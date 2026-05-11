@@ -7,7 +7,7 @@ const CONFIG = {
   SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU',
   
   APP_NAME: 'FriendlyBet',
-  APP_VERSION: '0.1.2',
+  APP_VERSION: '0.1.3',
   
   STORAGE_KEYS: {
     USER_ID: 'fb_user_id',
@@ -31,27 +31,25 @@ const CONFIG = {
 // Supabase client
 var supabaseClient = null;
 var initAttempts = 0;
-const MAX_INIT_ATTEMPTS = 50; // 5 seconds total
+const MAX_INIT_ATTEMPTS = 100; // 10 seconds total
 
 function initSupabase() {
   initAttempts++;
   
-  // Check if we've tried too many times
   if (initAttempts > MAX_INIT_ATTEMPTS) {
-    console.error('❌ Failed to load Supabase after 5 seconds. Network issue?');
+    console.error('❌ Failed to load Supabase after 10 seconds');
     return;
   }
   
-  // Check if Supabase is available
-  if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
+  // Check if the ESM-loaded createClient is available
+  if (typeof window.supabaseCreateClient === 'undefined') {
     setTimeout(initSupabase, 100);
     return;
   }
   
-  // Initialize
   if (!supabaseClient) {
     try {
-      supabaseClient = window.supabase.createClient(
+      supabaseClient = window.supabaseCreateClient(
         CONFIG.SUPABASE_URL,
         CONFIG.SUPABASE_PUBLISHABLE_KEY,
         {
@@ -61,22 +59,12 @@ function initSupabase() {
           }
         }
       );
-      console.log('✅ Supabase client initialized successfully (attempt ' + initAttempts + ')');
-      console.log('App version: ' + CONFIG.APP_VERSION);
+      console.log('✅ Supabase client ready! Version: ' + CONFIG.APP_VERSION);
     } catch (err) {
       console.error('❌ Error initializing Supabase:', err);
     }
   }
 }
 
-// Try to initialize as soon as possible
+// Start trying immediately
 initSupabase();
-
-// Also try when the page is fully loaded
-window.addEventListener('load', function() {
-  if (!supabaseClient) {
-    console.log('Page loaded, retrying Supabase init...');
-    initAttempts = 0; // reset counter
-    initSupabase();
-  }
-});

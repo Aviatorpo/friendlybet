@@ -445,44 +445,18 @@
 <!-- ============================================================ -->
 <!-- Scripts                                                      -->
 <!-- ============================================================ -->
-<!-- Load Supabase SDK - try multiple CDNs for reliability -->
-<script>
-  // Will try to load Supabase from multiple CDNs
-  window.SUPABASE_LOAD_STATUS = 'pending';
-</script>
-<script 
-  src="https://cdn.jsdelivr.net/npm/@supabase/[email protected]/dist/umd/supabase.js"
-  onload="window.SUPABASE_LOAD_STATUS='loaded'; console.log('✅ Supabase SDK loaded from jsdelivr');"
-  onerror="loadSupabaseFallback()"></script>
-<script>
-  function loadSupabaseFallback() {
-    console.warn('jsdelivr failed, trying unpkg...');
-    const s = document.createElement('script');
-    s.src = 'https://unpkg.com/@supabase/[email protected]/dist/umd/supabase.js';
-    s.onload = function() {
-      window.SUPABASE_LOAD_STATUS = 'loaded';
-      console.log('✅ Supabase SDK loaded from unpkg');
-    };
-    s.onerror = function() {
-      console.warn('unpkg failed, trying esm.sh...');
-      const s2 = document.createElement('script');
-      s2.src = 'https://cdn.skypack.dev/@supabase/supabase-js';
-      s2.type = 'module';
-      s2.onload = function() {
-        window.SUPABASE_LOAD_STATUS = 'loaded';
-        console.log('✅ Supabase SDK loaded from skypack');
-      };
-      s2.onerror = function() {
-        window.SUPABASE_LOAD_STATUS = 'failed';
-        console.error('❌ All Supabase CDNs failed');
-        alert('שגיאת חיבור לשרת. בדוק את החיבור לאינטרנט ורענן את הדף.');
-      };
-      document.head.appendChild(s2);
-    };
-    document.head.appendChild(s);
+<!-- Load Supabase SDK - using ESM bundle which is most reliable -->
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+  window.supabaseCreateClient = createClient;
+  window.SUPABASE_LOADED = true;
+  console.log('✅ Supabase SDK loaded via ESM');
+  // Trigger init if config is already loaded
+  if (typeof initSupabase === 'function') {
+    initSupabase();
   }
 </script>
-<!-- Our config (will wait for Supabase) -->
+<!-- Our config -->
 <script src="config.js"></script>
 <!-- Our app -->
 <script src="app.js"></script>
