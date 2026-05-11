@@ -3,15 +3,12 @@
 // ============================================================
 
 const CONFIG = {
-  // Supabase
   SUPABASE_URL: 'https://kovhuahdoluxyqqwqohw.supabase.co',
   SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU',
   
-  // App
   APP_NAME: 'FriendlyBet',
-  APP_VERSION: '0.1.0',
+  APP_VERSION: '0.1.1',
   
-  // Storage keys (localStorage)
   STORAGE_KEYS: {
     USER_ID: 'fb_user_id',
     POOL_ID: 'fb_pool_id',
@@ -21,26 +18,40 @@ const CONFIG = {
     LANGUAGE: 'fb_language'
   },
   
-  // Defaults
   DEFAULT_LANGUAGE: 'he',
   POOL_CODE_LENGTH: 5,
-  RECOVERY_CODE_LENGTH: 16, // 4 groups of 4 chars
+  RECOVERY_CODE_LENGTH: 16,
   
-  // Validation
   MIN_NICKNAME_LENGTH: 2,
   MAX_NICKNAME_LENGTH: 30,
   MIN_POOL_NAME_LENGTH: 3,
   MAX_POOL_NAME_LENGTH: 100,
 };
 
-// Initialize Supabase client
-const supabaseClient = supabase.createClient(
-  CONFIG.SUPABASE_URL,
-  CONFIG.SUPABASE_PUBLISHABLE_KEY,
-  {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false
-    }
+// Supabase client - initialized after the SDK loads
+var supabaseClient = null;
+
+function initSupabase() {
+  if (typeof window.supabase === 'undefined') {
+    console.error('Supabase SDK not loaded yet, retrying in 100ms...');
+    setTimeout(initSupabase, 100);
+    return;
   }
-);
+  
+  if (!supabaseClient) {
+    supabaseClient = window.supabase.createClient(
+      CONFIG.SUPABASE_URL,
+      CONFIG.SUPABASE_PUBLISHABLE_KEY,
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false
+        }
+      }
+    );
+    console.log('✅ Supabase client initialized successfully');
+  }
+}
+
+// Initialize immediately
+initSupabase();

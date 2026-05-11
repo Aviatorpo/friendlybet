@@ -138,6 +138,13 @@ async function checkPoolCode() {
     return;
   }
   
+  // Make sure supabase is ready
+  if (!supabaseClient) {
+    showError('join-error', 'מתחבר לשרת... נסה שוב בעוד רגע');
+    initSupabase();
+    return;
+  }
+  
   // Search pool
   try {
     showToast('מחפש את ההימור...', 'info');
@@ -263,6 +270,13 @@ async function submitNickname() {
     return;
   }
   
+  // Make sure supabase is ready
+  if (!supabaseClient) {
+    showError('nickname-error', 'מתחבר לשרת... נסה שוב בעוד רגע');
+    initSupabase();
+    return;
+  }
+  
   // Check availability again
   try {
     const { data: existing } = await supabaseClient
@@ -327,6 +341,13 @@ function shareRecoveryToWhatsApp() {
 async function completeRegistration() {
   if (!state.pendingNickname || !state.pendingRecoveryCode || !state.currentPool) {
     showToast('שגיאה - חסרים נתונים', 'error');
+    return;
+  }
+  
+  // Make sure supabase is ready
+  if (!supabaseClient) {
+    showToast('מתחבר לשרת... נסה שוב בעוד רגע', 'error');
+    initSupabase();
     return;
   }
   
@@ -413,6 +434,13 @@ async function createPool() {
   
   if (adminNickname.length < CONFIG.MIN_NICKNAME_LENGTH) {
     showError('admin-error', `הכינוי חייב להיות לפחות ${CONFIG.MIN_NICKNAME_LENGTH} תווים`);
+    return;
+  }
+  
+  // Make sure supabase is ready
+  if (!supabaseClient) {
+    showError('admin-error', 'מתחבר לשרת... נסה שוב בעוד רגע');
+    initSupabase();
     return;
   }
   
