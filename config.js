@@ -7,7 +7,7 @@ const CONFIG = {
   SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU',
   
   APP_NAME: 'FriendlyBet',
-  APP_VERSION: '0.1.1',
+  APP_VERSION: '0.1.2',
   
   STORAGE_KEYS: {
     USER_ID: 'fb_user_id',
@@ -28,30 +28,55 @@ const CONFIG = {
   MAX_POOL_NAME_LENGTH: 100,
 };
 
-// Supabase client - initialized after the SDK loads
+// Supabase client
 var supabaseClient = null;
+var initAttempts = 0;
+const MAX_INIT_ATTEMPTS = 50; // 5 seconds total
 
 function initSupabase() {
-  if (typeof window.supabase === 'undefined') {
-    console.error('Supabase SDK not loaded yet, retrying in 100ms...');
+  initAttempts++;
+  
+  // Check if we've tried too many times
+  if (initAttempts > MAX_INIT_ATTEMPTS) {
+    console.error('❌ Failed to load Supabase after 5 seconds. Network issue?');
+    return;
+  }
+  
+  // Check if Supabase is available
+  if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
     setTimeout(initSupabase, 100);
     return;
   }
   
+  // Initialize
   if (!supabaseClient) {
-    supabaseClient = window.supabase.createClient(
-      CONFIG.SUPABASE_URL,
-      CONFIG.SUPABASE_PUBLISHABLE_KEY,
-      {
-        auth: {
-          persistSession: false,
-          autoRefreshToken: false
+    try {
+      supabaseClient = window.supabase.createClient(
+        CONFIG.SUPABASE_URL,
+        CONFIG.SUPABASE_PUBLISHABLE_KEY,
+        {
+          auth: {
+            persistSession: false,
+            autoRefreshToken: false
+          }
         }
-      }
-    );
-    console.log('✅ Supabase client initialized successfully');
+      );
+      console.log('✅ Supabase client initialized successfully (attempt ' + initAttempts + ')');
+      console.log('App version: ' + CONFIG.APP_VERSION);
+    } catch (err) {
+      console.error('❌ Error initializing Supabase:', err);
+    }
   }
 }
 
-// Initialize immediately
+// Try to initialize as soon as possible
 initSupabase();
+
+// Also try when the page is fully loaded
+window.addEventListener('load', function() {
+  if (!supabaseClient) {
+    console.log('Page loaded, retrying Supabase init...');
+    initAttempts = 0; // reset counter
+    initSupabase();
+  }
+});
