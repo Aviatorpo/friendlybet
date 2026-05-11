@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a1628">
+<meta name="description" content="הימור חברים על מונדיאל 2026 - חינמי, בלי פרסומות, בלי כסף">
+<title>FriendlyBet · הימור חברים על מונדיאל 2026</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/[email protected]/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- App Container                                                -->
+<!-- ============================================================ -->
+<div id="app">
+
+  <!-- LOADING SCREEN -->
+  <div id="loading-screen" class="screen active">
+    <div class="loading-content">
+      <div class="logo-large">⚽</div>
+      <div class="loading-title">FriendlyBet</div>
+      <div class="loading-spinner"></div>
+    </div>
+  </div>
+
+  <!-- HOME SCREEN (G-00) -->
+  <div id="home-screen" class="screen">
+    <div class="container">
+      <div class="hero">
+        <div class="logo-xl">⚽</div>
+        <h1 class="hero-title">FriendlyBet</h1>
+        <p class="hero-subtitle">הימור חברים על מונדיאל 2026</p>
+        <p class="hero-description">חינמי · בלי פרסומות · בלי כסף · קוד פתוח</p>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-primary btn-large" onclick="showScreen('join-pool-screen')">
+          <i class="ti ti-users"></i>
+          הצטרף להימור
+        </button>
+        <button class="btn-secondary btn-large" onclick="showScreen('create-pool-screen')">
+          <i class="ti ti-crown"></i>
+          צור הימור חדש
+        </button>
+      </div>
+
+      <div class="info-banner">
+        <i class="ti ti-shield-check"></i>
+        <span>ללא הרשמה · ללא פרטים אישיים</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- JOIN POOL SCREEN (U-01) -->
+  <div id="join-pool-screen" class="screen">
+    <div class="topbar">
+      <button class="btn-icon" onclick="showScreen('home-screen')">
+        <i class="ti ti-arrow-right"></i>
+      </button>
+      <span class="topbar-title">הצטרף להימור</span>
+      <div style="width: 24px;"></div>
+    </div>
+
+    <div class="container">
+      <div class="form-section">
+        <div class="form-icon">🏆</div>
+        <h2 class="form-title">איזה הימור?</h2>
+        <p class="form-subtitle">הזן את קוד ההימור שקיבלת</p>
+
+        <div class="form-group">
+          <label class="form-label">קוד ההימור</label>
+          <input type="text" id="pool-code-input" class="form-input form-input-large" placeholder="XXXXX" maxlength="5" autocomplete="off" autocapitalize="characters">
+        </div>
+
+        <div id="join-error" class="error-message" style="display: none;"></div>
+
+        <button class="btn-primary btn-large" onclick="checkPoolCode()">
+          <i class="ti ti-arrow-left"></i>
+          המשך
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POOL FOUND SCREEN (after entering code) -->
+  <div id="pool-found-screen" class="screen">
+    <div class="topbar">
+      <button class="btn-icon" onclick="showScreen('join-pool-screen')">
+        <i class="ti ti-arrow-right"></i>
+      </button>
+      <span class="topbar-title">פרטי ההימור</span>
+      <div style="width: 24px;"></div>
+    </div>
+
+    <div class="container">
+      <div class="pool-info-card">
+        <div class="form-icon">🏆</div>
+        <p class="text-faint" style="font-size: 12px; letter-spacing: 1.5px; margin-bottom: 6px;">הוזמנת ל</p>
+        <h2 id="found-pool-name" class="pool-name">חברים מהעבודה</h2>
+        <p class="text-faint" style="margin-top: 4px;">קוד: <span id="found-pool-code" class="gold-mono">XXXXX</span></p>
+
+        <div class="pool-stats">
+          <div class="stat-row">
+            <div class="stat-icon-wrap"><i class="ti ti-users gold"></i></div>
+            <div>
+              <div class="stat-label">משתתפים</div>
+              <div class="stat-value"><span id="found-pool-members">0</span> חברים</div>
+            </div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-icon-wrap"><i class="ti ti-trophy gold"></i></div>
+            <div>
+              <div class="stat-label">טורניר</div>
+              <div class="stat-value">מונדיאל 2026</div>
+            </div>
+          </div>
+          <div class="stat-row">
+            <div class="stat-icon-wrap"><i class="ti ti-clock gold"></i></div>
+            <div>
+              <div class="stat-label">סטטוס</div>
+              <div class="stat-value" id="found-pool-status">פתוח להצטרפות</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-primary btn-large" onclick="showScreen('choose-nickname-screen')">
+          <i class="ti ti-user-plus"></i>
+          הצטרף להימור
+        </button>
+
+        <div class="hint-text">
+          <i class="ti ti-shield-check"></i>
+          ללא הרשמה · ללא פרטים אישיים
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHOOSE NICKNAME SCREEN (U-02) -->
+  <div id="choose-nickname-screen" class="screen">
+    <div class="topbar">
+      <button class="btn-icon" onclick="showScreen('pool-found-screen')">
+        <i class="ti ti-arrow-right"></i>
+      </button>
+      <span class="topbar-step">שלב 1 מתוך 2</span>
+      <div style="width: 24px;"></div>
+    </div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar"><div style="width: 50%"></div></div>
+    </div>
+
+    <div class="container">
+      <div class="form-section">
+        <div class="form-icon">👋</div>
+        <h2 class="form-title">איך נקרא לך?</h2>
+        <p class="form-subtitle">הכינוי יוצג בלוח הדירוגים</p>
+
+        <div class="form-group">
+          <label class="form-label">הכינוי שלך</label>
+          <input type="text" id="nickname-input" class="form-input" placeholder="לדוגמה: דני" maxlength="30" autocomplete="off">
+          <div id="nickname-status"></div>
+        </div>
+
+        <div id="nickname-error" class="error-message" style="display: none;"></div>
+
+        <button class="btn-primary btn-large" onclick="submitNickname()">
+          <i class="ti ti-arrow-left"></i>
+          המשך
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECOVERY CODE SCREEN (U-03) -->
+  <div id="recovery-code-screen" class="screen">
+    <div class="topbar">
+      <div style="width: 24px;"></div>
+      <span class="topbar-step">שלב 2 מתוך 2</span>
+      <div style="width: 24px;"></div>
+    </div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar"><div style="width: 100%"></div></div>
+    </div>
+
+    <div class="container">
+      <div class="form-section">
+        <div class="form-icon">🔑</div>
+        <h2 class="form-title">קוד השחזור שלך</h2>
+        <p class="form-subtitle">שמור אותו - תזדקק לו אם תרצה להתחבר ממכשיר אחר</p>
+
+        <div class="recovery-code-display">
+          <div id="recovery-code-value" class="recovery-code-text">XXXX-XXXX-XXXX-XXXX</div>
+        </div>
+
+        <div class="recovery-actions">
+          <button class="btn-secondary" onclick="copyRecoveryCode()">
+            <i class="ti ti-copy"></i>
+            העתק
+          </button>
+          <button class="btn-whatsapp" onclick="shareRecoveryToWhatsApp()">
+            <i class="ti ti-brand-whatsapp"></i>
+            שלח לעצמי
+          </button>
+        </div>
+
+        <div class="warning-banner">
+          <i class="ti ti-alert-circle"></i>
+          <div>
+            <strong>חשוב!</strong> ללא הקוד הזה לא תוכל להתחבר חזרה. שמור אותו במקום בטוח.
+          </div>
+        </div>
+
+        <button class="btn-primary btn-large" onclick="completeRegistration()">
+          <i class="ti ti-check"></i>
+          שמרתי, המשך
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE POOL SCREEN (M-02) -->
+  <div id="create-pool-screen" class="screen">
+    <div class="topbar">
+      <button class="btn-icon" onclick="showScreen('home-screen')">
+        <i class="ti ti-arrow-right"></i>
+      </button>
+      <span class="topbar-step">שלב 1 מתוך 3</span>
+      <div style="width: 24px;"></div>
+    </div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar"><div style="width: 33%"></div></div>
+    </div>
+
+    <div class="container">
+      <div class="form-section">
+        <div class="form-icon">🏆</div>
+        <h2 class="form-title">איך נקרא להימור?</h2>
+        <p class="form-subtitle">השם שיוצג לכל המשתתפים</p>
+
+        <div class="form-group">
+          <label class="form-label">שם ההימור</label>
+          <input type="text" id="pool-name-input" class="form-input" placeholder="לדוגמה: חברים מהעבודה" maxlength="100" autocomplete="off">
+        </div>
+
+        <div class="suggestion-chips">
+          <p class="text-faint" style="font-size: 11px; margin-bottom: 8px;">הצעות מהירות:</p>
+          <button class="chip" onclick="useSuggestion('חברים מהעבודה')">חברים מהעבודה</button>
+          <button class="chip" onclick="useSuggestion('המשפחה')">המשפחה</button>
+          <button class="chip" onclick="useSuggestion('הסטודנטים')">הסטודנטים</button>
+          <button class="chip" onclick="useSuggestion('החברים')">החברים</button>
+        </div>
+
+        <div id="create-error" class="error-message" style="display: none;"></div>
+
+        <button class="btn-primary btn-large" onclick="submitPoolName()">
+          <i class="ti ti-arrow-left"></i>
+          המשך
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE POOL - ADMIN NICKNAME (M-05) -->
+  <div id="admin-nickname-screen" class="screen">
+    <div class="topbar">
+      <button class="btn-icon" onclick="showScreen('create-pool-screen')">
+        <i class="ti ti-arrow-right"></i>
+      </button>
+      <span class="topbar-step">שלב 2 מתוך 3</span>
+      <div style="width: 24px;"></div>
+    </div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar"><div style="width: 66%"></div></div>
+    </div>
+
+    <div class="container">
+      <div class="form-section">
+        <div class="form-icon">👑</div>
+        <h2 class="form-title">איך נקרא לך?</h2>
+        <p class="form-subtitle">הכינוי שלך כמארגן וגם כמשתתף</p>
+
+        <div class="form-group">
+          <label class="form-label">הכינוי שלך</label>
+          <input type="text" id="admin-nickname-input" class="form-input" placeholder="לדוגמה: אסף" maxlength="30" autocomplete="off">
+        </div>
+
+        <div class="admin-permissions-card">
+          <h3 class="admin-perm-title">
+            <i class="ti ti-crown gold"></i>
+            הרשאות המארגן
+          </h3>
+          <div class="perm-item"><i class="ti ti-check"></i> ניהול חברי ההימור</div>
+          <div class="perm-item"><i class="ti ti-check"></i> אישור משתמשים חדשים</div>
+          <div class="perm-item"><i class="ti ti-check"></i> שחזור קודים אבודים</div>
+          <div class="perm-item"><i class="ti ti-check"></i> צפייה בכל ההימורים</div>
+          <div class="perm-item"><i class="ti ti-check"></i> אתה גם משתתף בהימור</div>
+        </div>
+
+        <div id="admin-error" class="error-message" style="display: none;"></div>
+
+        <button class="btn-primary btn-large" onclick="createPool()">
+          <i class="ti ti-check"></i>
+          צור הימור
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POOL CREATED - SHARE SCREEN (M-06) -->
+  <div id="share-pool-screen" class="screen">
+    <div class="topbar">
+      <div style="width: 24px;"></div>
+      <span class="topbar-title">ההימור נוצר!</span>
+      <div style="width: 24px;"></div>
+    </div>
+
+    <div class="container">
+      <div class="success-section">
+        <div class="success-icon">🎉</div>
+        <h2 class="form-title">מעולה!</h2>
+        <p class="form-subtitle">ההימור נוצר בהצלחה. שתף את הקוד עם חבריך</p>
+
+        <div class="pool-code-display">
+          <div class="text-faint" style="font-size: 11px; letter-spacing: 2px; margin-bottom: 8px;">קוד ההימור</div>
+          <div id="created-pool-code" class="pool-code-large">XXXXX</div>
+        </div>
+
+        <div class="share-actions">
+          <button class="btn-whatsapp btn-large" onclick="shareWhatsApp()">
+            <i class="ti ti-brand-whatsapp"></i>
+            שתף ב-WhatsApp
+          </button>
+          <button class="btn-telegram btn-large" onclick="shareTelegram()">
+            <i class="ti ti-brand-telegram"></i>
+            שתף ב-Telegram
+          </button>
+          <button class="btn-secondary" onclick="copyShareLink()">
+            <i class="ti ti-copy"></i>
+            העתק קישור
+          </button>
+        </div>
+
+        <button class="btn-primary btn-large" style="margin-top: 24px;" onclick="goToDashboard()">
+          <i class="ti ti-arrow-left"></i>
+          לדשבורד שלי
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- USER DASHBOARD (U-07) -->
+  <div id="user-dashboard-screen" class="screen">
+    <div class="topbar">
+      <div>
+        <div class="text-faint" style="font-size: 10px; letter-spacing: 1px;">
+          <span id="dashboard-pool-name">חברים מהעבודה</span>
+        </div>
+        <div class="topbar-title-small">היי, <span id="dashboard-user-name">דני</span> 👋</div>
+      </div>
+      <button class="btn-icon" onclick="openMenu()">
+        <i class="ti ti-menu-2 gold"></i>
+      </button>
+    </div>
+
+    <div class="container">
+      <!-- User Stats Card -->
+      <div class="dashboard-stats">
+        <div class="stat-block">
+          <div class="stat-label">המקום שלך</div>
+          <div class="stat-big">#<span id="user-rank">-</span></div>
+        </div>
+        <div class="stat-block stat-block-gold">
+          <div class="stat-label">נקודות</div>
+          <div class="stat-big gold"><span id="user-points">0</span></div>
+        </div>
+      </div>
+
+      <!-- Status sections -->
+      <div class="section-title">ההימורים שלי</div>
+
+      <div id="bet-status-groups" class="bet-status-card pending">
+        <div class="bet-status-content">
+          <div class="bet-status-title">
+            <i class="ti ti-flag gold"></i>
+            שלב הבתים
+          </div>
+          <div class="bet-status-subtitle">עדיין לא הימרת</div>
+        </div>
+        <button class="btn-small" onclick="startGroupBetting()">
+          התחל <i class="ti ti-chevron-left"></i>
+        </button>
+      </div>
+
+      <div class="bet-status-card locked">
+        <div class="bet-status-content">
+          <div class="bet-status-title">
+            <i class="ti ti-lock text-faint"></i>
+            שלב הנוקאאוט
+          </div>
+          <div class="bet-status-subtitle">נפתח אחרי שלב הבתים</div>
+        </div>
+      </div>
+
+      <div class="bet-status-card locked">
+        <div class="bet-status-content">
+          <div class="bet-status-title">
+            <i class="ti ti-bolt text-faint"></i>
+            מלך השערים
+          </div>
+          <div class="bet-status-subtitle">נפתח בקרוב</div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="quick-actions">
+        <button class="quick-action-btn" onclick="showLeaderboard()">
+          <i class="ti ti-trophy gold"></i>
+          <span>דירוג</span>
+        </button>
+        <button class="quick-action-btn" onclick="showHelp()">
+          <i class="ti ti-help gold"></i>
+          <span>עזרה</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- Toast notifications                                          -->
+<!-- ============================================================ -->
+<div id="toast-container"></div>
+
+<!-- ============================================================ -->
+<!-- Scripts                                                      -->
+<!-- ============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/[email protected]/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>

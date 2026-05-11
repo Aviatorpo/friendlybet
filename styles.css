@@ -1,0 +1,846 @@
+/* ============================================================ */
+/* FriendlyBet - Main Styles                                    */
+/* ============================================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(180deg, #0a1628 0%, #1a2942 100%);
+  color: white;
+  direction: rtl;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body {
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================ */
+/* App Container & Screens                                      */
+/* ============================================================ */
+
+#app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  position: relative;
+}
+
+.screen {
+  display: none;
+  min-height: 100vh;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.screen.active {
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================ */
+/* Loading Screen                                               */
+/* ============================================================ */
+
+#loading-screen {
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-content {
+  text-align: center;
+}
+
+.logo-large {
+  font-size: 80px;
+  margin-bottom: 16px;
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.logo-xl {
+  font-size: 96px;
+  margin-bottom: 20px;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.loading-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #d4a853;
+  letter-spacing: 3px;
+  margin-bottom: 24px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(212, 168, 83, 0.2);
+  border-top-color: #d4a853;
+  border-radius: 50%;
+  margin: 0 auto;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================ */
+/* Container & Layout                                           */
+/* ============================================================ */
+
+.container {
+  padding: 24px 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================ */
+/* Top Bar                                                      */
+/* ============================================================ */
+
+.topbar {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 0.5px solid rgba(212, 168, 83, 0.2);
+  background: rgba(10, 22, 40, 0.95);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+}
+
+.topbar-title-small {
+  font-size: 15px;
+  font-weight: 500;
+  color: white;
+}
+
+.topbar-step {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 1px;
+}
+
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #d4a853;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 0;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.btn-icon:hover, .btn-icon:active {
+  background: rgba(212, 168, 83, 0.1);
+}
+
+/* ============================================================ */
+/* Progress Bar                                                 */
+/* ============================================================ */
+
+.progress-bar-container {
+  padding: 10px 20px;
+  background: rgba(212, 168, 83, 0.05);
+}
+
+.progress-bar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar > div {
+  height: 100%;
+  background: linear-gradient(90deg, #d4a853 0%, #f4d77f 100%);
+  border-radius: 2px;
+  transition: width 0.3s ease-out;
+}
+
+/* ============================================================ */
+/* Hero / Home Screen                                           */
+/* ============================================================ */
+
+.hero {
+  text-align: center;
+  padding: 40px 0 32px;
+}
+
+.hero-title {
+  font-size: 40px;
+  font-weight: 700;
+  color: #d4a853;
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+}
+
+.hero-subtitle {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 12px;
+}
+
+.hero-description {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 1px;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.info-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(168, 85, 247, 0.06);
+  border: 0.5px solid rgba(168, 85, 247, 0.2);
+  border-radius: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 16px;
+}
+
+.info-banner i {
+  color: #c4b5fd;
+  font-size: 16px;
+}
+
+/* ============================================================ */
+/* Buttons                                                      */
+/* ============================================================ */
+
+.btn-primary, .btn-secondary, .btn-whatsapp, .btn-telegram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Heebo', sans-serif;
+  border: none;
+  text-align: center;
+}
+
+.btn-primary {
+  background: #d4a853;
+  color: #0a1628;
+}
+
+.btn-primary:hover, .btn-primary:active {
+  background: #c19542;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  border: 0.5px solid rgba(212, 168, 83, 0.3);
+}
+
+.btn-secondary:hover, .btn-secondary:active {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(212, 168, 83, 0.5);
+}
+
+.btn-large {
+  padding: 16px 24px;
+  font-size: 16px;
+}
+
+.btn-small {
+  padding: 8px 12px;
+  font-size: 12px;
+  background: rgba(212, 168, 83, 0.15);
+  color: #d4a853;
+  border: 0.5px solid rgba(212, 168, 83, 0.3);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  font-family: 'Heebo', sans-serif;
+  transition: all 0.2s;
+}
+
+.btn-small:hover {
+  background: rgba(212, 168, 83, 0.25);
+}
+
+.btn-whatsapp {
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: white;
+}
+
+.btn-telegram {
+  background: linear-gradient(135deg, #229ED9 0%, #1B7BB0 100%);
+  color: white;
+}
+
+/* ============================================================ */
+/* Forms                                                        */
+/* ============================================================ */
+
+.form-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-icon {
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.form-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.form-subtitle {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.5px solid rgba(212, 168, 83, 0.4);
+  color: white;
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: 'Heebo', sans-serif;
+  outline: none;
+  transition: all 0.2s;
+  text-align: right;
+}
+
+.form-input:focus {
+  border-color: #d4a853;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(212, 168, 83, 0.15);
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.form-input-large {
+  font-size: 24px;
+  text-align: center;
+  letter-spacing: 6px;
+  font-weight: 600;
+  font-family: 'Heebo', monospace;
+  text-transform: uppercase;
+}
+
+/* Status messages under inputs */
+#nickname-status {
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.status-checking {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.status-available {
+  color: #4ade80;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-taken {
+  color: #fb7185;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ============================================================ */
+/* Messages                                                     */
+/* ============================================================ */
+
+.error-message {
+  background: rgba(244, 63, 94, 0.1);
+  border: 0.5px solid rgba(244, 63, 94, 0.3);
+  color: #fb7185;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.warning-banner {
+  display: flex;
+  gap: 10px;
+  background: rgba(251, 191, 36, 0.08);
+  border: 0.5px solid rgba(251, 191, 36, 0.3);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+}
+
+.warning-banner i {
+  color: #fbbf24;
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.warning-banner strong {
+  color: #fbbf24;
+}
+
+.hint-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.hint-text i {
+  color: #c4b5fd;
+}
+
+/* ============================================================ */
+/* Pool Found Card                                              */
+/* ============================================================ */
+
+.pool-info-card {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.08) 0%, rgba(212, 168, 83, 0.02) 100%);
+  border: 0.5px solid rgba(212, 168, 83, 0.3);
+  border-radius: 12px;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+.pool-name {
+  font-size: 22px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.gold-mono {
+  color: #d4a853;
+  font-family: monospace;
+  letter-spacing: 3px;
+  font-weight: 600;
+}
+
+.pool-stats {
+  margin: 24px 0;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
+  text-align: right;
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-icon-wrap {
+  width: 36px;
+  height: 36px;
+  background: rgba(212, 168, 83, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 2px;
+}
+
+.stat-value {
+  font-size: 14px;
+  color: white;
+  font-weight: 500;
+}
+
+/* ============================================================ */
+/* Recovery Code Display                                        */
+/* ============================================================ */
+
+.recovery-code-display {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.15) 0%, rgba(212, 168, 83, 0.05) 100%);
+  border: 1px solid #d4a853;
+  border-radius: 12px;
+  padding: 24px 16px;
+  margin: 24px 0 16px;
+  text-align: center;
+}
+
+.recovery-code-text {
+  color: #d4a853;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  font-family: monospace;
+  word-spacing: 4px;
+}
+
+.recovery-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* ============================================================ */
+/* Pool Code Display (after creation)                          */
+/* ============================================================ */
+
+.success-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.success-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.pool-code-display {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.2) 0%, rgba(212, 168, 83, 0.05) 100%);
+  border: 2px solid #d4a853;
+  border-radius: 16px;
+  padding: 32px 24px;
+  margin: 24px 0;
+  width: 100%;
+}
+
+.pool-code-large {
+  font-size: 48px;
+  font-weight: 700;
+  color: #d4a853;
+  letter-spacing: 8px;
+  font-family: monospace;
+}
+
+.share-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ============================================================ */
+/* Suggestion Chips                                             */
+/* ============================================================ */
+
+.suggestion-chips {
+  margin: 12px 0 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.suggestion-chips > p {
+  width: 100%;
+}
+
+.chip {
+  background: rgba(212, 168, 83, 0.08);
+  border: 0.5px solid rgba(212, 168, 83, 0.25);
+  color: #d4a853;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'Heebo', sans-serif;
+  transition: all 0.2s;
+}
+
+.chip:hover, .chip:active {
+  background: rgba(212, 168, 83, 0.15);
+  border-color: rgba(212, 168, 83, 0.4);
+}
+
+/* ============================================================ */
+/* Admin Permissions Card                                       */
+/* ============================================================ */
+
+.admin-permissions-card {
+  background: rgba(212, 168, 83, 0.06);
+  border: 0.5px solid rgba(212, 168, 83, 0.2);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 16px 0;
+}
+
+.admin-perm-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.perm-item {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.perm-item i {
+  color: #4ade80;
+  font-size: 14px;
+}
+
+/* ============================================================ */
+/* Dashboard                                                    */
+/* ============================================================ */
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.stat-block {
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-block-gold {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.12) 0%, rgba(212, 168, 83, 0.04) 100%);
+  border-color: rgba(212, 168, 83, 0.3);
+}
+
+.stat-big {
+  font-size: 32px;
+  font-weight: 600;
+  color: white;
+  line-height: 1;
+  margin-top: 4px;
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 1px;
+  margin: 24px 0 12px;
+}
+
+.bet-status-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.bet-status-card.pending {
+  background: rgba(212, 168, 83, 0.06);
+  border-color: rgba(212, 168, 83, 0.25);
+}
+
+.bet-status-card.locked {
+  opacity: 0.5;
+}
+
+.bet-status-card.completed {
+  background: rgba(34, 197, 94, 0.06);
+  border-color: rgba(34, 197, 94, 0.25);
+}
+
+.bet-status-content {
+  flex: 1;
+}
+
+.bet-status-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bet-status-subtitle {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.quick-action-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'Heebo', sans-serif;
+  transition: all 0.2s;
+}
+
+.quick-action-btn:hover, .quick-action-btn:active {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(212, 168, 83, 0.3);
+}
+
+.quick-action-btn i {
+  font-size: 22px;
+}
+
+/* ============================================================ */
+/* Toast Notifications                                          */
+/* ============================================================ */
+
+#toast-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.toast {
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  border: 0.5px solid rgba(212, 168, 83, 0.3);
+  backdrop-filter: blur(10px);
+  animation: slideDown 0.3s ease-out;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast.success { border-color: rgba(34, 197, 94, 0.5); }
+.toast.error { border-color: rgba(244, 63, 94, 0.5); }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================ */
+/* Utility classes                                              */
+/* ============================================================ */
+
+.gold { color: #d4a853 !important; }
+.text-faint { color: rgba(255, 255, 255, 0.6) !important; }
+.text-faint-2 { color: rgba(255, 255, 255, 0.4) !important; }
