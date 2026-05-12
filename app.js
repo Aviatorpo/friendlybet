@@ -2175,63 +2175,13 @@ function createMatchCard(match) {
   // Header
   const matchLabel = round === 'FINAL' ? 'הגמר 🏆' : `משחק ${match.number}`;
   
-  // Get next match info (if not the final)
-  let nextOpponentHtml = '';
-  if (round !== 'FINAL' && match.nextMatch) {
-    const nextRound = match.nextMatch.split('_')[0];
-    const nextMatch = knockoutState.matches[nextRound]?.find(m => m.id === match.nextMatch);
-    
-    if (nextMatch) {
-      // Find the SIBLING match (the other match that feeds the same next match)
-      const currentMatches = knockoutState.matches[round];
-      const currentIdx = currentMatches.findIndex(m => m.id === match.id);
-      // Sibling is the adjacent match (if I'm at even idx, sibling is idx+1, if odd, idx-1)
-      const siblingIdx = currentIdx % 2 === 0 ? currentIdx + 1 : currentIdx - 1;
-      const sibling = currentMatches[siblingIdx];
-      
-      if (sibling && sibling.team1 && sibling.team2) {
-        // We know both possible teams!
-        const sibT1 = knockoutState.allTeams[sibling.team1];
-        const sibT2 = knockoutState.allTeams[sibling.team2];
-        const sibPick = knockoutState.picks[sibling.id];
-        
-        if (sibPick) {
-          // User already picked from sibling match
-          const winner = knockoutState.allTeams[sibPick];
-          nextOpponentHtml = `
-            <div class="ko-next-info">
-              <span class="ko-next-arrow">↓</span>
-              <span class="ko-next-text">
-                המנצח יתמודד מול <strong>${winner.name_he}</strong>
-              </span>
-            </div>
-          `;
-        } else {
-          // Both teams known, but no pick yet in sibling
-          nextOpponentHtml = `
-            <div class="ko-next-info">
-              <span class="ko-next-arrow">↓</span>
-              <span class="ko-next-text">
-                המנצח יתמודד מול <strong>${sibT1.name_he}</strong> או <strong>${sibT2.name_he}</strong>
-              </span>
-            </div>
-          `;
-        }
-      } else if (sibling) {
-        // Sibling not ready yet
-        nextOpponentHtml = `
-          <div class="ko-next-info ko-next-info-muted">
-            <span class="ko-next-arrow">↓</span>
-            <span class="ko-next-text">המנצח יתמודד מול הזוכה ממשחק ${sibling.number}</span>
-          </div>
-        `;
-      }
-    }
-  } else if (round === 'FINAL') {
-    nextOpponentHtml = `
-      <div class="ko-next-info ko-next-info-final">
-        <span class="ko-next-arrow">🏆</span>
-        <span class="ko-next-text"><strong>אלוף המונדיאל!</strong></span>
+  // For final, show champion declaration
+  let finalDeclaration = '';
+  if (round === 'FINAL') {
+    finalDeclaration = `
+      <div class="ko-final-declaration">
+        <span class="ko-final-icon">🏆</span>
+        <span class="ko-final-text">המנצח: <strong>אלוף המונדיאל!</strong></span>
       </div>
     `;
   }
@@ -2251,7 +2201,7 @@ function createMatchCard(match) {
       <span class="ko-match-points-value">${points} נק'</span>
       <span>אם תנחש נכון</span>
     </div>
-    ${nextOpponentHtml}
+    ${finalDeclaration}
   `;
   
   // Bind clicks
@@ -2551,82 +2501,152 @@ function renderBracketView() {
   const container = document.getElementById('bracket-container');
   container.innerHTML = '';
   
-  const rounds = ['R32', 'R16', 'QF', 'SF', 'FINAL'];
+  // Build bracket structure
+  // Top half: R32 matches 1-8 → R16 1-4 → QF 1-2 → SF 1
+  // Bottom half: R32 matches 9-16 → R16 5-8 → QF 3-4 → SF 2
+  // Final: SF1 vs SF2 winner
   
-  rounds.forEach((round, idx) => {
-    const matches = knockoutState.matches[round] || [];
-    const info = ROUND_INFO[round];
-    
-    // Round container
-    const roundEl = document.createElement('div');
-    roundEl.className = 'bracket-round';
-    
-    if (round === 'FINAL') {
-      // Special rendering for final
-      const final = matches[0];
-      const winner = final ? knockoutState.picks[final.id] : null;
-      const winnerData = winner ? knockoutState.allTeams[winner] : null;
-      
-      roundEl.innerHTML = `
-        <div class="bracket-final-trophy">🏆</div>
-        <div class="bracket-final-label">הגמר</div>
-        ${createBracketMatch(final, true)}
-        <div class="bracket-champion">
-          <div class="bracket-champion-label">אלוף המונדיאל לדעתך</div>
-          <div class="bracket-champion-name ${winnerData ? '' : 'tbd'}">
-            ${winnerData ? winnerData.name_he : 'להיקבע'}
-          </div>
-        </div>
-      `;
-    } else {
-      const completed = matches.filter(m => knockoutState.picks[m.id]).length;
-      const total = info.total;
-      
-      // Round header
-      const headerHtml = `
-        <div class="bracket-round-header">
-          <div class="bracket-round-title">
-            ${info.name}
-            <span style="color: rgba(255,255,255,0.4); font-size: 11px;">(${completed}/${total})</span>
-          </div>
-          <span class="bracket-round-points">${info.points} נק' לכל ניחוש</span>
-        </div>
-      `;
-      
-      // Matches
-      const matchesHtml = matches.map(m => createBracketMatch(m, false)).join('');
-      
-      roundEl.innerHTML = headerHtml + `<div class="bracket-matches">${matchesHtml}</div>`;
-    }
-    
-    container.appendChild(roundEl);
-    
-    // Add divider between rounds (except after final)
-    if (round !== 'FINAL') {
-      const divider = document.createElement('div');
-      divider.className = 'bracket-divider';
-      divider.innerHTML = `
-        <div class="bracket-divider-line"></div>
-        <div class="bracket-divider-text">↓ עולה ל${ROUND_INFO[rounds[idx + 1]].name} ↓</div>
-        <div class="bracket-divider-line"></div>
-      `;
-      container.appendChild(divider);
-    }
-  });
+  // Section header explanation
+  const intro = document.createElement('div');
+  intro.className = 'bracket-intro';
+  intro.innerHTML = `
+    <div class="bracket-intro-title">🌳 עץ הטורניר המלא</div>
+    <div class="bracket-intro-text">לחץ על כל משחק כדי לבחור או לערוך מנצח</div>
+    <div class="bracket-legend">
+      <span class="bracket-legend-item"><span class="bracket-legend-dot done"></span> נבחר</span>
+      <span class="bracket-legend-item"><span class="bracket-legend-dot pending"></span> ממתין</span>
+      <span class="bracket-legend-item"><span class="bracket-legend-dot tbd"></span> טרם בשל</span>
+    </div>
+  `;
+  container.appendChild(intro);
   
-  // Bind click handlers to bracket matches
-  container.querySelectorAll('.bracket-match').forEach(el => {
+  // Top half (matches 1-8 of R32)
+  const topHalf = document.createElement('div');
+  topHalf.className = 'bracket-half';
+  topHalf.innerHTML = `
+    <div class="bracket-half-label">
+      <span class="bracket-half-marker">▼</span>
+      החצי העליון של ההגרלה
+    </div>
+  `;
+  topHalf.appendChild(renderBracketHalf('top'));
+  container.appendChild(topHalf);
+  
+  // Final section (in middle visually)
+  const finalSection = document.createElement('div');
+  finalSection.className = 'bracket-final-section';
+  finalSection.appendChild(renderFinalSection());
+  container.appendChild(finalSection);
+  
+  // Bottom half (matches 9-16 of R32)
+  const bottomHalf = document.createElement('div');
+  bottomHalf.className = 'bracket-half';
+  bottomHalf.innerHTML = `
+    <div class="bracket-half-label">
+      <span class="bracket-half-marker">▲</span>
+      החצי התחתון של ההגרלה
+    </div>
+  `;
+  bottomHalf.appendChild(renderBracketHalf('bottom'));
+  container.appendChild(bottomHalf);
+  
+  // Bind clicks
+  container.querySelectorAll('.bracket-match-mini').forEach(el => {
     el.addEventListener('click', function() {
       const matchId = this.getAttribute('data-match-id');
-      if (matchId) {
-        jumpToMatch(matchId);
-      }
+      if (matchId) jumpToMatch(matchId);
     });
   });
 }
 
-function createBracketMatch(match, isFinal) {
-  if (!match) return '';
+function renderBracketHalf(half) {
+  const container = document.createElement('div');
+  container.className = 'bracket-half-content';
+  
+  // R32 matches: top half = 1-8, bottom half = 9-16
+  const r32Start = half === 'top' ? 0 : 8;
+  const r32End = half === 'top' ? 8 : 16;
+  
+  // R16 matches: top half = 1-4, bottom half = 5-8
+  const r16Start = half === 'top' ? 0 : 4;
+  const r16End = half === 'top' ? 4 : 8;
+  
+  // QF: top half = 1-2, bottom half = 3-4
+  const qfStart = half === 'top' ? 0 : 2;
+  const qfEnd = half === 'top' ? 2 : 4;
+  
+  // SF: top half = 1, bottom half = 2
+  const sfIdx = half === 'top' ? 0 : 1;
+  
+  // Build R32 → R16 pairs
+  const r32Matches = knockoutState.matches.R32.slice(r32Start, r32End);
+  const r16Matches = knockoutState.matches.R16.slice(r16Start, r16End);
+  const qfMatches = knockoutState.matches.QF.slice(qfStart, qfEnd);
+  const sfMatch = knockoutState.matches.SF[sfIdx];
+  
+  // Render in groups: each R16 has 2 R32 matches feeding it
+  // Each QF has 2 R16 matches feeding it (= 4 R32 matches)
+  // SF has 2 QF matches feeding it (= 8 R32 matches = full half)
+  
+  // We render 4 "quarters" per half (each quarter = 2 R32 + 1 R16)
+  // Actually let's render 2 quarter-groups per half (each = 4 R32 + 2 R16 + 1 QF)
+  
+  // Build SF level first (innermost)
+  const sfRow = document.createElement('div');
+  sfRow.className = 'bracket-sf-row';
+  sfRow.appendChild(createMiniMatch(sfMatch, 'sf'));
+  
+  // Build QF level
+  const qfRow = document.createElement('div');
+  qfRow.className = 'bracket-qf-row';
+  qfMatches.forEach(qf => {
+    qfRow.appendChild(createMiniMatch(qf, 'qf'));
+  });
+  
+  // Build R16 level
+  const r16Row = document.createElement('div');
+  r16Row.className = 'bracket-r16-row';
+  r16Matches.forEach(r16 => {
+    r16Row.appendChild(createMiniMatch(r16, 'r16'));
+  });
+  
+  // Build R32 level
+  const r32Row = document.createElement('div');
+  r32Row.className = 'bracket-r32-row';
+  r32Matches.forEach(r32 => {
+    r32Row.appendChild(createMiniMatch(r32, 'r32'));
+  });
+  
+  // Arrange: R32 → R16 → QF → SF
+  container.appendChild(r32Row);
+  container.appendChild(createBracketArrow('R32', 'R16'));
+  container.appendChild(r16Row);
+  container.appendChild(createBracketArrow('R16', 'QF'));
+  container.appendChild(qfRow);
+  container.appendChild(createBracketArrow('QF', 'SF'));
+  container.appendChild(sfRow);
+  
+  return container;
+}
+
+function createBracketArrow(fromRound, toRound) {
+  const arrow = document.createElement('div');
+  arrow.className = 'bracket-flow-arrow';
+  arrow.innerHTML = `
+    <span class="bracket-flow-line"></span>
+    <span class="bracket-flow-text">${ROUND_INFO[fromRound].name} → ${ROUND_INFO[toRound].name}</span>
+    <span class="bracket-flow-line"></span>
+  `;
+  return arrow;
+}
+
+function createMiniMatch(match, size) {
+  if (!match) {
+    const el = document.createElement('div');
+    el.className = `bracket-match-mini bracket-match-mini-${size} bracket-match-empty`;
+    el.textContent = '—';
+    return el;
+  }
   
   const userPick = knockoutState.picks[match.id];
   const team1Data = match.team1 ? knockoutState.allTeams[match.team1] : null;
@@ -2635,12 +2655,9 @@ function createBracketMatch(match, isFinal) {
   const team1Flag = match.team1 ? getCountryFlag(match.team1) : '⏳';
   const team2Flag = match.team2 ? getCountryFlag(match.team2) : '⏳';
   
-  // Determine row classes
-  let team1Class = 'neutral';
-  let team2Class = 'neutral';
-  
-  if (!team1Data) team1Class = 'tbd';
-  if (!team2Data) team2Class = 'tbd';
+  // Determine team display classes
+  let team1Class = team1Data ? 'neutral' : 'tbd';
+  let team2Class = team2Data ? 'neutral' : 'tbd';
   
   if (userPick) {
     if (userPick === match.team1) {
@@ -2652,26 +2669,77 @@ function createBracketMatch(match, isFinal) {
     }
   }
   
-  const matchClass = userPick ? 'completed' : (isFinal ? 'final-match' : '');
-  const statusIcon = userPick ? '✓' : (team1Data && team2Data ? '?' : '⏳');
-  const statusColor = userPick ? '#4ade80' : (team1Data && team2Data ? '#fbbf24' : 'rgba(255,255,255,0.3)');
+  // Status class for the match container
+  let statusClass;
+  if (userPick) statusClass = 'done';
+  else if (team1Data && team2Data) statusClass = 'pending';
+  else statusClass = 'tbd';
   
-  return `
-    <div class="bracket-match ${matchClass}" data-match-id="${match.id}">
-      <div class="bracket-match-num">${match.number}</div>
-      <div class="bracket-match-teams">
-        <div class="bracket-team-row ${team1Class}">
-          <span class="bracket-team-flag">${team1Flag}</span>
-          <span class="bracket-team-name">${team1Data ? team1Data.name_he : 'להיקבע'}</span>
-        </div>
-        <div class="bracket-team-row ${team2Class}">
-          <span class="bracket-team-flag">${team2Flag}</span>
-          <span class="bracket-team-name">${team2Data ? team2Data.name_he : 'להיקבע'}</span>
-        </div>
+  const el = document.createElement('div');
+  el.className = `bracket-match-mini bracket-match-mini-${size} bracket-${statusClass}`;
+  el.setAttribute('data-match-id', match.id);
+  
+  // Match number label
+  const matchNum = match.round === 'FINAL' ? '🏆' : `#${match.number}`;
+  
+  el.innerHTML = `
+    <div class="bracket-mini-num">${matchNum}</div>
+    <div class="bracket-mini-teams">
+      <div class="bracket-mini-team ${team1Class}">
+        <span class="bracket-mini-flag">${team1Flag}</span>
+        <span class="bracket-mini-name">${team1Data ? team1Data.name_he : 'TBD'}</span>
       </div>
-      <div class="bracket-match-status" style="color: ${statusColor};">${statusIcon}</div>
+      <div class="bracket-mini-team ${team2Class}">
+        <span class="bracket-mini-flag">${team2Flag}</span>
+        <span class="bracket-mini-name">${team2Data ? team2Data.name_he : 'TBD'}</span>
+      </div>
     </div>
   `;
+  
+  return el;
+}
+
+function renderFinalSection() {
+  const container = document.createElement('div');
+  container.className = 'bracket-final-container';
+  
+  const final = knockoutState.matches.FINAL[0];
+  const winner = final ? knockoutState.picks[final.id] : null;
+  const winnerData = winner ? knockoutState.allTeams[winner] : null;
+  
+  // Two SF feeders
+  const sf1 = knockoutState.matches.SF[0];
+  const sf2 = knockoutState.matches.SF[1];
+  const sf1Winner = sf1 ? knockoutState.picks[sf1.id] : null;
+  const sf2Winner = sf2 ? knockoutState.picks[sf2.id] : null;
+  
+  container.innerHTML = `
+    <div class="bracket-final-trophy">🏆</div>
+    <div class="bracket-final-title">הגמר</div>
+  `;
+  
+  // The Final match itself
+  const finalEl = createMiniMatch(final, 'final');
+  container.appendChild(finalEl);
+  
+  // Champion declaration
+  const champion = document.createElement('div');
+  champion.className = 'bracket-champion-box';
+  champion.innerHTML = `
+    <div class="bracket-champion-label">🏆 אלוף המונדיאל לדעתך 🏆</div>
+    <div class="bracket-champion-name ${winnerData ? '' : 'tbd'}">
+      ${winnerData ? `${getCountryFlag(winner)} ${winnerData.name_he}` : 'להיקבע'}
+    </div>
+  `;
+  container.appendChild(champion);
+  
+  // Bind click for the final match
+  finalEl.addEventListener('click', function() {
+    const matchId = this.getAttribute('data-match-id');
+    if (matchId) jumpToMatch(matchId);
+  });
+  
+  return container;
 }
 
 function jumpToMatch(matchId) {

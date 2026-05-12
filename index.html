@@ -943,26 +943,12 @@ function loadTablerFallback() {
         <div class="topbar-title-small" id="ko-round-title">שלב הנוקאאוט</div>
         <div class="topbar-step" id="ko-round-step">סבב 32</div>
       </div>
-      <div class="ko-topbar-actions">
-        <button class="btn-icon" onclick="openBracketView()" aria-label="תצוגת הגרלה">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 6h6"></path>
-            <path d="M14 6h6"></path>
-            <path d="M4 12h6"></path>
-            <path d="M14 12h6"></path>
-            <path d="M4 18h6"></path>
-            <path d="M14 18h6"></path>
-            <path d="M10 6c0 2 2 3 2 6s-2 4-2 6"></path>
-            <path d="M14 6c0 2 -2 3 -2 6s2 4 2 6"></path>
-          </svg>
-        </button>
-        <button class="btn-icon" onclick="openSimulator()" aria-label="סימולטור">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 3v18h18"></path>
-            <path d="M7 14l4 -4l4 4l6 -6"></path>
-          </svg>
-        </button>
-      </div>
+      <button class="btn-icon" onclick="openSimulator()" aria-label="סימולטור">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v18h18"></path>
+          <path d="M7 14l4 -4l4 4l6 -6"></path>
+        </svg>
+      </button>
     </div>
 
     <!-- Round tabs -->
@@ -1022,6 +1008,21 @@ function loadTablerFallback() {
         <span>סיים את הימור הנוקאאוט</span>
       </button>
     </div>
+
+    <!-- Floating Bracket button - always visible -->
+    <button class="floating-bracket-btn" onclick="openBracketView()" aria-label="תצוגת ההגרלה המלאה">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 6h6"></path>
+        <path d="M14 6h6"></path>
+        <path d="M4 12h6"></path>
+        <path d="M14 12h6"></path>
+        <path d="M4 18h6"></path>
+        <path d="M14 18h6"></path>
+        <path d="M10 6c0 2 2 3 2 6s-2 4-2 6"></path>
+        <path d="M14 6c0 2 -2 3 -2 6s2 4 2 6"></path>
+      </svg>
+      <span>תצוגת ההגרלה</span>
+    </button>
   </div>
 
   <!-- ============================================================ -->
@@ -1523,7 +1524,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v0.5.1</span>
+      <span class="menu-version">v0.5.2</span>
     </div>
   </div>
 
