@@ -1115,27 +1115,32 @@ function getNextGroupIndex() {
 function renderGroupBetting() {
   const currentLetter = getCurrentGroupLetter();
   
-  // Update title
-  document.getElementById('current-group-letter').textContent = currentLetter;
-  document.getElementById('instruction-group-letter').textContent = currentLetter;
-  document.getElementById('current-group-step').textContent = `בית ${bettingState.currentGroupIndex + 1} מתוך 12`;
+  // Update title (these are safe - they're not overwritten)
+  const currentGroupLetterEl = document.getElementById('current-group-letter');
+  const instructionGroupLetterEl = document.getElementById('instruction-group-letter');
+  const currentGroupStepEl = document.getElementById('current-group-step');
   
-  // Update prev/next labels
-  document.getElementById('prev-group-letter').textContent = bettingState.groupOrder[getPreviousGroupIndex()];
-  document.getElementById('next-group-letter').textContent = bettingState.groupOrder[getNextGroupIndex()];
+  if (currentGroupLetterEl) currentGroupLetterEl.textContent = currentLetter;
+  if (instructionGroupLetterEl) instructionGroupLetterEl.textContent = currentLetter;
+  if (currentGroupStepEl) currentGroupStepEl.textContent = `בית ${bettingState.currentGroupIndex + 1} מתוך 12`;
+  
+  // Note: prev-group-letter and next-group-letter are managed by updateNextButtonState
+  // and updatePrevButtonState - don't update them here
   
   // Render teams
   const teams = bettingState.groupedTeams[currentLetter] || [];
   const picks = bettingState.picks[currentLetter] || [];
   
   const teamsList = document.getElementById('teams-list');
-  teamsList.innerHTML = '';
-  
-  teams.forEach(team => {
-    const isSelected = picks.includes(team.code);
-    const card = createTeamCard(team, isSelected);
-    teamsList.appendChild(card);
-  });
+  if (teamsList) {
+    teamsList.innerHTML = '';
+    
+    teams.forEach(team => {
+      const isSelected = picks.includes(team.code);
+      const card = createTeamCard(team, isSelected);
+      teamsList.appendChild(card);
+    });
+  }
   
   // Update group info
   updateGroupPicksInfo();
@@ -1146,19 +1151,35 @@ function renderGroupBetting() {
   // Update quick navigation
   renderQuickGroupsNav();
   
-  // Update next button state
+  // Update navigation buttons (this rebuilds them with current data)
+  updatePrevButtonState();
   updateNextButtonState();
   
   // Update floating button
   updateFloatingStatusButton();
 }
 
+function updatePrevButtonState() {
+  const prevBtn = document.getElementById('prev-group-btn');
+  if (!prevBtn) return;
+  
+  const prevLetter = bettingState.groupOrder[getPreviousGroupIndex()];
+  prevBtn.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 6 15 12 9 18"></polyline>
+    </svg>
+    <span>בית ${prevLetter}</span>
+  `;
+}
+
 function updateNextButtonState() {
+  const nextBtn = document.getElementById('next-group-btn');
+  if (!nextBtn) return;
+  
   const currentLetter = getCurrentGroupLetter();
   const picks = bettingState.picks[currentLetter] || [];
-  const nextBtn = document.getElementById('next-group-btn');
-  const nextLabel = document.getElementById('next-group-letter');
   const isLastGroup = bettingState.currentGroupIndex === bettingState.groupOrder.length - 1;
+  const nextLetter = bettingState.groupOrder[getNextGroupIndex()];
   
   if (picks.length < 2) {
     // BLOCKED: less than 2 picks
@@ -1190,7 +1211,7 @@ function updateNextButtonState() {
     } else {
       // Normal next
       nextBtn.innerHTML = `
-        <span>בית <span id="next-group-letter">${bettingState.groupOrder[getNextGroupIndex()]}</span></span>
+        <span>בית ${nextLetter}</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 6 9 12 15 18"></polyline>
         </svg>
