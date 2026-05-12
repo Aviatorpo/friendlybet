@@ -680,13 +680,120 @@ function quickSharePool() {
 
 function showRecoveryCodeAgain() {
   closeMenu();
-  showToast('🚧 הצגת קוד שחזור - בשיחה הבאה', 'info');
-  // TODO: Implement showing the recovery code (need to re-enter it once)
+  showScreen('recovery-display-screen');
 }
 
-function showMembers() {
+async function showMembers() {
   closeMenu();
-  showToast('🚧 רשימת משתתפים - בשיחה הבאה', 'info');
+  
+  if (!state.currentPool || !supabaseClient) {
+    showToast('שגיאה בטעינה', 'error');
+    return;
+  }
+  
+  showScreen('members-screen');
+  
+  // Load all members
+  const { data: members, error } = await supabaseClient
+    .from('users')
+    .select('*')
+    .eq('pool_id', state.currentPool.id)
+    .order('joined_at', { ascending: true });
+  
+  if (error || !members) {
+    console.error('Members load error:', error);
+    showToast('שגיאה בטעינת המשתתפים', 'error');
+    return;
+  }
+  
+  // For each member, check if they've placed bets
+  const { data: allPicks } = await supabaseClient
+    .from('group_picks')
+    .select('user_id')
+    .eq('pool_id', state.currentPool.id);
+  
+  // Count picks per user
+  const picksPerUser = {};
+  if (allPicks) {
+    allPicks.forEach(p => {
+      picksPerUser[p.user_id] = (picksPerUser[p.user_id] || 0) + 1;
+    });
+  }
+  
+  // Build summary
+  const total = members.length;
+  let betted = 0;
+  let notBetted = 0;
+  
+  members.forEach(m => {
+    const picks = picksPerUser[m.id] || 0;
+    if (picks > 0) betted++;
+    else notBetted++;
+  });
+  
+  document.getElementById('members-total').textContent = total;
+  document.getElementById('members-betted').textContent = betted;
+  document.getElementById('members-not-betted').textContent = notBetted;
+  
+  // Render list
+  const list = document.getElementById('members-list');
+  list.innerHTML = '';
+  
+  members.forEach(member => {
+    const picks = picksPerUser[member.id] || 0;
+    const card = createMemberCard(member, picks);
+    list.appendChild(card);
+  });
+}
+
+function createMemberCard(member, picksCount) {
+  const card = document.createElement('div');
+  card.className = 'member-card';
+  
+  const isMe = state.currentUser && member.id === state.currentUser.id;
+  if (isMe) card.classList.add('is-me');
+  if (member.is_admin) card.classList.add('is-admin');
+  
+  // Status
+  let statusClass, statusText, statusEmoji;
+  if (picksCount === 0) {
+    statusClass = 'not-started';
+    statusText = 'עדיין לא הימר';
+  } else if (picksCount < 32) {
+    statusClass = 'partial';
+    statusText = `הימר ${picksCount}/32`;
+  } else {
+    statusClass = 'completed';
+    statusText = 'הימר על כל הבתים';
+  }
+  
+  // Joined date
+  const joinedDate = new Date(member.joined_at);
+  const today = new Date();
+  const daysAgo = Math.floor((today - joinedDate) / (1000 * 60 * 60 * 24));
+  let joinedText;
+  if (daysAgo === 0) joinedText = 'הצטרף היום';
+  else if (daysAgo === 1) joinedText = 'הצטרף אתמול';
+  else if (daysAgo < 7) joinedText = `הצטרף לפני ${daysAgo} ימים`;
+  else joinedText = `הצטרף ב-${joinedDate.toLocaleDateString('he-IL', { day: 'numeric', month: 'short' })}`;
+  
+  card.innerHTML = `
+    <div class="lb-avatar-small">${member.nickname.charAt(0)}</div>
+    <div class="member-info">
+      <div class="member-name">${member.nickname}${isMe ? ' <span class="lb-badge">אתה</span>' : ''}</div>
+      <div class="member-status ${statusClass}">
+        <span class="member-status-dot"></span>
+        <span>${statusText}</span>
+      </div>
+    </div>
+    <div class="member-joined">${joinedText}</div>
+  `;
+  
+  return card;
+}
+
+function shareInviteFromMembers() {
+  shareWhatsApp();
 }
 
 function showAdminMembers() {
@@ -1752,14 +1859,180 @@ async function updateBettingStatusOnDashboard() {
   }
 }
 
-function showLeaderboard() {
+async function showLeaderboard() {
   closeMenu();
-  showToast('🚧 לוח דירוגים יבנה בשיחה הבאה', 'info');
+  
+  if (!state.currentPool || !supabaseClient) {
+    showToast('שגיאה בטעינה', 'error');
+    return;
+  }
+  
+  showScreen('leaderboard-screen');
+  
+  // Update pool info
+  document.getElementById('lb-pool-name').textContent = state.currentPool.name;
+  
+  // Load all users sorted by score
+  const { data: users, error } = await supabaseClient
+    .from('users')
+    .select('*')
+    .eq('pool_id', state.currentPool.id)
+    .order('total_score', { ascending: false })
+    .order('joined_at', { ascending: true });
+  
+  if (error || !users) {
+    console.error('Leaderboard load error:', error);
+    showToast('שגיאה בטעינת הדירוג', 'error');
+    return;
+  }
+  
+  document.getElementById('lb-members-count').textContent = `${users.length} משתתפ${users.length === 1 ? '' : 'ים'}`;
+  
+  // Check tournament status (for now - always pre-tournament)
+  const totalScores = users.reduce((sum, u) => sum + (u.total_score || 0), 0);
+  const hasScores = totalScores > 0;
+  
+  document.getElementById('lb-tournament-status').textContent = 
+    hasScores ? 'במהלך הטורניר' : 'לפני התחלת הטורניר';
+  
+  // Render podium (top 3)
+  renderPodium(users);
+  
+  // Render full list
+  renderFullLeaderboard(users);
+  
+  // Empty state
+  const emptyEl = document.getElementById('lb-empty');
+  if (!hasScores) {
+    emptyEl.style.display = 'block';
+  } else {
+    emptyEl.style.display = 'none';
+  }
+}
+
+function renderPodium(users) {
+  const podium = document.getElementById('lb-podium');
+  podium.innerHTML = '';
+  
+  if (users.length === 0) return;
+  
+  // Take top 3 (or fewer)
+  const top3 = users.slice(0, 3);
+  
+  // Always build in order: 2nd, 1st, 3rd (visual order)
+  const second = top3[1];
+  const first = top3[0];
+  const third = top3[2];
+  
+  if (second) {
+    podium.appendChild(createPodiumSpot('second', second, 2));
+  } else {
+    podium.appendChild(createEmptyPodium('second'));
+  }
+  
+  if (first) {
+    podium.appendChild(createPodiumSpot('first', first, 1));
+  }
+  
+  if (third) {
+    podium.appendChild(createPodiumSpot('third', third, 3));
+  } else {
+    podium.appendChild(createEmptyPodium('third'));
+  }
+}
+
+function createPodiumSpot(rank, user, rankNum) {
+  const div = document.createElement('div');
+  div.className = `podium-spot ${rank}`;
+  
+  const medal = rankNum === 1 ? '👑' : (rankNum === 2 ? '🥈' : '🥉');
+  const medalClass = rankNum === 1 ? 'podium-first-crown' : 'podium-medal';
+  
+  div.innerHTML = `
+    <div class="${medalClass}">${medal}</div>
+    <div class="podium-name">${user.nickname}</div>
+    <div class="podium-points">${user.total_score || 0}</div>
+    <div class="podium-points-label">נקודות</div>
+  `;
+  
+  return div;
+}
+
+function createEmptyPodium(rank) {
+  const div = document.createElement('div');
+  div.className = `podium-spot ${rank}`;
+  div.style.opacity = '0.3';
+  div.innerHTML = `
+    <div class="podium-medal">—</div>
+    <div class="podium-name text-faint">ריק</div>
+  `;
+  return div;
+}
+
+function renderFullLeaderboard(users) {
+  const list = document.getElementById('lb-full-list');
+  list.innerHTML = '';
+  
+  if (users.length === 0) {
+    list.innerHTML = '<div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.4);">אין משתתפים</div>';
+    return;
+  }
+  
+  users.forEach((user, idx) => {
+    const row = document.createElement('div');
+    row.className = 'lb-row';
+    
+    const isMe = state.currentUser && user.id === state.currentUser.id;
+    if (isMe) row.classList.add('is-me');
+    
+    const rank = idx + 1;
+    
+    row.innerHTML = `
+      <div class="lb-rank">#${rank}</div>
+      <div class="lb-avatar-small">${user.nickname.charAt(0)}</div>
+      <div class="lb-info">
+        <div class="lb-name">
+          ${user.nickname}
+          ${user.is_admin ? '<span class="lb-badge">מארגן</span>' : ''}
+          ${isMe ? '<span class="lb-badge">אתה</span>' : ''}
+        </div>
+        <div class="lb-meta">${formatScoreDescription(user)}</div>
+      </div>
+      <div>
+        <div class="lb-points">${user.total_score || 0}</div>
+        <div class="lb-points-label">נקודות</div>
+      </div>
+    `;
+    
+    list.appendChild(row);
+  });
+}
+
+function formatScoreDescription(user) {
+  const parts = [];
+  if (user.group_score > 0) parts.push(`בתים: ${user.group_score}`);
+  if (user.knockout_score > 0) parts.push(`נוקאאוט: ${user.knockout_score}`);
+  if (user.top_scorer_score > 0) parts.push(`מלך השערים: ${user.top_scorer_score}`);
+  
+  if (parts.length === 0) return 'עדיין בלי נקודות';
+  return parts.join(' · ');
+}
+
+function shareLeaderboard() {
+  if (!state.currentPool) return;
+  
+  const poolName = state.currentPool.name;
+  const url = `${window.location.origin}?code=${state.currentPool.code}`;
+  
+  const text = `🏆 לוח הדירוגים של ${poolName}!\n\nהצטרף ל-FriendlyBet והתחרה איתנו על מונדיאל 2026:\n${url}`;
+  
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  window.open(whatsappUrl, '_blank');
 }
 
 function showHelp() {
   closeMenu();
-  showToast('🚧 מסך עזרה יבנה בשיחה הבאה', 'info');
+  showScreen('help-screen');
 }
 
 // ============================================================
