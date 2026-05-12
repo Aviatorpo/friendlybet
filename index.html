@@ -788,7 +788,144 @@ function loadTablerFallback() {
     </div>
   </div>
 
-  <!-- BOTTOM SHEET MENU -->
+  <!-- ============================================================ -->
+  <!-- GROUP BETTING SCREEN (U-05)                                  -->
+  <!-- ============================================================ -->
+  <div id="group-betting-screen" class="screen">
+    <div class="topbar">
+      <button class="btn-icon" onclick="exitGroupBetting()" aria-label="חזור">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12l14 0"></path>
+          <path d="M5 12l6 6"></path>
+          <path d="M5 12l6 -6"></path>
+        </svg>
+      </button>
+      <div class="topbar-center">
+        <div class="topbar-title-small">בית <span id="current-group-letter">A</span></div>
+        <div class="topbar-step" id="current-group-step">בית 1 מתוך 12</div>
+      </div>
+      <button class="btn-icon" onclick="saveProgressAndExit()" aria-label="שמור וצא">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"></path>
+          <circle cx="12" cy="14" r="2"></circle>
+          <polyline points="14 4 14 8 8 8 8 4"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Global progress bar -->
+    <div class="group-progress-area">
+      <div class="group-progress-info">
+        <div class="progress-counter">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-left: 4px;">
+            <polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5"></polygon>
+          </svg>
+          <span class="text-faint">סך הכל הימרת על</span>
+        </div>
+        <div class="progress-numbers">
+          <span class="gold-bold" id="total-picks-count">0</span>
+          <span class="text-faint-2">/ 32</span>
+        </div>
+      </div>
+      <div class="progress-bar"><div id="total-picks-progress" style="width: 0%"></div></div>
+      <div id="picks-validation" class="picks-validation hidden">
+        <span id="picks-validation-text"></span>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Group title -->
+      <div class="group-instructions">
+        <div class="group-title-row">
+          <span class="text-faint">על מי תהמר בבית</span>
+          <span class="group-letter-large" id="instruction-group-letter">A</span>
+          <span class="text-faint">?</span>
+        </div>
+        <div class="group-subtitle">בחר 2 או 3 קבוצות שיעלו לשלב הבא</div>
+      </div>
+
+      <!-- Teams list -->
+      <div id="teams-list" class="teams-list">
+        <!-- Will be populated by JS -->
+      </div>
+
+      <!-- Pick count info per group -->
+      <div id="group-picks-info" class="group-picks-info"></div>
+
+      <!-- Navigation buttons -->
+      <div class="group-nav-buttons">
+        <button class="btn-secondary btn-half" id="prev-group-btn" onclick="goToPreviousGroup()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 6 15 12 9 18"></polyline>
+          </svg>
+          <span>בית <span id="prev-group-letter">L</span></span>
+        </button>
+        <button class="btn-primary btn-half" id="next-group-btn" onclick="goToNextGroup()">
+          <span>בית <span id="next-group-letter">B</span></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 6 9 12 15 18"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Finish button (shown only when all 32 picks are made) -->
+      <button id="finish-betting-btn" class="btn-primary btn-large btn-finish" onclick="finishGroupBetting()" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>סיים את ההימור</span>
+      </button>
+
+      <!-- Quick groups navigation -->
+      <div class="quick-groups-nav-section">
+        <div class="section-title-small">קפיצה מהירה לבית</div>
+        <div class="quick-groups-nav" id="quick-groups-nav">
+          <!-- Will be populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- BETTING COMPLETE SCREEN                                      -->
+  <!-- ============================================================ -->
+  <div id="betting-complete-screen" class="screen">
+    <div class="container">
+      <div class="success-section">
+        <div class="success-icon">🎉</div>
+        <h2 class="form-title">כל הכבוד!</h2>
+        <p class="form-subtitle">השלמת את ההימור על שלב הבתים</p>
+
+        <div class="completion-card">
+          <div class="completion-stat">
+            <div class="completion-label">קבוצות שבחרת</div>
+            <div class="completion-value gold">32</div>
+          </div>
+          <div class="completion-divider"></div>
+          <div class="completion-stat">
+            <div class="completion-label">סיכוי לניקוד מקסימלי</div>
+            <div class="completion-value" id="max-possible-points">--</div>
+          </div>
+        </div>
+
+        <div class="info-banner">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>ההימור נשמר. תוכל לערוך אותו עד לפני המשחק הראשון</span>
+        </div>
+
+        <button class="btn-primary btn-large" onclick="goToDashboard()" style="margin-top: 24px;">
+          <span>לדשבורד שלי</span>
+        </button>
+        <button class="btn-secondary" onclick="reviewBettingPicks()" style="margin-top: 12px;">
+          <span>סקור את ההימורים שלי</span>
+        </button>
+      </div>
+    </div>
+  </div>
   <div id="menu-overlay" class="menu-overlay" onclick="closeMenu()"></div>
   <div id="menu-sheet" class="menu-sheet">
     <div class="menu-handle"></div>
@@ -893,7 +1030,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v0.2.0</span>
+      <span class="menu-version">v0.3.0</span>
     </div>
   </div>
 

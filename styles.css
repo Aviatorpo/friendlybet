@@ -1661,3 +1661,361 @@ input:disabled + .slider {
 .danger-help {
   color: rgba(244, 63, 94, 0.6) !important;
 }
+
+/* ============================================================ */
+/* Group Betting Screen                                         */
+/* ============================================================ */
+
+.topbar-center {
+  text-align: center;
+  flex: 1;
+}
+
+.group-progress-area {
+  padding: 12px 20px;
+  background: linear-gradient(90deg, rgba(212, 168, 83, 0.12) 0%, rgba(212, 168, 83, 0.04) 100%);
+  border-bottom: 0.5px solid rgba(212, 168, 83, 0.2);
+}
+
+.group-progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.progress-counter {
+  font-size: 12px;
+}
+
+.progress-numbers {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.gold-bold {
+  color: #d4a853;
+  font-weight: 600;
+  font-size: 16px;
+  font-family: monospace;
+}
+
+.picks-validation {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  text-align: center;
+}
+
+.picks-validation.hidden {
+  display: none;
+}
+
+.picks-validation.success {
+  background: rgba(34, 197, 94, 0.1);
+  color: #4ade80;
+  border: 0.5px solid rgba(34, 197, 94, 0.3);
+}
+
+.picks-validation.warning {
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
+  border: 0.5px solid rgba(251, 191, 36, 0.3);
+}
+
+.picks-validation.error {
+  background: rgba(244, 63, 94, 0.1);
+  color: #fb7185;
+  border: 0.5px solid rgba(244, 63, 94, 0.3);
+}
+
+/* Group instructions */
+.group-instructions {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.group-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.group-letter-large {
+  color: #d4a853;
+  font-size: 24px;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.group-subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Teams list */
+.teams-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.team-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.85;
+}
+
+.team-card:hover, .team-card:active {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.team-card.selected {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.2) 0%, rgba(212, 168, 83, 0.05) 100%);
+  border-color: #d4a853;
+  opacity: 1;
+}
+
+.team-flag {
+  width: 40px;
+  height: 28px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 22px;
+  overflow: hidden;
+}
+
+.team-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.team-name {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
+.team-card:not(.selected) .team-name {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.team-tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.team-tier-favorite {
+  background: rgba(212, 168, 83, 0.9);
+  color: #0a1628;
+}
+
+.team-tier-contender {
+  background: rgba(192, 192, 192, 0.25);
+  color: #f9fafb;
+}
+
+.team-tier-underdog {
+  background: rgba(205, 127, 50, 0.3);
+  color: #fbbf24;
+}
+
+.team-checkbox {
+  width: 26px;
+  height: 26px;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.team-card.selected .team-checkbox {
+  background: #d4a853;
+  border-color: #d4a853;
+}
+
+.team-card.selected .team-checkbox::after {
+  content: "✓";
+  color: #0a1628;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* Group picks info */
+.group-picks-info {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.group-picks-info.valid {
+  background: rgba(34, 197, 94, 0.08);
+  color: #4ade80;
+  border: 0.5px solid rgba(34, 197, 94, 0.25);
+}
+
+.group-picks-info.invalid {
+  background: rgba(251, 191, 36, 0.08);
+  color: #fbbf24;
+  border: 0.5px solid rgba(251, 191, 36, 0.25);
+}
+
+/* Nav buttons */
+.group-nav-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.btn-half {
+  flex: 1;
+}
+
+.btn-finish {
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+  color: white;
+}
+
+.btn-finish:hover, .btn-finish:active {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+/* Quick groups navigation */
+.quick-groups-nav-section {
+  margin-top: 12px;
+  padding-top: 16px;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.08);
+}
+
+.section-title-small {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.quick-groups-nav {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+
+.group-nav-pill {
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 8px 4px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: monospace;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.group-nav-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.group-nav-pill.current {
+  background: #d4a853;
+  color: #0a1628;
+  border-color: #d4a853;
+}
+
+.group-nav-pill.completed::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  background: #4ade80;
+  border-radius: 50%;
+}
+
+.group-nav-pill.partial::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  background: #fbbf24;
+  border-radius: 50%;
+}
+
+/* Completion card */
+.completion-card {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.15) 0%, rgba(212, 168, 83, 0.04) 100%);
+  border: 1px solid rgba(212, 168, 83, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.completion-stat {
+  flex: 1;
+  text-align: center;
+}
+
+.completion-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
+.completion-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: white;
+}
+
+.completion-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+}

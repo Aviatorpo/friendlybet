@@ -623,6 +623,9 @@ async function goToDashboard() {
     document.getElementById('user-rank').textContent = rank;
   }
   
+  // Update betting status based on actual picks
+  updateBettingStatusOnDashboard();
+  
   showScreen('user-dashboard-screen');
 }
 
@@ -995,9 +998,514 @@ function logoutConfirm() {
   }, 300);
 }
 
-// Placeholder functions for future screens
-function startGroupBetting() {
-  showToast('🚧 שלב הבתים יבנה בשיחה הבאה', 'info');
+// ============================================================
+// GROUP BETTING - The core of the app
+// ============================================================
+
+// State for betting
+const bettingState = {
+  groupOrder: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'],
+  currentGroupIndex: 0,
+  groupedTeams: {},  // {A: [team, team, team, team], B: [...]}
+  picks: {},          // {A: ['ENG', 'SWE', 'VIE'], B: [...]}
+  loading: false
+};
+
+async function startGroupBetting() {
+  if (!state.currentUser || !state.currentPool) {
+    showToast('שגיאה - אנא התחבר מחדש', 'error');
+    return;
+  }
+  
+  if (!supabaseClient) {
+    showToast('מתחבר לשרת... נסה שוב', 'error');
+    initSupabase();
+    return;
+  }
+  
+  showToast('טוען את הקבוצות...', 'info');
+  
+  try {
+    // Load all teams grouped by group_letter
+    const { data: teams, error: teamsError } = await supabaseClient
+      .from('teams')
+      .select('*')
+      .not('group_letter', 'is', null)
+      .order('group_letter')
+      .order('fifa_ranking');
+    
+    if (teamsError || !teams || teams.length === 0) {
+      console.error('Teams load error:', teamsError);
+      showToast('שגיאה בטעינת הקבוצות', 'error');
+      return;
+    }
+    
+    // Group teams by letter
+    bettingState.groupedTeams = {};
+    teams.forEach(team => {
+      const letter = team.group_letter;
+      if (!bettingState.groupedTeams[letter]) {
+        bettingState.groupedTeams[letter] = [];
+      }
+      bettingState.groupedTeams[letter].push(team);
+    });
+    
+    // Load existing picks
+    const { data: existingPicks } = await supabaseClient
+      .from('group_picks')
+      .select('*')
+      .eq('user_id', state.currentUser.id);
+    
+    // Build picks state
+    bettingState.picks = {};
+    bettingState.groupOrder.forEach(letter => {
+      bettingState.picks[letter] = [];
+    });
+    
+    if (existingPicks) {
+      existingPicks.forEach(pick => {
+        if (!bettingState.picks[pick.group_letter]) {
+          bettingState.picks[pick.group_letter] = [];
+        }
+        bettingState.picks[pick.group_letter].push(pick.team_code);
+      });
+    }
+    
+    // Determine current group (first unfinished group, or first group)
+    bettingState.currentGroupIndex = findFirstIncompleteGroup();
+    
+    // Render
+    renderGroupBetting();
+    showScreen('group-betting-screen');
+    
+  } catch (err) {
+    console.error('Start group betting error:', err);
+    showToast('שגיאה לא צפויה', 'error');
+  }
+}
+
+function findFirstIncompleteGroup() {
+  for (let i = 0; i < bettingState.groupOrder.length; i++) {
+    const letter = bettingState.groupOrder[i];
+    const picks = bettingState.picks[letter] || [];
+    if (picks.length < 2) {
+      return i;
+    }
+  }
+  return 0; // All complete - start from beginning for review
+}
+
+function getCurrentGroupLetter() {
+  return bettingState.groupOrder[bettingState.currentGroupIndex];
+}
+
+function getPreviousGroupIndex() {
+  return (bettingState.currentGroupIndex - 1 + 12) % 12;
+}
+
+function getNextGroupIndex() {
+  return (bettingState.currentGroupIndex + 1) % 12;
+}
+
+function renderGroupBetting() {
+  const currentLetter = getCurrentGroupLetter();
+  
+  // Update title
+  document.getElementById('current-group-letter').textContent = currentLetter;
+  document.getElementById('instruction-group-letter').textContent = currentLetter;
+  document.getElementById('current-group-step').textContent = `בית ${bettingState.currentGroupIndex + 1} מתוך 12`;
+  
+  // Update prev/next labels
+  document.getElementById('prev-group-letter').textContent = bettingState.groupOrder[getPreviousGroupIndex()];
+  document.getElementById('next-group-letter').textContent = bettingState.groupOrder[getNextGroupIndex()];
+  
+  // Render teams
+  const teams = bettingState.groupedTeams[currentLetter] || [];
+  const picks = bettingState.picks[currentLetter] || [];
+  
+  const teamsList = document.getElementById('teams-list');
+  teamsList.innerHTML = '';
+  
+  teams.forEach(team => {
+    const isSelected = picks.includes(team.code);
+    const card = createTeamCard(team, isSelected);
+    teamsList.appendChild(card);
+  });
+  
+  // Update group info
+  updateGroupPicksInfo();
+  
+  // Update global progress
+  updateGlobalProgress();
+  
+  // Update quick navigation
+  renderQuickGroupsNav();
+}
+
+function createTeamCard(team, isSelected) {
+  const card = document.createElement('div');
+  card.className = 'team-card' + (isSelected ? ' selected' : '');
+  card.onclick = () => toggleTeamSelection(team.code);
+  
+  // Tier badge text
+  const usesMultipliers = state.currentPool.use_multipliers;
+  let tierBadge = '';
+  if (usesMultipliers) {
+    if (team.tier === 'favorite') {
+      tierBadge = '<span class="team-tier-badge team-tier-favorite">⭐ פייבוריטית ×1</span>';
+    } else if (team.tier === 'contender') {
+      tierBadge = '<span class="team-tier-badge team-tier-contender">⚔️ מתמודדת ×1.5</span>';
+    } else {
+      tierBadge = '<span class="team-tier-badge team-tier-underdog">🐴 אנדרדוג ×2</span>';
+    }
+  }
+  
+  // Flag emoji from country code
+  const flagEmoji = getCountryFlag(team.code);
+  
+  card.innerHTML = `
+    <div class="team-flag">${flagEmoji}</div>
+    <div class="team-info">
+      <div class="team-name">${team.name_he}</div>
+      ${tierBadge}
+    </div>
+    <div class="team-checkbox"></div>
+  `;
+  
+  return card;
+}
+
+function getCountryFlag(code) {
+  // Map country codes to flag emojis using regional indicator characters
+  // ISO codes to flag emoji mapping
+  const flagMap = {
+    'ARG': '🇦🇷', 'FRA': '🇫🇷', 'BRA': '🇧🇷', 'ENG': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+    'ESP': '🇪🇸', 'POR': '🇵🇹', 'NED': '🇳🇱', 'GER': '🇩🇪',
+    'BEL': '🇧🇪', 'CRO': '🇭🇷', 'ITA': '🇮🇹', 'URU': '🇺🇾',
+    'USA': '🇺🇸', 'MEX': '🇲🇽', 'SUI': '🇨🇭', 'DEN': '🇩🇰',
+    'AUT': '🇦🇹', 'SWE': '🇸🇪', 'SEN': '🇸🇳', 'MAR': '🇲🇦',
+    'JPN': '🇯🇵', 'KOR': '🇰🇷', 'AUS': '🇦🇺', 'CAN': '🇨🇦',
+    'POL': '🇵🇱', 'UKR': '🇺🇦', 'TUR': '🇹🇷', 'NOR': '🇳🇴',
+    'SRB': '🇷🇸', 'GRE': '🇬🇷', 'IRN': '🇮🇷', 'TUN': '🇹🇳',
+    'EGY': '🇪🇬', 'NGA': '🇳🇬', 'CMR': '🇨🇲', 'GHA': '🇬🇭',
+    'CRC': '🇨🇷', 'PAN': '🇵🇦', 'JAM': '🇯🇲', 'PER': '🇵🇪',
+    'CHI': '🇨🇱', 'PAR': '🇵🇾', 'ECU': '🇪🇨', 'NZL': '🇳🇿',
+    'UZB': '🇺🇿', 'IRQ': '🇮🇶', 'SAU': '🇸🇦', 'JOR': '🇯🇴'
+  };
+  return flagMap[code] || '⚽';
+}
+
+function toggleTeamSelection(teamCode) {
+  const currentLetter = getCurrentGroupLetter();
+  const picks = bettingState.picks[currentLetter] || [];
+  
+  if (picks.includes(teamCode)) {
+    // Remove
+    bettingState.picks[currentLetter] = picks.filter(c => c !== teamCode);
+  } else {
+    // Add - but max 3
+    if (picks.length >= 3) {
+      showToast('כבר בחרת 3 קבוצות. הסר אחת לפני שתוסיף עוד', 'error');
+      return;
+    }
+    bettingState.picks[currentLetter] = [...picks, teamCode];
+  }
+  
+  // Re-render
+  renderGroupBetting();
+  
+  // Auto-save in the background (debounced)
+  autoSavePicks();
+}
+
+function updateGroupPicksInfo() {
+  const currentLetter = getCurrentGroupLetter();
+  const picks = bettingState.picks[currentLetter] || [];
+  const info = document.getElementById('group-picks-info');
+  
+  if (picks.length === 0) {
+    info.className = 'group-picks-info';
+    info.innerHTML = '<span class="text-faint">בחר 2 או 3 קבוצות מהבית הזה</span>';
+  } else if (picks.length === 1) {
+    info.className = 'group-picks-info invalid';
+    info.innerHTML = `⚠️ בחרת רק קבוצה אחת - צריך 2 או 3`;
+  } else if (picks.length === 2) {
+    info.className = 'group-picks-info valid';
+    info.innerHTML = `✓ בחרת 2 קבוצות בבית הזה`;
+  } else if (picks.length === 3) {
+    info.className = 'group-picks-info valid';
+    info.innerHTML = `✓ בחרת 3 קבוצות בבית הזה`;
+  }
+}
+
+function updateGlobalProgress() {
+  const total = countTotalPicks();
+  document.getElementById('total-picks-count').textContent = total;
+  document.getElementById('total-picks-progress').style.width = Math.min(100, (total / 32) * 100) + '%';
+  
+  const validation = document.getElementById('picks-validation');
+  const validationText = document.getElementById('picks-validation-text');
+  const finishBtn = document.getElementById('finish-betting-btn');
+  
+  if (total === 0) {
+    validation.className = 'picks-validation hidden';
+    finishBtn.style.display = 'none';
+  } else if (total < 32) {
+    validation.className = 'picks-validation warning';
+    validationText.textContent = `נשאר עוד ${32 - total} קבוצות לבחור`;
+    finishBtn.style.display = 'none';
+  } else if (total === 32) {
+    // Check that every group has valid picks (2 or 3)
+    const allValid = bettingState.groupOrder.every(letter => {
+      const count = (bettingState.picks[letter] || []).length;
+      return count >= 2 && count <= 3;
+    });
+    
+    if (allValid) {
+      validation.className = 'picks-validation success';
+      validationText.textContent = '🎉 הושלם! 32 קבוצות נבחרו';
+      finishBtn.style.display = 'flex';
+    } else {
+      validation.className = 'picks-validation error';
+      validationText.textContent = 'בעיה: לפחות בית אחד עם 0 או 1 קבוצות בלבד';
+      finishBtn.style.display = 'none';
+    }
+  } else {
+    validation.className = 'picks-validation error';
+    validationText.textContent = `יותר מדי! ${total - 32} קבוצות מעל המקסימום`;
+    finishBtn.style.display = 'none';
+  }
+}
+
+function countTotalPicks() {
+  let total = 0;
+  bettingState.groupOrder.forEach(letter => {
+    total += (bettingState.picks[letter] || []).length;
+  });
+  return total;
+}
+
+function renderQuickGroupsNav() {
+  const nav = document.getElementById('quick-groups-nav');
+  nav.innerHTML = '';
+  
+  bettingState.groupOrder.forEach((letter, idx) => {
+    const picks = bettingState.picks[letter] || [];
+    const btn = document.createElement('button');
+    
+    let className = 'group-nav-pill';
+    if (idx === bettingState.currentGroupIndex) {
+      className += ' current';
+    } else if (picks.length >= 2 && picks.length <= 3) {
+      className += ' completed';
+    } else if (picks.length === 1) {
+      className += ' partial';
+    }
+    
+    btn.className = className;
+    btn.textContent = letter;
+    btn.onclick = () => goToGroup(idx);
+    
+    nav.appendChild(btn);
+  });
+}
+
+function goToGroup(index) {
+  bettingState.currentGroupIndex = index;
+  renderGroupBetting();
+  window.scrollTo(0, 0);
+}
+
+function goToPreviousGroup() {
+  bettingState.currentGroupIndex = getPreviousGroupIndex();
+  renderGroupBetting();
+  window.scrollTo(0, 0);
+}
+
+function goToNextGroup() {
+  bettingState.currentGroupIndex = getNextGroupIndex();
+  renderGroupBetting();
+  window.scrollTo(0, 0);
+}
+
+// Debounced auto-save
+let autoSaveTimeout;
+function autoSavePicks() {
+  clearTimeout(autoSaveTimeout);
+  autoSaveTimeout = setTimeout(() => savePicksToDb(false), 1000);
+}
+
+async function savePicksToDb(showFeedback = true) {
+  if (!state.currentUser || !state.currentPool) return;
+  if (!supabaseClient) return;
+  
+  if (bettingState.loading) return;
+  bettingState.loading = true;
+  
+  try {
+    // First, delete all existing picks for this user
+    await supabaseClient
+      .from('group_picks')
+      .delete()
+      .eq('user_id', state.currentUser.id);
+    
+    // Build new picks array
+    const newPicks = [];
+    bettingState.groupOrder.forEach(letter => {
+      const teams = bettingState.picks[letter] || [];
+      teams.forEach(teamCode => {
+        // Find team data for multiplier
+        const team = bettingState.groupedTeams[letter]?.find(t => t.code === teamCode);
+        const multiplier = (team && state.currentPool.use_multipliers) ? team.multiplier : 1.0;
+        
+        newPicks.push({
+          user_id: state.currentUser.id,
+          pool_id: state.currentPool.id,
+          group_letter: letter,
+          team_code: teamCode,
+          multiplier_applied: multiplier
+        });
+      });
+    });
+    
+    // Insert new picks
+    if (newPicks.length > 0) {
+      const { error } = await supabaseClient
+        .from('group_picks')
+        .insert(newPicks);
+      
+      if (error) {
+        console.error('Save picks error:', error);
+        if (showFeedback) {
+          showToast('שגיאה בשמירת ההימור', 'error');
+        }
+        bettingState.loading = false;
+        return;
+      }
+    }
+    
+    if (showFeedback) {
+      showToast('ההימור נשמר ✓', 'success');
+    }
+    
+  } catch (err) {
+    console.error('Save picks error:', err);
+    if (showFeedback) {
+      showToast('שגיאה בשמירה', 'error');
+    }
+  } finally {
+    bettingState.loading = false;
+  }
+}
+
+async function saveProgressAndExit() {
+  // Force save and exit
+  await savePicksToDb(true);
+  setTimeout(() => {
+    goToDashboard();
+  }, 500);
+}
+
+function exitGroupBetting() {
+  const total = countTotalPicks();
+  if (total > 0 && total < 32) {
+    if (!confirm(`יש לך ${total} הימורים שמורים. צא מבלי לסיים?`)) {
+      return;
+    }
+  }
+  goToDashboard();
+}
+
+async function finishGroupBetting() {
+  // Final validation
+  let allValid = true;
+  let total = 0;
+  
+  bettingState.groupOrder.forEach(letter => {
+    const count = (bettingState.picks[letter] || []).length;
+    if (count < 2 || count > 3) {
+      allValid = false;
+    }
+    total += count;
+  });
+  
+  if (total !== 32) {
+    showToast(`צריך בדיוק 32 קבוצות (יש ${total})`, 'error');
+    return;
+  }
+  
+  if (!allValid) {
+    showToast('בכל בית חייבים להיות 2 או 3 קבוצות', 'error');
+    return;
+  }
+  
+  // Save final state
+  showToast('שומר הימור...', 'info');
+  await savePicksToDb(false);
+  
+  // Calculate max possible points
+  let maxPoints = 0;
+  const scoringGroupStage = state.currentPool.scoring_group_stage || 1;
+  
+  bettingState.groupOrder.forEach(letter => {
+    const picks = bettingState.picks[letter] || [];
+    picks.forEach(teamCode => {
+      const team = bettingState.groupedTeams[letter]?.find(t => t.code === teamCode);
+      if (team && state.currentPool.use_multipliers) {
+        maxPoints += scoringGroupStage * parseFloat(team.multiplier || 1);
+      } else {
+        maxPoints += scoringGroupStage;
+      }
+    });
+  });
+  
+  // Round to nearest integer
+  maxPoints = Math.round(maxPoints);
+  
+  // Show completion screen
+  document.getElementById('max-possible-points').textContent = maxPoints;
+  showScreen('betting-complete-screen');
+}
+
+function reviewBettingPicks() {
+  bettingState.currentGroupIndex = 0;
+  renderGroupBetting();
+  showScreen('group-betting-screen');
+}
+
+// Update dashboard to show actual betting status
+async function updateBettingStatusOnDashboard() {
+  if (!state.currentUser || !supabaseClient) return;
+  
+  const { data: picks } = await supabaseClient
+    .from('group_picks')
+    .select('id', { count: 'exact' })
+    .eq('user_id', state.currentUser.id);
+  
+  const picksCount = picks ? picks.length : 0;
+  const statusEl = document.getElementById('bet-status-groups');
+  if (!statusEl) return;
+  
+  const titleEl = statusEl.querySelector('.bet-status-title');
+  const subtitleEl = statusEl.querySelector('.bet-status-subtitle');
+  const buttonEl = statusEl.querySelector('button');
+  
+  if (picksCount === 0) {
+    titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> שלב הבתים';
+    subtitleEl.textContent = 'עדיין לא הימרת';
+    statusEl.className = 'bet-status-card pending';
+    if (buttonEl) buttonEl.innerHTML = 'התחל →';
+  } else if (picksCount < 32) {
+    titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="6" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> שלב הבתים';
+    subtitleEl.textContent = `הימרת על ${picksCount} מתוך 32`;
+    statusEl.className = 'bet-status-card pending';
+    if (buttonEl) buttonEl.innerHTML = 'המשך →';
+  } else {
+    titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> שלב הבתים';
+    subtitleEl.textContent = 'הושלם · 32 קבוצות';
+    statusEl.className = 'bet-status-card completed';
+    if (buttonEl) buttonEl.innerHTML = 'ערוך →';
+  }
 }
 
 function showLeaderboard() {
