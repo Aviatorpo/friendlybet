@@ -40,11 +40,7 @@ function loadTablerFallback() {
   <!-- LOADING SCREEN -->
   <div id="loading-screen" class="screen active">
     <div class="loading-content">
-      <div class="logo-large">
-        <div class="trophy-image-wrap trophy-image-wrap-large">
-          <img src="trophy.webp" alt="גביע" class="trophy-image" loading="eager">
-        </div>
-      </div>
+      <div class="logo-large">⚽</div>
       <div class="loading-title">FriendlyBet</div>
       <div class="loading-spinner"></div>
     </div>
@@ -54,11 +50,7 @@ function loadTablerFallback() {
   <div id="home-screen" class="screen">
     <div class="container">
       <div class="hero">
-        <div class="logo-xl">
-          <div class="trophy-image-wrap trophy-image-wrap-xl">
-            <img src="trophy.webp" alt="גביע" class="trophy-image" loading="eager">
-          </div>
-        </div>
+        <div class="logo-xl">⚽</div>
         <h1 class="hero-title">FriendlyBet</h1>
         <p class="hero-subtitle">הימור חברים על מונדיאל 2026</p>
         <p class="hero-description">חינמי · בלי פרסומות · בלי כסף · קוד פתוח</p>
@@ -936,6 +928,159 @@ function loadTablerFallback() {
   </div>
 
   <!-- ============================================================ -->
+  <!-- KNOCKOUT BETTING SCREEN                                      -->
+  <!-- ============================================================ -->
+  <div id="knockout-screen" class="screen">
+    <div class="topbar">
+      <button class="btn-icon" onclick="exitKnockoutBetting()" aria-label="חזור">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12l14 0"></path>
+          <path d="M5 12l6 6"></path>
+          <path d="M5 12l6 -6"></path>
+        </svg>
+      </button>
+      <div class="topbar-center">
+        <div class="topbar-title-small" id="ko-round-title">שלב הנוקאאוט</div>
+        <div class="topbar-step" id="ko-round-step">סבב 32</div>
+      </div>
+      <button class="btn-icon" onclick="openSimulator()" aria-label="סימולטור">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v18h18"></path>
+          <path d="M7 14l4 -4l4 4l6 -6"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Round tabs -->
+    <div class="ko-round-tabs">
+      <button class="ko-tab" data-round="R32" onclick="switchRound('R32')">
+        <span class="ko-tab-label">סבב 32</span>
+        <span class="ko-tab-count" id="ko-tab-count-R32">0/16</span>
+      </button>
+      <button class="ko-tab" data-round="R16" onclick="switchRound('R16')">
+        <span class="ko-tab-label">שמינית</span>
+        <span class="ko-tab-count" id="ko-tab-count-R16">0/8</span>
+      </button>
+      <button class="ko-tab" data-round="QF" onclick="switchRound('QF')">
+        <span class="ko-tab-label">רבע</span>
+        <span class="ko-tab-count" id="ko-tab-count-QF">0/4</span>
+      </button>
+      <button class="ko-tab" data-round="SF" onclick="switchRound('SF')">
+        <span class="ko-tab-label">חצי</span>
+        <span class="ko-tab-count" id="ko-tab-count-SF">0/2</span>
+      </button>
+      <button class="ko-tab" data-round="FINAL" onclick="switchRound('FINAL')">
+        <span class="ko-tab-label">גמר</span>
+        <span class="ko-tab-count" id="ko-tab-count-FINAL">0/1</span>
+      </button>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="ko-progress-area">
+      <div class="ko-progress-info">
+        <span class="text-faint" style="font-size: 12px;">סה"כ הימרת על</span>
+        <span class="ko-progress-numbers">
+          <span class="gold-bold" id="ko-total-picks">0</span>
+          <span class="text-faint-2">/ 31</span>
+        </span>
+      </div>
+      <div class="progress-bar"><div id="ko-progress-fill" style="width: 0%"></div></div>
+    </div>
+
+    <div class="container">
+      <!-- Matches list -->
+      <div id="ko-matches-list" class="ko-matches-list">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Empty state for round -->
+      <div id="ko-empty-state" class="ko-empty-state" style="display: none;">
+        <div class="ko-empty-icon">⏳</div>
+        <div class="ko-empty-title">הסבב הזה ייפתח בהמשך</div>
+        <div class="ko-empty-text">קודם השלם את הסבבים הקודמים</div>
+      </div>
+
+      <!-- Finish button -->
+      <button id="ko-finish-btn" class="btn-primary btn-large btn-finish" onclick="finishKnockoutBetting()" style="display: none; margin-top: 16px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>סיים את הימור הנוקאאוט</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SIMULATOR MODAL                                              -->
+  <!-- ============================================================ -->
+  <div id="simulator-overlay" class="status-modal-overlay" onclick="closeSimulator()"></div>
+  <div id="simulator-modal" class="status-modal sim-modal">
+    <div class="status-modal-content">
+      <button class="status-modal-close" onclick="closeSimulator()" aria-label="סגור">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      
+      <div class="status-modal-icon">📊</div>
+      <div class="status-modal-title">סימולטור הסיכון</div>
+      <div class="status-modal-subtitle">ניתוח אסטרטגיית ההימור שלך</div>
+      
+      <!-- Score projection -->
+      <div class="sim-section">
+        <div class="sim-section-title">ניקוד צפוי</div>
+        <div class="sim-score-display">
+          <div class="sim-score-item">
+            <div class="sim-score-label">צפי ממוצע</div>
+            <div class="sim-score-value gold" id="sim-expected-score">0</div>
+          </div>
+          <div class="sim-score-divider"></div>
+          <div class="sim-score-item">
+            <div class="sim-score-label">מקסימום אפשרי</div>
+            <div class="sim-score-value" id="sim-max-score">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Risk meter -->
+      <div class="sim-section">
+        <div class="sim-section-title">רמת סיכון</div>
+        <div class="sim-risk-meter">
+          <div class="sim-risk-bar">
+            <div class="sim-risk-fill" id="sim-risk-fill" style="width: 50%;"></div>
+            <div class="sim-risk-marker" id="sim-risk-marker" style="right: 50%;"></div>
+          </div>
+          <div class="sim-risk-labels">
+            <span class="sim-risk-label-safe">🛡️ בטוח</span>
+            <span class="sim-risk-label-bold">⚡ מאוזן</span>
+            <span class="sim-risk-label-risky">🎲 מסוכן</span>
+          </div>
+        </div>
+        <div class="sim-risk-description" id="sim-risk-description">בחר משחקים כדי לראות ניתוח</div>
+      </div>
+
+      <!-- Strategy breakdown -->
+      <div class="sim-section">
+        <div class="sim-section-title">פירוט לפי שלב</div>
+        <div id="sim-stages-breakdown" class="sim-stages">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Recommendation -->
+      <div class="sim-recommendation" id="sim-recommendation">
+        <div class="sim-rec-icon">💡</div>
+        <div class="sim-rec-text" id="sim-rec-text">בחר משחקים בנוקאאוט כדי לקבל המלצות</div>
+      </div>
+
+      <button class="btn-secondary" onclick="closeSimulator()" style="margin-top: 16px; width: 100%;">
+        סגור
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
   <!-- LEADERBOARD SCREEN                                           -->
   <!-- ============================================================ -->
   <div id="leaderboard-screen" class="screen">
@@ -1341,7 +1486,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v0.4.2</span>
+      <span class="menu-version">v0.5.0</span>
     </div>
   </div>
 

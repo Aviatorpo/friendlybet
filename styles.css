@@ -65,74 +65,14 @@ body {
 }
 
 .logo-large {
+  font-size: 80px;
   margin-bottom: 16px;
-  display: flex;
-  justify-content: center;
+  animation: bounce 1s ease-in-out infinite;
 }
 
 .logo-xl {
+  font-size: 96px;
   margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-}
-
-/* Trophy image - shows only the top portion (cup body without base) */
-.trophy-image-wrap {
-  position: relative;
-  overflow: hidden;
-  display: block;
-}
-
-.trophy-image-wrap-large {
-  width: 140px;
-  height: 200px;
-}
-
-.trophy-image-wrap-xl {
-  width: 200px;
-  height: 280px;
-  animation: trophyFloat 4s ease-in-out infinite;
-}
-
-.trophy-image {
-  width: 100%;
-  height: auto;
-  /* Show only top ~75% of image (hides the base with text) */
-  object-fit: cover;
-  object-position: top center;
-  display: block;
-  filter: drop-shadow(0 8px 24px rgba(212, 168, 83, 0.5));
-}
-
-.trophy-image-wrap-xl .trophy-image {
-  height: auto;
-  max-height: none;
-}
-
-/* Use clip-path to hide bottom 25% where the text is */
-.trophy-image-wrap-large .trophy-image,
-.trophy-image-wrap-xl .trophy-image {
-  clip-path: inset(0 0 25% 0);
-  -webkit-clip-path: inset(0 0 25% 0);
-  margin-bottom: -25%;
-}
-
-@keyframes trophyFloat {
-  0%, 100% { 
-    transform: translateY(0px); 
-  }
-  50% { 
-    transform: translateY(-8px); 
-  }
-}
-
-@keyframes trophyShine {
-  0%, 100% { 
-    opacity: 0.9;
-  }
-  50% { 
-    opacity: 1;
-  }
 }
 
 @keyframes bounce {
@@ -2775,4 +2715,382 @@ input:disabled + .slider {
 .help-footer-text {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
+}
+
+/* ============================================================ */
+/* Knockout Screen                                              */
+/* ============================================================ */
+
+.ko-round-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.ko-tab {
+  background: rgba(255, 255, 255, 0.03);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 8px 4px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-family: 'Heebo', sans-serif;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transition: all 0.2s;
+}
+
+.ko-tab.active {
+  background: #d4a853;
+  color: #0a1628;
+  border-color: #d4a853;
+  font-weight: 600;
+}
+
+.ko-tab-label {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.ko-tab-count {
+  font-size: 10px;
+  opacity: 0.7;
+  font-family: monospace;
+}
+
+.ko-tab.active .ko-tab-count {
+  opacity: 1;
+}
+
+.ko-progress-area {
+  padding: 12px 20px;
+  background: linear-gradient(90deg, rgba(212, 168, 83, 0.08) 0%, rgba(212, 168, 83, 0.02) 100%);
+  border-bottom: 0.5px solid rgba(212, 168, 83, 0.15);
+}
+
+.ko-progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.ko-progress-numbers {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.ko-matches-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ko-match-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ko-match-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 1px;
+}
+
+.ko-match-number {
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.ko-match-teams {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.ko-team {
+  background: rgba(255, 255, 255, 0.03);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ko-team:hover, .ko-team:active {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.ko-team.selected {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.25) 0%, rgba(212, 168, 83, 0.1) 100%);
+  border-color: #d4a853;
+  box-shadow: 0 0 12px rgba(212, 168, 83, 0.2);
+}
+
+.ko-team.tbd {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ko-team-flag {
+  font-size: 22px;
+}
+
+.ko-team-name {
+  font-size: 11px;
+  color: white;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.ko-team.tbd .ko-team-name {
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+.ko-vs {
+  font-size: 11px;
+  color: #d4a853;
+  font-weight: 600;
+  font-family: monospace;
+  padding: 0 4px;
+}
+
+.ko-match-points {
+  font-size: 10px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.ko-match-points-value {
+  background: rgba(212, 168, 83, 0.15);
+  color: #d4a853;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.ko-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.ko-empty-icon {
+  font-size: 56px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.ko-empty-title {
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.ko-empty-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ============================================================ */
+/* Simulator Modal                                              */
+/* ============================================================ */
+
+.sim-modal {
+  max-width: 440px;
+}
+
+.sim-section {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.sim-section-title {
+  font-size: 11px;
+  color: #d4a853;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  text-align: right;
+  font-weight: 500;
+}
+
+.sim-score-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.sim-score-item {
+  text-align: center;
+  flex: 1;
+}
+
+.sim-score-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.sim-score-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  font-family: monospace;
+}
+
+.sim-score-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Risk meter */
+.sim-risk-meter {
+  margin-bottom: 10px;
+}
+
+.sim-risk-bar {
+  position: relative;
+  height: 10px;
+  background: linear-gradient(90deg, 
+    #4ade80 0%, 
+    #fbbf24 50%, 
+    #fb7185 100%);
+  border-radius: 5px;
+  overflow: visible;
+}
+
+.sim-risk-fill {
+  display: none;
+}
+
+.sim-risk-marker {
+  position: absolute;
+  top: -4px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border: 2px solid #0a1628;
+  border-radius: 50%;
+  transform: translateX(50%);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: right 0.4s ease-out;
+}
+
+.sim-risk-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 10px;
+}
+
+.sim-risk-label-safe { color: #4ade80; }
+.sim-risk-label-bold { color: #fbbf24; }
+.sim-risk-label-risky { color: #fb7185; }
+
+.sim-risk-description {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
+  margin-top: 8px;
+  line-height: 1.4;
+}
+
+/* Stages breakdown */
+.sim-stages {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sim-stage-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.sim-stage-name {
+  color: rgba(255, 255, 255, 0.85);
+  min-width: 70px;
+}
+
+.sim-stage-progress {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.sim-stage-progress-fill {
+  height: 100%;
+  background: #d4a853;
+  border-radius: 2px;
+  transition: width 0.4s;
+}
+
+.sim-stage-count {
+  font-family: monospace;
+  font-size: 11px;
+  color: #d4a853;
+  min-width: 36px;
+  text-align: left;
+}
+
+.sim-recommendation {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(168, 85, 247, 0.03) 100%);
+  border: 0.5px solid rgba(168, 85, 247, 0.3);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.sim-rec-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.sim-rec-text {
+  font-size: 13px;
+  color: white;
+  line-height: 1.5;
 }

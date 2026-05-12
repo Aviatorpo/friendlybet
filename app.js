@@ -625,6 +625,7 @@ async function goToDashboard() {
   
   // Update betting status based on actual picks
   updateBettingStatusOnDashboard();
+  updateKnockoutStatusOnDashboard();
   
   showScreen('user-dashboard-screen');
 }
@@ -1860,6 +1861,709 @@ async function updateBettingStatusOnDashboard() {
     subtitleEl.textContent = 'הושלם · 32 קבוצות';
     statusEl.className = 'bet-status-card completed';
     if (buttonEl) buttonEl.innerHTML = 'ערוך →';
+  }
+}
+
+// ============================================================
+// KNOCKOUT BETTING - The unique feature
+// ============================================================
+
+const knockoutState = {
+  currentRound: 'R32',
+  matches: {
+    R32: [],
+    R16: [],
+    QF: [],
+    SF: [],
+    FINAL: []
+  },
+  picks: {},  // {match_id: 'team_code'}
+  selectedGroupTeams: [],  // 32 teams from group stage
+  allTeams: {}  // {code: team object}
+};
+
+const ROUND_INFO = {
+  R32: { name: 'סבב 32', total: 16, points: 1, order: 1 },
+  R16: { name: 'שמינית הגמר', total: 8, points: 2, order: 2 },
+  QF:  { name: 'רבע הגמר',   total: 4, points: 3, order: 3 },
+  SF:  { name: 'חצי הגמר',   total: 2, points: 4, order: 4 },
+  FINAL: { name: 'הגמר',     total: 1, points: 8, order: 5 }
+};
+
+async function startKnockoutBetting() {
+  if (!state.currentUser || !state.currentPool) {
+    showToast('שגיאה - אנא התחבר מחדש', 'error');
+    return;
+  }
+  
+  if (!supabaseClient) {
+    showToast('מתחבר לשרת...', 'error');
+    return;
+  }
+  
+  // First: check if group betting is complete (need 32 picks)
+  const { data: groupPicks } = await supabaseClient
+    .from('group_picks')
+    .select('team_code, group_letter')
+    .eq('user_id', state.currentUser.id);
+  
+  if (!groupPicks || groupPicks.length < 32) {
+    showToast('צריך לסיים קודם את שלב הבתים (32 קבוצות)', 'error');
+    return;
+  }
+  
+  showToast('טוען את שלב הנוקאאוט...', 'info');
+  
+  // Load all teams
+  const { data: teams } = await supabaseClient
+    .from('teams')
+    .select('*');
+  
+  if (!teams) {
+    showToast('שגיאה בטעינת הקבוצות', 'error');
+    return;
+  }
+  
+  // Build teams map
+  knockoutState.allTeams = {};
+  teams.forEach(t => { knockoutState.allTeams[t.code] = t; });
+  
+  // Get the 32 teams the user picked
+  knockoutState.selectedGroupTeams = groupPicks.map(p => p.team_code);
+  
+  // Generate R32 matchups (16 matches from 32 teams)
+  generateR32Matches();
+  
+  // Load existing knockout picks
+  const { data: existingPicks } = await supabaseClient
+    .from('knockout_picks')
+    .select('*')
+    .eq('user_id', state.currentUser.id);
+  
+  knockoutState.picks = {};
+  if (existingPicks) {
+    existingPicks.forEach(p => {
+      knockoutState.picks[p.match_id] = p.predicted_winner;
+    });
+  }
+  
+  // Propagate picks through subsequent rounds
+  propagateKnockoutBracket();
+  
+  // Show first incomplete round
+  knockoutState.currentRound = findFirstIncompleteRound();
+  
+  renderKnockout();
+  showScreen('knockout-screen');
+}
+
+function generateR32Matches() {
+  // Pair up the 32 selected teams into 16 matches
+  // Strategy: shuffle into pairs to avoid biases
+  // For consistency, we'll pair by index after sorting
+  
+  const teams = [...knockoutState.selectedGroupTeams];
+  // Sort by FIFA ranking for fair matchups (best vs worst)
+  teams.sort((a, b) => {
+    const ta = knockoutState.allTeams[a];
+    const tb = knockoutState.allTeams[b];
+    return (ta?.fifa_ranking || 99) - (tb?.fifa_ranking || 99);
+  });
+  
+  // Create matches: 1st vs 16th, 2nd vs 15th, etc.
+  const matches = [];
+  for (let i = 0; i < 16; i++) {
+    const team1 = teams[i];
+    const team2 = teams[31 - i];
+    matches.push({
+      id: `R32_M${i + 1}`,
+      round: 'R32',
+      number: i + 1,
+      team1: team1,
+      team2: team2,
+      nextMatch: `R16_M${Math.floor(i / 2) + 1}`
+    });
+  }
+  
+  knockoutState.matches.R32 = matches;
+  
+  // Initialize empty matches for subsequent rounds
+  knockoutState.matches.R16 = [];
+  for (let i = 0; i < 8; i++) {
+    knockoutState.matches.R16.push({
+      id: `R16_M${i + 1}`,
+      round: 'R16',
+      number: i + 1,
+      team1: null,
+      team2: null,
+      nextMatch: `QF_M${Math.floor(i / 2) + 1}`
+    });
+  }
+  
+  knockoutState.matches.QF = [];
+  for (let i = 0; i < 4; i++) {
+    knockoutState.matches.QF.push({
+      id: `QF_M${i + 1}`,
+      round: 'QF',
+      number: i + 1,
+      team1: null,
+      team2: null,
+      nextMatch: `SF_M${Math.floor(i / 2) + 1}`
+    });
+  }
+  
+  knockoutState.matches.SF = [];
+  for (let i = 0; i < 2; i++) {
+    knockoutState.matches.SF.push({
+      id: `SF_M${i + 1}`,
+      round: 'SF',
+      number: i + 1,
+      team1: null,
+      team2: null,
+      nextMatch: 'FINAL_M1'
+    });
+  }
+  
+  knockoutState.matches.FINAL = [{
+    id: 'FINAL_M1',
+    round: 'FINAL',
+    number: 1,
+    team1: null,
+    team2: null,
+    nextMatch: null
+  }];
+}
+
+function propagateKnockoutBracket() {
+  // For each round, fill in teams based on picks from previous round
+  const roundOrder = ['R32', 'R16', 'QF', 'SF', 'FINAL'];
+  
+  for (let r = 0; r < roundOrder.length - 1; r++) {
+    const currentRound = roundOrder[r];
+    const nextRound = roundOrder[r + 1];
+    
+    knockoutState.matches[currentRound].forEach((match, idx) => {
+      const winner = knockoutState.picks[match.id];
+      if (winner) {
+        // Find the next match this winner goes to
+        const nextMatchId = match.nextMatch;
+        const nextMatch = knockoutState.matches[nextRound].find(m => m.id === nextMatchId);
+        if (nextMatch) {
+          // Even idx fills team1, odd idx fills team2
+          if (idx % 2 === 0) {
+            nextMatch.team1 = winner;
+          } else {
+            nextMatch.team2 = winner;
+          }
+        }
+      } else {
+        // Clear downstream if no pick
+        const nextMatchId = match.nextMatch;
+        const nextMatch = knockoutState.matches[nextRound].find(m => m.id === nextMatchId);
+        if (nextMatch) {
+          if (idx % 2 === 0) {
+            nextMatch.team1 = null;
+          } else {
+            nextMatch.team2 = null;
+          }
+          // Also clear the pick for this next match (it's no longer valid)
+          if (knockoutState.picks[nextMatchId] === winner) {
+            delete knockoutState.picks[nextMatchId];
+          }
+        }
+      }
+    });
+  }
+  
+  // After propagation, clear any picks for matches with TBD teams
+  Object.keys(knockoutState.picks).forEach(matchId => {
+    const round = matchId.split('_')[0];
+    const match = knockoutState.matches[round]?.find(m => m.id === matchId);
+    if (match) {
+      const winner = knockoutState.picks[matchId];
+      if (match.team1 !== winner && match.team2 !== winner) {
+        delete knockoutState.picks[matchId];
+      }
+    }
+  });
+}
+
+function findFirstIncompleteRound() {
+  const order = ['R32', 'R16', 'QF', 'SF', 'FINAL'];
+  for (const round of order) {
+    const matches = knockoutState.matches[round];
+    const completed = matches.filter(m => knockoutState.picks[m.id]).length;
+    if (completed < matches.length) {
+      // Check if matches are ready (have both teams)
+      const readyMatches = matches.filter(m => m.team1 && m.team2);
+      if (readyMatches.length > 0 && readyMatches.filter(m => knockoutState.picks[m.id]).length < readyMatches.length) {
+        return round;
+      }
+    }
+  }
+  return 'R32';
+}
+
+function switchRound(round) {
+  knockoutState.currentRound = round;
+  renderKnockout();
+  window.scrollTo(0, 0);
+}
+
+function renderKnockout() {
+  const round = knockoutState.currentRound;
+  
+  // Update title
+  document.getElementById('ko-round-title').textContent = ROUND_INFO[round].name;
+  document.getElementById('ko-round-step').textContent = `${ROUND_INFO[round].points} נקודות לכל ניחוש נכון`;
+  
+  // Update tab states + counters
+  document.querySelectorAll('.ko-tab').forEach(tab => {
+    const tabRound = tab.dataset.round;
+    tab.classList.toggle('active', tabRound === round);
+    
+    const matches = knockoutState.matches[tabRound] || [];
+    const completed = matches.filter(m => knockoutState.picks[m.id]).length;
+    const total = ROUND_INFO[tabRound].total;
+    
+    const countEl = document.getElementById(`ko-tab-count-${tabRound}`);
+    if (countEl) {
+      countEl.textContent = `${completed}/${total}`;
+    }
+  });
+  
+  // Render matches
+  const matches = knockoutState.matches[round] || [];
+  const listEl = document.getElementById('ko-matches-list');
+  const emptyEl = document.getElementById('ko-empty-state');
+  
+  // Check if any matches are ready
+  const readyMatches = matches.filter(m => m.team1 && m.team2);
+  
+  if (readyMatches.length === 0 && round !== 'R32') {
+    listEl.style.display = 'none';
+    emptyEl.style.display = 'block';
+  } else {
+    listEl.style.display = 'flex';
+    emptyEl.style.display = 'none';
+    listEl.innerHTML = '';
+    
+    matches.forEach(match => {
+      const card = createMatchCard(match);
+      listEl.appendChild(card);
+    });
+  }
+  
+  // Update progress
+  updateKnockoutProgress();
+  
+  // Update finish button
+  updateKnockoutFinishButton();
+}
+
+function createMatchCard(match) {
+  const card = document.createElement('div');
+  card.className = 'ko-match-card';
+  
+  const round = match.round;
+  const points = ROUND_INFO[round].points;
+  const userPick = knockoutState.picks[match.id];
+  
+  const team1Data = match.team1 ? knockoutState.allTeams[match.team1] : null;
+  const team2Data = match.team2 ? knockoutState.allTeams[match.team2] : null;
+  
+  // Header
+  const matchLabel = round === 'FINAL' ? 'הגמר 🏆' : `משחק ${match.number}`;
+  
+  card.innerHTML = `
+    <div class="ko-match-header">
+      <span class="ko-match-number">${matchLabel}</span>
+      <span>${ROUND_INFO[round].name}</span>
+    </div>
+    <div class="ko-match-teams">
+      ${createTeamButton(match, team1Data, match.team1, userPick === match.team1)}
+      <div class="ko-vs">VS</div>
+      ${createTeamButton(match, team2Data, match.team2, userPick === match.team2)}
+    </div>
+    <div class="ko-match-points">
+      <span>שווה</span>
+      <span class="ko-match-points-value">${points} נק'</span>
+      <span>אם תניחש נכון</span>
+    </div>
+  `;
+  
+  // Bind clicks
+  const teamButtons = card.querySelectorAll('.ko-team');
+  teamButtons.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const teamCode = this.getAttribute('data-team');
+      if (!teamCode || teamCode === 'null') return;
+      pickKnockoutWinner(match.id, teamCode);
+    });
+  });
+  
+  return card;
+}
+
+function createTeamButton(match, teamData, teamCode, isSelected) {
+  if (!teamData || !teamCode) {
+    return `
+      <div class="ko-team tbd" data-team="null">
+        <div class="ko-team-flag">⏳</div>
+        <div class="ko-team-name">להיקבע</div>
+      </div>
+    `;
+  }
+  
+  const flag = getCountryFlag(teamCode);
+  
+  return `
+    <div class="ko-team ${isSelected ? 'selected' : ''}" data-team="${teamCode}">
+      <div class="ko-team-flag">${flag}</div>
+      <div class="ko-team-name">${teamData.name_he}</div>
+    </div>
+  `;
+}
+
+function pickKnockoutWinner(matchId, teamCode) {
+  // Save pick
+  knockoutState.picks[matchId] = teamCode;
+  
+  // Re-propagate bracket (this team now advances)
+  propagateKnockoutBracket();
+  
+  // Re-render
+  renderKnockout();
+  
+  // Auto-save
+  autoSaveKnockoutPicks();
+}
+
+function updateKnockoutProgress() {
+  let total = 0;
+  Object.keys(ROUND_INFO).forEach(round => {
+    total += knockoutState.matches[round].filter(m => knockoutState.picks[m.id]).length;
+  });
+  
+  document.getElementById('ko-total-picks').textContent = total;
+  document.getElementById('ko-progress-fill').style.width = `${(total / 31) * 100}%`;
+}
+
+function updateKnockoutFinishButton() {
+  const finishBtn = document.getElementById('ko-finish-btn');
+  if (!finishBtn) return;
+  
+  let total = 0;
+  Object.keys(ROUND_INFO).forEach(round => {
+    total += knockoutState.matches[round].filter(m => knockoutState.picks[m.id]).length;
+  });
+  
+  finishBtn.style.display = total === 31 ? 'flex' : 'none';
+}
+
+// Debounced save
+let knockoutSaveTimeout;
+function autoSaveKnockoutPicks() {
+  clearTimeout(knockoutSaveTimeout);
+  knockoutSaveTimeout = setTimeout(() => saveKnockoutPicksToDb(false), 1000);
+}
+
+async function saveKnockoutPicksToDb(showFeedback = true) {
+  if (!state.currentUser || !state.currentPool || !supabaseClient) return;
+  
+  try {
+    // Delete existing
+    await supabaseClient
+      .from('knockout_picks')
+      .delete()
+      .eq('user_id', state.currentUser.id);
+    
+    // Build new picks
+    const newPicks = [];
+    Object.keys(knockoutState.picks).forEach(matchId => {
+      const round = matchId.split('_')[0];
+      const winnerCode = knockoutState.picks[matchId];
+      const team = knockoutState.allTeams[winnerCode];
+      const multiplier = team && state.currentPool.use_multipliers ? team.multiplier : 1.0;
+      
+      newPicks.push({
+        user_id: state.currentUser.id,
+        pool_id: state.currentPool.id,
+        match_id: matchId,
+        round: round,
+        predicted_winner: winnerCode,
+        multiplier_applied: multiplier
+      });
+    });
+    
+    if (newPicks.length > 0) {
+      const { error } = await supabaseClient
+        .from('knockout_picks')
+        .insert(newPicks);
+      
+      if (error) {
+        console.error('Knockout save error:', error);
+        if (showFeedback) showToast('שגיאה בשמירה', 'error');
+        return;
+      }
+    }
+    
+    if (showFeedback) showToast('הימור הנוקאאוט נשמר ✓', 'success');
+    
+  } catch (err) {
+    console.error('Knockout save error:', err);
+    if (showFeedback) showToast('שגיאה בשמירה', 'error');
+  }
+}
+
+function exitKnockoutBetting() {
+  let total = 0;
+  Object.keys(ROUND_INFO).forEach(round => {
+    total += knockoutState.matches[round].filter(m => knockoutState.picks[m.id]).length;
+  });
+  
+  if (total > 0 && total < 31) {
+    if (!confirm(`יש לך ${total}/31 הימורים שמורים. צא מבלי לסיים?`)) {
+      return;
+    }
+  }
+  goToDashboard();
+}
+
+async function finishKnockoutBetting() {
+  await saveKnockoutPicksToDb(false);
+  showToast('הימור הנוקאאוט הושלם! 🏆', 'success');
+  setTimeout(() => goToDashboard(), 1000);
+}
+
+// ============================================================
+// SIMULATOR
+// ============================================================
+
+function openSimulator() {
+  const analysis = analyzeKnockoutStrategy();
+  
+  // Update display
+  document.getElementById('sim-expected-score').textContent = analysis.expected;
+  document.getElementById('sim-max-score').textContent = analysis.maxPossible;
+  
+  // Risk meter (0-100 scale, position from right)
+  const riskPos = Math.min(95, Math.max(5, analysis.riskScore));
+  document.getElementById('sim-risk-marker').style.right = `${riskPos}%`;
+  document.getElementById('sim-risk-description').textContent = analysis.riskDescription;
+  
+  // Stages
+  renderStagesBreakdown(analysis.stages);
+  
+  // Recommendation
+  document.getElementById('sim-rec-text').textContent = analysis.recommendation;
+  
+  // Show
+  document.getElementById('simulator-overlay').classList.add('active');
+  document.getElementById('simulator-modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSimulator() {
+  document.getElementById('simulator-overlay').classList.remove('active');
+  document.getElementById('simulator-modal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function analyzeKnockoutStrategy() {
+  let totalExpected = 0;
+  let totalMax = 0;
+  let riskSum = 0;
+  let riskCount = 0;
+  const stages = {};
+  
+  Object.keys(ROUND_INFO).forEach(round => {
+    const points = ROUND_INFO[round].points;
+    const matches = knockoutState.matches[round];
+    
+    let picked = 0;
+    let stageExpected = 0;
+    let stageMax = 0;
+    
+    matches.forEach(match => {
+      stageMax += points * 2; // max if we bet on the favored team with multiplier 2
+      
+      const winner = knockoutState.picks[match.id];
+      if (winner) {
+        picked++;
+        const team = knockoutState.allTeams[winner];
+        const multiplier = team && state.currentPool?.use_multipliers ? parseFloat(team.multiplier) : 1.0;
+        const tierProbability = getTeamWinProbability(team);
+        
+        // Expected = points * multiplier * probability
+        const expected = points * multiplier * tierProbability;
+        stageExpected += expected;
+        
+        // Risk: higher when betting underdogs
+        riskSum += (1 - tierProbability);
+        riskCount++;
+      }
+    });
+    
+    stages[round] = {
+      name: ROUND_INFO[round].name,
+      picked: picked,
+      total: ROUND_INFO[round].total,
+      expected: Math.round(stageExpected),
+      max: Math.round(stageMax)
+    };
+    
+    totalExpected += stageExpected;
+    totalMax += stageMax;
+  });
+  
+  // Risk score: 0 (all favorites) to 100 (all underdogs)
+  const avgRisk = riskCount > 0 ? (riskSum / riskCount) : 0.5;
+  const riskScore = Math.round(avgRisk * 100);
+  
+  // Risk description
+  let riskDescription;
+  if (riskCount === 0) {
+    riskDescription = 'בחר משחקים כדי לראות ניתוח';
+  } else if (riskScore < 30) {
+    riskDescription = '🛡️ אסטרטגיה בטוחה - אתה מהמר על הפייבוריטיות';
+  } else if (riskScore < 55) {
+    riskDescription = '⚡ אסטרטגיה מאוזנת - שילוב של בטוח ויצירתי';
+  } else if (riskScore < 75) {
+    riskDescription = '🎲 אסטרטגיה אגרסיבית - הרבה הימורים מסוכנים';
+  } else {
+    riskDescription = '🔥 אסטרטגיה ספורטיבית - הולך על הכל!';
+  }
+  
+  // Recommendation
+  let recommendation;
+  const totalPicked = Object.values(stages).reduce((s, v) => s + v.picked, 0);
+  if (totalPicked === 0) {
+    recommendation = 'התחל לבחור משחקים והסימולטור ינתח את האסטרטגיה שלך';
+  } else if (totalPicked < 10) {
+    recommendation = 'המשך לבחור כדי לראות תמונה מלאה של הסיכויים שלך';
+  } else if (riskScore < 30) {
+    recommendation = 'אסטרטגיה בטוחה תיתן צפי ניקוד יציב, אבל קשה לעקוף יריבים שיסתכנו ויצליחו. נסה להוסיף 1-2 הימורים נועזים יותר.';
+  } else if (riskScore > 70) {
+    recommendation = 'אסטרטגיה מסוכנת מאוד! פוטנציאל ענק לניקוד גבוה, אבל סיכוי גבוה לטעויות. שקול לחזור לבטוח ב-1-2 שלבים מאוחרים.';
+  } else {
+    recommendation = 'איזון מצוין! יש לך פוטנציאל לניקוד גבוה עם סיכון מתון. זאת אסטרטגיה חכמה.';
+  }
+  
+  return {
+    expected: Math.round(totalExpected),
+    maxPossible: Math.round(totalMax),
+    riskScore: riskScore,
+    riskDescription: riskDescription,
+    stages: stages,
+    recommendation: recommendation
+  };
+}
+
+function getTeamWinProbability(team) {
+  if (!team) return 0.5;
+  // Probability of advancing based on tier
+  switch (team.tier) {
+    case 'favorite':  return 0.65;  // Strong teams usually advance
+    case 'contender': return 0.45;  // Mid teams - 50/50
+    case 'underdog':  return 0.25;  // Weak teams rarely advance
+    default: return 0.4;
+  }
+}
+
+function renderStagesBreakdown(stages) {
+  const container = document.getElementById('sim-stages-breakdown');
+  container.innerHTML = '';
+  
+  ['R32', 'R16', 'QF', 'SF', 'FINAL'].forEach(round => {
+    const stage = stages[round];
+    if (!stage) return;
+    
+    const row = document.createElement('div');
+    row.className = 'sim-stage-row';
+    
+    const progress = stage.total > 0 ? (stage.picked / stage.total) * 100 : 0;
+    
+    row.innerHTML = `
+      <span class="sim-stage-name">${stage.name}</span>
+      <div class="sim-stage-progress">
+        <div class="sim-stage-progress-fill" style="width: ${progress}%"></div>
+      </div>
+      <span class="sim-stage-count">${stage.picked}/${stage.total}</span>
+    `;
+    
+    container.appendChild(row);
+  });
+}
+
+// Update dashboard knockout status
+async function updateKnockoutStatusOnDashboard() {
+  if (!state.currentUser || !supabaseClient) return;
+  
+  // Find the knockout status card (second bet-status-card.locked)
+  const cards = document.querySelectorAll('.bet-status-card');
+  if (cards.length < 2) return;
+  
+  const koCard = cards[1]; // The second one is knockout
+  
+  // Check if group betting is complete first
+  const { data: groupPicks } = await supabaseClient
+    .from('group_picks')
+    .select('id')
+    .eq('user_id', state.currentUser.id);
+  
+  const groupComplete = groupPicks && groupPicks.length >= 32;
+  
+  if (!groupComplete) {
+    // Still locked
+    koCard.className = 'bet-status-card locked';
+    const titleEl = koCard.querySelector('.bet-status-title');
+    const subtitleEl = koCard.querySelector('.bet-status-subtitle');
+    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> שלב הנוקאאוט';
+    if (subtitleEl) subtitleEl.textContent = 'נפתח אחרי שלב הבתים';
+    
+    // Remove any button
+    const existingBtn = koCard.querySelector('button');
+    if (existingBtn) existingBtn.remove();
+    return;
+  }
+  
+  // Group complete - knockout is open
+  const { data: koPicks } = await supabaseClient
+    .from('knockout_picks')
+    .select('id')
+    .eq('user_id', state.currentUser.id);
+  
+  const koCount = koPicks ? koPicks.length : 0;
+  
+  const titleEl = koCard.querySelector('.bet-status-title');
+  const subtitleEl = koCard.querySelector('.bet-status-subtitle');
+  
+  let existingBtn = koCard.querySelector('button');
+  if (!existingBtn) {
+    existingBtn = document.createElement('button');
+    existingBtn.className = 'btn-small';
+    koCard.appendChild(existingBtn);
+  }
+  
+  existingBtn.onclick = () => startKnockoutBetting();
+  
+  if (koCount === 0) {
+    koCard.className = 'bet-status-card pending';
+    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> שלב הנוקאאוט';
+    if (subtitleEl) subtitleEl.textContent = 'מוכן להמר על 31 משחקים';
+    existingBtn.innerHTML = 'התחל →';
+  } else if (koCount < 31) {
+    koCard.className = 'bet-status-card pending';
+    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="6" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> שלב הנוקאאוט';
+    if (subtitleEl) subtitleEl.textContent = `הימרת על ${koCount} מתוך 31`;
+    existingBtn.innerHTML = 'המשך →';
+  } else {
+    koCard.className = 'bet-status-card completed';
+    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> שלב הנוקאאוט';
+    if (subtitleEl) subtitleEl.textContent = 'הושלם · 31 משחקים';
+    existingBtn.innerHTML = 'ערוך →';
   }
 }
 
