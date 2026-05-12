@@ -3272,6 +3272,286 @@ function showHelp() {
 }
 
 // ============================================================
+// LIVE MATCHES SCREEN
+// ============================================================
+
+const matchesState = {
+  allMatches: [],
+  currentFilter: 'all',
+  loading: false,
+  lastSync: null
+};
+
+async function showMatches() {
+  closeMenu();
+  showScreen('matches-screen');
+  
+  // Show loading
+  document.getElementById('matches-loading').style.display = 'block';
+  document.getElementById('matches-list').style.display = 'none';
+  document.getElementById('matches-empty').style.display = 'none';
+  
+  await loadMatches();
+}
+
+async function loadMatches() {
+  if (!supabaseClient) {
+    showToast('שגיאה - מתחבר לשרת...', 'error');
+    return;
+  }
+  
+  matchesState.loading = true;
+  
+  try {
+    const { data: matches, error } = await supabaseClient
+      .from('matches')
+      .select('*')
+      .order('match_date', { ascending: true });
+    
+    if (error) {
+      console.error('Matches load error:', error);
+      showToast('שגיאה בטעינת המשחקים', 'error');
+      return;
+    }
+    
+    matchesState.allMatches = matches || [];
+    
+    // Find most recent update
+    if (matchesState.allMatches.length > 0) {
+      const lastUpdates = matchesState.allMatches
+        .map(m => m.last_updated)
+        .filter(d => d)
+        .sort()
+        .reverse();
+      matchesState.lastSync = lastUpdates[0];
+    }
+    
+    renderMatches();
+    
+  } catch (err) {
+    console.error('Matches error:', err);
+    showToast('שגיאה לא צפויה', 'error');
+  } finally {
+    matchesState.loading = false;
+    document.getElementById('matches-loading').style.display = 'none';
+  }
+}
+
+function renderMatches() {
+  const list = document.getElementById('matches-list');
+  const empty = document.getElementById('matches-empty');
+  const updatedText = document.getElementById('matches-last-updated-text');
+  
+  // Update last sync indicator
+  if (matchesState.lastSync) {
+    const date = new Date(matchesState.lastSync);
+    updatedText.textContent = `עודכן: ${formatRelativeTime(date)}`;
+  } else {
+    updatedText.textContent = 'עוד לא סונכרן';
+  }
+  
+  // Filter matches
+  const filtered = matchesState.allMatches.filter(m => {
+    if (matchesState.currentFilter === 'all') return true;
+    if (matchesState.currentFilter === 'live') return m.status === 'LIVE' || m.status === 'IN_PLAY';
+    if (matchesState.currentFilter === 'upcoming') return m.status === 'SCHEDULED' || m.status === 'TIMED';
+    if (matchesState.currentFilter === 'finished') return m.status === 'FINISHED';
+    return true;
+  });
+  
+  if (matchesState.allMatches.length === 0) {
+    list.style.display = 'none';
+    empty.style.display = 'block';
+    return;
+  }
+  
+  if (filtered.length === 0) {
+    list.style.display = 'flex';
+    list.innerHTML = `<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.4); font-size: 12px;">אין משחקים בקטגוריה הזאת</div>`;
+    empty.style.display = 'none';
+    return;
+  }
+  
+  empty.style.display = 'none';
+  list.style.display = 'flex';
+  list.innerHTML = '';
+  
+  filtered.forEach(match => {
+    list.appendChild(createMatchCard(match));
+  });
+}
+
+function createMatchCard(match) {
+  const card = document.createElement('div');
+  
+  const isLive = match.status === 'LIVE' || match.status === 'IN_PLAY';
+  const isFinished = match.status === 'FINISHED';
+  const isScheduled = !isLive && !isFinished;
+  
+  card.className = 'match-card';
+  if (isLive) card.classList.add('live');
+  if (isFinished) card.classList.add('finished');
+  
+  // Get team data
+  const homeFlag = getCountryFlag(match.home_team_code);
+  const awayFlag = getCountryFlag(match.away_team_code);
+  const homeName = getTeamName(match.home_team_code);
+  const awayName = getTeamName(match.away_team_code);
+  
+  // Stage label
+  const stageLabel = getStageLabel(match.stage, match.group_letter);
+  
+  // Status text
+  let statusText;
+  let statusClass;
+  if (isLive) {
+    statusText = 'משחק חי';
+    statusClass = 'live';
+  } else if (isFinished) {
+    statusText = 'הסתיים';
+    statusClass = 'finished';
+  } else {
+    statusText = formatMatchTime(match.match_date);
+    statusClass = 'scheduled';
+  }
+  
+  // Determine winner styling
+  let homeClass = '';
+  let awayClass = '';
+  if (isFinished && match.home_score !== null && match.away_score !== null) {
+    if (match.home_score > match.away_score) {
+      homeClass = 'match-team-winner';
+      awayClass = 'match-team-loser';
+    } else if (match.away_score > match.home_score) {
+      awayClass = 'match-team-winner';
+      homeClass = 'match-team-loser';
+    }
+  }
+  
+  // Score display
+  let scoreHtml;
+  if (isFinished || isLive) {
+    scoreHtml = `
+      <div class="match-score">
+        <span>${match.home_score ?? '?'}</span>
+        <span>-</span>
+        <span>${match.away_score ?? '?'}</span>
+      </div>
+    `;
+  } else {
+    const time = match.match_date ? new Date(match.match_date) : null;
+    const timeStr = time ? time.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : 'TBD';
+    scoreHtml = `<div class="match-score no-score">${timeStr}</div>`;
+  }
+  
+  card.innerHTML = `
+    <div class="match-header">
+      <span class="match-stage-badge">${stageLabel}</span>
+      <span class="match-status-badge ${statusClass}">${statusText}</span>
+    </div>
+    <div class="match-teams">
+      <div class="match-team home">
+        <span class="match-team-flag">${homeFlag}</span>
+        <span class="match-team-name ${homeClass}">${homeName}</span>
+      </div>
+      ${scoreHtml}
+      <div class="match-team away">
+        <span class="match-team-flag">${awayFlag}</span>
+        <span class="match-team-name ${awayClass}">${awayName}</span>
+      </div>
+    </div>
+    ${match.venue ? `<div class="match-info"><span>${match.venue}</span><span>${formatMatchDate(match.match_date)}</span></div>` : ''}
+  `;
+  
+  return card;
+}
+
+function getTeamName(code) {
+  if (!code) return 'TBD';
+  // Try to get from our knockout state cache
+  if (knockoutState.allTeams[code]) {
+    return knockoutState.allTeams[code].name_he;
+  }
+  // Fallback: try bettingState
+  for (const letter in bettingState.groupedTeams) {
+    const team = bettingState.groupedTeams[letter]?.find(t => t.code === code);
+    if (team) return team.name_he;
+  }
+  return code;
+}
+
+function getStageLabel(stage, groupLetter) {
+  const STAGE_LABELS = {
+    'GROUP_STAGE': `בית ${groupLetter || ''}`,
+    'LAST_16': 'שמינית הגמר',
+    'QUARTER_FINALS': 'רבע הגמר',
+    'SEMI_FINALS': 'חצי הגמר',
+    'FINAL': '🏆 הגמר',
+    'THIRD_PLACE': 'מקום 3'
+  };
+  return STAGE_LABELS[stage] || stage || 'משחק';
+}
+
+function formatMatchTime(dateStr) {
+  if (!dateStr) return 'תאריך לא ידוע';
+  
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = date - now;
+  const diffHours = diffMs / (1000 * 60 * 60);
+  const diffDays = diffMs / (1000 * 60 * 60 * 24);
+  
+  if (diffMs < 0) return 'עבר';
+  if (diffHours < 1) return `בעוד ${Math.round(diffMs / (1000 * 60))} דקות`;
+  if (diffHours < 24) return `בעוד ${Math.round(diffHours)} שעות`;
+  if (diffDays < 7) return `בעוד ${Math.round(diffDays)} ימים`;
+  
+  return date.toLocaleDateString('he-IL', { day: 'numeric', month: 'short' });
+}
+
+function formatMatchDate(dateStr) {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('he-IL', { 
+    day: 'numeric', 
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+}
+
+function formatRelativeTime(date) {
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  
+  if (diffMinutes < 1) return 'הרגע';
+  if (diffMinutes < 60) return `לפני ${diffMinutes} דקות`;
+  if (diffHours < 24) return `לפני ${diffHours} שעות`;
+  if (diffDays < 7) return `לפני ${diffDays} ימים`;
+  return date.toLocaleDateString('he-IL');
+}
+
+function filterMatches(filter) {
+  matchesState.currentFilter = filter;
+  
+  // Update active tab
+  document.querySelectorAll('.matches-filter-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.filter === filter);
+  });
+  
+  renderMatches();
+}
+
+async function refreshMatches() {
+  showToast('מסנכרן משחקים...', 'info');
+  await loadMatches();
+  showToast('עודכן ✓', 'success');
+}
+
+// ============================================================
 // Error Display Helper
 // ============================================================
 
