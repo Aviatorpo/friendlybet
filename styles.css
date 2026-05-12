@@ -857,6 +857,15 @@ body {
   border-radius: 12px !important;
   font-size: 22px !important;
   color: #d4a853 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.menu-button svg {
+  width: 22px;
+  height: 22px;
+  stroke: #d4a853;
 }
 
 .menu-button:hover, .menu-button:active {
