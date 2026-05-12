@@ -844,3 +844,811 @@ body {
 .gold { color: #d4a853 !important; }
 .text-faint { color: rgba(255, 255, 255, 0.6) !important; }
 .text-faint-2 { color: rgba(255, 255, 255, 0.4) !important; }
+
+/* ============================================================ */
+/* Menu Button - more prominent                                 */
+/* ============================================================ */
+
+.menu-button {
+  width: 44px !important;
+  height: 44px !important;
+  background: rgba(212, 168, 83, 0.15) !important;
+  border: 0.5px solid rgba(212, 168, 83, 0.35) !important;
+  border-radius: 12px !important;
+  font-size: 22px !important;
+  color: #d4a853 !important;
+}
+
+.menu-button:hover, .menu-button:active {
+  background: rgba(212, 168, 83, 0.25) !important;
+  border-color: rgba(212, 168, 83, 0.55) !important;
+  transform: scale(0.95);
+}
+
+/* ============================================================ */
+/* Pool Code Card - prominent in dashboard                      */
+/* ============================================================ */
+
+.pool-code-card {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.15) 0%, rgba(212, 168, 83, 0.04) 100%);
+  border: 0.5px solid rgba(212, 168, 83, 0.4);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pool-code-card:hover, .pool-code-card:active {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.22) 0%, rgba(212, 168, 83, 0.08) 100%);
+  border-color: rgba(212, 168, 83, 0.6);
+  transform: translateY(-1px);
+}
+
+.pool-code-card-content {
+  flex: 1;
+}
+
+.pool-code-display-inline {
+  font-size: 24px;
+  font-weight: 700;
+  color: #d4a853;
+  letter-spacing: 5px;
+  font-family: monospace;
+  margin-top: 2px;
+}
+
+.pool-code-share {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.pool-code-share i {
+  font-size: 16px;
+}
+
+/* ============================================================ */
+/* Bottom Sheet Menu                                            */
+/* ============================================================ */
+
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-out;
+  backdrop-filter: blur(4px);
+}
+
+.menu-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.menu-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 100%;
+  max-width: 480px;
+  max-height: 88vh;
+  background: linear-gradient(180deg, #0f1f3a 0%, #0a1628 100%);
+  border-radius: 24px 24px 0 0;
+  z-index: 101;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+  border-top: 0.5px solid rgba(212, 168, 83, 0.3);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+  -webkit-overflow-scrolling: touch;
+}
+
+.menu-sheet.active {
+  transform: translateX(-50%) translateY(0);
+}
+
+.menu-handle {
+  width: 40px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  margin: 10px auto 16px;
+  flex-shrink: 0;
+}
+
+/* User section in menu */
+.menu-user-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px 20px;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.08);
+}
+
+.menu-avatar {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #d4a853 0%, #b88a3a 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0a1628;
+  font-size: 20px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.menu-user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.menu-user-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 2px;
+}
+
+.menu-user-role {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.menu-pool-badge {
+  background: rgba(212, 168, 83, 0.1);
+  border: 0.5px solid rgba(212, 168, 83, 0.3);
+  border-radius: 8px;
+  padding: 6px 10px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.menu-pool-name {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 1px;
+}
+
+.menu-pool-code-mini {
+  font-size: 14px;
+  font-weight: 600;
+  color: #d4a853;
+  font-family: monospace;
+  letter-spacing: 2px;
+}
+
+/* Menu sections */
+.menu-section {
+  padding: 12px 0;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
+}
+
+.menu-section:last-of-type {
+  border-bottom: none;
+}
+
+.menu-section-title {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 1px;
+  padding: 6px 20px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.menu-section-title i {
+  font-size: 14px;
+}
+
+/* Menu items */
+.menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 15px;
+  font-family: 'Heebo', sans-serif;
+  cursor: pointer;
+  text-align: right;
+  transition: background 0.15s;
+}
+
+.menu-item:hover, .menu-item:active {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.menu-item > i:first-child {
+  font-size: 20px;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+
+.menu-item > span {
+  flex: 1;
+}
+
+.menu-arrow {
+  font-size: 16px !important;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.menu-value {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.menu-item-share {
+  background: rgba(37, 211, 102, 0.08);
+}
+
+.menu-item-share:hover, .menu-item-share:active {
+  background: rgba(37, 211, 102, 0.15);
+}
+
+.menu-item-danger {
+  color: #fb7185;
+}
+
+.menu-item-danger > i:first-child {
+  color: #fb7185 !important;
+}
+
+.menu-footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.menu-version {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+/* ============================================================ */
+/* Settings prompt (in share screen)                            */
+/* ============================================================ */
+
+.settings-prompt {
+  background: rgba(168, 85, 247, 0.06);
+  border: 0.5px solid rgba(168, 85, 247, 0.25);
+  border-radius: 12px;
+  padding: 14px;
+  margin: 20px 0 16px;
+  width: 100%;
+}
+
+.settings-prompt-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.settings-prompt-content > i {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.settings-prompt-title {
+  font-size: 13px;
+  color: white;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
+.settings-prompt-subtitle {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.4;
+}
+
+.btn-settings {
+  width: 100%;
+  background: rgba(168, 85, 247, 0.15);
+  color: #c4b5fd;
+  border: 0.5px solid rgba(168, 85, 247, 0.4);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: 'Heebo', sans-serif;
+  transition: all 0.2s;
+}
+
+.btn-settings:hover, .btn-settings:active {
+  background: rgba(168, 85, 247, 0.25);
+}
+
+.section-divider {
+  position: relative;
+  margin: 20px 0 16px;
+  text-align: center;
+  width: 100%;
+}
+
+.section-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 0.5px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.section-divider > span {
+  position: relative;
+  background: #0a1628;
+  padding: 0 12px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 1px;
+}
+
+/* ============================================================ */
+/* Settings Screen                                              */
+/* ============================================================ */
+
+.lock-banner {
+  background: linear-gradient(90deg, rgba(251, 191, 36, 0.15) 0%, rgba(251, 191, 36, 0.05) 100%);
+  border-bottom: 0.5px solid rgba(251, 191, 36, 0.3);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lock-banner > i {
+  color: #fbbf24;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.lock-banner strong {
+  display: block;
+  color: #fbbf24;
+  font-size: 13px;
+  margin-bottom: 2px;
+}
+
+.lock-banner > div > div {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+}
+
+.settings-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.settings-section-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #d4a853;
+  letter-spacing: 1px;
+  padding: 12px 16px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 0.5px solid rgba(212, 168, 83, 0.15);
+  background: rgba(212, 168, 83, 0.04);
+}
+
+.settings-section-title i {
+  font-size: 16px;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  gap: 12px;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
+}
+
+.settings-row:last-of-type {
+  border-bottom: none;
+}
+
+.settings-row-display {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.settings-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  min-width: 0;
+}
+
+.settings-label i {
+  font-size: 16px;
+  color: rgba(212, 168, 83, 0.7);
+  flex-shrink: 0;
+}
+
+.settings-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: 'Heebo', sans-serif;
+  text-align: right;
+  max-width: 180px;
+  outline: none;
+}
+
+.settings-input:focus {
+  border-color: #d4a853;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.settings-input-small {
+  max-width: 80px;
+  text-align: center;
+}
+
+.settings-value {
+  font-size: 14px;
+  color: white;
+  font-weight: 500;
+}
+
+.settings-value-mono {
+  font-size: 16px;
+  color: #d4a853;
+  font-family: monospace;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+.settings-help {
+  padding: 4px 16px 10px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.5;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.settings-help .help-active {
+  color: #d4a853;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.settings-help .help-inactive {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 10px;
+}
+
+/* Toggle group */
+.settings-toggle-group {
+  display: inline-flex;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.toggle-option {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'Heebo', sans-serif;
+  transition: all 0.2s;
+}
+
+.toggle-option.active {
+  background: #d4a853;
+  color: #0a1628;
+  font-weight: 500;
+}
+
+.toggle-option:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.15);
+  transition: 0.3s;
+  border-radius: 26px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  right: 3px;
+  bottom: 3px;
+  background: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background: #d4a853;
+}
+
+input:checked + .slider:before {
+  transform: translateX(-20px);
+}
+
+input:disabled + .slider {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Multipliers detail */
+.multiplier-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
+}
+
+.multiplier-row:last-child {
+  border-bottom: none;
+}
+
+.mult-emoji {
+  font-size: 18px;
+}
+
+.mult-name {
+  flex: 1;
+}
+
+.mult-value {
+  color: #d4a853;
+  font-weight: 500;
+  font-family: monospace;
+}
+
+/* Scoring */
+.scoring-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
+}
+
+.scoring-row:last-of-type {
+  border-bottom: none;
+}
+
+.scoring-row-highlight {
+  background: rgba(212, 168, 83, 0.04);
+}
+
+.scoring-stage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.scoring-stage i {
+  font-size: 16px;
+}
+
+.scoring-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-btn {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.5px solid rgba(212, 168, 83, 0.3);
+  color: #d4a853;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Heebo', sans-serif;
+}
+
+.score-btn:hover, .score-btn:active {
+  background: rgba(212, 168, 83, 0.15);
+  border-color: #d4a853;
+}
+
+.score-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.score-value {
+  min-width: 24px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  font-family: monospace;
+}
+
+.btn-reset-scoring {
+  width: calc(100% - 32px);
+  margin: 8px 16px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px dashed rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.6);
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: 'Heebo', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+
+.btn-reset-scoring:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Bonus options */
+.bonus-options {
+  display: flex;
+  gap: 6px;
+}
+
+.bonus-btn {
+  width: 42px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s;
+  font-family: 'Heebo', sans-serif;
+}
+
+.bonus-btn.active {
+  background: #d4a853;
+  border-color: #d4a853;
+  color: #0a1628;
+}
+
+.bonus-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Save area */
+.settings-save-area {
+  margin: 24px 0 16px;
+  padding: 16px;
+  background: rgba(212, 168, 83, 0.04);
+  border: 0.5px solid rgba(212, 168, 83, 0.2);
+  border-radius: 12px;
+}
+
+/* Danger zone */
+.settings-danger {
+  background: rgba(244, 63, 94, 0.04) !important;
+  border-color: rgba(244, 63, 94, 0.2) !important;
+  margin-top: 24px !important;
+}
+
+.danger-title {
+  color: #fb7185 !important;
+  background: rgba(244, 63, 94, 0.06) !important;
+  border-bottom-color: rgba(244, 63, 94, 0.15) !important;
+}
+
+.btn-danger {
+  width: calc(100% - 32px);
+  margin: 12px 16px;
+  background: rgba(244, 63, 94, 0.1);
+  color: #fb7185;
+  border: 0.5px solid rgba(244, 63, 94, 0.3);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Heebo', sans-serif;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.btn-danger:hover, .btn-danger:active {
+  background: rgba(244, 63, 94, 0.18);
+}
+
+.danger-help {
+  color: rgba(244, 63, 94, 0.6) !important;
+}

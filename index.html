@@ -328,11 +328,30 @@
       <div class="success-section">
         <div class="success-icon">🎉</div>
         <h2 class="form-title">מעולה!</h2>
-        <p class="form-subtitle">ההימור נוצר בהצלחה. שתף את הקוד עם חבריך</p>
+        <p class="form-subtitle">ההימור נוצר בהצלחה</p>
 
         <div class="pool-code-display">
           <div class="text-faint" style="font-size: 11px; letter-spacing: 2px; margin-bottom: 8px;">קוד ההימור</div>
           <div id="created-pool-code" class="pool-code-large">XXXXX</div>
+        </div>
+
+        <!-- Settings prompt -->
+        <div class="settings-prompt">
+          <div class="settings-prompt-content">
+            <i class="ti ti-info-circle gold"></i>
+            <div>
+              <div class="settings-prompt-title">ההימור נוצר עם חוקי Golazo (ברירת מחדל)</div>
+              <div class="settings-prompt-subtitle">תוכל לערוך את כל החוקים לפני שמישהו מצטרף</div>
+            </div>
+          </div>
+          <button class="btn-settings" onclick="showPoolSettings()">
+            <i class="ti ti-settings"></i>
+            ערוך הגדרות
+          </button>
+        </div>
+
+        <div class="section-divider">
+          <span>או פשוט שתף ותתחיל לשחק</span>
         </div>
 
         <div class="share-actions">
@@ -358,6 +377,307 @@
     </div>
   </div>
 
+  <!-- POOL SETTINGS SCREEN (M-12) -->
+  <div id="pool-settings-screen" class="screen">
+    <div class="topbar">
+      <button class="btn-icon" onclick="goToDashboard()">
+        <i class="ti ti-arrow-right"></i>
+      </button>
+      <span class="topbar-title">הגדרות ההימור</span>
+      <button class="btn-icon" onclick="savePoolSettings()" id="save-settings-btn">
+        <i class="ti ti-check gold"></i>
+      </button>
+    </div>
+
+    <!-- Lock warning (shown when rules are locked) -->
+    <div id="settings-lock-banner" class="lock-banner" style="display: none;">
+      <i class="ti ti-lock"></i>
+      <div>
+        <strong>החוקים נעולים</strong>
+        <div>משתתפים כבר הצטרפו - לא ניתן לשנות חוקים</div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Pool basic info -->
+      <div class="settings-section">
+        <div class="settings-section-title">פרטי ההימור</div>
+        
+        <div class="settings-row">
+          <div class="settings-label">
+            <i class="ti ti-tag"></i>
+            <span>שם ההימור</span>
+          </div>
+          <input type="text" id="settings-pool-name" class="settings-input" maxlength="100">
+        </div>
+
+        <div class="settings-row settings-row-display">
+          <div class="settings-label">
+            <i class="ti ti-key"></i>
+            <span>קוד ההימור</span>
+          </div>
+          <div class="settings-value-mono" id="settings-pool-code">XXXXX</div>
+        </div>
+
+        <div class="settings-row settings-row-display">
+          <div class="settings-label">
+            <i class="ti ti-users"></i>
+            <span>משתתפים</span>
+          </div>
+          <div class="settings-value" id="settings-member-count">0</div>
+        </div>
+      </div>
+
+      <!-- Game format -->
+      <div class="settings-section">
+        <div class="settings-section-title">מבנה ההימור</div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <i class="ti ti-list-numbers"></i>
+            <span>מספר שלבי הימור</span>
+          </div>
+          <div class="settings-toggle-group" data-setting="num_stages">
+            <button class="toggle-option active" data-value="2">2 שלבים</button>
+            <button class="toggle-option" data-value="6">6 שלבים</button>
+          </div>
+        </div>
+        <div class="settings-help">
+          <span class="help-active">2 שלבים: בתים + נוקאאוט</span>
+          <span class="help-inactive">6 שלבים: בתים + R32 + R16 + רבע + חצי + גמר</span>
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <i class="ti ti-target"></i>
+            <span>איך מהמרים על בתים</span>
+          </div>
+          <div class="settings-toggle-group" data-setting="group_pick_type">
+            <button class="toggle-option active" data-value="select_advancing">בחירת עולות</button>
+            <button class="toggle-option" data-value="full_ranking">דירוג 1-4</button>
+          </div>
+        </div>
+        <div class="settings-help">
+          <span class="help-active">בחירת 2-3 קבוצות שיעלו מכל בית</span>
+          <span class="help-inactive">דירוג מלא של כל הקבוצות בבית</span>
+        </div>
+      </div>
+
+      <!-- Multipliers -->
+      <div class="settings-section">
+        <div class="settings-section-title">
+          <i class="ti ti-rocket gold"></i>
+          מכפילי סיכון
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <i class="ti ti-bolt"></i>
+            <span>מכפילים פעילים</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="settings-use-multipliers" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-help">
+          <span>מי שמסתכן יותר — מרוויח יותר 🎲</span>
+        </div>
+
+        <div id="multipliers-detail">
+          <div class="multiplier-row">
+            <span class="mult-emoji">⭐</span>
+            <span class="mult-name">פייבוריטית</span>
+            <span class="mult-value">×1</span>
+          </div>
+          <div class="multiplier-row">
+            <span class="mult-emoji">⚔️</span>
+            <span class="mult-name">מתמודדת</span>
+            <span class="mult-value">×1.5</span>
+          </div>
+          <div class="multiplier-row">
+            <span class="mult-emoji">🐴</span>
+            <span class="mult-name">אנדרדוג</span>
+            <span class="mult-value">×2</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scoring -->
+      <div class="settings-section">
+        <div class="settings-section-title">
+          <i class="ti ti-trophy gold"></i>
+          ניקוד לכל שלב
+        </div>
+
+        <div class="scoring-row">
+          <div class="scoring-stage">
+            <i class="ti ti-flag"></i>
+            <span>שלב הבתים</span>
+          </div>
+          <div class="scoring-controls">
+            <button class="score-btn" onclick="adjustScore('group_stage', -1)">−</button>
+            <span class="score-value" id="score-group-stage">1</span>
+            <button class="score-btn" onclick="adjustScore('group_stage', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="scoring-row">
+          <div class="scoring-stage">
+            <span>סבב 32</span>
+          </div>
+          <div class="scoring-controls">
+            <button class="score-btn" onclick="adjustScore('r32', -1)">−</button>
+            <span class="score-value" id="score-r32">1</span>
+            <button class="score-btn" onclick="adjustScore('r32', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="scoring-row">
+          <div class="scoring-stage">
+            <span>שמינית גמר</span>
+          </div>
+          <div class="scoring-controls">
+            <button class="score-btn" onclick="adjustScore('r16', -1)">−</button>
+            <span class="score-value" id="score-r16">2</span>
+            <button class="score-btn" onclick="adjustScore('r16', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="scoring-row">
+          <div class="scoring-stage">
+            <span>רבע גמר</span>
+          </div>
+          <div class="scoring-controls">
+            <button class="score-btn" onclick="adjustScore('qf', -1)">−</button>
+            <span class="score-value" id="score-qf">3</span>
+            <button class="score-btn" onclick="adjustScore('qf', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="scoring-row">
+          <div class="scoring-stage">
+            <span>חצי גמר</span>
+          </div>
+          <div class="scoring-controls">
+            <button class="score-btn" onclick="adjustScore('sf', -1)">−</button>
+            <span class="score-value" id="score-sf">4</span>
+            <button class="score-btn" onclick="adjustScore('sf', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="scoring-row scoring-row-highlight">
+          <div class="scoring-stage">
+            <i class="ti ti-trophy gold"></i>
+            <span>גמר</span>
+          </div>
+          <div class="scoring-controls">
+            <button class="score-btn" onclick="adjustScore('final', -1)">−</button>
+            <span class="score-value gold" id="score-final">8</span>
+            <button class="score-btn" onclick="adjustScore('final', 1)">+</button>
+          </div>
+        </div>
+
+        <button class="btn-reset-scoring" onclick="resetScoringToGolazo()">
+          <i class="ti ti-refresh"></i>
+          איפוס לחוקי Golazo
+        </button>
+      </div>
+
+      <!-- Top scorer -->
+      <div class="settings-section">
+        <div class="settings-section-title">
+          <i class="ti ti-crown gold"></i>
+          מלך השערים
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <span>פעיל</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="settings-top-scorer" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div id="top-scorer-detail" class="settings-row">
+          <div class="settings-label">
+            <span>בונוס נקודות</span>
+          </div>
+          <div class="bonus-options">
+            <button class="bonus-btn" data-bonus="10" onclick="setTopScorerBonus(10)">10</button>
+            <button class="bonus-btn active" data-bonus="25" onclick="setTopScorerBonus(25)">25</button>
+            <button class="bonus-btn" data-bonus="50" onclick="setTopScorerBonus(50)">50</button>
+            <button class="bonus-btn" data-bonus="100" onclick="setTopScorerBonus(100)">100</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Participants -->
+      <div class="settings-section">
+        <div class="settings-section-title">
+          <i class="ti ti-users gold"></i>
+          משתתפים
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <span>הגבלת משתתפים</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="settings-limit-members">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div id="limit-members-detail" class="settings-row" style="display: none;">
+          <div class="settings-label">
+            <span>מקסימום משתתפים</span>
+          </div>
+          <input type="number" id="settings-max-members" class="settings-input settings-input-small" min="2" max="500" value="20">
+        </div>
+
+        <div class="settings-row">
+          <div class="settings-label">
+            <i class="ti ti-shield"></i>
+            <span>אישור משתמשים לפני הימור</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="settings-approve-before">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-help">
+          <span>הגנה מבוטים - תאשר כל משתתף ידנית לפני שיוכל להמר</span>
+        </div>
+      </div>
+
+      <!-- Save button (sticky bottom) -->
+      <div class="settings-save-area">
+        <button class="btn-primary btn-large" onclick="savePoolSettings()" id="save-settings-main-btn">
+          <i class="ti ti-check"></i>
+          שמור הגדרות
+        </button>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="settings-section settings-danger" id="danger-zone">
+        <div class="settings-section-title danger-title">
+          <i class="ti ti-alert-triangle"></i>
+          אזור מסוכן
+        </div>
+        <button class="btn-danger" onclick="confirmDeletePool()">
+          <i class="ti ti-trash"></i>
+          מחק את ההימור
+        </button>
+        <div class="settings-help danger-help">
+          <span>מחיקה היא פעולה לא הפיכה. כל הנתונים יימחקו לצמיתות.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- USER DASHBOARD (U-07) -->
   <div id="user-dashboard-screen" class="screen">
     <div class="topbar">
@@ -367,12 +687,24 @@
         </div>
         <div class="topbar-title-small">היי, <span id="dashboard-user-name">דני</span> 👋</div>
       </div>
-      <button class="btn-icon" onclick="openMenu()">
-        <i class="ti ti-menu-2 gold"></i>
+      <button class="btn-icon menu-button" onclick="openMenu()" aria-label="תפריט">
+        <i class="ti ti-menu-2"></i>
       </button>
     </div>
 
     <div class="container">
+      <!-- Pool Code Card - prominent display -->
+      <div class="pool-code-card" onclick="quickSharePool()">
+        <div class="pool-code-card-content">
+          <div class="text-faint" style="font-size: 11px; letter-spacing: 1px;">קוד הימור</div>
+          <div class="pool-code-display-inline" id="dashboard-pool-code">XXXXX</div>
+        </div>
+        <div class="pool-code-share">
+          <i class="ti ti-share"></i>
+          <span>שתף</span>
+        </div>
+      </div>
+
       <!-- User Stats Card -->
       <div class="dashboard-stats">
         <div class="stat-block">
@@ -432,6 +764,115 @@
           <span>עזרה</span>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM SHEET MENU -->
+  <div id="menu-overlay" class="menu-overlay" onclick="closeMenu()"></div>
+  <div id="menu-sheet" class="menu-sheet">
+    <div class="menu-handle"></div>
+    
+    <!-- User info section -->
+    <div class="menu-user-section">
+      <div class="menu-avatar">
+        <span id="menu-user-initial">א</span>
+      </div>
+      <div class="menu-user-details">
+        <div class="menu-user-name" id="menu-user-name">אייל</div>
+        <div class="menu-user-role" id="menu-user-role">משתתף</div>
+      </div>
+      <div class="menu-pool-badge" id="menu-pool-badge-wrap">
+        <div class="menu-pool-name" id="menu-pool-name">החברים</div>
+        <div class="menu-pool-code-mini" id="menu-pool-code">XXXXX</div>
+      </div>
+    </div>
+    
+    <!-- Quick share -->
+    <div class="menu-section">
+      <button class="menu-item menu-item-share" onclick="shareWhatsApp()">
+        <i class="ti ti-brand-whatsapp" style="color: #25D366;"></i>
+        <span>שתף בוואטסאפ</span>
+        <i class="ti ti-chevron-left menu-arrow"></i>
+      </button>
+      <button class="menu-item" onclick="shareTelegram()">
+        <i class="ti ti-brand-telegram" style="color: #229ED9;"></i>
+        <span>שתף בטלגרם</span>
+        <i class="ti ti-chevron-left menu-arrow"></i>
+      </button>
+      <button class="menu-item" onclick="copyShareLink()">
+        <i class="ti ti-copy gold"></i>
+        <span>העתק קישור</span>
+        <i class="ti ti-chevron-left menu-arrow"></i>
+      </button>
+    </div>
+    
+    <!-- Main actions -->
+    <div class="menu-section">
+      <div class="menu-section-title">המידע שלי</div>
+      <button class="menu-item" onclick="showRecoveryCodeAgain()">
+        <i class="ti ti-key gold"></i>
+        <span>הצג קוד שחזור</span>
+        <i class="ti ti-chevron-left menu-arrow"></i>
+      </button>
+      <button class="menu-item" onclick="showMembers()">
+        <i class="ti ti-users gold"></i>
+        <span>רשימת משתתפים</span>
+        <i class="ti ti-chevron-left menu-arrow"></i>
+      </button>
+      <button class="menu-item" onclick="showLeaderboard()">
+        <i class="ti ti-trophy gold"></i>
+        <span>לוח דירוגים</span>
+        <i class="ti ti-chevron-left menu-arrow"></i>
+      </button>
+      <button class="menu-item" onclick="showHelp()">
+        <i class="ti ti-help gold"></i>
+        <span>עזרה ושאלות נפוצות</span>
+        <i class="ti ti-chevron-left menu-arrow"></i>
+      </button>
+    </div>
+    
+    <!-- Admin section -->
+    <div class="menu-section" id="menu-admin-section" style="display: none;">
+      <div class="menu-section-title">
+        <i class="ti ti-crown gold"></i>
+        אזור מארגן
+      </div>
+      <button class="menu-item" onclick="showAdminMembers()">
+        <i class="ti ti-user-cog gold"></i>
+        <span>ניהול חברים</span>
+        <i class="ti ti-chevron-left menu-arrow"></i>
+      </button>
+      <button class="menu-item" onclick="showApprovals()">
+        <i class="ti ti-user-check gold"></i>
+        <span>אישור משתמשים</span>
+        <i class="ti ti-chevron-left menu-arrow"></i>
+      </button>
+      <button class="menu-item" onclick="showPoolSettings()">
+        <i class="ti ti-settings gold"></i>
+        <span>הגדרות ההימור</span>
+        <i class="ti ti-chevron-left menu-arrow"></i>
+      </button>
+    </div>
+    
+    <!-- Settings -->
+    <div class="menu-section">
+      <div class="menu-section-title">הגדרות</div>
+      <button class="menu-item" onclick="toggleLanguage()">
+        <i class="ti ti-language gold"></i>
+        <span>שפה</span>
+        <span class="menu-value">עברית 🇮🇱</span>
+      </button>
+      <button class="menu-item menu-item-danger" onclick="logoutConfirm()">
+        <i class="ti ti-logout"></i>
+        <span>התנתק מההימור</span>
+        <i class="ti ti-chevron-left menu-arrow"></i>
+      </button>
+    </div>
+    
+    <!-- Footer -->
+    <div class="menu-footer">
+      <span>FriendlyBet</span>
+      <span class="menu-version">v0.2.0</span>
     </div>
   </div>
 

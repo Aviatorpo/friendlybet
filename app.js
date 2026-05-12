@@ -608,6 +608,7 @@ async function goToDashboard() {
   // Update dashboard display
   document.getElementById('dashboard-pool-name').textContent = state.currentPool.name;
   document.getElementById('dashboard-user-name').textContent = state.currentUser.nickname;
+  document.getElementById('dashboard-pool-code').textContent = state.currentPool.code;
   document.getElementById('user-points').textContent = state.currentUser.total_score || 0;
   
   // Compute rank
@@ -625,27 +626,388 @@ async function goToDashboard() {
   showScreen('user-dashboard-screen');
 }
 
+// ============================================================
+// MENU (Bottom Sheet)
+// ============================================================
+
+function openMenu() {
+  // Update menu user info
+  const user = state.currentUser;
+  const pool = state.currentPool;
+  
+  if (!user || !pool) return;
+  
+  // User avatar (first letter)
+  document.getElementById('menu-user-initial').textContent = user.nickname.charAt(0);
+  document.getElementById('menu-user-name').textContent = user.nickname;
+  document.getElementById('menu-user-role').textContent = user.is_admin ? '👑 מארגן ומשתתף' : 'משתתף';
+  document.getElementById('menu-pool-name').textContent = pool.name;
+  document.getElementById('menu-pool-code').textContent = pool.code;
+  
+  // Show admin section if admin
+  const adminSection = document.getElementById('menu-admin-section');
+  if (adminSection) {
+    adminSection.style.display = user.is_admin ? 'block' : 'none';
+  }
+  
+  // Open the sheet
+  document.getElementById('menu-overlay').classList.add('active');
+  document.getElementById('menu-sheet').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMenu() {
+  document.getElementById('menu-overlay').classList.remove('active');
+  document.getElementById('menu-sheet').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ============================================================
+// Quick share from dashboard
+// ============================================================
+
+function quickSharePool() {
+  // Show a quick action sheet or just trigger WhatsApp share
+  shareWhatsApp();
+}
+
+// ============================================================
+// Menu actions
+// ============================================================
+
+function showRecoveryCodeAgain() {
+  closeMenu();
+  showToast('🚧 הצגת קוד שחזור - בשיחה הבאה', 'info');
+  // TODO: Implement showing the recovery code (need to re-enter it once)
+}
+
+function showMembers() {
+  closeMenu();
+  showToast('🚧 רשימת משתתפים - בשיחה הבאה', 'info');
+}
+
+function showAdminMembers() {
+  closeMenu();
+  showToast('🚧 ניהול חברים - בשיחה הבאה', 'info');
+}
+
+function showApprovals() {
+  closeMenu();
+  showToast('🚧 אישור משתמשים - בשיחה הבאה', 'info');
+}
+
+// ============================================================
+// POOL SETTINGS - Full settings screen
+// ============================================================
+
+// In-memory copy of settings being edited
+let editingSettings = null;
+
+async function showPoolSettings() {
+  closeMenu();
+  
+  if (!state.currentPool) {
+    showToast('לא נמצא הימור', 'error');
+    return;
+  }
+  
+  // Re-fetch latest pool data
+  const { data: pool, error } = await supabaseClient
+    .from('pools')
+    .select('*')
+    .eq('id', state.currentPool.id)
+    .single();
+  
+  if (error || !pool) {
+    showToast('שגיאה בטעינת ההגדרות', 'error');
+    return;
+  }
+  
+  state.currentPool = pool;
+  
+  // Count members
+  const { count: memberCount } = await supabaseClient
+    .from('users')
+    .select('*', { count: 'exact', head: true })
+    .eq('pool_id', pool.id);
+  
+  // Save initial settings for comparison
+  editingSettings = { ...pool };
+  
+  // Populate the form
+  document.getElementById('settings-pool-name').value = pool.name;
+  document.getElementById('settings-pool-code').textContent = pool.code;
+  document.getElementById('settings-member-count').textContent = memberCount || 1;
+  
+  // Game format
+  setToggleValue('num_stages', pool.num_stages.toString());
+  setToggleValue('group_pick_type', pool.group_pick_type);
+  
+  // Multipliers
+  document.getElementById('settings-use-multipliers').checked = pool.use_multipliers;
+  
+  // Scoring
+  document.getElementById('score-group-stage').textContent = pool.scoring_group_stage;
+  document.getElementById('score-r32').textContent = pool.scoring_r32;
+  document.getElementById('score-r16').textContent = pool.scoring_r16;
+  document.getElementById('score-qf').textContent = pool.scoring_qf;
+  document.getElementById('score-sf').textContent = pool.scoring_sf;
+  document.getElementById('score-final').textContent = pool.scoring_final;
+  
+  // Top scorer
+  document.getElementById('settings-top-scorer').checked = pool.top_scorer_enabled;
+  setTopScorerBonus(pool.top_scorer_bonus, false);
+  
+  // Participants
+  const hasLimit = pool.max_participants !== null;
+  document.getElementById('settings-limit-members').checked = hasLimit;
+  document.getElementById('limit-members-detail').style.display = hasLimit ? 'flex' : 'none';
+  if (hasLimit) {
+    document.getElementById('settings-max-members').value = pool.max_participants;
+  }
+  
+  document.getElementById('settings-approve-before').checked = pool.approve_before_betting;
+  
+  // Lock controls if rules are locked or member count > 1
+  const isLocked = pool.rules_locked || (memberCount && memberCount > 1);
+  applyLockState(isLocked);
+  
+  // Setup toggle button listeners
+  setupToggleListeners();
+  
+  // Limit members toggle
+  document.getElementById('settings-limit-members').onchange = function() {
+    document.getElementById('limit-members-detail').style.display = this.checked ? 'flex' : 'none';
+  };
+  
+  showScreen('pool-settings-screen');
+}
+
+function applyLockState(isLocked) {
+  const banner = document.getElementById('settings-lock-banner');
+  banner.style.display = isLocked ? 'flex' : 'none';
+  
+  // Disable all interactive elements (except delete pool)
+  const inputs = document.querySelectorAll('#pool-settings-screen input:not(#settings-pool-name), #pool-settings-screen .toggle-option, #pool-settings-screen .score-btn, #pool-settings-screen .bonus-btn, #pool-settings-screen #save-settings-main-btn, #pool-settings-screen #save-settings-btn');
+  inputs.forEach(el => {
+    if (isLocked) {
+      el.setAttribute('disabled', 'disabled');
+    } else {
+      el.removeAttribute('disabled');
+    }
+  });
+  
+  // Pool name input - allow editing even when locked
+  document.getElementById('settings-pool-name').removeAttribute('disabled');
+  
+  // Reset scoring button
+  const resetBtn = document.querySelector('.btn-reset-scoring');
+  if (resetBtn) {
+    if (isLocked) resetBtn.setAttribute('disabled', 'disabled');
+    else resetBtn.removeAttribute('disabled');
+  }
+}
+
+function setupToggleListeners() {
+  document.querySelectorAll('.settings-toggle-group').forEach(group => {
+    const settingName = group.dataset.setting;
+    group.querySelectorAll('.toggle-option').forEach(btn => {
+      btn.onclick = function() {
+        if (this.disabled) return;
+        group.querySelectorAll('.toggle-option').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      };
+    });
+  });
+}
+
+function setToggleValue(settingName, value) {
+  const group = document.querySelector(`.settings-toggle-group[data-setting="${settingName}"]`);
+  if (!group) return;
+  group.querySelectorAll('.toggle-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.value === value);
+  });
+}
+
+function getToggleValue(settingName) {
+  const active = document.querySelector(`.settings-toggle-group[data-setting="${settingName}"] .toggle-option.active`);
+  return active ? active.dataset.value : null;
+}
+
+function adjustScore(stage, delta) {
+  const el = document.getElementById('score-' + stage.replace(/_/g, '-'));
+  if (!el) return;
+  let current = parseInt(el.textContent) || 0;
+  current = Math.max(0, Math.min(99, current + delta));
+  el.textContent = current;
+}
+
+function resetScoringToGolazo() {
+  document.getElementById('score-group-stage').textContent = 1;
+  document.getElementById('score-r32').textContent = 1;
+  document.getElementById('score-r16').textContent = 2;
+  document.getElementById('score-qf').textContent = 3;
+  document.getElementById('score-sf').textContent = 4;
+  document.getElementById('score-final').textContent = 8;
+  showToast('הוחזר לחוקי Golazo המקוריים', 'success');
+}
+
+function setTopScorerBonus(value, showFeedback = true) {
+  document.querySelectorAll('.bonus-btn').forEach(btn => {
+    btn.classList.toggle('active', parseInt(btn.dataset.bonus) === value);
+  });
+  if (showFeedback) {
+    showToast(`בונוס מלך השערים: ${value} נקודות`, 'success');
+  }
+}
+
+async function savePoolSettings() {
+  if (!state.currentPool || !state.currentUser) {
+    showToast('שגיאה - חסרים נתונים', 'error');
+    return;
+  }
+  
+  if (!state.currentUser.is_admin) {
+    showToast('רק המארגן יכול לערוך הגדרות', 'error');
+    return;
+  }
+  
+  // Gather values from form
+  const newSettings = {
+    name: document.getElementById('settings-pool-name').value.trim(),
+    num_stages: parseInt(getToggleValue('num_stages')) || 2,
+    group_pick_type: getToggleValue('group_pick_type') || 'select_advancing',
+    use_multipliers: document.getElementById('settings-use-multipliers').checked,
+    scoring_group_stage: parseInt(document.getElementById('score-group-stage').textContent) || 1,
+    scoring_r32: parseInt(document.getElementById('score-r32').textContent) || 1,
+    scoring_r16: parseInt(document.getElementById('score-r16').textContent) || 2,
+    scoring_qf: parseInt(document.getElementById('score-qf').textContent) || 3,
+    scoring_sf: parseInt(document.getElementById('score-sf').textContent) || 4,
+    scoring_final: parseInt(document.getElementById('score-final').textContent) || 8,
+    top_scorer_enabled: document.getElementById('settings-top-scorer').checked,
+    top_scorer_bonus: parseInt(document.querySelector('.bonus-btn.active')?.dataset.bonus) || 25,
+    approve_before_betting: document.getElementById('settings-approve-before').checked,
+  };
+  
+  // Max participants
+  if (document.getElementById('settings-limit-members').checked) {
+    newSettings.max_participants = parseInt(document.getElementById('settings-max-members').value) || null;
+  } else {
+    newSettings.max_participants = null;
+  }
+  
+  // Validate name
+  if (!newSettings.name || newSettings.name.length < CONFIG.MIN_POOL_NAME_LENGTH) {
+    showToast('שם ההימור קצר מדי', 'error');
+    return;
+  }
+  
+  try {
+    showToast('שומר הגדרות...', 'info');
+    
+    const { error } = await supabaseClient
+      .from('pools')
+      .update(newSettings)
+      .eq('id', state.currentPool.id);
+    
+    if (error) {
+      console.error('Settings save error:', error);
+      showToast('שגיאה בשמירה: ' + error.message, 'error');
+      return;
+    }
+    
+    // Update local state
+    Object.assign(state.currentPool, newSettings);
+    
+    showToast('ההגדרות נשמרו בהצלחה! ✅', 'success');
+    
+    // Return to dashboard after short delay
+    setTimeout(() => {
+      goToDashboard();
+    }, 800);
+    
+  } catch (err) {
+    console.error('Save settings error:', err);
+    showToast('שגיאה לא צפויה', 'error');
+  }
+}
+
+async function confirmDeletePool() {
+  if (!state.currentPool || !state.currentUser?.is_admin) return;
+  
+  const poolName = state.currentPool.name;
+  const confirmed = confirm(
+    `⚠️ אזהרה!\n\nאתה עומד למחוק את ההימור "${poolName}".\n\nכל הנתונים, ההימורים והניקוד יימחקו לצמיתות.\n\nפעולה זו לא ניתנת לביטול.\n\nהאם להמשיך?`
+  );
+  
+  if (!confirmed) return;
+  
+  // Second confirmation
+  const finalConfirm = prompt(`כדי לאשר, הקלד את שם ההימור:\n"${poolName}"`);
+  
+  if (finalConfirm !== poolName) {
+    showToast('המחיקה בוטלה', 'info');
+    return;
+  }
+  
+  try {
+    const { error } = await supabaseClient
+      .from('pools')
+      .delete()
+      .eq('id', state.currentPool.id);
+    
+    if (error) {
+      console.error('Delete pool error:', error);
+      showToast('שגיאה במחיקה: ' + error.message, 'error');
+      return;
+    }
+    
+    clearLocalUser();
+    state.currentPool = null;
+    state.currentUser = null;
+    
+    showToast('ההימור נמחק', 'info');
+    setTimeout(() => {
+      showScreen('home-screen');
+    }, 1000);
+    
+  } catch (err) {
+    console.error('Delete pool error:', err);
+    showToast('שגיאה לא צפויה', 'error');
+  }
+}
+
+function toggleLanguage() {
+  closeMenu();
+  showToast('🚧 שינוי שפה - בשיחה הבאה', 'info');
+}
+
+function logoutConfirm() {
+  closeMenu();
+  setTimeout(() => {
+    if (confirm('האם להתנתק מההימור?\n\nהקוד שלך עדיין יעבוד - תוכל להתחבר שוב עם קוד השחזור.')) {
+      clearLocalUser();
+      state.currentUser = null;
+      state.currentPool = null;
+      showScreen('home-screen');
+      showToast('התנתקת מההימור', 'info');
+    }
+  }, 300);
+}
+
 // Placeholder functions for future screens
 function startGroupBetting() {
-  showToast('שלב הבתים יבנה בשיחה הבאה 🚧', 'info');
+  showToast('🚧 שלב הבתים יבנה בשיחה הבאה', 'info');
 }
 
 function showLeaderboard() {
-  showToast('לוח דירוגים יבנה בשיחה הבאה 🚧', 'info');
+  closeMenu();
+  showToast('🚧 לוח דירוגים יבנה בשיחה הבאה', 'info');
 }
 
 function showHelp() {
-  showToast('מסך עזרה יבנה בשיחה הבאה 🚧', 'info');
-}
-
-function openMenu() {
-  if (confirm('האם להתנתק מההימור?\n(הקוד שלך עדיין יעבוד)')) {
-    clearLocalUser();
-    state.currentUser = null;
-    state.currentPool = null;
-    showScreen('home-screen');
-    showToast('התנתקת מההימור', 'info');
-  }
+  closeMenu();
+  showToast('🚧 מסך עזרה יבנה בשיחה הבאה', 'info');
 }
 
 // ============================================================
