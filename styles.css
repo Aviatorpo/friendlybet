@@ -2990,6 +2990,18 @@ input:disabled + .slider {
   flex-shrink: 0;
 }
 
+/* Hide jump tabs on desktop - whole bracket is visible */
+@media (min-width: 1024px) {
+  .bracket-jump-tabs {
+    display: none;
+  }
+  
+  /* Also hide zoom button on desktop - bracket fits the screen */
+  #bracket-zoom-btn {
+    display: none;
+  }
+}
+
 .bracket-jump-tab {
   background: rgba(255, 255, 255, 0.04);
   border: 0.5px solid rgba(255, 255, 255, 0.1);
