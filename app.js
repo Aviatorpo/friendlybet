@@ -1217,7 +1217,9 @@ function updateFloatingStatusButton() {
 function createTeamCard(team, isSelected) {
   const card = document.createElement('div');
   card.className = 'team-card' + (isSelected ? ' selected' : '');
-  card.onclick = () => toggleTeamSelection(team.code);
+  card.setAttribute('data-team-code', team.code);
+  card.setAttribute('role', 'button');
+  card.setAttribute('tabindex', '0');
   
   // Tier badge text
   const usesMultipliers = state.currentPool.use_multipliers;
@@ -1243,6 +1245,15 @@ function createTeamCard(team, isSelected) {
     </div>
     <div class="team-checkbox"></div>
   `;
+  
+  // Use addEventListener instead of onclick for reliability
+  card.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const code = this.getAttribute('data-team-code');
+    console.log('Team clicked:', code);
+    toggleTeamSelection(code);
+  });
   
   return card;
 }
@@ -1379,7 +1390,14 @@ function renderQuickGroupsNav() {
     
     btn.className = className;
     btn.textContent = letter;
-    btn.onclick = () => goToGroup(idx);
+    btn.setAttribute('data-index', idx);
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const targetIdx = parseInt(this.getAttribute('data-index'));
+      console.log('Quick nav: going to group index', targetIdx);
+      goToGroup(targetIdx);
+    });
     
     nav.appendChild(btn);
   });
@@ -1390,6 +1408,7 @@ function renderQuickGroupsNav() {
 // ============================================================
 
 function openStatusModal() {
+  // Make sure state is fresh
   const total = countTotalPicks();
   const missing = 32 - total;
   
@@ -1406,11 +1425,18 @@ function openStatusModal() {
     document.getElementById('status-modal-subtitle').textContent = 'בחרת את כל ה-32 העולות';
   }
   
-  // Find groups with only 2 picks (where you can add a third)
-  const expandableGroups = bettingState.groupOrder.filter(letter => {
+  // Find groups with EXACTLY 2 picks (where you can add a third)
+  // Important: filter strictly to length === 2
+  const expandableGroups = [];
+  bettingState.groupOrder.forEach(letter => {
     const picks = bettingState.picks[letter] || [];
-    return picks.length === 2;
+    if (picks.length === 2) {
+      expandableGroups.push(letter);
+    }
   });
+  
+  console.log('Expandable groups (with 2 picks):', expandableGroups);
+  console.log('Current picks state:', bettingState.picks);
   
   // Render group buttons
   const container = document.getElementById('status-modal-groups');
@@ -1419,15 +1445,40 @@ function openStatusModal() {
   if (expandableGroups.length === 0) {
     container.innerHTML = '<div style="grid-column: 1 / -1; padding: 12px; color: rgba(255,255,255,0.5); text-align: center; font-size: 12px;">לא נמצאו בתים עם 2 עולות.<br/>תוכל להוסיף בכל בית.</div>';
   } else {
+    // Update section title with count
+    const sectionTitle = document.querySelector('.status-section-title');
+    if (sectionTitle) {
+      sectionTitle.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -3px; margin-left: 4px;">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        ${expandableGroups.length} בתים עם 2 עולות - לחץ כדי להוסיף שלישית:
+      `;
+    }
+    
     expandableGroups.forEach(letter => {
       const btn = document.createElement('button');
       btn.className = 'status-modal-group-btn';
       btn.textContent = letter;
-      btn.onclick = () => {
+      btn.setAttribute('data-letter', letter);
+      
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const targetLetter = this.getAttribute('data-letter');
+        const idx = bettingState.groupOrder.indexOf(targetLetter);
+        console.log('Modal: navigating to group', targetLetter, 'index', idx);
+        
         closeStatusModal();
-        const idx = bettingState.groupOrder.indexOf(letter);
-        goToGroup(idx);
-      };
+        
+        // Use setTimeout to ensure modal closes first
+        setTimeout(() => {
+          goToGroup(idx);
+        }, 50);
+      });
+      
       container.appendChild(btn);
     });
   }
