@@ -76,42 +76,62 @@ body {
   justify-content: center;
 }
 
-.trophy-svg {
+/* Trophy image - shows only the top portion (cup body without base) */
+.trophy-image-wrap {
+  position: relative;
+  overflow: hidden;
   display: block;
 }
 
-.trophy-large {
+.trophy-image-wrap-large {
   width: 140px;
-  height: 168px;
-  animation: trophyShine 3s ease-in-out infinite;
+  height: 200px;
 }
 
-.trophy-xl {
-  width: 180px;
-  height: 216px;
+.trophy-image-wrap-xl {
+  width: 200px;
+  height: 280px;
   animation: trophyFloat 4s ease-in-out infinite;
-  filter: drop-shadow(0 8px 24px rgba(212, 168, 83, 0.4));
+}
+
+.trophy-image {
+  width: 100%;
+  height: auto;
+  /* Show only top ~75% of image (hides the base with text) */
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  filter: drop-shadow(0 8px 24px rgba(212, 168, 83, 0.5));
+}
+
+.trophy-image-wrap-xl .trophy-image {
+  height: auto;
+  max-height: none;
+}
+
+/* Use clip-path to hide bottom 25% where the text is */
+.trophy-image-wrap-large .trophy-image,
+.trophy-image-wrap-xl .trophy-image {
+  clip-path: inset(0 0 25% 0);
+  -webkit-clip-path: inset(0 0 25% 0);
+  margin-bottom: -25%;
 }
 
 @keyframes trophyFloat {
   0%, 100% { 
     transform: translateY(0px); 
-    filter: drop-shadow(0 8px 24px rgba(212, 168, 83, 0.4));
   }
   50% { 
     transform: translateY(-8px); 
-    filter: drop-shadow(0 16px 32px rgba(212, 168, 83, 0.5));
   }
 }
 
 @keyframes trophyShine {
   0%, 100% { 
     opacity: 0.9;
-    filter: drop-shadow(0 4px 16px rgba(212, 168, 83, 0.4));
   }
   50% { 
     opacity: 1;
-    filter: drop-shadow(0 6px 20px rgba(212, 168, 83, 0.6));
   }
 }
 
