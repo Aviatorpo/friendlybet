@@ -643,7 +643,7 @@ function openMenu() {
   // User avatar (first letter)
   document.getElementById('menu-user-initial').textContent = user.nickname.charAt(0);
   document.getElementById('menu-user-name').textContent = user.nickname;
-  document.getElementById('menu-user-role').textContent = user.is_admin ? '👑 מארגן ומשתתף' : 'משתתף';
+  document.getElementById('menu-user-role').textContent = user.is_admin ? 'מארגן ומשתתף' : 'משתתף';
   document.getElementById('menu-pool-name').textContent = pool.name;
   document.getElementById('menu-pool-code').textContent = pool.code;
   
@@ -780,7 +780,11 @@ function createMemberCard(member, picksCount) {
   card.innerHTML = `
     <div class="lb-avatar-small">${member.nickname.charAt(0)}</div>
     <div class="member-info">
-      <div class="member-name">${member.nickname}${isMe ? ' <span class="lb-badge">אתה</span>' : ''}</div>
+      <div class="member-name">
+        ${member.nickname}
+        ${member.is_admin ? '<span class="admin-badge">מארגן</span>' : ''}
+        ${isMe ? '<span class="lb-badge">אתה</span>' : ''}
+      </div>
       <div class="member-status ${statusClass}">
         <span class="member-status-dot"></span>
         <span>${statusText}</span>
@@ -1945,8 +1949,8 @@ function createPodiumSpot(rank, user, rankNum) {
   const div = document.createElement('div');
   div.className = `podium-spot ${rank}`;
   
-  const medal = rankNum === 1 ? '👑' : (rankNum === 2 ? '🥈' : '🥉');
-  const medalClass = rankNum === 1 ? 'podium-first-crown' : 'podium-medal';
+  const medal = rankNum === 1 ? '🥇' : (rankNum === 2 ? '🥈' : '🥉');
+  const medalClass = 'podium-medal';
   
   div.innerHTML = `
     <div class="${medalClass}">${medal}</div>
@@ -1993,7 +1997,7 @@ function renderFullLeaderboard(users) {
       <div class="lb-info">
         <div class="lb-name">
           ${user.nickname}
-          ${user.is_admin ? '<span class="lb-badge">מארגן</span>' : ''}
+          ${user.is_admin ? '<span class="admin-badge">מארגן</span>' : ''}
           ${isMe ? '<span class="lb-badge">אתה</span>' : ''}
         </div>
         <div class="lb-meta">${formatScoreDescription(user)}</div>

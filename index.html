@@ -40,7 +40,62 @@ function loadTablerFallback() {
   <!-- LOADING SCREEN -->
   <div id="loading-screen" class="screen active">
     <div class="loading-content">
-      <div class="logo-large">⚽</div>
+      <div class="logo-large">
+        <svg class="trophy-svg trophy-large" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" aria-label="World Cup Trophy">
+          <defs>
+            <linearGradient id="trophy-gold-loading" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#f4d77f"/>
+              <stop offset="40%" stop-color="#d4a853"/>
+              <stop offset="100%" stop-color="#8b6914"/>
+            </linearGradient>
+            <linearGradient id="trophy-shine-loading" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+              <stop offset="50%" stop-color="#ffffff" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </linearGradient>
+            <radialGradient id="trophy-globe-loading" cx="35%" cy="35%">
+              <stop offset="0%" stop-color="#f4d77f"/>
+              <stop offset="100%" stop-color="#8b6914"/>
+            </radialGradient>
+            <filter id="trophy-glow-loading">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          
+          <!-- Glow background -->
+          <ellipse cx="100" cy="120" rx="80" ry="100" fill="url(#trophy-gold-loading)" opacity="0.15" filter="url(#trophy-glow-loading)"/>
+          
+          <!-- Trophy body - main shape (inspired by the FIFA cup) -->
+          <g filter="url(#trophy-glow-loading)">
+            <!-- The twisted base figures (simplified) -->
+            <path d="M 70 105 Q 70 130, 85 160 L 75 175 Q 100 180, 125 175 L 115 160 Q 130 130, 130 105 Z" 
+                  fill="url(#trophy-gold-loading)" stroke="#8b6914" stroke-width="1"/>
+            
+            <!-- Globe top -->
+            <circle cx="100" cy="90" r="32" fill="url(#trophy-globe-loading)" stroke="#8b6914" stroke-width="1.5"/>
+            
+            <!-- Globe meridians -->
+            <ellipse cx="100" cy="90" rx="32" ry="14" fill="none" stroke="#8b6914" stroke-width="0.8" opacity="0.6"/>
+            <ellipse cx="100" cy="90" rx="14" ry="32" fill="none" stroke="#8b6914" stroke-width="0.8" opacity="0.4"/>
+            <ellipse cx="100" cy="90" rx="32" ry="32" fill="none" stroke="#8b6914" stroke-width="1" opacity="0.5"/>
+            
+            <!-- Globe highlight -->
+            <ellipse cx="88" cy="78" rx="10" ry="6" fill="#ffffff" opacity="0.4"/>
+            
+            <!-- Base plate -->
+            <rect x="60" y="180" width="80" height="14" rx="2" fill="url(#trophy-gold-loading)" stroke="#8b6914" stroke-width="1"/>
+            <rect x="55" y="194" width="90" height="10" rx="2" fill="#8b6914" stroke="#3a2a08" stroke-width="0.5"/>
+            <rect x="50" y="204" width="100" height="6" rx="1" fill="#5a4408"/>
+          </g>
+          
+          <!-- Shine overlay -->
+          <ellipse cx="92" cy="85" rx="15" ry="20" fill="url(#trophy-shine-loading)" opacity="0.5"/>
+        </svg>
+      </div>
       <div class="loading-title">FriendlyBet</div>
       <div class="loading-spinner"></div>
     </div>
@@ -50,7 +105,62 @@ function loadTablerFallback() {
   <div id="home-screen" class="screen">
     <div class="container">
       <div class="hero">
-        <div class="logo-xl">⚽</div>
+        <div class="logo-xl">
+          <svg class="trophy-svg trophy-xl" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 240" aria-label="World Cup Trophy">
+            <defs>
+              <linearGradient id="trophy-gold-home" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#f4d77f"/>
+                <stop offset="40%" stop-color="#d4a853"/>
+                <stop offset="100%" stop-color="#8b6914"/>
+              </linearGradient>
+              <linearGradient id="trophy-shine-home" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+                <stop offset="50%" stop-color="#ffffff" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+              </linearGradient>
+              <radialGradient id="trophy-globe-home" cx="35%" cy="35%">
+                <stop offset="0%" stop-color="#f4d77f"/>
+                <stop offset="100%" stop-color="#8b6914"/>
+              </radialGradient>
+              <filter id="trophy-glow-home">
+                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            
+            <!-- Glow background -->
+            <ellipse cx="100" cy="120" rx="80" ry="100" fill="url(#trophy-gold-home)" opacity="0.2" filter="url(#trophy-glow-home)"/>
+            
+            <!-- Trophy body -->
+            <g filter="url(#trophy-glow-home)">
+              <!-- The twisted base figures (simplified) -->
+              <path d="M 70 105 Q 70 130, 85 160 L 75 175 Q 100 180, 125 175 L 115 160 Q 130 130, 130 105 Z" 
+                    fill="url(#trophy-gold-home)" stroke="#8b6914" stroke-width="1"/>
+              
+              <!-- Globe top -->
+              <circle cx="100" cy="90" r="32" fill="url(#trophy-globe-home)" stroke="#8b6914" stroke-width="1.5"/>
+              
+              <!-- Globe meridians -->
+              <ellipse cx="100" cy="90" rx="32" ry="14" fill="none" stroke="#8b6914" stroke-width="0.8" opacity="0.6"/>
+              <ellipse cx="100" cy="90" rx="14" ry="32" fill="none" stroke="#8b6914" stroke-width="0.8" opacity="0.4"/>
+              <ellipse cx="100" cy="90" rx="32" ry="32" fill="none" stroke="#8b6914" stroke-width="1" opacity="0.5"/>
+              
+              <!-- Globe highlight -->
+              <ellipse cx="88" cy="78" rx="10" ry="6" fill="#ffffff" opacity="0.4"/>
+              
+              <!-- Base plate -->
+              <rect x="60" y="180" width="80" height="14" rx="2" fill="url(#trophy-gold-home)" stroke="#8b6914" stroke-width="1"/>
+              <rect x="55" y="194" width="90" height="10" rx="2" fill="#8b6914" stroke="#3a2a08" stroke-width="0.5"/>
+              <rect x="50" y="204" width="100" height="6" rx="1" fill="#5a4408"/>
+            </g>
+            
+            <!-- Shine overlay -->
+            <ellipse cx="92" cy="85" rx="15" ry="20" fill="url(#trophy-shine-home)" opacity="0.5"/>
+          </svg>
+        </div>
         <h1 class="hero-title">FriendlyBet</h1>
         <p class="hero-subtitle">הימור חברים על מונדיאל 2026</p>
         <p class="hero-description">חינמי · בלי פרסומות · בלי כסף · קוד פתוח</p>
@@ -1333,7 +1443,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v0.4.0</span>
+      <span class="menu-version">v0.4.1</span>
     </div>
   </div>
 
