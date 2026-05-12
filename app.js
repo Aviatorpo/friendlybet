@@ -1008,7 +1008,8 @@ const bettingState = {
   currentGroupIndex: 0,
   groupedTeams: {},  // {A: [team, team, team, team], B: [...]}
   picks: {},          // {A: ['ENG', 'SWE', 'VIE'], B: [...]}
-  loading: false
+  loading: false,
+  completedFirstCycle: false  // true after user clicks "next" from group L
 };
 
 async function startGroupBetting() {
@@ -1070,6 +1071,10 @@ async function startGroupBetting() {
         bettingState.picks[pick.group_letter].push(pick.team_code);
       });
     }
+    
+    // If user already has picks in most groups, assume they completed first cycle
+    const groupsWithPicks = bettingState.groupOrder.filter(l => (bettingState.picks[l] || []).length > 0).length;
+    bettingState.completedFirstCycle = groupsWithPicks >= 10;
     
     // Determine current group (first unfinished group, or first group)
     bettingState.currentGroupIndex = findFirstIncompleteGroup();
@@ -1140,6 +1145,73 @@ function renderGroupBetting() {
   
   // Update quick navigation
   renderQuickGroupsNav();
+  
+  // Update next button state
+  updateNextButtonState();
+  
+  // Update floating button
+  updateFloatingStatusButton();
+}
+
+function updateNextButtonState() {
+  const currentLetter = getCurrentGroupLetter();
+  const picks = bettingState.picks[currentLetter] || [];
+  const nextBtn = document.getElementById('next-group-btn');
+  const nextLabel = document.getElementById('next-group-letter');
+  const isLastGroup = bettingState.currentGroupIndex === bettingState.groupOrder.length - 1;
+  
+  if (picks.length < 2) {
+    // BLOCKED: less than 2 picks
+    nextBtn.classList.add('btn-disabled-warning');
+    nextBtn.classList.remove('btn-primary');
+    const need = 2 - picks.length;
+    nextBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+      <span class="next-btn-warning-text">בחר עוד ${need} קבוצ${need > 1 ? 'ות' : 'ה'} כדי להמשיך</span>
+    `;
+  } else {
+    // ALLOWED
+    nextBtn.classList.remove('btn-disabled-warning');
+    nextBtn.classList.add('btn-primary');
+    
+    // Special: last group with incomplete total
+    const total = countTotalPicks();
+    if (isLastGroup && total < 32 && total > 0) {
+      // Show "check status" instead of "next group"
+      nextBtn.innerHTML = `
+        <span>סיים את ההימור</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      `;
+    } else {
+      // Normal next
+      nextBtn.innerHTML = `
+        <span>בית <span id="next-group-letter">${bettingState.groupOrder[getNextGroupIndex()]}</span></span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 6 9 12 15 18"></polyline>
+        </svg>
+      `;
+    }
+  }
+}
+
+function updateFloatingStatusButton() {
+  const btn = document.getElementById('floating-status-btn');
+  if (!btn) return;
+  
+  const total = countTotalPicks();
+  
+  // Show only if: completed first cycle AND total < 32
+  if (bettingState.completedFirstCycle && total < 32 && total > 0) {
+    btn.style.display = 'flex';
+    document.getElementById('floating-status-text').textContent = `${total}/32`;
+  } else {
+    btn.style.display = 'none';
+  }
 }
 
 function createTeamCard(team, isSelected) {
@@ -1296,11 +1368,14 @@ function renderQuickGroupsNav() {
     let className = 'group-nav-pill';
     if (idx === bettingState.currentGroupIndex) {
       className += ' current';
-    } else if (picks.length >= 2 && picks.length <= 3) {
-      className += ' completed';
+    } else if (picks.length === 3) {
+      className += ' has-three';  // Green dot
+    } else if (picks.length === 2) {
+      className += ' has-two';    // Orange dot
     } else if (picks.length === 1) {
-      className += ' partial';
+      className += ' partial';    // Yellow dot (warning - shouldn't happen since blocked)
     }
+    // 0 picks = no dot (clean)
     
     btn.className = className;
     btn.textContent = letter;
@@ -1310,19 +1385,116 @@ function renderQuickGroupsNav() {
   });
 }
 
+// ============================================================
+// STATUS MODAL
+// ============================================================
+
+function openStatusModal() {
+  const total = countTotalPicks();
+  const missing = 32 - total;
+  
+  // Update modal content
+  document.getElementById('status-modal-current').textContent = total;
+  document.getElementById('status-modal-missing').textContent = missing > 0 ? missing : 0;
+  
+  if (missing > 0) {
+    document.getElementById('status-modal-title').textContent = 'כמעט סיימת!';
+    document.getElementById('status-modal-subtitle').textContent = 
+      `חסר${missing > 1 ? 'ות' : 'ה'} עוד ${missing} עול${missing > 1 ? 'ות' : 'ה'}`;
+  } else {
+    document.getElementById('status-modal-title').textContent = 'מצוין! 🎉';
+    document.getElementById('status-modal-subtitle').textContent = 'בחרת את כל ה-32 העולות';
+  }
+  
+  // Find groups with only 2 picks (where you can add a third)
+  const expandableGroups = bettingState.groupOrder.filter(letter => {
+    const picks = bettingState.picks[letter] || [];
+    return picks.length === 2;
+  });
+  
+  // Render group buttons
+  const container = document.getElementById('status-modal-groups');
+  container.innerHTML = '';
+  
+  if (expandableGroups.length === 0) {
+    container.innerHTML = '<div style="grid-column: 1 / -1; padding: 12px; color: rgba(255,255,255,0.5); text-align: center; font-size: 12px;">לא נמצאו בתים עם 2 עולות.<br/>תוכל להוסיף בכל בית.</div>';
+  } else {
+    expandableGroups.forEach(letter => {
+      const btn = document.createElement('button');
+      btn.className = 'status-modal-group-btn';
+      btn.textContent = letter;
+      btn.onclick = () => {
+        closeStatusModal();
+        const idx = bettingState.groupOrder.indexOf(letter);
+        goToGroup(idx);
+      };
+      container.appendChild(btn);
+    });
+  }
+  
+  // Show modal
+  document.getElementById('status-modal-overlay').classList.add('active');
+  document.getElementById('status-modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeStatusModal() {
+  document.getElementById('status-modal-overlay').classList.remove('active');
+  document.getElementById('status-modal').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
 function goToGroup(index) {
+  // Allow free navigation via quick nav
   bettingState.currentGroupIndex = index;
   renderGroupBetting();
   window.scrollTo(0, 0);
 }
 
 function goToPreviousGroup() {
+  // Previous is always allowed
   bettingState.currentGroupIndex = getPreviousGroupIndex();
   renderGroupBetting();
   window.scrollTo(0, 0);
 }
 
 function goToNextGroup() {
+  const currentLetter = getCurrentGroupLetter();
+  const picks = bettingState.picks[currentLetter] || [];
+  
+  // BLOCK: cannot proceed if current group has < 2 picks
+  if (picks.length < 2) {
+    showToast(`חייב לבחור לפחות 2 קבוצות בבית ${currentLetter} כדי להמשיך`, 'error');
+    
+    // Visual shake feedback on the next button
+    const btn = document.getElementById('next-group-btn');
+    btn.style.animation = 'shake 0.4s';
+    setTimeout(() => { btn.style.animation = ''; }, 400);
+    
+    return;
+  }
+  
+  // Special case: about to wrap from L back to A
+  const isLastGroup = bettingState.currentGroupIndex === bettingState.groupOrder.length - 1;
+  if (isLastGroup) {
+    const total = countTotalPicks();
+    
+    // Mark that we completed first cycle (for floating button)
+    bettingState.completedFirstCycle = true;
+    
+    if (total === 32) {
+      // All good - finish!
+      finishGroupBetting();
+      return;
+    }
+    
+    if (total < 32) {
+      // Show modal with available groups
+      openStatusModal();
+      return;
+    }
+  }
+  
   bettingState.currentGroupIndex = getNextGroupIndex();
   renderGroupBetting();
   window.scrollTo(0, 0);

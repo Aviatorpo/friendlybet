@@ -926,6 +926,68 @@ function loadTablerFallback() {
       </div>
     </div>
   </div>
+
+  <!-- ============================================================ -->
+  <!-- STATUS MODAL - shown when missing picks                      -->
+  <!-- ============================================================ -->
+  <div id="status-modal-overlay" class="status-modal-overlay" onclick="closeStatusModal()"></div>
+  <div id="status-modal" class="status-modal">
+    <div class="status-modal-content">
+      <button class="status-modal-close" onclick="closeStatusModal()" aria-label="סגור">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      
+      <div class="status-modal-icon">🎯</div>
+      <div class="status-modal-title" id="status-modal-title">כמעט סיימת!</div>
+      <div class="status-modal-subtitle" id="status-modal-subtitle">חסרות עוד 4 עולות</div>
+      
+      <div class="status-modal-summary">
+        <div class="status-summary-item">
+          <div class="status-summary-label">בחרת</div>
+          <div class="status-summary-value gold" id="status-modal-current">28</div>
+        </div>
+        <div class="status-summary-divider"></div>
+        <div class="status-summary-item">
+          <div class="status-summary-label">מתוך</div>
+          <div class="status-summary-value">32</div>
+        </div>
+        <div class="status-summary-divider"></div>
+        <div class="status-summary-item">
+          <div class="status-summary-label">חסר</div>
+          <div class="status-summary-value" style="color: #fb7185;" id="status-modal-missing">4</div>
+        </div>
+      </div>
+
+      <div class="status-modal-section">
+        <div class="status-section-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -3px; margin-left: 4px;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          בתים שאפשר להוסיף בהם עולה שלישית:
+        </div>
+        <div id="status-modal-groups" class="status-modal-groups">
+          <!-- populated by JS -->
+        </div>
+      </div>
+
+      <button class="btn-secondary" onclick="closeStatusModal()" style="margin-top: 16px;">
+        סגור והמשך בעצמי
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- FLOATING STATUS BUTTON                                       -->
+  <!-- ============================================================ -->
+  <button id="floating-status-btn" class="floating-status-btn" onclick="openStatusModal()" style="display: none;">
+    <span class="floating-status-emoji">📊</span>
+    <span class="floating-status-text" id="floating-status-text">28/32</span>
+  </button>
   <div id="menu-overlay" class="menu-overlay" onclick="closeMenu()"></div>
   <div id="menu-sheet" class="menu-sheet">
     <div class="menu-handle"></div>
@@ -1030,7 +1092,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v0.3.0</span>
+      <span class="menu-version">v0.3.1</span>
     </div>
   </div>
 
