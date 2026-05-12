@@ -3033,6 +3033,13 @@ input:disabled + .slider {
   flex-shrink: 0;
 }
 
+/* Hide hint banner on desktop screens */
+@media (min-width: 1024px) {
+  .bracket-hint {
+    display: none;
+  }
+}
+
 .bracket-hint-arrow {
   color: #d4a853;
   font-size: 18px;
