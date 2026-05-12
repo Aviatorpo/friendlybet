@@ -2175,6 +2175,67 @@ function createMatchCard(match) {
   // Header
   const matchLabel = round === 'FINAL' ? 'הגמר 🏆' : `משחק ${match.number}`;
   
+  // Get next match info (if not the final)
+  let nextOpponentHtml = '';
+  if (round !== 'FINAL' && match.nextMatch) {
+    const nextRound = match.nextMatch.split('_')[0];
+    const nextMatch = knockoutState.matches[nextRound]?.find(m => m.id === match.nextMatch);
+    
+    if (nextMatch) {
+      // Find the SIBLING match (the other match that feeds the same next match)
+      const currentMatches = knockoutState.matches[round];
+      const currentIdx = currentMatches.findIndex(m => m.id === match.id);
+      // Sibling is the adjacent match (if I'm at even idx, sibling is idx+1, if odd, idx-1)
+      const siblingIdx = currentIdx % 2 === 0 ? currentIdx + 1 : currentIdx - 1;
+      const sibling = currentMatches[siblingIdx];
+      
+      if (sibling && sibling.team1 && sibling.team2) {
+        // We know both possible teams!
+        const sibT1 = knockoutState.allTeams[sibling.team1];
+        const sibT2 = knockoutState.allTeams[sibling.team2];
+        const sibPick = knockoutState.picks[sibling.id];
+        
+        if (sibPick) {
+          // User already picked from sibling match
+          const winner = knockoutState.allTeams[sibPick];
+          nextOpponentHtml = `
+            <div class="ko-next-info">
+              <span class="ko-next-arrow">↓</span>
+              <span class="ko-next-text">
+                המנצח יתמודד מול <strong>${winner.name_he}</strong>
+              </span>
+            </div>
+          `;
+        } else {
+          // Both teams known, but no pick yet in sibling
+          nextOpponentHtml = `
+            <div class="ko-next-info">
+              <span class="ko-next-arrow">↓</span>
+              <span class="ko-next-text">
+                המנצח יתמודד מול <strong>${sibT1.name_he}</strong> או <strong>${sibT2.name_he}</strong>
+              </span>
+            </div>
+          `;
+        }
+      } else if (sibling) {
+        // Sibling not ready yet
+        nextOpponentHtml = `
+          <div class="ko-next-info ko-next-info-muted">
+            <span class="ko-next-arrow">↓</span>
+            <span class="ko-next-text">המנצח יתמודד מול הזוכה ממשחק ${sibling.number}</span>
+          </div>
+        `;
+      }
+    }
+  } else if (round === 'FINAL') {
+    nextOpponentHtml = `
+      <div class="ko-next-info ko-next-info-final">
+        <span class="ko-next-arrow">🏆</span>
+        <span class="ko-next-text"><strong>אלוף המונדיאל!</strong></span>
+      </div>
+    `;
+  }
+  
   card.innerHTML = `
     <div class="ko-match-header">
       <span class="ko-match-number">${matchLabel}</span>
@@ -2186,10 +2247,11 @@ function createMatchCard(match) {
       ${createTeamButton(match, team2Data, match.team2, userPick === match.team2)}
     </div>
     <div class="ko-match-points">
-      <span>שווה</span>
+      <span>משווה</span>
       <span class="ko-match-points-value">${points} נק'</span>
-      <span>אם תניחש נכון</span>
+      <span>אם תנחש נכון</span>
     </div>
+    ${nextOpponentHtml}
   `;
   
   // Bind clicks
@@ -2470,6 +2532,171 @@ function getTeamWinProbability(team) {
     case 'underdog':  return 0.25;  // Weak teams rarely advance
     default: return 0.4;
   }
+}
+
+// ============================================================
+// BRACKET VIEW
+// ============================================================
+
+function openBracketView() {
+  renderBracketView();
+  showScreen('bracket-screen');
+}
+
+function closeBracketView() {
+  showScreen('knockout-screen');
+}
+
+function renderBracketView() {
+  const container = document.getElementById('bracket-container');
+  container.innerHTML = '';
+  
+  const rounds = ['R32', 'R16', 'QF', 'SF', 'FINAL'];
+  
+  rounds.forEach((round, idx) => {
+    const matches = knockoutState.matches[round] || [];
+    const info = ROUND_INFO[round];
+    
+    // Round container
+    const roundEl = document.createElement('div');
+    roundEl.className = 'bracket-round';
+    
+    if (round === 'FINAL') {
+      // Special rendering for final
+      const final = matches[0];
+      const winner = final ? knockoutState.picks[final.id] : null;
+      const winnerData = winner ? knockoutState.allTeams[winner] : null;
+      
+      roundEl.innerHTML = `
+        <div class="bracket-final-trophy">🏆</div>
+        <div class="bracket-final-label">הגמר</div>
+        ${createBracketMatch(final, true)}
+        <div class="bracket-champion">
+          <div class="bracket-champion-label">אלוף המונדיאל לדעתך</div>
+          <div class="bracket-champion-name ${winnerData ? '' : 'tbd'}">
+            ${winnerData ? winnerData.name_he : 'להיקבע'}
+          </div>
+        </div>
+      `;
+    } else {
+      const completed = matches.filter(m => knockoutState.picks[m.id]).length;
+      const total = info.total;
+      
+      // Round header
+      const headerHtml = `
+        <div class="bracket-round-header">
+          <div class="bracket-round-title">
+            ${info.name}
+            <span style="color: rgba(255,255,255,0.4); font-size: 11px;">(${completed}/${total})</span>
+          </div>
+          <span class="bracket-round-points">${info.points} נק' לכל ניחוש</span>
+        </div>
+      `;
+      
+      // Matches
+      const matchesHtml = matches.map(m => createBracketMatch(m, false)).join('');
+      
+      roundEl.innerHTML = headerHtml + `<div class="bracket-matches">${matchesHtml}</div>`;
+    }
+    
+    container.appendChild(roundEl);
+    
+    // Add divider between rounds (except after final)
+    if (round !== 'FINAL') {
+      const divider = document.createElement('div');
+      divider.className = 'bracket-divider';
+      divider.innerHTML = `
+        <div class="bracket-divider-line"></div>
+        <div class="bracket-divider-text">↓ עולה ל${ROUND_INFO[rounds[idx + 1]].name} ↓</div>
+        <div class="bracket-divider-line"></div>
+      `;
+      container.appendChild(divider);
+    }
+  });
+  
+  // Bind click handlers to bracket matches
+  container.querySelectorAll('.bracket-match').forEach(el => {
+    el.addEventListener('click', function() {
+      const matchId = this.getAttribute('data-match-id');
+      if (matchId) {
+        jumpToMatch(matchId);
+      }
+    });
+  });
+}
+
+function createBracketMatch(match, isFinal) {
+  if (!match) return '';
+  
+  const userPick = knockoutState.picks[match.id];
+  const team1Data = match.team1 ? knockoutState.allTeams[match.team1] : null;
+  const team2Data = match.team2 ? knockoutState.allTeams[match.team2] : null;
+  
+  const team1Flag = match.team1 ? getCountryFlag(match.team1) : '⏳';
+  const team2Flag = match.team2 ? getCountryFlag(match.team2) : '⏳';
+  
+  // Determine row classes
+  let team1Class = 'neutral';
+  let team2Class = 'neutral';
+  
+  if (!team1Data) team1Class = 'tbd';
+  if (!team2Data) team2Class = 'tbd';
+  
+  if (userPick) {
+    if (userPick === match.team1) {
+      team1Class = 'winner';
+      team2Class = team2Data ? 'loser' : 'tbd';
+    } else if (userPick === match.team2) {
+      team2Class = 'winner';
+      team1Class = team1Data ? 'loser' : 'tbd';
+    }
+  }
+  
+  const matchClass = userPick ? 'completed' : (isFinal ? 'final-match' : '');
+  const statusIcon = userPick ? '✓' : (team1Data && team2Data ? '?' : '⏳');
+  const statusColor = userPick ? '#4ade80' : (team1Data && team2Data ? '#fbbf24' : 'rgba(255,255,255,0.3)');
+  
+  return `
+    <div class="bracket-match ${matchClass}" data-match-id="${match.id}">
+      <div class="bracket-match-num">${match.number}</div>
+      <div class="bracket-match-teams">
+        <div class="bracket-team-row ${team1Class}">
+          <span class="bracket-team-flag">${team1Flag}</span>
+          <span class="bracket-team-name">${team1Data ? team1Data.name_he : 'להיקבע'}</span>
+        </div>
+        <div class="bracket-team-row ${team2Class}">
+          <span class="bracket-team-flag">${team2Flag}</span>
+          <span class="bracket-team-name">${team2Data ? team2Data.name_he : 'להיקבע'}</span>
+        </div>
+      </div>
+      <div class="bracket-match-status" style="color: ${statusColor};">${statusIcon}</div>
+    </div>
+  `;
+}
+
+function jumpToMatch(matchId) {
+  // Parse round from match id (e.g., "R16_M3" → "R16")
+  const round = matchId.split('_')[0];
+  
+  // Switch to that round and close bracket view
+  knockoutState.currentRound = round;
+  renderKnockout();
+  showScreen('knockout-screen');
+  
+  // Scroll to that match after a brief delay
+  setTimeout(() => {
+    const matchEls = document.querySelectorAll('.ko-match-card');
+    const matchIndex = knockoutState.matches[round].findIndex(m => m.id === matchId);
+    if (matchEls[matchIndex]) {
+      matchEls[matchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Highlight briefly
+      matchEls[matchIndex].style.transition = 'box-shadow 0.3s';
+      matchEls[matchIndex].style.boxShadow = '0 0 0 2px #d4a853';
+      setTimeout(() => {
+        matchEls[matchIndex].style.boxShadow = '';
+      }, 1500);
+    }
+  }, 100);
 }
 
 function renderStagesBreakdown(stages) {

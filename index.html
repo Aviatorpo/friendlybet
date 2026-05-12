@@ -943,12 +943,26 @@ function loadTablerFallback() {
         <div class="topbar-title-small" id="ko-round-title">שלב הנוקאאוט</div>
         <div class="topbar-step" id="ko-round-step">סבב 32</div>
       </div>
-      <button class="btn-icon" onclick="openSimulator()" aria-label="סימולטור">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 3v18h18"></path>
-          <path d="M7 14l4 -4l4 4l6 -6"></path>
-        </svg>
-      </button>
+      <div class="ko-topbar-actions">
+        <button class="btn-icon" onclick="openBracketView()" aria-label="תצוגת הגרלה">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6h6"></path>
+            <path d="M14 6h6"></path>
+            <path d="M4 12h6"></path>
+            <path d="M14 12h6"></path>
+            <path d="M4 18h6"></path>
+            <path d="M14 18h6"></path>
+            <path d="M10 6c0 2 2 3 2 6s-2 4-2 6"></path>
+            <path d="M14 6c0 2 -2 3 -2 6s2 4 2 6"></path>
+          </svg>
+        </button>
+        <button class="btn-icon" onclick="openSimulator()" aria-label="סימולטור">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18"></path>
+            <path d="M7 14l4 -4l4 4l6 -6"></path>
+          </svg>
+        </button>
+      </div>
     </div>
 
     <!-- Round tabs -->
@@ -1007,6 +1021,29 @@ function loadTablerFallback() {
         </svg>
         <span>סיים את הימור הנוקאאוט</span>
       </button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- BRACKET VIEW SCREEN                                          -->
+  <!-- ============================================================ -->
+  <div id="bracket-screen" class="screen">
+    <div class="topbar">
+      <button class="btn-icon" onclick="closeBracketView()" aria-label="סגור">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="topbar-center">
+        <div class="topbar-title-small">תצוגת ההגרלה</div>
+        <div class="topbar-step">31 משחקים</div>
+      </div>
+      <div style="width: 44px;"></div>
+    </div>
+
+    <div class="bracket-container" id="bracket-container">
+      <!-- Populated by JS -->
     </div>
   </div>
 
@@ -1269,7 +1306,7 @@ function loadTablerFallback() {
         </div>
         <div class="help-item">
           <div class="help-q">3. ניקוד</div>
-          <div class="help-a">תקבל נקודה (או יותר עם מכפילים) על כל קבוצה שניחשת נכון שעולה לשלב הבא.</div>
+          <div class="help-a">תקבל נקודה (או יותר עם מכפילים) על כל קבוצה שניחשת נכון שתעלה לשלב הבא.</div>
         </div>
       </div>
 
@@ -1486,7 +1523,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v0.5.0</span>
+      <span class="menu-version">v0.5.1</span>
     </div>
   </div>
 
