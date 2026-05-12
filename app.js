@@ -2485,168 +2485,174 @@ function getTeamWinProbability(team) {
 }
 
 // ============================================================
-// BRACKET VIEW
+// BRACKET VIEW - Horizontal scrollable tree
 // ============================================================
+
+const bracketViewState = {
+  isZoomedIn: false  // false = mini view (default), true = full view
+};
 
 function openBracketView() {
   renderBracketView();
   showScreen('bracket-screen');
+  
+  // Scroll to current round after a brief delay
+  setTimeout(() => {
+    const currentRound = knockoutState.currentRound || 'R32';
+    jumpToRound(currentRound);
+  }, 150);
 }
 
 function closeBracketView() {
   showScreen('knockout-screen');
 }
 
+function toggleBracketZoom() {
+  bracketViewState.isZoomedIn = !bracketViewState.isZoomedIn;
+  
+  const tree = document.getElementById('bracket-tree');
+  if (tree) {
+    tree.classList.toggle('zoomed-in', bracketViewState.isZoomedIn);
+  }
+  
+  // Update icon - show different state
+  const icon = document.getElementById('bracket-zoom-icon');
+  if (icon) {
+    if (bracketViewState.isZoomedIn) {
+      // Now in zoomed-in mode - show "zoom out" icon (minus)
+      icon.innerHTML = `
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <line x1="8" y1="11" x2="14" y2="11"></line>
+      `;
+    } else {
+      // In mini mode - show "zoom in" icon (plus)
+      icon.innerHTML = `
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        <line x1="11" y1="8" x2="11" y2="14"></line>
+        <line x1="8" y1="11" x2="14" y2="11"></line>
+      `;
+    }
+  }
+  
+  // Re-render to recalc connectors
+  setTimeout(() => renderBracketConnectors(), 50);
+}
+
 function renderBracketView() {
-  const container = document.getElementById('bracket-container');
-  container.innerHTML = '';
+  const tree = document.getElementById('bracket-tree');
+  if (!tree) return;
   
-  // Build bracket structure
-  // Top half: R32 matches 1-8 → R16 1-4 → QF 1-2 → SF 1
-  // Bottom half: R32 matches 9-16 → R16 5-8 → QF 3-4 → SF 2
-  // Final: SF1 vs SF2 winner
+  tree.innerHTML = '';
+  tree.classList.toggle('zoomed-in', bracketViewState.isZoomedIn);
   
-  // Section header explanation
-  const intro = document.createElement('div');
-  intro.className = 'bracket-intro';
-  intro.innerHTML = `
-    <div class="bracket-intro-title">🌳 עץ הטורניר המלא</div>
-    <div class="bracket-intro-text">לחץ על כל משחק כדי לבחור או לערוך מנצח</div>
-    <div class="bracket-legend">
-      <span class="bracket-legend-item"><span class="bracket-legend-dot done"></span> נבחר</span>
-      <span class="bracket-legend-item"><span class="bracket-legend-dot pending"></span> ממתין</span>
-      <span class="bracket-legend-item"><span class="bracket-legend-dot tbd"></span> טרם בשל</span>
-    </div>
-  `;
-  container.appendChild(intro);
+  // Update progress text
+  let totalPicked = 0;
+  Object.keys(ROUND_INFO).forEach(round => {
+    totalPicked += knockoutState.matches[round].filter(m => knockoutState.picks[m.id]).length;
+  });
+  const progressEl = document.getElementById('bracket-progress-text');
+  if (progressEl) progressEl.textContent = `${totalPicked}/31 משחקים`;
   
-  // Top half (matches 1-8 of R32)
-  const topHalf = document.createElement('div');
-  topHalf.className = 'bracket-half';
-  topHalf.innerHTML = `
-    <div class="bracket-half-label">
-      <span class="bracket-half-marker">▼</span>
-      החצי העליון של ההגרלה
-    </div>
-  `;
-  topHalf.appendChild(renderBracketHalf('top'));
-  container.appendChild(topHalf);
+  // Update jump tabs with status
+  document.querySelectorAll('.bracket-jump-tab').forEach(tab => {
+    const round = tab.dataset.round;
+    const matches = knockoutState.matches[round] || [];
+    const picked = matches.filter(m => knockoutState.picks[m.id]).length;
+    tab.classList.toggle('has-picks', picked > 0);
+  });
   
-  // Final section (in middle visually)
-  const finalSection = document.createElement('div');
-  finalSection.className = 'bracket-final-section';
-  finalSection.appendChild(renderFinalSection());
-  container.appendChild(finalSection);
+  // Build columns in RTL order:
+  // Right-to-left visual flow: R32 → R16 → QF → SF → FINAL → SF → QF → R16 → R32
+  // But since the container is RTL, we just need: R32, R16, QF, SF, FINAL
+  // The user reads right-to-left so R32 (the first column we add) appears on the right
   
-  // Bottom half (matches 9-16 of R32)
-  const bottomHalf = document.createElement('div');
-  bottomHalf.className = 'bracket-half';
-  bottomHalf.innerHTML = `
-    <div class="bracket-half-label">
-      <span class="bracket-half-marker">▲</span>
-      החצי התחתון של ההגרלה
-    </div>
-  `;
-  bottomHalf.appendChild(renderBracketHalf('bottom'));
-  container.appendChild(bottomHalf);
+  // RIGHT SIDE (top half of bracket): R32 1-8, R16 1-4, QF 1-2, SF 1
+  // LEFT SIDE (bottom half): R32 9-16, R16 5-8, QF 3-4, SF 2
+  // FINAL in middle
   
-  // Bind clicks
-  container.querySelectorAll('.bracket-match-mini').forEach(el => {
+  // Build columns
+  const rounds = [
+    { id: 'R32', label: 'סבב 32', side: 'right', start: 0, end: 8 },
+    { id: 'R16', label: 'שמינית', side: 'right', start: 0, end: 4 },
+    { id: 'QF',  label: 'רבע',    side: 'right', start: 0, end: 2 },
+    { id: 'SF',  label: 'חצי',    side: 'right', start: 0, end: 1 },
+    { id: 'FINAL', label: 'גמר',  side: 'center', start: 0, end: 1 },
+    { id: 'SF',  label: 'חצי',    side: 'left', start: 1, end: 2 },
+    { id: 'QF',  label: 'רבע',    side: 'left', start: 2, end: 4 },
+    { id: 'R16', label: 'שמינית', side: 'left', start: 4, end: 8 },
+    { id: 'R32', label: 'סבב 32', side: 'left', start: 8, end: 16 }
+  ];
+  
+  rounds.forEach(roundDef => {
+    const col = document.createElement('div');
+    col.className = 'bracket-column';
+    col.setAttribute('data-round', roundDef.id);
+    col.setAttribute('data-side', roundDef.side);
+    
+    // Round label
+    const label = document.createElement('div');
+    label.className = 'bracket-round-label';
+    if (roundDef.id === 'FINAL') {
+      label.innerHTML = '🏆 הגמר';
+    } else {
+      label.textContent = roundDef.label;
+    }
+    col.appendChild(label);
+    
+    // Get matches for this column
+    const matches = knockoutState.matches[roundDef.id].slice(roundDef.start, roundDef.end);
+    
+    // Special handling for FINAL column - center the trophy
+    if (roundDef.id === 'FINAL') {
+      const trophyIcon = document.createElement('div');
+      trophyIcon.className = 'bracket-final-trophy-icon';
+      trophyIcon.textContent = '🏆';
+      col.appendChild(trophyIcon);
+    }
+    
+    matches.forEach(match => {
+      const card = createBracketCard(match, roundDef.id === 'FINAL');
+      col.appendChild(card);
+    });
+    
+    // For FINAL - add champion row below the match
+    if (roundDef.id === 'FINAL') {
+      const final = knockoutState.matches.FINAL[0];
+      const winner = final ? knockoutState.picks[final.id] : null;
+      const winnerData = winner ? knockoutState.allTeams[winner] : null;
+      
+      const champion = document.createElement('div');
+      champion.className = 'bracket-champion-row';
+      champion.innerHTML = `
+        <div class="bracket-champion-row-label">🏆 אלוף 🏆</div>
+        <div class="bracket-champion-row-name ${winnerData ? '' : 'tbd'}">
+          ${winnerData ? `${getCountryFlag(winner)} ${winnerData.name_he}` : 'להיקבע'}
+        </div>
+      `;
+      col.appendChild(champion);
+    }
+    
+    tree.appendChild(col);
+  });
+  
+  // Bind click handlers
+  tree.querySelectorAll('.bracket-card[data-match-id]').forEach(el => {
     el.addEventListener('click', function() {
       const matchId = this.getAttribute('data-match-id');
-      if (matchId) jumpToMatch(matchId);
+      if (matchId && !this.classList.contains('tbd')) {
+        jumpToMatch(matchId);
+      }
     });
   });
+  
+  // Note: Connector lines could be added with SVG but the spatial layout 
+  // already conveys flow well. The cards visually align by round.
 }
 
-function renderBracketHalf(half) {
-  const container = document.createElement('div');
-  container.className = 'bracket-half-content';
-  
-  // R32 matches: top half = 1-8, bottom half = 9-16
-  const r32Start = half === 'top' ? 0 : 8;
-  const r32End = half === 'top' ? 8 : 16;
-  
-  // R16 matches: top half = 1-4, bottom half = 5-8
-  const r16Start = half === 'top' ? 0 : 4;
-  const r16End = half === 'top' ? 4 : 8;
-  
-  // QF: top half = 1-2, bottom half = 3-4
-  const qfStart = half === 'top' ? 0 : 2;
-  const qfEnd = half === 'top' ? 2 : 4;
-  
-  // SF: top half = 1, bottom half = 2
-  const sfIdx = half === 'top' ? 0 : 1;
-  
-  // Build R32 → R16 pairs
-  const r32Matches = knockoutState.matches.R32.slice(r32Start, r32End);
-  const r16Matches = knockoutState.matches.R16.slice(r16Start, r16End);
-  const qfMatches = knockoutState.matches.QF.slice(qfStart, qfEnd);
-  const sfMatch = knockoutState.matches.SF[sfIdx];
-  
-  // Render in groups: each R16 has 2 R32 matches feeding it
-  // Each QF has 2 R16 matches feeding it (= 4 R32 matches)
-  // SF has 2 QF matches feeding it (= 8 R32 matches = full half)
-  
-  // We render 4 "quarters" per half (each quarter = 2 R32 + 1 R16)
-  // Actually let's render 2 quarter-groups per half (each = 4 R32 + 2 R16 + 1 QF)
-  
-  // Build SF level first (innermost)
-  const sfRow = document.createElement('div');
-  sfRow.className = 'bracket-sf-row';
-  sfRow.appendChild(createMiniMatch(sfMatch, 'sf'));
-  
-  // Build QF level
-  const qfRow = document.createElement('div');
-  qfRow.className = 'bracket-qf-row';
-  qfMatches.forEach(qf => {
-    qfRow.appendChild(createMiniMatch(qf, 'qf'));
-  });
-  
-  // Build R16 level
-  const r16Row = document.createElement('div');
-  r16Row.className = 'bracket-r16-row';
-  r16Matches.forEach(r16 => {
-    r16Row.appendChild(createMiniMatch(r16, 'r16'));
-  });
-  
-  // Build R32 level
-  const r32Row = document.createElement('div');
-  r32Row.className = 'bracket-r32-row';
-  r32Matches.forEach(r32 => {
-    r32Row.appendChild(createMiniMatch(r32, 'r32'));
-  });
-  
-  // Arrange: R32 → R16 → QF → SF
-  container.appendChild(r32Row);
-  container.appendChild(createBracketArrow('R32', 'R16'));
-  container.appendChild(r16Row);
-  container.appendChild(createBracketArrow('R16', 'QF'));
-  container.appendChild(qfRow);
-  container.appendChild(createBracketArrow('QF', 'SF'));
-  container.appendChild(sfRow);
-  
-  return container;
-}
-
-function createBracketArrow(fromRound, toRound) {
-  const arrow = document.createElement('div');
-  arrow.className = 'bracket-flow-arrow';
-  arrow.innerHTML = `
-    <span class="bracket-flow-line"></span>
-    <span class="bracket-flow-text">${ROUND_INFO[fromRound].name} → ${ROUND_INFO[toRound].name}</span>
-    <span class="bracket-flow-line"></span>
-  `;
-  return arrow;
-}
-
-function createMiniMatch(match, size) {
-  if (!match) {
-    const el = document.createElement('div');
-    el.className = `bracket-match-mini bracket-match-mini-${size} bracket-match-empty`;
-    el.textContent = '—';
-    return el;
-  }
+function createBracketCard(match, isFinal) {
+  if (!match) return document.createElement('div');
   
   const userPick = knockoutState.picks[match.id];
   const team1Data = match.team1 ? knockoutState.allTeams[match.team1] : null;
@@ -2669,77 +2675,59 @@ function createMiniMatch(match, size) {
     }
   }
   
-  // Status class for the match container
+  // Status class
   let statusClass;
   if (userPick) statusClass = 'done';
   else if (team1Data && team2Data) statusClass = 'pending';
   else statusClass = 'tbd';
   
-  const el = document.createElement('div');
-  el.className = `bracket-match-mini bracket-match-mini-${size} bracket-${statusClass}`;
-  el.setAttribute('data-match-id', match.id);
+  const card = document.createElement('div');
+  card.className = `bracket-card bracket-${statusClass}${isFinal ? ' final-card' : ''}`;
+  card.setAttribute('data-match-id', match.id);
   
-  // Match number label
-  const matchNum = match.round === 'FINAL' ? '🏆' : `#${match.number}`;
+  // Use shorter team name in mini mode
+  const team1Name = team1Data ? team1Data.name_he : 'TBD';
+  const team2Name = team2Data ? team2Data.name_he : 'TBD';
   
-  el.innerHTML = `
-    <div class="bracket-mini-num">${matchNum}</div>
-    <div class="bracket-mini-teams">
-      <div class="bracket-mini-team ${team1Class}">
-        <span class="bracket-mini-flag">${team1Flag}</span>
-        <span class="bracket-mini-name">${team1Data ? team1Data.name_he : 'TBD'}</span>
-      </div>
-      <div class="bracket-mini-team ${team2Class}">
-        <span class="bracket-mini-flag">${team2Flag}</span>
-        <span class="bracket-mini-name">${team2Data ? team2Data.name_he : 'TBD'}</span>
-      </div>
+  card.innerHTML = `
+    <div class="bracket-card-num">#${match.number}</div>
+    <div class="bracket-card-team ${team1Class}">
+      <span class="bracket-card-flag">${team1Flag}</span>
+      <span class="bracket-card-name">${team1Name}</span>
+    </div>
+    <div class="bracket-card-team ${team2Class}">
+      <span class="bracket-card-flag">${team2Flag}</span>
+      <span class="bracket-card-name">${team2Name}</span>
     </div>
   `;
   
-  return el;
+  return card;
 }
 
-function renderFinalSection() {
-  const container = document.createElement('div');
-  container.className = 'bracket-final-container';
+function jumpToRound(round) {
+  const container = document.getElementById('bracket-scroll-container');
+  if (!container) return;
   
-  const final = knockoutState.matches.FINAL[0];
-  const winner = final ? knockoutState.picks[final.id] : null;
-  const winnerData = winner ? knockoutState.allTeams[winner] : null;
+  // Find the first column for this round
+  // For RTL: R32 is on the right, FINAL is in center
+  // We want to scroll to the column
   
-  // Two SF feeders
-  const sf1 = knockoutState.matches.SF[0];
-  const sf2 = knockoutState.matches.SF[1];
-  const sf1Winner = sf1 ? knockoutState.picks[sf1.id] : null;
-  const sf2Winner = sf2 ? knockoutState.picks[sf2.id] : null;
+  const columns = container.querySelectorAll(`.bracket-column[data-round="${round}"]`);
+  if (columns.length === 0) return;
   
-  container.innerHTML = `
-    <div class="bracket-final-trophy">🏆</div>
-    <div class="bracket-final-title">הגמר</div>
-  `;
+  // Use the first matching column
+  const targetCol = columns[0];
+  const containerRect = container.getBoundingClientRect();
+  const targetRect = targetCol.getBoundingClientRect();
   
-  // The Final match itself
-  const finalEl = createMiniMatch(final, 'final');
-  container.appendChild(finalEl);
+  // Calculate scroll position - center the target column
+  const currentScroll = container.scrollLeft;
+  const targetScroll = currentScroll + (targetRect.left - containerRect.left) - (containerRect.width / 2) + (targetRect.width / 2);
   
-  // Champion declaration
-  const champion = document.createElement('div');
-  champion.className = 'bracket-champion-box';
-  champion.innerHTML = `
-    <div class="bracket-champion-label">🏆 אלוף המונדיאל לדעתך 🏆</div>
-    <div class="bracket-champion-name ${winnerData ? '' : 'tbd'}">
-      ${winnerData ? `${getCountryFlag(winner)} ${winnerData.name_he}` : 'להיקבע'}
-    </div>
-  `;
-  container.appendChild(champion);
-  
-  // Bind click for the final match
-  finalEl.addEventListener('click', function() {
-    const matchId = this.getAttribute('data-match-id');
-    if (matchId) jumpToMatch(matchId);
+  container.scrollTo({
+    left: targetScroll,
+    behavior: 'smooth'
   });
-  
-  return container;
 }
 
 function jumpToMatch(matchId) {
@@ -2765,6 +2753,12 @@ function jumpToMatch(matchId) {
       }, 1500);
     }
   }, 100);
+}
+
+// Placeholder for connectors (could be added later as SVG enhancement)
+function renderBracketConnectors() {
+  // Future: draw SVG lines between matches showing the bracket flow
+  // For now, the spatial layout itself conveys the structure
 }
 
 function renderStagesBreakdown(stages) {

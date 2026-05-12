@@ -2955,22 +2955,421 @@ input:disabled + .slider {
 }
 
 /* ============================================================ */
-/* Bracket View Screen - Visual Tree Structure                  */
+/* Bracket View - Horizontal Scrollable Tree                    */
 /* ============================================================ */
 
-.bracket-container {
-  padding: 16px 12px 80px;
-  background: linear-gradient(180deg, #0a1628 0%, #0d1a30 100%);
-  min-height: 100vh;
+/* Bracket screen breaks out of the 480px app container */
+#bracket-screen {
+  /* When active, full width regardless of app max-width */
 }
 
-.bracket-intro {
+#bracket-screen.active {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  background: #0a1628;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Topbar inside bracket should be full width */
+#bracket-screen .topbar {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Quick jump tabs */
+.bracket-jump-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 0.5px solid rgba(212, 168, 83, 0.15);
+  flex-shrink: 0;
+}
+
+.bracket-jump-tab {
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 7px 4px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: 'Heebo', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.bracket-jump-tab:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.bracket-jump-tab.has-picks {
+  border-color: rgba(74, 222, 128, 0.3);
+  color: #4ade80;
+}
+
+.bracket-jump-tab.active {
+  background: #d4a853;
+  color: #0a1628;
+  border-color: #d4a853;
+  font-weight: 600;
+}
+
+/* Hint banner */
+.bracket-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: linear-gradient(90deg, rgba(168, 85, 247, 0.15) 0%, rgba(168, 85, 247, 0.05) 50%, rgba(168, 85, 247, 0.15) 100%);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  border-bottom: 0.5px solid rgba(168, 85, 247, 0.2);
+  flex-shrink: 0;
+}
+
+.bracket-hint-arrow {
+  color: #d4a853;
+  font-size: 18px;
+  font-weight: 700;
+  animation: arrowBounce 1.5s ease-in-out infinite;
+}
+
+.bracket-hint-arrow:first-child {
+  animation-delay: 0s;
+}
+
+.bracket-hint-arrow:last-child {
+  animation-delay: 0.5s;
+}
+
+@keyframes arrowBounce {
+  0%, 100% { transform: translateX(0); opacity: 0.6; }
+  50% { transform: translateX(4px); opacity: 1; }
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+/* Scroll container - this is what the user swipes */
+.bracket-scroll-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  flex: 1;
+  background: linear-gradient(180deg, #0a1628 0%, #0d1a30 100%);
+  position: relative;
+  width: 100%;
+}
+
+/* Visual scroll indicators on edges */
+.bracket-scroll-container::before,
+.bracket-scroll-container::after {
+  content: '';
+  position: sticky;
+  top: 50%;
+  width: 30px;
+  height: 60px;
+  background: linear-gradient(90deg, rgba(212, 168, 83, 0.3), transparent);
+  pointer-events: none;
+  z-index: 10;
+  border-radius: 4px;
+}
+
+/* Custom scrollbar */
+.bracket-scroll-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.bracket-scroll-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.bracket-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(212, 168, 83, 0.5);
+  border-radius: 4px;
+}
+
+.bracket-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 168, 83, 0.7);
+}
+
+/* Bracket tree - horizontal layout */
+.bracket-tree {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  padding: 16px 12px;
+  gap: 8px;
+  min-height: 1200px;
+  width: max-content;
+  position: relative;
+  direction: ltr; /* Force LTR for proper horizontal scroll */
+}
+
+.bracket-tree.zoomed-in {
+  min-height: 1800px;
+  gap: 12px;
+}
+
+/* Each column = one round */
+.bracket-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 6px;
+  position: relative;
+  padding: 8px 4px;
+  flex-shrink: 0;
+}
+
+/* Round label - sticky at top of column */
+.bracket-round-label {
   text-align: center;
-  padding: 16px;
-  margin-bottom: 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  font-size: 10px;
+  font-weight: 700;
+  color: #d4a853;
+  letter-spacing: 1px;
+  padding: 6px 8px;
+  background: linear-gradient(180deg, rgba(212, 168, 83, 0.2), rgba(212, 168, 83, 0.05));
+  border: 0.5px solid rgba(212, 168, 83, 0.3);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  white-space: nowrap;
+}
+
+/* Column widths - mini mode (default) */
+.bracket-tree:not(.zoomed-in) .bracket-column[data-round="R32"] { width: 130px; }
+.bracket-tree:not(.zoomed-in) .bracket-column[data-round="R16"] { width: 130px; }
+.bracket-tree:not(.zoomed-in) .bracket-column[data-round="QF"]  { width: 130px; }
+.bracket-tree:not(.zoomed-in) .bracket-column[data-round="SF"]  { width: 130px; }
+.bracket-tree:not(.zoomed-in) .bracket-column[data-round="FINAL"] { width: 150px; }
+
+/* Column widths - zoomed-in mode */
+.bracket-tree.zoomed-in .bracket-column[data-round="R32"] { width: 180px; }
+.bracket-tree.zoomed-in .bracket-column[data-round="R16"] { width: 180px; }
+.bracket-tree.zoomed-in .bracket-column[data-round="QF"]  { width: 180px; }
+.bracket-tree.zoomed-in .bracket-column[data-round="SF"]  { width: 180px; }
+.bracket-tree.zoomed-in .bracket-column[data-round="FINAL"] { width: 200px; }
+
+/* Match card in bracket */
+.bracket-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 10px;
+  position: relative;
+  min-height: 50px;
+}
+
+.bracket-tree.zoomed-in .bracket-card {
+  padding: 8px 10px;
+  font-size: 12px;
+  min-height: 64px;
+  border-radius: 8px;
+}
+
+.bracket-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(212, 168, 83, 0.3);
+}
+
+.bracket-card.done {
+  background: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.bracket-card.pending {
+  background: rgba(251, 191, 36, 0.06);
+  border-color: rgba(251, 191, 36, 0.25);
+}
+
+.bracket-card.tbd {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.bracket-card.tbd:hover {
+  transform: none;
+}
+
+.bracket-card.final-card {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.25) 0%, rgba(212, 168, 83, 0.05) 100%);
+  border: 1px solid #d4a853;
+  min-height: 80px;
+}
+
+.bracket-tree.zoomed-in .bracket-card.final-card {
+  min-height: 100px;
+}
+
+/* Card team rows */
+.bracket-card-team {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 3px;
+  border-radius: 3px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.bracket-card-flag {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.bracket-tree.zoomed-in .bracket-card-flag {
+  font-size: 14px;
+}
+
+.bracket-card-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  font-size: 10px;
+}
+
+.bracket-tree.zoomed-in .bracket-card-name {
+  font-size: 12px;
+}
+
+.bracket-card-team.winner {
+  background: rgba(212, 168, 83, 0.2);
+}
+
+.bracket-card-team.winner .bracket-card-name {
+  color: #d4a853;
+  font-weight: 600;
+}
+
+.bracket-card-team.loser .bracket-card-name {
+  color: rgba(255, 255, 255, 0.3);
+  text-decoration: line-through;
+}
+
+.bracket-card-team.neutral .bracket-card-name {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.bracket-card-team.tbd .bracket-card-name {
+  color: rgba(255, 255, 255, 0.3);
+  font-style: italic;
+  font-size: 9px;
+}
+
+.bracket-tree.zoomed-in .bracket-card-team.tbd .bracket-card-name {
+  font-size: 11px;
+}
+
+/* Match number badge */
+.bracket-card-num {
+  position: absolute;
+  top: -7px;
+  left: 6px;
+  background: #0a1628;
+  border: 0.5px solid rgba(212, 168, 83, 0.5);
+  color: #d4a853;
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  font-family: monospace;
+  font-weight: 700;
+}
+
+/* Final column - special treatment */
+.bracket-column[data-round="FINAL"] {
+  justify-content: center;
+}
+
+.bracket-final-trophy-icon {
+  font-size: 36px;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.bracket-tree.zoomed-in .bracket-final-trophy-icon {
+  font-size: 48px;
+}
+
+/* Champion display */
+.bracket-champion-row {
+  margin-top: 16px;
+  padding: 12px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
+  border: 1px solid rgba(212, 168, 83, 0.5);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.bracket-champion-row-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.bracket-champion-row-name {
+  font-size: 14px;
+  color: #d4a853;
+  font-weight: 700;
+}
+
+.bracket-tree.zoomed-in .bracket-champion-row-name {
+  font-size: 16px;
+}
+
+.bracket-champion-row-name.tbd {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* Bracket connector lines (SVG-like effect using borders) */
+.bracket-column:not([data-round="FINAL"]):not(:last-child) .bracket-card::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  width: 4px;
+  height: 1px;
+  background: rgba(212, 168, 83, 0.3);
+}
+
+/* Hide old bracket styles */
+.bracket-container,
+.bracket-intro,
+.bracket-half,
+.bracket-half-content,
+.bracket-r32-row,
+.bracket-r16-row,
+.bracket-qf-row,
+.bracket-sf-row,
+.bracket-flow-arrow,
+.bracket-match-mini,
+.bracket-final-section,
+.bracket-final-container {
+  display: none !important;
 }
 
 .bracket-intro-title {

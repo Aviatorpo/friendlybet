@@ -1037,14 +1037,40 @@ function loadTablerFallback() {
         </svg>
       </button>
       <div class="topbar-center">
-        <div class="topbar-title-small">תצוגת ההגרלה</div>
-        <div class="topbar-step">31 משחקים</div>
+        <div class="topbar-title-small">עץ ההגרלה</div>
+        <div class="topbar-step" id="bracket-progress-text">0/31 משחקים</div>
       </div>
-      <div style="width: 44px;"></div>
+      <button class="btn-icon" id="bracket-zoom-btn" onclick="toggleBracketZoom()" aria-label="הגדל">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="bracket-zoom-icon">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <line x1="11" y1="8" x2="11" y2="14"></line>
+          <line x1="8" y1="11" x2="14" y2="11"></line>
+        </svg>
+      </button>
     </div>
 
-    <div class="bracket-container" id="bracket-container">
-      <!-- Populated by JS -->
+    <!-- Quick jump tabs -->
+    <div class="bracket-jump-tabs">
+      <button class="bracket-jump-tab" data-round="R32" onclick="jumpToRound('R32')">R32</button>
+      <button class="bracket-jump-tab" data-round="R16" onclick="jumpToRound('R16')">שמינית</button>
+      <button class="bracket-jump-tab" data-round="QF" onclick="jumpToRound('QF')">רבע</button>
+      <button class="bracket-jump-tab" data-round="SF" onclick="jumpToRound('SF')">חצי</button>
+      <button class="bracket-jump-tab" data-round="FINAL" onclick="jumpToRound('FINAL')">🏆 גמר</button>
+    </div>
+
+    <!-- Hint banner -->
+    <div class="bracket-hint">
+      <span class="bracket-hint-arrow">←</span>
+      <span>גרור עם האצבע כדי לראות את כל הסבבים</span>
+      <span class="bracket-hint-arrow">→</span>
+    </div>
+
+    <!-- Bracket scrollable area -->
+    <div class="bracket-scroll-container" id="bracket-scroll-container">
+      <div class="bracket-tree" id="bracket-tree">
+        <!-- Populated by JS -->
+      </div>
     </div>
   </div>
 
@@ -1524,7 +1550,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v0.5.2</span>
+      <span class="menu-version">v0.5.4</span>
     </div>
   </div>
 
