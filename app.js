@@ -2485,22 +2485,50 @@ function getTeamWinProbability(team) {
 }
 
 // ============================================================
-// BRACKET VIEW - Horizontal scrollable tree
+// BRACKET VIEW - Professional tournament tree with SVG lines
 // ============================================================
 
 const bracketViewState = {
-  isZoomedIn: false  // false = mini view (default), true = full view
+  isZoomedIn: false
 };
+
+// Layout constants
+const BRACKET_LAYOUT = {
+  // Mini mode dimensions
+  mini: {
+    cardWidth: 130,
+    cardHeight: 50,
+    columnGap: 50,
+    r32VerticalGap: 14,
+    topPadding: 50,
+    sidePadding: 20
+  },
+  zoom: {
+    cardWidth: 180,
+    cardHeight: 64,
+    columnGap: 60,
+    r32VerticalGap: 18,
+    topPadding: 60,
+    sidePadding: 25
+  }
+};
+
+function getLayout() {
+  return bracketViewState.isZoomedIn ? BRACKET_LAYOUT.zoom : BRACKET_LAYOUT.mini;
+}
 
 function openBracketView() {
   renderBracketView();
   showScreen('bracket-screen');
   
-  // Scroll to current round after a brief delay
+  // Scroll to a useful position - the final in the center
   setTimeout(() => {
-    const currentRound = knockoutState.currentRound || 'R32';
-    jumpToRound(currentRound);
-  }, 150);
+    const container = document.getElementById('bracket-scroll-container');
+    if (container) {
+      // Scroll to middle
+      container.scrollLeft = (container.scrollWidth - container.clientWidth) / 2;
+    }
+  }, 100);
 }
 
 function closeBracketView() {
@@ -2510,23 +2538,15 @@ function closeBracketView() {
 function toggleBracketZoom() {
   bracketViewState.isZoomedIn = !bracketViewState.isZoomedIn;
   
-  const tree = document.getElementById('bracket-tree');
-  if (tree) {
-    tree.classList.toggle('zoomed-in', bracketViewState.isZoomedIn);
-  }
-  
-  // Update icon - show different state
   const icon = document.getElementById('bracket-zoom-icon');
   if (icon) {
     if (bracketViewState.isZoomedIn) {
-      // Now in zoomed-in mode - show "zoom out" icon (minus)
       icon.innerHTML = `
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         <line x1="8" y1="11" x2="14" y2="11"></line>
       `;
     } else {
-      // In mini mode - show "zoom in" icon (plus)
       icon.innerHTML = `
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -2536,8 +2556,8 @@ function toggleBracketZoom() {
     }
   }
   
-  // Re-render to recalc connectors
-  setTimeout(() => renderBracketConnectors(), 50);
+  // Re-render with new layout
+  renderBracketView();
 }
 
 function renderBracketView() {
@@ -2545,7 +2565,6 @@ function renderBracketView() {
   if (!tree) return;
   
   tree.innerHTML = '';
-  tree.classList.toggle('zoomed-in', bracketViewState.isZoomedIn);
   
   // Update progress text
   let totalPicked = 0;
@@ -2563,82 +2582,306 @@ function renderBracketView() {
     tab.classList.toggle('has-picks', picked > 0);
   });
   
-  // Build columns in RTL order:
-  // Right-to-left visual flow: R32 → R16 → QF → SF → FINAL → SF → QF → R16 → R32
-  // But since the container is RTL, we just need: R32, R16, QF, SF, FINAL
-  // The user reads right-to-left so R32 (the first column we add) appears on the right
+  const L = getLayout();
   
-  // RIGHT SIDE (top half of bracket): R32 1-8, R16 1-4, QF 1-2, SF 1
-  // LEFT SIDE (bottom half): R32 9-16, R16 5-8, QF 3-4, SF 2
-  // FINAL in middle
+  // Calculate column X positions
+  // Layout (LTR): R32-L | R16-L | QF-L | SF-L | FINAL | SF-R | QF-R | R16-R | R32-R
+  // 9 columns total
   
-  // Build columns
-  const rounds = [
-    { id: 'R32', label: 'סבב 32', side: 'right', start: 0, end: 8 },
-    { id: 'R16', label: 'שמינית', side: 'right', start: 0, end: 4 },
-    { id: 'QF',  label: 'רבע',    side: 'right', start: 0, end: 2 },
-    { id: 'SF',  label: 'חצי',    side: 'right', start: 0, end: 1 },
-    { id: 'FINAL', label: 'גמר',  side: 'center', start: 0, end: 1 },
-    { id: 'SF',  label: 'חצי',    side: 'left', start: 1, end: 2 },
-    { id: 'QF',  label: 'רבע',    side: 'left', start: 2, end: 4 },
-    { id: 'R16', label: 'שמינית', side: 'left', start: 4, end: 8 },
-    { id: 'R32', label: 'סבב 32', side: 'left', start: 8, end: 16 }
-  ];
+  const colPositions = {};
+  let xPos = L.sidePadding;
   
-  rounds.forEach(roundDef => {
-    const col = document.createElement('div');
-    col.className = 'bracket-column';
-    col.setAttribute('data-round', roundDef.id);
-    col.setAttribute('data-side', roundDef.side);
+  // Left side (matches 9-16 of R32 logically, but visually on left)
+  colPositions.R32_left = xPos; xPos += L.cardWidth + L.columnGap;
+  colPositions.R16_left = xPos; xPos += L.cardWidth + L.columnGap;
+  colPositions.QF_left  = xPos; xPos += L.cardWidth + L.columnGap;
+  colPositions.SF_left  = xPos; xPos += L.cardWidth + L.columnGap;
+  colPositions.FINAL    = xPos; xPos += L.cardWidth + L.columnGap;
+  colPositions.SF_right = xPos; xPos += L.cardWidth + L.columnGap;
+  colPositions.QF_right = xPos; xPos += L.cardWidth + L.columnGap;
+  colPositions.R16_right = xPos; xPos += L.cardWidth + L.columnGap;
+  colPositions.R32_right = xPos; xPos += L.cardWidth;
+  
+  const totalWidth = xPos + L.sidePadding;
+  
+  // Calculate Y positions for R32 (the base of the tree)
+  // 8 matches in each half-bracket, vertical layout
+  const r32Spacing = L.cardHeight + L.r32VerticalGap;
+  const totalR32Height = 8 * r32Spacing;
+  
+  // Calculate match positions
+  // Side mapping:
+  //   right side: R32 matches 1-8 -> R16 1-4 -> QF 1-2 -> SF 1
+  //   left side: R32 matches 9-16 -> R16 5-8 -> QF 3-4 -> SF 2
+  //   Final: SF1 vs SF2
+  
+  const positions = {}; // match_id -> {x, y, width, height}
+  
+  // RIGHT SIDE positions
+  for (let i = 0; i < 8; i++) {
+    const matchId = `R32_M${i + 1}`;
+    positions[matchId] = {
+      x: colPositions.R32_right,
+      y: L.topPadding + (i * r32Spacing),
+      side: 'right',
+      round: 'R32'
+    };
+  }
+  
+  // R16 right: each R16 is centered between two R32 matches
+  for (let i = 0; i < 4; i++) {
+    const matchId = `R16_M${i + 1}`;
+    const r32a = positions[`R32_M${i * 2 + 1}`];
+    const r32b = positions[`R32_M${i * 2 + 2}`];
+    positions[matchId] = {
+      x: colPositions.R16_right,
+      y: (r32a.y + r32b.y) / 2,
+      side: 'right',
+      round: 'R16'
+    };
+  }
+  
+  // QF right
+  for (let i = 0; i < 2; i++) {
+    const matchId = `QF_M${i + 1}`;
+    const r16a = positions[`R16_M${i * 2 + 1}`];
+    const r16b = positions[`R16_M${i * 2 + 2}`];
+    positions[matchId] = {
+      x: colPositions.QF_right,
+      y: (r16a.y + r16b.y) / 2,
+      side: 'right',
+      round: 'QF'
+    };
+  }
+  
+  // SF right (SF_M1)
+  {
+    const qfa = positions['QF_M1'];
+    const qfb = positions['QF_M2'];
+    positions['SF_M1'] = {
+      x: colPositions.SF_right,
+      y: (qfa.y + qfb.y) / 2,
+      side: 'right',
+      round: 'SF'
+    };
+  }
+  
+  // LEFT SIDE positions (matches 9-16, R16 5-8, QF 3-4, SF 2)
+  for (let i = 0; i < 8; i++) {
+    const matchId = `R32_M${i + 9}`;
+    positions[matchId] = {
+      x: colPositions.R32_left,
+      y: L.topPadding + (i * r32Spacing),
+      side: 'left',
+      round: 'R32'
+    };
+  }
+  
+  for (let i = 0; i < 4; i++) {
+    const matchId = `R16_M${i + 5}`;
+    const r32a = positions[`R32_M${(i * 2) + 9}`];
+    const r32b = positions[`R32_M${(i * 2) + 10}`];
+    positions[matchId] = {
+      x: colPositions.R16_left,
+      y: (r32a.y + r32b.y) / 2,
+      side: 'left',
+      round: 'R16'
+    };
+  }
+  
+  for (let i = 0; i < 2; i++) {
+    const matchId = `QF_M${i + 3}`;
+    const r16a = positions[`R16_M${(i * 2) + 5}`];
+    const r16b = positions[`R16_M${(i * 2) + 6}`];
+    positions[matchId] = {
+      x: colPositions.QF_left,
+      y: (r16a.y + r16b.y) / 2,
+      side: 'left',
+      round: 'QF'
+    };
+  }
+  
+  {
+    const qfa = positions['QF_M3'];
+    const qfb = positions['QF_M4'];
+    positions['SF_M2'] = {
+      x: colPositions.SF_left,
+      y: (qfa.y + qfb.y) / 2,
+      side: 'left',
+      round: 'SF'
+    };
+  }
+  
+  // FINAL position (centered between SF1 and SF2)
+  {
+    const sf1 = positions['SF_M1'];
+    const sf2 = positions['SF_M2'];
+    positions['FINAL_M1'] = {
+      x: colPositions.FINAL,
+      y: (sf1.y + sf2.y) / 2,
+      side: 'center',
+      round: 'FINAL'
+    };
+  }
+  
+  // Total height
+  const totalHeight = L.topPadding + totalR32Height + 80; // 80px extra for champion display
+  
+  // Set tree dimensions
+  tree.style.width = `${totalWidth}px`;
+  tree.style.height = `${totalHeight}px`;
+  
+  // ====== RENDER SVG LINES LAYER ======
+  const svgNS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(svgNS, 'svg');
+  svg.classList.add('bracket-svg-layer');
+  svg.setAttribute('width', totalWidth);
+  svg.setAttribute('height', totalHeight);
+  svg.setAttribute('viewBox', `0 0 ${totalWidth} ${totalHeight}`);
+  
+  // Draw connectors: from each match to its next match
+  // Each pair of matches goes to one next match
+  // We draw: horizontal line from card -> midpoint -> next card
+  
+  function drawConnector(fromMatch, toMatch, isActive) {
+    const from = positions[fromMatch];
+    const to = positions[toMatch];
+    if (!from || !to) return;
     
-    // Round label
-    const label = document.createElement('div');
-    label.className = 'bracket-round-label';
-    if (roundDef.id === 'FINAL') {
-      label.innerHTML = '🏆 הגמר';
-    } else {
-      label.textContent = roundDef.label;
+    const cardW = L.cardWidth;
+    const cardH = L.cardHeight;
+    
+    let fromX, toX;
+    // Right side: connectors go right (from right edge of card to left edge of next)
+    // Left side: connectors go right too (we read left-to-right visually but tree converges to center)
+    
+    // Wait - need to think about RTL layout:
+    // Left columns connect rightward (toward FINAL)
+    // Right columns connect leftward (toward FINAL)
+    
+    if (from.side === 'left' || (from.round === 'SF' && from.side === 'left')) {
+      // Left side: lines go right
+      fromX = from.x + cardW;
+      toX = to.x;
+    } else if (from.side === 'right') {
+      // Right side: lines go left  
+      fromX = from.x;
+      toX = to.x + cardW;
     }
-    col.appendChild(label);
     
-    // Get matches for this column
-    const matches = knockoutState.matches[roundDef.id].slice(roundDef.start, roundDef.end);
+    const fromY = from.y + cardH / 2;
+    const toY = to.y + cardH / 2;
     
-    // Special handling for FINAL column - center the trophy
-    if (roundDef.id === 'FINAL') {
-      const trophyIcon = document.createElement('div');
-      trophyIcon.className = 'bracket-final-trophy-icon';
-      trophyIcon.textContent = '🏆';
-      col.appendChild(trophyIcon);
-    }
+    // Midpoint x (halfway between from and to)
+    const midX = (fromX + toX) / 2;
     
-    matches.forEach(match => {
-      const card = createBracketCard(match, roundDef.id === 'FINAL');
-      col.appendChild(card);
+    // Path: from -> midX (horizontal) -> midX, toY (vertical) -> toX, toY (horizontal)
+    const path = document.createElementNS(svgNS, 'path');
+    const d = `M ${fromX} ${fromY} L ${midX} ${fromY} L ${midX} ${toY} L ${toX} ${toY}`;
+    path.setAttribute('d', d);
+    path.classList.add('bracket-connector-line');
+    if (isActive) path.classList.add('active');
+    path.setAttribute('stroke', isActive ? 'rgba(212, 168, 83, 0.85)' : 'rgba(212, 168, 83, 0.3)');
+    path.setAttribute('stroke-width', isActive ? '2' : '1.5');
+    path.setAttribute('fill', 'none');
+    svg.appendChild(path);
+  }
+  
+  // Draw all connectors
+  const rounds = ['R32', 'R16', 'QF', 'SF'];
+  rounds.forEach(round => {
+    knockoutState.matches[round].forEach((match, idx) => {
+      if (match.nextMatch) {
+        const userPick = knockoutState.picks[match.id];
+        const isActive = !!userPick;
+        drawConnector(match.id, match.nextMatch, isActive);
+      }
     });
-    
-    // For FINAL - add champion row below the match
-    if (roundDef.id === 'FINAL') {
-      const final = knockoutState.matches.FINAL[0];
-      const winner = final ? knockoutState.picks[final.id] : null;
-      const winnerData = winner ? knockoutState.allTeams[winner] : null;
-      
-      const champion = document.createElement('div');
-      champion.className = 'bracket-champion-row';
-      champion.innerHTML = `
-        <div class="bracket-champion-row-label">🏆 אלוף 🏆</div>
-        <div class="bracket-champion-row-name ${winnerData ? '' : 'tbd'}">
-          ${winnerData ? `${getCountryFlag(winner)} ${winnerData.name_he}` : 'להיקבע'}
-        </div>
-      `;
-      col.appendChild(champion);
-    }
-    
-    tree.appendChild(col);
   });
   
-  // Bind click handlers
-  tree.querySelectorAll('.bracket-card[data-match-id]').forEach(el => {
+  tree.appendChild(svg);
+  
+  // ====== RENDER CARDS LAYER ======
+  const cardsLayer = document.createElement('div');
+  cardsLayer.className = 'bracket-cards-layer';
+  cardsLayer.style.position = 'relative';
+  cardsLayer.style.width = `${totalWidth}px`;
+  cardsLayer.style.height = `${totalHeight}px`;
+  
+  // Add round headers
+  const headers = [
+    { round: 'R32', side: 'left',  label: 'סבב 32' },
+    { round: 'R16', side: 'left',  label: 'שמינית' },
+    { round: 'QF',  side: 'left',  label: 'רבע' },
+    { round: 'SF',  side: 'left',  label: 'חצי' },
+    { round: 'FINAL', side: 'center', label: '🏆 גמר' },
+    { round: 'SF',  side: 'right', label: 'חצי' },
+    { round: 'QF',  side: 'right', label: 'רבע' },
+    { round: 'R16', side: 'right', label: 'שמינית' },
+    { round: 'R32', side: 'right', label: 'סבב 32' }
+  ];
+  
+  headers.forEach(h => {
+    const key = h.round === 'FINAL' ? 'FINAL' : `${h.round}_${h.side}`;
+    const x = colPositions[key];
+    if (x === undefined) return;
+    
+    const header = document.createElement('div');
+    header.className = 'bracket-round-header';
+    header.style.left = `${x}px`;
+    header.style.top = '10px';
+    header.style.width = `${L.cardWidth}px`;
+    header.textContent = h.label;
+    cardsLayer.appendChild(header);
+  });
+  
+  // Trophy decoration for FINAL
+  const trophyDeco = document.createElement('div');
+  trophyDeco.className = 'bracket-trophy-decoration';
+  trophyDeco.style.left = `${colPositions.FINAL + L.cardWidth / 2 - 16}px`;
+  trophyDeco.style.top = `${positions.FINAL_M1.y - 50}px`;
+  trophyDeco.textContent = '🏆';
+  cardsLayer.appendChild(trophyDeco);
+  
+  // Render all match cards
+  Object.keys(positions).forEach(matchId => {
+    const pos = positions[matchId];
+    const roundKey = matchId.startsWith('FINAL') ? 'FINAL' : matchId.split('_')[0];
+    const matchArr = knockoutState.matches[roundKey];
+    const match = matchArr.find(m => m.id === matchId);
+    if (!match) return;
+    
+    const card = createBracketCard(match, roundKey === 'FINAL');
+    card.style.left = `${pos.x}px`;
+    card.style.top = `${pos.y}px`;
+    card.style.width = `${L.cardWidth}px`;
+    card.style.height = `${L.cardHeight}px`;
+    
+    cardsLayer.appendChild(card);
+  });
+  
+  // Champion display below final
+  const final = knockoutState.matches.FINAL[0];
+  const winner = final ? knockoutState.picks[final.id] : null;
+  const winnerData = winner ? knockoutState.allTeams[winner] : null;
+  
+  const champion = document.createElement('div');
+  champion.className = 'bracket-champion-display';
+  champion.style.left = `${colPositions.FINAL - 10}px`;
+  champion.style.top = `${positions.FINAL_M1.y + L.cardHeight + 20}px`;
+  champion.style.width = `${L.cardWidth + 20}px`;
+  champion.innerHTML = `
+    <div class="bracket-champion-display-label">🏆 אלוף 🏆</div>
+    <div class="bracket-champion-display-name ${winnerData ? '' : 'tbd'}">
+      ${winnerData ? `${getCountryFlag(winner)} ${winnerData.name_he}` : 'להיקבע'}
+    </div>
+  `;
+  cardsLayer.appendChild(champion);
+  
+  tree.appendChild(cardsLayer);
+  
+  // Bind clicks
+  cardsLayer.querySelectorAll('.bracket-card').forEach(el => {
     el.addEventListener('click', function() {
       const matchId = this.getAttribute('data-match-id');
       if (matchId && !this.classList.contains('tbd')) {
@@ -2646,9 +2889,6 @@ function renderBracketView() {
       }
     });
   });
-  
-  // Note: Connector lines could be added with SVG but the spatial layout 
-  // already conveys flow well. The cards visually align by round.
 }
 
 function createBracketCard(match, isFinal) {
@@ -2661,7 +2901,6 @@ function createBracketCard(match, isFinal) {
   const team1Flag = match.team1 ? getCountryFlag(match.team1) : '⏳';
   const team2Flag = match.team2 ? getCountryFlag(match.team2) : '⏳';
   
-  // Determine team display classes
   let team1Class = team1Data ? 'neutral' : 'tbd';
   let team2Class = team2Data ? 'neutral' : 'tbd';
   
@@ -2675,7 +2914,6 @@ function createBracketCard(match, isFinal) {
     }
   }
   
-  // Status class
   let statusClass;
   if (userPick) statusClass = 'done';
   else if (team1Data && team2Data) statusClass = 'pending';
@@ -2685,7 +2923,6 @@ function createBracketCard(match, isFinal) {
   card.className = `bracket-card bracket-${statusClass}${isFinal ? ' final-card' : ''}`;
   card.setAttribute('data-match-id', match.id);
   
-  // Use shorter team name in mini mode
   const team1Name = team1Data ? team1Data.name_he : 'TBD';
   const team2Name = team2Data ? team2Data.name_he : 'TBD';
   
@@ -2708,44 +2945,42 @@ function jumpToRound(round) {
   const container = document.getElementById('bracket-scroll-container');
   if (!container) return;
   
-  // Find the first column for this round
-  // For RTL: R32 is on the right, FINAL is in center
-  // We want to scroll to the column
+  const L = getLayout();
   
-  const columns = container.querySelectorAll(`.bracket-column[data-round="${round}"]`);
-  if (columns.length === 0) return;
-  
-  // Use the first matching column
-  const targetCol = columns[0];
-  const containerRect = container.getBoundingClientRect();
-  const targetRect = targetCol.getBoundingClientRect();
-  
-  // Calculate scroll position - center the target column
-  const currentScroll = container.scrollLeft;
-  const targetScroll = currentScroll + (targetRect.left - containerRect.left) - (containerRect.width / 2) + (targetRect.width / 2);
+  // Find center of this round in the bracket
+  let targetX;
+  if (round === 'FINAL') {
+    // Center of the layout
+    targetX = container.scrollWidth / 2;
+  } else if (round === 'R32') {
+    // Go to right side
+    targetX = container.scrollWidth - container.clientWidth / 2;
+  } else if (round === 'R16') {
+    targetX = container.scrollWidth * 0.78;
+  } else if (round === 'QF') {
+    targetX = container.scrollWidth * 0.64;
+  } else if (round === 'SF') {
+    targetX = container.scrollWidth * 0.56;
+  }
   
   container.scrollTo({
-    left: targetScroll,
+    left: targetX - container.clientWidth / 2,
     behavior: 'smooth'
   });
 }
 
 function jumpToMatch(matchId) {
-  // Parse round from match id (e.g., "R16_M3" → "R16")
   const round = matchId.split('_')[0];
   
-  // Switch to that round and close bracket view
   knockoutState.currentRound = round;
   renderKnockout();
   showScreen('knockout-screen');
   
-  // Scroll to that match after a brief delay
   setTimeout(() => {
     const matchEls = document.querySelectorAll('.ko-match-card');
     const matchIndex = knockoutState.matches[round].findIndex(m => m.id === matchId);
     if (matchEls[matchIndex]) {
       matchEls[matchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-      // Highlight briefly
       matchEls[matchIndex].style.transition = 'box-shadow 0.3s';
       matchEls[matchIndex].style.boxShadow = '0 0 0 2px #d4a853';
       setTimeout(() => {
@@ -2755,10 +2990,9 @@ function jumpToMatch(matchId) {
   }, 100);
 }
 
-// Placeholder for connectors (could be added later as SVG enhancement)
 function renderBracketConnectors() {
-  // Future: draw SVG lines between matches showing the bracket flow
-  // For now, the spatial layout itself conveys the structure
+  // Re-renders the bracket which redraws connectors
+  renderBracketView();
 }
 
 function renderStagesBreakdown(stages) {
