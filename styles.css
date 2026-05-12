@@ -3059,6 +3059,10 @@ input:disabled + .slider {
   background: linear-gradient(180deg, #0a1628 0%, #0d1a30 100%);
   position: relative;
   width: 100%;
+  /* Center content horizontally if smaller than viewport */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .bracket-scroll-container::-webkit-scrollbar {
@@ -3080,6 +3084,9 @@ input:disabled + .slider {
   position: relative;
   padding: 20px 12px;
   direction: ltr;
+  /* Allow tree to be larger than container (for scroll) */
+  flex-shrink: 0;
+  margin: 0 auto;
 }
 
 /* SVG layer for connector lines - sits behind cards */

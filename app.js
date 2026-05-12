@@ -2521,12 +2521,17 @@ function openBracketView() {
   renderBracketView();
   showScreen('bracket-screen');
   
-  // Scroll to a useful position - the final in the center
+  // Center the bracket horizontally and scroll vertically to the middle
   setTimeout(() => {
     const container = document.getElementById('bracket-scroll-container');
     if (container) {
-      // Scroll to middle
-      container.scrollLeft = (container.scrollWidth - container.clientWidth) / 2;
+      // Center horizontally - scroll to middle of total width
+      const horizontalCenter = (container.scrollWidth - container.clientWidth) / 2;
+      container.scrollLeft = Math.max(0, horizontalCenter);
+      
+      // Also center vertically if the bracket is taller than viewport
+      const verticalCenter = (container.scrollHeight - container.clientHeight) / 2;
+      container.scrollTop = Math.max(0, verticalCenter);
     }
   }, 100);
 }
