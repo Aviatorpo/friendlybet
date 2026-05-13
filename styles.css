@@ -1779,6 +1779,7 @@ input:disabled + .slider {
   cursor: pointer;
   transition: all 0.2s;
   opacity: 0.85;
+  position: relative;
 }
 
 .team-card:hover, .team-card:active {
@@ -3256,6 +3257,116 @@ input:disabled + .slider {
 .admin-modal-btn-text {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.5);
+}
+
+/* ============================================================ */
+/* Got It Right / Wrong Indicators                              */
+/* ============================================================ */
+
+/* Knockout match cards with results */
+.ko-match-card.result-correct {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.02) 100%);
+  border-color: rgba(34, 197, 94, 0.4);
+  position: relative;
+}
+
+.ko-match-card.result-correct::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 3px;
+  height: 100%;
+  background: #4ade80;
+  border-radius: 3px 0 0 3px;
+}
+
+.ko-match-card.result-wrong {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.05) 0%, rgba(244, 63, 94, 0.02) 100%);
+  border-color: rgba(244, 63, 94, 0.25);
+  opacity: 0.85;
+}
+
+.ko-match-card.result-wrong::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 3px;
+  height: 100%;
+  background: rgba(244, 63, 94, 0.5);
+  border-radius: 3px 0 0 3px;
+}
+
+/* Result badge in knockout cards */
+.ko-result-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.ko-result-badge.correct {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+}
+
+.ko-result-badge.wrong {
+  background: rgba(244, 63, 94, 0.12);
+  color: #fb7185;
+}
+
+/* Team card result indicators (in group betting) */
+.team-card.result-correct {
+  border-color: rgba(34, 197, 94, 0.5);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+}
+
+.team-card.result-wrong {
+  border-color: rgba(244, 63, 94, 0.3);
+  opacity: 0.75;
+}
+
+.team-result-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.team-result-badge.correct {
+  background: #4ade80;
+  color: #0a1628;
+}
+
+.team-result-badge.wrong {
+  background: #fb7185;
+  color: white;
+}
+
+/* Bracket cards - highlight correct paths */
+.bracket-card.result-correct {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, #1a2942 100%);
+  border-color: rgba(34, 197, 94, 0.5);
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.3);
+}
+
+.bracket-card.result-wrong {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.1) 0%, #1a2942 100%);
+  border-color: rgba(244, 63, 94, 0.3);
+  opacity: 0.7;
 }
 
 /* ============================================================ */

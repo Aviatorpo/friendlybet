@@ -611,6 +611,9 @@ async function goToDashboard() {
     state.currentUser = user;
   }
   
+  // Load real-world results data
+  await loadResultsData();
+  
   // Update dashboard display
   document.getElementById('dashboard-pool-name').textContent = state.currentPool.name;
   document.getElementById('dashboard-user-name').textContent = state.currentUser.nickname;
@@ -634,6 +637,140 @@ async function goToDashboard() {
   updateKnockoutStatusOnDashboard();
   
   showScreen('user-dashboard-screen');
+}
+
+// ============================================================
+// REAL RESULTS DATA - For showing "got it right" indicators
+// ============================================================
+
+// Global cache of results
+state.results = {
+  // Per match: { match_id, status, winner_code, home_team, away_team, scores, stage, group }
+  matchesByTeam: {},   // team_code -> [matches]
+  finishedMatches: [],
+  myScores: {},        // match_id -> score earned
+  groupAdvancers: {},  // group letter -> [team_codes that advanced]
+  knockoutWinners: {}, // match_id -> winning_team_code
+  lastLoaded: null
+};
+
+async function loadResultsData() {
+  if (!supabaseClient || !state.currentUser) return;
+  
+  // Cache for 60 seconds to avoid spam
+  if (state.results.lastLoaded && (Date.now() - state.results.lastLoaded) < 60000) {
+    return;
+  }
+  
+  try {
+    // Load finished matches
+    const { data: matches } = await supabaseClient
+      .from('matches')
+      .select('*')
+      .eq('status', 'FINISHED');
+    
+    state.results.finishedMatches = matches || [];
+    
+    // Build per-team match list
+    state.results.matchesByTeam = {};
+    (matches || []).forEach(m => {
+      if (m.home_team_code) {
+        if (!state.results.matchesByTeam[m.home_team_code]) {
+          state.results.matchesByTeam[m.home_team_code] = [];
+        }
+        state.results.matchesByTeam[m.home_team_code].push(m);
+      }
+      if (m.away_team_code) {
+        if (!state.results.matchesByTeam[m.away_team_code]) {
+          state.results.matchesByTeam[m.away_team_code] = [];
+        }
+        state.results.matchesByTeam[m.away_team_code].push(m);
+      }
+    });
+    
+    // Build knockout winners map
+    state.results.knockoutWinners = {};
+    (matches || []).forEach(m => {
+      if (m.stage && m.stage !== 'GROUP_STAGE' && m.home_score !== null && m.away_score !== null) {
+        if (m.home_score > m.away_score) {
+          state.results.knockoutWinners[m.id] = m.home_team_code;
+        } else if (m.away_score > m.home_score) {
+          state.results.knockoutWinners[m.id] = m.away_team_code;
+        }
+      }
+    });
+    
+    // Build group advancers map (top 2 of each group)
+    // For now: based on who appears in knockout matches
+    state.results.groupAdvancers = {};
+    (matches || []).forEach(m => {
+      if (m.stage === 'LAST_16') {
+        // Teams in R16 advanced from groups
+        if (m.home_team_code) {
+          // Find their group
+          const groupMatch = (matches || []).find(gm => 
+            gm.stage === 'GROUP_STAGE' && 
+            (gm.home_team_code === m.home_team_code || gm.away_team_code === m.home_team_code)
+          );
+          if (groupMatch?.group_letter) {
+            if (!state.results.groupAdvancers[groupMatch.group_letter]) {
+              state.results.groupAdvancers[groupMatch.group_letter] = new Set();
+            }
+            state.results.groupAdvancers[groupMatch.group_letter].add(m.home_team_code);
+          }
+        }
+        if (m.away_team_code) {
+          const groupMatch = (matches || []).find(gm => 
+            gm.stage === 'GROUP_STAGE' && 
+            (gm.home_team_code === m.away_team_code || gm.away_team_code === m.away_team_code)
+          );
+          if (groupMatch?.group_letter) {
+            if (!state.results.groupAdvancers[groupMatch.group_letter]) {
+              state.results.groupAdvancers[groupMatch.group_letter] = new Set();
+            }
+            state.results.groupAdvancers[groupMatch.group_letter].add(m.away_team_code);
+          }
+        }
+      }
+    });
+    
+    // Load my scores per match
+    const { data: myScores } = await supabaseClient
+      .from('user_scores')
+      .select('*')
+      .eq('user_id', state.currentUser.id);
+    
+    state.results.myScores = {};
+    (myScores || []).forEach(s => {
+      const key = `${s.match_id}_${s.pick_type}`;
+      state.results.myScores[key] = s;
+    });
+    
+    state.results.lastLoaded = Date.now();
+    
+  } catch (err) {
+    console.error('Load results error:', err);
+  }
+}
+
+// Check if a team advanced from group stage (for group betting indicator)
+function didTeamAdvance(teamCode, groupLetter) {
+  const advancers = state.results.groupAdvancers[groupLetter];
+  if (!advancers) return null; // Unknown yet
+  return advancers.has(teamCode);
+}
+
+// Check if a knockout pick was correct
+function wasKnockoutPickCorrect(matchId, pickedTeamCode) {
+  const winner = state.results.knockoutWinners[matchId];
+  if (!winner) return null; // Match not finished
+  return winner === pickedTeamCode;
+}
+
+// Get my score for a specific match+type
+function getMyMatchScore(matchId, pickType) {
+  const key = `${matchId}_${pickType}`;
+  return state.results.myScores[key];
 }
 
 // ============================================================
@@ -1503,6 +1640,9 @@ async function startGroupBetting() {
     return;
   }
   
+  // Load results data for "got it right" indicators
+  await loadResultsData();
+  
   showToast('טוען את הקבוצות...', 'info');
   
   try {
@@ -1734,6 +1874,32 @@ function createTeamCard(team, isSelected) {
     }
   }
   
+  // Check real-world result if user selected this team
+  let resultIndicator = '';
+  if (isSelected && team.group_letter) {
+    const advanced = didTeamAdvance(team.code, team.group_letter);
+    if (advanced === true) {
+      card.classList.add('result-correct');
+      resultIndicator = `
+        <div class="team-result-badge correct" title="הקבוצה עלתה!">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+      `;
+    } else if (advanced === false) {
+      card.classList.add('result-wrong');
+      resultIndicator = `
+        <div class="team-result-badge wrong" title="הקבוצה הודחה">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </div>
+      `;
+    }
+  }
+  
   // Flag emoji from country code
   const flagEmoji = getCountryFlag(team.code);
   
@@ -1743,6 +1909,7 @@ function createTeamCard(team, isSelected) {
       <div class="team-name">${team.name_he}</div>
       ${tierBadge}
     </div>
+    ${resultIndicator}
     <div class="team-checkbox"></div>
   `;
   
@@ -2268,6 +2435,9 @@ async function startKnockoutBetting() {
     return;
   }
   
+  // Load results data for "got it right" indicators
+  await loadResultsData();
+  
   // First: check if group betting is complete (need 32 picks)
   const { data: groupPicks } = await supabaseClient
     .from('group_picks')
@@ -2553,6 +2723,41 @@ function createMatchCard(match) {
     `;
   }
   
+  // Check if real match result is known
+  const realResult = userPick ? wasKnockoutPickCorrect(match.id, userPick) : null;
+  const myScore = userPick ? getMyMatchScore(match.id, 'KNOCKOUT') : null;
+  
+  let resultBadge = '';
+  let cardClass = 'ko-match-card';
+  
+  if (realResult === true) {
+    cardClass += ' result-correct';
+    const points = myScore?.points_earned || 0;
+    resultBadge = `
+      <div class="ko-result-badge correct">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>ניחשת נכון! +${points} נק'</span>
+      </div>
+    `;
+  } else if (realResult === false) {
+    cardClass += ' result-wrong';
+    const winner = state.results.knockoutWinners[match.id];
+    const winnerData = winner ? knockoutState.allTeams[winner] : null;
+    resultBadge = `
+      <div class="ko-result-badge wrong">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <span>${winnerData ? winnerData.name_he : 'היריב'} ניצח</span>
+      </div>
+    `;
+  }
+  
+  card.className = cardClass;
+  
   card.innerHTML = `
     <div class="ko-match-header">
       <span class="ko-match-number">${matchLabel}</span>
@@ -2568,6 +2773,7 @@ function createMatchCard(match) {
       <span class="ko-match-points-value">${points} נק'</span>
       <span>אם תנחש נכון</span>
     </div>
+    ${resultBadge}
     ${finalDeclaration}
   `;
   
