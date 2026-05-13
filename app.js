@@ -2326,8 +2326,14 @@ async function startGroupBetting() {
     
     if (teamsError || !teams || teams.length === 0) {
       console.error('Teams load error:', teamsError);
-      showToast('שגיאה בטעינת הקבוצות', 'error');
+      showToast('הקבוצות עדיין בסנכרון - נסה שוב בעוד מספר דקות', 'error');
       return;
+    }
+    
+    // Check if we have at least 8 groups
+    const uniqueGroups = new Set(teams.map(t => t.group_letter));
+    if (uniqueGroups.size < 8) {
+      showToast(`טוען בתים... (${uniqueGroups.size}/12 מוכנים)`, 'info');
     }
     
     // Group teams by letter
