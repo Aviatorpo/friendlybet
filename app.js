@@ -814,8 +814,8 @@ function closeMenu() {
 // ============================================================
 
 function quickSharePool() {
-  // Show a quick action sheet or just trigger WhatsApp share
-  shareWhatsApp();
+  // Open the new viral share modal
+  showShareModal();
 }
 
 // ============================================================
@@ -4642,9 +4642,10 @@ function showError(elementId, message) {
 async function initApp() {
   console.log('FriendlyBet v' + CONFIG.APP_VERSION + ' starting...');
   
-  // Check URL for pool code parameter (?code=XXXXX)
+  // Check URL for pool code parameter (?code=XXXXX or ?join=XXXXX)
   const urlParams = new URLSearchParams(window.location.search);
-  const codeFromUrl = urlParams.get('code');
+  const codeFromUrl = urlParams.get('code') || urlParams.get('join');
+  const poolNameFromUrl = urlParams.get('pool');
   
   // Check if user is logged in
   const localUser = loadLocalUser();
@@ -4652,6 +4653,27 @@ async function initApp() {
   // Small delay for loading screen aesthetics
   setTimeout(async () => {
     if (codeFromUrl) {
+      // Store invite info in case user already logged in elsewhere
+      if (poolNameFromUrl) {
+        sessionStorage.setItem('invite_pool_name', decodeURIComponent(poolNameFromUrl));
+      }
+      
+      // If user already has an account
+      if (localUser && localUser.pool_id) {
+        const confirmed = window.confirm(
+          'אתה כבר חבר בהימור.\n\nכדי להצטרף להימור חדש, תצטרך לצאת מהקיים.\n\nלצאת ולהצטרף להימור החדש?'
+        );
+        if (confirmed) {
+          clearLocalUser();
+          // Reload with same URL params
+          window.location.reload();
+          return;
+        } else {
+          await goToDashboard();
+          return;
+        }
+      }
+      
       // Direct join via link
       document.getElementById('pool-code-input').value = codeFromUrl.toUpperCase();
       showScreen('join-pool-screen');
@@ -4683,6 +4705,170 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// ============================================================
+// VIRAL SHARING - Invite Friends
+// ============================================================
+
+function showShareModal() {
+  if (!state.currentPool) {
+    showToast('שגיאה - אנא נסה שוב', 'error');
+    return;
+  }
+  
+  closeMenu();
+  
+  // Build invite URL
+  const baseUrl = window.location.origin;
+  const code = state.currentPool.code;
+  const poolName = encodeURIComponent(state.currentPool.name);
+  const inviteUrl = `${baseUrl}/?join=${code}&pool=${poolName}`;
+  
+  // Update modal content
+  document.getElementById('share-pool-code').textContent = code;
+  document.getElementById('share-invite-url').textContent = inviteUrl;
+  document.getElementById('share-invite-url').dataset.url = inviteUrl;
+  
+  // Generate QR code
+  generateQRCode(inviteUrl);
+  
+  // Show modal
+  document.getElementById('share-modal-overlay').classList.add('active');
+  document.getElementById('share-modal').classList.add('active');
+}
+
+function closeShareModal() {
+  document.getElementById('share-modal-overlay').classList.remove('active');
+  document.getElementById('share-modal').classList.remove('active');
+}
+
+function getInviteUrl() {
+  if (!state.currentPool) return '';
+  const baseUrl = window.location.origin;
+  const code = state.currentPool.code;
+  const poolName = encodeURIComponent(state.currentPool.name);
+  return `${baseUrl}/?join=${code}&pool=${poolName}`;
+}
+
+function getShareMessage() {
+  if (!state.currentPool) return '';
+  const poolName = state.currentPool.name;
+  const code = state.currentPool.code;
+  const url = getInviteUrl();
+  
+  return `🏆 הצטרף להימור "${poolName}" במונדיאל 2026!\n\n` +
+    `קוד ההימור: ${code}\n\n` +
+    `👇 לחץ על הקישור כדי להצטרף:\n${url}\n\n` +
+    `📱 FriendlyBet - הימור חברים, חינמי, בלי פרסומות, בלי כסף.`;
+}
+
+function shareToWhatsApp() {
+  const message = getShareMessage();
+  const encoded = encodeURIComponent(message);
+  const url = `https://wa.me/?text=${encoded}`;
+  window.open(url, '_blank');
+}
+
+function shareToTelegram() {
+  const inviteUrl = getInviteUrl();
+  const message = getShareMessage();
+  const url = `https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(message)}`;
+  window.open(url, '_blank');
+}
+
+function shareNative() {
+  if (!navigator.share) {
+    copyInviteLink();
+    return;
+  }
+  
+  const inviteUrl = getInviteUrl();
+  const poolName = state.currentPool?.name || 'הימור';
+  
+  navigator.share({
+    title: `הצטרף ל-${poolName}`,
+    text: getShareMessage(),
+    url: inviteUrl
+  }).catch(err => {
+    if (err.name !== 'AbortError') {
+      console.error('Share failed:', err);
+    }
+  });
+}
+
+async function copyInviteLink() {
+  const url = getInviteUrl();
+  
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('✓ הקישור הועתק!', 'success');
+  } catch (err) {
+    // Fallback
+    const tempInput = document.createElement('input');
+    tempInput.value = url;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+    showToast('✓ הקישור הועתק!', 'success');
+  }
+}
+
+async function copyPoolCodeOnly() {
+  const code = state.currentPool?.code;
+  if (!code) return;
+  
+  try {
+    await navigator.clipboard.writeText(code);
+    showToast('✓ הקוד הועתק!', 'success');
+  } catch (err) {
+    showToast('שגיאה בהעתקה', 'error');
+  }
+}
+
+// ============================================================
+// QR Code generation - pure JS, no library needed
+// ============================================================
+
+function generateQRCode(text) {
+  const container = document.getElementById('share-qr-code');
+  if (!container) return;
+  
+  container.innerHTML = '<div class="ts-loading">יוצר קוד QR...</div>';
+  
+  // Use a free QR API as fallback
+  const size = 200;
+  const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}&bgcolor=ffffff&color=0a1628&margin=8&format=svg`;
+  
+  // Try to fetch and embed
+  fetch(apiUrl)
+    .then(r => r.text())
+    .then(svg => {
+      container.innerHTML = svg;
+    })
+    .catch(err => {
+      // Fallback: show image tag
+      container.innerHTML = `<img src="${apiUrl}" alt="QR Code" width="${size}" height="${size}" style="border-radius: 8px;">`;
+    });
+}
+
+// ============================================================
+// SHARE MY RECOVERY CODE - For users to share their own code
+// ============================================================
+
+function copyMyRecoveryCode() {
+  const code = state.pendingRecoveryCode || localStorage.getItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE);
+  if (!code) {
+    showToast('לא נמצא קוד שחזור', 'error');
+    return;
+  }
+  
+  navigator.clipboard.writeText(code).then(() => {
+    showToast('✓ קוד השחזור הועתק', 'success');
+  }).catch(() => {
+    showToast('שגיאה בהעתקה', 'error');
+  });
+}
 
 // ============================================================
 // PWA - Service Worker Registration & Install Prompt
