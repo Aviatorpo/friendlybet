@@ -363,7 +363,7 @@ async function completeRegistration() {
     // Hash recovery code
     const recoveryHash = await hashRecoveryCode(state.pendingRecoveryCode);
     
-    // Create user
+    // Create user - joins immediately, admin can approve/remove later
     const { data: user, error } = await supabaseClient
       .from('users')
       .insert({
@@ -371,7 +371,8 @@ async function completeRegistration() {
         nickname: state.pendingNickname,
         recovery_code_hash: recoveryHash,
         is_admin: false,
-        is_approved: true // No approval needed by default
+        is_approved: true, // Legacy field - keep true
+        approval_status: 'pending' // New: admin can approve later
       })
       .select()
       .single();
@@ -392,7 +393,7 @@ async function completeRegistration() {
     
     showToast('ברוך הבא ל-' + state.currentPool.name + '!', 'success');
     
-    // Go to dashboard
+    // Go to dashboard - user can play immediately!
     setTimeout(() => {
       goToDashboard();
     }, 1000);
@@ -496,7 +497,7 @@ async function createPool() {
     const adminRecoveryCode = generateRecoveryCode();
     const adminRecoveryHash = await hashRecoveryCode(adminRecoveryCode);
     
-    // Create admin user
+    // Create admin user - auto-approved
     const { data: adminUser, error: userError } = await supabaseClient
       .from('users')
       .insert({
@@ -504,7 +505,9 @@ async function createPool() {
         nickname: adminNickname,
         recovery_code_hash: adminRecoveryHash,
         is_admin: true,
-        is_approved: true
+        is_approved: true,
+        approval_status: 'approved',
+        approved_at: new Date().toISOString()
       })
       .select()
       .single();
@@ -788,10 +791,40 @@ function openMenu() {
     adminSection.style.display = user.is_admin ? 'block' : 'none';
   }
   
+  // If admin - check pending count
+  if (user.is_admin) {
+    updatePendingBadge();
+  }
+  
   // Open the sheet
   document.getElementById('menu-overlay').classList.add('active');
   document.getElementById('menu-sheet').classList.add('active');
   document.body.style.overflow = 'hidden';
+}
+
+async function updatePendingBadge() {
+  try {
+    const { count, error } = await supabaseClient
+      .from('users')
+      .select('*', { count: 'exact', head: true })
+      .eq('pool_id', state.currentPool.id)
+      .eq('approval_status', 'pending')
+      .eq('is_admin', false);
+    
+    if (error) return;
+    
+    const badge = document.getElementById('menu-pending-badge');
+    if (badge) {
+      if (count && count > 0) {
+        badge.style.display = 'inline-block';
+        badge.textContent = count;
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+  } catch (err) {
+    console.warn('Pending badge update failed:', err);
+  }
 }
 
 function closeMenu() {
@@ -1036,6 +1069,7 @@ function renderAdminMembers() {
   
   // Stats
   const total = adminState.members.length;
+  const pending = adminState.members.filter(m => m.approval_status === 'pending' && !m.isAdmin).length;
   const withGroups = adminState.members.filter(m => m.groupPicksCount >= 32).length;
   const withKnockout = adminState.members.filter(m => m.knockoutPicksCount >= 16).length;
   
@@ -1043,26 +1077,75 @@ function renderAdminMembers() {
   document.getElementById('admin-stat-groups').textContent = withGroups;
   document.getElementById('admin-stat-knockout').textContent = withKnockout;
   
+  // Show pending banner if any
+  const pendingBanner = document.getElementById('admin-pending-banner');
+  if (pendingBanner) {
+    if (pending > 0) {
+      pendingBanner.style.display = 'flex';
+      const countEl = document.getElementById('admin-pending-count');
+      if (countEl) countEl.textContent = pending;
+    } else {
+      pendingBanner.style.display = 'none';
+    }
+  }
+  
+  // Sort: pending first, then approved
+  const sorted = [...adminState.members].sort((a, b) => {
+    if (a.isAdmin && !b.isAdmin) return -1;
+    if (!a.isAdmin && b.isAdmin) return 1;
+    if (a.approval_status === 'pending' && b.approval_status !== 'pending') return -1;
+    if (a.approval_status !== 'pending' && b.approval_status === 'pending') return 1;
+    return (a.nickname || '').localeCompare(b.nickname || '');
+  });
+  
   // Render list
   list.innerHTML = '';
   
-  adminState.members.forEach(member => {
+  sorted.forEach(member => {
     const card = document.createElement('div');
     card.className = 'admin-member-card';
     if (member.isAdmin) card.classList.add('is-admin');
+    if (member.approval_status === 'pending' && !member.isAdmin) {
+      card.classList.add('is-pending');
+    }
     
     const initial = member.nickname ? member.nickname.charAt(0).toUpperCase() : '?';
     
     const adminBadge = member.isAdmin ? '<span class="admin-member-badge">מארגן ✓</span>' : '';
+    const pendingBadge = (member.approval_status === 'pending' && !member.isAdmin) 
+      ? '<span class="admin-member-pending-badge">⏳ ממתין לאישור</span>' 
+      : '';
     
     // Progress dots
     const groupsDone = member.groupPicksCount >= 32;
     const knockoutDone = member.knockoutPicksCount >= 16;
     
+    // Quick action buttons for pending users
+    let quickActions = '';
+    if (member.approval_status === 'pending' && !member.isAdmin) {
+      quickActions = `
+        <div class="admin-member-quick-actions">
+          <button class="admin-quick-btn approve" data-member-id="${member.id}" title="אשר">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </button>
+          <button class="admin-quick-btn reject" data-member-id="${member.id}" title="הסר">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      `;
+    } else if (!member.isAdmin) {
+      quickActions = '<div class="admin-member-arrow">‹</div>';
+    }
+    
     card.innerHTML = `
       <div class="admin-member-avatar">${initial}</div>
       <div class="admin-member-info">
-        <div class="admin-member-name">${adminBadge}${escapeHtml(member.nickname || 'משתמש')}</div>
+        <div class="admin-member-name">${adminBadge}${pendingBadge}${escapeHtml(member.nickname || 'משתמש')}</div>
         <div class="admin-member-progress">
           <span class="admin-member-progress-dot ${groupsDone ? 'done' : ''}">
             בתים: ${member.groupPicksCount}/32 ${groupsDone ? '✓' : ''}
@@ -1072,11 +1155,30 @@ function renderAdminMembers() {
           </span>
         </div>
       </div>
-      ${!member.isAdmin ? '<div class="admin-member-arrow">‹</div>' : ''}
+      ${quickActions}
     `;
     
-    // Click handler - only for non-admins
+    // Click handlers
     if (!member.isAdmin) {
+      // Quick action buttons
+      const approveBtn = card.querySelector('.admin-quick-btn.approve');
+      const rejectBtn = card.querySelector('.admin-quick-btn.reject');
+      
+      if (approveBtn) {
+        approveBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          quickApproveMember(member);
+        });
+      }
+      
+      if (rejectBtn) {
+        rejectBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          quickRejectMember(member);
+        });
+      }
+      
+      // Main card click - open detail modal
       card.addEventListener('click', () => openAdminActionModal(member));
     } else {
       card.style.cursor = 'default';
@@ -1084,6 +1186,76 @@ function renderAdminMembers() {
     
     list.appendChild(card);
   });
+}
+
+// Quick approve - one click
+async function quickApproveMember(member) {
+  try {
+    const { error } = await supabaseClient
+      .from('users')
+      .update({ 
+        approval_status: 'approved',
+        approved_at: new Date().toISOString(),
+        approved_by: state.currentUser.id
+      })
+      .eq('id', member.id);
+    
+    if (error) throw error;
+    
+    // Log action
+    await supabaseClient.from('admin_actions').insert({
+      pool_id: state.currentPool.id,
+      admin_id: state.currentUser.id,
+      action_type: 'USER_APPROVED',
+      target_user_id: member.id,
+      details: { nickname: member.nickname }
+    });
+    
+    showToast(`✓ ${member.nickname} אושר`, 'success');
+    
+    // Reload
+    await loadAdminMembers();
+    
+  } catch (err) {
+    console.error('Approve error:', err);
+    showToast('שגיאה באישור', 'error');
+  }
+}
+
+// Quick reject - confirm + remove
+async function quickRejectMember(member) {
+  const confirmed = window.confirm(
+    `להסיר את ${member.nickname} מההימור?\n\n` +
+    `כל ההימורים שלו יימחקו.\n` +
+    `הפעולה לא ניתנת לביטול.`
+  );
+  if (!confirmed) return;
+  
+  try {
+    const { error } = await supabaseClient
+      .from('users')
+      .delete()
+      .eq('id', member.id);
+    
+    if (error) throw error;
+    
+    // Log
+    await supabaseClient.from('admin_actions').insert({
+      pool_id: state.currentPool.id,
+      admin_id: state.currentUser.id,
+      action_type: 'USER_REJECTED',
+      target_user_id: member.id,
+      details: { nickname: member.nickname }
+    });
+    
+    showToast(`${member.nickname} הוסר`, 'success');
+    
+    await loadAdminMembers();
+    
+  } catch (err) {
+    console.error('Reject error:', err);
+    showToast('שגיאה בהסרה', 'error');
+  }
 }
 
 function updatePoolLockCard() {

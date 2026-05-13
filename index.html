@@ -1280,6 +1280,19 @@ function loadTablerFallback() {
         <button class="admin-action-btn" id="pool-lock-btn" onclick="togglePoolLock()">נעל</button>
       </div>
 
+      <!-- Pending Approval Banner -->
+      <div class="admin-pending-banner" id="admin-pending-banner" style="display: none;">
+        <div class="admin-pending-banner-icon">⏳</div>
+        <div class="admin-pending-banner-content">
+          <div class="admin-pending-banner-title">
+            יש <span id="admin-pending-count">0</span> חברים שממתינים לאישור
+          </div>
+          <div class="admin-pending-banner-subtitle">
+            הם יכולים לשחק - אבל מומלץ לאשר/להסיר אותם
+          </div>
+        </div>
+      </div>
+
       <!-- Stats -->
       <div class="admin-stats">
         <div class="admin-stat-item">
@@ -1974,6 +1987,7 @@ function loadTablerFallback() {
       <button class="menu-item" onclick="showAdminMembers()">
         <i class="ti ti-user-cog gold"></i>
         <span>ניהול חברים</span>
+        <span class="menu-badge" id="menu-pending-badge" style="display: none;">0</span>
         <i class="ti ti-chevron-left menu-arrow"></i>
       </button>
       <button class="menu-item" onclick="showPoolSettings()">
@@ -2001,7 +2015,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v1.2.0</span>
+      <span class="menu-version">v1.3.0</span>
     </div>
   </div>
 
