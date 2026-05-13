@@ -1316,6 +1316,382 @@ function showApprovals() {
 }
 
 // ============================================================
+// TOP SCORER PREDICTION
+// ============================================================
+
+const topScorerState = {
+  allPlayers: [],
+  filteredPlayers: [],
+  currentPick: null,  // The player selected
+  searchTimeout: null
+};
+
+async function showTopScorer() {
+  closeMenu();
+  
+  if (!state.currentUser || !state.currentPool) {
+    showToast('שגיאה - אנא התחבר מחדש', 'error');
+    return;
+  }
+  
+  if (!supabaseClient) {
+    showToast('מתחבר לשרת...', 'error');
+    return;
+  }
+  
+  showScreen('top-scorer-screen');
+  
+  // Load players if not loaded
+  if (topScorerState.allPlayers.length === 0) {
+    await loadAllPlayers();
+  }
+  
+  // Load existing pick
+  await loadMyTopScorerPick();
+  
+  // Render
+  renderTopScorerList();
+}
+
+async function loadAllPlayers() {
+  const list = document.getElementById('ts-players-list');
+  list.innerHTML = '<div class="ts-loading">טוען שחקנים...</div>';
+  
+  try {
+    const { data: players, error } = await supabaseClient
+      .from('players')
+      .select('*')
+      .order('is_star', { ascending: false })
+      .order('name_he', { ascending: true });
+    
+    if (error) {
+      console.error('Players load error:', error);
+      showToast('שגיאה בטעינת שחקנים', 'error');
+      return;
+    }
+    
+    topScorerState.allPlayers = players || [];
+    topScorerState.filteredPlayers = players || [];
+    
+  } catch (err) {
+    console.error('Load players error:', err);
+    showToast('שגיאה לא צפויה', 'error');
+  }
+}
+
+async function loadMyTopScorerPick() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('top_scorer_picks')
+      .select('*, players(*)')
+      .eq('user_id', state.currentUser.id)
+      .maybeSingle();
+    
+    if (error) {
+      // If table doesn't have the foreign key, fallback
+      console.warn('Top scorer load fallback:', error);
+      const { data: simpleData } = await supabaseClient
+        .from('top_scorer_picks')
+        .select('*')
+        .eq('user_id', state.currentUser.id)
+        .maybeSingle();
+      
+      if (simpleData?.player_id) {
+        // Manually fetch the player
+        const { data: player } = await supabaseClient
+          .from('players')
+          .select('*')
+          .eq('id', simpleData.player_id)
+          .maybeSingle();
+        
+        if (player) {
+          topScorerState.currentPick = player;
+        }
+      }
+    } else if (data) {
+      topScorerState.currentPick = data.players || data;
+    }
+    
+    updateCurrentPickDisplay();
+    
+  } catch (err) {
+    console.error('Load my top scorer pick error:', err);
+  }
+}
+
+function updateCurrentPickDisplay() {
+  const currentPickEl = document.getElementById('ts-current-pick');
+  if (!currentPickEl) return;
+  
+  if (!topScorerState.currentPick) {
+    currentPickEl.style.display = 'none';
+    return;
+  }
+  
+  const pick = topScorerState.currentPick;
+  
+  currentPickEl.style.display = 'block';
+  document.getElementById('ts-current-flag').textContent = getCountryFlag(pick.team_code);
+  document.getElementById('ts-current-name').textContent = pick.name_he;
+  document.getElementById('ts-current-club').textContent = `${getTeamName(pick.team_code)} · ${pick.club || ''}`.replace(/ · $/, '');
+}
+
+function onTopScorerSearch(query) {
+  clearTimeout(topScorerState.searchTimeout);
+  
+  // Show/hide clear button
+  const clearBtn = document.getElementById('ts-search-clear');
+  if (clearBtn) {
+    clearBtn.style.display = query ? 'flex' : 'none';
+  }
+  
+  // Debounce the search
+  topScorerState.searchTimeout = setTimeout(() => {
+    performTopScorerSearch(query.trim());
+  }, 150);
+}
+
+function performTopScorerSearch(query) {
+  if (!query) {
+    // Show all - stars first
+    topScorerState.filteredPlayers = topScorerState.allPlayers;
+    updateSectionTitle('stars');
+  } else {
+    const lowerQuery = query.toLowerCase();
+    
+    // Search in Hebrew name, English name, team code, club
+    topScorerState.filteredPlayers = topScorerState.allPlayers.filter(p => {
+      return (
+        p.name_he.toLowerCase().includes(lowerQuery) ||
+        p.name_en.toLowerCase().includes(lowerQuery) ||
+        p.team_code.toLowerCase().includes(lowerQuery) ||
+        (p.club && p.club.toLowerCase().includes(lowerQuery))
+      );
+    });
+    
+    // Sort: exact match first, then starts-with, then contains
+    topScorerState.filteredPlayers.sort((a, b) => {
+      const aHe = a.name_he.toLowerCase();
+      const bHe = b.name_he.toLowerCase();
+      const aEn = a.name_en.toLowerCase();
+      const bEn = b.name_en.toLowerCase();
+      
+      const aStarts = aHe.startsWith(lowerQuery) || aEn.startsWith(lowerQuery);
+      const bStarts = bHe.startsWith(lowerQuery) || bEn.startsWith(lowerQuery);
+      
+      if (aStarts && !bStarts) return -1;
+      if (!aStarts && bStarts) return 1;
+      
+      // Within same group - stars first
+      if (a.is_star && !b.is_star) return -1;
+      if (!a.is_star && b.is_star) return 1;
+      
+      return aHe.localeCompare(bHe);
+    });
+    
+    updateSectionTitle('search', query);
+  }
+  
+  renderTopScorerList();
+}
+
+function updateSectionTitle(mode, query = '') {
+  const title = document.getElementById('ts-section-title');
+  if (!title) return;
+  
+  if (mode === 'search') {
+    title.innerHTML = `
+      <span>🔍</span>
+      <span>תוצאות חיפוש לפי "${escapeHtml(query)}"</span>
+    `;
+  } else {
+    title.innerHTML = `
+      <span>⭐</span>
+      <span>הכוכבים הגדולים</span>
+    `;
+  }
+}
+
+function renderTopScorerList() {
+  const list = document.getElementById('ts-players-list');
+  const noResults = document.getElementById('ts-no-results');
+  if (!list) return;
+  
+  if (topScorerState.filteredPlayers.length === 0) {
+    list.style.display = 'none';
+    noResults.style.display = 'block';
+    return;
+  }
+  
+  noResults.style.display = 'none';
+  list.style.display = 'flex';
+  list.innerHTML = '';
+  
+  // If no search query, only show stars by default
+  const searchInput = document.getElementById('ts-search-input');
+  const hasQuery = searchInput && searchInput.value.trim();
+  
+  const playersToShow = hasQuery 
+    ? topScorerState.filteredPlayers
+    : topScorerState.filteredPlayers.filter(p => p.is_star);
+  
+  // Limit to 50 results to avoid lag
+  const limited = playersToShow.slice(0, 50);
+  
+  limited.forEach(player => {
+    const card = createPlayerCard(player, hasQuery ? searchInput.value.trim() : '');
+    list.appendChild(card);
+  });
+  
+  // If showing limited stars and there are more results in search, show count
+  if (!hasQuery && topScorerState.filteredPlayers.length > playersToShow.length) {
+    const moreInfo = document.createElement('div');
+    moreInfo.className = 'ts-help-text';
+    moreInfo.style.marginTop = '12px';
+    moreInfo.innerHTML = `💡 יש עוד ${topScorerState.filteredPlayers.length - playersToShow.length} שחקנים. השתמש בחיפוש כדי למצוא שחקן ספציפי.`;
+    list.appendChild(moreInfo);
+  }
+}
+
+function createPlayerCard(player, searchQuery = '') {
+  const card = document.createElement('div');
+  card.className = 'ts-player-card';
+  if (player.is_star) card.classList.add('star');
+  if (topScorerState.currentPick?.id === player.id) {
+    card.classList.add('selected');
+  }
+  
+  const flag = getCountryFlag(player.team_code);
+  const teamName = getTeamName(player.team_code);
+  
+  // Highlight matching text
+  let displayName = player.name_he;
+  if (searchQuery) {
+    displayName = highlightMatch(player.name_he, searchQuery);
+  }
+  
+  const starBadge = player.is_star ? '<span class="ts-player-star-badge">⭐ כוכב</span>' : '';
+  const positionBadge = player.position ? `<span class="ts-player-position">${player.position}</span>` : '';
+  
+  card.innerHTML = `
+    <span class="ts-player-flag">${flag}</span>
+    <div class="ts-player-info">
+      <div class="ts-player-name">${starBadge}${displayName}</div>
+      <div class="ts-player-meta">
+        ${positionBadge}
+        <span>${teamName}</span>
+        ${player.club ? `<span>· ${escapeHtml(player.club)}</span>` : ''}
+      </div>
+    </div>
+    <div class="ts-player-action">
+      ${topScorerState.currentPick?.id === player.id 
+        ? '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>'
+        : '‹'
+      }
+    </div>
+  `;
+  
+  card.addEventListener('click', () => selectTopScorer(player));
+  
+  return card;
+}
+
+function highlightMatch(text, query) {
+  if (!query) return escapeHtml(text);
+  
+  const escapedText = escapeHtml(text);
+  const escapedQuery = escapeHtml(query);
+  const regex = new RegExp(`(${escapedQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  
+  return escapedText.replace(regex, '<span class="ts-highlight">$1</span>');
+}
+
+async function selectTopScorer(player) {
+  if (!state.currentUser || !state.currentPool) return;
+  
+  // Confirm if changing
+  if (topScorerState.currentPick && topScorerState.currentPick.id !== player.id) {
+    const confirmed = window.confirm(
+      `להחליף את הבחירה?\n\nמ: ${topScorerState.currentPick.name_he}\nל: ${player.name_he}`
+    );
+    if (!confirmed) return;
+  }
+  
+  try {
+    // Upsert pick
+    const { error } = await supabaseClient
+      .from('top_scorer_picks')
+      .upsert({
+        user_id: state.currentUser.id,
+        pool_id: state.currentPool.id,
+        player_id: player.id
+      }, {
+        onConflict: 'user_id'
+      });
+    
+    if (error) {
+      console.error('Save top scorer error:', error);
+      showToast('שגיאה בשמירת הבחירה', 'error');
+      return;
+    }
+    
+    topScorerState.currentPick = player;
+    updateCurrentPickDisplay();
+    renderTopScorerList();
+    
+    showToast(`🥇 בחרת ב-${player.name_he}!`, 'success');
+    
+    // Clear search
+    const searchInput = document.getElementById('ts-search-input');
+    if (searchInput && searchInput.value) {
+      searchInput.value = '';
+      onTopScorerSearch('');
+    }
+    
+  } catch (err) {
+    console.error('Select top scorer error:', err);
+    showToast('שגיאה לא צפויה', 'error');
+  }
+}
+
+async function clearTopScorerPick() {
+  if (!topScorerState.currentPick) return;
+  
+  const confirmed = window.confirm('לבטל את הבחירה של מלך השערים?');
+  if (!confirmed) return;
+  
+  try {
+    const { error } = await supabaseClient
+      .from('top_scorer_picks')
+      .delete()
+      .eq('user_id', state.currentUser.id);
+    
+    if (error) {
+      console.error('Clear top scorer error:', error);
+      showToast('שגיאה בביטול הבחירה', 'error');
+      return;
+    }
+    
+    topScorerState.currentPick = null;
+    updateCurrentPickDisplay();
+    renderTopScorerList();
+    
+    showToast('הבחירה בוטלה', 'info');
+    
+  } catch (err) {
+    console.error('Clear top scorer error:', err);
+  }
+}
+
+function clearTopScorerSearch() {
+  const input = document.getElementById('ts-search-input');
+  if (input) {
+    input.value = '';
+    onTopScorerSearch('');
+  }
+}
+
+// ============================================================
 // POOL SETTINGS - Full settings screen
 // ============================================================
 

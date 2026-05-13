@@ -1313,6 +1313,98 @@ function loadTablerFallback() {
   </div>
 
   <!-- ============================================================ -->
+  <!-- TOP SCORER PREDICTION SCREEN                                 -->
+  <!-- ============================================================ -->
+  <div id="top-scorer-screen" class="screen">
+    <div class="topbar">
+      <button class="btn-icon" onclick="goToDashboard()" aria-label="חזור">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12l14 0"></path>
+          <path d="M5 12l6 6"></path>
+          <path d="M5 12l6 -6"></path>
+        </svg>
+      </button>
+      <span class="topbar-title">מלך השערים</span>
+      <div style="width: 44px;"></div>
+    </div>
+
+    <div class="container">
+      <!-- Intro hero -->
+      <div class="ts-hero">
+        <div class="ts-hero-trophy">🥇</div>
+        <div class="ts-hero-title">נחש את מלך השערים</div>
+        <div class="ts-hero-desc">
+          מי יקבע הכי הרבה שערים במונדיאל?<br>
+          <strong>+25 נקודות בונוס</strong> אם תנחש נכון!
+        </div>
+      </div>
+
+      <!-- Current pick display (when selected) -->
+      <div id="ts-current-pick" class="ts-current-pick" style="display: none;">
+        <div class="ts-current-label">הבחירה שלך:</div>
+        <div class="ts-current-content">
+          <span class="ts-current-flag" id="ts-current-flag">🏳️</span>
+          <div class="ts-current-info">
+            <div class="ts-current-name" id="ts-current-name">-</div>
+            <div class="ts-current-club" id="ts-current-club">-</div>
+          </div>
+          <button class="ts-change-btn" onclick="clearTopScorerPick()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Search box -->
+      <div class="ts-search-wrapper">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ts-search-icon">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          id="ts-search-input" 
+          class="ts-search-input" 
+          placeholder="חפש שחקן..." 
+          autocomplete="off"
+          oninput="onTopScorerSearch(this.value)"
+        >
+        <button class="ts-search-clear" id="ts-search-clear" onclick="clearTopScorerSearch()" style="display: none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Section title -->
+      <div class="ts-section-title" id="ts-section-title">
+        <span>⭐</span>
+        <span>הכוכבים הגדולים</span>
+      </div>
+
+      <!-- Players list -->
+      <div id="ts-players-list" class="ts-players-list">
+        <div class="ts-loading">טוען שחקנים...</div>
+      </div>
+
+      <!-- No results -->
+      <div id="ts-no-results" class="ts-no-results" style="display: none;">
+        <div class="ts-no-results-icon">🔍</div>
+        <div class="ts-no-results-title">לא נמצאו שחקנים</div>
+        <div class="ts-no-results-text">נסה לחפש שם אחר</div>
+      </div>
+
+      <!-- Help text -->
+      <div class="ts-help-text">
+        💡 רשימת שחקנים מורחבת כוללת מעל 200 שחקני מונדיאל. תוכל לחפש כל שחקן שמשתתף בטורניר.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
   <!-- LEADERBOARD SCREEN                                           -->
   <!-- ============================================================ -->
   <div id="leaderboard-screen" class="screen">
@@ -1680,6 +1772,18 @@ function loadTablerFallback() {
         <span>לוח משחקים</span>
         <i class="ti ti-chevron-left menu-arrow"></i>
       </button>
+      <button class="menu-item" onclick="showTopScorer()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 8px;">
+          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+          <path d="M4 22h16"></path>
+          <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+          <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+        </svg>
+        <span>מלך השערים</span>
+        <i class="ti ti-chevron-left menu-arrow"></i>
+      </button>
       <button class="menu-item" onclick="showHelp()">
         <i class="ti ti-help gold"></i>
         <span>עזרה ושאלות נפוצות</span>
@@ -1728,7 +1832,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v0.8.1</span>
+      <span class="menu-version">v0.9.0</span>
     </div>
   </div>
 
