@@ -1,0 +1,35 @@
+# ============================================================
+# FriendlyBet - Score Calculation Workflow
+# ============================================================
+# Runs every 30 minutes during the tournament
+# Calculates points for all users based on finished matches
+# ============================================================
+
+name: Calculate User Scores
+
+on:
+  schedule:
+    # Every 30 minutes
+    - cron: '*/30 * * * *'
+  
+  # Allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  calculate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Calculate scores
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/calculate-scores.js
