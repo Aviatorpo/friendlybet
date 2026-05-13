@@ -3613,9 +3613,9 @@ function renderFullLeaderboard(users) {
 
 function formatScoreDescription(user) {
   const parts = [];
-  if (user.group_score > 0) parts.push(`בתים: ${user.group_score}`);
+  if (user.groups_score > 0) parts.push(`בתים: ${user.groups_score}`);
   if (user.knockout_score > 0) parts.push(`נוקאאוט: ${user.knockout_score}`);
-  if (user.top_scorer_score > 0) parts.push(`מלך השערים: ${user.top_scorer_score}`);
+  if (user.bonus_score > 0) parts.push(`בונוס: ${user.bonus_score}`);
   
   if (parts.length === 0) return 'עדיין בלי נקודות';
   return parts.join(' · ');
