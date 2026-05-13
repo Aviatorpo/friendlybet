@@ -78,6 +78,19 @@ const TEAM_INFO = {
   'Iraq': { code: 'IRQ', name_he: 'עיראק', tier: 'underdog', fifa_ranking: 46 },
   'Jordan': { code: 'JOR', name_he: 'ירדן', tier: 'underdog', fifa_ranking: 47 },
   'Uzbekistan': { code: 'UZB', name_he: 'אוזבקיסטן', tier: 'underdog', fifa_ranking: 48 },
+  
+  // Added qualifiers (March 31, 2026 playoffs)
+  'South Africa': { code: 'RSA', name_he: 'דרום אפריקה', tier: 'underdog', fifa_ranking: 49 },
+  'Algeria': { code: 'ALG', name_he: 'אלג\'יריה', tier: 'contender', fifa_ranking: 31 },
+  'Czechia': { code: 'CZE', name_he: 'צ\'כיה', tier: 'contender', fifa_ranking: 28 },
+  'Haiti': { code: 'HAI', name_he: 'האיטי', tier: 'underdog', fifa_ranking: 50 },
+  'Bosnia-Herzegovina': { code: 'BIH', name_he: 'בוסניה-הרצגובינה', tier: 'underdog', fifa_ranking: 51 },
+  'Cape Verde Islands': { code: 'CPV', name_he: 'כף ורדה', tier: 'underdog', fifa_ranking: 52 },
+  'Congo DR': { code: 'COD', name_he: 'קונגו', tier: 'underdog', fifa_ranking: 53 },
+  'Ivory Coast': { code: 'CIV', name_he: 'חוף השנהב', tier: 'contender', fifa_ranking: 32 },
+  'Qatar': { code: 'QAT', name_he: 'קטאר', tier: 'underdog', fifa_ranking: 54 },
+  'Scotland': { code: 'SCO', name_he: 'סקוטלנד', tier: 'contender', fifa_ranking: 33 },
+  'Curaçao': { code: 'CUR', name_he: 'קוראסאו', tier: 'underdog', fifa_ranking: 55 },
 };
 
 // ============================================================
@@ -208,15 +221,27 @@ async function syncTeams() {
   console.log('🧹 Cleaning up existing data...');
   
   // Delete all picks (they may reference teams that won't exist)
-  await callSupabase('DELETE', 'group_picks', { query: '?id=neq.00000000-0000-0000-0000-000000000000' });
-  console.log('   ✅ Deleted all group_picks');
+  try {
+    await callSupabase('DELETE', 'group_picks', { query: '?id=neq.00000000-0000-0000-0000-000000000000' });
+    console.log('   ✅ Deleted all group_picks');
+  } catch (err) {
+    console.log(`   ⚠️  group_picks cleanup: ${err.message}`);
+  }
   
-  await callSupabase('DELETE', 'knockout_picks', { query: '?id=neq.00000000-0000-0000-0000-000000000000' });
-  console.log('   ✅ Deleted all knockout_picks');
+  try {
+    await callSupabase('DELETE', 'knockout_picks', { query: '?id=neq.00000000-0000-0000-0000-000000000000' });
+    console.log('   ✅ Deleted all knockout_picks');
+  } catch (err) {
+    console.log(`   ⚠️  knockout_picks cleanup: ${err.message}`);
+  }
   
-  // Delete teams
-  await callSupabase('DELETE', 'teams', { query: '?id=neq.00000000-0000-0000-0000-000000000000' });
-  console.log('   ✅ Deleted all teams\n');
+  // Delete teams - use code instead of id (teams table uses 'code' as primary key)
+  try {
+    await callSupabase('DELETE', 'teams', { query: '?code=neq.__NEVER__' });
+    console.log('   ✅ Deleted all teams\n');
+  } catch (err) {
+    console.log(`   ⚠️  teams cleanup: ${err.message}\n`);
+  }
   
   // Step 5: Insert new teams
   console.log('💾 Inserting teams...');
