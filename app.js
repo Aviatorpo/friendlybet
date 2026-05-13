@@ -821,7 +821,7 @@ async function showAdminMembers() {
   closeMenu();
   
   // Verify user is admin
-  if (!state.currentPool || state.currentPool.admin_id !== state.currentUser.id) {
+  if (!state.currentPool || !state.currentUser.is_admin) {
     showToast('🚫 רק המארגן יכול לגשת לאזור הזה', 'error');
     return;
   }
@@ -887,7 +887,7 @@ async function loadAdminMembers() {
       ...u,
       groupPicksCount: groupPicksByUser[u.id] || 0,
       knockoutPicksCount: knockoutPicksByUser[u.id] || 0,
-      isAdmin: u.id === pool.admin_id
+      isAdmin: u.is_admin === true
     }));
     
     renderAdminMembers();
@@ -980,7 +980,7 @@ function updatePoolLockCard() {
 }
 
 async function togglePoolLock() {
-  if (!state.currentPool || state.currentPool.admin_id !== state.currentUser.id) {
+  if (!state.currentPool || !state.currentUser.is_admin) {
     showToast('🚫 רק המארגן יכול לעשות זאת', 'error');
     return;
   }
