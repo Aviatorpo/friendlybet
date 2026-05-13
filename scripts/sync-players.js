@@ -51,6 +51,25 @@ function getTeamCode(teamName) {
   return TEAM_NAME_TO_CODE[teamName] || null;
 }
 
+// Teams considered favorites (their attackers are auto-stars)
+const FAVORITE_TEAMS = new Set([
+  'ARG', 'BRA', 'FRA', 'ENG', 'ESP', 'POR', 'GER', 'NED'
+]);
+
+// Positions considered "attacking" (likely goal scorers)
+const ATTACKING_POSITIONS = new Set([
+  'Offence', 'Centre-Forward', 'Left Winger', 'Right Winger',
+  'Attacking Midfield', 'Midfield', 'Centre-Midfield',
+  'FORWARD', 'MIDFIELDER', 'ATTACK', 'MID'
+]);
+
+function isAutoStar(teamCode, position) {
+  // Star if: from favorite team AND attacking position
+  if (!FAVORITE_TEAMS.has(teamCode)) return false;
+  if (!position) return false;
+  return ATTACKING_POSITIONS.has(position);
+}
+
 async function callFootballAPI(endpoint) {
   const url = `${FOOTBALL_API_BASE}${endpoint}`;
   const response = await fetch(url, {
@@ -146,14 +165,15 @@ async function smartSync() {
         totalPlayersFound += squad.length;
         
         squad.forEach(player => {
+          const position = player.position || 'MID';
           allSquadPlayers.push({
             external_id: String(player.id),
             team_external_id: String(team.id),
             name_en: player.name,
             name_he: player.name,
             team_code: teamCode,
-            position: player.position || 'MID',
-            is_star: false,
+            position: position,
+            is_star: isAutoStar(teamCode, position),
             goals_so_far: 0,
             data_source: 'api',
             last_synced: new Date().toISOString()

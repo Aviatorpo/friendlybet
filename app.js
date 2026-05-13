@@ -1908,26 +1908,31 @@ async function selectTopScorer(player) {
   // Confirm if changing
   if (topScorerState.currentPick && topScorerState.currentPick.id !== player.id) {
     const confirmed = window.confirm(
-      `להחליף את הבחירה?\n\nמ: ${topScorerState.currentPick.name_he}\nל: ${player.name_he}`
+      `להחליף את הבחירה?\n\nמ: ${topScorerState.currentPick.name_he || topScorerState.currentPick.name_en}\nל: ${player.name_he || player.name_en}`
     );
     if (!confirmed) return;
   }
   
   try {
-    // Upsert pick
+    // Strategy: delete existing + insert new (more reliable than upsert)
+    await supabaseClient
+      .from('top_scorer_picks')
+      .delete()
+      .eq('user_id', state.currentUser.id)
+      .eq('pool_id', state.currentPool.id);
+    
+    // Insert new pick
     const { error } = await supabaseClient
       .from('top_scorer_picks')
-      .upsert({
+      .insert({
         user_id: state.currentUser.id,
         pool_id: state.currentPool.id,
         player_id: player.id
-      }, {
-        onConflict: 'user_id'
       });
     
     if (error) {
       console.error('Save top scorer error:', error);
-      showToast('שגיאה בשמירת הבחירה', 'error');
+      showToast('שגיאה בשמירת הבחירה: ' + (error.message || ''), 'error');
       return;
     }
     
@@ -1935,7 +1940,8 @@ async function selectTopScorer(player) {
     updateCurrentPickDisplay();
     renderTopScorerList();
     
-    showToast(`🥇 בחרת ב-${player.name_he}!`, 'success');
+    const displayName = player.name_he || player.name_en || 'השחקן';
+    showToast(`🥇 בחרת ב-${displayName}!`, 'success');
     
     // Clear search
     const searchInput = document.getElementById('ts-search-input');
@@ -1946,7 +1952,7 @@ async function selectTopScorer(player) {
     
   } catch (err) {
     console.error('Select top scorer error:', err);
-    showToast('שגיאה לא צפויה', 'error');
+    showToast('שגיאה לא צפויה: ' + (err.message || ''), 'error');
   }
 }
 
