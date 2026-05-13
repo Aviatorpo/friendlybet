@@ -3404,6 +3404,43 @@ input:disabled + .slider {
   color: #d4a853;
 }
 
+/* Sync info banner */
+.ts-sync-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 0.5px solid rgba(56, 189, 248, 0.25);
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.ts-sync-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ts-sync-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.ts-sync-text strong {
+  color: #7dd3fc;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ts-sync-text span {
+  color: rgba(255, 255, 255, 0.6);
+}
+
 /* Current pick card */
 .ts-current-pick {
   background: linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(74, 222, 128, 0.02) 100%);
@@ -3690,6 +3727,182 @@ input:disabled + .slider {
   color: rgba(255, 255, 255, 0.6);
   line-height: 1.5;
   text-align: center;
+}
+
+/* Expand button */
+.ts-expand-btn {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.1) 0%, rgba(212, 168, 83, 0.03) 100%);
+  border: 0.5px solid rgba(212, 168, 83, 0.3);
+  color: #d4a853;
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Heebo', sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.ts-expand-btn:hover {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.15) 0%, rgba(212, 168, 83, 0.05) 100%);
+  border-color: rgba(212, 168, 83, 0.5);
+  transform: translateY(-1px);
+}
+
+.ts-expand-btn:active {
+  transform: translateY(0);
+}
+
+/* Results count info */
+.ts-results-count {
+  text-align: center;
+  padding: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+/* ============================================================ */
+/* Top Scorer Locked View                                       */
+/* ============================================================ */
+
+.ts-locked-hero {
+  text-align: center;
+  padding: 32px 16px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(168, 85, 247, 0.02) 100%);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+
+.ts-locked-icon {
+  font-size: 56px;
+  margin-bottom: 12px;
+  filter: grayscale(0.3);
+}
+
+.ts-locked-title {
+  font-size: 20px;
+  color: #c4b5fd;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.ts-locked-subtitle {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.ts-locked-explanation {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.ts-explain-row {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+
+.ts-explain-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.ts-explain-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ts-explain-text strong {
+  font-size: 13px;
+  color: white;
+  font-weight: 600;
+}
+
+.ts-explain-text span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.5;
+}
+
+/* Countdown card */
+.ts-countdown-card {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.12) 0%, rgba(212, 168, 83, 0.03) 100%);
+  border: 1px solid rgba(212, 168, 83, 0.3);
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.ts-countdown-label {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 8px;
+}
+
+.ts-countdown-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.ts-countdown-value > span:first-child {
+  font-size: 40px;
+  font-weight: 700;
+  color: #d4a853;
+  font-family: monospace;
+  line-height: 1;
+}
+
+.ts-countdown-unit {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.ts-countdown-date {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.ts-status-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 8px;
+}
+
+.ts-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
 /* ============================================================ */

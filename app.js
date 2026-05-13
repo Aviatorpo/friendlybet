@@ -1323,7 +1323,8 @@ const topScorerState = {
   allPlayers: [],
   filteredPlayers: [],
   currentPick: null,  // The player selected
-  searchTimeout: null
+  searchTimeout: null,
+  showAll: false  // false = show only stars, true = show all
 };
 
 async function showTopScorer() {
@@ -1341,6 +1342,32 @@ async function showTopScorer() {
   
   showScreen('top-scorer-screen');
   
+  // Check if feature is unlocked
+  const { data: settings } = await supabaseClient
+    .from('app_settings')
+    .select('*')
+    .in('key', ['squads_released', 'squads_player_count', 'squads_last_check']);
+  
+  const settingsMap = {};
+  (settings || []).forEach(s => { settingsMap[s.key] = s.value; });
+  
+  const isUnlocked = settingsMap.squads_released === 'true';
+  const playerCount = parseInt(settingsMap.squads_player_count) || 0;
+  
+  // Toggle locked/unlocked view
+  const lockedView = document.getElementById('ts-locked-view');
+  const unlockedView = document.getElementById('ts-unlocked-view');
+  
+  if (!isUnlocked) {
+    lockedView.style.display = 'block';
+    unlockedView.style.display = 'none';
+    updateLockedView(settingsMap);
+    return;
+  }
+  
+  lockedView.style.display = 'none';
+  unlockedView.style.display = 'block';
+  
   // Load players if not loaded
   if (topScorerState.allPlayers.length === 0) {
     await loadAllPlayers();
@@ -1351,6 +1378,31 @@ async function showTopScorer() {
   
   // Render
   renderTopScorerList();
+}
+
+function updateLockedView(settings) {
+  const lastCheck = settings.squads_last_check;
+  if (lastCheck) {
+    const date = new Date(lastCheck);
+    const formatted = date.toLocaleString('he-IL', { 
+      day: 'numeric', 
+      month: 'short', 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+    const el = document.getElementById('ts-last-check');
+    if (el) el.textContent = `בדיקה אחרונה: ${formatted}`;
+  }
+  
+  // Calculate days until tournament
+  const tournamentStart = new Date('2026-06-11');
+  const now = new Date();
+  const daysUntil = Math.max(0, Math.ceil((tournamentStart - now) / (1000 * 60 * 60 * 24)));
+  
+  const countdownEl = document.getElementById('ts-countdown');
+  if (countdownEl) {
+    countdownEl.textContent = daysUntil;
+  }
 }
 
 async function loadAllPlayers() {
@@ -1527,29 +1579,98 @@ function renderTopScorerList() {
   list.style.display = 'flex';
   list.innerHTML = '';
   
-  // If no search query, only show stars by default
+  // If searching - show all matching results
   const searchInput = document.getElementById('ts-search-input');
   const hasQuery = searchInput && searchInput.value.trim();
   
-  const playersToShow = hasQuery 
-    ? topScorerState.filteredPlayers
-    : topScorerState.filteredPlayers.filter(p => p.is_star);
+  let playersToShow;
+  let totalStars = 0;
+  let totalNonStars = 0;
   
-  // Limit to 50 results to avoid lag
-  const limited = playersToShow.slice(0, 50);
+  // Calculate stats
+  topScorerState.filteredPlayers.forEach(p => {
+    if (p.is_star) totalStars++;
+    else totalNonStars++;
+  });
   
-  limited.forEach(player => {
+  if (hasQuery) {
+    // Searching - show all matches, limited to 50
+    playersToShow = topScorerState.filteredPlayers.slice(0, 50);
+  } else if (topScorerState.showAll) {
+    // Show all (after expand)
+    playersToShow = topScorerState.filteredPlayers;
+  } else {
+    // Default - show only stars
+    playersToShow = topScorerState.filteredPlayers.filter(p => p.is_star);
+  }
+  
+  // Render players
+  playersToShow.forEach(player => {
     const card = createPlayerCard(player, hasQuery ? searchInput.value.trim() : '');
     list.appendChild(card);
   });
   
-  // If showing limited stars and there are more results in search, show count
-  if (!hasQuery && topScorerState.filteredPlayers.length > playersToShow.length) {
+  // Add expand button (only when not searching and there are non-stars)
+  if (!hasQuery && totalNonStars > 0) {
+    const expandBtn = document.createElement('button');
+    expandBtn.className = 'ts-expand-btn';
+    expandBtn.onclick = toggleShowAllPlayers;
+    
+    if (topScorerState.showAll) {
+      expandBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+        <span>הסתר שחקנים נוספים</span>
+      `;
+    } else {
+      expandBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <span>הצג עוד ${totalNonStars} שחקנים</span>
+      `;
+    }
+    
+    list.appendChild(expandBtn);
+  }
+  
+  // Show count info when expanded or searching
+  if (hasQuery && topScorerState.filteredPlayers.length > playersToShow.length) {
     const moreInfo = document.createElement('div');
-    moreInfo.className = 'ts-help-text';
-    moreInfo.style.marginTop = '12px';
-    moreInfo.innerHTML = `💡 יש עוד ${topScorerState.filteredPlayers.length - playersToShow.length} שחקנים. השתמש בחיפוש כדי למצוא שחקן ספציפי.`;
+    moreInfo.className = 'ts-results-count';
+    moreInfo.textContent = `מציג ${playersToShow.length} מתוך ${topScorerState.filteredPlayers.length} תוצאות`;
     list.appendChild(moreInfo);
+  }
+}
+
+function toggleShowAllPlayers() {
+  topScorerState.showAll = !topScorerState.showAll;
+  
+  // Update section title
+  const title = document.getElementById('ts-section-title');
+  if (title && !topScorerState.showAll) {
+    title.innerHTML = `
+      <span>⭐</span>
+      <span>הכוכבים הגדולים</span>
+    `;
+  } else if (title && topScorerState.showAll) {
+    title.innerHTML = `
+      <span>👥</span>
+      <span>כל שחקני המונדיאל</span>
+    `;
+  }
+  
+  renderTopScorerList();
+  
+  // Scroll to top of list smoothly
+  if (topScorerState.showAll) {
+    setTimeout(() => {
+      const expandBtn = document.querySelector('.ts-expand-btn');
+      if (expandBtn) {
+        expandBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
   }
 }
 

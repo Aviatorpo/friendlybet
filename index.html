@@ -1329,77 +1329,133 @@ function loadTablerFallback() {
     </div>
 
     <div class="container">
-      <!-- Intro hero -->
-      <div class="ts-hero">
-        <div class="ts-hero-trophy">🥇</div>
-        <div class="ts-hero-title">נחש את מלך השערים</div>
-        <div class="ts-hero-desc">
-          מי יקבע הכי הרבה שערים במונדיאל?<br>
-          <strong>+25 נקודות בונוס</strong> אם תנחש נכון!
+      <!-- LOCKED VIEW - shown until squads are released -->
+      <div id="ts-locked-view">
+        <div class="ts-locked-hero">
+          <div class="ts-locked-icon">🔒</div>
+          <div class="ts-locked-title">הפיצ'ר עדיין נעול</div>
+          <div class="ts-locked-subtitle">מחכים לפרסום הסגלים הרשמיים</div>
+        </div>
+
+        <div class="ts-locked-explanation">
+          <div class="ts-explain-row">
+            <div class="ts-explain-icon">📋</div>
+            <div class="ts-explain-text">
+              <strong>למה זה נעול?</strong>
+              <span>פיפ"א טרם פרסמה את הסגלים הרשמיים של כל הקבוצות. כל קבוצה צריכה להגיש 26 שחקנים עד 1 ביוני.</span>
+            </div>
+          </div>
+
+          <div class="ts-explain-row">
+            <div class="ts-explain-icon">🤖</div>
+            <div class="ts-explain-text">
+              <strong>איך זה ייפתח?</strong>
+              <span>המערכת בודקת אוטומטית כל יום. ברגע שהסגלים יתפרסמו - הפיצ'ר ייפתח לבד עם כל ~736 השחקנים האמיתיים!</span>
+            </div>
+          </div>
+
+          <div class="ts-explain-row">
+            <div class="ts-explain-icon">🥇</div>
+            <div class="ts-explain-text">
+              <strong>מה אפשר לעשות בינתיים?</strong>
+              <span>תמלא את הימור הבתים והנוקאאוט. הזמן את החברים. כשהפיצ'ר ייפתח - תקבל התראה.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ts-countdown-card">
+          <div class="ts-countdown-label">⏱️ עד פתיחת המונדיאל:</div>
+          <div class="ts-countdown-value">
+            <span id="ts-countdown">-</span>
+            <span class="ts-countdown-unit">ימים</span>
+          </div>
+          <div class="ts-countdown-date">11 ביוני 2026</div>
+        </div>
+
+        <div class="ts-status-info">
+          <span class="ts-status-dot"></span>
+          <span id="ts-last-check">טוען...</span>
         </div>
       </div>
 
-      <!-- Current pick display (when selected) -->
-      <div id="ts-current-pick" class="ts-current-pick" style="display: none;">
-        <div class="ts-current-label">הבחירה שלך:</div>
-        <div class="ts-current-content">
-          <span class="ts-current-flag" id="ts-current-flag">🏳️</span>
-          <div class="ts-current-info">
-            <div class="ts-current-name" id="ts-current-name">-</div>
-            <div class="ts-current-club" id="ts-current-club">-</div>
+      <!-- UNLOCKED VIEW - shown when squads are released -->
+      <div id="ts-unlocked-view" style="display: none;">
+        <!-- Intro hero -->
+        <div class="ts-hero">
+          <div class="ts-hero-trophy">🥇</div>
+          <div class="ts-hero-title">נחש את מלך השערים</div>
+          <div class="ts-hero-desc">
+            מי יקבע הכי הרבה שערים במונדיאל?<br>
+            <strong>+25 נקודות בונוס</strong> אם תנחש נכון!
           </div>
-          <button class="ts-change-btn" onclick="clearTopScorerPick()">
+        </div>
+
+        <!-- Sync info banner -->
+        <div class="ts-sync-banner">
+          <span class="ts-sync-icon">📡</span>
+          <div class="ts-sync-text">
+            <strong>הרשימה מתעדכנת אוטומטית</strong>
+            <span>שערים מעודכנים בזמן אמת מ-football-data.org</span>
+          </div>
+        </div>
+
+        <!-- Current pick display -->
+        <div id="ts-current-pick" class="ts-current-pick" style="display: none;">
+          <div class="ts-current-label">הבחירה שלך:</div>
+          <div class="ts-current-content">
+            <span class="ts-current-flag" id="ts-current-flag">🏳️</span>
+            <div class="ts-current-info">
+              <div class="ts-current-name" id="ts-current-name">-</div>
+              <div class="ts-current-club" id="ts-current-club">-</div>
+            </div>
+            <button class="ts-change-btn" onclick="clearTopScorerPick()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Search box -->
+        <div class="ts-search-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ts-search-icon">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
+            id="ts-search-input" 
+            class="ts-search-input" 
+            placeholder="חפש שחקן..." 
+            autocomplete="off"
+            oninput="onTopScorerSearch(this.value)"
+          >
+          <button class="ts-search-clear" id="ts-search-clear" onclick="clearTopScorerSearch()" style="display: none;">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
         </div>
-      </div>
 
-      <!-- Search box -->
-      <div class="ts-search-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ts-search-icon">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input 
-          type="text" 
-          id="ts-search-input" 
-          class="ts-search-input" 
-          placeholder="חפש שחקן..." 
-          autocomplete="off"
-          oninput="onTopScorerSearch(this.value)"
-        >
-        <button class="ts-search-clear" id="ts-search-clear" onclick="clearTopScorerSearch()" style="display: none;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-      </div>
+        <!-- Section title -->
+        <div class="ts-section-title" id="ts-section-title">
+          <span>⭐</span>
+          <span>הכוכבים הגדולים</span>
+        </div>
 
-      <!-- Section title -->
-      <div class="ts-section-title" id="ts-section-title">
-        <span>⭐</span>
-        <span>הכוכבים הגדולים</span>
-      </div>
+        <!-- Players list -->
+        <div id="ts-players-list" class="ts-players-list">
+          <div class="ts-loading">טוען שחקנים...</div>
+        </div>
 
-      <!-- Players list -->
-      <div id="ts-players-list" class="ts-players-list">
-        <div class="ts-loading">טוען שחקנים...</div>
-      </div>
-
-      <!-- No results -->
-      <div id="ts-no-results" class="ts-no-results" style="display: none;">
-        <div class="ts-no-results-icon">🔍</div>
-        <div class="ts-no-results-title">לא נמצאו שחקנים</div>
-        <div class="ts-no-results-text">נסה לחפש שם אחר</div>
-      </div>
-
-      <!-- Help text -->
-      <div class="ts-help-text">
-        💡 רשימת שחקנים מורחבת כוללת מעל 200 שחקני מונדיאל. תוכל לחפש כל שחקן שמשתתף בטורניר.
+        <!-- No results -->
+        <div id="ts-no-results" class="ts-no-results" style="display: none;">
+          <div class="ts-no-results-icon">🔍</div>
+          <div class="ts-no-results-title">לא נמצאו שחקנים</div>
+          <div class="ts-no-results-text">נסה לחפש שם אחר</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1832,7 +1888,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v0.9.0</span>
+      <span class="menu-version">v0.9.3</span>
     </div>
   </div>
 
