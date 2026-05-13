@@ -927,12 +927,13 @@ function createMemberCard(member, picksCount) {
   if (picksCount === 0) {
     statusClass = 'not-started';
     statusText = 'עדיין לא הימר';
-  } else if (picksCount < 32) {
+  } else if (picksCount < 24) {
+    // Minimum is 24 (2 per group × 12 groups)
     statusClass = 'partial';
-    statusText = `הימר ${picksCount}/32`;
+    statusText = `הימר על ${picksCount} בחירות`;
   } else {
     statusClass = 'completed';
-    statusText = 'הימר על כל הבתים';
+    statusText = 'השלים את הבתים';
   }
   
   // Joined date
@@ -1070,7 +1071,8 @@ function renderAdminMembers() {
   // Stats
   const total = adminState.members.length;
   const pending = adminState.members.filter(m => m.approval_status === 'pending' && !m.isAdmin).length;
-  const withGroups = adminState.members.filter(m => m.groupPicksCount >= 32).length;
+  // "Complete" = at least 24 picks (2 per group × 12 groups minimum)
+  const withGroups = adminState.members.filter(m => m.groupPicksCount >= 24).length;
   const withKnockout = adminState.members.filter(m => m.knockoutPicksCount >= 16).length;
   
   document.getElementById('admin-stat-total').textContent = total;
@@ -1117,7 +1119,7 @@ function renderAdminMembers() {
       : '';
     
     // Progress dots
-    const groupsDone = member.groupPicksCount >= 32;
+    const groupsDone = member.groupPicksCount >= 24;
     const knockoutDone = member.knockoutPicksCount >= 16;
     
     // Quick action buttons for pending users
@@ -1150,7 +1152,7 @@ function renderAdminMembers() {
         <div class="admin-member-name">${adminBadge}${pendingBadge}${escapeHtml(member.nickname || 'משתמש')}</div>
         <div class="admin-member-progress">
           <span class="admin-member-progress-dot ${groupsDone ? 'done' : ''}">
-            בתים: ${member.groupPicksCount}/32 ${groupsDone ? '✓' : ''}
+            בתים: ${member.groupPicksCount} ${groupsDone ? '✓' : ''}
           </span>
           <span class="admin-member-progress-dot ${knockoutDone ? 'done' : ''}">
             נוקאאוט: ${member.knockoutPicksCount}/16 ${knockoutDone ? '✓' : ''}

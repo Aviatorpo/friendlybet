@@ -29,17 +29,21 @@ if (!SUPABASE_KEY || !FOOTBALL_TOKEN) {
 const TEAM_NAME_TO_CODE = {
   'Argentina': 'ARG', 'France': 'FRA', 'Brazil': 'BRA', 'England': 'ENG',
   'Spain': 'ESP', 'Portugal': 'POR', 'Netherlands': 'NED', 'Germany': 'GER',
-  'Belgium': 'BEL', 'Croatia': 'CRO', 'Italy': 'ITA', 'Uruguay': 'URU',
-  'United States': 'USA', 'Mexico': 'MEX', 'Switzerland': 'SUI', 'Denmark': 'DEN',
+  'Belgium': 'BEL', 'Croatia': 'CRO', 'Uruguay': 'URU',
+  'United States': 'USA', 'Mexico': 'MEX', 'Switzerland': 'SUI',
   'Austria': 'AUT', 'Sweden': 'SWE', 'Senegal': 'SEN', 'Morocco': 'MAR',
-  'Japan': 'JPN', 'South Korea': 'KOR', 'Republic of Korea': 'KOR',
-  'Australia': 'AUS', 'Canada': 'CAN', 'Poland': 'POL', 'Ukraine': 'UKR',
-  'Turkey': 'TUR', 'Norway': 'NOR', 'Serbia': 'SRB', 'Greece': 'GRE',
-  'Iran': 'IRN', 'Tunisia': 'TUN', 'Egypt': 'EGY', 'Nigeria': 'NGA',
-  'Cameroon': 'CMR', 'Ghana': 'GHA', 'Costa Rica': 'CRC', 'Panama': 'PAN',
-  'Jamaica': 'JAM', 'Peru': 'PER', 'Chile': 'CHI', 'Paraguay': 'PAR',
-  'Ecuador': 'ECU', 'New Zealand': 'NZL', 'Uzbekistan': 'UZB', 'Iraq': 'IRQ',
+  'Japan': 'JPN', 'South Korea': 'KOR', 'Republic of Korea': 'KOR', 'Korea Republic': 'KOR',
+  'Australia': 'AUS', 'Canada': 'CAN', 'Ukraine': 'UKR',
+  'Turkey': 'TUR', 'Norway': 'NOR', 'Iran': 'IRN', 'Tunisia': 'TUN', 
+  'Egypt': 'EGY', 'Cameroon': 'CMR', 'Ghana': 'GHA', 'Panama': 'PAN',
+  'Jamaica': 'JAM', 'Paraguay': 'PAR',
+  'New Zealand': 'NZL', 'Uzbekistan': 'UZB', 'Iraq': 'IRQ',
   'Saudi Arabia': 'SAU', 'Jordan': 'JOR',
+  // Added qualifiers
+  'South Africa': 'RSA', 'Algeria': 'ALG', 'Czechia': 'CZE',
+  'Haiti': 'HAI', 'Bosnia-Herzegovina': 'BIH', 'Cape Verde Islands': 'CPV',
+  'Congo DR': 'COD', 'Ivory Coast': 'CIV', 'Qatar': 'QAT',
+  'Scotland': 'SCO', 'Curaçao': 'CUR',
 };
 
 function getTeamCode(teamName) {
