@@ -1582,9 +1582,7 @@ async function loadAllPlayers() {
   try {
     const { data: players, error } = await supabaseClient
       .from('players')
-      .select('*')
-      .order('is_star', { ascending: false })
-      .order('name_he', { ascending: true });
+      .select('*');
     
     if (error) {
       console.error('Players load error:', error);
@@ -1592,13 +1590,104 @@ async function loadAllPlayers() {
       return;
     }
     
-    topScorerState.allPlayers = players || [];
-    topScorerState.filteredPlayers = players || [];
+    // Smart sort - rank by likelihood of being top scorer
+    const sorted = (players || []).slice().sort((a, b) => {
+      const scoreA = calculateScorerRank(a);
+      const scoreB = calculateScorerRank(b);
+      
+      // Higher rank first
+      if (scoreA !== scoreB) return scoreB - scoreA;
+      
+      // Same rank: alphabetical by Hebrew/English name
+      const nameA = (a.name_he || a.name_en || '').toLowerCase();
+      const nameB = (b.name_he || b.name_en || '').toLowerCase();
+      return nameA.localeCompare(nameB);
+    });
+    
+    topScorerState.allPlayers = sorted;
+    topScorerState.filteredPlayers = sorted;
     
   } catch (err) {
     console.error('Load players error:', err);
     showToast('שגיאה לא צפויה', 'error');
   }
+}
+
+// ============================================================
+// Smart ranking algorithm for top scorer candidates
+// ============================================================
+
+const FAVORITE_TEAMS_FOR_RANK = new Set([
+  'ARG', 'BRA', 'FRA', 'ENG', 'ESP', 'POR', 'GER', 'NED'
+]);
+
+const CONTENDER_TEAMS_FOR_RANK = new Set([
+  'BEL', 'CRO', 'URU', 'COL', 'MAR', 'SUI', 'USA', 'MEX',
+  'JPN', 'KOR', 'SEN', 'IRN'
+]);
+
+const STRIKER_POSITIONS = new Set([
+  'Centre-Forward', 'Offence', 'FORWARD', 'ATTACK'
+]);
+
+const WINGER_POSITIONS = new Set([
+  'Left Winger', 'Right Winger'
+]);
+
+const ATTACKING_MID_POSITIONS = new Set([
+  'Attacking Midfield'
+]);
+
+const MIDFIELDER_POSITIONS = new Set([
+  'Midfield', 'Centre-Midfield', 'MIDFIELDER', 'MID'
+]);
+
+const DEFENSIVE_POSITIONS = new Set([
+  'Goalkeeper', 'Centre-Back', 'Left-Back', 'Right-Back', 
+  'Defensive Midfield', 'Defence', 'DEFENDER', 'GOALKEEPER'
+]);
+
+function calculateScorerRank(player) {
+  let score = 0;
+  
+  // Filter out defenders/goalkeepers entirely
+  if (player.position && DEFENSIVE_POSITIONS.has(player.position)) {
+    return -100;  // Always last
+  }
+  
+  // 1. Actual goals scored (most important DURING tournament)
+  // Worth a LOT - 1 goal in tournament beats any pre-tournament prediction
+  const goals = player.goals_so_far || 0;
+  score += goals * 1000;
+  
+  // 2. POSITION is the primary factor before tournament
+  // Strikers score 70% of goals, then wingers, then attacking mids
+  if (player.position) {
+    if (STRIKER_POSITIONS.has(player.position)) {
+      score += 100;  // Strikers - top tier
+    } else if (WINGER_POSITIONS.has(player.position)) {
+      score += 60;   // Wingers - second tier
+    } else if (ATTACKING_MID_POSITIONS.has(player.position)) {
+      score += 40;   // Attacking mids - third tier
+    } else if (MIDFIELDER_POSITIONS.has(player.position)) {
+      score += 10;   // Regular mids - low chance
+    }
+  }
+  
+  // 3. Team strength multiplier
+  // Top scorer always comes from a strong team (more games, more chances)
+  if (FAVORITE_TEAMS_FOR_RANK.has(player.team_code)) {
+    score += 50;   // Strong boost for top 8 teams
+  } else if (CONTENDER_TEAMS_FOR_RANK.has(player.team_code)) {
+    score += 20;
+  }
+  
+  // 4. Marked as star (manual override for known names)
+  if (player.is_star) {
+    score += 25;
+  }
+  
+  return score;
 }
 
 async function loadMyTopScorerPick() {
@@ -1732,10 +1821,20 @@ function updateSectionTitle(mode, query = '') {
       <span>תוצאות חיפוש לפי "${escapeHtml(query)}"</span>
     `;
   } else {
-    title.innerHTML = `
-      <span>⭐</span>
-      <span>הכוכבים הגדולים</span>
-    `;
+    // Check if tournament has started (anyone scored?)
+    const hasGoals = topScorerState.allPlayers.some(p => (p.goals_so_far || 0) > 0);
+    
+    if (hasGoals) {
+      title.innerHTML = `
+        <span>🏆</span>
+        <span>המובילים כרגע</span>
+      `;
+    } else {
+      title.innerHTML = `
+        <span>⚽</span>
+        <span>החלוצים והכנפיים מהקבוצות החזקות</span>
+      `;
+    }
   }
 }
 
@@ -1825,10 +1924,19 @@ function toggleShowAllPlayers() {
   // Update section title
   const title = document.getElementById('ts-section-title');
   if (title && !topScorerState.showAll) {
-    title.innerHTML = `
-      <span>⭐</span>
-      <span>הכוכבים הגדולים</span>
-    `;
+    // Check if tournament has started
+    const hasGoals = topScorerState.allPlayers.some(p => (p.goals_so_far || 0) > 0);
+    if (hasGoals) {
+      title.innerHTML = `
+        <span>🏆</span>
+        <span>המובילים כרגע</span>
+      `;
+    } else {
+      title.innerHTML = `
+        <span>⚽</span>
+        <span>החלוצים והכנפיים מהקבוצות החזקות</span>
+      `;
+    }
   } else if (title && topScorerState.showAll) {
     title.innerHTML = `
       <span>👥</span>
@@ -1859,20 +1967,29 @@ function createPlayerCard(player, searchQuery = '') {
   
   const flag = getCountryFlag(player.team_code);
   const teamName = getTeamName(player.team_code);
+  const goals = player.goals_so_far || 0;
   
   // Highlight matching text
-  let displayName = player.name_he;
+  let displayName = player.name_he || player.name_en || 'שחקן';
   if (searchQuery) {
-    displayName = highlightMatch(player.name_he, searchQuery);
+    displayName = highlightMatch(displayName, searchQuery);
   }
   
-  const starBadge = player.is_star ? '<span class="ts-player-star-badge">⭐ כוכב</span>' : '';
+  // Build badges
+  let badges = '';
+  if (goals > 0) {
+    // Goal-scorer badge (highest priority)
+    badges = `<span class="ts-player-goals-badge">⚽ ${goals}</span>`;
+  } else if (player.is_star) {
+    badges = '<span class="ts-player-star-badge">⭐ כוכב</span>';
+  }
+  
   const positionBadge = player.position ? `<span class="ts-player-position">${player.position}</span>` : '';
   
   card.innerHTML = `
     <span class="ts-player-flag">${flag}</span>
     <div class="ts-player-info">
-      <div class="ts-player-name">${starBadge}${displayName}</div>
+      <div class="ts-player-name">${badges}${displayName}</div>
       <div class="ts-player-meta">
         ${positionBadge}
         <span>${teamName}</span>

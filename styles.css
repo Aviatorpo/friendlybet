@@ -5264,3 +5264,20 @@ input:disabled + .slider {
     transform: scale(1.08);
   }
 }
+
+/* ============================================================ */
+/* Top Scorer - Goals Badge                                     */
+/* ============================================================ */
+
+.ts-player-goals-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #fb923c, #ea580c);
+  color: white;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-left: 6px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 4px rgba(251, 146, 60, 0.3);
+}
