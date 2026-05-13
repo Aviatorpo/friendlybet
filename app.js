@@ -1577,9 +1577,11 @@ function updateLockedView(settings) {
 
 async function loadAllPlayers() {
   try {
+    // Use range to fetch all players (Supabase default limit is 1000)
     const { data: players, error } = await supabaseClient
       .from('players')
-      .select('*');
+      .select('*')
+      .range(0, 9999);  // Get up to 10,000 players
     
     if (error) {
       console.error('Players load error:', error);
