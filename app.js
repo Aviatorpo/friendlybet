@@ -1576,9 +1576,6 @@ function updateLockedView(settings) {
 }
 
 async function loadAllPlayers() {
-  const list = document.getElementById('ts-players-list');
-  list.innerHTML = '<div class="ts-loading">טוען שחקנים...</div>';
-  
   try {
     const { data: players, error } = await supabaseClient
       .from('players')
@@ -1595,10 +1592,8 @@ async function loadAllPlayers() {
       const scoreA = calculateScorerRank(a);
       const scoreB = calculateScorerRank(b);
       
-      // Higher rank first
       if (scoreA !== scoreB) return scoreB - scoreA;
       
-      // Same rank: alphabetical by Hebrew/English name
       const nameA = (a.name_he || a.name_en || '').toLowerCase();
       const nameB = (b.name_he || b.name_en || '').toLowerCase();
       return nameA.localeCompare(nameB);
@@ -1606,6 +1601,8 @@ async function loadAllPlayers() {
     
     topScorerState.allPlayers = sorted;
     topScorerState.filteredPlayers = sorted;
+    
+    console.log(`✅ Loaded ${sorted.length} players`);
     
   } catch (err) {
     console.error('Load players error:', err);
@@ -1772,6 +1769,17 @@ function onTopScorerSearch(query) {
   // Searching - hide hints
   if (hints) hints.style.display = 'none';
   
+  // Check if players are loaded
+  if (topScorerState.allPlayers.length === 0) {
+    console.warn('⚠️ No players loaded yet. Trying to load...');
+    showToast('טוען רשימת שחקנים...', 'info');
+    loadAllPlayers().then(() => {
+      // Try search again after loading
+      performTopScorerSearch(query.trim());
+    });
+    return;
+  }
+  
   // Debounce the search
   topScorerState.searchTimeout = setTimeout(() => {
     performTopScorerSearch(query.trim());
@@ -1788,49 +1796,53 @@ function setSearchValue(value) {
 
 function performTopScorerSearch(query) {
   if (!query) {
-    // Show all - stars first
     topScorerState.filteredPlayers = topScorerState.allPlayers;
-    updateSectionTitle('stars');
-  } else {
-    const lowerQuery = query.toLowerCase();
-    
-    // Search in Hebrew name, English name, team code, club
-    topScorerState.filteredPlayers = topScorerState.allPlayers.filter(p => {
-      const he = (p.name_he || '').toLowerCase();
-      const en = (p.name_en || '').toLowerCase();
-      const code = (p.team_code || '').toLowerCase();
-      const club = (p.club || '').toLowerCase();
-      
-      return (
-        he.includes(lowerQuery) ||
-        en.includes(lowerQuery) ||
-        code.includes(lowerQuery) ||
-        club.includes(lowerQuery)
-      );
-    });
-    
-    // Sort: exact match first, then starts-with, then contains
-    topScorerState.filteredPlayers.sort((a, b) => {
-      const aHe = (a.name_he || '').toLowerCase();
-      const bHe = (b.name_he || '').toLowerCase();
-      const aEn = (a.name_en || '').toLowerCase();
-      const bEn = (b.name_en || '').toLowerCase();
-      
-      const aStarts = aHe.startsWith(lowerQuery) || aEn.startsWith(lowerQuery);
-      const bStarts = bHe.startsWith(lowerQuery) || bEn.startsWith(lowerQuery);
-      
-      if (aStarts && !bStarts) return -1;
-      if (!aStarts && bStarts) return 1;
-      
-      // Within same group - stars first
-      if (a.is_star && !b.is_star) return -1;
-      if (!a.is_star && b.is_star) return 1;
-      
-      return aHe.localeCompare(bHe);
-    });
-    
-    updateSectionTitle('search', query);
+    return;
   }
+  
+  console.log(`🔍 Searching for "${query}" in ${topScorerState.allPlayers.length} players`);
+  
+  const lowerQuery = query.toLowerCase();
+  
+  // Search in Hebrew name, English name, team code, club
+  topScorerState.filteredPlayers = topScorerState.allPlayers.filter(p => {
+    const he = (p.name_he || '').toLowerCase();
+    const en = (p.name_en || '').toLowerCase();
+    const code = (p.team_code || '').toLowerCase();
+    const club = (p.club || '').toLowerCase();
+    
+    return (
+      he.includes(lowerQuery) ||
+      en.includes(lowerQuery) ||
+      code.includes(lowerQuery) ||
+      club.includes(lowerQuery)
+    );
+  });
+  
+  console.log(`   Found ${topScorerState.filteredPlayers.length} matches`);
+  if (topScorerState.filteredPlayers.length > 0) {
+    console.log(`   First match:`, topScorerState.filteredPlayers[0]);
+  }
+  
+  // Sort: exact match first, then starts-with, then contains
+  topScorerState.filteredPlayers.sort((a, b) => {
+    const aHe = (a.name_he || '').toLowerCase();
+    const bHe = (b.name_he || '').toLowerCase();
+    const aEn = (a.name_en || '').toLowerCase();
+    const bEn = (b.name_en || '').toLowerCase();
+    
+    const aStarts = aHe.startsWith(lowerQuery) || aEn.startsWith(lowerQuery);
+    const bStarts = bHe.startsWith(lowerQuery) || bEn.startsWith(lowerQuery);
+    
+    if (aStarts && !bStarts) return -1;
+    if (!aStarts && bStarts) return 1;
+    
+    // Within same group - stars first
+    if (a.is_star && !b.is_star) return -1;
+    if (!a.is_star && b.is_star) return 1;
+    
+    return aHe.localeCompare(bHe);
+  });
   
   renderTopScorerList();
 }
