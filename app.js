@@ -854,7 +854,7 @@ async function loadAdminMembers() {
       .from('users')
       .select('*')
       .eq('pool_id', state.currentPool.id)
-      .order('created_at', { ascending: true });
+      .order('joined_at', { ascending: true });
     
     if (usersError) throw usersError;
     
@@ -1039,7 +1039,7 @@ function openAdminActionModal(member) {
   avatar.textContent = initial;
   name.textContent = member.nickname || 'משתמש';
   
-  const joinedDate = new Date(member.created_at).toLocaleDateString('he-IL');
+  const joinedDate = new Date(member.joined_at).toLocaleDateString('he-IL');
   meta.textContent = `הצטרף ב-${joinedDate} · ${member.groupPicksCount} בתים · ${member.knockoutPicksCount} נוקאאוט`;
   
   document.getElementById('admin-action-overlay').classList.add('active');
