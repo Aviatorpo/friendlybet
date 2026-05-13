@@ -5,8 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0a1628">
 <meta name="description" content="הימור חברים על מונדיאל 2026 - חינמי, בלי פרסומות, בלי כסף">
-<title>FriendlyBet · הימור חברים על מונדיאל 2026</title>
+
+<!-- PWA -->
 <link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.svg">
+
+<!-- iOS specific -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FriendlyBet">
+<meta name="mobile-web-app-capable" content="yes">
+
+<title>FriendlyBet · הימור חברים על מונדיאל 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -31,6 +42,26 @@ function loadTablerFallback() {
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+<!-- ============================================================ -->
+<!-- PWA Install Banner                                           -->
+<!-- ============================================================ -->
+<div id="pwa-install-banner" class="pwa-install-banner">
+  <div class="pwa-banner-icon">📱</div>
+  <div class="pwa-banner-content">
+    <div class="pwa-banner-title">התקן את האפליקציה</div>
+    <div class="pwa-banner-text">גישה מהירה מהמסך הראשי, ללא דפדפן</div>
+  </div>
+  <button class="pwa-banner-install" onclick="triggerInstall()">
+    התקן
+  </button>
+  <button class="pwa-banner-dismiss" onclick="dismissInstallBanner()" aria-label="סגור">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </button>
+</div>
 
 <!-- ============================================================ -->
 <!-- App Container                                                -->
@@ -1888,7 +1919,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v0.9.3</span>
+      <span class="menu-version">v1.0.0</span>
     </div>
   </div>
 

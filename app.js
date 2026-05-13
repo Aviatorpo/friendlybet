@@ -4683,3 +4683,167 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// ============================================================
+// PWA - Service Worker Registration & Install Prompt
+// ============================================================
+
+let deferredInstallPrompt = null;
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => {
+        console.log('✅ Service Worker registered:', reg.scope);
+        
+        // Check for updates every 30 minutes
+        setInterval(() => reg.update(), 30 * 60 * 1000);
+        
+        // Notify about updates
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('🔄 New version available');
+                showUpdateAvailable();
+              }
+            });
+          }
+        });
+      })
+      .catch(err => {
+        console.warn('Service Worker registration failed:', err);
+      });
+    
+    // Reload on controller change (after SW update)
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        refreshing = true;
+        window.location.reload();
+      }
+    });
+  });
+}
+
+// Capture install prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+  console.log('📱 Install prompt available');
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  
+  // Show our custom install banner after a short delay
+  // (only if user hasn't dismissed it recently)
+  const lastDismissed = localStorage.getItem('pwa_install_dismissed');
+  const now = Date.now();
+  
+  if (!lastDismissed || (now - parseInt(lastDismissed)) > 7 * 24 * 60 * 60 * 1000) {
+    setTimeout(() => showInstallBanner(), 3000);
+  }
+});
+
+// Track successful installation
+window.addEventListener('appinstalled', () => {
+  console.log('✅ App installed');
+  deferredInstallPrompt = null;
+  hideInstallBanner();
+  showToast('🎉 האפליקציה הותקנה!', 'success');
+});
+
+function showInstallBanner() {
+  if (!deferredInstallPrompt) return;
+  
+  // Don't show if already in standalone mode
+  if (window.matchMedia('(display-mode: standalone)').matches) return;
+  if (window.navigator.standalone) return;  // iOS
+  
+  const banner = document.getElementById('pwa-install-banner');
+  if (banner) {
+    banner.classList.add('visible');
+  }
+}
+
+function hideInstallBanner() {
+  const banner = document.getElementById('pwa-install-banner');
+  if (banner) {
+    banner.classList.remove('visible');
+  }
+}
+
+async function triggerInstall() {
+  if (!deferredInstallPrompt) {
+    // iOS or unsupported browser
+    showIosInstallInstructions();
+    return;
+  }
+  
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  console.log('Install outcome:', outcome);
+  
+  if (outcome === 'accepted') {
+    showToast('🎉 מתקין...', 'success');
+  }
+  
+  deferredInstallPrompt = null;
+  hideInstallBanner();
+}
+
+function dismissInstallBanner() {
+  localStorage.setItem('pwa_install_dismissed', Date.now().toString());
+  hideInstallBanner();
+}
+
+function showIosInstallInstructions() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  
+  if (isIOS) {
+    alert(
+      'להתקנת האפליקציה ב-iPhone/iPad:\n\n' +
+      '1. לחץ על כפתור השיתוף ⎙ למטה\n' +
+      '2. גלול ובחר "הוסף למסך הבית"\n' +
+      '3. לחץ "הוסף"\n\n' +
+      'האפליקציה תופיע במסך הבית כמו אפליקציה רגילה!'
+    );
+  } else {
+    alert(
+      'להתקנת האפליקציה:\n\n' +
+      '• Chrome/Edge: יופיע כפתור "התקן" בשורת הכתובת\n' +
+      '• Firefox: לחץ על שלוש הנקודות → "התקן"\n' +
+      '• או הוסף לסימניות'
+    );
+  }
+}
+
+function showUpdateAvailable() {
+  const toast = document.createElement('div');
+  toast.className = 'pwa-update-toast';
+  toast.innerHTML = `
+    <span>🔄 גרסה חדשה זמינה</span>
+    <button onclick="applyUpdate()">עדכן</button>
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.classList.add('visible'), 100);
+}
+
+function applyUpdate() {
+  if (navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+  }
+}
+
+// Detect iOS and show special hint
+window.addEventListener('load', () => {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  
+  if (isIOS && !isStandalone) {
+    const lastDismissed = localStorage.getItem('pwa_install_dismissed');
+    const now = Date.now();
+    
+    if (!lastDismissed || (now - parseInt(lastDismissed)) > 7 * 24 * 60 * 60 * 1000) {
+      setTimeout(() => showInstallBanner(), 3000);
+    }
+  }
+});

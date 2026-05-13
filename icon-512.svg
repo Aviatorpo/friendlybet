@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a2942;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0a1628;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gold512" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e0b966;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d4a853;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" fill="url(#bg512)" rx="80"/>
+  
+  <!-- Decorative circles -->
+  <circle cx="100" cy="100" r="160" fill="#d4a853" opacity="0.05"/>
+  <circle cx="420" cy="420" r="130" fill="#d4a853" opacity="0.05"/>
+  
+  <!-- Trophy -->
+  <g transform="translate(256, 240)">
+    <!-- Trophy cup -->
+    <path d="M -75 -85 L 75 -85 L 65 22 Q 65 65 0 65 Q -65 65 -65 22 Z" 
+          fill="url(#gold512)" stroke="#b88a3a" stroke-width="3"/>
+    
+    <!-- Handles -->
+    <path d="M -75 -65 Q -115 -65 -115 -20 Q -115 12 -75 12" 
+          fill="none" stroke="url(#gold512)" stroke-width="11" stroke-linecap="round"/>
+    <path d="M 75 -65 Q 115 -65 115 -20 Q 115 12 75 12" 
+          fill="none" stroke="url(#gold512)" stroke-width="11" stroke-linecap="round"/>
+    
+    <!-- Base -->
+    <rect x="-32" y="60" width="64" height="16" fill="#b88a3a"/>
+    <rect x="-52" y="76" width="104" height="16" rx="4" fill="url(#gold512)"/>
+    
+    <!-- Star on trophy -->
+    <text x="0" y="5" font-size="58" text-anchor="middle" fill="#0a1628" font-weight="bold">★</text>
+  </g>
+  
+  <!-- Text "FriendlyBet" -->
+  <text x="256" y="430" font-size="40" text-anchor="middle" fill="#d4a853" 
+        font-family="Arial, sans-serif" font-weight="700" letter-spacing="2">FriendlyBet</text>
+  
+  <!-- Soccer ball decoration -->
+  <text x="80" y="450" font-size="50" opacity="0.3">⚽</text>
+</svg>
