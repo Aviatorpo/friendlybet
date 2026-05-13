@@ -166,6 +166,12 @@ async function checkPoolCode() {
       return;
     }
     
+    // Check if pool is locked
+    if (data.is_locked === true) {
+      showError('join-error', '🔒 ההימור הזה נעול ולא מקבל חברים חדשים');
+      return;
+    }
+    
     // Count members
     const { count: memberCount } = await supabaseClient
       .from('users')
@@ -801,14 +807,401 @@ function shareInviteFromMembers() {
   shareWhatsApp();
 }
 
-function showAdminMembers() {
+// ============================================================
+// ADMIN MEMBERS MANAGEMENT
+// ============================================================
+
+const adminState = {
+  members: [],
+  selectedMember: null,
+  poolData: null
+};
+
+async function showAdminMembers() {
   closeMenu();
-  showToast('🚧 ניהול חברים - בשיחה הבאה', 'info');
+  
+  // Verify user is admin
+  if (!currentPool || currentPool.admin_id !== currentUser.id) {
+    showToast('🚫 רק המארגן יכול לגשת לאזור הזה', 'error');
+    return;
+  }
+  
+  showScreen('admin-members-screen');
+  await loadAdminMembers();
+}
+
+async function loadAdminMembers() {
+  const list = document.getElementById('admin-members-list');
+  const loading = document.getElementById('admin-members-loading');
+  
+  loading.style.display = 'block';
+  list.innerHTML = '';
+  
+  try {
+    // Load pool fresh
+    const { data: pool, error: poolError } = await supabaseClient
+      .from('pools')
+      .select('*')
+      .eq('id', currentPool.id)
+      .single();
+    
+    if (poolError) throw poolError;
+    adminState.poolData = pool;
+    updatePoolLockCard();
+    
+    // Load all users in pool
+    const { data: users, error: usersError } = await supabaseClient
+      .from('users')
+      .select('*')
+      .eq('pool_id', currentPool.id)
+      .order('created_at', { ascending: true });
+    
+    if (usersError) throw usersError;
+    
+    // Load picks stats for each user
+    const userIds = users.map(u => u.id);
+    
+    const [groupPicksRes, knockoutPicksRes] = await Promise.all([
+      supabaseClient
+        .from('group_picks')
+        .select('user_id')
+        .in('user_id', userIds),
+      supabaseClient
+        .from('knockout_picks')
+        .select('user_id')
+        .in('user_id', userIds)
+    ]);
+    
+    const groupPicksByUser = {};
+    (groupPicksRes.data || []).forEach(p => {
+      groupPicksByUser[p.user_id] = (groupPicksByUser[p.user_id] || 0) + 1;
+    });
+    
+    const knockoutPicksByUser = {};
+    (knockoutPicksRes.data || []).forEach(p => {
+      knockoutPicksByUser[p.user_id] = (knockoutPicksByUser[p.user_id] || 0) + 1;
+    });
+    
+    // Enrich users with stats
+    adminState.members = users.map(u => ({
+      ...u,
+      groupPicksCount: groupPicksByUser[u.id] || 0,
+      knockoutPicksCount: knockoutPicksByUser[u.id] || 0,
+      isAdmin: u.id === pool.admin_id
+    }));
+    
+    renderAdminMembers();
+    
+  } catch (err) {
+    console.error('Load admin members error:', err);
+    showToast('שגיאה בטעינת חברים', 'error');
+  } finally {
+    loading.style.display = 'none';
+  }
+}
+
+function renderAdminMembers() {
+  const list = document.getElementById('admin-members-list');
+  
+  // Stats
+  const total = adminState.members.length;
+  const withGroups = adminState.members.filter(m => m.groupPicksCount >= 32).length;
+  const withKnockout = adminState.members.filter(m => m.knockoutPicksCount >= 16).length;
+  
+  document.getElementById('admin-stat-total').textContent = total;
+  document.getElementById('admin-stat-groups').textContent = withGroups;
+  document.getElementById('admin-stat-knockout').textContent = withKnockout;
+  
+  // Render list
+  list.innerHTML = '';
+  
+  adminState.members.forEach(member => {
+    const card = document.createElement('div');
+    card.className = 'admin-member-card';
+    if (member.isAdmin) card.classList.add('is-admin');
+    
+    const initial = member.display_name ? member.display_name.charAt(0).toUpperCase() : '?';
+    
+    const adminBadge = member.isAdmin ? '<span class="admin-member-badge">מארגן ✓</span>' : '';
+    
+    // Progress dots
+    const groupsDone = member.groupPicksCount >= 32;
+    const knockoutDone = member.knockoutPicksCount >= 16;
+    
+    card.innerHTML = `
+      <div class="admin-member-avatar">${initial}</div>
+      <div class="admin-member-info">
+        <div class="admin-member-name">${adminBadge}${escapeHtml(member.display_name || 'משתמש')}</div>
+        <div class="admin-member-progress">
+          <span class="admin-member-progress-dot ${groupsDone ? 'done' : ''}">
+            בתים: ${member.groupPicksCount}/32 ${groupsDone ? '✓' : ''}
+          </span>
+          <span class="admin-member-progress-dot ${knockoutDone ? 'done' : ''}">
+            נוקאאוט: ${member.knockoutPicksCount}/16 ${knockoutDone ? '✓' : ''}
+          </span>
+        </div>
+      </div>
+      ${!member.isAdmin ? '<div class="admin-member-arrow">‹</div>' : ''}
+    `;
+    
+    // Click handler - only for non-admins
+    if (!member.isAdmin) {
+      card.addEventListener('click', () => openAdminActionModal(member));
+    } else {
+      card.style.cursor = 'default';
+    }
+    
+    list.appendChild(card);
+  });
+}
+
+function updatePoolLockCard() {
+  const card = document.getElementById('pool-lock-card');
+  const icon = document.getElementById('pool-lock-icon');
+  const title = document.getElementById('pool-lock-title');
+  const text = document.getElementById('pool-lock-text');
+  const btn = document.getElementById('pool-lock-btn');
+  
+  const isLocked = adminState.poolData?.is_locked === true;
+  
+  if (isLocked) {
+    card.classList.add('locked');
+    icon.textContent = '🔒';
+    title.textContent = 'ההימור נעול';
+    text.textContent = 'אין אפשרות להצטרף עם קוד ההזמנה';
+    btn.textContent = 'בטל נעילה';
+  } else {
+    card.classList.remove('locked');
+    icon.textContent = '🔓';
+    title.textContent = 'ההימור פתוח להצטרפות';
+    text.textContent = 'חברים חדשים יכולים להצטרף עם קוד ההזמנה';
+    btn.textContent = 'נעל';
+  }
+}
+
+async function togglePoolLock() {
+  if (!currentPool || currentPool.admin_id !== currentUser.id) {
+    showToast('🚫 רק המארגן יכול לעשות זאת', 'error');
+    return;
+  }
+  
+  const isCurrentlyLocked = adminState.poolData?.is_locked === true;
+  const newState = !isCurrentlyLocked;
+  
+  const action = newState ? 'לנעול' : 'לפתוח';
+  const confirm = window.confirm(`האם אתה בטוח שברצונך ${action} את ההימור?`);
+  if (!confirm) return;
+  
+  const btn = document.getElementById('pool-lock-btn');
+  btn.disabled = true;
+  btn.textContent = 'מעבד...';
+  
+  try {
+    const { error } = await supabaseClient
+      .from('pools')
+      .update({ 
+        is_locked: newState,
+        locked_at: newState ? new Date().toISOString() : null,
+        locked_by: newState ? currentUser.id : null
+      })
+      .eq('id', currentPool.id);
+    
+    if (error) throw error;
+    
+    // Log action
+    await supabaseClient.from('admin_actions').insert({
+      pool_id: currentPool.id,
+      admin_id: currentUser.id,
+      action_type: newState ? 'POOL_LOCKED' : 'POOL_UNLOCKED'
+    });
+    
+    adminState.poolData.is_locked = newState;
+    updatePoolLockCard();
+    
+    showToast(newState ? '🔒 ההימור ננעל' : '🔓 ההימור נפתח', 'success');
+    
+  } catch (err) {
+    console.error('Toggle lock error:', err);
+    showToast('שגיאה בעדכון מצב ההימור', 'error');
+    btn.disabled = false;
+    updatePoolLockCard();
+  }
+}
+
+function openAdminActionModal(member) {
+  adminState.selectedMember = member;
+  
+  const avatar = document.getElementById('admin-modal-avatar');
+  const name = document.getElementById('admin-modal-name');
+  const meta = document.getElementById('admin-modal-meta');
+  
+  const initial = member.display_name ? member.display_name.charAt(0).toUpperCase() : '?';
+  avatar.textContent = initial;
+  name.textContent = member.display_name || 'משתמש';
+  
+  const joinedDate = new Date(member.created_at).toLocaleDateString('he-IL');
+  meta.textContent = `הצטרף ב-${joinedDate} · ${member.groupPicksCount} בתים · ${member.knockoutPicksCount} נוקאאוט`;
+  
+  document.getElementById('admin-action-overlay').classList.add('active');
+  document.getElementById('admin-action-modal').classList.add('active');
+}
+
+function closeAdminActionModal() {
+  document.getElementById('admin-action-overlay').classList.remove('active');
+  document.getElementById('admin-action-modal').classList.remove('active');
+  adminState.selectedMember = null;
+}
+
+async function adminGenerateNewCode() {
+  const member = adminState.selectedMember;
+  if (!member) return;
+  
+  const confirm = window.confirm(
+    `האם ליצור קוד שחזור חדש עבור ${member.display_name}?\n\n` +
+    `הקוד הישן יבוטל מיד. תצטרך לשלוח לו את הקוד החדש בעצמך.`
+  );
+  if (!confirm) return;
+  
+  try {
+    // Generate new recovery code (16 chars)
+    const newCode = generateRecoveryCode();
+    const newCodeHash = await hashString(newCode);
+    
+    // Update user
+    const { error } = await supabaseClient
+      .from('users')
+      .update({ recovery_code_hash: newCodeHash })
+      .eq('id', member.id);
+    
+    if (error) throw error;
+    
+    // Log action
+    await supabaseClient.from('admin_actions').insert({
+      pool_id: currentPool.id,
+      admin_id: currentUser.id,
+      action_type: 'RECOVERY_CODE_RESET',
+      target_user_id: member.id
+    });
+    
+    // Show the new code
+    closeAdminActionModal();
+    showNewRecoveryCode(member.display_name, newCode);
+    
+  } catch (err) {
+    console.error('Generate code error:', err);
+    showToast('שגיאה ביצירת קוד', 'error');
+  }
+}
+
+function showNewRecoveryCode(userName, code) {
+  // Use the recovery code display modal
+  const modal = document.getElementById('recovery-code-modal');
+  const overlay = document.getElementById('recovery-code-overlay');
+  
+  if (!modal || !overlay) {
+    // Fallback - show in alert
+    alert(`קוד שחזור חדש עבור ${userName}:\n\n${code}\n\nשלח את הקוד למשתמש.`);
+    return;
+  }
+  
+  // Display the code
+  const codeDisplay = document.getElementById('recovery-code-display');
+  if (codeDisplay) {
+    codeDisplay.textContent = code;
+  }
+  
+  const title = modal.querySelector('.recovery-code-title');
+  if (title) {
+    title.textContent = `קוד שחזור חדש עבור ${userName}`;
+  }
+  
+  overlay.classList.add('active');
+  modal.classList.add('active');
+  
+  showToast('🔑 קוד חדש נוצר! שלח למשתמש', 'success');
+}
+
+function adminConfirmRemove() {
+  const member = adminState.selectedMember;
+  if (!member) return;
+  
+  const confirm = window.confirm(
+    `⚠️ האם אתה בטוח שברצונך להסיר את ${member.display_name} מההימור?\n\n` +
+    `פעולה זו תמחק:\n` +
+    `- כל ההימורים שלו (${member.groupPicksCount} בתים, ${member.knockoutPicksCount} נוקאאוט)\n` +
+    `- את החשבון שלו לחלוטין\n\n` +
+    `הפעולה לא ניתנת לביטול.`
+  );
+  if (!confirm) return;
+  
+  // Double confirm for safety
+  const doubleConfirm = window.confirm(`אישור אחרון - להסיר את ${member.display_name}?`);
+  if (!doubleConfirm) return;
+  
+  adminPerformRemove(member);
+}
+
+async function adminPerformRemove(member) {
+  try {
+    // Delete user (cascade should delete picks)
+    const { error } = await supabaseClient
+      .from('users')
+      .delete()
+      .eq('id', member.id);
+    
+    if (error) throw error;
+    
+    // Log action
+    await supabaseClient.from('admin_actions').insert({
+      pool_id: currentPool.id,
+      admin_id: currentUser.id,
+      action_type: 'USER_REMOVED',
+      target_user_id: member.id,
+      details: { display_name: member.display_name }
+    });
+    
+    closeAdminActionModal();
+    showToast(`✓ ${member.display_name} הוסר מההימור`, 'success');
+    
+    // Reload list
+    await loadAdminMembers();
+    
+  } catch (err) {
+    console.error('Remove user error:', err);
+    showToast('שגיאה בהסרת המשתמש', 'error');
+  }
+}
+
+// Helper - generate 16 char recovery code
+function generateRecoveryCode() {
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';  // No O, 0, I, 1, L
+  let code = '';
+  for (let i = 0; i < 16; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+    if (i === 3 || i === 7 || i === 11) code += '-';
+  }
+  return code;
+}
+
+// Helper - SHA-256 hash
+async function hashString(str) {
+  const buffer = new TextEncoder().encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// Helper - escape HTML
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 
 function showApprovals() {
   closeMenu();
-  showToast('🚧 אישור משתמשים - בשיחה הבאה', 'info');
+  showToast('🚧 אישור משתמשים - בקרוב', 'info');
 }
 
 // ============================================================
