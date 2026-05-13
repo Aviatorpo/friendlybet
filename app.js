@@ -550,30 +550,20 @@ async function createPool() {
 // SHARE FUNCTIONS
 // ============================================================
 
-function getShareMessage() {
-  const pool = state.currentPool;
-  if (!pool) return '';
-  
-  const url = `${window.location.origin}?code=${pool.code}`;
-  return `🏆 הוזמנת להימור על מונדיאל 2026!\n\nשם ההימור: ${pool.name}\nקוד הצטרפות: ${pool.code}\n\nלהצטרפות:\n${url}\n\n_FriendlyBet - חינמי, ללא פרסומות_`;
-}
+// ============================================================
+// LEGACY SHARE FUNCTIONS (kept for backward compat - delegate to new)
+// ============================================================
 
 function shareWhatsApp() {
-  const url = `https://wa.me/?text=${encodeURIComponent(getShareMessage())}`;
-  window.open(url, '_blank');
+  shareToWhatsApp();  // New function
 }
 
 function shareTelegram() {
-  const text = getShareMessage();
-  const url = `https://t.me/share/url?url=${encodeURIComponent(window.location.origin)}&text=${encodeURIComponent(text)}`;
-  window.open(url, '_blank');
+  shareToTelegram();  // New function
 }
 
 function copyShareLink() {
-  const text = getShareMessage();
-  navigator.clipboard.writeText(text).then(() => {
-    showToast('הודעת השיתוף הועתקה!', 'success');
-  });
+  copyInviteLink();  // New function - copies URL only
 }
 
 // ============================================================
@@ -785,11 +775,12 @@ function openMenu() {
   if (!user || !pool) return;
   
   // User avatar (first letter)
-  document.getElementById('menu-user-initial').textContent = user.nickname.charAt(0);
-  document.getElementById('menu-user-name').textContent = user.nickname;
+  const safeNick = user.nickname || 'משתמש';
+  document.getElementById('menu-user-initial').textContent = safeNick.charAt(0).toUpperCase();
+  document.getElementById('menu-user-name').textContent = safeNick;
   document.getElementById('menu-user-role').textContent = user.is_admin ? 'מארגן ומשתתף' : 'משתתף';
-  document.getElementById('menu-pool-name').textContent = pool.name;
-  document.getElementById('menu-pool-code').textContent = pool.code;
+  document.getElementById('menu-pool-name').textContent = pool.name || 'הימור';
+  document.getElementById('menu-pool-code').textContent = pool.code || '-----';
   
   // Show admin section if admin
   const adminSection = document.getElementById('menu-admin-section');
@@ -921,11 +912,14 @@ function createMemberCard(member, picksCount) {
   else if (daysAgo < 7) joinedText = `הצטרף לפני ${daysAgo} ימים`;
   else joinedText = `הצטרף ב-${joinedDate.toLocaleDateString('he-IL', { day: 'numeric', month: 'short' })}`;
   
+  const safeNickname = member.nickname || 'משתמש';
+  const safeInitial = safeNickname.charAt(0).toUpperCase();
+  
   card.innerHTML = `
-    <div class="lb-avatar-small">${member.nickname.charAt(0)}</div>
+    <div class="lb-avatar-small">${safeInitial}</div>
     <div class="member-info">
       <div class="member-name">
-        ${member.nickname}
+        ${escapeHtml(safeNickname)}
         ${member.is_admin ? '<span class="admin-badge">מארגן</span>' : ''}
         ${isMe ? '<span class="lb-badge">אתה</span>' : ''}
       </div>
@@ -1513,20 +1507,25 @@ function performTopScorerSearch(query) {
     
     // Search in Hebrew name, English name, team code, club
     topScorerState.filteredPlayers = topScorerState.allPlayers.filter(p => {
+      const he = (p.name_he || '').toLowerCase();
+      const en = (p.name_en || '').toLowerCase();
+      const code = (p.team_code || '').toLowerCase();
+      const club = (p.club || '').toLowerCase();
+      
       return (
-        p.name_he.toLowerCase().includes(lowerQuery) ||
-        p.name_en.toLowerCase().includes(lowerQuery) ||
-        p.team_code.toLowerCase().includes(lowerQuery) ||
-        (p.club && p.club.toLowerCase().includes(lowerQuery))
+        he.includes(lowerQuery) ||
+        en.includes(lowerQuery) ||
+        code.includes(lowerQuery) ||
+        club.includes(lowerQuery)
       );
     });
     
     // Sort: exact match first, then starts-with, then contains
     topScorerState.filteredPlayers.sort((a, b) => {
-      const aHe = a.name_he.toLowerCase();
-      const bHe = b.name_he.toLowerCase();
-      const aEn = a.name_en.toLowerCase();
-      const bEn = b.name_en.toLowerCase();
+      const aHe = (a.name_he || '').toLowerCase();
+      const bHe = (b.name_he || '').toLowerCase();
+      const aEn = (a.name_en || '').toLowerCase();
+      const bEn = (b.name_en || '').toLowerCase();
       
       const aStarts = aHe.startsWith(lowerQuery) || aEn.startsWith(lowerQuery);
       const bStarts = bHe.startsWith(lowerQuery) || bEn.startsWith(lowerQuery);
@@ -4875,6 +4874,55 @@ function copyMyRecoveryCode() {
 // ============================================================
 
 let deferredInstallPrompt = null;
+
+// ============================================================
+// ONLINE/OFFLINE DETECTION
+// ============================================================
+
+window.addEventListener('online', () => {
+  console.log('🌐 Back online');
+  hideOfflineBanner();
+  showToast('🌐 מחובר לאינטרנט', 'success');
+});
+
+window.addEventListener('offline', () => {
+  console.log('🔌 Gone offline');
+  showOfflineBanner();
+});
+
+function showOfflineBanner() {
+  let banner = document.getElementById('offline-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'offline-banner';
+    banner.className = 'offline-banner';
+    banner.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+        <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+        <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+        <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+        <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+      </svg>
+      <span>אין חיבור לאינטרנט - חלק מהפיצ'רים מוגבלים</span>
+    `;
+    document.body.appendChild(banner);
+  }
+  setTimeout(() => banner.classList.add('visible'), 10);
+}
+
+function hideOfflineBanner() {
+  const banner = document.getElementById('offline-banner');
+  if (banner) banner.classList.remove('visible');
+}
+
+// Check initial state
+if (!navigator.onLine) {
+  setTimeout(showOfflineBanner, 2000);
+}
+
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

@@ -1911,19 +1911,9 @@ function loadTablerFallback() {
     
     <!-- Quick share -->
     <div class="menu-section">
-      <button class="menu-item menu-item-share" onclick="shareWhatsApp()">
-        <i class="ti ti-brand-whatsapp" style="color: #25D366;"></i>
-        <span>שתף בוואטסאפ</span>
-        <i class="ti ti-chevron-left menu-arrow"></i>
-      </button>
-      <button class="menu-item" onclick="shareTelegram()">
-        <i class="ti ti-brand-telegram" style="color: #229ED9;"></i>
-        <span>שתף בטלגרם</span>
-        <i class="ti ti-chevron-left menu-arrow"></i>
-      </button>
-      <button class="menu-item" onclick="copyShareLink()">
-        <i class="ti ti-copy gold"></i>
-        <span>העתק קישור</span>
+      <button class="menu-item menu-item-share" onclick="showShareModal()">
+        <i class="ti ti-share gold"></i>
+        <span>הזמן חברים להימור</span>
         <i class="ti ti-chevron-left menu-arrow"></i>
       </button>
     </div>
@@ -1986,11 +1976,6 @@ function loadTablerFallback() {
         <span>ניהול חברים</span>
         <i class="ti ti-chevron-left menu-arrow"></i>
       </button>
-      <button class="menu-item" onclick="showApprovals()">
-        <i class="ti ti-user-check gold"></i>
-        <span>אישור משתמשים</span>
-        <i class="ti ti-chevron-left menu-arrow"></i>
-      </button>
       <button class="menu-item" onclick="showPoolSettings()">
         <i class="ti ti-settings gold"></i>
         <span>הגדרות ההימור</span>
@@ -2016,7 +2001,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v1.1.1</span>
+      <span class="menu-version">v1.2.0</span>
     </div>
   </div>
 
