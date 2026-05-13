@@ -1921,13 +1921,15 @@ async function selectTopScorer(player) {
       .eq('user_id', state.currentUser.id)
       .eq('pool_id', state.currentPool.id);
     
-    // Insert new pick
+    // Insert new pick - include all required fields
     const { error } = await supabaseClient
       .from('top_scorer_picks')
       .insert({
         user_id: state.currentUser.id,
         pool_id: state.currentPool.id,
-        player_id: player.id
+        player_id: player.id,
+        player_name: player.name_he || player.name_en || 'שחקן',
+        team_code: player.team_code || ''
       });
     
     if (error) {
