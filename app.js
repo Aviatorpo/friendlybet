@@ -1771,21 +1771,10 @@ function onTopScorerSearch(query) {
   // Searching - hide hints
   if (hints) hints.style.display = 'none';
   
-  // Check if players are loaded
-  if (topScorerState.allPlayers.length === 0) {
-    console.warn('⚠️ No players loaded yet. Trying to load...');
-    showToast('טוען רשימת שחקנים...', 'info');
-    loadAllPlayers().then(() => {
-      // Try search again after loading
-      performTopScorerSearch(query.trim());
-    });
-    return;
-  }
-  
-  // Debounce the search
+  // Debounce the search - search directly in DB
   topScorerState.searchTimeout = setTimeout(() => {
     performTopScorerSearch(query.trim());
-  }, 150);
+  }, 250);
 }
 
 function setSearchValue(value) {
@@ -1796,57 +1785,64 @@ function setSearchValue(value) {
   }
 }
 
-function performTopScorerSearch(query) {
+async function performTopScorerSearch(query) {
   if (!query) {
-    topScorerState.filteredPlayers = topScorerState.allPlayers;
+    topScorerState.filteredPlayers = [];
+    renderTopScorerList();
     return;
   }
   
-  console.log(`🔍 Searching for "${query}" in ${topScorerState.allPlayers.length} players`);
+  console.log(`🔍 Searching DB for "${query}"`);
   
-  const lowerQuery = query.toLowerCase();
-  
-  // Search in Hebrew name, English name, team code, club
-  topScorerState.filteredPlayers = topScorerState.allPlayers.filter(p => {
-    const he = (p.name_he || '').toLowerCase();
-    const en = (p.name_en || '').toLowerCase();
-    const code = (p.team_code || '').toLowerCase();
-    const club = (p.club || '').toLowerCase();
+  try {
+    // Search directly in DB with ILIKE - bypasses all limits
+    const lowerQuery = query.toLowerCase();
     
-    return (
-      he.includes(lowerQuery) ||
-      en.includes(lowerQuery) ||
-      code.includes(lowerQuery) ||
-      club.includes(lowerQuery)
-    );
-  });
-  
-  console.log(`   Found ${topScorerState.filteredPlayers.length} matches`);
-  if (topScorerState.filteredPlayers.length > 0) {
-    console.log(`   First match:`, topScorerState.filteredPlayers[0]);
+    const { data, error } = await supabaseClient
+      .from('players')
+      .select('*')
+      .or(`name_en.ilike.%${query}%,name_he.ilike.%${query}%,team_code.ilike.%${query}%`)
+      .limit(50);
+    
+    if (error) {
+      console.error('Search error:', error);
+      topScorerState.filteredPlayers = [];
+      renderTopScorerList();
+      return;
+    }
+    
+    console.log(`   Found ${data?.length || 0} matches in DB`);
+    
+    const results = data || [];
+    
+    // Sort: exact starts-with first
+    results.sort((a, b) => {
+      const aEn = (a.name_en || '').toLowerCase();
+      const bEn = (b.name_en || '').toLowerCase();
+      const aHe = (a.name_he || '').toLowerCase();
+      const bHe = (b.name_he || '').toLowerCase();
+      
+      const aStarts = aEn.startsWith(lowerQuery) || aHe.startsWith(lowerQuery);
+      const bStarts = bEn.startsWith(lowerQuery) || bHe.startsWith(lowerQuery);
+      
+      if (aStarts && !bStarts) return -1;
+      if (!aStarts && bStarts) return 1;
+      
+      // Stars first
+      if (a.is_star && !b.is_star) return -1;
+      if (!a.is_star && b.is_star) return 1;
+      
+      return aEn.localeCompare(bEn);
+    });
+    
+    topScorerState.filteredPlayers = results;
+    renderTopScorerList();
+    
+  } catch (err) {
+    console.error('Search exception:', err);
+    topScorerState.filteredPlayers = [];
+    renderTopScorerList();
   }
-  
-  // Sort: exact match first, then starts-with, then contains
-  topScorerState.filteredPlayers.sort((a, b) => {
-    const aHe = (a.name_he || '').toLowerCase();
-    const bHe = (b.name_he || '').toLowerCase();
-    const aEn = (a.name_en || '').toLowerCase();
-    const bEn = (b.name_en || '').toLowerCase();
-    
-    const aStarts = aHe.startsWith(lowerQuery) || aEn.startsWith(lowerQuery);
-    const bStarts = bHe.startsWith(lowerQuery) || bEn.startsWith(lowerQuery);
-    
-    if (aStarts && !bStarts) return -1;
-    if (!aStarts && bStarts) return 1;
-    
-    // Within same group - stars first
-    if (a.is_star && !b.is_star) return -1;
-    if (!a.is_star && b.is_star) return 1;
-    
-    return aHe.localeCompare(bHe);
-  });
-  
-  renderTopScorerList();
 }
 
 function updateSectionTitle(mode, query = '') {
