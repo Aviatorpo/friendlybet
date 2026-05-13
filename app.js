@@ -2601,18 +2601,26 @@ function getCountryFlag(code) {
   // Map country codes to flag emojis using regional indicator characters
   // ISO codes to flag emoji mapping
   const flagMap = {
+    // Tier 1 - Favorites
     'ARG': '🇦🇷', 'FRA': '🇫🇷', 'BRA': '🇧🇷', 'ENG': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
     'ESP': '🇪🇸', 'POR': '🇵🇹', 'NED': '🇳🇱', 'GER': '🇩🇪',
-    'BEL': '🇧🇪', 'CRO': '🇭🇷', 'ITA': '🇮🇹', 'URU': '🇺🇾',
-    'USA': '🇺🇸', 'MEX': '🇲🇽', 'SUI': '🇨🇭', 'DEN': '🇩🇰',
+    
+    // Tier 2 - Contenders
+    'BEL': '🇧🇪', 'CRO': '🇭🇷', 'URU': '🇺🇾',
+    'USA': '🇺🇸', 'MEX': '🇲🇽', 'SUI': '🇨🇭',
     'AUT': '🇦🇹', 'SWE': '🇸🇪', 'SEN': '🇸🇳', 'MAR': '🇲🇦',
     'JPN': '🇯🇵', 'KOR': '🇰🇷', 'AUS': '🇦🇺', 'CAN': '🇨🇦',
-    'POL': '🇵🇱', 'UKR': '🇺🇦', 'TUR': '🇹🇷', 'NOR': '🇳🇴',
-    'SRB': '🇷🇸', 'GRE': '🇬🇷', 'IRN': '🇮🇷', 'TUN': '🇹🇳',
-    'EGY': '🇪🇬', 'NGA': '🇳🇬', 'CMR': '🇨🇲', 'GHA': '🇬🇭',
-    'CRC': '🇨🇷', 'PAN': '🇵🇦', 'JAM': '🇯🇲', 'PER': '🇵🇪',
-    'CHI': '🇨🇱', 'PAR': '🇵🇾', 'ECU': '🇪🇨', 'NZL': '🇳🇿',
-    'UZB': '🇺🇿', 'IRQ': '🇮🇶', 'SAU': '🇸🇦', 'JOR': '🇯🇴'
+    'UKR': '🇺🇦', 'TUR': '🇹🇷', 'NOR': '🇳🇴',
+    'IRN': '🇮🇷',
+    'SCO': '🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'CZE': '🇨🇿', 'ALG': '🇩🇿', 'CIV': '🇨🇮',
+    
+    // Tier 3 - Underdogs
+    'TUN': '🇹🇳', 'EGY': '🇪🇬', 'CMR': '🇨🇲', 'GHA': '🇬🇭',
+    'PAN': '🇵🇦', 'JAM': '🇯🇲',
+    'PAR': '🇵🇾', 'NZL': '🇳🇿',
+    'UZB': '🇺🇿', 'IRQ': '🇮🇶', 'SAU': '🇸🇦', 'JOR': '🇯🇴',
+    'RSA': '🇿🇦', 'HAI': '🇭🇹', 'BIH': '🇧🇦', 'CPV': '🇨🇻',
+    'COD': '🇨🇩', 'QAT': '🇶🇦', 'CUR': '🇨🇼',
   };
   return flagMap[code] || '⚽';
 }
