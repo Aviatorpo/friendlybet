@@ -821,7 +821,7 @@ async function showAdminMembers() {
   closeMenu();
   
   // Verify user is admin
-  if (!currentPool || currentPool.admin_id !== currentUser.id) {
+  if (!state.currentPool || state.currentPool.admin_id !== state.currentUser.id) {
     showToast('🚫 רק המארגן יכול לגשת לאזור הזה', 'error');
     return;
   }
@@ -842,7 +842,7 @@ async function loadAdminMembers() {
     const { data: pool, error: poolError } = await supabaseClient
       .from('pools')
       .select('*')
-      .eq('id', currentPool.id)
+      .eq('id', state.currentPool.id)
       .single();
     
     if (poolError) throw poolError;
@@ -853,7 +853,7 @@ async function loadAdminMembers() {
     const { data: users, error: usersError } = await supabaseClient
       .from('users')
       .select('*')
-      .eq('pool_id', currentPool.id)
+      .eq('pool_id', state.currentPool.id)
       .order('created_at', { ascending: true });
     
     if (usersError) throw usersError;
@@ -920,7 +920,7 @@ function renderAdminMembers() {
     card.className = 'admin-member-card';
     if (member.isAdmin) card.classList.add('is-admin');
     
-    const initial = member.display_name ? member.display_name.charAt(0).toUpperCase() : '?';
+    const initial = member.nickname ? member.nickname.charAt(0).toUpperCase() : '?';
     
     const adminBadge = member.isAdmin ? '<span class="admin-member-badge">מארגן ✓</span>' : '';
     
@@ -931,7 +931,7 @@ function renderAdminMembers() {
     card.innerHTML = `
       <div class="admin-member-avatar">${initial}</div>
       <div class="admin-member-info">
-        <div class="admin-member-name">${adminBadge}${escapeHtml(member.display_name || 'משתמש')}</div>
+        <div class="admin-member-name">${adminBadge}${escapeHtml(member.nickname || 'משתמש')}</div>
         <div class="admin-member-progress">
           <span class="admin-member-progress-dot ${groupsDone ? 'done' : ''}">
             בתים: ${member.groupPicksCount}/32 ${groupsDone ? '✓' : ''}
@@ -980,7 +980,7 @@ function updatePoolLockCard() {
 }
 
 async function togglePoolLock() {
-  if (!currentPool || currentPool.admin_id !== currentUser.id) {
+  if (!state.currentPool || state.currentPool.admin_id !== state.currentUser.id) {
     showToast('🚫 רק המארגן יכול לעשות זאת', 'error');
     return;
   }
@@ -1002,16 +1002,16 @@ async function togglePoolLock() {
       .update({ 
         is_locked: newState,
         locked_at: newState ? new Date().toISOString() : null,
-        locked_by: newState ? currentUser.id : null
+        locked_by: newState ? state.currentUser.id : null
       })
-      .eq('id', currentPool.id);
+      .eq('id', state.currentPool.id);
     
     if (error) throw error;
     
     // Log action
     await supabaseClient.from('admin_actions').insert({
-      pool_id: currentPool.id,
-      admin_id: currentUser.id,
+      pool_id: state.currentPool.id,
+      admin_id: state.currentUser.id,
       action_type: newState ? 'POOL_LOCKED' : 'POOL_UNLOCKED'
     });
     
@@ -1035,9 +1035,9 @@ function openAdminActionModal(member) {
   const name = document.getElementById('admin-modal-name');
   const meta = document.getElementById('admin-modal-meta');
   
-  const initial = member.display_name ? member.display_name.charAt(0).toUpperCase() : '?';
+  const initial = member.nickname ? member.nickname.charAt(0).toUpperCase() : '?';
   avatar.textContent = initial;
-  name.textContent = member.display_name || 'משתמש';
+  name.textContent = member.nickname || 'משתמש';
   
   const joinedDate = new Date(member.created_at).toLocaleDateString('he-IL');
   meta.textContent = `הצטרף ב-${joinedDate} · ${member.groupPicksCount} בתים · ${member.knockoutPicksCount} נוקאאוט`;
@@ -1057,7 +1057,7 @@ async function adminGenerateNewCode() {
   if (!member) return;
   
   const confirm = window.confirm(
-    `האם ליצור קוד שחזור חדש עבור ${member.display_name}?\n\n` +
+    `האם ליצור קוד שחזור חדש עבור ${member.nickname}?\n\n` +
     `הקוד הישן יבוטל מיד. תצטרך לשלוח לו את הקוד החדש בעצמך.`
   );
   if (!confirm) return;
@@ -1065,7 +1065,7 @@ async function adminGenerateNewCode() {
   try {
     // Generate new recovery code (16 chars)
     const newCode = generateRecoveryCode();
-    const newCodeHash = await hashString(newCode);
+    const newCodeHash = await hashRecoveryCode(newCode);
     
     // Update user
     const { error } = await supabaseClient
@@ -1077,15 +1077,15 @@ async function adminGenerateNewCode() {
     
     // Log action
     await supabaseClient.from('admin_actions').insert({
-      pool_id: currentPool.id,
-      admin_id: currentUser.id,
+      pool_id: state.currentPool.id,
+      admin_id: state.currentUser.id,
       action_type: 'RECOVERY_CODE_RESET',
       target_user_id: member.id
     });
     
     // Show the new code
     closeAdminActionModal();
-    showNewRecoveryCode(member.display_name, newCode);
+    showNewRecoveryCode(member.nickname, newCode);
     
   } catch (err) {
     console.error('Generate code error:', err);
@@ -1094,31 +1094,24 @@ async function adminGenerateNewCode() {
 }
 
 function showNewRecoveryCode(userName, code) {
-  // Use the recovery code display modal
-  const modal = document.getElementById('recovery-code-modal');
-  const overlay = document.getElementById('recovery-code-overlay');
+  // Show in a nice prompt with copy option
+  const message = `✅ קוד שחזור חדש נוצר עבור ${userName}:\n\n${code}\n\n` +
+    `📋 הקוד יועתק ללוח שלך כשתלחץ "אישור".\n` +
+    `שלח אותו ל-${userName} בהודעה פרטית.\n\n` +
+    `⚠️ הקוד הישן בוטל ולא יעבוד יותר.`;
   
-  if (!modal || !overlay) {
-    // Fallback - show in alert
-    alert(`קוד שחזור חדש עבור ${userName}:\n\n${code}\n\nשלח את הקוד למשתמש.`);
-    return;
+  // Try to copy to clipboard
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(() => {
+      alert(message);
+    }).catch(() => {
+      alert(message);
+    });
+  } else {
+    alert(message);
   }
   
-  // Display the code
-  const codeDisplay = document.getElementById('recovery-code-display');
-  if (codeDisplay) {
-    codeDisplay.textContent = code;
-  }
-  
-  const title = modal.querySelector('.recovery-code-title');
-  if (title) {
-    title.textContent = `קוד שחזור חדש עבור ${userName}`;
-  }
-  
-  overlay.classList.add('active');
-  modal.classList.add('active');
-  
-  showToast('🔑 קוד חדש נוצר! שלח למשתמש', 'success');
+  showToast('🔑 קוד חדש נוצר והועתק', 'success');
 }
 
 function adminConfirmRemove() {
@@ -1126,7 +1119,7 @@ function adminConfirmRemove() {
   if (!member) return;
   
   const confirm = window.confirm(
-    `⚠️ האם אתה בטוח שברצונך להסיר את ${member.display_name} מההימור?\n\n` +
+    `⚠️ האם אתה בטוח שברצונך להסיר את ${member.nickname} מההימור?\n\n` +
     `פעולה זו תמחק:\n` +
     `- כל ההימורים שלו (${member.groupPicksCount} בתים, ${member.knockoutPicksCount} נוקאאוט)\n` +
     `- את החשבון שלו לחלוטין\n\n` +
@@ -1135,7 +1128,7 @@ function adminConfirmRemove() {
   if (!confirm) return;
   
   // Double confirm for safety
-  const doubleConfirm = window.confirm(`אישור אחרון - להסיר את ${member.display_name}?`);
+  const doubleConfirm = window.confirm(`אישור אחרון - להסיר את ${member.nickname}?`);
   if (!doubleConfirm) return;
   
   adminPerformRemove(member);
@@ -1153,15 +1146,15 @@ async function adminPerformRemove(member) {
     
     // Log action
     await supabaseClient.from('admin_actions').insert({
-      pool_id: currentPool.id,
-      admin_id: currentUser.id,
+      pool_id: state.currentPool.id,
+      admin_id: state.currentUser.id,
       action_type: 'USER_REMOVED',
       target_user_id: member.id,
-      details: { display_name: member.display_name }
+      details: { display_name: member.nickname }
     });
     
     closeAdminActionModal();
-    showToast(`✓ ${member.display_name} הוסר מההימור`, 'success');
+    showToast(`✓ ${member.nickname} הוסר מההימור`, 'success');
     
     // Reload list
     await loadAdminMembers();
@@ -1170,25 +1163,6 @@ async function adminPerformRemove(member) {
     console.error('Remove user error:', err);
     showToast('שגיאה בהסרת המשתמש', 'error');
   }
-}
-
-// Helper - generate 16 char recovery code
-function generateRecoveryCode() {
-  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';  // No O, 0, I, 1, L
-  let code = '';
-  for (let i = 0; i < 16; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-    if (i === 3 || i === 7 || i === 11) code += '-';
-  }
-  return code;
-}
-
-// Helper - SHA-256 hash
-async function hashString(str) {
-  const buffer = new TextEncoder().encode(str);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 // Helper - escape HTML
