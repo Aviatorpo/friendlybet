@@ -1756,10 +1756,34 @@ function onTopScorerSearch(query) {
     clearBtn.style.display = query ? 'flex' : 'none';
   }
   
+  // Show/hide UI elements based on search state
+  const hints = document.getElementById('ts-search-hints');
+  const list = document.getElementById('ts-players-list');
+  const noResults = document.getElementById('ts-no-results');
+  
+  if (!query || !query.trim()) {
+    // No search - show hints, hide results
+    if (hints) hints.style.display = 'block';
+    if (list) list.style.display = 'none';
+    if (noResults) noResults.style.display = 'none';
+    return;
+  }
+  
+  // Searching - hide hints
+  if (hints) hints.style.display = 'none';
+  
   // Debounce the search
   topScorerState.searchTimeout = setTimeout(() => {
     performTopScorerSearch(query.trim());
   }, 150);
+}
+
+function setSearchValue(value) {
+  const input = document.getElementById('ts-search-input');
+  if (input) {
+    input.value = value;
+    onTopScorerSearch(value);
+  }
 }
 
 function performTopScorerSearch(query) {
@@ -1841,76 +1865,46 @@ function updateSectionTitle(mode, query = '') {
 function renderTopScorerList() {
   const list = document.getElementById('ts-players-list');
   const noResults = document.getElementById('ts-no-results');
+  const hints = document.getElementById('ts-search-hints');
   if (!list) return;
   
-  if (topScorerState.filteredPlayers.length === 0) {
-    list.style.display = 'none';
-    noResults.style.display = 'block';
-    return;
-  }
-  
-  noResults.style.display = 'none';
-  list.style.display = 'flex';
-  list.innerHTML = '';
-  
-  // If searching - show all matching results
+  // Check if we're searching
   const searchInput = document.getElementById('ts-search-input');
   const hasQuery = searchInput && searchInput.value.trim();
   
-  let playersToShow;
-  let totalStars = 0;
-  let totalNonStars = 0;
-  
-  // Calculate stats
-  topScorerState.filteredPlayers.forEach(p => {
-    if (p.is_star) totalStars++;
-    else totalNonStars++;
-  });
-  
-  if (hasQuery) {
-    // Searching - show all matches, limited to 50
-    playersToShow = topScorerState.filteredPlayers.slice(0, 50);
-  } else if (topScorerState.showAll) {
-    // Show all (after expand)
-    playersToShow = topScorerState.filteredPlayers;
-  } else {
-    // Default - show only stars
-    playersToShow = topScorerState.filteredPlayers.filter(p => p.is_star);
+  // No search? Show hints, hide list
+  if (!hasQuery) {
+    if (hints) hints.style.display = 'block';
+    list.style.display = 'none';
+    if (noResults) noResults.style.display = 'none';
+    return;
   }
   
-  // Render players
+  // Searching - hide hints
+  if (hints) hints.style.display = 'none';
+  
+  // No results found
+  if (topScorerState.filteredPlayers.length === 0) {
+    list.style.display = 'none';
+    if (noResults) noResults.style.display = 'block';
+    return;
+  }
+  
+  // Show results
+  if (noResults) noResults.style.display = 'none';
+  list.style.display = 'flex';
+  list.innerHTML = '';
+  
+  // Show up to 50 results
+  const playersToShow = topScorerState.filteredPlayers.slice(0, 50);
+  
   playersToShow.forEach(player => {
-    const card = createPlayerCard(player, hasQuery ? searchInput.value.trim() : '');
+    const card = createPlayerCard(player, searchInput.value.trim());
     list.appendChild(card);
   });
   
-  // Add expand button (only when not searching and there are non-stars)
-  if (!hasQuery && totalNonStars > 0) {
-    const expandBtn = document.createElement('button');
-    expandBtn.className = 'ts-expand-btn';
-    expandBtn.onclick = toggleShowAllPlayers;
-    
-    if (topScorerState.showAll) {
-      expandBtn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="18 15 12 9 6 15"></polyline>
-        </svg>
-        <span>הסתר שחקנים נוספים</span>
-      `;
-    } else {
-      expandBtn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-        <span>הצג עוד ${totalNonStars} שחקנים</span>
-      `;
-    }
-    
-    list.appendChild(expandBtn);
-  }
-  
-  // Show count info when expanded or searching
-  if (hasQuery && topScorerState.filteredPlayers.length > playersToShow.length) {
+  // Show "showing X of Y" if more results
+  if (topScorerState.filteredPlayers.length > playersToShow.length) {
     const moreInfo = document.createElement('div');
     moreInfo.className = 'ts-results-count';
     moreInfo.textContent = `מציג ${playersToShow.length} מתוך ${topScorerState.filteredPlayers.length} תוצאות`;

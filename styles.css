@@ -5281,3 +5281,57 @@ input:disabled + .slider {
   letter-spacing: 0.3px;
   box-shadow: 0 2px 4px rgba(251, 146, 60, 0.3);
 }
+
+/* ============================================================ */
+/* Top Scorer - Search Hints                                    */
+/* ============================================================ */
+
+.ts-search-hints {
+  background: rgba(255, 255, 255, 0.02);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.ts-search-hints-title {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.ts-search-hints-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ts-search-hint-chip {
+  display: inline-block;
+  background: rgba(212, 168, 83, 0.15);
+  border: 0.5px solid rgba(212, 168, 83, 0.3);
+  color: #d4a853;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Heebo', sans-serif;
+}
+
+.ts-search-hint-chip:hover {
+  background: rgba(212, 168, 83, 0.25);
+  border-color: rgba(212, 168, 83, 0.5);
+  transform: translateY(-1px);
+}
+
+.ts-search-hints-note {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.5;
+  padding-top: 10px;
+  border-top: 0.5px solid rgba(255, 255, 255, 0.05);
+}

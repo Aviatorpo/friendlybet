@@ -1568,7 +1568,7 @@ function loadTablerFallback() {
             type="text" 
             id="ts-search-input" 
             class="ts-search-input" 
-            placeholder="חפש שחקן..." 
+            placeholder="חפש שחקן בעברית או באנגלית..." 
             autocomplete="off"
             oninput="onTopScorerSearch(this.value)"
           >
@@ -1580,16 +1580,24 @@ function loadTablerFallback() {
           </button>
         </div>
 
-        <!-- Section title -->
-        <div class="ts-section-title" id="ts-section-title">
-          <span>⭐</span>
-          <span>הכוכבים הגדולים</span>
+        <!-- Search hints (shown when no search) -->
+        <div class="ts-search-hints" id="ts-search-hints">
+          <div class="ts-search-hints-title">💡 דוגמאות לחיפוש:</div>
+          <div class="ts-search-hints-examples">
+            <span class="ts-search-hint-chip" onclick="setSearchValue('Messi')">Messi</span>
+            <span class="ts-search-hint-chip" onclick="setSearchValue('Kane')">Kane</span>
+            <span class="ts-search-hint-chip" onclick="setSearchValue('Mbappé')">Mbappé</span>
+            <span class="ts-search-hint-chip" onclick="setSearchValue('Haaland')">Haaland</span>
+            <span class="ts-search-hint-chip" onclick="setSearchValue('ARG')">ARG (קבוצה)</span>
+            <span class="ts-search-hint-chip" onclick="setSearchValue('BRA')">BRA (קבוצה)</span>
+          </div>
+          <div class="ts-search-hints-note">
+            ניתן לחפש לפי שם השחקן, חלק מהשם, או קוד הקבוצה (3 אותיות באנגלית)
+          </div>
         </div>
 
-        <!-- Players list -->
-        <div id="ts-players-list" class="ts-players-list">
-          <div class="ts-loading">טוען שחקנים...</div>
-        </div>
+        <!-- Players list (only shown when searching) -->
+        <div id="ts-players-list" class="ts-players-list" style="display: none;"></div>
 
         <!-- No results -->
         <div id="ts-no-results" class="ts-no-results" style="display: none;">
@@ -2015,7 +2023,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v1.6.1</span>
+      <span class="menu-version">v1.6.2</span>
     </div>
   </div>
 
