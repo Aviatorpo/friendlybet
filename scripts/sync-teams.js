@@ -94,6 +94,51 @@ const TEAM_INFO = {
 };
 
 // ============================================================
+// Manual group assignments (Source of truth)
+// FIFA World Cup 2026 Final Draw - December 5, 2025
+// Update this if FIFA changes anything
+// ============================================================
+
+const MANUAL_GROUPS = {
+  // Group A
+  'Mexico': 'A', 'South Africa': 'A', 'South Korea': 'A',
+  'Republic of Korea': 'A', 'Korea Republic': 'A', 'Czechia': 'A',
+  
+  // Group B
+  'Canada': 'B', 'Switzerland': 'B', 'Qatar': 'B', 'Bosnia-Herzegovina': 'B',
+  
+  // Group C
+  'Brazil': 'C', 'Morocco': 'C', 'Haiti': 'C', 'Scotland': 'C',
+  
+  // Group D
+  'United States': 'D', 'Paraguay': 'D', 'Australia': 'D', 'Turkey': 'D',
+  
+  // Group E
+  'Spain': 'E', 'Ukraine': 'E', 'Iran': 'E', 'Cape Verde Islands': 'E',
+  
+  // Group F
+  'Argentina': 'F', 'Tunisia': 'F', 'Iraq': 'F', 'Algeria': 'F',
+  
+  // Group G
+  'Germany': 'G', 'Curaçao': 'G', 'Belgium': 'G', 'Saudi Arabia': 'G',
+  
+  // Group H
+  'Portugal': 'H', 'Austria': 'H', 'Egypt': 'H', 'Sweden': 'H',
+  
+  // Group I
+  'France': 'I', 'Senegal': 'I', 'Norway': 'I', 'New Zealand': 'I',
+  
+  // Group J
+  'Netherlands': 'J', 'Cameroon': 'J', 'Uzbekistan': 'J', 'Jordan': 'J',
+  
+  // Group K
+  'Uruguay': 'K', 'Japan': 'K', 'Jamaica': 'K', 'Ivory Coast': 'K',
+  
+  // Group L
+  'England': 'L', 'Croatia': 'L', 'Ghana': 'L', 'Panama': 'L',
+};
+
+// ============================================================
 // Helpers
 // ============================================================
 
@@ -194,18 +239,24 @@ async function syncTeams() {
       return;
     }
     
+    // Group letter: prefer MANUAL_GROUPS (most authoritative), fallback to API
+    const manualGroup = MANUAL_GROUPS[apiTeam.name];
+    const apiGroup = groupsByTeamId[apiTeam.id];
+    const groupLetter = manualGroup || apiGroup || null;
+    
     teamsToInsert.push({
       code: info.code,
       name_en: apiTeam.name,
       name_he: info.name_he,
-      group_letter: groupsByTeamId[apiTeam.id] || null,
+      group_letter: groupLetter,
       tier: info.tier,
       fifa_ranking: info.fifa_ranking,
       flag_emoji: apiTeam.crest || null
     });
   });
   
-  console.log(`✅ Mapped: ${teamsToInsert.length} teams`);
+  const withGroup = teamsToInsert.filter(t => t.group_letter).length;
+  console.log(`✅ Mapped: ${teamsToInsert.length} teams (${withGroup} with group)`);
   if (unmapped.length > 0) {
     console.log(`⚠️  Unmapped teams (need to add to TEAM_INFO):`);
     unmapped.forEach(name => console.log(`   - ${name}`));
