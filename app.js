@@ -2397,10 +2397,7 @@ async function confirmDeletePool() {
   }
 }
 
-function toggleLanguage() {
-  closeMenu();
-  showToast('🚧 שינוי שפה - בשיחה הבאה', 'info');
-}
+// toggleLanguage() and setLanguage() are now provided by i18n.js
 
 function logoutConfirm() {
   closeMenu();
@@ -4849,21 +4846,38 @@ function createMatchCard(match) {
 }
 
 function getTeamName(code) {
-  if (!code) return 'TBD';
-  // Try to get from our knockout state cache
-  if (knockoutState.allTeams[code]) {
-    return knockoutState.allTeams[code].name_he;
+  if (!code) return typeof t === 'function' ? t('knockout.tbd') : 'TBD';
+  
+  // First priority: use i18n translation
+  if (typeof getCountryName === 'function') {
+    const translated = getCountryName(code);
+    if (translated && translated !== code) return translated;
   }
+  
+  // Fallback: try to get from our knockout state cache
+  if (knockoutState.allTeams[code]) {
+    const team = knockoutState.allTeams[code];
+    return typeof getCurrentLanguage === 'function' && getCurrentLanguage() === 'en' 
+      ? (team.name_en || team.name_he || code)
+      : (team.name_he || team.name_en || code);
+  }
+  
   // Fallback: try bettingState
   for (const letter in bettingState.groupedTeams) {
     const team = bettingState.groupedTeams[letter]?.find(t => t.code === code);
-    if (team) return team.name_he;
+    if (team) {
+      return typeof getCurrentLanguage === 'function' && getCurrentLanguage() === 'en'
+        ? (team.name_en || team.name_he || code)
+        : (team.name_he || team.name_en || code);
+    }
   }
   return code;
 }
 
 function getStageLabel(stage, groupLetter) {
-  const STAGE_LABELS = {
+  const isHe = typeof getCurrentLanguage === 'function' ? getCurrentLanguage() === 'he' : true;
+  
+  const STAGE_LABELS_HE = {
     'GROUP_STAGE': `בית ${groupLetter || ''}`,
     'LAST_16': 'שמינית הגמר',
     'QUARTER_FINALS': 'רבע הגמר',
@@ -4871,7 +4885,22 @@ function getStageLabel(stage, groupLetter) {
     'FINAL': '🏆 הגמר',
     'THIRD_PLACE': 'מקום 3'
   };
-  return STAGE_LABELS[stage] || stage || 'משחק';
+  
+  const STAGE_LABELS_EN = {
+    'GROUP_STAGE': `Group ${groupLetter || ''}`,
+    'LAST_16': 'Round of 16',
+    'QUARTER_FINALS': 'Quarter-Finals',
+    'SEMI_FINALS': 'Semi-Finals',
+    'FINAL': '🏆 Final',
+    'THIRD_PLACE': '3rd Place'
+  };
+  
+  const labels = isHe ? STAGE_LABELS_HE : STAGE_LABELS_EN;
+  return labels[stage] || stage;
+}
+
+function _unused_getStageLabel_old(stage, groupLetter) {
+  return stage;
 }
 
 function formatMatchTime(dateStr) {
@@ -4953,6 +4982,27 @@ function showError(elementId, message) {
 
 async function initApp() {
   console.log('FriendlyBet v' + CONFIG.APP_VERSION + ' starting...');
+  console.log('Language:', typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'unknown');
+  
+  // Listen for language changes - re-render current screen
+  window.addEventListener('languageChanged', () => {
+    // Re-render visible dynamic content
+    if (state.currentScreen === 'dashboard-screen' && state.currentPool) {
+      renderDashboard();
+    } else if (state.currentScreen === 'leaderboard-screen') {
+      renderLeaderboard();
+    } else if (state.currentScreen === 'members-screen') {
+      renderMembers();
+    } else if (state.currentScreen === 'admin-members-screen') {
+      renderAdminMembers();
+    } else if (state.currentScreen === 'matches-screen') {
+      renderMatches();
+    } else if (state.currentScreen === 'group-betting-screen') {
+      renderGroupBetting();
+    } else if (state.currentScreen === 'top-scorer-screen') {
+      renderTopScorerList();
+    }
+  });
   
   // Check URL for pool code parameter (?code=XXXXX or ?join=XXXXX)
   const urlParams = new URLSearchParams(window.location.search);

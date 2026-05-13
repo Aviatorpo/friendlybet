@@ -5335,3 +5335,157 @@ input:disabled + .slider {
   padding-top: 10px;
   border-top: 0.5px solid rgba(255, 255, 255, 0.05);
 }
+
+/* ============================================================ */
+/* LTR Support (English mode)                                   */
+/* ============================================================ */
+
+body.ltr {
+  direction: ltr;
+  text-align: left;
+}
+
+body.ltr .topbar {
+  /* The back arrow flips */
+}
+
+body.ltr .topbar .btn-icon svg {
+  transform: scaleX(-1);
+}
+
+body.ltr .menu-item .menu-arrow,
+body.ltr .admin-member-arrow {
+  transform: scaleX(-1);
+}
+
+/* Hebrew icons that should NOT flip */
+body.ltr [data-no-flip] {
+  transform: none !important;
+}
+
+/* Form labels */
+body.ltr .form-label,
+body.ltr .form-input,
+body.ltr label,
+body.ltr input,
+body.ltr textarea {
+  text-align: left;
+  direction: ltr;
+}
+
+/* Number inputs and codes stay LTR always */
+input[type="number"],
+input[type="tel"],
+input[autocomplete="off"][maxlength="16"],
+.recovery-code-display,
+.pool-code-display,
+.menu-version {
+  direction: ltr !important;
+  text-align: center !important;
+}
+
+/* Headers should align properly */
+body.ltr .topbar-title,
+body.ltr h1,
+body.ltr h2,
+body.ltr h3 {
+  text-align: center;
+}
+
+/* Group betting cards */
+body.ltr .group-letter-badge {
+  /* No special change */
+}
+
+/* Player cards in top scorer - flex direction stays */
+body.ltr .ts-player-card {
+  flex-direction: row;
+}
+
+body.ltr .ts-player-info {
+  text-align: left;
+}
+
+body.ltr .ts-player-flag {
+  margin-right: 10px;
+  margin-left: 0;
+}
+
+body.ltr .ts-player-action {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* Search input keeps LTR placeholder */
+body.ltr .ts-search-input {
+  text-align: left;
+}
+
+/* Toast messages */
+body.ltr .toast {
+  text-align: center;
+}
+
+/* Bracket */
+body.ltr .bracket-svg-wrapper {
+  /* SVG handles its own direction */
+}
+
+/* Menu items in English mode */
+body.ltr .menu-item {
+  flex-direction: row;
+}
+
+body.ltr .menu-item .menu-icon {
+  margin-right: 12px;
+  margin-left: 0;
+}
+
+/* Language switcher in menu */
+.menu-language-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(212, 168, 83, 0.05);
+  border: 0.5px solid rgba(212, 168, 83, 0.15);
+  border-radius: 10px;
+  margin: 8px 0;
+}
+
+.menu-language-switcher-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+.menu-language-toggle {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+}
+
+.menu-language-toggle-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  letter-spacing: 0.5px;
+}
+
+.menu-language-toggle-btn.active {
+  background: #d4a853;
+  color: #0a1628;
+}
+
+.menu-language-toggle-btn:not(.active):hover {
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.05);
+}

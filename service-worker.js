@@ -5,7 +5,7 @@
 // Strategy: Cache-first for assets, Network-first for API
 // ============================================================
 
-const CACHE_VERSION = 'friendlybet-v1.6.5';
+const CACHE_VERSION = 'friendlybet-v1.7.0';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -16,6 +16,7 @@ const STATIC_ASSETS = [
   '/styles.css',
   '/app.js',
   '/config.js',
+  '/i18n.js',
   '/manifest.json',
   '/favicon.svg',
   '/apple-touch-icon.svg',

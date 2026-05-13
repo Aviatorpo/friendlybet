@@ -83,24 +83,24 @@ function loadTablerFallback() {
       <div class="hero">
         <div class="logo-xl">⚽</div>
         <h1 class="hero-title">FriendlyBet</h1>
-        <p class="hero-subtitle">הימור חברים על מונדיאל 2026</p>
-        <p class="hero-description">חינמי · בלי פרסומות · בלי כסף · קוד פתוח</p>
+        <p class="hero-subtitle" data-i18n="welcome.subtitle">הימור חברים על מונדיאל 2026</p>
+        <p class="hero-description" data-i18n="welcome.tagline">חינמי · בלי פרסומות · בלי כסף · קוד פתוח</p>
       </div>
 
       <div class="action-buttons">
         <button class="btn-primary btn-large" onclick="showScreen('join-pool-screen')">
           <i class="ti ti-users"></i>
-          הצטרף להימור
+          <span data-i18n="welcome.join">הצטרף להימור</span>
         </button>
         <button class="btn-secondary btn-large" onclick="showScreen('create-pool-screen')">
           <i class="ti ti-crown"></i>
-          צור הימור חדש
+          <span data-i18n="welcome.create">צור הימור חדש</span>
         </button>
       </div>
 
       <div class="info-banner">
         <i class="ti ti-shield-check"></i>
-        <span>ללא הרשמה · ללא פרטים אישיים</span>
+        <span data-i18n="welcome.noSignup">ללא הרשמה · ללא פרטים אישיים</span>
       </div>
     </div>
   </div>
@@ -1526,7 +1526,7 @@ function loadTablerFallback() {
           <div class="ts-hero-trophy">🥇</div>
           <div class="ts-hero-title">נחש את מלך השערים</div>
           <div class="ts-hero-desc">
-            מי יקבע הכי הרבה שערים במונדיאל?<br>
+            מי יבקיע הכי הרבה שערים במונדיאל?<br>
             <strong>+25 נקודות בונוס</strong> אם תנחש נכון!
           </div>
         </div>
@@ -1998,15 +1998,20 @@ function loadTablerFallback() {
     
     <!-- Settings -->
     <div class="menu-section">
-      <div class="menu-section-title">הגדרות</div>
-      <button class="menu-item" onclick="toggleLanguage()">
-        <i class="ti ti-language gold"></i>
-        <span>שפה</span>
-        <span class="menu-value">עברית 🇮🇱</span>
-      </button>
+      <div class="menu-section-title" data-i18n="dashboard.menu.preferences">הגדרות</div>
+      
+      <!-- Language Switcher -->
+      <div class="menu-language-switcher">
+        <span class="menu-language-switcher-label" data-i18n="dashboard.menu.language">שפה</span>
+        <div class="menu-language-toggle">
+          <button class="menu-language-toggle-btn" id="lang-btn-he" onclick="setLanguage('he')">עב</button>
+          <button class="menu-language-toggle-btn" id="lang-btn-en" onclick="setLanguage('en')">EN</button>
+        </div>
+      </div>
+      
       <button class="menu-item menu-item-danger" onclick="logoutConfirm()">
         <i class="ti ti-logout"></i>
-        <span>התנתק מההימור</span>
+        <span data-i18n="dashboard.menu.leave">התנתק מההימור</span>
         <i class="ti ti-chevron-left menu-arrow"></i>
       </button>
     </div>
@@ -2014,7 +2019,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v1.6.5</span>
+      <span class="menu-version">v1.7.0</span>
     </div>
   </div>
 
@@ -2041,6 +2046,8 @@ function loadTablerFallback() {
 </script>
 <!-- Our config -->
 <script src="config.js"></script>
+<!-- i18n - language management -->
+<script src="i18n.js"></script>
 <!-- Our app -->
 <script src="app.js"></script>
 
