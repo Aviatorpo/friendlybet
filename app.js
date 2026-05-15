@@ -778,11 +778,11 @@ function openMenu() {
   if (!user || !pool) return;
   
   // User avatar (first letter)
-  const safeNick = user.nickname || 'משתמש';
+  const safeNick = user.nickname || t('dashboard.fallback.nickname');
   document.getElementById('menu-user-initial').textContent = safeNick.charAt(0).toUpperCase();
   document.getElementById('menu-user-name').textContent = safeNick;
-  document.getElementById('menu-user-role').textContent = user.is_admin ? 'מארגן ומשתתף' : 'משתתף';
-  document.getElementById('menu-pool-name').textContent = pool.name || 'הימור';
+  document.getElementById('menu-user-role').textContent = user.is_admin ? t('dashboard.role.adminMember') : t('dashboard.role.member');
+  document.getElementById('menu-pool-name').textContent = pool.name || t('dashboard.fallback.poolName');
   document.getElementById('menu-pool-code').textContent = pool.code || '-----';
   
   // Show admin section if admin

@@ -115,6 +115,10 @@ const TRANSLATIONS = {
     'dashboard.quickAction.help': 'עזרה',
     
     'dashboard.menu.title': 'תפריט',
+    'dashboard.role.member': 'משתתף',
+    'dashboard.role.adminMember': 'מארגן ומשתתף',
+    'dashboard.fallback.nickname': 'משתמש',
+    'dashboard.fallback.poolName': 'הימור',
     'dashboard.menu.invite': 'הזמן חברים להימור',
     'dashboard.menu.myInfo': 'המידע שלי',
     'dashboard.menu.showRecovery': 'הצג קוד שחזור',
@@ -494,6 +498,10 @@ const TRANSLATIONS = {
     'dashboard.quickAction.help': 'Help',
     
     'dashboard.menu.title': 'Menu',
+    'dashboard.role.member': 'Member',
+    'dashboard.role.adminMember': 'Admin & Member',
+    'dashboard.fallback.nickname': 'User',
+    'dashboard.fallback.poolName': 'Pool',
     'dashboard.menu.invite': 'Invite friends to pool',
     'dashboard.menu.myInfo': 'My info',
     'dashboard.menu.showRecovery': 'Show recovery code',
