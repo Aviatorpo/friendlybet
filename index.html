@@ -739,9 +739,9 @@ function loadTablerFallback() {
         <div class="text-faint" style="font-size: 10px; letter-spacing: 1px;">
           <span id="dashboard-pool-name">חברים מהעבודה</span>
         </div>
-        <div class="topbar-title-small">היי, <span id="dashboard-user-name">דני</span> 👋</div>
+        <div class="topbar-title-small"><span data-i18n="dashboard.greeting">היי</span>, <span id="dashboard-user-name">דני</span> 👋</div>
       </div>
-      <button class="btn-icon menu-button" onclick="openMenu()" aria-label="תפריט">
+      <button class="btn-icon menu-button" onclick="openMenu()" aria-label="תפריט" data-i18n-aria="common.menu">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="4" y1="6" x2="20" y2="6"></line>
           <line x1="4" y1="12" x2="20" y2="12"></line>
@@ -754,40 +754,40 @@ function loadTablerFallback() {
       <!-- Pool Code Card - prominent display -->
       <div class="pool-code-card" onclick="quickSharePool()">
         <div class="pool-code-card-content">
-          <div class="text-faint" style="font-size: 11px; letter-spacing: 1px;">קוד הימור</div>
+          <div class="text-faint" style="font-size: 11px; letter-spacing: 1px;" data-i18n="dashboard.poolCode">קוד הימור</div>
           <div class="pool-code-display-inline" id="dashboard-pool-code">XXXXX</div>
         </div>
         <div class="pool-code-share">
           <i class="ti ti-share"></i>
-          <span>שתף</span>
+          <span data-i18n="dashboard.share">שתף</span>
         </div>
       </div>
 
       <!-- User Stats Card -->
       <div class="dashboard-stats">
         <div class="stat-block">
-          <div class="stat-label">המקום שלך</div>
+          <div class="stat-label" data-i18n="dashboard.myRank">המקום שלך</div>
           <div class="stat-big">#<span id="user-rank">-</span></div>
         </div>
         <div class="stat-block stat-block-gold">
-          <div class="stat-label">נקודות</div>
+          <div class="stat-label" data-i18n="dashboard.points">נקודות</div>
           <div class="stat-big gold"><span id="user-points">0</span></div>
         </div>
       </div>
 
       <!-- Status sections -->
-      <div class="section-title">ההימורים שלי</div>
+      <div class="section-title" data-i18n="dashboard.myBets">ההימורים שלי</div>
 
       <div id="bet-status-groups" class="bet-status-card pending">
         <div class="bet-status-content">
           <div class="bet-status-title">
             <i class="ti ti-flag gold"></i>
-            שלב הבתים
+            <span data-i18n="dashboard.status.groups">שלב הבתים</span>
           </div>
-          <div class="bet-status-subtitle">עדיין לא הימרת</div>
+          <div class="bet-status-subtitle" data-i18n="dashboard.status.notStarted">עדיין לא הימרת</div>
         </div>
         <button class="btn-small" onclick="startGroupBetting()">
-          התחל <i class="ti ti-chevron-left"></i>
+          <span data-i18n="dashboard.action.start">התחל</span> <i class="ti ti-chevron-left"></i>
         </button>
       </div>
 
@@ -795,9 +795,9 @@ function loadTablerFallback() {
         <div class="bet-status-content">
           <div class="bet-status-title">
             <i class="ti ti-lock text-faint"></i>
-            שלב הנוקאאוט
+            <span data-i18n="dashboard.status.knockout">שלב הנוקאאוט</span>
           </div>
-          <div class="bet-status-subtitle">נפתח אחרי שלב הבתים</div>
+          <div class="bet-status-subtitle" data-i18n="dashboard.status.afterGroups">נפתח אחרי שלב הבתים</div>
         </div>
       </div>
 
@@ -805,9 +805,9 @@ function loadTablerFallback() {
         <div class="bet-status-content">
           <div class="bet-status-title">
             <i class="ti ti-bolt text-faint"></i>
-            מלך השערים
+            <span data-i18n="dashboard.status.topScorer">מלך השערים</span>
           </div>
-          <div class="bet-status-subtitle">נפתח בקרוב</div>
+          <div class="bet-status-subtitle" data-i18n="dashboard.status.topScorerLocked">נפתח בקרוב</div>
         </div>
       </div>
 
@@ -815,8 +815,8 @@ function loadTablerFallback() {
       <button class="invite-friends-btn" onclick="showShareModal()">
         <div class="invite-friends-icon">🎉</div>
         <div class="invite-friends-content">
-          <div class="invite-friends-title">הזמן חברים להימור</div>
-          <div class="invite-friends-subtitle">שלח קישור ב-WhatsApp · Telegram · קוד QR</div>
+          <div class="invite-friends-title" data-i18n="dashboard.invite.title">הזמן חברים להימור</div>
+          <div class="invite-friends-subtitle" data-i18n="dashboard.invite.subtitle">שלח קישור ב-WhatsApp · Telegram · קוד QR</div>
         </div>
         <i class="ti ti-chevron-left invite-friends-arrow"></i>
       </button>
@@ -825,11 +825,11 @@ function loadTablerFallback() {
       <div class="quick-actions">
         <button class="quick-action-btn" onclick="showLeaderboard()">
           <i class="ti ti-trophy gold"></i>
-          <span>דירוג</span>
+          <span data-i18n="dashboard.quickAction.leaderboard">דירוג</span>
         </button>
         <button class="quick-action-btn" onclick="showHelp()">
           <i class="ti ti-help gold"></i>
-          <span>עזרה</span>
+          <span data-i18n="dashboard.quickAction.help">עזרה</span>
         </button>
       </div>
     </div>

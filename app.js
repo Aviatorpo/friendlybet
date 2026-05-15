@@ -3186,21 +3186,22 @@ async function updateBettingStatusOnDashboard() {
   const subtitleEl = statusEl.querySelector('.bet-status-subtitle');
   const buttonEl = statusEl.querySelector('button');
   
+  const groupsLabel = t('dashboard.status.groups');
   if (picksCount === 0) {
-    titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> שלב הבתים';
-    subtitleEl.textContent = 'עדיין לא הימרת';
+    titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> ' + groupsLabel;
+    subtitleEl.textContent = t('dashboard.status.notStarted');
     statusEl.className = 'bet-status-card pending';
-    if (buttonEl) buttonEl.innerHTML = 'התחל →';
+    if (buttonEl) buttonEl.innerHTML = t('dashboard.action.start') + ' →';
   } else if (picksCount < 32) {
-    titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="6" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> שלב הבתים';
-    subtitleEl.textContent = `הימרת על ${picksCount} מתוך 32`;
+    titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="6" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> ' + groupsLabel;
+    subtitleEl.textContent = t('dashboard.status.partialGroups', { n: picksCount });
     statusEl.className = 'bet-status-card pending';
-    if (buttonEl) buttonEl.innerHTML = 'המשך →';
+    if (buttonEl) buttonEl.innerHTML = t('dashboard.action.continue') + ' →';
   } else {
-    titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> שלב הבתים';
-    subtitleEl.textContent = 'הושלם · 32 קבוצות';
+    titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ' + groupsLabel;
+    subtitleEl.textContent = t('dashboard.status.completedGroups');
     statusEl.className = 'bet-status-card completed';
-    if (buttonEl) buttonEl.innerHTML = 'ערוך →';
+    if (buttonEl) buttonEl.innerHTML = t('dashboard.action.edit') + ' →';
   }
 }
 
@@ -4422,14 +4423,15 @@ async function updateKnockoutStatusOnDashboard() {
   
   const groupComplete = groupPicks && groupPicks.length >= 32;
   
+  const koLabel = t('dashboard.status.knockout');
   if (!groupComplete) {
     // Still locked
     koCard.className = 'bet-status-card locked';
     const titleEl = koCard.querySelector('.bet-status-title');
     const subtitleEl = koCard.querySelector('.bet-status-subtitle');
-    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> שלב הנוקאאוט';
-    if (subtitleEl) subtitleEl.textContent = 'נפתח אחרי שלב הבתים';
-    
+    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> ' + koLabel;
+    if (subtitleEl) subtitleEl.textContent = t('dashboard.status.afterGroups');
+
     // Remove any button
     const existingBtn = koCard.querySelector('button');
     if (existingBtn) existingBtn.remove();
@@ -4458,19 +4460,19 @@ async function updateKnockoutStatusOnDashboard() {
   
   if (koCount === 0) {
     koCard.className = 'bet-status-card pending';
-    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> שלב הנוקאאוט';
-    if (subtitleEl) subtitleEl.textContent = 'מוכן להמר על 31 משחקים';
-    existingBtn.innerHTML = 'התחל →';
+    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> ' + koLabel;
+    if (subtitleEl) subtitleEl.textContent = t('dashboard.status.koReady');
+    existingBtn.innerHTML = t('dashboard.action.start') + ' →';
   } else if (koCount < 31) {
     koCard.className = 'bet-status-card pending';
-    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="6" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> שלב הנוקאאוט';
-    if (subtitleEl) subtitleEl.textContent = `הימרת על ${koCount} מתוך 31`;
-    existingBtn.innerHTML = 'המשך →';
+    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="6" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> ' + koLabel;
+    if (subtitleEl) subtitleEl.textContent = t('dashboard.status.partialKo', { n: koCount });
+    existingBtn.innerHTML = t('dashboard.action.continue') + ' →';
   } else {
     koCard.className = 'bet-status-card completed';
-    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> שלב הנוקאאוט';
-    if (subtitleEl) subtitleEl.textContent = 'הושלם · 31 משחקים';
-    existingBtn.innerHTML = 'ערוך →';
+    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ' + koLabel;
+    if (subtitleEl) subtitleEl.textContent = t('dashboard.status.completedKo');
+    existingBtn.innerHTML = t('dashboard.action.edit') + ' →';
   }
 }
 
@@ -4987,8 +4989,9 @@ async function initApp() {
   // Listen for language changes - re-render current screen
   window.addEventListener('languageChanged', () => {
     // Re-render visible dynamic content
-    if (state.currentScreen === 'dashboard-screen' && state.currentPool) {
-      renderDashboard();
+    if (state.currentScreen === 'user-dashboard-screen' && state.currentPool) {
+      updateBettingStatusOnDashboard();
+      updateKnockoutStatusOnDashboard();
     } else if (state.currentScreen === 'leaderboard-screen') {
       renderLeaderboard();
     } else if (state.currentScreen === 'members-screen') {
