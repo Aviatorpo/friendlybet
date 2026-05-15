@@ -228,6 +228,16 @@ const TRANSLATIONS = {
     'leaderboard.joinedYesterday': 'הצטרף אתמול',
     'leaderboard.joinedDaysAgo': 'הצטרף לפני {n} ימים',
     'leaderboard.joinedOn': 'הצטרף ב-{date}',
+    'leaderboard.fullRanking': 'דירוג מלא',
+    'leaderboard.emptyTitle': 'הטורניר עוד לא התחיל',
+    'leaderboard.emptyText': 'הניקוד יחושב אחרי שיתחילו המשחקים',
+    'leaderboard.participantsCount': '{n} משתתפים',
+    'leaderboard.statusBefore': 'לפני התחלת הטורניר',
+    'leaderboard.statusDuring': 'במהלך הטורניר',
+    'leaderboard.podiumEmpty': 'ריק',
+    'leaderboard.noPointsYet': 'עדיין בלי נקודות',
+    'leaderboard.loadError': 'שגיאה בטעינת הדירוג',
+    'leaderboard.shareText': '🏆 לוח הדירוגים של {poolName}!\n\nהצטרף ל-FriendlyBet והתחרה איתנו על מונדיאל 2026:\n{url}',
     
     // === Matches ===
     'matches.title': 'לוח משחקים',
@@ -322,6 +332,7 @@ const TRANSLATIONS = {
     'toast.online': 'חזרת למצב מקוון',
     'toast.poolLocked': 'ההימור נעול',
     'toast.poolUnlocked': 'ההימור נפתח',
+    'toast.loadError': 'שגיאה בטעינה',
     
     // === Confirmations ===
     'confirm.leave': 'להתנתק מההימור?',
@@ -611,6 +622,16 @@ const TRANSLATIONS = {
     'leaderboard.joinedYesterday': 'Joined yesterday',
     'leaderboard.joinedDaysAgo': 'Joined {n} days ago',
     'leaderboard.joinedOn': 'Joined on {date}',
+    'leaderboard.fullRanking': 'Full ranking',
+    'leaderboard.emptyTitle': 'Tournament hasn\'t started yet',
+    'leaderboard.emptyText': 'Scores will be calculated after matches begin',
+    'leaderboard.participantsCount': '{n} participants',
+    'leaderboard.statusBefore': 'Before tournament starts',
+    'leaderboard.statusDuring': 'Tournament in progress',
+    'leaderboard.podiumEmpty': 'Empty',
+    'leaderboard.noPointsYet': 'No points yet',
+    'leaderboard.loadError': 'Failed to load leaderboard',
+    'leaderboard.shareText': '🏆 Leaderboard for {poolName}!\n\nJoin FriendlyBet and compete with us on World Cup 2026:\n{url}',
     
     // === Matches ===
     'matches.title': 'Match Schedule',
@@ -705,6 +726,7 @@ const TRANSLATIONS = {
     'toast.online': 'Back online',
     'toast.poolLocked': 'Pool locked',
     'toast.poolUnlocked': 'Pool unlocked',
+    'toast.loadError': 'Failed to load',
     
     // === Confirmations ===
     'confirm.leave': 'Leave the pool?',

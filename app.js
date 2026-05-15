@@ -4478,17 +4478,17 @@ async function updateKnockoutStatusOnDashboard() {
 
 async function showLeaderboard() {
   closeMenu();
-  
+
   if (!state.currentPool || !supabaseClient) {
-    showToast('שגיאה בטעינה', 'error');
+    showToast(t('toast.loadError'), 'error');
     return;
   }
-  
+
   showScreen('leaderboard-screen');
-  
+
   // Update pool info
   document.getElementById('lb-pool-name').textContent = state.currentPool.name;
-  
+
   // Load all users sorted by score
   const { data: users, error } = await supabaseClient
     .from('users')
@@ -4496,28 +4496,28 @@ async function showLeaderboard() {
     .eq('pool_id', state.currentPool.id)
     .order('total_score', { ascending: false })
     .order('joined_at', { ascending: true });
-  
+
   if (error || !users) {
     console.error('Leaderboard load error:', error);
-    showToast('שגיאה בטעינת הדירוג', 'error');
+    showToast(t('leaderboard.loadError'), 'error');
     return;
   }
-  
-  document.getElementById('lb-members-count').textContent = `${users.length} משתתפ${users.length === 1 ? '' : 'ים'}`;
-  
+
+  document.getElementById('lb-members-count').textContent = t('leaderboard.participantsCount', { n: users.length });
+
   // Check tournament status (for now - always pre-tournament)
   const totalScores = users.reduce((sum, u) => sum + (u.total_score || 0), 0);
   const hasScores = totalScores > 0;
-  
-  document.getElementById('lb-tournament-status').textContent = 
-    hasScores ? 'במהלך הטורניר' : 'לפני התחלת הטורניר';
-  
+
+  document.getElementById('lb-tournament-status').textContent =
+    hasScores ? t('leaderboard.statusDuring') : t('leaderboard.statusBefore');
+
   // Render podium (top 3)
   renderPodium(users);
-  
+
   // Render full list
   renderFullLeaderboard(users);
-  
+
   // Empty state
   const emptyEl = document.getElementById('lb-empty');
   if (!hasScores) {
@@ -4569,9 +4569,9 @@ function createPodiumSpot(rank, user, rankNum) {
     <div class="${medalClass}">${medal}</div>
     <div class="podium-name">${user.nickname}</div>
     <div class="podium-points">${user.total_score || 0}</div>
-    <div class="podium-points-label">נקודות</div>
+    <div class="podium-points-label">${t('leaderboard.points')}</div>
   `;
-  
+
   return div;
 }
 
@@ -4581,7 +4581,7 @@ function createEmptyPodium(rank) {
   div.style.opacity = '0.3';
   div.innerHTML = `
     <div class="podium-medal">—</div>
-    <div class="podium-name text-faint">ריק</div>
+    <div class="podium-name text-faint">${t('leaderboard.podiumEmpty')}</div>
   `;
   return div;
 }
@@ -4589,60 +4589,60 @@ function createEmptyPodium(rank) {
 function renderFullLeaderboard(users) {
   const list = document.getElementById('lb-full-list');
   list.innerHTML = '';
-  
+
   if (users.length === 0) {
-    list.innerHTML = '<div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.4);">אין משתתפים</div>';
+    list.innerHTML = `<div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.4);">${t('leaderboard.empty')}</div>`;
     return;
   }
-  
+
   users.forEach((user, idx) => {
     const row = document.createElement('div');
     row.className = 'lb-row';
-    
+
     const isMe = state.currentUser && user.id === state.currentUser.id;
     if (isMe) row.classList.add('is-me');
-    
+
     const rank = idx + 1;
-    
+
     row.innerHTML = `
       <div class="lb-rank">#${rank}</div>
       <div class="lb-avatar-small">${user.nickname.charAt(0)}</div>
       <div class="lb-info">
         <div class="lb-name">
           ${user.nickname}
-          ${user.is_admin ? '<span class="admin-badge">מארגן</span>' : ''}
-          ${isMe ? '<span class="lb-badge">אתה</span>' : ''}
+          ${user.is_admin ? `<span class="admin-badge">${t('common.admin')}</span>` : ''}
+          ${isMe ? `<span class="lb-badge">${t('common.you')}</span>` : ''}
         </div>
         <div class="lb-meta">${formatScoreDescription(user)}</div>
       </div>
       <div>
         <div class="lb-points">${user.total_score || 0}</div>
-        <div class="lb-points-label">נקודות</div>
+        <div class="lb-points-label">${t('leaderboard.points')}</div>
       </div>
     `;
-    
+
     list.appendChild(row);
   });
 }
 
 function formatScoreDescription(user) {
   const parts = [];
-  if (user.groups_score > 0) parts.push(`בתים: ${user.groups_score}`);
-  if (user.knockout_score > 0) parts.push(`נוקאאוט: ${user.knockout_score}`);
-  if (user.bonus_score > 0) parts.push(`בונוס: ${user.bonus_score}`);
-  
-  if (parts.length === 0) return 'עדיין בלי נקודות';
+  if (user.groups_score > 0) parts.push(`${t('leaderboard.groups')}: ${user.groups_score}`);
+  if (user.knockout_score > 0) parts.push(`${t('leaderboard.knockout')}: ${user.knockout_score}`);
+  if (user.bonus_score > 0) parts.push(`${t('leaderboard.bonus')}: ${user.bonus_score}`);
+
+  if (parts.length === 0) return t('leaderboard.noPointsYet');
   return parts.join(' · ');
 }
 
 function shareLeaderboard() {
   if (!state.currentPool) return;
-  
+
   const poolName = state.currentPool.name;
   const url = `${window.location.origin}?code=${state.currentPool.code}`;
-  
-  const text = `🏆 לוח הדירוגים של ${poolName}!\n\nהצטרף ל-FriendlyBet והתחרה איתנו על מונדיאל 2026:\n${url}`;
-  
+
+  const text = t('leaderboard.shareText', { poolName, url });
+
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
   window.open(whatsappUrl, '_blank');
 }
@@ -4993,7 +4993,7 @@ async function initApp() {
       updateBettingStatusOnDashboard();
       updateKnockoutStatusOnDashboard();
     } else if (state.currentScreen === 'leaderboard-screen') {
-      renderLeaderboard();
+      showLeaderboard();
     } else if (state.currentScreen === 'members-screen') {
       renderMembers();
     } else if (state.currentScreen === 'admin-members-screen') {

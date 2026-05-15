@@ -1611,15 +1611,15 @@ function loadTablerFallback() {
   <!-- ============================================================ -->
   <div id="leaderboard-screen" class="screen">
     <div class="topbar">
-      <button class="btn-icon" onclick="goToDashboard()" aria-label="חזור">
+      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="common.back" aria-label="חזור">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12l14 0"></path>
           <path d="M5 12l6 6"></path>
           <path d="M5 12l6 -6"></path>
         </svg>
       </button>
-      <span class="topbar-title">לוח דירוגים</span>
-      <button class="btn-icon" onclick="shareLeaderboard()" aria-label="שתף">
+      <span class="topbar-title" data-i18n="leaderboard.title">לוח דירוגים</span>
+      <button class="btn-icon" onclick="shareLeaderboard()" data-i18n-aria="common.share" aria-label="שתף">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="18" cy="5" r="3"></circle>
           <circle cx="6" cy="12" r="3"></circle>
@@ -1647,7 +1647,7 @@ function loadTablerFallback() {
       </div>
 
       <!-- Full list -->
-      <div class="section-title-small">דירוג מלא</div>
+      <div class="section-title-small" data-i18n="leaderboard.fullRanking">דירוג מלא</div>
       <div id="lb-full-list" class="lb-full-list">
         <!-- Populated by JS -->
       </div>
@@ -1655,8 +1655,8 @@ function loadTablerFallback() {
       <!-- Empty state -->
       <div id="lb-empty" class="lb-empty" style="display: none;">
         <div class="lb-empty-icon">🎯</div>
-        <div class="lb-empty-title">הטורניר עוד לא התחיל</div>
-        <div class="lb-empty-text">הניקוד יחושב אחרי שיתחילו המשחקים</div>
+        <div class="lb-empty-title" data-i18n="leaderboard.emptyTitle">הטורניר עוד לא התחיל</div>
+        <div class="lb-empty-text" data-i18n="leaderboard.emptyText">הניקוד יחושב אחרי שיתחילו המשחקים</div>
       </div>
     </div>
   </div>
@@ -2025,7 +2025,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v1.8.0</span>
+      <span class="menu-version">v1.9.0</span>
     </div>
   </div>
 
