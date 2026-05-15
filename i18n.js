@@ -24,6 +24,14 @@ const TRANSLATIONS = {
     'common.copy': 'העתק',
     'common.share': 'שתף',
     'common.copied': 'הועתק!',
+    'common.continue': 'המשך',
+    'common.skip': 'דלג',
+    'common.create': 'צור',
+    'common.add': 'הוסף',
+    'common.remove': 'הסר',
+    'common.edit': 'ערוך',
+    'common.update': 'עדכן',
+    'common.send': 'שלח',
     'common.points': 'נק\'',
     'common.bonusPoints': 'נק\' בונוס',
     'common.you': 'אתה',
@@ -52,11 +60,18 @@ const TRANSLATIONS = {
     'create.button': 'צור הימור',
     
     'join.title': 'הצטרף להימור',
+    'join.whichPool': 'איזה הימור?',
+    'join.enterCode': 'הזן את קוד ההימור שקיבלת',
     'join.code': 'קוד ההימור',
     'join.codePlaceholder': '5 אותיות, למשל: ABCDE',
     'join.nickname': 'הכינוי שלך',
     'join.nicknamePlaceholder': 'איך תופיע בלוח הדירוג',
     'join.button': 'הצטרף',
+    'join.invitedTo': 'הוזמנת ל',
+    'join.poolCode': 'קוד',
+    'join.findError': 'הקוד לא נמצא. בדוק שוב.',
+    'join.poolLocked': 'ההימור נעול',
+    'join.poolLockedDesc': 'המארגן נעל את ההימור. לא ניתן להצטרף.',
     
     'recovery.title': 'התחברות עם קוד שחזור',
     'recovery.code': 'הקוד שלך',
@@ -365,6 +380,14 @@ const TRANSLATIONS = {
     'common.copy': 'Copy',
     'common.share': 'Share',
     'common.copied': 'Copied!',
+    'common.continue': 'Continue',
+    'common.skip': 'Skip',
+    'common.create': 'Create',
+    'common.add': 'Add',
+    'common.remove': 'Remove',
+    'common.edit': 'Edit',
+    'common.update': 'Update',
+    'common.send': 'Send',
     'common.points': 'pts',
     'common.bonusPoints': 'bonus pts',
     'common.you': 'You',
@@ -393,11 +416,18 @@ const TRANSLATIONS = {
     'create.button': 'Create Pool',
     
     'join.title': 'Join Pool',
+    'join.whichPool': 'Which Pool?',
+    'join.enterCode': 'Enter the pool code you received',
     'join.code': 'Pool Code',
     'join.codePlaceholder': '5 letters, e.g. ABCDE',
     'join.nickname': 'Your Nickname',
     'join.nicknamePlaceholder': 'How you appear on the leaderboard',
     'join.button': 'Join',
+    'join.invitedTo': 'You\'re invited to',
+    'join.poolCode': 'Code',
+    'join.findError': 'Code not found. Try again.',
+    'join.poolLocked': 'Pool Locked',
+    'join.poolLockedDesc': 'The admin has locked this pool. Cannot join.',
     
     'recovery.title': 'Login with Recovery Code',
     'recovery.code': 'Your Code',
@@ -757,12 +787,20 @@ function setLanguage(lang) {
   localStorage.setItem('friendlybet_language', lang);
   applyLanguage();
   
-  // Update language switcher button states
+  // Update menu language switcher button states
   const heBtn = document.getElementById('lang-btn-he');
   const enBtn = document.getElementById('lang-btn-en');
   if (heBtn && enBtn) {
     heBtn.classList.toggle('active', lang === 'he');
     enBtn.classList.toggle('active', lang === 'en');
+  }
+  
+  // Update home screen language switcher button states
+  const homeHeBtn = document.getElementById('home-lang-btn-he');
+  const homeEnBtn = document.getElementById('home-lang-btn-en');
+  if (homeHeBtn && homeEnBtn) {
+    homeHeBtn.classList.toggle('active', lang === 'he');
+    homeEnBtn.classList.toggle('active', lang === 'en');
   }
   
   // Close menu if open (function from app.js)
@@ -807,12 +845,20 @@ function applyLanguage() {
     body.classList.add('ltr');
   }
   
-  // Update language switcher button states
+  // Update language switcher button states (menu)
   const heBtn = document.getElementById('lang-btn-he');
   const enBtn = document.getElementById('lang-btn-en');
   if (heBtn && enBtn) {
     heBtn.classList.toggle('active', currentLanguage === 'he');
     enBtn.classList.toggle('active', currentLanguage === 'en');
+  }
+  
+  // Update home screen language switcher button states
+  const homeHeBtn = document.getElementById('home-lang-btn-he');
+  const homeEnBtn = document.getElementById('home-lang-btn-en');
+  if (homeHeBtn && homeEnBtn) {
+    homeHeBtn.classList.toggle('active', currentLanguage === 'he');
+    homeEnBtn.classList.toggle('active', currentLanguage === 'en');
   }
   
   // Update all elements with data-i18n attribute

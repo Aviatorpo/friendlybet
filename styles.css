@@ -5489,3 +5489,63 @@ body.ltr .menu-item .menu-icon {
   color: rgba(255, 255, 255, 0.8);
   background: rgba(255, 255, 255, 0.05);
 }
+
+/* ============================================================ */
+/* Home Screen Language Toggle                                  */
+/* ============================================================ */
+
+.home-lang-toggle {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* In RTL mode (Hebrew default), position on left.
+   In LTR mode (English), also on left for consistency */
+body.ltr .home-lang-toggle {
+  left: 16px;
+  right: auto;
+}
+
+body.rtl .home-lang-toggle,
+body:not(.ltr) .home-lang-toggle {
+  left: 16px;
+  right: auto;
+}
+
+.home-lang-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  letter-spacing: 0.5px;
+  min-width: 42px;
+}
+
+.home-lang-btn.active {
+  background: #d4a853;
+  color: #0a1628;
+}
+
+.home-lang-btn:not(.active):hover {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.home-lang-btn:not(.active):active {
+  transform: scale(0.95);
+}

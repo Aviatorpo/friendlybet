@@ -79,6 +79,12 @@ function loadTablerFallback() {
 
   <!-- HOME SCREEN (G-00) -->
   <div id="home-screen" class="screen">
+    <!-- Language toggle in top corner -->
+    <div class="home-lang-toggle">
+      <button class="home-lang-btn" id="home-lang-btn-he" onclick="setLanguage('he')">עב</button>
+      <button class="home-lang-btn" id="home-lang-btn-en" onclick="setLanguage('en')">EN</button>
+    </div>
+    
     <div class="container">
       <div class="hero">
         <div class="logo-xl">⚽</div>
@@ -111,18 +117,18 @@ function loadTablerFallback() {
       <button class="btn-icon" onclick="showScreen('home-screen')">
         <i class="ti ti-arrow-right"></i>
       </button>
-      <span class="topbar-title">הצטרף להימור</span>
+      <span class="topbar-title" data-i18n="join.title">הצטרף להימור</span>
       <div style="width: 24px;"></div>
     </div>
 
     <div class="container">
       <div class="form-section">
         <div class="form-icon">🏆</div>
-        <h2 class="form-title">איזה הימור?</h2>
-        <p class="form-subtitle">הזן את קוד ההימור שקיבלת</p>
+        <h2 class="form-title" data-i18n="join.whichPool">איזה הימור?</h2>
+        <p class="form-subtitle" data-i18n="join.enterCode">הזן את קוד ההימור שקיבלת</p>
 
         <div class="form-group">
-          <label class="form-label">קוד ההימור</label>
+          <label class="form-label" data-i18n="join.code">קוד ההימור</label>
           <input type="text" id="pool-code-input" class="form-input form-input-large" placeholder="XXXXX" maxlength="5" autocomplete="off" autocapitalize="characters">
         </div>
 
@@ -130,7 +136,7 @@ function loadTablerFallback() {
 
         <button class="btn-primary btn-large" onclick="checkPoolCode()">
           <i class="ti ti-arrow-left"></i>
-          המשך
+          <span data-i18n="common.continue">המשך</span>
         </button>
       </div>
     </div>
@@ -2019,7 +2025,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v1.7.0</span>
+      <span class="menu-version">v1.7.1</span>
     </div>
   </div>
 
