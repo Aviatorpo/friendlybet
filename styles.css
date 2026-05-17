@@ -6137,29 +6137,16 @@ body:not(.ltr) .home-lang-toggle {
   text-align: center;
   margin-bottom: 18px;
 }
-.rc-hero-emoji {
-  font-size: 56px;
-  line-height: 1;
-  margin-bottom: 6px;
-  display: inline-block;
-  animation: rc-bounce 1.6s ease-in-out infinite;
-}
 .rc-hero-title {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 800;
   color: #d4a853;
-  margin: 6px 0 4px;
+  margin: 0 0 6px;
 }
 .rc-hero-subtitle {
-  font-size: 15px;
-  color: rgba(255,255,255,0.75);
+  font-size: 14px;
+  color: rgba(255,255,255,0.7);
   margin: 0;
-}
-@keyframes rc-bounce {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25%      { transform: translateY(-4px) rotate(-6deg); }
-  50%      { transform: translateY(-8px) rotate(0deg); }
-  75%      { transform: translateY(-4px) rotate(6deg); }
 }
 
 .rc-divider {

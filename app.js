@@ -6739,20 +6739,17 @@ function showRecoveryCode(mode, recoveryCode, poolName) {
   // Set title/subtitle by mode
   const titleEl = document.getElementById('rc-hero-title');
   const subEl = document.getElementById('rc-hero-subtitle');
-  const heroEmoji = document.getElementById('rc-hero-emoji');
   const continueBtn = document.getElementById('rc-continue-btn');
   const codeCard = document.getElementById('rc-code-card');
 
   if (mode === 'view') {
     titleEl.textContent = t('recovery.viewMode.title');
     subEl.style.display = 'none';
-    heroEmoji.style.display = 'none';
     continueBtn.querySelector('span').textContent = t('recovery.button.close');
     // Reduce animation for view mode
     if (codeCard) codeCard.style.animation = 'none';
   } else {
     subEl.style.display = '';
-    heroEmoji.style.display = '';
     if (mode === 'joined') {
       titleEl.textContent = t('recovery.joined.title');
       subEl.textContent = t('recovery.joined.subtitle');
@@ -6824,27 +6821,9 @@ function rcAnimateCodeReveal(el, finalText) {
 }
 
 function rcCreateConfetti() {
-  // v2.1.1: minimal gold sparkles around the code card (no falling confetti)
-  const layer = document.getElementById('rc-confetti-layer');
-  if (!layer) return;
-  layer.innerHTML = '';
-  const card = document.getElementById('rc-code-card');
-  const layerRect = layer.getBoundingClientRect();
-  const cardRect = card ? card.getBoundingClientRect() : layerRect;
-  // Anchor sparkles around the card's vertical zone
-  const top = cardRect.top - layerRect.top - 20;
-  const height = cardRect.height + 40;
-  const count = 8;
-  for (let i = 0; i < count; i++) {
-    const dot = document.createElement('span');
-    dot.className = 'rc-sparkle';
-    dot.style.left = `${10 + Math.random() * 80}%`;
-    dot.style.top = `${top + Math.random() * height}px`;
-    dot.style.animationDelay = `${Math.random() * 0.8}s`;
-    layer.appendChild(dot);
-  }
-  if (rcState.confettiTimer) clearTimeout(rcState.confettiTimer);
-  rcState.confettiTimer = setTimeout(() => rcClearConfetti(), 3500);
+  // v2.1.2: confetti removed - the slide-in + pulse on the code card is
+  // already the celebration cue. No particles.
+  rcClearConfetti();
 }
 
 function rcClearConfetti() {

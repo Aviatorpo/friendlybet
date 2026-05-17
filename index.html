@@ -2060,7 +2060,7 @@ function loadTablerFallback() {
       <div class="menu-section-title" data-i18n="dashboard.menu.myInfo">המידע שלי</div>
       <button class="menu-item" onclick="rcViewFromMenu()">
         <i class="ti ti-key gold"></i>
-        <span data-i18n="recovery.menu.viewCode">🔑 קוד השחזור שלי</span>
+        <span data-i18n="recovery.menu.viewCode">קוד השחזור שלי</span>
         <i class="ti ti-chevron-left menu-arrow"></i>
       </button>
       <button class="menu-item" onclick="showMembers()">
@@ -2144,11 +2144,9 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.1.1</span>
+      <span class="menu-version">v2.1.2</span>
     </div>
   </div>
-
-</div>
 
 <!-- ============================================================ -->
 <!-- SINGLE-PHASE BETTING FLOW (v2.0)                              -->
@@ -2362,39 +2360,38 @@ function loadTablerFallback() {
 
   <div class="container rc-container">
     <div class="rc-hero">
-      <div class="rc-hero-emoji" id="rc-hero-emoji">🎉</div>
-      <h1 class="rc-hero-title" id="rc-hero-title" data-i18n="recovery.poolCreated.title">🎉 הבריכה נוצרה!</h1>
+      <h1 class="rc-hero-title" id="rc-hero-title" data-i18n="recovery.poolCreated.title">הבריכה נוצרה!</h1>
       <p class="rc-hero-subtitle" id="rc-hero-subtitle" data-i18n="recovery.poolCreated.subtitle">ברוך הבא לבריכה שלך!</p>
     </div>
 
     <div class="rc-divider"></div>
 
-    <div class="rc-code-label" data-i18n="recovery.codeLabel">🔑 קוד השחזור האישי שלך</div>
+    <div class="rc-code-label"><i class="ti ti-key gold"></i> <span data-i18n="recovery.codeLabel">קוד השחזור האישי שלך</span></div>
 
     <div class="rc-code-card" id="rc-code-card">
       <div class="rc-code-text" id="rc-code-text">XXXX-XXXX-XXXX-XXXX</div>
     </div>
 
     <div class="rc-warning-box">
-      <div class="rc-warning-title" data-i18n="recovery.warning.title">⚠️ שמור את הקוד!</div>
+      <div class="rc-warning-title"><i class="ti ti-alert-triangle"></i> <span data-i18n="recovery.warning.title">שמור את הקוד!</span></div>
       <div class="rc-warning-text" data-i18n="recovery.warning.text">תצטרך אותו כדי להתחבר ממכשיר אחר או אם המכשיר הנוכחי יתנתק.</div>
-      <div class="rc-warning-privacy" data-i18n="recovery.privacy">🔒 שמור על פרטיות. אל תשתף.</div>
+      <div class="rc-warning-privacy"><i class="ti ti-lock"></i> <span data-i18n="recovery.privacy">שמור על פרטיות. אל תשתף.</span></div>
     </div>
 
     <div class="rc-actions-primary">
       <button class="rc-action-btn" id="rc-btn-copy" onclick="rcCopy()">
-        <span class="rc-action-icon">📋</span>
+        <i class="ti ti-copy rc-action-icon"></i>
         <span class="rc-action-label" data-i18n="recovery.button.copy">העתק</span>
       </button>
       <button class="rc-action-btn" id="rc-btn-email" onclick="rcEmail()">
-        <span class="rc-action-icon">📧</span>
+        <i class="ti ti-mail rc-action-icon"></i>
         <span class="rc-action-label" data-i18n="recovery.button.email">שלח במייל</span>
       </button>
     </div>
 
     <div class="rc-actions-secondary">
       <button class="rc-action-btn rc-action-btn-secondary" id="rc-btn-download" onclick="rcDownload()">
-        <span class="rc-action-icon">💾</span>
+        <i class="ti ti-download rc-action-icon"></i>
         <span class="rc-action-label" data-i18n="recovery.button.download">הורד כקובץ</span>
       </button>
     </div>
@@ -2409,7 +2406,7 @@ function loadTablerFallback() {
 <div id="rc-warning-modal" class="rc-modal" style="display:none;">
   <div class="rc-modal-overlay" onclick="rcCloseModal()"></div>
   <div class="rc-modal-content">
-    <div class="rc-modal-title" data-i18n="recovery.warningModal.title">⚠️ אתה בטוח?</div>
+    <div class="rc-modal-title"><i class="ti ti-alert-triangle"></i> <span data-i18n="recovery.warningModal.title">אתה בטוח?</span></div>
     <div class="rc-modal-text" data-i18n="recovery.warningModal.text">עדיין לא שמרת את קוד השחזור. בלעדיו, לא תוכל להתחבר ממכשיר אחר.</div>
     <div class="rc-modal-actions">
       <button class="btn-secondary" onclick="rcCloseModal()">
@@ -2421,6 +2418,8 @@ function loadTablerFallback() {
     </div>
   </div>
 </div>
+
+</div><!-- end #app -->
 
 <!-- ============================================================ -->
 <!-- Toast notifications                                          -->
