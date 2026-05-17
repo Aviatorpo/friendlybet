@@ -49,13 +49,13 @@ function loadTablerFallback() {
 <div id="pwa-install-banner" class="pwa-install-banner">
   <div class="pwa-banner-icon">📱</div>
   <div class="pwa-banner-content">
-    <div class="pwa-banner-title">התקן את האפליקציה</div>
-    <div class="pwa-banner-text">גישה מהירה מהמסך הראשי, ללא דפדפן</div>
+    <div class="pwa-banner-title" data-i18n="pwa.title">התקן את האפליקציה</div>
+    <div class="pwa-banner-text" data-i18n="pwa.text">גישה מהירה מהמסך הראשי, ללא דפדפן</div>
   </div>
-  <button class="pwa-banner-install" onclick="triggerInstall()">
+  <button class="pwa-banner-install" onclick="triggerInstall()" data-i18n="pwa.install">
     התקן
   </button>
-  <button class="pwa-banner-dismiss" onclick="dismissInstallBanner()" aria-label="סגור">
+  <button class="pwa-banner-dismiss" onclick="dismissInstallBanner()" data-i18n-aria="common.close" aria-label="סגור">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="18" y1="6" x2="6" y2="18"></line>
       <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -148,36 +148,36 @@ function loadTablerFallback() {
       <button class="btn-icon" onclick="showScreen('join-pool-screen')">
         <i class="ti ti-arrow-right"></i>
       </button>
-      <span class="topbar-title">פרטי ההימור</span>
+      <span class="topbar-title" data-i18n="poolFound.title">פרטי ההימור</span>
       <div style="width: 24px;"></div>
     </div>
 
     <div class="container">
       <div class="pool-info-card">
         <div class="form-icon">🏆</div>
-        <p class="text-faint" style="font-size: 12px; letter-spacing: 1.5px; margin-bottom: 6px;">הוזמנת ל</p>
+        <p class="text-faint" style="font-size: 12px; letter-spacing: 1.5px; margin-bottom: 6px;" data-i18n="join.invitedTo">הוזמנת ל</p>
         <h2 id="found-pool-name" class="pool-name">חברים מהעבודה</h2>
-        <p class="text-faint" style="margin-top: 4px;">קוד: <span id="found-pool-code" class="gold-mono">XXXXX</span></p>
+        <p class="text-faint" style="margin-top: 4px;"><span data-i18n="join.poolCode">קוד</span>: <span id="found-pool-code" class="gold-mono">XXXXX</span></p>
 
         <div class="pool-stats">
           <div class="stat-row">
             <div class="stat-icon-wrap"><i class="ti ti-users gold"></i></div>
             <div>
-              <div class="stat-label">משתתפים</div>
-              <div class="stat-value"><span id="found-pool-members">0</span> חברים</div>
+              <div class="stat-label" data-i18n="poolSettings.poolMembers">משתתפים</div>
+              <div class="stat-value"><span id="found-pool-members">0</span> <span data-i18n="common.members">חברים</span></div>
             </div>
           </div>
           <div class="stat-row">
             <div class="stat-icon-wrap"><i class="ti ti-trophy gold"></i></div>
             <div>
-              <div class="stat-label">טורניר</div>
-              <div class="stat-value">מונדיאל 2026</div>
+              <div class="stat-label" data-i18n="common.tournament">טורניר</div>
+              <div class="stat-value" data-i18n="common.tournamentName">מונדיאל 2026</div>
             </div>
           </div>
           <div class="stat-row">
             <div class="stat-icon-wrap"><i class="ti ti-clock gold"></i></div>
             <div>
-              <div class="stat-label">סטטוס</div>
+              <div class="stat-label" data-i18n="common.status">סטטוס</div>
               <div class="stat-value" id="found-pool-status">פתוח להצטרפות</div>
             </div>
           </div>
@@ -185,12 +185,12 @@ function loadTablerFallback() {
 
         <button class="btn-primary btn-large" onclick="showScreen('choose-nickname-screen')">
           <i class="ti ti-user-plus"></i>
-          הצטרף להימור
+          <span data-i18n="join.button">הצטרף להימור</span>
         </button>
 
         <div class="hint-text">
           <i class="ti ti-shield-check"></i>
-          ללא הרשמה · ללא פרטים אישיים
+          <span data-i18n="welcome.noSignup">ללא הרשמה · ללא פרטים אישיים</span>
         </div>
       </div>
     </div>
@@ -202,7 +202,7 @@ function loadTablerFallback() {
       <button class="btn-icon" onclick="showScreen('pool-found-screen')">
         <i class="ti ti-arrow-right"></i>
       </button>
-      <span class="topbar-step">שלב 1 מתוך 2</span>
+      <span class="topbar-step" data-i18n="nickname.step">שלב 1 מתוך 2</span>
       <div style="width: 24px;"></div>
     </div>
 
@@ -213,12 +213,12 @@ function loadTablerFallback() {
     <div class="container">
       <div class="form-section">
         <div class="form-icon">👋</div>
-        <h2 class="form-title">איך נקרא לך?</h2>
-        <p class="form-subtitle">הכינוי יוצג בלוח הדירוגים</p>
+        <h2 class="form-title" data-i18n="nickname.title">איך נקרא לך?</h2>
+        <p class="form-subtitle" data-i18n="nickname.subtitle">הכינוי יוצג בלוח הדירוגים</p>
 
         <div class="form-group">
-          <label class="form-label">הכינוי שלך</label>
-          <input type="text" id="nickname-input" class="form-input" placeholder="לדוגמה: דני" maxlength="30" autocomplete="off">
+          <label class="form-label" data-i18n="join.nickname">הכינוי שלך</label>
+          <input type="text" id="nickname-input" class="form-input" placeholder="לדוגמה: דני" data-i18n-placeholder="nickname.placeholder" maxlength="30" autocomplete="off">
           <div id="nickname-status"></div>
         </div>
 
@@ -226,7 +226,7 @@ function loadTablerFallback() {
 
         <button class="btn-primary btn-large" onclick="submitNickname()">
           <i class="ti ti-arrow-left"></i>
-          המשך
+          <span data-i18n="common.continue">המשך</span>
         </button>
       </div>
     </div>
@@ -236,7 +236,7 @@ function loadTablerFallback() {
   <div id="recovery-code-screen" class="screen">
     <div class="topbar">
       <div style="width: 24px;"></div>
-      <span class="topbar-step">שלב 2 מתוך 2</span>
+      <span class="topbar-step" data-i18n="recoveryCode.step">שלב 2 מתוך 2</span>
       <div style="width: 24px;"></div>
     </div>
 
@@ -247,8 +247,8 @@ function loadTablerFallback() {
     <div class="container">
       <div class="form-section">
         <div class="form-icon">🔑</div>
-        <h2 class="form-title">קוד השחזור שלך</h2>
-        <p class="form-subtitle">שמור אותו - תזדקק לו אם תרצה להתחבר ממכשיר אחר</p>
+        <h2 class="form-title" data-i18n="recoveryCode.title">קוד השחזור שלך</h2>
+        <p class="form-subtitle" data-i18n="recoveryCode.subtitle">שמור אותו - תזדקק לו אם תרצה להתחבר ממכשיר אחר</p>
 
         <div class="recovery-code-display">
           <div id="recovery-code-value" class="recovery-code-text">XXXX-XXXX-XXXX-XXXX</div>
@@ -257,24 +257,24 @@ function loadTablerFallback() {
         <div class="recovery-actions">
           <button class="btn-secondary" onclick="copyRecoveryCode()">
             <i class="ti ti-copy"></i>
-            העתק
+            <span data-i18n="common.copy">העתק</span>
           </button>
           <button class="btn-whatsapp" onclick="shareRecoveryToWhatsApp()">
             <i class="ti ti-brand-whatsapp"></i>
-            שלח לעצמי
+            <span data-i18n="recoveryCode.sendSelf">שלח לעצמי</span>
           </button>
         </div>
 
         <div class="warning-banner">
           <i class="ti ti-alert-circle"></i>
           <div>
-            <strong>חשוב!</strong> ללא הקוד הזה לא תוכל להתחבר חזרה. שמור אותו במקום בטוח.
+            <strong data-i18n="recoveryCode.warningTitle">חשוב!</strong> <span data-i18n="recoveryCode.warningText">ללא הקוד הזה לא תוכל להתחבר חזרה. שמור אותו במקום בטוח.</span>
           </div>
         </div>
 
         <button class="btn-primary btn-large" onclick="completeRegistration()">
           <i class="ti ti-check"></i>
-          שמרתי, המשך
+          <span data-i18n="recoveryCode.saved">שמרתי, המשך</span>
         </button>
       </div>
     </div>
@@ -286,7 +286,7 @@ function loadTablerFallback() {
       <button class="btn-icon" onclick="showScreen('home-screen')">
         <i class="ti ti-arrow-right"></i>
       </button>
-      <span class="topbar-step">שלב 1 מתוך 3</span>
+      <span class="topbar-step" data-i18n="createPool.step1">שלב 1 מתוך 3</span>
       <div style="width: 24px;"></div>
     </div>
 
@@ -297,27 +297,27 @@ function loadTablerFallback() {
     <div class="container">
       <div class="form-section">
         <div class="form-icon">🏆</div>
-        <h2 class="form-title">איך נקרא להימור?</h2>
-        <p class="form-subtitle">השם שיוצג לכל המשתתפים</p>
+        <h2 class="form-title" data-i18n="createPool.title1">איך נקרא להימור?</h2>
+        <p class="form-subtitle" data-i18n="createPool.subtitle1">השם שיוצג לכל המשתתפים</p>
 
         <div class="form-group">
-          <label class="form-label">שם ההימור</label>
-          <input type="text" id="pool-name-input" class="form-input" placeholder="לדוגמה: חברים מהעבודה" maxlength="100" autocomplete="off">
+          <label class="form-label" data-i18n="create.poolName">שם ההימור</label>
+          <input type="text" id="pool-name-input" class="form-input" placeholder="לדוגמה: חברים מהעבודה" data-i18n-placeholder="createPool.placeholder" maxlength="100" autocomplete="off">
         </div>
 
         <div class="suggestion-chips">
-          <p class="text-faint" style="font-size: 11px; margin-bottom: 8px;">הצעות מהירות:</p>
-          <button class="chip" onclick="useSuggestion('חברים מהעבודה')">חברים מהעבודה</button>
-          <button class="chip" onclick="useSuggestion('המשפחה')">המשפחה</button>
-          <button class="chip" onclick="useSuggestion('הסטודנטים')">הסטודנטים</button>
-          <button class="chip" onclick="useSuggestion('החברים')">החברים</button>
+          <p class="text-faint" style="font-size: 11px; margin-bottom: 8px;" data-i18n="createPool.suggestions">הצעות מהירות:</p>
+          <button class="chip" data-i18n="createPool.suggestion1" onclick="useSuggestionByKey('createPool.suggestion1')">חברים מהעבודה</button>
+          <button class="chip" data-i18n="createPool.suggestion2" onclick="useSuggestionByKey('createPool.suggestion2')">המשפחה</button>
+          <button class="chip" data-i18n="createPool.suggestion3" onclick="useSuggestionByKey('createPool.suggestion3')">הסטודנטים</button>
+          <button class="chip" data-i18n="createPool.suggestion4" onclick="useSuggestionByKey('createPool.suggestion4')">החברים</button>
         </div>
 
         <div id="create-error" class="error-message" style="display: none;"></div>
 
         <button class="btn-primary btn-large" onclick="submitPoolName()">
           <i class="ti ti-arrow-left"></i>
-          המשך
+          <span data-i18n="common.continue">המשך</span>
         </button>
       </div>
     </div>
@@ -329,7 +329,7 @@ function loadTablerFallback() {
       <button class="btn-icon" onclick="showScreen('create-pool-screen')">
         <i class="ti ti-arrow-right"></i>
       </button>
-      <span class="topbar-step">שלב 2 מתוך 3</span>
+      <span class="topbar-step" data-i18n="adminNickname.step">שלב 2 מתוך 3</span>
       <div style="width: 24px;"></div>
     </div>
 
@@ -340,31 +340,31 @@ function loadTablerFallback() {
     <div class="container">
       <div class="form-section">
         <div class="form-icon">👑</div>
-        <h2 class="form-title">איך נקרא לך?</h2>
-        <p class="form-subtitle">הכינוי שלך כמארגן וגם כמשתתף</p>
+        <h2 class="form-title" data-i18n="nickname.title">איך נקרא לך?</h2>
+        <p class="form-subtitle" data-i18n="adminNickname.subtitle">הכינוי שלך כמארגן וגם כמשתתף</p>
 
         <div class="form-group">
-          <label class="form-label">הכינוי שלך</label>
-          <input type="text" id="admin-nickname-input" class="form-input" placeholder="לדוגמה: אסף" maxlength="30" autocomplete="off">
+          <label class="form-label" data-i18n="join.nickname">הכינוי שלך</label>
+          <input type="text" id="admin-nickname-input" class="form-input" placeholder="לדוגמה: אסף" data-i18n-placeholder="adminNickname.placeholder" maxlength="30" autocomplete="off">
         </div>
 
         <div class="admin-permissions-card">
           <h3 class="admin-perm-title">
             <i class="ti ti-crown gold"></i>
-            הרשאות המארגן
+            <span data-i18n="adminNickname.permTitle">הרשאות המארגן</span>
           </h3>
-          <div class="perm-item"><i class="ti ti-check"></i> ניהול חברי ההימור</div>
-          <div class="perm-item"><i class="ti ti-check"></i> אישור משתמשים חדשים</div>
-          <div class="perm-item"><i class="ti ti-check"></i> שחזור קודים אבודים</div>
-          <div class="perm-item"><i class="ti ti-check"></i> צפייה בכל ההימורים</div>
-          <div class="perm-item"><i class="ti ti-check"></i> אתה גם משתתף בהימור</div>
+          <div class="perm-item"><i class="ti ti-check"></i> <span data-i18n="adminNickname.perm1">ניהול חברי ההימור</span></div>
+          <div class="perm-item"><i class="ti ti-check"></i> <span data-i18n="adminNickname.perm2">אישור משתמשים חדשים</span></div>
+          <div class="perm-item"><i class="ti ti-check"></i> <span data-i18n="adminNickname.perm3">שחזור קודים אבודים</span></div>
+          <div class="perm-item"><i class="ti ti-check"></i> <span data-i18n="adminNickname.perm4">צפייה בכל ההימורים</span></div>
+          <div class="perm-item"><i class="ti ti-check"></i> <span data-i18n="adminNickname.perm5">אתה גם משתתף בהימור</span></div>
         </div>
 
         <div id="admin-error" class="error-message" style="display: none;"></div>
 
         <button class="btn-primary btn-large" onclick="createPool()">
           <i class="ti ti-check"></i>
-          צור הימור
+          <span data-i18n="adminNickname.createBtn">צור הימור</span>
         </button>
       </div>
     </div>
@@ -374,18 +374,18 @@ function loadTablerFallback() {
   <div id="share-pool-screen" class="screen">
     <div class="topbar">
       <div style="width: 24px;"></div>
-      <span class="topbar-title">ההימור נוצר!</span>
+      <span class="topbar-title" data-i18n="sharePool.created">ההימור נוצר!</span>
       <div style="width: 24px;"></div>
     </div>
 
     <div class="container">
       <div class="success-section">
         <div class="success-icon">🎉</div>
-        <h2 class="form-title">מעולה!</h2>
-        <p class="form-subtitle">ההימור נוצר בהצלחה</p>
+        <h2 class="form-title" data-i18n="sharePool.awesome">מעולה!</h2>
+        <p class="form-subtitle" data-i18n="sharePool.subtitle">ההימור נוצר בהצלחה</p>
 
         <div class="pool-code-display">
-          <div class="text-faint" style="font-size: 11px; letter-spacing: 2px; margin-bottom: 8px;">קוד ההימור</div>
+          <div class="text-faint" style="font-size: 11px; letter-spacing: 2px; margin-bottom: 8px;" data-i18n="invite.code">קוד ההימור</div>
           <div id="created-pool-code" class="pool-code-large">XXXXX</div>
         </div>
 
@@ -394,38 +394,38 @@ function loadTablerFallback() {
           <div class="settings-prompt-content">
             <i class="ti ti-info-circle gold"></i>
             <div>
-              <div class="settings-prompt-title">ההימור נוצר עם חוקי Golazo (ברירת מחדל)</div>
-              <div class="settings-prompt-subtitle">תוכל לערוך את כל החוקים לפני שמישהו מצטרף</div>
+              <div class="settings-prompt-title" data-i18n="sharePool.promptTitle">ההימור נוצר עם חוקי Golazo (ברירת מחדל)</div>
+              <div class="settings-prompt-subtitle" data-i18n="sharePool.promptSubtitle">תוכל לערוך את כל החוקים לפני שמישהו מצטרף</div>
             </div>
           </div>
           <button class="btn-settings" onclick="showPoolSettings()">
             <i class="ti ti-settings"></i>
-            ערוך הגדרות
+            <span data-i18n="sharePool.editSettings">ערוך הגדרות</span>
           </button>
         </div>
 
         <div class="section-divider">
-          <span>או פשוט שתף ותתחיל לשחק</span>
+          <span data-i18n="sharePool.divider">או פשוט שתף ותתחיל לשחק</span>
         </div>
 
         <div class="share-actions">
           <button class="btn-whatsapp btn-large" onclick="shareWhatsApp()">
             <i class="ti ti-brand-whatsapp"></i>
-            שתף ב-WhatsApp
+            <span data-i18n="sharePool.whatsapp">שתף ב-WhatsApp</span>
           </button>
           <button class="btn-telegram btn-large" onclick="shareTelegram()">
             <i class="ti ti-brand-telegram"></i>
-            שתף ב-Telegram
+            <span data-i18n="sharePool.telegram">שתף ב-Telegram</span>
           </button>
           <button class="btn-secondary" onclick="copyShareLink()">
             <i class="ti ti-copy"></i>
-            העתק קישור
+            <span data-i18n="sharePool.copyLink">העתק קישור</span>
           </button>
         </div>
 
         <button class="btn-primary btn-large" style="margin-top: 24px;" onclick="goToDashboard()">
           <i class="ti ti-arrow-left"></i>
-          לדשבורד שלי
+          <span data-i18n="sharePool.toDashboard">לדשבורד שלי</span>
         </button>
       </div>
     </div>
@@ -437,7 +437,7 @@ function loadTablerFallback() {
       <button class="btn-icon" onclick="goToDashboard()">
         <i class="ti ti-arrow-right"></i>
       </button>
-      <span class="topbar-title">הגדרות ההימור</span>
+      <span class="topbar-title" data-i18n="admin.settings.title">הגדרות ההימור</span>
       <button class="btn-icon" onclick="savePoolSettings()" id="save-settings-btn">
         <i class="ti ti-check gold"></i>
       </button>
@@ -447,20 +447,20 @@ function loadTablerFallback() {
     <div id="settings-lock-banner" class="lock-banner" style="display: none;">
       <i class="ti ti-lock"></i>
       <div>
-        <strong>החוקים נעולים</strong>
-        <div>משתתפים כבר הצטרפו - לא ניתן לשנות חוקים</div>
+        <strong data-i18n="poolSettings.lockedTitle">החוקים נעולים</strong>
+        <div data-i18n="poolSettings.lockedText">משתתפים כבר הצטרפו - לא ניתן לשנות חוקים</div>
       </div>
     </div>
 
     <div class="container">
       <!-- Pool basic info -->
       <div class="settings-section">
-        <div class="settings-section-title">פרטי ההימור</div>
-        
+        <div class="settings-section-title" data-i18n="poolSettings.poolInfo">פרטי ההימור</div>
+
         <div class="settings-row">
           <div class="settings-label">
             <i class="ti ti-tag"></i>
-            <span>שם ההימור</span>
+            <span data-i18n="poolSettings.poolName">שם ההימור</span>
           </div>
           <input type="text" id="settings-pool-name" class="settings-input" maxlength="100">
         </div>
@@ -468,7 +468,7 @@ function loadTablerFallback() {
         <div class="settings-row settings-row-display">
           <div class="settings-label">
             <i class="ti ti-key"></i>
-            <span>קוד ההימור</span>
+            <span data-i18n="poolSettings.poolCode">קוד ההימור</span>
           </div>
           <div class="settings-value-mono" id="settings-pool-code">XXXXX</div>
         </div>
@@ -476,7 +476,7 @@ function loadTablerFallback() {
         <div class="settings-row settings-row-display">
           <div class="settings-label">
             <i class="ti ti-users"></i>
-            <span>משתתפים</span>
+            <span data-i18n="poolSettings.poolMembers">משתתפים</span>
           </div>
           <div class="settings-value" id="settings-member-count">0</div>
         </div>
@@ -484,36 +484,36 @@ function loadTablerFallback() {
 
       <!-- Game format -->
       <div class="settings-section">
-        <div class="settings-section-title">מבנה ההימור</div>
+        <div class="settings-section-title" data-i18n="poolSettings.format">מבנה ההימור</div>
 
         <div class="settings-row">
           <div class="settings-label">
             <i class="ti ti-list-numbers"></i>
-            <span>מספר שלבי הימור</span>
+            <span data-i18n="poolSettings.stages">מספר שלבי הימור</span>
           </div>
           <div class="settings-toggle-group" data-setting="num_stages">
-            <button class="toggle-option active" data-value="2">2 שלבים</button>
-            <button class="toggle-option" data-value="6">6 שלבים</button>
+            <button class="toggle-option active" data-value="2" data-i18n="poolSettings.stages2">2 שלבים</button>
+            <button class="toggle-option" data-value="6" data-i18n="poolSettings.stages6">6 שלבים</button>
           </div>
         </div>
         <div class="settings-help">
-          <span class="help-active">2 שלבים: בתים + נוקאאוט</span>
-          <span class="help-inactive">6 שלבים: בתים + R32 + R16 + רבע + חצי + גמר</span>
+          <span class="help-active" data-i18n="poolSettings.help2">2 שלבים: בתים + נוקאאוט</span>
+          <span class="help-inactive" data-i18n="poolSettings.help6">6 שלבים: בתים + R32 + R16 + רבע + חצי + גמר</span>
         </div>
 
         <div class="settings-row">
           <div class="settings-label">
             <i class="ti ti-target"></i>
-            <span>איך מהמרים על בתים</span>
+            <span data-i18n="poolSettings.groupBetting">איך מהמרים על בתים</span>
           </div>
           <div class="settings-toggle-group" data-setting="group_pick_type">
-            <button class="toggle-option active" data-value="select_advancing">בחירת עולות</button>
-            <button class="toggle-option" data-value="full_ranking">דירוג 1-4</button>
+            <button class="toggle-option active" data-value="select_advancing" data-i18n="poolSettings.pickAdvancing">בחירת עולות</button>
+            <button class="toggle-option" data-value="full_ranking" data-i18n="poolSettings.fullRanking">דירוג 1-4</button>
           </div>
         </div>
         <div class="settings-help">
-          <span class="help-active">בחירת 2-3 קבוצות שיעלו מכל בית</span>
-          <span class="help-inactive">דירוג מלא של כל הקבוצות בבית</span>
+          <span class="help-active" data-i18n="poolSettings.helpPickAdvancing">בחירת 2-3 קבוצות שיעלו מכל בית</span>
+          <span class="help-inactive" data-i18n="poolSettings.helpFullRanking">דירוג מלא של כל הקבוצות בבית</span>
         </div>
       </div>
 
@@ -521,13 +521,13 @@ function loadTablerFallback() {
       <div class="settings-section">
         <div class="settings-section-title">
           <i class="ti ti-rocket gold"></i>
-          מכפילי סיכון
+          <span data-i18n="poolSettings.multipliers">מכפילי סיכון</span>
         </div>
 
         <div class="settings-row">
           <div class="settings-label">
             <i class="ti ti-bolt"></i>
-            <span>מכפילים פעילים</span>
+            <span data-i18n="poolSettings.multipliersActive">מכפילים פעילים</span>
           </div>
           <label class="switch">
             <input type="checkbox" id="settings-use-multipliers" checked>
@@ -535,23 +535,23 @@ function loadTablerFallback() {
           </label>
         </div>
         <div class="settings-help">
-          <span>מי שמסתכן יותר — מרוויח יותר 🎲</span>
+          <span data-i18n="poolSettings.multipliersHelp">מי שמסתכן יותר — מרוויח יותר 🎲</span>
         </div>
 
         <div id="multipliers-detail">
           <div class="multiplier-row">
             <span class="mult-emoji">⭐</span>
-            <span class="mult-name">פייבוריטית</span>
+            <span class="mult-name" data-i18n="poolSettings.multFav">פייבוריטית</span>
             <span class="mult-value">×1</span>
           </div>
           <div class="multiplier-row">
             <span class="mult-emoji">⚔️</span>
-            <span class="mult-name">מתמודדת</span>
+            <span class="mult-name" data-i18n="poolSettings.multCont">מתמודדת</span>
             <span class="mult-value">×1.5</span>
           </div>
           <div class="multiplier-row">
             <span class="mult-emoji">🐴</span>
-            <span class="mult-name">אנדרדוג</span>
+            <span class="mult-name" data-i18n="poolSettings.multUnd">אנדרדוג</span>
             <span class="mult-value">×2</span>
           </div>
         </div>
@@ -561,13 +561,13 @@ function loadTablerFallback() {
       <div class="settings-section">
         <div class="settings-section-title">
           <i class="ti ti-trophy gold"></i>
-          ניקוד לכל שלב
+          <span data-i18n="poolSettings.scoring">ניקוד לכל שלב</span>
         </div>
 
         <div class="scoring-row">
           <div class="scoring-stage">
             <i class="ti ti-flag"></i>
-            <span>שלב הבתים</span>
+            <span data-i18n="poolSettings.scoreGroupStage">שלב הבתים</span>
           </div>
           <div class="scoring-controls">
             <button class="score-btn" onclick="adjustScore('group_stage', -1)">−</button>
@@ -578,7 +578,7 @@ function loadTablerFallback() {
 
         <div class="scoring-row">
           <div class="scoring-stage">
-            <span>סבב 32</span>
+            <span data-i18n="poolSettings.scoreR32">סבב 32</span>
           </div>
           <div class="scoring-controls">
             <button class="score-btn" onclick="adjustScore('r32', -1)">−</button>
@@ -589,7 +589,7 @@ function loadTablerFallback() {
 
         <div class="scoring-row">
           <div class="scoring-stage">
-            <span>שמינית גמר</span>
+            <span data-i18n="poolSettings.scoreR16">שמינית גמר</span>
           </div>
           <div class="scoring-controls">
             <button class="score-btn" onclick="adjustScore('r16', -1)">−</button>
@@ -600,7 +600,7 @@ function loadTablerFallback() {
 
         <div class="scoring-row">
           <div class="scoring-stage">
-            <span>רבע גמר</span>
+            <span data-i18n="poolSettings.scoreQF">רבע גמר</span>
           </div>
           <div class="scoring-controls">
             <button class="score-btn" onclick="adjustScore('qf', -1)">−</button>
@@ -611,7 +611,7 @@ function loadTablerFallback() {
 
         <div class="scoring-row">
           <div class="scoring-stage">
-            <span>חצי גמר</span>
+            <span data-i18n="poolSettings.scoreSF">חצי גמר</span>
           </div>
           <div class="scoring-controls">
             <button class="score-btn" onclick="adjustScore('sf', -1)">−</button>
@@ -623,7 +623,7 @@ function loadTablerFallback() {
         <div class="scoring-row scoring-row-highlight">
           <div class="scoring-stage">
             <i class="ti ti-trophy gold"></i>
-            <span>גמר</span>
+            <span data-i18n="poolSettings.scoreFinal">גמר</span>
           </div>
           <div class="scoring-controls">
             <button class="score-btn" onclick="adjustScore('final', -1)">−</button>
@@ -634,7 +634,7 @@ function loadTablerFallback() {
 
         <button class="btn-reset-scoring" onclick="resetScoringToGolazo()">
           <i class="ti ti-refresh"></i>
-          איפוס לחוקי Golazo
+          <span data-i18n="poolSettings.resetGolazo">איפוס לחוקי Golazo</span>
         </button>
       </div>
 
@@ -642,12 +642,12 @@ function loadTablerFallback() {
       <div class="settings-section">
         <div class="settings-section-title">
           <i class="ti ti-crown gold"></i>
-          מלך השערים
+          <span data-i18n="poolSettings.topScorer">מלך השערים</span>
         </div>
 
         <div class="settings-row">
           <div class="settings-label">
-            <span>פעיל</span>
+            <span data-i18n="poolSettings.topScorerActive">פעיל</span>
           </div>
           <label class="switch">
             <input type="checkbox" id="settings-top-scorer" checked>
@@ -657,7 +657,7 @@ function loadTablerFallback() {
 
         <div id="top-scorer-detail" class="settings-row">
           <div class="settings-label">
-            <span>בונוס נקודות</span>
+            <span data-i18n="poolSettings.bonusPoints">בונוס נקודות</span>
           </div>
           <div class="bonus-options">
             <button class="bonus-btn" data-bonus="10" onclick="setTopScorerBonus(10)">10</button>
@@ -672,12 +672,12 @@ function loadTablerFallback() {
       <div class="settings-section">
         <div class="settings-section-title">
           <i class="ti ti-users gold"></i>
-          משתתפים
+          <span data-i18n="poolSettings.members">משתתפים</span>
         </div>
 
         <div class="settings-row">
           <div class="settings-label">
-            <span>הגבלת משתתפים</span>
+            <span data-i18n="poolSettings.limitMembers">הגבלת משתתפים</span>
           </div>
           <label class="switch">
             <input type="checkbox" id="settings-limit-members">
@@ -687,7 +687,7 @@ function loadTablerFallback() {
 
         <div id="limit-members-detail" class="settings-row" style="display: none;">
           <div class="settings-label">
-            <span>מקסימום משתתפים</span>
+            <span data-i18n="poolSettings.maxMembers">מקסימום משתתפים</span>
           </div>
           <input type="number" id="settings-max-members" class="settings-input settings-input-small" min="2" max="500" value="20">
         </div>
@@ -695,7 +695,7 @@ function loadTablerFallback() {
         <div class="settings-row">
           <div class="settings-label">
             <i class="ti ti-shield"></i>
-            <span>אישור משתמשים לפני הימור</span>
+            <span data-i18n="poolSettings.approveBefore">אישור משתמשים לפני הימור</span>
           </div>
           <label class="switch">
             <input type="checkbox" id="settings-approve-before">
@@ -703,7 +703,7 @@ function loadTablerFallback() {
           </label>
         </div>
         <div class="settings-help">
-          <span>הגנה מבוטים - תאשר כל משתתף ידנית לפני שיוכל להמר</span>
+          <span data-i18n="poolSettings.approveBeforeHelp">הגנה מבוטים - תאשר כל משתתף ידנית לפני שיוכל להמר</span>
         </div>
       </div>
 
@@ -711,7 +711,7 @@ function loadTablerFallback() {
       <div class="settings-save-area">
         <button class="btn-primary btn-large" onclick="savePoolSettings()" id="save-settings-main-btn">
           <i class="ti ti-check"></i>
-          שמור הגדרות
+          <span data-i18n="poolSettings.saveBtn">שמור הגדרות</span>
         </button>
       </div>
 
@@ -719,14 +719,14 @@ function loadTablerFallback() {
       <div class="settings-section settings-danger" id="danger-zone">
         <div class="settings-section-title danger-title">
           <i class="ti ti-alert-triangle"></i>
-          אזור מסוכן
+          <span data-i18n="poolSettings.dangerZone">אזור מסוכן</span>
         </div>
         <button class="btn-danger" onclick="confirmDeletePool()">
           <i class="ti ti-trash"></i>
-          מחק את ההימור
+          <span data-i18n="poolSettings.deletePool">מחק את ההימור</span>
         </button>
         <div class="settings-help danger-help">
-          <span>מחיקה היא פעולה לא הפיכה. כל הנתונים יימחקו לצמיתות.</span>
+          <span data-i18n="poolSettings.deleteHelp">מחיקה היא פעולה לא הפיכה. כל הנתונים יימחקו לצמיתות.</span>
         </div>
       </div>
     </div>
@@ -840,7 +840,7 @@ function loadTablerFallback() {
   <!-- ============================================================ -->
   <div id="group-betting-screen" class="screen">
     <div class="topbar">
-      <button class="btn-icon" onclick="exitGroupBetting()" aria-label="חזור">
+      <button class="btn-icon" onclick="exitGroupBetting()" data-i18n-aria="common.back" aria-label="חזור">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12l14 0"></path>
           <path d="M5 12l6 6"></path>
@@ -848,10 +848,10 @@ function loadTablerFallback() {
         </svg>
       </button>
       <div class="topbar-center">
-        <div class="topbar-title-small">בית <span id="current-group-letter">A</span></div>
+        <div class="topbar-title-small"><span data-i18n="groups.group">בית</span> <span id="current-group-letter">A</span></div>
         <div class="topbar-step" id="current-group-step">בית 1 מתוך 12</div>
       </div>
-      <button class="btn-icon" onclick="saveProgressAndExit()" aria-label="שמור וצא">
+      <button class="btn-icon" onclick="saveProgressAndExit()" data-i18n-aria="common.saveExit" aria-label="שמור וצא">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"></path>
           <circle cx="12" cy="14" r="2"></circle>
@@ -867,7 +867,7 @@ function loadTablerFallback() {
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-left: 4px;">
             <polygon points="12 2 15 8.5 22 9.3 17 14 18.2 21 12 17.8 5.8 21 7 14 2 9.3 9 8.5"></polygon>
           </svg>
-          <span class="text-faint">סך הכל הימרת על</span>
+          <span class="text-faint" data-i18n="groups.totalPicks">סך הכל הימרת על</span>
         </div>
         <div class="progress-numbers">
           <span class="gold-bold" id="total-picks-count">0</span>
@@ -884,11 +884,11 @@ function loadTablerFallback() {
       <!-- Group title -->
       <div class="group-instructions">
         <div class="group-title-row">
-          <span class="text-faint">על מי תהמר בבית</span>
+          <span class="text-faint" data-i18n="groups.questionHeader">על מי תהמר בבית</span>
           <span class="group-letter-large" id="instruction-group-letter">A</span>
           <span class="text-faint">?</span>
         </div>
-        <div class="group-subtitle">בחר 2 או 3 קבוצות שיעלו לשלב הבא</div>
+        <div class="group-subtitle" data-i18n="groups.subtitleInline">בחר 2 או 3 קבוצות שיעלו לשלב הבא</div>
       </div>
 
       <!-- Teams list -->
@@ -905,10 +905,10 @@ function loadTablerFallback() {
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="9 6 15 12 9 18"></polyline>
           </svg>
-          <span>בית <span id="prev-group-letter">L</span></span>
+          <span><span data-i18n="groups.group">בית</span> <span id="prev-group-letter">L</span></span>
         </button>
         <button class="btn-primary btn-half" id="next-group-btn" onclick="goToNextGroup()">
-          <span>בית <span id="next-group-letter">B</span></span>
+          <span><span data-i18n="groups.group">בית</span> <span id="next-group-letter">B</span></span>
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="15 6 9 12 15 18"></polyline>
           </svg>
@@ -920,12 +920,12 @@ function loadTablerFallback() {
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
-        <span>סיים את ההימור</span>
+        <span data-i18n="groups.finishBetting">סיים את ההימור</span>
       </button>
 
       <!-- Quick groups navigation -->
       <div class="quick-groups-nav-section">
-        <div class="section-title-small">קפיצה מהירה לבית</div>
+        <div class="section-title-small" data-i18n="groups.quickJump">קפיצה מהירה לבית</div>
         <div class="quick-groups-nav" id="quick-groups-nav">
           <!-- Will be populated by JS -->
         </div>
@@ -940,17 +940,17 @@ function loadTablerFallback() {
     <div class="container">
       <div class="success-section">
         <div class="success-icon">🎉</div>
-        <h2 class="form-title">כל הכבוד!</h2>
-        <p class="form-subtitle">השלמת את ההימור על שלב הבתים</p>
+        <h2 class="form-title" data-i18n="complete.title">כל הכבוד!</h2>
+        <p class="form-subtitle" data-i18n="complete.subtitle">השלמת את ההימור על שלב הבתים</p>
 
         <div class="completion-card">
           <div class="completion-stat">
-            <div class="completion-label">קבוצות שבחרת</div>
+            <div class="completion-label" data-i18n="complete.teamsPicked">קבוצות שבחרת</div>
             <div class="completion-value gold">32</div>
           </div>
           <div class="completion-divider"></div>
           <div class="completion-stat">
-            <div class="completion-label">סיכוי לניקוד מקסימלי</div>
+            <div class="completion-label" data-i18n="complete.maxPoints">סיכוי לניקוד מקסימלי</div>
             <div class="completion-value" id="max-possible-points">--</div>
           </div>
         </div>
@@ -961,14 +961,14 @@ function loadTablerFallback() {
             <line x1="12" y1="16" x2="12" y2="12"></line>
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
           </svg>
-          <span>ההימור נשמר. תוכל לערוך אותו עד לפני המשחק הראשון</span>
+          <span data-i18n="complete.info">ההימור נשמר. תוכל לערוך אותו עד לפני המשחק הראשון</span>
         </div>
 
         <button class="btn-primary btn-large" onclick="goToDashboard()" style="margin-top: 24px;">
-          <span>לדשבורד שלי</span>
+          <span data-i18n="complete.toDashboard">לדשבורד שלי</span>
         </button>
         <button class="btn-secondary" onclick="reviewBettingPicks()" style="margin-top: 12px;">
-          <span>סקור את ההימורים שלי</span>
+          <span data-i18n="complete.review">סקור את ההימורים שלי</span>
         </button>
       </div>
     </div>
@@ -979,7 +979,7 @@ function loadTablerFallback() {
   <!-- ============================================================ -->
   <div id="knockout-screen" class="screen">
     <div class="topbar">
-      <button class="btn-icon" onclick="exitKnockoutBetting()" aria-label="חזור">
+      <button class="btn-icon" onclick="exitKnockoutBetting()" data-i18n-aria="common.back" aria-label="חזור">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12l14 0"></path>
           <path d="M5 12l6 6"></path>
@@ -987,10 +987,10 @@ function loadTablerFallback() {
         </svg>
       </button>
       <div class="topbar-center">
-        <div class="topbar-title-small" id="ko-round-title">שלב הנוקאאוט</div>
+        <div class="topbar-title-small" id="ko-round-title" data-i18n="dashboard.status.knockout">שלב הנוקאאוט</div>
         <div class="topbar-step" id="ko-round-step">סבב 32</div>
       </div>
-      <button class="btn-icon" onclick="openSimulator()" aria-label="סימולטור">
+      <button class="btn-icon" onclick="openSimulator()" data-i18n-aria="common.simulator" aria-label="סימולטור">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 3v18h18"></path>
           <path d="M7 14l4 -4l4 4l6 -6"></path>
@@ -1001,23 +1001,23 @@ function loadTablerFallback() {
     <!-- Round tabs -->
     <div class="ko-round-tabs">
       <button class="ko-tab" data-round="R32" onclick="switchRound('R32')">
-        <span class="ko-tab-label">סבב 32</span>
+        <span class="ko-tab-label" data-i18n="knockoutEx.r32Short">סבב 32</span>
         <span class="ko-tab-count" id="ko-tab-count-R32">0/16</span>
       </button>
       <button class="ko-tab" data-round="R16" onclick="switchRound('R16')">
-        <span class="ko-tab-label">שמינית</span>
+        <span class="ko-tab-label" data-i18n="knockoutEx.r16Short">שמינית</span>
         <span class="ko-tab-count" id="ko-tab-count-R16">0/8</span>
       </button>
       <button class="ko-tab" data-round="QF" onclick="switchRound('QF')">
-        <span class="ko-tab-label">רבע</span>
+        <span class="ko-tab-label" data-i18n="knockoutEx.qfShort">רבע</span>
         <span class="ko-tab-count" id="ko-tab-count-QF">0/4</span>
       </button>
       <button class="ko-tab" data-round="SF" onclick="switchRound('SF')">
-        <span class="ko-tab-label">חצי</span>
+        <span class="ko-tab-label" data-i18n="knockoutEx.sfShort">חצי</span>
         <span class="ko-tab-count" id="ko-tab-count-SF">0/2</span>
       </button>
       <button class="ko-tab" data-round="FINAL" onclick="switchRound('FINAL')">
-        <span class="ko-tab-label">גמר</span>
+        <span class="ko-tab-label" data-i18n="knockoutEx.finalShort">גמר</span>
         <span class="ko-tab-count" id="ko-tab-count-FINAL">0/1</span>
       </button>
     </div>
@@ -1025,7 +1025,7 @@ function loadTablerFallback() {
     <!-- Progress bar -->
     <div class="ko-progress-area">
       <div class="ko-progress-info">
-        <span class="text-faint" style="font-size: 12px;">סה"כ הימרת על</span>
+        <span class="text-faint" style="font-size: 12px;" data-i18n="knockoutEx.totalPicks">סה"כ הימרת על</span>
         <span class="ko-progress-numbers">
           <span class="gold-bold" id="ko-total-picks">0</span>
           <span class="text-faint-2">/ 31</span>
@@ -1043,8 +1043,8 @@ function loadTablerFallback() {
       <!-- Empty state for round -->
       <div id="ko-empty-state" class="ko-empty-state" style="display: none;">
         <div class="ko-empty-icon">⏳</div>
-        <div class="ko-empty-title">הסבב הזה ייפתח בהמשך</div>
-        <div class="ko-empty-text">קודם השלם את הסבבים הקודמים</div>
+        <div class="ko-empty-title" data-i18n="knockoutEx.emptyTitle">הסבב הזה ייפתח בהמשך</div>
+        <div class="ko-empty-text" data-i18n="knockoutEx.emptyText">קודם השלם את הסבבים הקודמים</div>
       </div>
 
       <!-- Finish button -->
@@ -1052,12 +1052,12 @@ function loadTablerFallback() {
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
-        <span>סיים את הימור הנוקאאוט</span>
+        <span data-i18n="knockoutEx.finishBtn">סיים את הימור הנוקאאוט</span>
       </button>
     </div>
 
     <!-- Floating Bracket button - always visible -->
-    <button class="floating-bracket-btn" onclick="openBracketView()" aria-label="תצוגת ההגרלה המלאה">
+    <button class="floating-bracket-btn" onclick="openBracketView()" data-i18n-aria="knockoutEx.bracketView" aria-label="תצוגת ההגרלה המלאה">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4 6h6"></path>
         <path d="M14 6h6"></path>
@@ -1068,7 +1068,7 @@ function loadTablerFallback() {
         <path d="M10 6c0 2 2 3 2 6s-2 4-2 6"></path>
         <path d="M14 6c0 2 -2 3 -2 6s2 4 2 6"></path>
       </svg>
-      <span>תצוגת ההגרלה</span>
+      <span data-i18n="knockoutEx.bracketView">תצוגת ההגרלה</span>
     </button>
   </div>
 
@@ -1077,17 +1077,17 @@ function loadTablerFallback() {
   <!-- ============================================================ -->
   <div id="bracket-screen" class="screen">
     <div class="topbar">
-      <button class="btn-icon" onclick="closeBracketView()" aria-label="סגור">
+      <button class="btn-icon" onclick="closeBracketView()" data-i18n-aria="common.close" aria-label="סגור">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
       <div class="topbar-center">
-        <div class="topbar-title-small">עץ ההגרלה</div>
+        <div class="topbar-title-small" data-i18n="bracketView.title">עץ ההגרלה</div>
         <div class="topbar-step" id="bracket-progress-text">0/31 משחקים</div>
       </div>
-      <button class="btn-icon" id="bracket-zoom-btn" onclick="toggleBracketZoom()" aria-label="הגדל">
+      <button class="btn-icon" id="bracket-zoom-btn" onclick="toggleBracketZoom()" data-i18n-aria="common.zoom" aria-label="הגדל">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="bracket-zoom-icon">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -1099,17 +1099,17 @@ function loadTablerFallback() {
 
     <!-- Quick jump tabs -->
     <div class="bracket-jump-tabs">
-      <button class="bracket-jump-tab" data-round="R32" onclick="jumpToRound('R32')">R32</button>
-      <button class="bracket-jump-tab" data-round="R16" onclick="jumpToRound('R16')">שמינית</button>
-      <button class="bracket-jump-tab" data-round="QF" onclick="jumpToRound('QF')">רבע</button>
-      <button class="bracket-jump-tab" data-round="SF" onclick="jumpToRound('SF')">חצי</button>
-      <button class="bracket-jump-tab" data-round="FINAL" onclick="jumpToRound('FINAL')">🏆 גמר</button>
+      <button class="bracket-jump-tab" data-round="R32" onclick="jumpToRound('R32')" data-i18n="bracketView.r32">R32</button>
+      <button class="bracket-jump-tab" data-round="R16" onclick="jumpToRound('R16')" data-i18n="bracketView.r16">שמינית</button>
+      <button class="bracket-jump-tab" data-round="QF" onclick="jumpToRound('QF')" data-i18n="bracketView.qf">רבע</button>
+      <button class="bracket-jump-tab" data-round="SF" onclick="jumpToRound('SF')" data-i18n="bracketView.sf">חצי</button>
+      <button class="bracket-jump-tab" data-round="FINAL" onclick="jumpToRound('FINAL')" data-i18n="bracketView.final">🏆 גמר</button>
     </div>
 
     <!-- Hint banner -->
     <div class="bracket-hint">
       <span class="bracket-hint-arrow">←</span>
-      <span>גרור עם האצבע כדי לראות את כל הסבבים</span>
+      <span data-i18n="bracketView.hint">גרור עם האצבע כדי לראות את כל הסבבים</span>
       <span class="bracket-hint-arrow">→</span>
     </div>
 
@@ -1127,28 +1127,28 @@ function loadTablerFallback() {
   <div id="simulator-overlay" class="status-modal-overlay" onclick="closeSimulator()"></div>
   <div id="simulator-modal" class="status-modal sim-modal">
     <div class="status-modal-content">
-      <button class="status-modal-close" onclick="closeSimulator()" aria-label="סגור">
+      <button class="status-modal-close" onclick="closeSimulator()" data-i18n-aria="common.close" aria-label="סגור">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
-      
+
       <div class="status-modal-icon">📊</div>
-      <div class="status-modal-title">סימולטור הסיכון</div>
-      <div class="status-modal-subtitle">ניתוח אסטרטגיית ההימור שלך</div>
-      
+      <div class="status-modal-title" data-i18n="simulatorEx.titleFull">סימולטור הסיכון</div>
+      <div class="status-modal-subtitle" data-i18n="simulatorEx.subtitle">ניתוח אסטרטגיית ההימור שלך</div>
+
       <!-- Score projection -->
       <div class="sim-section">
-        <div class="sim-section-title">ניקוד צפוי</div>
+        <div class="sim-section-title" data-i18n="simulatorEx.expectedScore">ניקוד צפוי</div>
         <div class="sim-score-display">
           <div class="sim-score-item">
-            <div class="sim-score-label">צפי ממוצע</div>
+            <div class="sim-score-label" data-i18n="simulatorEx.avgProjection">צפי ממוצע</div>
             <div class="sim-score-value gold" id="sim-expected-score">0</div>
           </div>
           <div class="sim-score-divider"></div>
           <div class="sim-score-item">
-            <div class="sim-score-label">מקסימום אפשרי</div>
+            <div class="sim-score-label" data-i18n="simulatorEx.maxPossible">מקסימום אפשרי</div>
             <div class="sim-score-value" id="sim-max-score">0</div>
           </div>
         </div>
@@ -1156,24 +1156,24 @@ function loadTablerFallback() {
 
       <!-- Risk meter -->
       <div class="sim-section">
-        <div class="sim-section-title">רמת סיכון</div>
+        <div class="sim-section-title" data-i18n="simulatorEx.riskLevel">רמת סיכון</div>
         <div class="sim-risk-meter">
           <div class="sim-risk-bar">
             <div class="sim-risk-fill" id="sim-risk-fill" style="width: 50%;"></div>
             <div class="sim-risk-marker" id="sim-risk-marker" style="right: 50%;"></div>
           </div>
           <div class="sim-risk-labels">
-            <span class="sim-risk-label-safe">🛡️ בטוח</span>
-            <span class="sim-risk-label-bold">⚡ מאוזן</span>
-            <span class="sim-risk-label-risky">🎲 מסוכן</span>
+            <span class="sim-risk-label-safe" data-i18n="simulatorEx.riskSafe">🛡️ בטוח</span>
+            <span class="sim-risk-label-bold" data-i18n="simulatorEx.riskBalanced">⚡ מאוזן</span>
+            <span class="sim-risk-label-risky" data-i18n="simulatorEx.riskRisky">🎲 מסוכן</span>
           </div>
         </div>
-        <div class="sim-risk-description" id="sim-risk-description">בחר משחקים כדי לראות ניתוח</div>
+        <div class="sim-risk-description" id="sim-risk-description" data-i18n="simulatorEx.riskDefault">בחר משחקים כדי לראות ניתוח</div>
       </div>
 
       <!-- Strategy breakdown -->
       <div class="sim-section">
-        <div class="sim-section-title">פירוט לפי שלב</div>
+        <div class="sim-section-title" data-i18n="simulatorEx.byStage">פירוט לפי שלב</div>
         <div id="sim-stages-breakdown" class="sim-stages">
           <!-- Populated by JS -->
         </div>
@@ -1182,10 +1182,10 @@ function loadTablerFallback() {
       <!-- Recommendation -->
       <div class="sim-recommendation" id="sim-recommendation">
         <div class="sim-rec-icon">💡</div>
-        <div class="sim-rec-text" id="sim-rec-text">בחר משחקים בנוקאאוט כדי לקבל המלצות</div>
+        <div class="sim-rec-text" id="sim-rec-text" data-i18n="simulatorEx.recommendDefault">בחר משחקים בנוקאאוט כדי לקבל המלצות</div>
       </div>
 
-      <button class="btn-secondary" onclick="closeSimulator()" style="margin-top: 16px; width: 100%;">
+      <button class="btn-secondary" onclick="closeSimulator()" style="margin-top: 16px; width: 100%;" data-i18n="common.close">
         סגור
       </button>
     </div>
@@ -1196,15 +1196,15 @@ function loadTablerFallback() {
   <!-- ============================================================ -->
   <div id="matches-screen" class="screen">
     <div class="topbar">
-      <button class="btn-icon" onclick="goToDashboard()" aria-label="חזור">
+      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="common.back" aria-label="חזור">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12l14 0"></path>
           <path d="M5 12l6 6"></path>
           <path d="M5 12l6 -6"></path>
         </svg>
       </button>
-      <span class="topbar-title">לוח משחקים</span>
-      <button class="btn-icon" onclick="refreshMatches()" aria-label="רענן">
+      <span class="topbar-title" data-i18n="matches.title">לוח משחקים</span>
+      <button class="btn-icon" onclick="refreshMatches()" data-i18n-aria="common.refresh" aria-label="רענן">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 12a9 9 0 0 1 9 -9a9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
           <path d="M21 3v5h-5"></path>
@@ -1216,10 +1216,10 @@ function loadTablerFallback() {
 
     <!-- Filter tabs -->
     <div class="matches-filter-tabs">
-      <button class="matches-filter-tab active" data-filter="all" onclick="filterMatches('all')">הכל</button>
-      <button class="matches-filter-tab" data-filter="live" onclick="filterMatches('live')">🔴 חי</button>
-      <button class="matches-filter-tab" data-filter="upcoming" onclick="filterMatches('upcoming')">קרובים</button>
-      <button class="matches-filter-tab" data-filter="finished" onclick="filterMatches('finished')">הסתיימו</button>
+      <button class="matches-filter-tab active" data-filter="all" onclick="filterMatches('all')" data-i18n="matches.filter.all">הכל</button>
+      <button class="matches-filter-tab" data-filter="live" onclick="filterMatches('live')" data-i18n="matchesEx.filterLive">🔴 חי</button>
+      <button class="matches-filter-tab" data-filter="upcoming" onclick="filterMatches('upcoming')" data-i18n="matchesEx.filterUpcoming">קרובים</button>
+      <button class="matches-filter-tab" data-filter="finished" onclick="filterMatches('finished')" data-i18n="matchesEx.filterFinished">הסתיימו</button>
     </div>
 
     <div class="container">
@@ -1229,7 +1229,7 @@ function loadTablerFallback() {
           <circle cx="12" cy="12" r="10"></circle>
           <polyline points="12 6 12 12 16 14"></polyline>
         </svg>
-        <span id="matches-last-updated-text">טוען...</span>
+        <span id="matches-last-updated-text" data-i18n="common.loading">טוען...</span>
       </div>
 
       <!-- Matches list -->
@@ -1240,14 +1240,14 @@ function loadTablerFallback() {
       <!-- Empty state -->
       <div id="matches-empty" class="matches-empty" style="display: none;">
         <div class="matches-empty-icon">⚽</div>
-        <div class="matches-empty-title">המשחקים עוד לא פורסמו</div>
-        <div class="matches-empty-text">לוח המשחקים יתעדכן ברגע שפיפ"א תפרסם את ה-Draw הרשמי</div>
+        <div class="matches-empty-title" data-i18n="matchesEx.emptyTitle">המשחקים עוד לא פורסמו</div>
+        <div class="matches-empty-text" data-i18n="matchesEx.emptyText">לוח המשחקים יתעדכן ברגע שפיפ"א תפרסם את ה-Draw הרשמי</div>
       </div>
 
       <!-- Loading state -->
       <div id="matches-loading" class="matches-loading" style="display: none;">
         <div class="loading-spinner-small"></div>
-        <span>טוען משחקים...</span>
+        <span data-i18n="matchesEx.loadingMatches">טוען משחקים...</span>
       </div>
     </div>
   </div>
@@ -1257,15 +1257,15 @@ function loadTablerFallback() {
   <!-- ============================================================ -->
   <div id="admin-members-screen" class="screen">
     <div class="topbar">
-      <button class="btn-icon" onclick="goToDashboard()" aria-label="חזור">
+      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="common.back" aria-label="חזור">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12l14 0"></path>
           <path d="M5 12l6 6"></path>
           <path d="M5 12l6 -6"></path>
         </svg>
       </button>
-      <span class="topbar-title">ניהול חברים</span>
-      <button class="btn-icon" onclick="loadAdminMembers()" aria-label="רענן">
+      <span class="topbar-title" data-i18n="admin.members.title">ניהול חברים</span>
+      <button class="btn-icon" onclick="loadAdminMembers()" data-i18n-aria="common.refresh" aria-label="רענן">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 12a9 9 0 0 1 9 -9a9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
           <path d="M21 3v5h-5"></path>
@@ -1290,10 +1290,10 @@ function loadTablerFallback() {
       <div class="admin-pending-banner" id="admin-pending-banner" style="display: none;">
         <div class="admin-pending-banner-icon">⏳</div>
         <div class="admin-pending-banner-content">
-          <div class="admin-pending-banner-title">
+          <div class="admin-pending-banner-title" id="admin-pending-banner-title">
             יש <span id="admin-pending-count">0</span> חברים שממתינים לאישור
           </div>
-          <div class="admin-pending-banner-subtitle">
+          <div class="admin-pending-banner-subtitle" data-i18n="adminMembersEx.pendingSubtitle">
             הם יכולים לשחק - אבל מומלץ לאשר/להסיר אותם
           </div>
         </div>
@@ -1303,15 +1303,15 @@ function loadTablerFallback() {
       <div class="admin-stats">
         <div class="admin-stat-item">
           <div class="admin-stat-value" id="admin-stat-total">-</div>
-          <div class="admin-stat-label">חברים</div>
+          <div class="admin-stat-label" data-i18n="adminMembersEx.members">חברים</div>
         </div>
         <div class="admin-stat-item">
           <div class="admin-stat-value" id="admin-stat-groups">-</div>
-          <div class="admin-stat-label">בחרו בתים</div>
+          <div class="admin-stat-label" data-i18n="adminMembersEx.pickedGroups">בחרו בתים</div>
         </div>
         <div class="admin-stat-item">
           <div class="admin-stat-value" id="admin-stat-knockout">-</div>
-          <div class="admin-stat-label">בחרו נוקאאוט</div>
+          <div class="admin-stat-label" data-i18n="adminMembersEx.pickedKO">בחרו נוקאאוט</div>
         </div>
       </div>
 
@@ -1322,7 +1322,7 @@ function loadTablerFallback() {
 
       <div id="admin-members-loading" class="matches-loading">
         <div class="loading-spinner-small"></div>
-        <span>טוען...</span>
+        <span data-i18n="common.loading">טוען...</span>
       </div>
     </div>
   </div>
@@ -1330,13 +1330,13 @@ function loadTablerFallback() {
   <!-- Admin User Action Modal -->
   <div id="admin-action-overlay" class="status-modal-overlay" onclick="closeAdminActionModal()"></div>
   <div id="admin-action-modal" class="status-modal admin-action-modal">
-    <button class="status-modal-close" onclick="closeAdminActionModal()" aria-label="סגור">
+    <button class="status-modal-close" onclick="closeAdminActionModal()" data-i18n-aria="common.close" aria-label="סגור">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     </button>
-    
+
     <div class="admin-action-modal-content">
       <div class="admin-action-user-info">
         <div class="admin-action-user-avatar" id="admin-modal-avatar">?</div>
@@ -1351,8 +1351,8 @@ function loadTablerFallback() {
             <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
           </svg>
           <div>
-            <div class="admin-modal-btn-title">צור קוד שחזור חדש</div>
-            <div class="admin-modal-btn-text">הקוד הישן יבוטל</div>
+            <div class="admin-modal-btn-title" data-i18n="adminModal.newCodeTitle">צור קוד שחזור חדש</div>
+            <div class="admin-modal-btn-text" data-i18n="adminModal.newCodeText">הקוד הישן יבוטל</div>
           </div>
         </button>
 
@@ -1364,8 +1364,8 @@ function loadTablerFallback() {
             <line x1="14" y1="11" x2="14" y2="17"></line>
           </svg>
           <div>
-            <div class="admin-modal-btn-title">הסר מההימור</div>
-            <div class="admin-modal-btn-text">פעולה זו תמחק את כל ההימורים שלו</div>
+            <div class="admin-modal-btn-title" data-i18n="adminModal.removeTitle">הסר מההימור</div>
+            <div class="admin-modal-btn-text" data-i18n="adminModal.removeText">פעולה זו תמחק את כל ההימורים שלו</div>
           </div>
         </button>
       </div>
@@ -1377,26 +1377,26 @@ function loadTablerFallback() {
   <!-- ============================================================ -->
   <div id="share-modal-overlay" class="status-modal-overlay" onclick="closeShareModal()"></div>
   <div id="share-modal" class="status-modal share-modal">
-    <button class="status-modal-close" onclick="closeShareModal()" aria-label="סגור">
+    <button class="status-modal-close" onclick="closeShareModal()" data-i18n-aria="common.close" aria-label="סגור">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="6" x2="6" y2="18"></line>
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     </button>
-    
+
     <div class="share-modal-content">
       <!-- Header -->
       <div class="share-header">
         <div class="share-icon">🎉</div>
-        <div class="share-title">הזמן חברים להימור</div>
-        <div class="share-subtitle">שלח להם את הקישור והם יצטרפו בלחיצה אחת</div>
+        <div class="share-title" data-i18n="dashboard.invite.title">הזמן חברים להימור</div>
+        <div class="share-subtitle" data-i18n="shareModal.subtitle">שלח להם את הקישור והם יצטרפו בלחיצה אחת</div>
       </div>
 
       <!-- Pool code -->
       <div class="share-code-card" onclick="copyPoolCodeOnly()">
-        <div class="share-code-label">קוד ההימור</div>
+        <div class="share-code-label" data-i18n="invite.code">קוד ההימור</div>
         <div class="share-code-value" id="share-pool-code">-</div>
-        <div class="share-code-hint">לחץ להעתקה</div>
+        <div class="share-code-hint" data-i18n="shareModal.copyHint">לחץ להעתקה</div>
       </div>
 
       <!-- Share options -->
@@ -1426,7 +1426,7 @@ function loadTablerFallback() {
               <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
             </svg>
           </div>
-          <div class="share-option-label">העתק קישור</div>
+          <div class="share-option-label" data-i18n="shareModal.copyLink">העתק קישור</div>
         </button>
 
         <button class="share-option" onclick="shareNative()">
@@ -1439,13 +1439,13 @@ function loadTablerFallback() {
               <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
             </svg>
           </div>
-          <div class="share-option-label">שתף עם הודעה</div>
+          <div class="share-option-label" data-i18n="shareModal.shareMsg">שתף עם הודעה</div>
         </button>
       </div>
 
       <!-- QR Code -->
       <div class="share-qr-section">
-        <div class="share-qr-label">או סרוק את הקוד למטה:</div>
+        <div class="share-qr-label" data-i18n="shareModal.scanCode">או סרוק את הקוד למטה:</div>
         <div class="share-qr-wrapper">
           <div id="share-qr-code" class="share-qr-code"></div>
         </div>
@@ -1453,7 +1453,7 @@ function loadTablerFallback() {
 
       <!-- Invite URL preview -->
       <div class="share-url-section">
-        <div class="share-url-label">קישור ההזמנה:</div>
+        <div class="share-url-label" data-i18n="shareModal.inviteUrl">קישור ההזמנה:</div>
         <div class="share-url-display" id="share-invite-url" onclick="copyInviteLink()">-</div>
       </div>
     </div>
@@ -1464,14 +1464,14 @@ function loadTablerFallback() {
   <!-- ============================================================ -->
   <div id="top-scorer-screen" class="screen">
     <div class="topbar">
-      <button class="btn-icon" onclick="goToDashboard()" aria-label="חזור">
+      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="common.back" aria-label="חזור">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12l14 0"></path>
           <path d="M5 12l6 6"></path>
           <path d="M5 12l6 -6"></path>
         </svg>
       </button>
-      <span class="topbar-title">מלך השערים</span>
+      <span class="topbar-title" data-i18n="topScorer.title">מלך השערים</span>
       <div style="width: 44px;"></div>
     </div>
 
@@ -1480,48 +1480,48 @@ function loadTablerFallback() {
       <div id="ts-locked-view">
         <div class="ts-locked-hero">
           <div class="ts-locked-icon">🔒</div>
-          <div class="ts-locked-title">הפיצ'ר עדיין נעול</div>
-          <div class="ts-locked-subtitle">מחכים לפרסום הסגלים הרשמיים</div>
+          <div class="ts-locked-title" data-i18n="tsLocked.title">הפיצ'ר עדיין נעול</div>
+          <div class="ts-locked-subtitle" data-i18n="tsLocked.subtitle">מחכים לפרסום הסגלים הרשמיים</div>
         </div>
 
         <div class="ts-locked-explanation">
           <div class="ts-explain-row">
             <div class="ts-explain-icon">📋</div>
             <div class="ts-explain-text">
-              <strong>למה זה נעול?</strong>
-              <span>פיפ"א טרם פרסמה את הסגלים הרשמיים של כל הקבוצות. כל קבוצה צריכה להגיש 26 שחקנים עד 1 ביוני.</span>
+              <strong data-i18n="tsLocked.why">למה זה נעול?</strong>
+              <span data-i18n="tsLocked.whyText">פיפ"א טרם פרסמה את הסגלים הרשמיים של כל הקבוצות. כל קבוצה צריכה להגיש 26 שחקנים עד 1 ביוני.</span>
             </div>
           </div>
 
           <div class="ts-explain-row">
             <div class="ts-explain-icon">🤖</div>
             <div class="ts-explain-text">
-              <strong>איך זה ייפתח?</strong>
-              <span>המערכת בודקת אוטומטית כל יום. ברגע שהסגלים יתפרסמו - הפיצ'ר ייפתח לבד עם כל ~736 השחקנים האמיתיים!</span>
+              <strong data-i18n="tsLocked.how">איך זה ייפתח?</strong>
+              <span data-i18n="tsLocked.howText">המערכת בודקת אוטומטית כל יום. ברגע שהסגלים יתפרסמו - הפיצ'ר ייפתח לבד עם כל ~736 השחקנים האמיתיים!</span>
             </div>
           </div>
 
           <div class="ts-explain-row">
             <div class="ts-explain-icon">🥇</div>
             <div class="ts-explain-text">
-              <strong>מה אפשר לעשות בינתיים?</strong>
-              <span>תמלא את הימור הבתים והנוקאאוט. הזמן את החברים. כשהפיצ'ר ייפתח - תקבל התראה.</span>
+              <strong data-i18n="tsLocked.what">מה אפשר לעשות בינתיים?</strong>
+              <span data-i18n="tsLocked.whatText">תמלא את הימור הבתים והנוקאאוט. הזמן את החברים. כשהפיצ'ר ייפתח - תקבל התראה.</span>
             </div>
           </div>
         </div>
 
         <div class="ts-countdown-card">
-          <div class="ts-countdown-label">⏱️ עד פתיחת המונדיאל:</div>
+          <div class="ts-countdown-label" data-i18n="tsLocked.countdown">⏱️ עד פתיחת המונדיאל:</div>
           <div class="ts-countdown-value">
             <span id="ts-countdown">-</span>
-            <span class="ts-countdown-unit">ימים</span>
+            <span class="ts-countdown-unit" data-i18n="common.days">ימים</span>
           </div>
-          <div class="ts-countdown-date">11 ביוני 2026</div>
+          <div class="ts-countdown-date" data-i18n="tsLocked.openDate">11 ביוני 2026</div>
         </div>
 
         <div class="ts-status-info">
           <span class="ts-status-dot"></span>
-          <span id="ts-last-check">טוען...</span>
+          <span id="ts-last-check" data-i18n="common.loading">טוען...</span>
         </div>
       </div>
 
@@ -1530,8 +1530,8 @@ function loadTablerFallback() {
         <!-- Intro hero -->
         <div class="ts-hero">
           <div class="ts-hero-trophy">🥇</div>
-          <div class="ts-hero-title">נחש את מלך השערים</div>
-          <div class="ts-hero-desc">
+          <div class="ts-hero-title" data-i18n="topScorer.heroTitle">נחש את מלך השערים</div>
+          <div class="ts-hero-desc" data-i18n-html="tsUnlocked.heroDesc">
             מי יבקיע הכי הרבה שערים במונדיאל?<br>
             <strong>+25 נקודות בונוס</strong> אם תנחש נכון!
           </div>
@@ -1539,7 +1539,7 @@ function loadTablerFallback() {
 
         <!-- Current pick display -->
         <div id="ts-current-pick" class="ts-current-pick" style="display: none;">
-          <div class="ts-current-label">הבחירה שלך:</div>
+          <div class="ts-current-label" data-i18n="topScorer.yourPick">הבחירה שלך:</div>
           <div class="ts-current-content">
             <span class="ts-current-flag" id="ts-current-flag">🏳️</span>
             <div class="ts-current-info">
@@ -1561,11 +1561,12 @@ function loadTablerFallback() {
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input 
-            type="text" 
-            id="ts-search-input" 
-            class="ts-search-input" 
-            placeholder="חפש שחקן בעברית או באנגלית..." 
+          <input
+            type="text"
+            id="ts-search-input"
+            class="ts-search-input"
+            placeholder="חפש שחקן בעברית או באנגלית..."
+            data-i18n-placeholder="topScorer.searchPlaceholder"
             autocomplete="off"
             oninput="onTopScorerSearch(this.value)"
           >
@@ -1579,16 +1580,16 @@ function loadTablerFallback() {
 
         <!-- Search hints (shown when no search) -->
         <div class="ts-search-hints" id="ts-search-hints">
-          <div class="ts-search-hints-title">💡 דוגמאות לחיפוש:</div>
+          <div class="ts-search-hints-title" data-i18n="topScorer.hintsTitle">💡 דוגמאות לחיפוש:</div>
           <div class="ts-search-hints-examples">
             <span class="ts-search-hint-chip" onclick="setSearchValue('Messi')">Messi</span>
             <span class="ts-search-hint-chip" onclick="setSearchValue('Kane')">Kane</span>
             <span class="ts-search-hint-chip" onclick="setSearchValue('Mbappé')">Mbappé</span>
             <span class="ts-search-hint-chip" onclick="setSearchValue('Haaland')">Haaland</span>
-            <span class="ts-search-hint-chip" onclick="setSearchValue('ARG')">ARG (קבוצה)</span>
-            <span class="ts-search-hint-chip" onclick="setSearchValue('BRA')">BRA (קבוצה)</span>
+            <span class="ts-search-hint-chip" onclick="setSearchValue('ARG')" id="ts-hint-arg">ARG (קבוצה)</span>
+            <span class="ts-search-hint-chip" onclick="setSearchValue('BRA')" id="ts-hint-bra">BRA (קבוצה)</span>
           </div>
-          <div class="ts-search-hints-note">
+          <div class="ts-search-hints-note" data-i18n="topScorer.hintsNote">
             ניתן לחפש לפי שם השחקן, חלק מהשם, או קוד הקבוצה (3 אותיות באנגלית)
           </div>
         </div>
@@ -1599,8 +1600,8 @@ function loadTablerFallback() {
         <!-- No results -->
         <div id="ts-no-results" class="ts-no-results" style="display: none;">
           <div class="ts-no-results-icon">🔍</div>
-          <div class="ts-no-results-title">לא נמצאו שחקנים</div>
-          <div class="ts-no-results-text">נסה לחפש שם אחר</div>
+          <div class="ts-no-results-title" data-i18n="topScorer.noResults">לא נמצאו שחקנים</div>
+          <div class="ts-no-results-text" data-i18n="topScorer.tryOther">נסה לחפש שם אחר</div>
         </div>
       </div>
     </div>
@@ -1666,15 +1667,15 @@ function loadTablerFallback() {
   <!-- ============================================================ -->
   <div id="members-screen" class="screen">
     <div class="topbar">
-      <button class="btn-icon" onclick="goToDashboard()" aria-label="חזור">
+      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="common.back" aria-label="חזור">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12l14 0"></path>
           <path d="M5 12l6 6"></path>
           <path d="M5 12l6 -6"></path>
         </svg>
       </button>
-      <span class="topbar-title">משתתפים</span>
-      <button class="btn-icon" onclick="shareInviteFromMembers()" aria-label="הזמן">
+      <span class="topbar-title" data-i18n="membersList.title">משתתפים</span>
+      <button class="btn-icon" onclick="shareInviteFromMembers()" data-i18n-aria="common.invite" aria-label="הזמן">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="12" y1="5" x2="12" y2="19"></line>
           <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -1687,17 +1688,17 @@ function loadTablerFallback() {
       <div class="members-summary">
         <div class="members-summary-item">
           <div class="members-summary-value" id="members-total">0</div>
-          <div class="members-summary-label">בסה"כ</div>
+          <div class="members-summary-label" data-i18n="membersList.total">בסה"כ</div>
         </div>
         <div class="members-summary-divider"></div>
         <div class="members-summary-item">
           <div class="members-summary-value gold" id="members-betted">0</div>
-          <div class="members-summary-label">הימרו</div>
+          <div class="members-summary-label" data-i18n="membersList.bet">הימרו</div>
         </div>
         <div class="members-summary-divider"></div>
         <div class="members-summary-item">
           <div class="members-summary-value" id="members-not-betted">0</div>
-          <div class="members-summary-label">עוד לא</div>
+          <div class="members-summary-label" data-i18n="membersList.notYet">עוד לא</div>
         </div>
       </div>
 
@@ -1713,22 +1714,22 @@ function loadTablerFallback() {
   <!-- ============================================================ -->
   <div id="recovery-display-screen" class="screen">
     <div class="topbar">
-      <button class="btn-icon" onclick="goToDashboard()" aria-label="חזור">
+      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="common.back" aria-label="חזור">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12l14 0"></path>
           <path d="M5 12l6 6"></path>
           <path d="M5 12l6 -6"></path>
         </svg>
       </button>
-      <span class="topbar-title">קוד השחזור שלך</span>
+      <span class="topbar-title" data-i18n="recoveryDisplay.title">קוד השחזור שלך</span>
       <div style="width: 24px;"></div>
     </div>
 
     <div class="container">
       <div class="form-section">
         <div class="form-icon">🔑</div>
-        <h2 class="form-title">קוד השחזור שלך</h2>
-        <p class="form-subtitle">הקוד הזה הוצג רק פעם אחת כשהצטרפת. מסיבות אבטחה לא ניתן להציג אותו שוב.</p>
+        <h2 class="form-title" data-i18n="recoveryDisplay.title">קוד השחזור שלך</h2>
+        <p class="form-subtitle" data-i18n="recoveryDisplay.heroSubtitle">הקוד הזה הוצג רק פעם אחת כשהצטרפת. מסיבות אבטחה לא ניתן להציג אותו שוב.</p>
 
         <div class="recovery-info-box">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1737,8 +1738,8 @@ function loadTablerFallback() {
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
           </svg>
           <div>
-            <div class="recovery-info-title">לא שמרת את הקוד?</div>
-            <div class="recovery-info-text">
+            <div class="recovery-info-title" data-i18n="recoveryDisplay.didntSave">לא שמרת את הקוד?</div>
+            <div class="recovery-info-text" data-i18n="recoveryDisplay.didntSaveText">
               פנה למארגן ההימור ובקש לייצר עבורך קוד חדש.
               הקוד הקיים יישאר תקף - יש לך 2 קודים בו זמנית.
             </div>
@@ -1750,8 +1751,8 @@ function loadTablerFallback() {
             <path d="M21 11.5a8.38 8.38 0 0 1 -.9 3.8 8.5 8.5 0 0 1 -7.6 4.7 8.38 8.38 0 0 1 -3.8 -.9L3 21l1.9 -5.7a8.38 8.38 0 0 1 -.9 -3.8 8.5 8.5 0 0 1 4.7 -7.6 8.38 8.38 0 0 1 3.8 -.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
           </svg>
           <div>
-            <div class="recovery-info-title">למה אני צריך קוד שחזור?</div>
-            <div class="recovery-info-text">
+            <div class="recovery-info-title" data-i18n="recoveryDisplay.whyTitle">למה אני צריך קוד שחזור?</div>
+            <div class="recovery-info-text" data-i18n="recoveryDisplay.whyText">
               קוד השחזור הוא הדרך היחידה להתחבר אם החלפת מכשיר, ניקית את הדפדפן, או רוצה להיכנס ממכשיר אחר. שמור אותו במקום בטוח!
             </div>
           </div>
@@ -1759,7 +1760,7 @@ function loadTablerFallback() {
 
         <div style="margin-top: 24px;">
           <button class="btn-secondary btn-large" onclick="goToDashboard()">
-            <span>הבנתי, חזור לדשבורד</span>
+            <span data-i18n="recoveryDisplay.backBtn">הבנתי, חזור לדשבורד</span>
           </button>
         </div>
       </div>
@@ -1771,76 +1772,76 @@ function loadTablerFallback() {
   <!-- ============================================================ -->
   <div id="help-screen" class="screen">
     <div class="topbar">
-      <button class="btn-icon" onclick="goToDashboard()" aria-label="חזור">
+      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="common.back" aria-label="חזור">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12l14 0"></path>
           <path d="M5 12l6 6"></path>
           <path d="M5 12l6 -6"></path>
         </svg>
       </button>
-      <span class="topbar-title">עזרה ושאלות נפוצות</span>
+      <span class="topbar-title" data-i18n="help.title">עזרה ושאלות נפוצות</span>
       <div style="width: 24px;"></div>
     </div>
 
     <div class="container">
       <div class="help-section">
-        <div class="help-section-title">📋 איך מהמרים?</div>
+        <div class="help-section-title" data-i18n="helpEx.section1Title">📋 איך מהמרים?</div>
         <div class="help-item">
-          <div class="help-q">1. הצטרפות להימור</div>
-          <div class="help-a">לחץ "הצטרף להימור" בדף הבית, הזן קוד 5 תווים שקיבלת מהמארגן, בחר כינוי ושמור את קוד השחזור.</div>
+          <div class="help-q" data-i18n="helpEx.q1">1. הצטרפות להימור</div>
+          <div class="help-a" data-i18n="helpEx.a1">לחץ "הצטרף להימור" בדף הבית, הזן קוד 5 תווים שקיבלת מהמארגן, בחר כינוי ושמור את קוד השחזור.</div>
         </div>
         <div class="help-item">
-          <div class="help-q">2. הימור על שלב הבתים</div>
-          <div class="help-a">בכל בית (12 בתים) בחר 2 או 3 קבוצות שיעלו לשלב הבא. סך הכל צריך לבחור בדיוק 32 קבוצות.</div>
+          <div class="help-q" data-i18n="helpEx.q2">2. הימור על שלב הבתים</div>
+          <div class="help-a" data-i18n="helpEx.a2">בכל בית (12 בתים) בחר 2 או 3 קבוצות שיעלו לשלב הבא. סך הכל צריך לבחור בדיוק 32 קבוצות.</div>
         </div>
         <div class="help-item">
-          <div class="help-q">3. ניקוד</div>
-          <div class="help-a">תקבל נקודה (או יותר עם מכפילים) על כל קבוצה שניחשת נכון שתעלה לשלב הבא.</div>
-        </div>
-      </div>
-
-      <div class="help-section">
-        <div class="help-section-title">🎲 מכפילי סיכון</div>
-        <div class="help-item">
-          <div class="help-q">⭐ פייבוריטית - ×1</div>
-          <div class="help-a">קבוצות חזקות. ניחוש "בטוח" אבל נקודה אחת בלבד.</div>
-        </div>
-        <div class="help-item">
-          <div class="help-q">⚔️ מתמודדת - ×1.5</div>
-          <div class="help-a">קבוצות באמצע הדירוג. סיכון בינוני, פרס בינוני.</div>
-        </div>
-        <div class="help-item">
-          <div class="help-q">🐴 אנדרדוג - ×2</div>
-          <div class="help-a">קבוצות חלשות. סיכון גבוה אבל נקודה כפולה אם צדקת!</div>
+          <div class="help-q" data-i18n="helpEx.q3">3. ניקוד</div>
+          <div class="help-a" data-i18n="helpEx.a3">תקבל נקודה (או יותר עם מכפילים) על כל קבוצה שניחשת נכון שתעלה לשלב הבא.</div>
         </div>
       </div>
 
       <div class="help-section">
-        <div class="help-section-title">🔐 אבטחה ופרטיות</div>
+        <div class="help-section-title" data-i18n="helpEx.section2Title">🎲 מכפילי סיכון</div>
         <div class="help-item">
-          <div class="help-q">איבדתי את קוד השחזור</div>
-          <div class="help-a">פנה למארגן ההימור - רק הוא יכול לייצר עבורך קוד חדש. אנחנו לא שומרים את הקוד שלך בשרת מסיבות אבטחה.</div>
+          <div class="help-q" data-i18n="helpEx.q4">⭐ פייבוריטית - ×1</div>
+          <div class="help-a" data-i18n="helpEx.a4">קבוצות חזקות. ניחוש "בטוח" אבל נקודה אחת בלבד.</div>
         </div>
         <div class="help-item">
-          <div class="help-q">אילו פרטים אישיים נשמרים?</div>
-          <div class="help-a">רק הכינוי שבחרת וההימורים שלך. אין דרישה לאימייל, טלפון או פרטים אישיים אחרים.</div>
+          <div class="help-q" data-i18n="helpEx.q5">⚔️ מתמודדת - ×1.5</div>
+          <div class="help-a" data-i18n="helpEx.a5">קבוצות באמצע הדירוג. סיכון בינוני, פרס בינוני.</div>
         </div>
         <div class="help-item">
-          <div class="help-q">מה קורה אחרי הטורניר?</div>
-          <div class="help-a">30 ימים אחרי סיום המונדיאל, כל הנתונים נמחקים אוטומטית מהמערכת.</div>
+          <div class="help-q" data-i18n="helpEx.q6">🐴 אנדרדוג - ×2</div>
+          <div class="help-a" data-i18n="helpEx.a6">קבוצות חלשות. סיכון גבוה אבל נקודה כפולה אם צדקת!</div>
         </div>
       </div>
 
       <div class="help-section">
-        <div class="help-section-title">💰 כסף ותשלומים</div>
+        <div class="help-section-title" data-i18n="helpEx.section3Title">🔐 אבטחה ופרטיות</div>
         <div class="help-item">
-          <div class="help-q">איך עובדים התשלומים?</div>
-          <div class="help-a">FriendlyBet לא מטפלת בכסף בכלל! כל המעורבות הכספית מתבצעת מחוץ לאפליקציה - בקבוצות וואטסאפ או טלגרם של ההימור.</div>
+          <div class="help-q" data-i18n="helpEx.q7">איבדתי את קוד השחזור</div>
+          <div class="help-a" data-i18n="helpEx.a7">פנה למארגן ההימור - רק הוא יכול לייצר עבורך קוד חדש. אנחנו לא שומרים את הקוד שלך בשרת מסיבות אבטחה.</div>
+        </div>
+        <div class="help-item">
+          <div class="help-q" data-i18n="helpEx.q8">אילו פרטים אישיים נשמרים?</div>
+          <div class="help-a" data-i18n="helpEx.a8">רק הכינוי שבחרת וההימורים שלך. אין דרישה לאימייל, טלפון או פרטים אישיים אחרים.</div>
+        </div>
+        <div class="help-item">
+          <div class="help-q" data-i18n="helpEx.q9">מה קורה אחרי הטורניר?</div>
+          <div class="help-a" data-i18n="helpEx.a9">30 ימים אחרי סיום המונדיאל, כל הנתונים נמחקים אוטומטית מהמערכת.</div>
+        </div>
+      </div>
+
+      <div class="help-section">
+        <div class="help-section-title" data-i18n="helpEx.section4Title">💰 כסף ותשלומים</div>
+        <div class="help-item">
+          <div class="help-q" data-i18n="helpEx.q10">איך עובדים התשלומים?</div>
+          <div class="help-a" data-i18n="helpEx.a10">FriendlyBet לא מטפלת בכסף בכלל! כל המעורבות הכספית מתבצעת מחוץ לאפליקציה - בקבוצות וואטסאפ או טלגרם של ההימור.</div>
         </div>
       </div>
 
       <div class="help-footer">
-        <div class="help-footer-text">
+        <div class="help-footer-text" data-i18n="helpEx.footer">
           יש לך שאלה נוספת? פנה למארגן ההימור שלך.
         </div>
       </div>
@@ -1853,30 +1854,30 @@ function loadTablerFallback() {
   <div id="status-modal-overlay" class="status-modal-overlay" onclick="closeStatusModal()"></div>
   <div id="status-modal" class="status-modal">
     <div class="status-modal-content">
-      <button class="status-modal-close" onclick="closeStatusModal()" aria-label="סגור">
+      <button class="status-modal-close" onclick="closeStatusModal()" data-i18n-aria="common.close" aria-label="סגור">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
-      
+
       <div class="status-modal-icon">🎯</div>
       <div class="status-modal-title" id="status-modal-title">כמעט סיימת!</div>
       <div class="status-modal-subtitle" id="status-modal-subtitle">חסרות עוד 4 עולות</div>
-      
+
       <div class="status-modal-summary">
         <div class="status-summary-item">
-          <div class="status-summary-label">בחרת</div>
+          <div class="status-summary-label" data-i18n="statusModal.picked">בחרת</div>
           <div class="status-summary-value gold" id="status-modal-current">28</div>
         </div>
         <div class="status-summary-divider"></div>
         <div class="status-summary-item">
-          <div class="status-summary-label">מתוך</div>
+          <div class="status-summary-label" data-i18n="statusModal.of">מתוך</div>
           <div class="status-summary-value">32</div>
         </div>
         <div class="status-summary-divider"></div>
         <div class="status-summary-item">
-          <div class="status-summary-label">חסר</div>
+          <div class="status-summary-label" data-i18n="statusModal.missing">חסר</div>
           <div class="status-summary-value" style="color: #fb7185;" id="status-modal-missing">4</div>
         </div>
       </div>
@@ -1888,14 +1889,14 @@ function loadTablerFallback() {
             <line x1="12" y1="8" x2="12" y2="12"></line>
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
-          בתים שאפשר להוסיף בהם עולה שלישית:
+          <span data-i18n="statusModal.canAddTitle">בתים שאפשר להוסיף בהם עולה שלישית:</span>
         </div>
         <div id="status-modal-groups" class="status-modal-groups">
           <!-- populated by JS -->
         </div>
       </div>
 
-      <button class="btn-secondary" onclick="closeStatusModal()" style="margin-top: 16px;">
+      <button class="btn-secondary" onclick="closeStatusModal()" style="margin-top: 16px;" data-i18n="statusModal.closeBtn">
         סגור והמשך בעצמי
       </button>
     </div>
@@ -1919,7 +1920,7 @@ function loadTablerFallback() {
       </div>
       <div class="menu-user-details">
         <div class="menu-user-name" id="menu-user-name">אייל</div>
-        <div class="menu-user-role" id="menu-user-role">משתתף</div>
+        <div class="menu-user-role" id="menu-user-role" data-i18n="dashboard.role.member">משתתף</div>
       </div>
       <div class="menu-pool-badge" id="menu-pool-badge-wrap">
         <div class="menu-pool-name" id="menu-pool-name">החברים</div>
@@ -2025,7 +2026,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v1.9.0</span>
+      <span class="menu-version">v1.10.0</span>
     </div>
   </div>
 

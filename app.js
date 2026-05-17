@@ -129,46 +129,46 @@ async function checkPoolCode() {
   errorDiv.style.display = 'none';
   
   if (!code) {
-    showError('join-error', 'נא להזין קוד הימור');
+    showError('join-error', t('errors.joinCodeRequired'));
     return;
   }
-  
+
   if (code.length !== 5) {
-    showError('join-error', 'קוד הימור הוא 5 תווים');
+    showError('join-error', t('errors.joinCodeLen'));
     return;
   }
-  
+
   // Make sure supabase is ready
   if (!supabaseClient) {
-    showError('join-error', 'מתחבר לשרת... נסה שוב בעוד רגע');
+    showError('join-error', t('errors.serverConnecting'));
     initSupabase();
     return;
   }
-  
+
   // Search pool
   try {
-    showToast('מחפש את ההימור...', 'info');
-    
+    showToast(t('errors.searchingPool'), 'info');
+
     const { data, error } = await supabaseClient
       .from('pools')
       .select('*')
       .eq('code', code)
       .maybeSingle();
-    
+
     if (error) {
       console.error('Pool search error:', error);
-      showError('join-error', 'שגיאה בחיפוש ההימור. נסה שוב.');
+      showError('join-error', t('errors.poolSearchError'));
       return;
     }
-    
+
     if (!data) {
-      showError('join-error', `לא נמצא הימור עם הקוד ${code}`);
+      showError('join-error', t('errors.poolNotFoundCode', { code }));
       return;
     }
-    
+
     // Check if pool is locked
     if (data.is_locked === true) {
-      showError('join-error', '🔒 ההימור הזה נעול ולא מקבל חברים חדשים');
+      showError('join-error', t('errors.poolLockedNoJoin'));
       return;
     }
     
@@ -187,18 +187,18 @@ async function checkPoolCode() {
     document.getElementById('found-pool-members').textContent = memberCount || 0;
     
     const statusMap = {
-      'open': 'פתוח להצטרפות',
-      'group_locked': 'שלב הבתים סגור',
-      'knockout_active': 'בשלב הנוקאאוט',
-      'finished': 'הסתיים'
+      'open': t('poolFound.statusOpen'),
+      'group_locked': t('poolFound.statusGroupLocked'),
+      'knockout_active': t('poolFound.statusKnockout'),
+      'finished': t('poolFound.statusFinished')
     };
     document.getElementById('found-pool-status').textContent = statusMap[data.status] || data.status;
-    
+
     showScreen('pool-found-screen');
-    
+
   } catch (err) {
     console.error('Unexpected error:', err);
-    showError('join-error', 'שגיאה לא צפויה. נסה שוב.');
+    showError('join-error', t('errors.unexpected'));
   }
 }
 
@@ -222,8 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       
-      statusDiv.innerHTML = '<span class="status-checking">בודק זמינות...</span>';
-      
+      statusDiv.innerHTML = `<span class="status-checking">${t('nickname.checking')}</span>`;
+
       nicknameCheckTimeout = setTimeout(() => checkNicknameAvailability(nickname), 500);
     });
   }
@@ -246,9 +246,9 @@ async function checkNicknameAvailability(nickname) {
       .maybeSingle();
     
     if (data) {
-      statusDiv.innerHTML = '<span class="status-taken"><i class="ti ti-x"></i> הכינוי תפוס, נסה אחר</span>';
+      statusDiv.innerHTML = `<span class="status-taken"><i class="ti ti-x"></i> ${t('nickname.taken')}</span>`;
     } else {
-      statusDiv.innerHTML = '<span class="status-available"><i class="ti ti-check"></i> הכינוי פנוי!</span>';
+      statusDiv.innerHTML = `<span class="status-available"><i class="ti ti-check"></i> ${t('nickname.available')}</span>`;
     }
   } catch (err) {
     console.error('Nickname check error:', err);
@@ -262,27 +262,27 @@ async function submitNickname() {
   
   // Validation
   if (!nickname) {
-    showError('nickname-error', 'נא להזין כינוי');
+    showError('nickname-error', t('nickname.errorRequired'));
     return;
   }
-  
+
   if (nickname.length < CONFIG.MIN_NICKNAME_LENGTH) {
-    showError('nickname-error', `הכינוי חייב להיות לפחות ${CONFIG.MIN_NICKNAME_LENGTH} תווים`);
+    showError('nickname-error', t('nickname.errorMin', { n: CONFIG.MIN_NICKNAME_LENGTH }));
     return;
   }
-  
+
   if (nickname.length > CONFIG.MAX_NICKNAME_LENGTH) {
-    showError('nickname-error', `הכינוי לא יכול לחרוג מ-${CONFIG.MAX_NICKNAME_LENGTH} תווים`);
+    showError('nickname-error', t('nickname.errorMax', { n: CONFIG.MAX_NICKNAME_LENGTH }));
     return;
   }
-  
+
   // Make sure supabase is ready
   if (!supabaseClient) {
-    showError('nickname-error', 'מתחבר לשרת... נסה שוב בעוד רגע');
+    showError('nickname-error', t('errors.serverConnecting'));
     initSupabase();
     return;
   }
-  
+
   // Check availability again
   try {
     const { data: existing } = await supabaseClient
@@ -291,9 +291,9 @@ async function submitNickname() {
       .eq('pool_id', state.currentPool.id)
       .eq('nickname', nickname)
       .maybeSingle();
-    
+
     if (existing) {
-      showError('nickname-error', 'הכינוי כבר תפוס בהימור הזה');
+      showError('nickname-error', t('nickname.errorTaken'));
       return;
     }
     
@@ -308,7 +308,7 @@ async function submitNickname() {
     
   } catch (err) {
     console.error('Submit nickname error:', err);
-    showError('nickname-error', 'שגיאה לא צפויה. נסה שוב.');
+    showError('nickname-error', t('errors.unexpected'));
   }
 }
 
@@ -321,7 +321,7 @@ function copyRecoveryCode() {
   if (!code) return;
   
   navigator.clipboard.writeText(code).then(() => {
-    showToast('קוד השחזור הועתק! שמור אותו במקום בטוח', 'success');
+    showToast(t('recoveryCode.copiedSave'), 'success');
   }).catch(() => {
     // Fallback
     const textArea = document.createElement('textarea');
@@ -330,15 +330,15 @@ function copyRecoveryCode() {
     textArea.select();
     document.execCommand('copy');
     document.body.removeChild(textArea);
-    showToast('קוד השחזור הועתק!', 'success');
+    showToast(t('recoveryCode.copied'), 'success');
   });
 }
 
 function shareRecoveryToWhatsApp() {
   const code = state.pendingRecoveryCode;
   const poolName = state.currentPool?.name || 'FriendlyBet';
-  
-  const text = `🔑 קוד השחזור שלי ל-${poolName}:\n\n${code}\n\n⚠️ שמור הודעה זו - תזדקק לקוד אם תרצה להתחבר מחדש!\n\n${window.location.origin}`;
+
+  const text = t('recoveryCode.shareText', { poolName, code, url: window.location.origin });
   
   const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
   window.open(url, '_blank');
@@ -346,23 +346,23 @@ function shareRecoveryToWhatsApp() {
 
 async function completeRegistration() {
   if (!state.pendingNickname || !state.pendingRecoveryCode || !state.currentPool) {
-    showToast('שגיאה - חסרים נתונים', 'error');
+    showToast(t('errors.missingData'), 'error');
     return;
   }
-  
+
   // Make sure supabase is ready
   if (!supabaseClient) {
-    showToast('מתחבר לשרת... נסה שוב בעוד רגע', 'error');
+    showToast(t('errors.serverConnecting'), 'error');
     initSupabase();
     return;
   }
-  
+
   try {
-    showToast('יוצר משתמש...', 'info');
-    
+    showToast(t('errors.creatingUser'), 'info');
+
     // Hash recovery code
     const recoveryHash = await hashRecoveryCode(state.pendingRecoveryCode);
-    
+
     // Create user - joins immediately, admin can approve/remove later
     const { data: user, error } = await supabaseClient
       .from('users')
@@ -376,31 +376,31 @@ async function completeRegistration() {
       })
       .select()
       .single();
-    
+
     if (error) {
       console.error('User creation error:', error);
-      showToast('שגיאה ביצירת המשתמש: ' + error.message, 'error');
+      showToast(t('errors.creatingUserFail', { msg: error.message }), 'error');
       return;
     }
-    
+
     // Save locally
     saveLocalUser(user);
     state.currentUser = user;
-    
+
     // Clear pending data
     state.pendingNickname = null;
     state.pendingRecoveryCode = null;
-    
-    showToast('ברוך הבא ל-' + state.currentPool.name + '!', 'success');
-    
+
+    showToast(t('sharePool.welcomeToast', { name: state.currentPool.name }), 'success');
+
     // Go to dashboard - user can play immediately!
     setTimeout(() => {
       goToDashboard();
     }, 1000);
-    
+
   } catch (err) {
     console.error('Complete registration error:', err);
-    showToast('שגיאה לא צפויה', 'error');
+    showToast(t('errors.unexpected'), 'error');
   }
 }
 
@@ -412,20 +412,24 @@ function useSuggestion(name) {
   document.getElementById('pool-name-input').value = name;
 }
 
+function useSuggestionByKey(key) {
+  document.getElementById('pool-name-input').value = t(key);
+}
+
 function submitPoolName() {
   const input = document.getElementById('pool-name-input');
   const name = input.value.trim();
-  
+
   if (!name) {
-    showError('create-error', 'נא להזין שם להימור');
+    showError('create-error', t('createPool.errorRequired'));
     return;
   }
-  
+
   if (name.length < CONFIG.MIN_POOL_NAME_LENGTH) {
-    showError('create-error', `השם חייב להיות לפחות ${CONFIG.MIN_POOL_NAME_LENGTH} תווים`);
+    showError('create-error', t('createPool.errorMin', { n: CONFIG.MIN_POOL_NAME_LENGTH }));
     return;
   }
-  
+
   state.pendingPoolName = name;
   showScreen('admin-nickname-screen');
 }
@@ -433,26 +437,26 @@ function submitPoolName() {
 async function createPool() {
   const input = document.getElementById('admin-nickname-input');
   const adminNickname = input.value.trim();
-  
+
   if (!adminNickname) {
-    showError('admin-error', 'נא להזין את הכינוי שלך');
+    showError('admin-error', t('adminNickname.errorRequired'));
     return;
   }
-  
+
   if (adminNickname.length < CONFIG.MIN_NICKNAME_LENGTH) {
-    showError('admin-error', `הכינוי חייב להיות לפחות ${CONFIG.MIN_NICKNAME_LENGTH} תווים`);
+    showError('admin-error', t('nickname.errorMin', { n: CONFIG.MIN_NICKNAME_LENGTH }));
     return;
   }
-  
+
   // Make sure supabase is ready
   if (!supabaseClient) {
-    showError('admin-error', 'מתחבר לשרת... נסה שוב בעוד רגע');
+    showError('admin-error', t('errors.serverConnecting'));
     initSupabase();
     return;
   }
-  
+
   try {
-    showToast('יוצר את ההימור...', 'info');
+    showToast(t('errors.creatingPool'), 'info');
     
     // Generate unique pool code
     let poolCode;
@@ -470,7 +474,7 @@ async function createPool() {
     }
     
     if (attempts >= 10) {
-      showToast('שגיאה ביצירת קוד ייחודי', 'error');
+      showToast(t('errors.uniqueCodeFail'), 'error');
       return;
     }
     
@@ -489,7 +493,7 @@ async function createPool() {
     
     if (poolError) {
       console.error('Pool creation error:', poolError);
-      showToast('שגיאה ביצירת ההימור: ' + poolError.message, 'error');
+      showToast(t('errors.creatingPoolFail', { msg: poolError.message }), 'error');
       return;
     }
     
@@ -514,7 +518,7 @@ async function createPool() {
     
     if (userError) {
       console.error('Admin user creation error:', userError);
-      showToast('שגיאה ביצירת מנהל ההימור: ' + userError.message, 'error');
+      showToast(t('errors.creatingAdminFail', { msg: userError.message }), 'error');
       // Rollback pool
       await supabaseClient.from('pools').delete().eq('id', pool.id);
       return;
@@ -535,17 +539,17 @@ async function createPool() {
     // Show share screen
     document.getElementById('created-pool-code').textContent = poolCode;
     
-    showToast('ההימור נוצר בהצלחה! 🎉', 'success');
+    showToast(t('errors.poolCreated'), 'success');
     showScreen('share-pool-screen');
-    
+
     // Show recovery code modal (admin can save it later from settings)
     setTimeout(() => {
-      alert(`🔑 קוד השחזור שלך כמארגן:\n\n${adminRecoveryCode}\n\nשמור אותו במקום בטוח! בלעדיו לא תוכל להתחבר חזרה.`);
+      alert(t('sharePool.adminCodeAlert', { code: adminRecoveryCode }));
     }, 500);
-    
+
   } catch (err) {
     console.error('Create pool error:', err);
-    showToast('שגיאה לא צפויה', 'error');
+    showToast(t('errors.unexpected'), 'error');
   }
 }
 
@@ -853,24 +857,24 @@ function showRecoveryCodeAgain() {
 
 async function showMembers() {
   closeMenu();
-  
+
   if (!state.currentPool || !supabaseClient) {
-    showToast('שגיאה בטעינה', 'error');
+    showToast(t('errors.loadError'), 'error');
     return;
   }
-  
+
   showScreen('members-screen');
-  
+
   // Load all members
   const { data: members, error } = await supabaseClient
     .from('users')
     .select('*')
     .eq('pool_id', state.currentPool.id)
     .order('joined_at', { ascending: true });
-  
+
   if (error || !members) {
     console.error('Members load error:', error);
-    showToast('שגיאה בטעינת המשתתפים', 'error');
+    showToast(t('membersList.loadError'), 'error');
     return;
   }
   
@@ -926,36 +930,37 @@ function createMemberCard(member, picksCount) {
   let statusClass, statusText, statusEmoji;
   if (picksCount === 0) {
     statusClass = 'not-started';
-    statusText = 'עדיין לא הימר';
+    statusText = t('membersList.notStarted');
   } else if (picksCount < 24) {
     // Minimum is 24 (2 per group × 12 groups)
     statusClass = 'partial';
-    statusText = `הימר על ${picksCount} בחירות`;
+    statusText = t('membersList.partial', { n: picksCount });
   } else {
     statusClass = 'completed';
-    statusText = 'השלים את הבתים';
+    statusText = t('membersList.complete');
   }
-  
+
   // Joined date
   const joinedDate = new Date(member.joined_at);
   const today = new Date();
   const daysAgo = Math.floor((today - joinedDate) / (1000 * 60 * 60 * 24));
+  const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
   let joinedText;
-  if (daysAgo === 0) joinedText = 'הצטרף היום';
-  else if (daysAgo === 1) joinedText = 'הצטרף אתמול';
-  else if (daysAgo < 7) joinedText = `הצטרף לפני ${daysAgo} ימים`;
-  else joinedText = `הצטרף ב-${joinedDate.toLocaleDateString('he-IL', { day: 'numeric', month: 'short' })}`;
-  
-  const safeNickname = member.nickname || 'משתמש';
+  if (daysAgo === 0) joinedText = t('membersList.joinedToday');
+  else if (daysAgo === 1) joinedText = t('membersList.joinedYesterday');
+  else if (daysAgo < 7) joinedText = t('membersList.joinedDaysAgo', { n: daysAgo });
+  else joinedText = t('membersList.joinedOn', { date: joinedDate.toLocaleDateString(lang === 'he' ? 'he-IL' : 'en-US', { day: 'numeric', month: 'short' }) });
+
+  const safeNickname = member.nickname || t('membersList.fallbackUser');
   const safeInitial = safeNickname.charAt(0).toUpperCase();
-  
+
   card.innerHTML = `
     <div class="lb-avatar-small">${safeInitial}</div>
     <div class="member-info">
       <div class="member-name">
         ${escapeHtml(safeNickname)}
-        ${member.is_admin ? '<span class="admin-badge">מארגן</span>' : ''}
-        ${isMe ? '<span class="lb-badge">אתה</span>' : ''}
+        ${member.is_admin ? `<span class="admin-badge">${t('common.admin')}</span>` : ''}
+        ${isMe ? `<span class="lb-badge">${t('common.you')}</span>` : ''}
       </div>
       <div class="member-status ${statusClass}">
         <span class="member-status-dot"></span>
@@ -987,7 +992,7 @@ async function showAdminMembers() {
   
   // Verify user is admin
   if (!state.currentPool || !state.currentUser.is_admin) {
-    showToast('🚫 רק המארגן יכול לגשת לאזור הזה', 'error');
+    showToast(t('adminMembersEx.notAdmin'), 'error');
     return;
   }
   
@@ -1059,7 +1064,7 @@ async function loadAdminMembers() {
     
   } catch (err) {
     console.error('Load admin members error:', err);
-    showToast('שגיאה בטעינת חברים', 'error');
+    showToast(t('adminMembersEx.loadError'), 'error');
   } finally {
     loading.style.display = 'none';
   }
@@ -1113,15 +1118,15 @@ function renderAdminMembers() {
     
     const initial = member.nickname ? member.nickname.charAt(0).toUpperCase() : '?';
     
-    const adminBadge = member.isAdmin ? '<span class="admin-member-badge">מארגן ✓</span>' : '';
-    const pendingBadge = (member.approval_status === 'pending' && !member.isAdmin) 
-      ? '<span class="admin-member-pending-badge">⏳ ממתין לאישור</span>' 
+    const adminBadge = member.isAdmin ? `<span class="admin-member-badge">${t('adminMembersEx.adminBadge')}</span>` : '';
+    const pendingBadge = (member.approval_status === 'pending' && !member.isAdmin)
+      ? `<span class="admin-member-pending-badge">${t('adminMembersEx.pendingBadge')}</span>`
       : '';
-    
+
     // Progress dots
     const groupsDone = member.groupPicksCount >= 24;
     const knockoutDone = member.knockoutPicksCount >= 16;
-    
+
     // Quick action buttons for pending users
     let quickActions = '';
     if (member.approval_status === 'pending' && !member.isAdmin) {
@@ -1131,31 +1136,31 @@ function renderAdminMembers() {
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
-            <span>אשר</span>
+            <span>${t('adminMembersEx.approve')}</span>
           </button>
           <button class="admin-quick-btn reject" data-member-id="${member.id}">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
-            <span>הסר</span>
+            <span>${t('adminMembersEx.remove')}</span>
           </button>
         </div>
       `;
     } else if (!member.isAdmin) {
       quickActions = '<div class="admin-member-arrow">‹</div>';
     }
-    
+
     card.innerHTML = `
       <div class="admin-member-avatar">${initial}</div>
       <div class="admin-member-info">
-        <div class="admin-member-name">${adminBadge}${pendingBadge}${escapeHtml(member.nickname || 'משתמש')}</div>
+        <div class="admin-member-name">${adminBadge}${pendingBadge}${escapeHtml(member.nickname || t('membersList.fallbackUser'))}</div>
         <div class="admin-member-progress">
           <span class="admin-member-progress-dot ${groupsDone ? 'done' : ''}">
-            בתים: ${member.groupPicksCount} ${groupsDone ? '✓' : ''}
+            ${t('adminMembersEx.groupsPicks', { n: member.groupPicksCount, check: groupsDone ? '✓' : '' })}
           </span>
           <span class="admin-member-progress-dot ${knockoutDone ? 'done' : ''}">
-            נוקאאוט: ${member.knockoutPicksCount}/16 ${knockoutDone ? '✓' : ''}
+            ${t('adminMembersEx.koPicks', { n: member.knockoutPicksCount, check: knockoutDone ? '✓' : '' })}
           </span>
         </div>
       </div>
@@ -1215,24 +1220,20 @@ async function quickApproveMember(member) {
       details: { nickname: member.nickname }
     });
     
-    showToast(`✓ ${member.nickname} אושר`, 'success');
-    
+    showToast(t('adminMembersEx.approvedToast', { name: member.nickname }), 'success');
+
     // Reload
     await loadAdminMembers();
-    
+
   } catch (err) {
     console.error('Approve error:', err);
-    showToast('שגיאה באישור', 'error');
+    showToast(t('adminMembersEx.approveError'), 'error');
   }
 }
 
 // Quick reject - confirm + remove
 async function quickRejectMember(member) {
-  const confirmed = window.confirm(
-    `להסיר את ${member.nickname} מההימור?\n\n` +
-    `כל ההימורים שלו יימחקו.\n` +
-    `הפעולה לא ניתנת לביטול.`
-  );
+  const confirmed = window.confirm(t('adminMembersEx.confirmRemoveAll', { name: member.nickname }));
   if (!confirmed) return;
   
   try {
@@ -1252,13 +1253,13 @@ async function quickRejectMember(member) {
       details: { nickname: member.nickname }
     });
     
-    showToast(`${member.nickname} הוסר`, 'success');
-    
+    showToast(t('adminMembersEx.removedToast', { name: member.nickname }), 'success');
+
     await loadAdminMembers();
-    
+
   } catch (err) {
     console.error('Reject error:', err);
-    showToast('שגיאה בהסרה', 'error');
+    showToast(t('adminMembersEx.removeError'), 'error');
   }
 }
 
@@ -1274,34 +1275,42 @@ function updatePoolLockCard() {
   if (isLocked) {
     card.classList.add('locked');
     icon.textContent = '🔒';
-    title.textContent = 'ההימור נעול';
-    text.textContent = 'אין אפשרות להצטרף עם קוד ההזמנה';
-    btn.textContent = 'בטל נעילה';
+    title.textContent = t('adminMembersEx.lockedTitle');
+    text.textContent = t('adminMembersEx.lockedText');
+    btn.textContent = t('adminMembersEx.unlockBtn');
   } else {
     card.classList.remove('locked');
     icon.textContent = '🔓';
-    title.textContent = 'ההימור פתוח להצטרפות';
-    text.textContent = 'חברים חדשים יכולים להצטרף עם קוד ההזמנה';
-    btn.textContent = 'נעל';
+    title.textContent = t('adminMembersEx.openTitle');
+    text.textContent = t('adminMembersEx.openText');
+    btn.textContent = t('adminMembersEx.lockBtn');
+  }
+
+  // Pending banner title (dynamic count)
+  const pendingTitleEl = document.getElementById('admin-pending-banner-title');
+  if (pendingTitleEl) {
+    const cnt = document.getElementById('admin-pending-count');
+    const n = cnt ? cnt.textContent : '0';
+    pendingTitleEl.innerHTML = t('adminMembersEx.pendingCount', { n });
   }
 }
 
 async function togglePoolLock() {
   if (!state.currentPool || !state.currentUser.is_admin) {
-    showToast('🚫 רק המארגן יכול לעשות זאת', 'error');
+    showToast(t('adminMembersEx.notAdminAction'), 'error');
     return;
   }
-  
+
   const isCurrentlyLocked = adminState.poolData?.is_locked === true;
   const newState = !isCurrentlyLocked;
-  
-  const action = newState ? 'לנעול' : 'לפתוח';
-  const confirm = window.confirm(`האם אתה בטוח שברצונך ${action} את ההימור?`);
+
+  const actionKey = newState ? 'adminMembersEx.actionLock' : 'adminMembersEx.actionUnlock';
+  const confirm = window.confirm(t('adminMembersEx.confirmAction', { action: t(actionKey) }));
   if (!confirm) return;
-  
+
   const btn = document.getElementById('pool-lock-btn');
   btn.disabled = true;
-  btn.textContent = 'מעבד...';
+  btn.textContent = t('common.processing');
   
   try {
     const { error } = await supabaseClient
@@ -1325,11 +1334,11 @@ async function togglePoolLock() {
     adminState.poolData.is_locked = newState;
     updatePoolLockCard();
     
-    showToast(newState ? '🔒 ההימור ננעל' : '🔓 ההימור נפתח', 'success');
-    
+    showToast(newState ? t('adminMembersEx.poolLocked') : t('adminMembersEx.poolUnlocked'), 'success');
+
   } catch (err) {
     console.error('Toggle lock error:', err);
-    showToast('שגיאה בעדכון מצב ההימור', 'error');
+    showToast(t('adminMembersEx.toggleError'), 'error');
     btn.disabled = false;
     updatePoolLockCard();
   }
@@ -1344,10 +1353,11 @@ function openAdminActionModal(member) {
   
   const initial = member.nickname ? member.nickname.charAt(0).toUpperCase() : '?';
   avatar.textContent = initial;
-  name.textContent = member.nickname || 'משתמש';
-  
-  const joinedDate = new Date(member.joined_at).toLocaleDateString('he-IL');
-  meta.textContent = `הצטרף ב-${joinedDate} · ${member.groupPicksCount} בתים · ${member.knockoutPicksCount} נוקאאוט`;
+  name.textContent = member.nickname || t('membersList.fallbackUser');
+
+  const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+  const joinedDate = new Date(member.joined_at).toLocaleDateString(lang === 'he' ? 'he-IL' : 'en-US');
+  meta.textContent = t('adminMembersEx.memberJoinedMeta', { date: joinedDate, g: member.groupPicksCount, k: member.knockoutPicksCount });
   
   document.getElementById('admin-action-overlay').classList.add('active');
   document.getElementById('admin-action-modal').classList.add('active');
@@ -1363,10 +1373,7 @@ async function adminGenerateNewCode() {
   const member = adminState.selectedMember;
   if (!member) return;
   
-  const confirm = window.confirm(
-    `האם ליצור קוד שחזור חדש עבור ${member.nickname}?\n\n` +
-    `הקוד הישן יבוטל מיד. תצטרך לשלוח לו את הקוד החדש בעצמך.`
-  );
+  const confirm = window.confirm(t('adminMembersEx.confirmNewCode', { name: member.nickname }));
   if (!confirm) return;
   
   try {
@@ -1396,17 +1403,14 @@ async function adminGenerateNewCode() {
     
   } catch (err) {
     console.error('Generate code error:', err);
-    showToast('שגיאה ביצירת קוד', 'error');
+    showToast(t('adminMembersEx.newCodeError'), 'error');
   }
 }
 
 function showNewRecoveryCode(userName, code) {
   // Show in a nice prompt with copy option
-  const message = `✅ קוד שחזור חדש נוצר עבור ${userName}:\n\n${code}\n\n` +
-    `📋 הקוד יועתק ללוח שלך כשתלחץ "אישור".\n` +
-    `שלח אותו ל-${userName} בהודעה פרטית.\n\n` +
-    `⚠️ הקוד הישן בוטל ולא יעבוד יותר.`;
-  
+  const message = t('adminMembersEx.newCodeMsg', { name: userName, code });
+
   // Try to copy to clipboard
   if (navigator.clipboard) {
     navigator.clipboard.writeText(code).then(() => {
@@ -1417,27 +1421,25 @@ function showNewRecoveryCode(userName, code) {
   } else {
     alert(message);
   }
-  
-  showToast('🔑 קוד חדש נוצר והועתק', 'success');
+
+  showToast(t('adminMembersEx.newCodeCopied'), 'success');
 }
 
 function adminConfirmRemove() {
   const member = adminState.selectedMember;
   if (!member) return;
-  
-  const confirm = window.confirm(
-    `⚠️ האם אתה בטוח שברצונך להסיר את ${member.nickname} מההימור?\n\n` +
-    `פעולה זו תמחק:\n` +
-    `- כל ההימורים שלו (${member.groupPicksCount} בתים, ${member.knockoutPicksCount} נוקאאוט)\n` +
-    `- את החשבון שלו לחלוטין\n\n` +
-    `הפעולה לא ניתנת לביטול.`
-  );
+
+  const confirm = window.confirm(t('adminMembersEx.confirmDeleteFull', {
+    name: member.nickname,
+    g: member.groupPicksCount,
+    k: member.knockoutPicksCount
+  }));
   if (!confirm) return;
-  
+
   // Double confirm for safety
-  const doubleConfirm = window.confirm(`אישור אחרון - להסיר את ${member.nickname}?`);
+  const doubleConfirm = window.confirm(t('adminMembersEx.finalConfirm', { name: member.nickname }));
   if (!doubleConfirm) return;
-  
+
   adminPerformRemove(member);
 }
 
@@ -1461,14 +1463,14 @@ async function adminPerformRemove(member) {
     });
     
     closeAdminActionModal();
-    showToast(`✓ ${member.nickname} הוסר מההימור`, 'success');
-    
+    showToast(t('adminMembersEx.finalRemovedToast', { name: member.nickname }), 'success');
+
     // Reload list
     await loadAdminMembers();
-    
+
   } catch (err) {
     console.error('Remove user error:', err);
-    showToast('שגיאה בהסרת המשתמש', 'error');
+    showToast(t('adminMembersEx.finalRemoveError'), 'error');
   }
 }
 
@@ -1482,7 +1484,7 @@ function escapeHtml(str) {
 
 function showApprovals() {
   closeMenu();
-  showToast('🚧 אישור משתמשים - בקרוב', 'info');
+  showToast('🚧 ' + t('common.processing'), 'info');
 }
 
 // ============================================================
@@ -1501,15 +1503,15 @@ async function showTopScorer() {
   closeMenu();
   
   if (!state.currentUser || !state.currentPool) {
-    showToast('שגיאה - אנא התחבר מחדש', 'error');
+    showToast(t('errors.reconnect'), 'error');
     return;
   }
-  
+
   if (!supabaseClient) {
-    showToast('מתחבר לשרת...', 'error');
+    showToast(t('errors.serverConnectingShort'), 'error');
     return;
   }
-  
+
   showScreen('top-scorer-screen');
   
   // Check if feature is unlocked
@@ -1554,14 +1556,15 @@ function updateLockedView(settings) {
   const lastCheck = settings.squads_last_check;
   if (lastCheck) {
     const date = new Date(lastCheck);
-    const formatted = date.toLocaleString('he-IL', { 
-      day: 'numeric', 
-      month: 'short', 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+    const formatted = date.toLocaleString(lang === 'he' ? 'he-IL' : 'en-US', {
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit'
     });
     const el = document.getElementById('ts-last-check');
-    if (el) el.textContent = `בדיקה אחרונה: ${formatted}`;
+    if (el) el.textContent = t('tsLocked.lastCheck', { time: formatted });
   }
   
   // Calculate days until tournament
@@ -1585,7 +1588,7 @@ async function loadAllPlayers() {
     
     if (error) {
       console.error('Players load error:', error);
-      showToast('שגיאה בטעינת שחקנים', 'error');
+      showToast(t('tsLocked.loadingPlayers'), 'error');
       return;
     }
     
@@ -1608,7 +1611,7 @@ async function loadAllPlayers() {
     
   } catch (err) {
     console.error('Load players error:', err);
-    showToast('שגיאה לא צפויה', 'error');
+    showToast(t('errors.unexpected'), 'error');
   }
 }
 
@@ -1852,21 +1855,21 @@ function updateSectionTitle(mode, query = '') {
   if (mode === 'search') {
     title.innerHTML = `
       <span>🔍</span>
-      <span>תוצאות חיפוש לפי "${escapeHtml(query)}"</span>
+      <span>${t('tsUnlocked.searchResults', { q: escapeHtml(query) })}</span>
     `;
   } else {
     // Check if tournament has started (anyone scored?)
     const hasGoals = topScorerState.allPlayers.some(p => (p.goals_so_far || 0) > 0);
-    
+
     if (hasGoals) {
       title.innerHTML = `
         <span>🏆</span>
-        <span>המובילים כרגע</span>
+        <span>${t('tsUnlocked.currentLeaders')}</span>
       `;
     } else {
       title.innerHTML = `
         <span>⚽</span>
-        <span>החלוצים והכנפיים מהקבוצות החזקות</span>
+        <span>${t('tsUnlocked.forwardsWings')}</span>
       `;
     }
   }
@@ -1917,7 +1920,7 @@ function renderTopScorerList() {
   if (topScorerState.filteredPlayers.length > playersToShow.length) {
     const moreInfo = document.createElement('div');
     moreInfo.className = 'ts-results-count';
-    moreInfo.textContent = `מציג ${playersToShow.length} מתוך ${topScorerState.filteredPlayers.length} תוצאות`;
+    moreInfo.textContent = t('tsUnlocked.showing', { n: playersToShow.length, total: topScorerState.filteredPlayers.length });
     list.appendChild(moreInfo);
   }
 }
@@ -1933,18 +1936,18 @@ function toggleShowAllPlayers() {
     if (hasGoals) {
       title.innerHTML = `
         <span>🏆</span>
-        <span>המובילים כרגע</span>
+        <span>${t('tsUnlocked.currentLeaders')}</span>
       `;
     } else {
       title.innerHTML = `
         <span>⚽</span>
-        <span>החלוצים והכנפיים מהקבוצות החזקות</span>
+        <span>${t('tsUnlocked.forwardsWings')}</span>
       `;
     }
   } else if (title && topScorerState.showAll) {
     title.innerHTML = `
       <span>👥</span>
-      <span>כל שחקני המונדיאל</span>
+      <span>${t('tsUnlocked.allPlayers')}</span>
     `;
   }
   
@@ -1974,18 +1977,18 @@ function createPlayerCard(player, searchQuery = '') {
   const goals = player.goals_so_far || 0;
   
   // Highlight matching text
-  let displayName = player.name_he || player.name_en || 'שחקן';
+  let displayName = player.name_he || player.name_en || t('tsUnlocked.fallbackPlayer');
   if (searchQuery) {
     displayName = highlightMatch(displayName, searchQuery);
   }
-  
+
   // Build badges
   let badges = '';
   if (goals > 0) {
     // Goal-scorer badge (highest priority)
     badges = `<span class="ts-player-goals-badge">⚽ ${goals}</span>`;
   } else if (player.is_star) {
-    badges = '<span class="ts-player-star-badge">⭐ כוכב</span>';
+    badges = `<span class="ts-player-star-badge">${t('tsUnlocked.starBadge')}</span>`;
   }
   
   const positionBadge = player.position ? `<span class="ts-player-position">${player.position}</span>` : '';
@@ -2028,9 +2031,10 @@ async function selectTopScorer(player) {
   
   // Confirm if changing
   if (topScorerState.currentPick && topScorerState.currentPick.id !== player.id) {
-    const confirmed = window.confirm(
-      `להחליף את הבחירה?\n\nמ: ${topScorerState.currentPick.name_he || topScorerState.currentPick.name_en}\nל: ${player.name_he || player.name_en}`
-    );
+    const confirmed = window.confirm(t('tsUnlocked.confirmChange', {
+      from: topScorerState.currentPick.name_he || topScorerState.currentPick.name_en,
+      to: player.name_he || player.name_en
+    }));
     if (!confirmed) return;
   }
   
@@ -2049,59 +2053,59 @@ async function selectTopScorer(player) {
         user_id: state.currentUser.id,
         pool_id: state.currentPool.id,
         player_id: player.id,
-        player_name: player.name_he || player.name_en || 'שחקן',
+        player_name: player.name_he || player.name_en || t('tsUnlocked.fallbackPlayer'),
         team_code: player.team_code || ''
       });
-    
+
     if (error) {
       console.error('Save top scorer error:', error);
-      showToast('שגיאה בשמירת הבחירה: ' + (error.message || ''), 'error');
+      showToast(t('tsUnlocked.saveError', { msg: error.message || '' }), 'error');
       return;
     }
-    
+
     topScorerState.currentPick = player;
     updateCurrentPickDisplay();
     renderTopScorerList();
-    
-    const displayName = player.name_he || player.name_en || 'השחקן';
-    showToast(`🥇 בחרת ב-${displayName}!`, 'success');
-    
+
+    const displayName = player.name_he || player.name_en || t('tsUnlocked.fallbackThePlayer');
+    showToast(t('tsUnlocked.pickedToast', { name: displayName }), 'success');
+
     // Clear search
     const searchInput = document.getElementById('ts-search-input');
     if (searchInput && searchInput.value) {
       searchInput.value = '';
       onTopScorerSearch('');
     }
-    
+
   } catch (err) {
     console.error('Select top scorer error:', err);
-    showToast('שגיאה לא צפויה: ' + (err.message || ''), 'error');
+    showToast(t('errors.unexpectedMsg', { msg: err.message || '' }), 'error');
   }
 }
 
 async function clearTopScorerPick() {
   if (!topScorerState.currentPick) return;
-  
-  const confirmed = window.confirm('לבטל את הבחירה של מלך השערים?');
+
+  const confirmed = window.confirm(t('tsUnlocked.confirmClear'));
   if (!confirmed) return;
-  
+
   try {
     const { error } = await supabaseClient
       .from('top_scorer_picks')
       .delete()
       .eq('user_id', state.currentUser.id);
-    
+
     if (error) {
       console.error('Clear top scorer error:', error);
-      showToast('שגיאה בביטול הבחירה', 'error');
+      showToast(t('tsUnlocked.clearError'), 'error');
       return;
     }
-    
+
     topScorerState.currentPick = null;
     updateCurrentPickDisplay();
     renderTopScorerList();
-    
-    showToast('הבחירה בוטלה', 'info');
+
+    showToast(t('tsUnlocked.clearedToast'), 'info');
     
   } catch (err) {
     console.error('Clear top scorer error:', err);
@@ -2127,19 +2131,19 @@ async function showPoolSettings() {
   closeMenu();
   
   if (!state.currentPool) {
-    showToast('לא נמצא הימור', 'error');
+    showToast(t('poolSettings.notFound'), 'error');
     return;
   }
-  
+
   // Re-fetch latest pool data
   const { data: pool, error } = await supabaseClient
     .from('pools')
     .select('*')
     .eq('id', state.currentPool.id)
     .single();
-  
+
   if (error || !pool) {
-    showToast('שגיאה בטעינת ההגדרות', 'error');
+    showToast(t('poolSettings.loadError'), 'error');
     return;
   }
   
@@ -2269,7 +2273,7 @@ function resetScoringToGolazo() {
   document.getElementById('score-qf').textContent = 3;
   document.getElementById('score-sf').textContent = 4;
   document.getElementById('score-final').textContent = 8;
-  showToast('הוחזר לחוקי Golazo המקוריים', 'success');
+  showToast(t('poolSettings.resetToast'), 'success');
 }
 
 function setTopScorerBonus(value, showFeedback = true) {
@@ -2277,18 +2281,18 @@ function setTopScorerBonus(value, showFeedback = true) {
     btn.classList.toggle('active', parseInt(btn.dataset.bonus) === value);
   });
   if (showFeedback) {
-    showToast(`בונוס מלך השערים: ${value} נקודות`, 'success');
+    showToast(t('poolSettings.bonusToast', { n: value }), 'success');
   }
 }
 
 async function savePoolSettings() {
   if (!state.currentPool || !state.currentUser) {
-    showToast('שגיאה - חסרים נתונים', 'error');
+    showToast(t('errors.missingData'), 'error');
     return;
   }
-  
+
   if (!state.currentUser.is_admin) {
-    showToast('רק המארגן יכול לערוך הגדרות', 'error');
+    showToast(t('poolSettings.notAdmin'), 'error');
     return;
   }
   
@@ -2318,82 +2322,80 @@ async function savePoolSettings() {
   
   // Validate name
   if (!newSettings.name || newSettings.name.length < CONFIG.MIN_POOL_NAME_LENGTH) {
-    showToast('שם ההימור קצר מדי', 'error');
+    showToast(t('poolSettings.poolNameShort'), 'error');
     return;
   }
-  
+
   try {
-    showToast('שומר הגדרות...', 'info');
-    
+    showToast(t('poolSettings.savingToast'), 'info');
+
     const { error } = await supabaseClient
       .from('pools')
       .update(newSettings)
       .eq('id', state.currentPool.id);
-    
+
     if (error) {
       console.error('Settings save error:', error);
-      showToast('שגיאה בשמירה: ' + error.message, 'error');
+      showToast(t('poolSettings.saveError', { msg: error.message }), 'error');
       return;
     }
-    
+
     // Update local state
     Object.assign(state.currentPool, newSettings);
-    
-    showToast('ההגדרות נשמרו בהצלחה! ✅', 'success');
-    
+
+    showToast(t('poolSettings.savedToast'), 'success');
+
     // Return to dashboard after short delay
     setTimeout(() => {
       goToDashboard();
     }, 800);
-    
+
   } catch (err) {
     console.error('Save settings error:', err);
-    showToast('שגיאה לא צפויה', 'error');
+    showToast(t('errors.unexpected'), 'error');
   }
 }
 
 async function confirmDeletePool() {
   if (!state.currentPool || !state.currentUser?.is_admin) return;
-  
+
   const poolName = state.currentPool.name;
-  const confirmed = confirm(
-    `⚠️ אזהרה!\n\nאתה עומד למחוק את ההימור "${poolName}".\n\nכל הנתונים, ההימורים והניקוד יימחקו לצמיתות.\n\nפעולה זו לא ניתנת לביטול.\n\nהאם להמשיך?`
-  );
-  
+  const confirmed = confirm(t('poolSettings.deleteWarning', { name: poolName }));
+
   if (!confirmed) return;
-  
+
   // Second confirmation
-  const finalConfirm = prompt(`כדי לאשר, הקלד את שם ההימור:\n"${poolName}"`);
-  
+  const finalConfirm = prompt(t('poolSettings.deletePrompt', { name: poolName }));
+
   if (finalConfirm !== poolName) {
-    showToast('המחיקה בוטלה', 'info');
+    showToast(t('poolSettings.deleteCancelled'), 'info');
     return;
   }
-  
+
   try {
     const { error } = await supabaseClient
       .from('pools')
       .delete()
       .eq('id', state.currentPool.id);
-    
+
     if (error) {
       console.error('Delete pool error:', error);
-      showToast('שגיאה במחיקה: ' + error.message, 'error');
+      showToast(t('poolSettings.deleteError', { msg: error.message }), 'error');
       return;
     }
-    
+
     clearLocalUser();
     state.currentPool = null;
     state.currentUser = null;
-    
-    showToast('ההימור נמחק', 'info');
+
+    showToast(t('poolSettings.deletedToast'), 'info');
     setTimeout(() => {
       showScreen('home-screen');
     }, 1000);
-    
+
   } catch (err) {
     console.error('Delete pool error:', err);
-    showToast('שגיאה לא צפויה', 'error');
+    showToast(t('errors.unexpected'), 'error');
   }
 }
 
@@ -2402,12 +2404,12 @@ async function confirmDeletePool() {
 function logoutConfirm() {
   closeMenu();
   setTimeout(() => {
-    if (confirm('האם להתנתק מההימור?\n\nהקוד שלך עדיין יעבוד - תוכל להתחבר שוב עם קוד השחזור.')) {
+    if (confirm(t('poolSettings.leaveConfirm'))) {
       clearLocalUser();
       state.currentUser = null;
       state.currentPool = null;
       showScreen('home-screen');
-      showToast('התנתקת מההימור', 'info');
+      showToast(t('poolSettings.leftToast'), 'info');
     }
   }, 300);
 }
@@ -2428,20 +2430,20 @@ const bettingState = {
 
 async function startGroupBetting() {
   if (!state.currentUser || !state.currentPool) {
-    showToast('שגיאה - אנא התחבר מחדש', 'error');
+    showToast(t('errors.reconnect'), 'error');
     return;
   }
-  
+
   if (!supabaseClient) {
-    showToast('מתחבר לשרת... נסה שוב', 'error');
+    showToast(t('errors.serverConnectingRetry'), 'error');
     initSupabase();
     return;
   }
-  
+
   // Load results data for "got it right" indicators
   await loadResultsData();
-  
-  showToast('טוען את הקבוצות...', 'info');
+
+  showToast(t('groups.loadingTeams'), 'info');
   
   try {
     // Load all teams grouped by group_letter
@@ -2454,7 +2456,7 @@ async function startGroupBetting() {
     
     if (teamsError || !teams || teams.length === 0) {
       console.error('Teams load error:', teamsError);
-      showToast('הקבוצות עדיין בסנכרון - נסה שוב בעוד מספר דקות', 'error');
+      showToast(t('groups.teamsSyncing'), 'error');
       return;
     }
     
@@ -2502,7 +2504,7 @@ async function startGroupBetting() {
     
   } catch (err) {
     console.error('Start group betting error:', err);
-    showToast('שגיאה לא צפויה', 'error');
+    showToast(t('errors.unexpected'), 'error');
   }
 }
 
@@ -2539,7 +2541,7 @@ function renderGroupBetting() {
   
   if (currentGroupLetterEl) currentGroupLetterEl.textContent = currentLetter;
   if (instructionGroupLetterEl) instructionGroupLetterEl.textContent = currentLetter;
-  if (currentGroupStepEl) currentGroupStepEl.textContent = `בית ${bettingState.currentGroupIndex + 1} מתוך 12`;
+  if (currentGroupStepEl) currentGroupStepEl.textContent = t('groups.stepProgress', { current: bettingState.currentGroupIndex + 1, total: 12 });
   
   // Note: prev-group-letter and next-group-letter are managed by updateNextButtonState
   // and updatePrevButtonState - don't update them here
@@ -2585,7 +2587,7 @@ function updatePrevButtonState() {
     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="9 6 15 12 9 18"></polyline>
     </svg>
-    <span>בית ${prevLetter}</span>
+    <span>${t('groups.prevGroup', { letter: prevLetter })}</span>
   `;
 }
 
@@ -2608,19 +2610,19 @@ function updateNextButtonState() {
         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
       </svg>
-      <span class="next-btn-warning-text">בחר עוד ${need} קבוצ${need > 1 ? 'ות' : 'ה'} כדי להמשיך</span>
+      <span class="next-btn-warning-text">${t('groups.needMore', { n: need, plural: need > 1 ? 's' : '' })}</span>
     `;
   } else {
     // ALLOWED
     nextBtn.classList.remove('btn-disabled-warning');
     nextBtn.classList.add('btn-primary');
-    
+
     // Special: last group with incomplete total
     const total = countTotalPicks();
     if (isLastGroup && total < 32 && total > 0) {
       // Show "check status" instead of "next group"
       nextBtn.innerHTML = `
-        <span>סיים את ההימור</span>
+        <span>${t('groups.finishBetting')}</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
@@ -2628,7 +2630,7 @@ function updateNextButtonState() {
     } else {
       // Normal next
       nextBtn.innerHTML = `
-        <span>בית ${nextLetter}</span>
+        <span>${t('groups.nextGroup', { letter: nextLetter })}</span>
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 6 9 12 15 18"></polyline>
         </svg>
@@ -2664,14 +2666,14 @@ function createTeamCard(team, isSelected) {
   let tierBadge = '';
   if (usesMultipliers) {
     if (team.tier === 'favorite') {
-      tierBadge = '<span class="team-tier-badge team-tier-favorite">⭐ פייבוריטית ×1</span>';
+      tierBadge = `<span class="team-tier-badge team-tier-favorite">${t('groups.tierFavorite')}</span>`;
     } else if (team.tier === 'contender') {
-      tierBadge = '<span class="team-tier-badge team-tier-contender">⚔️ מתמודדת ×1.5</span>';
+      tierBadge = `<span class="team-tier-badge team-tier-contender">${t('groups.tierContender')}</span>`;
     } else {
-      tierBadge = '<span class="team-tier-badge team-tier-underdog">🐴 אנדרדוג ×2</span>';
+      tierBadge = `<span class="team-tier-badge team-tier-underdog">${t('groups.tierUnderdog')}</span>`;
     }
   }
-  
+
   // Check real-world result if user selected this team
   let resultIndicator = '';
   if (isSelected && team.group_letter) {
@@ -2679,7 +2681,7 @@ function createTeamCard(team, isSelected) {
     if (advanced === true) {
       card.classList.add('result-correct');
       resultIndicator = `
-        <div class="team-result-badge correct" title="הקבוצה עלתה!">
+        <div class="team-result-badge correct" title="${t('groups.tooltipAdvanced')}">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
@@ -2688,7 +2690,7 @@ function createTeamCard(team, isSelected) {
     } else if (advanced === false) {
       card.classList.add('result-wrong');
       resultIndicator = `
-        <div class="team-result-badge wrong" title="הקבוצה הודחה">
+        <div class="team-result-badge wrong" title="${t('groups.tooltipEliminated')}">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -2697,14 +2699,16 @@ function createTeamCard(team, isSelected) {
       `;
     }
   }
-  
+
   // Flag emoji from country code
   const flagEmoji = getCountryFlag(team.code);
-  
+  const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+  const teamName = lang === 'he' ? (team.name_he || team.name_en) : (team.name_en || team.name_he);
+
   card.innerHTML = `
     <div class="team-flag">${flagEmoji}</div>
     <div class="team-info">
-      <div class="team-name">${team.name_he}</div>
+      <div class="team-name">${teamName}</div>
       ${tierBadge}
     </div>
     ${resultIndicator}
@@ -2761,7 +2765,7 @@ function toggleTeamSelection(teamCode) {
   } else {
     // Add - but max 3
     if (picks.length >= 3) {
-      showToast('כבר בחרת 3 קבוצות. הסר אחת לפני שתוסיף עוד', 'error');
+      showToast(t('groups.maxReachedToast'), 'error');
       return;
     }
     bettingState.picks[currentLetter] = [...picks, teamCode];
@@ -2781,16 +2785,16 @@ function updateGroupPicksInfo() {
   
   if (picks.length === 0) {
     info.className = 'group-picks-info';
-    info.innerHTML = '<span class="text-faint">בחר 2 או 3 קבוצות מהבית הזה</span>';
+    info.innerHTML = `<span class="text-faint">${t('groups.pickSubtitleDefault')}</span>`;
   } else if (picks.length === 1) {
     info.className = 'group-picks-info invalid';
-    info.innerHTML = `⚠️ בחרת רק קבוצה אחת - צריך 2 או 3`;
+    info.innerHTML = t('groups.pickOneOnly');
   } else if (picks.length === 2) {
     info.className = 'group-picks-info valid';
-    info.innerHTML = `✓ בחרת 2 קבוצות בבית הזה`;
+    info.innerHTML = t('groups.pickedTwo');
   } else if (picks.length === 3) {
     info.className = 'group-picks-info valid';
-    info.innerHTML = `✓ בחרת 3 קבוצות בבית הזה`;
+    info.innerHTML = t('groups.pickedThree');
   }
 }
 
@@ -2808,7 +2812,7 @@ function updateGlobalProgress() {
     finishBtn.style.display = 'none';
   } else if (total < 32) {
     validation.className = 'picks-validation warning';
-    validationText.textContent = `נשאר עוד ${32 - total} קבוצות לבחור`;
+    validationText.textContent = t('groups.validationRemaining', { n: 32 - total });
     finishBtn.style.display = 'none';
   } else if (total === 32) {
     // Check that every group has valid picks (2 or 3)
@@ -2816,19 +2820,19 @@ function updateGlobalProgress() {
       const count = (bettingState.picks[letter] || []).length;
       return count >= 2 && count <= 3;
     });
-    
+
     if (allValid) {
       validation.className = 'picks-validation success';
-      validationText.textContent = '🎉 הושלם! 32 קבוצות נבחרו';
+      validationText.textContent = t('groups.validationDone');
       finishBtn.style.display = 'flex';
     } else {
       validation.className = 'picks-validation error';
-      validationText.textContent = 'בעיה: לפחות בית אחד עם 0 או 1 קבוצות בלבד';
+      validationText.textContent = t('groups.validationProblem');
       finishBtn.style.display = 'none';
     }
   } else {
     validation.className = 'picks-validation error';
-    validationText.textContent = `יותר מדי! ${total - 32} קבוצות מעל המקסימום`;
+    validationText.textContent = t('groups.validationTooMany', { n: total - 32 });
     finishBtn.style.display = 'none';
   }
 }
@@ -2890,12 +2894,15 @@ function openStatusModal() {
   document.getElementById('status-modal-missing').textContent = missing > 0 ? missing : 0;
   
   if (missing > 0) {
-    document.getElementById('status-modal-title').textContent = 'כמעט סיימת!';
-    document.getElementById('status-modal-subtitle').textContent = 
-      `חסר${missing > 1 ? 'ות' : 'ה'} עוד ${missing} עול${missing > 1 ? 'ות' : 'ה'}`;
+    document.getElementById('status-modal-title').textContent = t('statusModal.almostTitle');
+    const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+    const heSuffix = missing > 1 ? 'ות' : 'ה';
+    const enSuffix = missing > 1 ? 's' : '';
+    document.getElementById('status-modal-subtitle').textContent =
+      t('statusModal.missingPicks', { n: missing, plural: lang === 'he' ? heSuffix : enSuffix, pluralN: heSuffix });
   } else {
-    document.getElementById('status-modal-title').textContent = 'מצוין! 🎉';
-    document.getElementById('status-modal-subtitle').textContent = 'בחרת את כל ה-32 העולות';
+    document.getElementById('status-modal-title').textContent = t('statusModal.doneTitle');
+    document.getElementById('status-modal-subtitle').textContent = t('statusModal.doneSubtitle');
   }
   
   // Find groups with EXACTLY 2 picks (where you can add a third)
@@ -2916,7 +2923,7 @@ function openStatusModal() {
   container.innerHTML = '';
   
   if (expandableGroups.length === 0) {
-    container.innerHTML = '<div style="grid-column: 1 / -1; padding: 12px; color: rgba(255,255,255,0.5); text-align: center; font-size: 12px;">לא נמצאו בתים עם 2 עולות.<br/>תוכל להוסיף בכל בית.</div>';
+    container.innerHTML = `<div style="grid-column: 1 / -1; padding: 12px; color: rgba(255,255,255,0.5); text-align: center; font-size: 12px;">${t('statusModal.noGroupsToAdd')}</div>`;
   } else {
     // Update section title with count
     const sectionTitle = document.querySelector('.status-section-title');
@@ -2927,7 +2934,7 @@ function openStatusModal() {
           <line x1="12" y1="8" x2="12" y2="12"></line>
           <line x1="12" y1="16" x2="12.01" y2="16"></line>
         </svg>
-        ${expandableGroups.length} בתים עם 2 עולות - לחץ כדי להוסיף שלישית:
+        ${t('statusModal.expandable', { n: expandableGroups.length })}
       `;
     }
     
@@ -2988,13 +2995,13 @@ function goToNextGroup() {
   
   // BLOCK: cannot proceed if current group has < 2 picks
   if (picks.length < 2) {
-    showToast(`חייב לבחור לפחות 2 קבוצות בבית ${currentLetter} כדי להמשיך`, 'error');
-    
+    showToast(t('groups.mustPickTwo', { letter: currentLetter }), 'error');
+
     // Visual shake feedback on the next button
     const btn = document.getElementById('next-group-btn');
     btn.style.animation = 'shake 0.4s';
     setTimeout(() => { btn.style.animation = ''; }, 400);
-    
+
     return;
   }
   
@@ -3073,21 +3080,21 @@ async function savePicksToDb(showFeedback = true) {
       if (error) {
         console.error('Save picks error:', error);
         if (showFeedback) {
-          showToast('שגיאה בשמירת ההימור', 'error');
+          showToast(t('groups.saveError'), 'error');
         }
         bettingState.loading = false;
         return;
       }
     }
-    
+
     if (showFeedback) {
-      showToast('ההימור נשמר ✓', 'success');
+      showToast(t('groups.savedOk'), 'success');
     }
-    
+
   } catch (err) {
     console.error('Save picks error:', err);
     if (showFeedback) {
-      showToast('שגיאה בשמירה', 'error');
+      showToast(t('groups.saveError'), 'error');
     }
   } finally {
     bettingState.loading = false;
@@ -3105,7 +3112,7 @@ async function saveProgressAndExit() {
 function exitGroupBetting() {
   const total = countTotalPicks();
   if (total > 0 && total < 32) {
-    if (!confirm(`יש לך ${total} הימורים שמורים. צא מבלי לסיים?`)) {
+    if (!confirm(t('groups.exitConfirm', { n: total }))) {
       return;
     }
   }
@@ -3126,17 +3133,17 @@ async function finishGroupBetting() {
   });
   
   if (total !== 32) {
-    showToast(`צריך בדיוק 32 קבוצות (יש ${total})`, 'error');
+    showToast(t('groups.exactly32', { n: total }), 'error');
     return;
   }
-  
+
   if (!allValid) {
-    showToast('בכל בית חייבים להיות 2 או 3 קבוצות', 'error');
+    showToast(t('groups.eachGroup2or3'), 'error');
     return;
   }
-  
+
   // Save final state
-  showToast('שומר הימור...', 'info');
+  showToast(t('groups.savingToast'), 'info');
   await savePicksToDb(false);
   
   // Calculate max possible points
@@ -3224,47 +3231,47 @@ const knockoutState = {
 };
 
 const ROUND_INFO = {
-  R32: { name: 'סבב 32', total: 16, points: 1, order: 1 },
-  R16: { name: 'שמינית הגמר', total: 8, points: 2, order: 2 },
-  QF:  { name: 'רבע הגמר',   total: 4, points: 3, order: 3 },
-  SF:  { name: 'חצי הגמר',   total: 2, points: 4, order: 4 },
-  FINAL: { name: 'הגמר',     total: 1, points: 8, order: 5 }
+  R32: { nameKey: 'knockoutEx.r32Full', total: 16, points: 1, order: 1 },
+  R16: { nameKey: 'knockoutEx.r16Full', total: 8, points: 2, order: 2 },
+  QF:  { nameKey: 'knockoutEx.qfFull',  total: 4, points: 3, order: 3 },
+  SF:  { nameKey: 'knockoutEx.sfFull',  total: 2, points: 4, order: 4 },
+  FINAL: { nameKey: 'knockoutEx.finalFull', total: 1, points: 8, order: 5 }
 };
 
 async function startKnockoutBetting() {
   if (!state.currentUser || !state.currentPool) {
-    showToast('שגיאה - אנא התחבר מחדש', 'error');
+    showToast(t('errors.reconnect'), 'error');
     return;
   }
-  
+
   if (!supabaseClient) {
-    showToast('מתחבר לשרת...', 'error');
+    showToast(t('errors.serverConnectingShort'), 'error');
     return;
   }
-  
+
   // Load results data for "got it right" indicators
   await loadResultsData();
-  
+
   // First: check if group betting is complete (need 32 picks)
   const { data: groupPicks } = await supabaseClient
     .from('group_picks')
     .select('team_code, group_letter')
     .eq('user_id', state.currentUser.id);
-  
+
   if (!groupPicks || groupPicks.length < 32) {
-    showToast('צריך לסיים קודם את שלב הבתים (32 קבוצות)', 'error');
+    showToast(t('knockoutEx.needGroups'), 'error');
     return;
   }
-  
-  showToast('טוען את שלב הנוקאאוט...', 'info');
-  
+
+  showToast(t('knockoutEx.loadingKO'), 'info');
+
   // Load all teams
   const { data: teams } = await supabaseClient
     .from('teams')
     .select('*');
-  
+
   if (!teams) {
-    showToast('שגיאה בטעינת הקבוצות', 'error');
+    showToast(t('knockoutEx.loadError'), 'error');
     return;
   }
   
@@ -3458,8 +3465,8 @@ function renderKnockout() {
   const round = knockoutState.currentRound;
   
   // Update title
-  document.getElementById('ko-round-title').textContent = ROUND_INFO[round].name;
-  document.getElementById('ko-round-step').textContent = `${ROUND_INFO[round].points} נקודות לכל ניחוש נכון`;
+  document.getElementById('ko-round-title').textContent = t(ROUND_INFO[round].nameKey);
+  document.getElementById('ko-round-step').textContent = t('knockoutEx.pointsPerPick', { n: ROUND_INFO[round].points });
   
   // Update tab states + counters
   document.querySelectorAll('.ko-tab').forEach(tab => {
@@ -3517,58 +3524,60 @@ function createMatchCard(match) {
   const team2Data = match.team2 ? knockoutState.allTeams[match.team2] : null;
   
   // Header
-  const matchLabel = round === 'FINAL' ? 'הגמר 🏆' : `משחק ${match.number}`;
-  
+  const matchLabel = round === 'FINAL' ? t('knockoutEx.finalLabel') : t('knockoutEx.matchNum', { n: match.number });
+  const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+
   // For final, show champion declaration
   let finalDeclaration = '';
   if (round === 'FINAL') {
     finalDeclaration = `
       <div class="ko-final-declaration">
         <span class="ko-final-icon">🏆</span>
-        <span class="ko-final-text">המנצח: <strong>אלוף המונדיאל!</strong></span>
+        <span class="ko-final-text">${t('knockoutEx.winnerLine')}</span>
       </div>
     `;
   }
-  
+
   // Check if real match result is known
   const realResult = userPick ? wasKnockoutPickCorrect(match.id, userPick) : null;
   const myScore = userPick ? getMyMatchScore(match.id, 'KNOCKOUT') : null;
-  
+
   let resultBadge = '';
   let cardClass = 'ko-match-card';
-  
+
   if (realResult === true) {
     cardClass += ' result-correct';
-    const points = myScore?.points_earned || 0;
+    const correctPoints = myScore?.points_earned || 0;
     resultBadge = `
       <div class="ko-result-badge correct">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
-        <span>ניחשת נכון! +${points} נק'</span>
+        <span>${t('knockoutEx.correctLine', { n: correctPoints })}</span>
       </div>
     `;
   } else if (realResult === false) {
     cardClass += ' result-wrong';
     const winner = state.results.knockoutWinners[match.id];
     const winnerData = winner ? knockoutState.allTeams[winner] : null;
+    const winnerName = winnerData ? (lang === 'he' ? (winnerData.name_he || winnerData.name_en) : (winnerData.name_en || winnerData.name_he)) : t('knockoutEx.opponent');
     resultBadge = `
       <div class="ko-result-badge wrong">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
-        <span>${winnerData ? winnerData.name_he : 'היריב'} ניצח</span>
+        <span>${t('knockoutEx.wonLine', { name: winnerName })}</span>
       </div>
     `;
   }
-  
+
   card.className = cardClass;
-  
+
   card.innerHTML = `
     <div class="ko-match-header">
       <span class="ko-match-number">${matchLabel}</span>
-      <span>${ROUND_INFO[round].name}</span>
+      <span>${t(ROUND_INFO[round].nameKey)}</span>
     </div>
     <div class="ko-match-teams">
       ${createTeamButton(match, team1Data, match.team1, userPick === match.team1)}
@@ -3576,9 +3585,9 @@ function createMatchCard(match) {
       ${createTeamButton(match, team2Data, match.team2, userPick === match.team2)}
     </div>
     <div class="ko-match-points">
-      <span>משווה</span>
-      <span class="ko-match-points-value">${points} נק'</span>
-      <span>אם תנחש נכון</span>
+      <span>${t('knockoutEx.equalizer')}</span>
+      <span class="ko-match-points-value">${t('knockoutEx.pointsValue', { n: points })}</span>
+      <span>${t('knockoutEx.ifCorrect')}</span>
     </div>
     ${resultBadge}
     ${finalDeclaration}
@@ -3603,17 +3612,19 @@ function createTeamButton(match, teamData, teamCode, isSelected) {
     return `
       <div class="ko-team tbd" data-team="null">
         <div class="ko-team-flag">⏳</div>
-        <div class="ko-team-name">להיקבע</div>
+        <div class="ko-team-name">${t('knockoutEx.tbdTeam')}</div>
       </div>
     `;
   }
-  
+
   const flag = getCountryFlag(teamCode);
-  
+  const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+  const teamName = lang === 'he' ? (teamData.name_he || teamData.name_en) : (teamData.name_en || teamData.name_he);
+
   return `
     <div class="ko-team ${isSelected ? 'selected' : ''}" data-team="${teamCode}">
       <div class="ko-team-flag">${flag}</div>
-      <div class="ko-team-name">${teamData.name_he}</div>
+      <div class="ko-team-name">${teamName}</div>
     </div>
   `;
 }
@@ -3696,16 +3707,16 @@ async function saveKnockoutPicksToDb(showFeedback = true) {
       
       if (error) {
         console.error('Knockout save error:', error);
-        if (showFeedback) showToast('שגיאה בשמירה', 'error');
+        if (showFeedback) showToast(t('groups.saveError'), 'error');
         return;
       }
     }
-    
-    if (showFeedback) showToast('הימור הנוקאאוט נשמר ✓', 'success');
-    
+
+    if (showFeedback) showToast(t('knockoutEx.savedOk'), 'success');
+
   } catch (err) {
     console.error('Knockout save error:', err);
-    if (showFeedback) showToast('שגיאה בשמירה', 'error');
+    if (showFeedback) showToast(t('groups.saveError'), 'error');
   }
 }
 
@@ -3714,9 +3725,9 @@ function exitKnockoutBetting() {
   Object.keys(ROUND_INFO).forEach(round => {
     total += knockoutState.matches[round].filter(m => knockoutState.picks[m.id]).length;
   });
-  
+
   if (total > 0 && total < 31) {
-    if (!confirm(`יש לך ${total}/31 הימורים שמורים. צא מבלי לסיים?`)) {
+    if (!confirm(t('groups.exitConfirm', { n: total + '/31' }))) {
       return;
     }
   }
@@ -3725,7 +3736,7 @@ function exitKnockoutBetting() {
 
 async function finishKnockoutBetting() {
   await saveKnockoutPicksToDb(false);
-  showToast('הימור הנוקאאוט הושלם! 🏆', 'success');
+  showToast(t('knockoutEx.completed'), 'success');
   setTimeout(() => goToDashboard(), 1000);
 }
 
@@ -3799,7 +3810,7 @@ function analyzeKnockoutStrategy() {
     });
     
     stages[round] = {
-      name: ROUND_INFO[round].name,
+      name: t(ROUND_INFO[round].nameKey),
       picked: picked,
       total: ROUND_INFO[round].total,
       expected: Math.round(stageExpected),
@@ -3817,30 +3828,30 @@ function analyzeKnockoutStrategy() {
   // Risk description
   let riskDescription;
   if (riskCount === 0) {
-    riskDescription = 'בחר משחקים כדי לראות ניתוח';
+    riskDescription = t('simulatorEx.riskDefault');
   } else if (riskScore < 30) {
-    riskDescription = '🛡️ אסטרטגיה בטוחה - אתה מהמר על הפייבוריטיות';
+    riskDescription = t('simulatorEx.riskDescSafe');
   } else if (riskScore < 55) {
-    riskDescription = '⚡ אסטרטגיה מאוזנת - שילוב של בטוח ויצירתי';
+    riskDescription = t('simulatorEx.riskDescBalanced');
   } else if (riskScore < 75) {
-    riskDescription = '🎲 אסטרטגיה אגרסיבית - הרבה הימורים מסוכנים';
+    riskDescription = t('simulatorEx.riskDescRisky');
   } else {
-    riskDescription = '🔥 אסטרטגיה ספורטיבית - הולך על הכל!';
+    riskDescription = t('simulatorEx.riskDescVery');
   }
-  
+
   // Recommendation
   let recommendation;
   const totalPicked = Object.values(stages).reduce((s, v) => s + v.picked, 0);
   if (totalPicked === 0) {
-    recommendation = 'התחל לבחור משחקים והסימולטור ינתח את האסטרטגיה שלך';
+    recommendation = t('simulatorEx.recEarly');
   } else if (totalPicked < 10) {
-    recommendation = 'המשך לבחור כדי לראות תמונה מלאה של הסיכויים שלך';
+    recommendation = t('simulatorEx.recContinue');
   } else if (riskScore < 30) {
-    recommendation = 'אסטרטגיה בטוחה תיתן צפי ניקוד יציב, אבל קשה לעקוף יריבים שיסתכנו ויצליחו. נסה להוסיף 1-2 הימורים נועזים יותר.';
+    recommendation = t('simulatorEx.recTooSafe');
   } else if (riskScore > 70) {
-    recommendation = 'אסטרטגיה מסוכנת מאוד! פוטנציאל ענק לניקוד גבוה, אבל סיכוי גבוה לטעויות. שקול לחזור לבטוח ב-1-2 שלבים מאוחרים.';
+    recommendation = t('simulatorEx.recTooRisky');
   } else {
-    recommendation = 'איזון מצוין! יש לך פוטנציאל לניקוד גבוה עם סיכון מתון. זאת אסטרטגיה חכמה.';
+    recommendation = t('simulatorEx.recBalanced');
   }
   
   return {
@@ -3957,7 +3968,7 @@ function renderBracketView() {
     totalPicked += knockoutState.matches[round].filter(m => knockoutState.picks[m.id]).length;
   });
   const progressEl = document.getElementById('bracket-progress-text');
-  if (progressEl) progressEl.textContent = `${totalPicked}/31 משחקים`;
+  if (progressEl) progressEl.textContent = t('knockoutEx.matchesProgress', { n: totalPicked });
   
   // Update jump tabs with status
   document.querySelectorAll('.bracket-jump-tab').forEach(tab => {
@@ -4195,15 +4206,15 @@ function renderBracketView() {
   
   // Add round headers
   const headers = [
-    { round: 'R32', side: 'left',  label: 'סבב 32' },
-    { round: 'R16', side: 'left',  label: 'שמינית' },
-    { round: 'QF',  side: 'left',  label: 'רבע' },
-    { round: 'SF',  side: 'left',  label: 'חצי' },
-    { round: 'FINAL', side: 'center', label: '🏆 גמר' },
-    { round: 'SF',  side: 'right', label: 'חצי' },
-    { round: 'QF',  side: 'right', label: 'רבע' },
-    { round: 'R16', side: 'right', label: 'שמינית' },
-    { round: 'R32', side: 'right', label: 'סבב 32' }
+    { round: 'R32', side: 'left',  labelKey: 'bracketView.r32' },
+    { round: 'R16', side: 'left',  labelKey: 'bracketView.r16' },
+    { round: 'QF',  side: 'left',  labelKey: 'bracketView.qf' },
+    { round: 'SF',  side: 'left',  labelKey: 'bracketView.sf' },
+    { round: 'FINAL', side: 'center', labelKey: 'bracketView.final' },
+    { round: 'SF',  side: 'right', labelKey: 'bracketView.sf' },
+    { round: 'QF',  side: 'right', labelKey: 'bracketView.qf' },
+    { round: 'R16', side: 'right', labelKey: 'bracketView.r16' },
+    { round: 'R32', side: 'right', labelKey: 'bracketView.r32' }
   ];
   
   headers.forEach(h => {
@@ -4216,7 +4227,7 @@ function renderBracketView() {
     header.style.left = `${x}px`;
     header.style.top = '10px';
     header.style.width = `${L.cardWidth}px`;
-    header.textContent = h.label;
+    header.textContent = t(h.labelKey);
     cardsLayer.appendChild(header);
   });
   
@@ -4255,10 +4266,12 @@ function renderBracketView() {
   champion.style.left = `${colPositions.FINAL - 10}px`;
   champion.style.top = `${positions.FINAL_M1.y + L.cardHeight + 20}px`;
   champion.style.width = `${L.cardWidth + 20}px`;
+  const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+  const winnerName = winnerData ? (lang === 'he' ? (winnerData.name_he || winnerData.name_en) : (winnerData.name_en || winnerData.name_he)) : null;
   champion.innerHTML = `
-    <div class="bracket-champion-display-label">🏆 אלוף 🏆</div>
+    <div class="bracket-champion-display-label">${t('bracketView.championLabel')}</div>
     <div class="bracket-champion-display-name ${winnerData ? '' : 'tbd'}">
-      ${winnerData ? `${getCountryFlag(winner)} ${winnerData.name_he}` : 'להיקבע'}
+      ${winnerData ? `${getCountryFlag(winner)} ${winnerName}` : t('bracketView.tbd')}
     </div>
   `;
   cardsLayer.appendChild(champion);
@@ -4308,8 +4321,9 @@ function createBracketCard(match, isFinal) {
   card.className = `bracket-card bracket-${statusClass}${isFinal ? ' final-card' : ''}`;
   card.setAttribute('data-match-id', match.id);
   
-  const team1Name = team1Data ? team1Data.name_he : 'TBD';
-  const team2Name = team2Data ? team2Data.name_he : 'TBD';
+  const bracketLang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+  const team1Name = team1Data ? (bracketLang === 'he' ? (team1Data.name_he || team1Data.name_en) : (team1Data.name_en || team1Data.name_he)) : 'TBD';
+  const team2Name = team2Data ? (bracketLang === 'he' ? (team2Data.name_he || team2Data.name_en) : (team2Data.name_en || team2Data.name_he)) : 'TBD';
   
   card.innerHTML = `
     <div class="bracket-card-num">#${match.number}</div>
@@ -4677,7 +4691,7 @@ async function showMatches() {
 
 async function loadMatches() {
   if (!supabaseClient) {
-    showToast('שגיאה - מתחבר לשרת...', 'error');
+    showToast(t('errors.serverConnectingShort'), 'error');
     return;
   }
   
@@ -4691,7 +4705,7 @@ async function loadMatches() {
     
     if (error) {
       console.error('Matches load error:', error);
-      showToast('שגיאה בטעינת המשחקים', 'error');
+      showToast(t('matchesEx.loadError'), 'error');
       return;
     }
     
@@ -4711,7 +4725,7 @@ async function loadMatches() {
     
   } catch (err) {
     console.error('Matches error:', err);
-    showToast('שגיאה לא צפויה', 'error');
+    showToast(t('errors.unexpected'), 'error');
   } finally {
     matchesState.loading = false;
     document.getElementById('matches-loading').style.display = 'none';
@@ -4726,9 +4740,9 @@ function renderMatches() {
   // Update last sync indicator
   if (matchesState.lastSync) {
     const date = new Date(matchesState.lastSync);
-    updatedText.textContent = `עודכן: ${formatRelativeTime(date)}`;
+    updatedText.textContent = t('matchesEx.lastUpdated', { time: formatRelativeTime(date) });
   } else {
-    updatedText.textContent = 'עוד לא סונכרן';
+    updatedText.textContent = t('matchesEx.notSynced');
   }
   
   // Filter matches
@@ -4748,7 +4762,7 @@ function renderMatches() {
   
   if (filtered.length === 0) {
     list.style.display = 'flex';
-    list.innerHTML = `<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.4); font-size: 12px;">אין משחקים בקטגוריה הזאת</div>`;
+    list.innerHTML = `<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.4); font-size: 12px;">${t('matchesEx.noInCategory')}</div>`;
     empty.style.display = 'none';
     return;
   }
@@ -4786,10 +4800,10 @@ function createMatchCard(match) {
   let statusText;
   let statusClass;
   if (isLive) {
-    statusText = 'משחק חי';
+    statusText = t('matchesEx.live');
     statusClass = 'live';
   } else if (isFinished) {
-    statusText = 'הסתיים';
+    statusText = t('matchesEx.finished');
     statusClass = 'finished';
   } else {
     statusText = formatMatchTime(match.match_date);
@@ -4821,7 +4835,8 @@ function createMatchCard(match) {
     `;
   } else {
     const time = match.match_date ? new Date(match.match_date) : null;
-    const timeStr = time ? time.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : 'TBD';
+    const tmLang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+    const timeStr = time ? time.toLocaleTimeString(tmLang === 'he' ? 'he-IL' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: tmLang === 'en' }) : 'TBD';
     scoreHtml = `<div class="match-score no-score">${timeStr}</div>`;
   }
   
@@ -4877,28 +4892,15 @@ function getTeamName(code) {
 }
 
 function getStageLabel(stage, groupLetter) {
-  const isHe = typeof getCurrentLanguage === 'function' ? getCurrentLanguage() === 'he' : true;
-  
-  const STAGE_LABELS_HE = {
-    'GROUP_STAGE': `בית ${groupLetter || ''}`,
-    'LAST_16': 'שמינית הגמר',
-    'QUARTER_FINALS': 'רבע הגמר',
-    'SEMI_FINALS': 'חצי הגמר',
-    'FINAL': '🏆 הגמר',
-    'THIRD_PLACE': 'מקום 3'
-  };
-  
-  const STAGE_LABELS_EN = {
-    'GROUP_STAGE': `Group ${groupLetter || ''}`,
-    'LAST_16': 'Round of 16',
-    'QUARTER_FINALS': 'Quarter-Finals',
-    'SEMI_FINALS': 'Semi-Finals',
-    'FINAL': '🏆 Final',
-    'THIRD_PLACE': '3rd Place'
-  };
-  
-  const labels = isHe ? STAGE_LABELS_HE : STAGE_LABELS_EN;
-  return labels[stage] || stage;
+  switch (stage) {
+    case 'GROUP_STAGE': return t('matchesEx.stageGroup', { letter: groupLetter || '' });
+    case 'LAST_16': return t('matchesEx.stageR16');
+    case 'QUARTER_FINALS': return t('matchesEx.stageQF');
+    case 'SEMI_FINALS': return t('matchesEx.stageSF');
+    case 'FINAL': return t('matchesEx.stageFinal');
+    case 'THIRD_PLACE': return t('matchesEx.stageThird');
+    default: return stage;
+  }
 }
 
 function _unused_getStageLabel_old(stage, groupLetter) {
@@ -4906,30 +4908,33 @@ function _unused_getStageLabel_old(stage, groupLetter) {
 }
 
 function formatMatchTime(dateStr) {
-  if (!dateStr) return 'תאריך לא ידוע';
-  
+  if (!dateStr) return t('matchesEx.dateUnknown');
+
   const date = new Date(dateStr);
   const now = new Date();
   const diffMs = date - now;
   const diffHours = diffMs / (1000 * 60 * 60);
   const diffDays = diffMs / (1000 * 60 * 60 * 24);
-  
-  if (diffMs < 0) return 'עבר';
-  if (diffHours < 1) return `בעוד ${Math.round(diffMs / (1000 * 60))} דקות`;
-  if (diffHours < 24) return `בעוד ${Math.round(diffHours)} שעות`;
-  if (diffDays < 7) return `בעוד ${Math.round(diffDays)} ימים`;
-  
-  return date.toLocaleDateString('he-IL', { day: 'numeric', month: 'short' });
+  const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+
+  if (diffMs < 0) return t('matchesEx.past');
+  if (diffHours < 1) return t('matchesEx.inMinutes', { n: Math.round(diffMs / (1000 * 60)) });
+  if (diffHours < 24) return t('matchesEx.inHours', { n: Math.round(diffHours) });
+  if (diffDays < 7) return t('matchesEx.inDays', { n: Math.round(diffDays) });
+
+  return date.toLocaleDateString(lang === 'he' ? 'he-IL' : 'en-US', { day: 'numeric', month: 'short' });
 }
 
 function formatMatchDate(dateStr) {
   if (!dateStr) return '';
   const date = new Date(dateStr);
-  return date.toLocaleDateString('he-IL', { 
-    day: 'numeric', 
+  const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+  return date.toLocaleDateString(lang === 'he' ? 'he-IL' : 'en-US', {
+    day: 'numeric',
     month: 'short',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
+    hour12: lang === 'en'
   });
 }
 
@@ -4939,12 +4944,13 @@ function formatRelativeTime(date) {
   const diffMinutes = Math.floor(diffMs / (1000 * 60));
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  
-  if (diffMinutes < 1) return 'הרגע';
-  if (diffMinutes < 60) return `לפני ${diffMinutes} דקות`;
-  if (diffHours < 24) return `לפני ${diffHours} שעות`;
-  if (diffDays < 7) return `לפני ${diffDays} ימים`;
-  return date.toLocaleDateString('he-IL');
+  const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+
+  if (diffMinutes < 1) return t('common.justNow');
+  if (diffMinutes < 60) return t('matchesEx.minutesAgo', { n: diffMinutes });
+  if (diffHours < 24) return t('matchesEx.hoursAgo', { n: diffHours });
+  if (diffDays < 7) return t('matchesEx.daysAgo', { n: diffDays });
+  return date.toLocaleDateString(lang === 'he' ? 'he-IL' : 'en-US');
 }
 
 function filterMatches(filter) {
@@ -4959,9 +4965,9 @@ function filterMatches(filter) {
 }
 
 async function refreshMatches() {
-  showToast('מסנכרן משחקים...', 'info');
+  showToast(t('matchesEx.syncing'), 'info');
   await loadMatches();
-  showToast('עודכן ✓', 'success');
+  showToast(t('matchesEx.synced'), 'success');
 }
 
 // ============================================================
@@ -5025,9 +5031,7 @@ async function initApp() {
       
       // If user already has an account
       if (localUser && localUser.pool_id) {
-        const confirmed = window.confirm(
-          'אתה כבר חבר בהימור.\n\nכדי להצטרף להימור חדש, תצטרך לצאת מהקיים.\n\nלצאת ולהצטרף להימור החדש?'
-        );
+        const confirmed = window.confirm(t('errors.alreadyMember'));
         if (confirmed) {
           clearLocalUser();
           // Reload with same URL params
@@ -5077,7 +5081,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function showShareModal() {
   if (!state.currentPool) {
-    showToast('שגיאה - אנא נסה שוב', 'error');
+    showToast(t('errors.tryAgain'), 'error');
     return;
   }
   
@@ -5120,11 +5124,8 @@ function getShareMessage() {
   const poolName = state.currentPool.name;
   const code = state.currentPool.code;
   const url = getInviteUrl();
-  
-  return `🏆 הצטרף להימור "${poolName}" במונדיאל 2026!\n\n` +
-    `קוד ההימור: ${code}\n\n` +
-    `👇 לחץ על הקישור כדי להצטרף:\n${url}\n\n` +
-    `📱 FriendlyBet - הימור חברים, חינמי, בלי פרסומות, בלי כסף.`;
+
+  return t('sharePool.shareText', { poolName, code, url });
 }
 
 function shareToWhatsApp() {
@@ -5148,10 +5149,10 @@ function shareNative() {
   }
   
   const inviteUrl = getInviteUrl();
-  const poolName = state.currentPool?.name || 'הימור';
-  
+  const poolName = state.currentPool?.name || t('dashboard.fallback.poolName');
+
   navigator.share({
-    title: `הצטרף ל-${poolName}`,
+    title: t('shareModal.joinTitle', { name: poolName }),
     text: getShareMessage(),
     url: inviteUrl
   }).catch(err => {
@@ -5166,7 +5167,7 @@ async function copyInviteLink() {
   
   try {
     await navigator.clipboard.writeText(url);
-    showToast('✓ הקישור הועתק!', 'success');
+    showToast(t('shareModal.copyLinkOk'), 'success');
   } catch (err) {
     // Fallback
     const tempInput = document.createElement('input');
@@ -5175,19 +5176,19 @@ async function copyInviteLink() {
     tempInput.select();
     document.execCommand('copy');
     document.body.removeChild(tempInput);
-    showToast('✓ הקישור הועתק!', 'success');
+    showToast(t('shareModal.copyLinkOk'), 'success');
   }
 }
 
 async function copyPoolCodeOnly() {
   const code = state.currentPool?.code;
   if (!code) return;
-  
+
   try {
     await navigator.clipboard.writeText(code);
-    showToast('✓ הקוד הועתק!', 'success');
+    showToast(t('shareModal.copyCodeOk'), 'success');
   } catch (err) {
-    showToast('שגיאה בהעתקה', 'error');
+    showToast(t('shareModal.copyError'), 'error');
   }
 }
 
@@ -5199,7 +5200,7 @@ function generateQRCode(text) {
   const container = document.getElementById('share-qr-code');
   if (!container) return;
   
-  container.innerHTML = '<div class="ts-loading">יוצר קוד QR...</div>';
+  container.innerHTML = `<div class="ts-loading">${t('shareModal.generatingQR')}</div>`;
   
   // Use a free QR API as fallback
   const size = 200;
@@ -5224,14 +5225,14 @@ function generateQRCode(text) {
 function copyMyRecoveryCode() {
   const code = state.pendingRecoveryCode || localStorage.getItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE);
   if (!code) {
-    showToast('לא נמצא קוד שחזור', 'error');
+    showToast(t('recoveryDisplay.notFound'), 'error');
     return;
   }
-  
+
   navigator.clipboard.writeText(code).then(() => {
-    showToast('✓ קוד השחזור הועתק', 'success');
+    showToast(t('recoveryDisplay.copiedToast'), 'success');
   }).catch(() => {
-    showToast('שגיאה בהעתקה', 'error');
+    showToast(t('shareModal.copyError'), 'error');
   });
 }
 
@@ -5248,7 +5249,7 @@ let deferredInstallPrompt = null;
 window.addEventListener('online', () => {
   console.log('🌐 Back online');
   hideOfflineBanner();
-  showToast('🌐 מחובר לאינטרנט', 'success');
+  showToast(t('pwa.online'), 'success');
 });
 
 window.addEventListener('offline', () => {
@@ -5272,7 +5273,7 @@ function showOfflineBanner() {
         <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
         <line x1="12" y1="20" x2="12.01" y2="20"></line>
       </svg>
-      <span>אין חיבור לאינטרנט - חלק מהפיצ'רים מוגבלים</span>
+      <span>${t('pwa.offline')}</span>
     `;
     document.body.appendChild(banner);
   }
@@ -5348,7 +5349,7 @@ window.addEventListener('appinstalled', () => {
   console.log('✅ App installed');
   deferredInstallPrompt = null;
   hideInstallBanner();
-  showToast('🎉 האפליקציה הותקנה!', 'success');
+  showToast(t('pwa.installed'), 'success');
 });
 
 function showInstallBanner() {
@@ -5383,7 +5384,7 @@ async function triggerInstall() {
   console.log('Install outcome:', outcome);
   
   if (outcome === 'accepted') {
-    showToast('🎉 מתקין...', 'success');
+    showToast(t('pwa.installing'), 'success');
   }
   
   deferredInstallPrompt = null;
@@ -5399,20 +5400,9 @@ function showIosInstallInstructions() {
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
   
   if (isIOS) {
-    alert(
-      'להתקנת האפליקציה ב-iPhone/iPad:\n\n' +
-      '1. לחץ על כפתור השיתוף ⎙ למטה\n' +
-      '2. גלול ובחר "הוסף למסך הבית"\n' +
-      '3. לחץ "הוסף"\n\n' +
-      'האפליקציה תופיע במסך הבית כמו אפליקציה רגילה!'
-    );
+    alert(t('pwa.iosInstructions'));
   } else {
-    alert(
-      'להתקנת האפליקציה:\n\n' +
-      '• Chrome/Edge: יופיע כפתור "התקן" בשורת הכתובת\n' +
-      '• Firefox: לחץ על שלוש הנקודות → "התקן"\n' +
-      '• או הוסף לסימניות'
-    );
+    alert(t('pwa.desktopInstructions'));
   }
 }
 
@@ -5420,8 +5410,8 @@ function showUpdateAvailable() {
   const toast = document.createElement('div');
   toast.className = 'pwa-update-toast';
   toast.innerHTML = `
-    <span>🔄 גרסה חדשה זמינה</span>
-    <button onclick="applyUpdate()">עדכן</button>
+    <span>${t('pwa.updateAvailable')}</span>
+    <button onclick="applyUpdate()">${t('pwa.update')}</button>
   `;
   document.body.appendChild(toast);
   setTimeout(() => toast.classList.add('visible'), 100);
