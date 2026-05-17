@@ -475,9 +475,10 @@ const TRANSLATIONS = {
     // === Admin nickname ===
     'adminNickname.step': 'שלב 2 מתוך 3',
     'adminNickname.subtitle': 'הכינוי שלך כמארגן וגם כמשתתף',
-    'adminNickname.placeholder': 'לדוגמה: אסף',
+    'adminNickname.placeholder': 'לדוגמה: יוסי',
     'adminNickname.permTitle': 'הרשאות המארגן',
     'adminNickname.perm1': 'ניהול חברי ההימור',
+    'adminNickname.permRules': 'קביעת חוקי ההימור',
     'adminNickname.perm2': 'אישור משתמשים חדשים',
     'adminNickname.perm3': 'שחזור קודים אבודים',
     'adminNickname.perm4': 'צפייה בכל ההימורים',
@@ -1357,9 +1358,10 @@ const TRANSLATIONS = {
     // === Admin nickname ===
     'adminNickname.step': 'Step 2 of 3',
     'adminNickname.subtitle': 'Your nickname — as admin AND member',
-    'adminNickname.placeholder': 'e.g. Asaf',
+    'adminNickname.placeholder': 'e.g. John',
     'adminNickname.permTitle': 'Admin permissions',
     'adminNickname.perm1': 'Manage pool members',
+    'adminNickname.permRules': 'Set the betting rules',
     'adminNickname.perm2': 'Approve new users',
     'adminNickname.perm3': 'Recover lost codes',
     'adminNickname.perm4': 'View all predictions',
