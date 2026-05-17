@@ -1519,7 +1519,7 @@ const topScorerState = {
 
 async function showTopScorer() {
   closeMenu();
-  
+
   if (!state.currentUser || !state.currentPool) {
     showToast(t('errors.reconnect'), 'error');
     return;
@@ -1529,6 +1529,10 @@ async function showTopScorer() {
     showToast(t('errors.serverConnectingShort'), 'error');
     return;
   }
+
+  // v2.3: hide SP-flow nav unless explicitly entered via spStartTopScorerStep
+  const tsNav = document.getElementById('ts-sp-flow-nav');
+  if (tsNav && !state.spInFlow) tsNav.style.display = 'none';
 
   showScreen('top-scorer-screen');
   
@@ -3194,22 +3198,54 @@ function reviewBettingPicks() {
   showScreen('group-betting-screen');
 }
 
-// Update dashboard CTA card to reflect betting progress (v2.1.4 layout)
+// Update dashboard CTA card to reflect betting progress (v2.3 mode-aware)
 async function updateBettingStatusOnDashboard() {
   if (!state.currentUser || !supabaseClient) return;
 
-  const { data: picks } = await supabaseClient
-    .from('group_picks')
-    .select('id', { count: 'exact' })
-    .eq('user_id', state.currentUser.id);
-
-  const picksCount = picks ? picks.length : 0;
   const ctaEl = document.getElementById('bet-status-groups');
   if (!ctaEl) return;
-
   const titleEl = ctaEl.querySelector('.bet-cta-title');
   const subtitleEl = ctaEl.querySelector('.bet-cta-subtitle');
   if (!titleEl || !subtitleEl) return;
+
+  const isSingle = state.currentPool && state.currentPool.betting_mode === 'single_phase';
+
+  if (isSingle) {
+    // Once the user has done a full pass, the CTA becomes "View your predictions"
+    if (state.currentUser.predictions_submitted_at) {
+      titleEl.textContent = t('dashboard.viewCta.title');
+      subtitleEl.textContent = t('dashboard.viewCta.subtitle');
+      ctaEl.classList.add('done');
+      return;
+    }
+    // Otherwise count v2 group_position_picks to show progress
+    const { data: gpp } = await supabaseClient
+      .from('group_position_picks')
+      .select('id')
+      .eq('user_id', state.currentUser.id);
+    const rows = (gpp || []).length;          // 4 per group, max 48
+    const groupsFilled = Math.floor(rows / 4);  // 0..12
+    if (rows === 0) {
+      titleEl.textContent = t('dashboard.startCta.title');
+      subtitleEl.textContent = t('dashboard.startCta.subtitle');
+      ctaEl.classList.remove('done');
+    } else if (groupsFilled < 12) {
+      titleEl.textContent = t('dashboard.continueCta.title');
+      subtitleEl.textContent = t('dashboard.continueCta.partialGroups', { n: groupsFilled, total: 12 });
+      ctaEl.classList.remove('done');
+    } else {
+      titleEl.textContent = t('dashboard.continueCta.title');
+      subtitleEl.textContent = t('dashboard.continueCta.almostDone');
+      ctaEl.classList.remove('done');
+    }
+    return;
+  }
+
+  // Two-phase (legacy) - use group_picks
+  const { data: picks } = await supabaseClient
+    .from('group_picks').select('id', { count: 'exact' })
+    .eq('user_id', state.currentUser.id);
+  const picksCount = picks ? picks.length : 0;
 
   if (picksCount === 0) {
     titleEl.textContent = t('dashboard.startCta.title');
@@ -5868,12 +5904,20 @@ const spState = {
 };
 
 function spIsLocked() {
+  // The only hard gate on edits: pool.locked_at is set once the
+  // first World Cup match starts (auto-locked by spAutoLockPoolIfNeeded).
   return !!(state.currentPool && state.currentPool.locked_at);
 }
 
-function spIsUserSubmitted() {
-  return !!(state.currentUser && state.currentUser.predictions_locked);
+// v2.3: informational only - true once the user has "saved" their full
+// set of picks at least once. Does NOT block further edits; the user
+// can keep editing until the pool itself locks. Used by the dashboard
+// to switch the CTA copy to "View / edit your predictions".
+function spHasUserSubmitted() {
+  return !!(state.currentUser && state.currentUser.predictions_submitted_at);
 }
+// Back-compat shim
+function spIsUserSubmitted() { return false; }
 
 async function startSinglePhaseBetting() {
   // Entry point from dashboard
@@ -5881,12 +5925,19 @@ async function startSinglePhaseBetting() {
     showToast(t('errors.reconnect'), 'error');
     return;
   }
-  // Already locked / submitted: show read-only locked view
-  if (spIsLocked() || spIsUserSubmitted()) {
+  // Pool locked = read-only summary. Only pool.locked_at gates edits.
+  if (spIsLocked()) {
     await spShowLockedView();
     return;
   }
   await spLoadExistingPicks();
+  // v2.3: if the user has already gone through the full flow once,
+  //       land them on the summary so they can review + edit.
+  if (spHasUserSubmitted()) {
+    spRenderSummary();
+    showScreen('sp-summary-screen');
+    return;
+  }
   spState.currentGroupIdx = 0;
   spRenderGroups();
   showScreen('sp-groups-screen');
@@ -6014,7 +6065,7 @@ const _spDrag = {
 };
 
 function spSlotPointerDown(ev, idx) {
-  if (spIsLocked() || spIsUserSubmitted()) return;
+  if (spIsLocked()) return;
   const slot = ev.currentTarget;
   // Only respond to primary button / touch
   if (ev.button !== undefined && ev.button !== 0) return;
@@ -6095,7 +6146,7 @@ function spAutoSaveGroups() {
 
 async function spSaveGroupsToDb(showFeedback = true) {
   if (!state.currentPool || !state.currentUser) return;
-  if (spIsLocked() || spIsUserSubmitted()) return;
+  if (spIsLocked()) return;
 
   const userId = state.currentUser.id;
   const poolId = state.currentPool.id;
@@ -6310,7 +6361,7 @@ function spRenderBracketMatch(m) {
 }
 
 function spPickBracket(bracketPos, teamCode) {
-  if (spIsLocked() || spIsUserSubmitted()) return;
+  if (spIsLocked()) return;
   const prev = spState.bracketPicks[bracketPos];
   spState.bracketPicks[bracketPos] = teamCode;
 
@@ -6347,7 +6398,7 @@ function spAutoSaveBracket() {
 
 async function spSaveBracketToDb(showFeedback = true) {
   if (!state.currentPool || !state.currentUser) return;
-  if (spIsLocked() || spIsUserSubmitted()) return;
+  if (spIsLocked()) return;
   const userId = state.currentUser.id;
   const poolId = state.currentPool.id;
   try {
@@ -6410,7 +6461,7 @@ function spRenderWinnerScreen() {
 }
 
 function spPickWinner(code) {
-  if (spIsLocked() || spIsUserSubmitted()) return;
+  if (spIsLocked()) return;
   spState.tournamentWinner = code;
   spRenderWinnerScreen();
   spSaveWinnerToDb(false);
@@ -6441,9 +6492,50 @@ function spWinnerNext() {
     showToast(t('betting.winnerRequired'), 'error');
     return;
   }
+  // v2.3: detour through top scorer before reaching summary
+  spStartTopScorerStep();
+}
+
+// v2.3: Top scorer step inside the SP flow.
+//       Reuses the existing #top-scorer-screen but enables the
+//       inline back/next nav and routes the topbar back button
+//       to the winner screen instead of the dashboard.
+function spStartTopScorerStep() {
+  state.spInFlow = true;
+  showTopScorer();  // existing function handles the screen-level logic
+  // Defer until after showTopScorer's async DOM updates
+  setTimeout(() => {
+    const nav = document.getElementById('ts-sp-flow-nav');
+    if (nav) nav.style.display = 'flex';
+  }, 0);
+}
+
+function spTopScorerBack() {
+  state.spInFlow = false;
+  const nav = document.getElementById('ts-sp-flow-nav');
+  if (nav) nav.style.display = 'none';
+  showScreen('sp-winner-screen');
+}
+
+function spTopScorerNext() {
+  state.spInFlow = false;
+  const nav = document.getElementById('ts-sp-flow-nav');
+  if (nav) nav.style.display = 'none';
   spRenderSummary();
   showScreen('sp-summary-screen');
 }
+
+// Smart back handler for the standalone top-scorer screen
+function topScorerBack() {
+  if (state.spInFlow) {
+    spTopScorerBack();
+  } else {
+    goToDashboard();
+  }
+}
+window.topScorerBack = topScorerBack;
+window.spTopScorerBack = spTopScorerBack;
+window.spTopScorerNext = spTopScorerNext;
 
 async function spRenderSummary() {
   // v2.2.1: render directly from in-memory spState. The user just
@@ -6526,12 +6618,16 @@ async function spRenderSummary() {
 }
 
 function spEditTopScorer() {
-  // Reuse existing showTopScorer flow
+  // Edit from summary: use the standalone top-scorer screen.
+  // (No SP-flow nav - the user goes back to dashboard via the topbar.)
+  state.spInFlow = false;
+  const nav = document.getElementById('ts-sp-flow-nav');
+  if (nav) nav.style.display = 'none';
   if (typeof showTopScorer === 'function') showTopScorer();
 }
 
 async function spSubmitPredictions() {
-  // Final validation - must have winner + at least groups
+  // Final validation - must have winner + all groups filled
   if (!spState.tournamentWinner) {
     showToast(t('betting.winnerRequired'), 'error');
     return;
@@ -6544,7 +6640,8 @@ async function spSubmitPredictions() {
     return;
   }
 
-  if (!confirm(t('betting.confirmSubmit'))) return;
+  // v2.3: no more "are you sure" - this is a save, not a lock.
+  //       The user can keep editing until the tournament starts.
 
   try {
     // Save everything one more time
@@ -6552,19 +6649,20 @@ async function spSubmitPredictions() {
     await spSaveBracketToDb(false);
     await spSaveWinnerToDb(false);
 
-    // Mark user submitted
+    // Mark that the user has completed a full pass (informational only).
+    // The hard lock will be applied automatically when the tournament starts
+    // (pool.locked_at via spAutoLockPoolIfNeeded).
+    const submittedAt = new Date().toISOString();
     const { error } = await supabaseClient.from('users')
-      .update({
-        predictions_locked: true,
-        predictions_submitted_at: new Date().toISOString()
-      })
+      .update({ predictions_submitted_at: submittedAt })
       .eq('id', state.currentUser.id);
     if (error && !/column .* does not exist/i.test(error.message || '')) {
-      console.warn('predictions_locked update warning:', error);
+      console.warn('predictions_submitted_at update warning:', error);
     }
-    state.currentUser.predictions_locked = true;
-    showToast(t('betting.submitted'), 'success');
-    await spShowLockedView();
+    state.currentUser.predictions_submitted_at = submittedAt;
+
+    showToast(t('betting.saved'), 'success');
+    goToDashboard();
   } catch (err) {
     console.error('spSubmitPredictions err:', err);
     showToast(t('errors.unexpected'), 'error');

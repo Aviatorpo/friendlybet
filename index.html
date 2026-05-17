@@ -1518,7 +1518,7 @@ function loadTablerFallback() {
   <!-- ============================================================ -->
   <div id="top-scorer-screen" class="screen">
     <div class="topbar">
-      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="common.back" aria-label="חזור">
+      <button class="btn-icon" onclick="topScorerBack()" data-i18n-aria="common.back" aria-label="חזור">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 12l14 0"></path>
           <path d="M5 12l6 6"></path>
@@ -1656,6 +1656,18 @@ function loadTablerFallback() {
           <div class="ts-no-results-icon">🔍</div>
           <div class="ts-no-results-title" data-i18n="topScorer.noResults">לא נמצאו שחקנים</div>
           <div class="ts-no-results-text" data-i18n="topScorer.tryOther">נסה לחפש שם אחר</div>
+        </div>
+
+        <!-- v2.3: SP-flow inline nav (shown only when navigating from SP winner step) -->
+        <div id="ts-sp-flow-nav" class="sp-group-nav" style="display:none;">
+          <button class="btn-secondary" onclick="spTopScorerBack()">
+            <i class="ti ti-arrow-right"></i>
+            <span data-i18n="wizard.back">חזור</span>
+          </button>
+          <button class="btn-primary" onclick="spTopScorerNext()">
+            <span data-i18n="betting.continueToSummary">המשך לסיכום</span>
+            <i class="ti ti-arrow-left"></i>
+          </button>
         </div>
       </div>
     </div>
@@ -2080,7 +2092,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.2.2</span>
+      <span class="menu-version">v2.3.0</span>
     </div>
   </div>
 
@@ -2216,7 +2228,7 @@ function loadTablerFallback() {
   <div class="container">
     <div class="sp-summary-warning">
       <i class="ti ti-alert-triangle"></i>
-      <span data-i18n="betting.summary.warning">אחרי שליחה ותחילת הטורניר - לא ניתן יהיה לשנות את הניחושים!</span>
+      <span data-i18n="betting.summary.warning">תוכל לערוך את הניחושים כל עוד המונדיאל לא התחיל. ברגע שמשחק ראשון מתחיל - הניחושים יינעלו.</span>
     </div>
 
     <div class="sp-summary-card">
@@ -2245,7 +2257,7 @@ function loadTablerFallback() {
 
     <button class="btn-primary btn-large" onclick="spSubmitPredictions()" id="sp-submit-btn">
       <i class="ti ti-rocket"></i>
-      <span data-i18n="betting.summary.submit">שלח ניחושים סופיים</span>
+      <span data-i18n="betting.summary.submit">שמור את הניחושים שלי</span>
     </button>
   </div>
 </div>
