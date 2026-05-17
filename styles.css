@@ -6050,13 +6050,24 @@ body:not(.ltr) .home-lang-toggle {
   font-size: 13px;
   color: rgba(255,255,255,0.85);
 }
-.sp-summary-row .sr-flag { font-size: 18px; }
+.sp-summary-row .sr-flag {
+  font-size: 18px;
+  flex-shrink: 0;
+}
 .sp-summary-row .sr-label {
-  flex: 1;
   color: rgba(255,255,255,0.55);
   font-size: 12px;
+  font-style: italic;
 }
 .sp-summary-row .sr-value { font-weight: 600; }
+/* v2.2.2: position number used in group summary rows */
+.sp-summary-row .sr-pos {
+  color: rgba(255,168,83,0.85);
+  font-size: 12px;
+  font-weight: 600;
+  min-width: 16px;
+  flex-shrink: 0;
+}
 
 .sp-locked-banner {
   display: flex;

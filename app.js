@@ -6463,7 +6463,7 @@ async function spRenderSummary() {
           const code = positions[i];
           return `
             <div class="sp-summary-row">
-              <span class="sr-label">${i + 1}.</span>
+              <span class="sr-pos">${i + 1}.</span>
               <span class="sr-flag">${code ? getCountryFlag(code) : '—'}</span>
               <span class="sr-value">${code ? getTeamName(code) : t('betting.notPicked')}</span>
             </div>
@@ -6487,9 +6487,7 @@ async function spRenderSummary() {
           <div class="sp-summary-row">
             <span class="sr-flag">${winner ? getCountryFlag(winner) : '—'}</span>
             <span class="sr-value">${winner ? getTeamName(winner) : t('betting.notPicked')}</span>
-            <span class="sr-label">
-              ${m.home ? getTeamName(m.home) : '?'} vs ${m.away ? getTeamName(m.away) : '?'}
-            </span>
+            <span class="sr-label">(${m.home ? getTeamName(m.home) : '?'} vs ${m.away ? getTeamName(m.away) : '?'})</span>
           </div>
         `;
       }).join('')}
@@ -6588,7 +6586,7 @@ async function spShowLockedView() {
       ${[0,1,2,3].map(i => {
         const code = positions[i];
         return `<div class="sp-summary-row">
-          <span class="sr-label">${i+1}.</span>
+          <span class="sr-pos">${i+1}.</span>
           <span class="sr-flag">${code ? getCountryFlag(code) : '—'}</span>
           <span class="sr-value">${code ? getTeamName(code) : '—'}</span>
         </div>`;
@@ -6688,7 +6686,7 @@ async function showUserHypotheticalBracket(userId, userName) {
           <div style="font-weight:600;color:#d4a853;font-size:12px;">${t('groups.group')} ${letter}</div>`;
         positions[letter].forEach((code, i) => {
           html += `<div class="sp-summary-row">
-            <span class="sr-label">${i+1}.</span>
+            <span class="sr-pos">${i+1}.</span>
             <span class="sr-flag">${code ? getCountryFlag(code) : '—'}</span>
             <span class="sr-value">${code ? getTeamName(code) : '—'}</span>
           </div>`;
