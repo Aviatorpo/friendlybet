@@ -5821,7 +5821,13 @@ async function wizardCreatePool() {
     showToast(t('errors.poolCreated'), 'success');
     // v2.1: persist code so the menu view can find it later
     localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, adminRecoveryCode);
-    showScreen('share-pool-screen');
+    // v2.1.1: show recovery code screen FIRST (right after wizard),
+    //        then share-pool-screen on continue.
+    if (typeof showRecoveryCode === 'function') {
+      showRecoveryCode('created', adminRecoveryCode, pool.name);
+    } else {
+      showScreen('share-pool-screen');
+    }
   } catch (err) {
     console.error('Create pool error:', err);
     showToast(t('errors.unexpected'), 'error');
@@ -6818,27 +6824,27 @@ function rcAnimateCodeReveal(el, finalText) {
 }
 
 function rcCreateConfetti() {
+  // v2.1.1: minimal gold sparkles around the code card (no falling confetti)
   const layer = document.getElementById('rc-confetti-layer');
   if (!layer) return;
   layer.innerHTML = '';
-  const colors = ['#d4a853', '#f5c518', '#10b981', '#3b82f6', '#ef4444', '#a855f7', '#ffffff'];
-  const count = 42;
+  const card = document.getElementById('rc-code-card');
+  const layerRect = layer.getBoundingClientRect();
+  const cardRect = card ? card.getBoundingClientRect() : layerRect;
+  // Anchor sparkles around the card's vertical zone
+  const top = cardRect.top - layerRect.top - 20;
+  const height = cardRect.height + 40;
+  const count = 8;
   for (let i = 0; i < count; i++) {
-    const piece = document.createElement('span');
-    piece.className = 'rc-confetti';
-    piece.style.left = `${Math.random() * 100}%`;
-    piece.style.background = colors[i % colors.length];
-    const dur = 2.4 + Math.random() * 1.6;
-    const delay = Math.random() * 0.5;
-    piece.style.animationDuration = `${dur}s`;
-    piece.style.animationDelay = `${delay}s`;
-    piece.style.width = `${6 + Math.random() * 6}px`;
-    piece.style.height = `${10 + Math.random() * 8}px`;
-    layer.appendChild(piece);
+    const dot = document.createElement('span');
+    dot.className = 'rc-sparkle';
+    dot.style.left = `${10 + Math.random() * 80}%`;
+    dot.style.top = `${top + Math.random() * height}px`;
+    dot.style.animationDelay = `${Math.random() * 0.8}s`;
+    layer.appendChild(dot);
   }
-  // Clean up after animations finish (~4s)
   if (rcState.confettiTimer) clearTimeout(rcState.confettiTimer);
-  rcState.confettiTimer = setTimeout(() => rcClearConfetti(), 4500);
+  rcState.confettiTimer = setTimeout(() => rcClearConfetti(), 3500);
 }
 
 function rcClearConfetti() {
@@ -6998,13 +7004,17 @@ function rcContinueAnyway() {
 
 async function rcProceedToNext() {
   rcClearConfetti();
-  // 'created' or 'joined': finalize and go to dashboard
+  // Joiner: finalize registration in DB, then go to dashboard
   if (rcState.mode === 'joined' && state.pendingNickname && state.currentPool) {
-    // Still need to register the user in DB
     await completeRegistration();
     return;
   }
-  // 'created' (admin): user already exists in DB - just navigate
+  // Admin: pool was just created in DB; next stop is the share screen
+  if (rcState.mode === 'created') {
+    showScreen('share-pool-screen');
+    return;
+  }
+  // Fallback / view mode
   goToDashboard();
 }
 
@@ -7020,17 +7030,10 @@ function rcViewFromMenu() {
 
 // ----- Hooks into existing flows -----
 
-// 1. Admin flow: continueFromSharePool() bridges share-pool-screen -> new recovery screen
+// v2.1.1: Admin already saw the recovery screen BEFORE share-pool;
+//         this button now goes straight to the dashboard.
 function continueFromSharePool() {
-  const code = state.pendingRecoveryCode;
-  const poolName = state.currentPool && state.currentPool.name;
-  if (code) {
-    // Persist locally so the menu's view-mode can find it later
-    localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, code);
-    showRecoveryCode('created', code, poolName);
-  } else {
-    goToDashboard();
-  }
+  goToDashboard();
 }
 
 // 2. Joiner flow: override the old completeRegistration trigger.

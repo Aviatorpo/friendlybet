@@ -6367,7 +6367,7 @@ body:not(.ltr) .home-lang-toggle {
   background: rgba(239,68,68,0.24);
 }
 
-/* Confetti */
+/* Minimal gold sparkles (replaces confetti) */
 .rc-confetti-layer {
   position: absolute;
   inset: 0;
@@ -6375,19 +6375,19 @@ body:not(.ltr) .home-lang-toggle {
   overflow: hidden;
   z-index: 0;
 }
-.rc-confetti {
+.rc-sparkle {
   position: absolute;
-  top: -20px;
-  width: 8px;
-  height: 14px;
-  opacity: 0.9;
-  animation: rc-confetti-fall linear forwards;
-  border-radius: 2px;
-  transform-origin: center;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #d4a853;
+  box-shadow: 0 0 6px rgba(212, 168, 83, 0.7);
+  opacity: 0;
+  animation: rc-sparkle-fade 2.4s ease-out forwards;
 }
-@keyframes rc-confetti-fall {
-  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-  90%  { opacity: 1; }
-  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+@keyframes rc-sparkle-fade {
+  0%   { opacity: 0; transform: scale(0.4) translateY(0); }
+  30%  { opacity: 1; transform: scale(1) translateY(-6px); }
+  100% { opacity: 0; transform: scale(0.5) translateY(-22px); }
 }
 .rc-container > * { position: relative; z-index: 1; }
