@@ -5893,44 +5893,56 @@ async function startSinglePhaseBetting() {
 }
 
 async function spLoadExistingPicks() {
-  try {
-    const userId = state.currentUser.id;
-    const poolId = state.currentPool.id;
-    spState.groupPositions = {};
-    spState.bracketPicks = {};
-    spState.tournamentWinner = null;
+  // v2.2.1 fix: load into TEMPS first; only overwrite spState if we
+  // actually got data back. The previous version wiped spState BEFORE
+  // any await, so any failed or empty query would erase the picks the
+  // user just made in this session (the "summary shows nothing" bug).
+  if (!state.currentUser) return;
+  const userId = state.currentUser.id;
 
-    // Group positions
-    const { data: gpp } = await supabaseClient
-      .from('group_position_picks')
-      .select('*')
-      .eq('user_id', userId);
-    if (gpp) {
+  const newGroups = {};
+  const newBracket = {};
+  let newWinner = null;
+  let anyDataLoaded = false;
+  let anyError = false;
+
+  try {
+    const { data: gpp, error: gppErr } = await supabaseClient
+      .from('group_position_picks').select('*').eq('user_id', userId);
+    if (gppErr) { console.warn('load group_position_picks err:', gppErr); anyError = true; }
+    else if (gpp) {
       gpp.forEach(p => {
-        if (!spState.groupPositions[p.group_letter]) {
-          spState.groupPositions[p.group_letter] = [null, null, null, null];
-        }
-        spState.groupPositions[p.group_letter][p.position - 1] = p.team_code;
+        if (!newGroups[p.group_letter]) newGroups[p.group_letter] = [null, null, null, null];
+        newGroups[p.group_letter][p.position - 1] = p.team_code;
+        anyDataLoaded = true;
       });
     }
 
-    // Knockout picks with bracket_position
-    const { data: kp } = await supabaseClient
-      .from('knockout_picks')
-      .select('*')
-      .eq('user_id', userId)
+    const { data: kp, error: kpErr } = await supabaseClient
+      .from('knockout_picks').select('*').eq('user_id', userId)
       .not('bracket_position', 'is', null);
-    if (kp) {
-      kp.forEach(p => { spState.bracketPicks[p.bracket_position] = p.team_code; });
-    }
+    if (kpErr) { console.warn('load knockout_picks err:', kpErr); anyError = true; }
+    else (kp || []).forEach(p => {
+      newBracket[p.bracket_position] = p.team_code;
+      anyDataLoaded = true;
+    });
 
-    // Tournament winner
-    const { data: twp } = await supabaseClient
-      .from('tournament_winner_picks')
-      .select('*')
-      .eq('user_id', userId)
-      .maybeSingle();
-    if (twp) spState.tournamentWinner = twp.team_code;
+    const { data: twp, error: twpErr } = await supabaseClient
+      .from('tournament_winner_picks').select('*').eq('user_id', userId).maybeSingle();
+    if (twpErr) { console.warn('load tournament_winner_picks err:', twpErr); anyError = true; }
+    else if (twp) { newWinner = twp.team_code; anyDataLoaded = true; }
+
+    // Commit policy:
+    //   - if we got any data, trust DB
+    //   - if no data + no errors, also trust DB (user has no picks yet)
+    //   - if errors + no data, keep current in-memory state (don't wipe)
+    if (anyDataLoaded || !anyError) {
+      spState.groupPositions = newGroups;
+      spState.bracketPicks = newBracket;
+      spState.tournamentWinner = newWinner;
+    } else {
+      console.warn('spLoadExistingPicks: DB errors and no data — keeping in-memory state');
+    }
   } catch (err) {
     console.warn('Failed to load existing SP picks:', err);
   }
@@ -6434,8 +6446,9 @@ function spWinnerNext() {
 }
 
 async function spRenderSummary() {
-  // Refresh from DB to be safe
-  await spLoadExistingPicks();
+  // v2.2.1: render directly from in-memory spState. The user just
+  // made all these picks - in-memory IS the source of truth.
+  // (The old reload-from-DB call would wipe state if DB queries failed.)
 
   // Groups summary
   const groupsEl = document.getElementById('sp-summary-groups');
