@@ -3751,9 +3751,10 @@ function openSimulator() {
   document.getElementById('sim-expected-score').textContent = analysis.expected;
   document.getElementById('sim-max-score').textContent = analysis.maxPossible;
   
-  // Risk meter (0-100 scale, position from right)
+  // Risk meter (0-100 scale, position from safe end of inline axis)
   const riskPos = Math.min(95, Math.max(5, analysis.riskScore));
-  document.getElementById('sim-risk-marker').style.right = `${riskPos}%`;
+  document.getElementById('sim-risk-marker').style.insetInlineStart = `${riskPos}%`;
+  document.getElementById('sim-risk-marker').style.right = '';
   document.getElementById('sim-risk-description').textContent = analysis.riskDescription;
   
   // Stages

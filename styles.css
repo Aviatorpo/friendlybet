@@ -13,7 +13,6 @@ html, body {
   font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
   background: linear-gradient(180deg, #0a1628 0%, #1a2942 100%);
   color: white;
-  direction: rtl;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -218,6 +217,7 @@ body {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
   letter-spacing: 1px;
+  white-space: pre-line;
 }
 
 .action-buttons {
@@ -375,7 +375,7 @@ body {
   font-family: 'Heebo', sans-serif;
   outline: none;
   transition: all 0.2s;
-  text-align: right;
+  text-align: start;
 }
 
 .form-input:focus {
@@ -515,7 +515,7 @@ body {
   gap: 12px;
   padding: 10px 0;
   border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
-  text-align: right;
+  text-align: start;
 }
 
 .stat-row:last-child {
@@ -1081,7 +1081,7 @@ body {
   font-size: 15px;
   font-family: 'Heebo', sans-serif;
   cursor: pointer;
-  text-align: right;
+  text-align: start;
   transition: background 0.15s;
 }
 
@@ -1327,7 +1327,7 @@ body {
   border-radius: 6px;
   font-size: 13px;
   font-family: 'Heebo', sans-serif;
-  text-align: right;
+  text-align: start;
   max-width: 180px;
   outline: none;
 }
@@ -1439,7 +1439,7 @@ body {
   content: "";
   height: 20px;
   width: 20px;
-  right: 3px;
+  inset-inline-start: 3px;
   bottom: 3px;
   background: white;
   transition: 0.3s;
@@ -1452,6 +1452,15 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(-20px);
+}
+
+body.ltr input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* Risk marker centering in LTR */
+body.ltr .sim-risk-marker {
+  transform: translateX(-50%);
 }
 
 input:disabled + .slider {
@@ -1967,7 +1976,7 @@ input:disabled + .slider {
   content: "";
   position: absolute;
   top: 2px;
-  right: 2px;
+  inset-inline-end: 2px;
   width: 6px;
   height: 6px;
   background: #4ade80;
@@ -1978,7 +1987,7 @@ input:disabled + .slider {
   content: "";
   position: absolute;
   top: 2px;
-  right: 2px;
+  inset-inline-end: 2px;
   width: 6px;
   height: 6px;
   background: #fbbf24;
@@ -2078,7 +2087,7 @@ input:disabled + .slider {
 .status-modal-close {
   position: absolute;
   top: 12px;
-  left: 12px;
+  inset-inline-end: 12px;
   width: 32px;
   height: 32px;
   background: rgba(255, 255, 255, 0.05);
@@ -2164,7 +2173,7 @@ input:disabled + .slider {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.85);
   margin-bottom: 12px;
-  text-align: right;
+  text-align: start;
 }
 
 .status-modal-groups {
@@ -2475,7 +2484,7 @@ input:disabled + .slider {
   content: "✓";
   font-size: 8px;
   font-weight: 700;
-  margin-right: 1px;
+  margin-inline-end: 1px;
 }
 
 .lb-meta {
@@ -2785,7 +2794,7 @@ input:disabled + .slider {
   content: '';
   position: absolute;
   top: 0;
-  right: 0;
+  inset-inline-start: 0;
   width: 3px;
   height: 100%;
   background: #fb7185;
@@ -3133,7 +3142,7 @@ input:disabled + .slider {
   font-size: 9px;
   padding: 1px 5px;
   border-radius: 4px;
-  margin-right: 4px;
+  margin-inline-end: 4px;
   font-weight: 700;
   letter-spacing: 0.3px;
 }
@@ -3229,7 +3238,7 @@ input:disabled + .slider {
   display: flex;
   align-items: center;
   gap: 12px;
-  text-align: right;
+  text-align: start;
   transition: all 0.2s;
   width: 100%;
 }
@@ -3274,11 +3283,11 @@ input:disabled + .slider {
   content: '';
   position: absolute;
   top: 0;
-  right: 0;
+  inset-inline-start: 0;
   width: 3px;
   height: 100%;
   background: #4ade80;
-  border-radius: 3px 0 0 3px;
+  border-radius: 3px;
 }
 
 .ko-match-card.result-wrong {
@@ -3291,11 +3300,11 @@ input:disabled + .slider {
   content: '';
   position: absolute;
   top: 0;
-  right: 0;
+  inset-inline-start: 0;
   width: 3px;
   height: 100%;
   background: rgba(244, 63, 94, 0.5);
-  border-radius: 3px 0 0 3px;
+  border-radius: 3px;
 }
 
 /* Result badge in knockout cards */
@@ -3335,7 +3344,7 @@ input:disabled + .slider {
 .team-result-badge {
   position: absolute;
   top: 6px;
-  left: 6px;
+  inset-inline-end: 6px;
   width: 22px;
   height: 22px;
   border-radius: 50%;
@@ -3515,7 +3524,7 @@ input:disabled + .slider {
 .ts-search-icon {
   position: absolute;
   top: 50%;
-  right: 14px;
+  inset-inline-start: 14px;
   transform: translateY(-50%);
   pointer-events: none;
   z-index: 1;
@@ -3532,7 +3541,6 @@ input:disabled + .slider {
   border-radius: 10px;
   outline: none;
   transition: all 0.2s;
-  direction: rtl;
 }
 
 .ts-search-input:focus {
@@ -3547,7 +3555,7 @@ input:disabled + .slider {
 .ts-search-clear {
   position: absolute;
   top: 50%;
-  left: 12px;
+  inset-inline-end: 12px;
   transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.08);
   border: none;
@@ -3662,7 +3670,7 @@ input:disabled + .slider {
   padding: 1px 5px;
   border-radius: 4px;
   font-weight: 700;
-  margin-right: 4px;
+  margin-inline-end: 4px;
 }
 
 .ts-player-action {
@@ -4538,7 +4546,7 @@ input:disabled + .slider {
   color: #d4a853;
   letter-spacing: 1px;
   margin-bottom: 10px;
-  text-align: right;
+  text-align: start;
   font-weight: 500;
 }
 
@@ -4841,7 +4849,7 @@ input:disabled + .slider {
   cursor: pointer;
   font-family: 'Heebo', sans-serif;
   margin: 16px 0;
-  text-align: right;
+  text-align: start;
   transition: all 0.2s;
 }
 
@@ -5182,7 +5190,7 @@ input:disabled + .slider {
   font-size: 9px;
   padding: 1px 6px;
   border-radius: 4px;
-  margin-right: 4px;
+  margin-inline-end: 4px;
   font-weight: 600;
   letter-spacing: 0.3px;
 }
@@ -5349,12 +5357,20 @@ body.ltr .topbar {
   /* The back arrow flips */
 }
 
-body.ltr .topbar .btn-icon svg {
+body.ltr [data-i18n-aria="common.back"] svg {
   transform: scaleX(-1);
 }
 
-body.ltr .menu-item .menu-arrow,
 body.ltr .admin-member-arrow {
+  transform: scaleX(-1);
+}
+
+/* Flip directional Tabler icon fonts in LTR */
+body.ltr .ti-arrow-right::before,
+body.ltr .ti-arrow-left::before,
+body.ltr .ti-chevron-right::before,
+body.ltr .ti-chevron-left::before {
+  display: inline-block;
   transform: scaleX(-1);
 }
 
@@ -5403,22 +5419,7 @@ body.ltr .ts-player-card {
 }
 
 body.ltr .ts-player-info {
-  text-align: left;
-}
-
-body.ltr .ts-player-flag {
-  margin-right: 10px;
-  margin-left: 0;
-}
-
-body.ltr .ts-player-action {
-  margin-left: auto;
-  margin-right: 0;
-}
-
-/* Search input keeps LTR placeholder */
-body.ltr .ts-search-input {
-  text-align: left;
+  text-align: start;
 }
 
 /* Toast messages */
@@ -5434,11 +5435,6 @@ body.ltr .bracket-svg-wrapper {
 /* Menu items in English mode */
 body.ltr .menu-item {
   flex-direction: row;
-}
-
-body.ltr .menu-item .menu-icon {
-  margin-right: 12px;
-  margin-left: 0;
 }
 
 /* Language switcher in menu */
