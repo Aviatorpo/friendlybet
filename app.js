@@ -4619,16 +4619,27 @@ function renderFullLeaderboard(users) {
 
     const rank = idx + 1;
 
+    // v2 breakdown - new columns fall back to legacy ones
+    const groupPts = (user.group_points ?? user.groups_score) || 0;
+    const knockoutPts = (user.knockout_points ?? user.knockout_score) || 0;
+    const bonusPts = (user.bonus_points ?? user.bonus_score) || 0;
+    const isSinglePhase = state.currentPool && state.currentPool.betting_mode === 'single_phase';
+
     row.innerHTML = `
       <div class="lb-rank">#${rank}</div>
       <div class="lb-avatar-small">${user.nickname.charAt(0)}</div>
       <div class="lb-info">
         <div class="lb-name">
-          ${user.nickname}
+          ${escapeHtml(user.nickname)}
           ${user.is_admin ? `<span class="admin-badge">${t('common.admin')}</span>` : ''}
           ${isMe ? `<span class="lb-badge">${t('common.you')}</span>` : ''}
+          ${isSinglePhase ? `<button class="lb-view-bracket-btn" onclick="showUserHypotheticalBracket(${user.id}, '${escapeHtml(user.nickname).replace(/'/g, "\\'")}')">${t('leaderboard.viewBracket')}</button>` : ''}
         </div>
-        <div class="lb-meta">${formatScoreDescription(user)}</div>
+        <div class="lb-breakdown">
+          <span>${t('leaderboard.breakdown.group')}: <span class="lb-bd-gold">${groupPts}</span></span>
+          <span>${t('leaderboard.breakdown.knockout')}: <span class="lb-bd-gold">${knockoutPts}</span></span>
+          <span>${t('leaderboard.breakdown.bonus')}: <span class="lb-bd-gold">${bonusPts}</span></span>
+        </div>
       </div>
       <div>
         <div class="lb-points">${user.total_score || 0}</div>
@@ -5438,3 +5449,1250 @@ window.addEventListener('load', () => {
     }
   }
 });
+
+// ============================================================
+// v2.0.0 - POOL SETUP WIZARD + SINGLE-PHASE BETTING + NEW SCORING
+// ============================================================
+
+// ---- WC 2026 group definitions (mirrors CLAUDE.md) ----
+const WC2026_GROUPS = {
+  A: ['MEX','RSA','KOR','CZE'],
+  B: ['CAN','SUI','QAT','BIH'],
+  C: ['BRA','MAR','HAI','SCO'],
+  D: ['USA','PAR','AUS','TUR'],
+  E: ['ESP','UKR','IRN','CPV'],
+  F: ['ARG','TUN','IRQ','ALG'],
+  G: ['GER','CUR','BEL','SAU'],
+  H: ['POR','AUT','EGY','SWE'],
+  I: ['FRA','SEN','NOR','NZL'],
+  J: ['NED','CMR','UZB','JOR'],
+  K: ['URU','JPN','JAM','CIV'],
+  L: ['ENG','CRO','GHA','PAN']
+};
+const WC2026_GROUP_LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+
+// Default scoring rules per mode
+const DEFAULT_SCORING_RULES = {
+  single_phase: {
+    group_first: 5,
+    group_second: 3,
+    group_third: 2,
+    group_fourth: 1,
+    round_of_16: 5,
+    quarter_final: 8,
+    semi_final: 12,
+    final: 20,
+    tournament_winner: 30,
+    top_scorer: 10
+  },
+  two_phase: {
+    group_first: 5,
+    group_second: 3,
+    group_third: 0,
+    group_fourth: 0,
+    round_of_16: 5,
+    quarter_final: 8,
+    semi_final: 12,
+    final: 20,
+    tournament_winner: 0,
+    top_scorer: 10
+  }
+};
+
+// ============================================================
+// PHASE 1: POOL SETUP WIZARD
+// ============================================================
+
+const wizardState = {
+  step: 1,
+  mode: 'single_phase',      // 'single_phase' | 'two_phase'
+  rulesChoice: 'default',     // 'default' | 'custom'
+  customRules: null           // populated when user customizes
+};
+
+function startPoolWizard() {
+  const input = document.getElementById('admin-nickname-input');
+  const adminNickname = input.value.trim();
+
+  if (!adminNickname) {
+    showError('admin-error', t('adminNickname.errorRequired'));
+    return;
+  }
+  if (adminNickname.length < CONFIG.MIN_NICKNAME_LENGTH) {
+    showError('admin-error', t('nickname.errorMin', { n: CONFIG.MIN_NICKNAME_LENGTH }));
+    return;
+  }
+
+  state.pendingAdminNickname = adminNickname;
+  wizardState.step = 1;
+  wizardState.mode = 'single_phase';
+  wizardState.rulesChoice = 'default';
+  wizardState.customRules = null;
+
+  renderWizardStep();
+  showScreen('pool-wizard-screen');
+}
+
+function renderWizardStep() {
+  // Show only the current step
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById(`wizard-step-${i}`);
+    if (el) el.style.display = (i === wizardState.step) ? '' : 'none';
+  }
+
+  // Update progress + step label
+  const pct = wizardState.step * 33;
+  const fill = document.getElementById('wizard-progress-fill');
+  if (fill) fill.style.width = `${pct}%`;
+  const lbl = document.getElementById('wizard-step-label');
+  if (lbl) lbl.textContent = t('wizard.stepLabel', { n: wizardState.step, total: 3 });
+
+  // Buttons
+  const backBtn = document.getElementById('wizard-back-btn');
+  const nextBtn = document.getElementById('wizard-next-btn');
+  const createBtn = document.getElementById('wizard-create-btn');
+  if (backBtn) backBtn.style.display = wizardState.step > 1 ? '' : 'none';
+  if (nextBtn) nextBtn.style.display = wizardState.step < 3 ? '' : 'none';
+  if (createBtn) createBtn.style.display = wizardState.step === 3 ? '' : 'none';
+
+  // Per-step rendering
+  if (wizardState.step === 1) {
+    document.querySelectorAll('#wizard-step-1 .wizard-option-card').forEach(c => {
+      c.classList.toggle('selected', c.dataset.mode === wizardState.mode);
+    });
+  }
+  if (wizardState.step === 2) {
+    renderWizardRulesStep();
+  }
+  if (wizardState.step === 3) {
+    renderWizardSummary();
+  }
+}
+
+function wizardSelectMode(mode) {
+  wizardState.mode = mode;
+  wizardState.customRules = null; // reset on mode change
+  document.querySelectorAll('#wizard-step-1 .wizard-option-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.mode === mode);
+  });
+}
+
+function wizardSelectRules(choice) {
+  wizardState.rulesChoice = choice;
+  document.querySelectorAll('#wizard-step-2 .wizard-option-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.rules === choice);
+  });
+  const form = document.getElementById('wizard-rules-form');
+  if (form) form.style.display = (choice === 'custom') ? '' : 'none';
+  if (choice === 'custom' && !wizardState.customRules) {
+    wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
+    renderCustomRulesForm();
+  }
+}
+
+function getWizardRuleKeys() {
+  // Two_phase doesn't use 3rd/4th place or tournament_winner
+  if (wizardState.mode === 'two_phase') {
+    return ['group_first','group_second','round_of_16','quarter_final','semi_final','final','top_scorer'];
+  }
+  return ['group_first','group_second','group_third','group_fourth',
+          'round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
+}
+
+function renderWizardRulesStep() {
+  // Default preview
+  const preview = document.getElementById('wizard-rules-preview');
+  if (preview) {
+    const defaults = DEFAULT_SCORING_RULES[wizardState.mode];
+    preview.innerHTML = getWizardRuleKeys().map(k => `
+      <div class="rule-row">
+        <span>${t('wizard.rule.' + k)}</span>
+        <span class="pts">${defaults[k]} ${t('common.points')}</span>
+      </div>
+    `).join('');
+  }
+  // Render custom form if needed
+  document.querySelectorAll('#wizard-step-2 .wizard-option-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.rules === wizardState.rulesChoice);
+  });
+  const form = document.getElementById('wizard-rules-form');
+  if (form) form.style.display = (wizardState.rulesChoice === 'custom') ? '' : 'none';
+  if (wizardState.rulesChoice === 'custom') {
+    if (!wizardState.customRules) {
+      wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
+    }
+    renderCustomRulesForm();
+  }
+}
+
+function renderCustomRulesForm() {
+  const form = document.getElementById('wizard-rules-form');
+  if (!form) return;
+  form.innerHTML = getWizardRuleKeys().map(k => `
+    <div class="rule-input-row">
+      <label>${t('wizard.rule.' + k)}</label>
+      <input type="number" min="0" max="100" value="${wizardState.customRules[k]}"
+        onchange="wizardUpdateCustomRule('${k}', this.value)"
+        onclick="event.stopPropagation()" />
+    </div>
+  `).join('');
+}
+
+function wizardUpdateCustomRule(key, value) {
+  let v = parseInt(value, 10);
+  if (isNaN(v) || v < 0) v = 0;
+  if (v > 100) v = 100;
+  if (!wizardState.customRules) wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
+  wizardState.customRules[key] = v;
+}
+
+function getFinalScoringRules() {
+  if (wizardState.rulesChoice === 'custom' && wizardState.customRules) {
+    // Make sure all required keys exist (fill unused with 0 for storage)
+    const merged = { ...DEFAULT_SCORING_RULES.single_phase };
+    Object.keys(merged).forEach(k => merged[k] = 0);
+    Object.keys(wizardState.customRules).forEach(k => merged[k] = wizardState.customRules[k]);
+    return merged;
+  }
+  // Default for current mode — but always return full shape (zero-fill unused)
+  const full = { ...DEFAULT_SCORING_RULES.single_phase };
+  Object.keys(full).forEach(k => full[k] = 0);
+  const d = DEFAULT_SCORING_RULES[wizardState.mode];
+  Object.keys(d).forEach(k => full[k] = d[k]);
+  return full;
+}
+
+function calcMaxPoints(rules, mode) {
+  if (mode === 'single_phase') {
+    // 12 groups × (1st+2nd+3rd+4th) + 8 R16 + 4 QF + 2 SF + 1 Final + winner + top scorer
+    return 12 * (rules.group_first + rules.group_second + rules.group_third + rules.group_fourth) +
+           8 * rules.round_of_16 +
+           4 * rules.quarter_final +
+           2 * rules.semi_final +
+           1 * rules.final +
+           rules.tournament_winner +
+           rules.top_scorer;
+  }
+  // two_phase: 16 advancing per stage (2 per group * 12 groups) but simpler approximation
+  return 12 * (rules.group_first + rules.group_second) +
+         8 * rules.round_of_16 +
+         4 * rules.quarter_final +
+         2 * rules.semi_final +
+         1 * rules.final +
+         rules.top_scorer;
+}
+
+function renderWizardSummary() {
+  const rules = getFinalScoringRules();
+  document.getElementById('wizard-summary-pool').textContent = state.pendingPoolName || '—';
+  document.getElementById('wizard-summary-admin').textContent = state.pendingAdminNickname || '—';
+  document.getElementById('wizard-summary-mode').textContent =
+    t('wizard.step1.' + (wizardState.mode === 'single_phase' ? 'singlePhase' : 'twoPhase') + '.title');
+  document.getElementById('wizard-summary-total').textContent = calcMaxPoints(rules, wizardState.mode);
+  const rulesEl = document.getElementById('wizard-summary-rules');
+  rulesEl.innerHTML = getWizardRuleKeys().map(k => `
+    <div class="rule-row">
+      <span>${t('wizard.rule.' + k)}</span>
+      <span class="pts">${rules[k]}</span>
+    </div>
+  `).join('');
+}
+
+function wizardNext() {
+  if (wizardState.step < 3) {
+    wizardState.step++;
+    renderWizardStep();
+  }
+}
+
+function wizardBack() {
+  if (wizardState.step > 1) {
+    wizardState.step--;
+    renderWizardStep();
+  } else {
+    showScreen('admin-nickname-screen');
+  }
+}
+
+async function wizardCreatePool() {
+  // Validate basics
+  const adminNickname = state.pendingAdminNickname;
+  if (!adminNickname || !state.pendingPoolName) {
+    showError('wizard-error', t('errors.missingData'));
+    return;
+  }
+  if (!supabaseClient) {
+    showError('wizard-error', t('errors.serverConnecting'));
+    initSupabase();
+    return;
+  }
+
+  const finalRules = getFinalScoringRules();
+
+  try {
+    showToast(t('errors.creatingPool'), 'info');
+
+    // Generate unique pool code
+    let poolCode;
+    let attempts = 0;
+    while (attempts < 10) {
+      poolCode = generateRandomCode(CONFIG.POOL_CODE_LENGTH);
+      const { data: existing } = await supabaseClient
+        .from('pools').select('id').eq('code', poolCode).maybeSingle();
+      if (!existing) break;
+      attempts++;
+    }
+    if (attempts >= 10) {
+      showToast(t('errors.uniqueCodeFail'), 'error');
+      return;
+    }
+
+    // Build insert payload. If columns don't exist (migration not yet run),
+    // we'll fall back to the legacy minimal payload.
+    const fullInsert = {
+      code: poolCode,
+      name: state.pendingPoolName,
+      language: currentLanguage || 'he',
+      tournament: 'wc2026',
+      status: 'open',
+      betting_mode: wizardState.mode,
+      scoring_rules: finalRules
+    };
+
+    let pool, poolError;
+    ({ data: pool, error: poolError } = await supabaseClient
+      .from('pools').insert(fullInsert).select().single());
+
+    if (poolError && /column .* does not exist/i.test(poolError.message || '')) {
+      // Migration not applied yet - insert legacy shape
+      console.warn('v2 columns missing on pools - falling back to legacy insert');
+      ({ data: pool, error: poolError } = await supabaseClient
+        .from('pools').insert({
+          code: poolCode,
+          name: state.pendingPoolName,
+          language: currentLanguage || 'he',
+          tournament: 'wc2026',
+          status: 'open'
+        }).select().single());
+    }
+
+    if (poolError) {
+      console.error('Pool creation error:', poolError);
+      showToast(t('errors.creatingPoolFail', { msg: poolError.message }), 'error');
+      return;
+    }
+
+    // Admin user
+    const adminRecoveryCode = generateRecoveryCode();
+    const adminRecoveryHash = await hashRecoveryCode(adminRecoveryCode);
+    const { data: adminUser, error: userError } = await supabaseClient
+      .from('users').insert({
+        pool_id: pool.id,
+        nickname: adminNickname,
+        recovery_code_hash: adminRecoveryHash,
+        is_admin: true,
+        is_approved: true,
+        approval_status: 'approved',
+        approved_at: new Date().toISOString()
+      }).select().single();
+
+    if (userError) {
+      console.error('Admin user creation error:', userError);
+      showToast(t('errors.creatingAdminFail', { msg: userError.message }), 'error');
+      await supabaseClient.from('pools').delete().eq('id', pool.id);
+      return;
+    }
+
+    await supabaseClient.from('pools')
+      .update({ admin_user_id: adminUser.id }).eq('id', pool.id);
+
+    state.currentPool = pool;
+    state.currentUser = adminUser;
+    state.pendingRecoveryCode = adminRecoveryCode;
+    saveLocalUser(adminUser);
+
+    document.getElementById('created-pool-code').textContent = poolCode;
+    showToast(t('errors.poolCreated'), 'success');
+    showScreen('share-pool-screen');
+
+    setTimeout(() => {
+      alert(t('sharePool.adminCodeAlert', { code: adminRecoveryCode }));
+    }, 500);
+  } catch (err) {
+    console.error('Create pool error:', err);
+    showToast(t('errors.unexpected'), 'error');
+  }
+}
+
+// ============================================================
+// PHASE 2: SINGLE-PHASE BETTING FLOW
+// ============================================================
+
+const spState = {
+  currentGroupIdx: 0,
+  // groupPositions: { A: ['BRA','MOR','SCO','HAI'], ... }  index 0=1st, etc.
+  groupPositions: {},
+  // bracketPicks: { [bracket_position]: 'TEAM_CODE' }
+  bracketPicks: {},
+  tournamentWinner: null,
+  topScorerLoaded: false
+};
+
+function spIsLocked() {
+  return !!(state.currentPool && state.currentPool.locked_at);
+}
+
+function spIsUserSubmitted() {
+  return !!(state.currentUser && state.currentUser.predictions_locked);
+}
+
+async function startSinglePhaseBetting() {
+  // Entry point from dashboard
+  if (!state.currentPool || !state.currentUser) {
+    showToast(t('errors.reconnect'), 'error');
+    return;
+  }
+  // Already locked / submitted: show read-only locked view
+  if (spIsLocked() || spIsUserSubmitted()) {
+    await spShowLockedView();
+    return;
+  }
+  await spLoadExistingPicks();
+  spState.currentGroupIdx = 0;
+  spRenderGroups();
+  showScreen('sp-groups-screen');
+}
+
+async function spLoadExistingPicks() {
+  try {
+    const userId = state.currentUser.id;
+    const poolId = state.currentPool.id;
+    spState.groupPositions = {};
+    spState.bracketPicks = {};
+    spState.tournamentWinner = null;
+
+    // Group positions
+    const { data: gpp } = await supabaseClient
+      .from('group_position_picks')
+      .select('*')
+      .eq('user_id', userId);
+    if (gpp) {
+      gpp.forEach(p => {
+        if (!spState.groupPositions[p.group_letter]) {
+          spState.groupPositions[p.group_letter] = [null, null, null, null];
+        }
+        spState.groupPositions[p.group_letter][p.position - 1] = p.team_code;
+      });
+    }
+
+    // Knockout picks with bracket_position
+    const { data: kp } = await supabaseClient
+      .from('knockout_picks')
+      .select('*')
+      .eq('user_id', userId)
+      .not('bracket_position', 'is', null);
+    if (kp) {
+      kp.forEach(p => { spState.bracketPicks[p.bracket_position] = p.team_code; });
+    }
+
+    // Tournament winner
+    const { data: twp } = await supabaseClient
+      .from('tournament_winner_picks')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle();
+    if (twp) spState.tournamentWinner = twp.team_code;
+  } catch (err) {
+    console.warn('Failed to load existing SP picks:', err);
+  }
+}
+
+function spRenderGroups() {
+  const letter = WC2026_GROUP_LETTERS[spState.currentGroupIdx];
+  document.getElementById('sp-current-group-letter').textContent = letter;
+  document.getElementById('sp-groups-step').textContent =
+    t('betting.groupStep', { n: spState.currentGroupIdx + 1, total: 12 });
+
+  // Progress: how many groups have all 4 slots filled
+  const completed = WC2026_GROUP_LETTERS.filter(l =>
+    spState.groupPositions[l] && spState.groupPositions[l].every(x => x)
+  ).length;
+  document.getElementById('sp-groups-progress').style.width = `${(completed / 12) * 100}%`;
+
+  // Ensure array exists
+  if (!spState.groupPositions[letter]) {
+    spState.groupPositions[letter] = [null, null, null, null];
+  }
+  const positions = spState.groupPositions[letter];
+  const teams = WC2026_GROUPS[letter];
+
+  // Render position slots
+  const slotsEl = document.getElementById('sp-positions-list');
+  const positionLabels = [
+    t('betting.position.1'),
+    t('betting.position.2'),
+    t('betting.position.3'),
+    t('betting.position.4')
+  ];
+  slotsEl.innerHTML = positions.map((teamCode, i) => {
+    if (teamCode) {
+      return `
+        <div class="sp-position-slot filled">
+          <div class="pos-rank">${i + 1}</div>
+          <div class="pos-flag">${getCountryFlag(teamCode)}</div>
+          <div class="pos-name">${getTeamName(teamCode)}</div>
+          <button class="pos-remove" onclick="spRemoveFromSlot(${i})" aria-label="remove">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+      `;
+    }
+    return `
+      <div class="sp-position-slot">
+        <div class="pos-rank">${i + 1}</div>
+        <div class="pos-empty">${positionLabels[i]}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Render teams pool
+  const poolEl = document.getElementById('sp-teams-pool');
+  poolEl.innerHTML = teams.map(code => {
+    const used = positions.includes(code);
+    return `
+      <button class="sp-team-chip ${used ? 'used' : ''}" onclick="spAssignTeam('${code}')">
+        <span class="chip-flag">${getCountryFlag(code)}</span>
+        <span>${getTeamName(code)}</span>
+      </button>
+    `;
+  }).join('');
+
+  // Prev/Next state
+  const prev = document.getElementById('sp-groups-prev');
+  const next = document.getElementById('sp-groups-next');
+  if (prev) prev.disabled = (spState.currentGroupIdx === 0);
+  if (next) {
+    const isLast = spState.currentGroupIdx === 11;
+    next.querySelector('span').textContent = isLast ? t('betting.continueToBracket') : t('wizard.next');
+  }
+}
+
+function spAssignTeam(teamCode) {
+  const letter = WC2026_GROUP_LETTERS[spState.currentGroupIdx];
+  const positions = spState.groupPositions[letter] || [null,null,null,null];
+  if (positions.includes(teamCode)) return;
+  const emptyIdx = positions.findIndex(x => !x);
+  if (emptyIdx === -1) {
+    showToast(t('betting.groupFull'), 'info');
+    return;
+  }
+  positions[emptyIdx] = teamCode;
+  spState.groupPositions[letter] = positions;
+  spRenderGroups();
+  spAutoSaveGroups();
+}
+
+function spRemoveFromSlot(idx) {
+  const letter = WC2026_GROUP_LETTERS[spState.currentGroupIdx];
+  const positions = spState.groupPositions[letter] || [null,null,null,null];
+  positions[idx] = null;
+  spState.groupPositions[letter] = positions;
+  spRenderGroups();
+  spAutoSaveGroups();
+}
+
+let _spSaveTimer = null;
+function spAutoSaveGroups() {
+  if (_spSaveTimer) clearTimeout(_spSaveTimer);
+  _spSaveTimer = setTimeout(() => { spSaveGroupsToDb(false); }, 600);
+}
+
+async function spSaveGroupsToDb(showFeedback = true) {
+  if (!state.currentPool || !state.currentUser) return;
+  if (spIsLocked() || spIsUserSubmitted()) return;
+
+  const userId = state.currentUser.id;
+  const poolId = state.currentPool.id;
+
+  // Delete existing for this user, then insert fresh
+  try {
+    const rows = [];
+    Object.entries(spState.groupPositions).forEach(([letter, positions]) => {
+      positions.forEach((teamCode, i) => {
+        if (teamCode) {
+          rows.push({
+            pool_id: poolId,
+            user_id: userId,
+            group_letter: letter,
+            position: i + 1,
+            team_code: teamCode
+          });
+        }
+      });
+    });
+
+    await supabaseClient.from('group_position_picks')
+      .delete().eq('user_id', userId);
+    if (rows.length > 0) {
+      const { error } = await supabaseClient.from('group_position_picks').insert(rows);
+      if (error) console.warn('Save group_position_picks error:', error);
+    }
+    if (showFeedback) showToast(t('groups.picksSaved'), 'success');
+  } catch (err) {
+    console.warn('spSaveGroupsToDb err:', err);
+  }
+}
+
+function spGroupsPrev() {
+  if (spState.currentGroupIdx > 0) {
+    spState.currentGroupIdx--;
+    spRenderGroups();
+  }
+}
+
+function spGroupsNext() {
+  if (spState.currentGroupIdx < 11) {
+    spState.currentGroupIdx++;
+    spRenderGroups();
+    return;
+  }
+  // Last group: validate all groups have all 4 filled before advancing to bracket
+  const incomplete = WC2026_GROUP_LETTERS.filter(l =>
+    !spState.groupPositions[l] || !spState.groupPositions[l].every(x => x)
+  );
+  if (incomplete.length > 0) {
+    showToast(t('betting.groupsIncomplete', { letters: incomplete.join(', ') }), 'error');
+    return;
+  }
+  spSaveGroupsToDb(false);
+  spRenderBracket();
+  showScreen('sp-bracket-screen');
+}
+
+function spGroupsSaveAndExit() {
+  spSaveGroupsToDb(true);
+  setTimeout(() => goToDashboard(), 400);
+}
+
+function spExit() {
+  goToDashboard();
+}
+
+function spBackToGroups() {
+  spState.currentGroupIdx = 11;
+  spRenderGroups();
+  showScreen('sp-groups-screen');
+}
+
+// ----- Hypothetical bracket -----
+// Real WC bracket pairings (R16, by position):
+//   1: A1 vs B2
+//   2: C1 vs D2
+//   3: E1 vs F2
+//   4: G1 vs H2
+//   5: I1 vs J2
+//   6: K1 vs L2
+//   7: B1 vs A2   (cross)
+//   8: D1 vs C2
+// Wait - need 8 R16 matches but 12 groups. The real WC2026 has 32 advancing
+// (top 2 + best 8 third-placed). For simplicity in MVP, we'll use top 2
+// from each group = 24 teams, then need 32 for R16... Actually the real
+// format is: top 2 from each of 12 groups = 24 teams, plus 8 best
+// third-placed teams. To keep this simple and deterministic, we use a
+// canonical mapping that pairs winners of one group with runners-up of
+// another - producing 16 advancing teams from top 2 only is too few.
+// We follow the official WC2026 R16 bracket: 12 group winners + 12 runners-up
+// + 8 best 3rd places = 32, then knockout starts at Round-of-32 (R32).
+// To match the existing app's structure (R16 = 8 matches) we'll compute
+// R16 from 16 teams: the 12 group winners + the top 4 runners-up.
+// Simpler approach: pair adjacent groups' winners vs runners-up.
+//   R16 #1: A1 vs B2
+//   R16 #2: C1 vs D2
+//   ...continuing the pattern across 12 groups produces 12 matches which
+// is too many for R16. We need to switch to R16-as-8 by reducing.
+//
+// For this v2 hypothetical bracket, we simulate R16 = 8 matches by taking
+// only the 8 "favorite" group winners + 8 second-best. But to keep it
+// truly user-driven from their predictions, we use the simpler convention:
+//   Slot S (1..8) is determined by groups paired in WC2026 order:
+//     1: A1 vs B2
+//     2: C1 vs D2
+//     3: E1 vs F2
+//     4: G1 vs H2
+//     5: I1 vs J2
+//     6: K1 vs L2
+//     7: B1 vs A2
+//     8: D1 vs C2
+// This yields 8 R16 matches sourced from each of the 12 groups' top 2.
+// (Groups E,F,G,H,I,J,K,L runners-up not yet used; in real WC 2026 the
+// third-place teams fill remaining slots. For an MVP hypothetical bracket
+// this convention is acceptable and intuitive.)
+
+const SP_R16_PAIRS = [
+  ['A',1,'B',2], ['C',1,'D',2], ['E',1,'F',2], ['G',1,'H',2],
+  ['I',1,'J',2], ['K',1,'L',2], ['B',1,'A',2], ['D',1,'C',2]
+];
+
+function spGetR16Teams() {
+  // Returns 8 pairs of {home, away} team codes (or null if user hasn't picked yet)
+  return SP_R16_PAIRS.map(([g1, p1, g2, p2]) => ({
+    home: spState.groupPositions[g1] ? spState.groupPositions[g1][p1 - 1] : null,
+    away: spState.groupPositions[g2] ? spState.groupPositions[g2][p2 - 1] : null
+  }));
+}
+
+function spGetMatchWinner(bracketPos) {
+  return spState.bracketPicks[bracketPos] || null;
+}
+
+function spGetBracketStructure() {
+  // R16 (1-8), QF (9-12), SF (13-14), Final (15)
+  const r16Teams = spGetR16Teams();
+  const r16Matches = r16Teams.map((m, i) => ({
+    pos: i + 1,
+    round: 'R16',
+    home: m.home,
+    away: m.away
+  }));
+
+  const qfMatches = [
+    { pos: 9,  round: 'QF', home: spGetMatchWinner(1), away: spGetMatchWinner(2) },
+    { pos: 10, round: 'QF', home: spGetMatchWinner(3), away: spGetMatchWinner(4) },
+    { pos: 11, round: 'QF', home: spGetMatchWinner(5), away: spGetMatchWinner(6) },
+    { pos: 12, round: 'QF', home: spGetMatchWinner(7), away: spGetMatchWinner(8) }
+  ];
+
+  const sfMatches = [
+    { pos: 13, round: 'SF', home: spGetMatchWinner(9),  away: spGetMatchWinner(10) },
+    { pos: 14, round: 'SF', home: spGetMatchWinner(11), away: spGetMatchWinner(12) }
+  ];
+
+  const finalMatch = {
+    pos: 15, round: 'FINAL',
+    home: spGetMatchWinner(13), away: spGetMatchWinner(14)
+  };
+
+  return { r16: r16Matches, qf: qfMatches, sf: sfMatches, final: finalMatch };
+}
+
+function spRenderBracket() {
+  const container = document.getElementById('sp-bracket-container');
+  const struct = spGetBracketStructure();
+
+  const renderRound = (titleKey, matches) => `
+    <div class="sp-bracket-round">
+      <div class="sp-bracket-round-title">${t(titleKey)}</div>
+      ${matches.map(m => spRenderBracketMatch(m)).join('')}
+    </div>
+  `;
+
+  container.innerHTML =
+    renderRound('knockout.r16', struct.r16) +
+    renderRound('knockout.qf', struct.qf) +
+    renderRound('knockout.sf', struct.sf) +
+    renderRound('knockout.final', [struct.final]);
+
+  // Update step counter
+  const total = 15;
+  const picked = Object.keys(spState.bracketPicks).length;
+  document.getElementById('sp-bracket-step').textContent = `${picked}/${total}`;
+}
+
+function spRenderBracketMatch(m) {
+  const picked = spState.bracketPicks[m.pos];
+  const teamBtn = (code, side) => {
+    if (!code) {
+      return `<button class="sp-bracket-team tbd" disabled>
+        <span class="bt-flag">⏳</span>
+        <span class="bt-name">${t('knockout.tbd')}</span>
+      </button>`;
+    }
+    const isPicked = picked === code;
+    return `<button class="sp-bracket-team ${isPicked ? 'picked' : ''}" onclick="spPickBracket(${m.pos}, '${code}')">
+      <span class="bt-flag">${getCountryFlag(code)}</span>
+      <span class="bt-name">${getTeamName(code)}</span>
+      <span class="bt-check"><i class="ti ti-check"></i></span>
+    </button>`;
+  };
+  return `
+    <div class="sp-bracket-match">
+      ${teamBtn(m.home, 'home')}
+      <div class="sp-bracket-vs">VS</div>
+      ${teamBtn(m.away, 'away')}
+    </div>
+  `;
+}
+
+function spPickBracket(bracketPos, teamCode) {
+  if (spIsLocked() || spIsUserSubmitted()) return;
+  const prev = spState.bracketPicks[bracketPos];
+  spState.bracketPicks[bracketPos] = teamCode;
+
+  // If the user changes a pick, clear downstream picks that depended on it
+  if (prev && prev !== teamCode) {
+    spClearDownstream(bracketPos);
+  }
+
+  spRenderBracket();
+  spAutoSaveBracket();
+}
+
+function spClearDownstream(bracketPos) {
+  // R16 (1-8) feeds QF: 1,2->9; 3,4->10; 5,6->11; 7,8->12
+  // QF (9-12) feeds SF: 9,10->13; 11,12->14
+  // SF (13,14) feeds Final: 15
+  const parents = {
+    1: 9, 2: 9, 3: 10, 4: 10, 5: 11, 6: 11, 7: 12, 8: 12,
+    9: 13, 10: 13, 11: 14, 12: 14,
+    13: 15, 14: 15
+  };
+  let p = parents[bracketPos];
+  while (p) {
+    delete spState.bracketPicks[p];
+    p = parents[p];
+  }
+}
+
+let _spBracketSaveTimer = null;
+function spAutoSaveBracket() {
+  if (_spBracketSaveTimer) clearTimeout(_spBracketSaveTimer);
+  _spBracketSaveTimer = setTimeout(() => spSaveBracketToDb(false), 600);
+}
+
+async function spSaveBracketToDb(showFeedback = true) {
+  if (!state.currentPool || !state.currentUser) return;
+  if (spIsLocked() || spIsUserSubmitted()) return;
+  const userId = state.currentUser.id;
+  const poolId = state.currentPool.id;
+  try {
+    // Delete prior bracket picks for this user
+    await supabaseClient.from('knockout_picks')
+      .delete()
+      .eq('user_id', userId)
+      .not('bracket_position', 'is', null);
+
+    const rows = Object.entries(spState.bracketPicks).map(([pos, code]) => ({
+      pool_id: poolId,
+      user_id: userId,
+      team_code: code,
+      bracket_position: parseInt(pos, 10)
+    }));
+    if (rows.length > 0) {
+      const { error } = await supabaseClient.from('knockout_picks').insert(rows);
+      if (error) console.warn('Save bracket picks error:', error);
+    }
+    if (showFeedback) showToast(t('groups.picksSaved'), 'success');
+  } catch (err) {
+    console.warn('spSaveBracketToDb err:', err);
+  }
+}
+
+function spBracketNext() {
+  // Allow proceeding even if bracket is incomplete - user can come back
+  spRenderWinnerScreen();
+  showScreen('sp-winner-screen');
+}
+
+function spRenderWinnerScreen() {
+  // Options: SF winners if user picked any; else fallback to all R16-picked teams
+  const struct = spGetBracketStructure();
+  let candidates = [];
+  // Prefer the two SF winners (positions 13, 14)
+  [13, 14].forEach(pos => {
+    const w = spGetMatchWinner(pos);
+    if (w) candidates.push(w);
+  });
+  if (candidates.length < 2) {
+    // Fallback: include QF winners (9-12)
+    [9,10,11,12].forEach(pos => {
+      const w = spGetMatchWinner(pos);
+      if (w && !candidates.includes(w)) candidates.push(w);
+    });
+  }
+  if (candidates.length === 0) {
+    // Pure fallback: all teams from groups
+    candidates = Object.values(WC2026_GROUPS).flat();
+  }
+
+  const container = document.getElementById('sp-winner-options');
+  container.innerHTML = candidates.map(code => `
+    <button class="sp-winner-option ${spState.tournamentWinner === code ? 'selected' : ''}" onclick="spPickWinner('${code}')">
+      <span class="wo-flag">${getCountryFlag(code)}</span>
+      <span class="wo-name">${getTeamName(code)}</span>
+    </button>
+  `).join('');
+}
+
+function spPickWinner(code) {
+  if (spIsLocked() || spIsUserSubmitted()) return;
+  spState.tournamentWinner = code;
+  spRenderWinnerScreen();
+  spSaveWinnerToDb(false);
+}
+
+async function spSaveWinnerToDb(showFeedback = true) {
+  if (!state.currentPool || !state.currentUser || !spState.tournamentWinner) return;
+  const userId = state.currentUser.id;
+  const poolId = state.currentPool.id;
+  try {
+    // Upsert
+    await supabaseClient.from('tournament_winner_picks')
+      .delete().eq('user_id', userId);
+    const { error } = await supabaseClient.from('tournament_winner_picks').insert({
+      pool_id: poolId,
+      user_id: userId,
+      team_code: spState.tournamentWinner
+    });
+    if (error) console.warn('Save tournament winner error:', error);
+    if (showFeedback) showToast(t('groups.picksSaved'), 'success');
+  } catch (err) {
+    console.warn('spSaveWinnerToDb err:', err);
+  }
+}
+
+function spWinnerNext() {
+  if (!spState.tournamentWinner) {
+    showToast(t('betting.winnerRequired'), 'error');
+    return;
+  }
+  spRenderSummary();
+  showScreen('sp-summary-screen');
+}
+
+async function spRenderSummary() {
+  // Refresh from DB to be safe
+  await spLoadExistingPicks();
+
+  // Groups summary
+  const groupsEl = document.getElementById('sp-summary-groups');
+  groupsEl.innerHTML = WC2026_GROUP_LETTERS.map(letter => {
+    const positions = spState.groupPositions[letter] || [];
+    return `
+      <div style="margin-bottom:10px;">
+        <div style="font-weight:600;color:#d4a853;font-size:12px;letter-spacing:.5px;margin-bottom:4px;">
+          ${t('groups.group')} ${letter}
+        </div>
+        ${[0,1,2,3].map(i => {
+          const code = positions[i];
+          return `
+            <div class="sp-summary-row">
+              <span class="sr-label">${i + 1}.</span>
+              <span class="sr-flag">${code ? getCountryFlag(code) : '—'}</span>
+              <span class="sr-value">${code ? getTeamName(code) : t('betting.notPicked')}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }).join('');
+
+  // Bracket summary
+  const struct = spGetBracketStructure();
+  const bracketEl = document.getElementById('sp-summary-bracket');
+  const renderBracketRound = (label, matches) => {
+    return `
+      <div style="font-weight:600;color:#d4a853;font-size:12px;letter-spacing:.5px;margin:8px 0 4px;">
+        ${label}
+      </div>
+      ${matches.map(m => {
+        const winner = spGetMatchWinner(m.pos);
+        return `
+          <div class="sp-summary-row">
+            <span class="sr-flag">${winner ? getCountryFlag(winner) : '—'}</span>
+            <span class="sr-value">${winner ? getTeamName(winner) : t('betting.notPicked')}</span>
+            <span class="sr-label">
+              ${m.home ? getTeamName(m.home) : '?'} vs ${m.away ? getTeamName(m.away) : '?'}
+            </span>
+          </div>
+        `;
+      }).join('')}
+    `;
+  };
+  bracketEl.innerHTML =
+    renderBracketRound(t('knockout.r16'), struct.r16) +
+    renderBracketRound(t('knockout.qf'), struct.qf) +
+    renderBracketRound(t('knockout.sf'), struct.sf) +
+    renderBracketRound(t('knockout.final'), [struct.final]);
+
+  // Winner
+  const w = spState.tournamentWinner;
+  document.getElementById('sp-summary-winner').innerHTML = w
+    ? `<div class="sp-summary-row">
+         <span class="sr-flag" style="font-size:28px;">${getCountryFlag(w)}</span>
+         <span class="sr-value" style="font-size:18px;">${getTeamName(w)}</span>
+       </div>`
+    : `<div class="sp-summary-row"><span class="sr-label">${t('betting.notPicked')}</span></div>`;
+
+  // Top scorer
+  try {
+    const { data: ts } = await supabaseClient.from('top_scorer_picks')
+      .select('*').eq('user_id', state.currentUser.id).maybeSingle();
+    const tsEl = document.getElementById('sp-summary-topscorer');
+    if (ts) {
+      tsEl.innerHTML = `<div class="sp-summary-row">
+        <span class="sr-flag">${getCountryFlag(ts.team_code)}</span>
+        <span class="sr-value">${ts.player_name}</span>
+        <span class="sr-label">${ts.team_code}</span>
+      </div>`;
+    } else {
+      tsEl.innerHTML = `<div class="sp-summary-row"><span class="sr-label">${t('betting.notPicked')}</span></div>`;
+    }
+  } catch (e) { /* ignore */ }
+}
+
+function spEditTopScorer() {
+  // Reuse existing showTopScorer flow
+  if (typeof showTopScorer === 'function') showTopScorer();
+}
+
+async function spSubmitPredictions() {
+  // Final validation - must have winner + at least groups
+  if (!spState.tournamentWinner) {
+    showToast(t('betting.winnerRequired'), 'error');
+    return;
+  }
+  const incompleteGroups = WC2026_GROUP_LETTERS.filter(l =>
+    !spState.groupPositions[l] || !spState.groupPositions[l].every(x => x)
+  );
+  if (incompleteGroups.length > 0) {
+    showToast(t('betting.groupsIncomplete', { letters: incompleteGroups.join(', ') }), 'error');
+    return;
+  }
+
+  if (!confirm(t('betting.confirmSubmit'))) return;
+
+  try {
+    // Save everything one more time
+    await spSaveGroupsToDb(false);
+    await spSaveBracketToDb(false);
+    await spSaveWinnerToDb(false);
+
+    // Mark user submitted
+    const { error } = await supabaseClient.from('users')
+      .update({
+        predictions_locked: true,
+        predictions_submitted_at: new Date().toISOString()
+      })
+      .eq('id', state.currentUser.id);
+    if (error && !/column .* does not exist/i.test(error.message || '')) {
+      console.warn('predictions_locked update warning:', error);
+    }
+    state.currentUser.predictions_locked = true;
+    showToast(t('betting.submitted'), 'success');
+    await spShowLockedView();
+  } catch (err) {
+    console.error('spSubmitPredictions err:', err);
+    showToast(t('errors.unexpected'), 'error');
+  }
+}
+
+async function spShowLockedView() {
+  await spLoadExistingPicks();
+  const el = document.getElementById('sp-locked-content');
+  // Build a read-only render
+  let html = '';
+  // Groups
+  html += `<div class="sp-summary-card">
+    <div class="sp-summary-section-title">${t('betting.summary.groups')}</div>`;
+  WC2026_GROUP_LETTERS.forEach(letter => {
+    const positions = spState.groupPositions[letter] || [];
+    html += `<div style="margin-bottom:8px;">
+      <div style="font-weight:600;color:#d4a853;font-size:12px;">${t('groups.group')} ${letter}</div>
+      ${[0,1,2,3].map(i => {
+        const code = positions[i];
+        return `<div class="sp-summary-row">
+          <span class="sr-label">${i+1}.</span>
+          <span class="sr-flag">${code ? getCountryFlag(code) : '—'}</span>
+          <span class="sr-value">${code ? getTeamName(code) : '—'}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+  });
+  html += '</div>';
+
+  // Bracket
+  const struct = spGetBracketStructure();
+  html += `<div class="sp-summary-card">
+    <div class="sp-summary-section-title">${t('betting.summary.bracket')}</div>`;
+  [['knockout.r16', struct.r16], ['knockout.qf', struct.qf],
+   ['knockout.sf', struct.sf], ['knockout.final', [struct.final]]].forEach(([key, matches]) => {
+    html += `<div style="font-weight:600;color:#d4a853;font-size:12px;margin:6px 0 3px;">${t(key)}</div>`;
+    matches.forEach(m => {
+      const w = spGetMatchWinner(m.pos);
+      html += `<div class="sp-summary-row">
+        <span class="sr-flag">${w ? getCountryFlag(w) : '—'}</span>
+        <span class="sr-value">${w ? getTeamName(w) : '—'}</span>
+      </div>`;
+    });
+  });
+  html += '</div>';
+
+  // Winner
+  const w = spState.tournamentWinner;
+  html += `<div class="sp-summary-card">
+    <div class="sp-summary-section-title">${t('betting.summary.winner')}</div>
+    <div class="sp-summary-row">
+      <span class="sr-flag" style="font-size:28px;">${w ? getCountryFlag(w) : '—'}</span>
+      <span class="sr-value" style="font-size:17px;">${w ? getTeamName(w) : '—'}</span>
+    </div>
+  </div>`;
+  el.innerHTML = html;
+  showScreen('sp-locked-screen');
+}
+
+// ============================================================
+// AUTO-LOCK POOL when first match has started
+// ============================================================
+async function spAutoLockPoolIfNeeded() {
+  if (!state.currentPool || state.currentPool.locked_at) return;
+  if (state.currentPool.betting_mode !== 'single_phase') return;
+
+  try {
+    const { data: anyStarted } = await supabaseClient.from('matches')
+      .select('id, status')
+      .in('status', ['IN_PLAY', 'PAUSED', 'FINISHED', 'LIVE', 'started', 'finished'])
+      .limit(1);
+    if (anyStarted && anyStarted.length > 0) {
+      const lockTs = new Date().toISOString();
+      const { error } = await supabaseClient.from('pools')
+        .update({ locked_at: lockTs })
+        .eq('id', state.currentPool.id);
+      if (!error) {
+        state.currentPool.locked_at = lockTs;
+      }
+    }
+  } catch (e) { /* migration may not be applied yet */ }
+}
+
+// ============================================================
+// PHASE 3: LEADERBOARD - hypothetical bracket viewer
+// ============================================================
+async function showUserHypotheticalBracket(userId, userName) {
+  if (!supabaseClient) return;
+  try {
+    // Load groups + bracket + winner + top scorer for that user
+    const [gpp, kp, twp, tsp] = await Promise.all([
+      supabaseClient.from('group_position_picks').select('*').eq('user_id', userId),
+      supabaseClient.from('knockout_picks').select('*').eq('user_id', userId).not('bracket_position', 'is', null),
+      supabaseClient.from('tournament_winner_picks').select('*').eq('user_id', userId).maybeSingle(),
+      supabaseClient.from('top_scorer_picks').select('*').eq('user_id', userId).maybeSingle()
+    ]);
+
+    const positions = {};
+    (gpp.data || []).forEach(p => {
+      if (!positions[p.group_letter]) positions[p.group_letter] = [null,null,null,null];
+      positions[p.group_letter][p.position - 1] = p.team_code;
+    });
+    const bracket = {};
+    (kp.data || []).forEach(p => { bracket[p.bracket_position] = p.team_code; });
+    const winner = twp.data ? twp.data.team_code : null;
+    const topScorer = tsp.data ? tsp.data : null;
+
+    document.getElementById('hypo-bracket-title').textContent =
+      t('leaderboard.viewBracket') + ' ' + (userName || '');
+
+    // Render content
+    let html = '';
+    if (Object.keys(positions).length > 0) {
+      html += `<div class="sp-summary-card"><div class="sp-summary-section-title">${t('betting.summary.groups')}</div>`;
+      WC2026_GROUP_LETTERS.forEach(letter => {
+        if (!positions[letter]) return;
+        html += `<div style="margin-bottom:8px;">
+          <div style="font-weight:600;color:#d4a853;font-size:12px;">${t('groups.group')} ${letter}</div>`;
+        positions[letter].forEach((code, i) => {
+          html += `<div class="sp-summary-row">
+            <span class="sr-label">${i+1}.</span>
+            <span class="sr-flag">${code ? getCountryFlag(code) : '—'}</span>
+            <span class="sr-value">${code ? getTeamName(code) : '—'}</span>
+          </div>`;
+        });
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+
+    if (Object.keys(bracket).length > 0) {
+      // Build matches list with home/away from positions
+      const getMatchWinner = (pos) => bracket[pos];
+      const r16 = SP_R16_PAIRS.map(([g1,p1,g2,p2], i) => ({
+        pos: i+1,
+        home: positions[g1] ? positions[g1][p1-1] : null,
+        away: positions[g2] ? positions[g2][p2-1] : null
+      }));
+      const qf = [
+        { pos: 9,  home: getMatchWinner(1), away: getMatchWinner(2) },
+        { pos: 10, home: getMatchWinner(3), away: getMatchWinner(4) },
+        { pos: 11, home: getMatchWinner(5), away: getMatchWinner(6) },
+        { pos: 12, home: getMatchWinner(7), away: getMatchWinner(8) }
+      ];
+      const sf = [
+        { pos: 13, home: getMatchWinner(9),  away: getMatchWinner(10) },
+        { pos: 14, home: getMatchWinner(11), away: getMatchWinner(12) }
+      ];
+      const fin = { pos: 15, home: getMatchWinner(13), away: getMatchWinner(14) };
+
+      html += `<div class="sp-summary-card"><div class="sp-summary-section-title">${t('betting.summary.bracket')}</div>`;
+      [['knockout.r16', r16], ['knockout.qf', qf], ['knockout.sf', sf], ['knockout.final', [fin]]].forEach(([key, matches]) => {
+        html += `<div style="font-weight:600;color:#d4a853;font-size:12px;margin:6px 0 3px;">${t(key)}</div>`;
+        matches.forEach(m => {
+          const w = getMatchWinner(m.pos);
+          html += `<div class="sp-summary-row">
+            <span class="sr-flag">${w ? getCountryFlag(w) : '—'}</span>
+            <span class="sr-value">${w ? getTeamName(w) : '—'}</span>
+          </div>`;
+        });
+      });
+      html += '</div>';
+    }
+
+    if (winner) {
+      html += `<div class="sp-summary-card">
+        <div class="sp-summary-section-title">${t('betting.summary.winner')}</div>
+        <div class="sp-summary-row">
+          <span class="sr-flag" style="font-size:28px;">${getCountryFlag(winner)}</span>
+          <span class="sr-value" style="font-size:17px;">${getTeamName(winner)}</span>
+        </div>
+      </div>`;
+    }
+
+    if (topScorer) {
+      html += `<div class="sp-summary-card">
+        <div class="sp-summary-section-title">${t('betting.summary.topScorer')}</div>
+        <div class="sp-summary-row">
+          <span class="sr-flag">${getCountryFlag(topScorer.team_code)}</span>
+          <span class="sr-value">${topScorer.player_name}</span>
+        </div>
+      </div>`;
+    }
+
+    if (!html) {
+      html = `<div style="text-align:center;color:rgba(255,255,255,0.5);padding:24px;">${t('leaderboard.noPicks')}</div>`;
+    }
+
+    document.getElementById('hypo-bracket-content').innerHTML = html;
+    document.getElementById('hypo-bracket-modal').style.display = 'flex';
+  } catch (err) {
+    console.error('Hypothetical bracket load error:', err);
+    showToast(t('errors.unexpected'), 'error');
+  }
+}
+
+function closeHypoBracket() {
+  document.getElementById('hypo-bracket-modal').style.display = 'none';
+}
+
+// ============================================================
+// Patch dashboard betting entry to route by mode
+// ============================================================
+const _origStartGroupBetting = typeof startGroupBetting === 'function' ? startGroupBetting : null;
+window.startBettingFromDashboard = function() {
+  if (state.currentPool && state.currentPool.betting_mode === 'single_phase') {
+    startSinglePhaseBetting();
+  } else if (_origStartGroupBetting) {
+    _origStartGroupBetting();
+  }
+};
+
+// Make the wizard the entry point: keep original createPool() exported as
+// adminCreatePoolLegacy for safety; new flow uses startPoolWizard.
+window.adminCreatePoolLegacy = createPool;

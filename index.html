@@ -363,9 +363,126 @@ function loadTablerFallback() {
 
         <div id="admin-error" class="error-message" style="display: none;"></div>
 
-        <button class="btn-primary btn-large" onclick="createPool()">
+        <button class="btn-primary btn-large" onclick="startPoolWizard()">
+          <i class="ti ti-arrow-left"></i>
+          <span data-i18n="wizard.continueToSetup">המשך להגדרת ההימור</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POOL SETUP WIZARD (v2.0) - 3 steps after admin nickname -->
+  <div id="pool-wizard-screen" class="screen">
+    <div class="topbar">
+      <button class="btn-icon" onclick="wizardBack()" data-i18n-aria="common.back" aria-label="Back">
+        <i class="ti ti-arrow-right"></i>
+      </button>
+      <span class="topbar-title" data-i18n="wizard.title">הגדרת ההימור</span>
+      <span class="topbar-step" id="wizard-step-label">שלב 1 מתוך 3</span>
+    </div>
+
+    <div class="progress-bar-container">
+      <div class="progress-bar"><div id="wizard-progress-fill" style="width: 33%"></div></div>
+    </div>
+
+    <div class="container">
+      <!-- ===== STEP 1: BETTING MODE ===== -->
+      <div class="wizard-step" id="wizard-step-1">
+        <h2 class="wizard-step-title" data-i18n="wizard.step1.title">בחר את שיטת ההימור</h2>
+        <p class="wizard-step-subtitle" data-i18n="wizard.step1.subtitle">איך השחקנים שלך יהמרו?</p>
+
+        <div class="wizard-option-cards">
+          <div class="wizard-option-card selected" data-mode="single_phase" onclick="wizardSelectMode('single_phase')">
+            <div class="wizard-option-badge wizard-badge-recommended" data-i18n="wizard.recommended">מומלץ ⭐</div>
+            <div class="wizard-option-icon">🎯</div>
+            <div class="wizard-option-title" data-i18n="wizard.step1.singlePhase.title">הימור חד-פעמי</div>
+            <div class="wizard-option-desc" data-i18n="wizard.step1.singlePhase.description">השחקנים מהמרים פעם אחת לפני תחילת המונדיאל. הם מנחשים הכל: מיקום בבתים, הברקאט המלא, מנצחת הטורניר, ומלך השערים. קל יותר - לא צריך לחזור!</div>
+            <div class="wizard-option-check"><i class="ti ti-check"></i></div>
+          </div>
+
+          <div class="wizard-option-card" data-mode="two_phase" onclick="wizardSelectMode('two_phase')">
+            <div class="wizard-option-badge wizard-badge-advanced" data-i18n="wizard.advanced">מתקדם</div>
+            <div class="wizard-option-icon">⚡</div>
+            <div class="wizard-option-title" data-i18n="wizard.step1.twoPhase.title">הימור דו-שלבי</div>
+            <div class="wizard-option-desc" data-i18n="wizard.step1.twoPhase.description">השחקנים מהמרים פעמיים: פעם לפני הבתים (רק מנצחי בתים), ופעם נוספת אחרי הבתים על הנוקאאוט ומלך השערים. יותר ריאלי, אבל דורש חזרה.</div>
+            <div class="wizard-option-check"><i class="ti ti-check"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== STEP 2: SCORING RULES ===== -->
+      <div class="wizard-step" id="wizard-step-2" style="display:none;">
+        <h2 class="wizard-step-title" data-i18n="wizard.step2.title">חוקי הניקוד</h2>
+        <p class="wizard-step-subtitle" data-i18n="wizard.step2.subtitle">איך מחושבות נקודות?</p>
+
+        <div class="wizard-option-cards">
+          <div class="wizard-option-card selected" data-rules="default" onclick="wizardSelectRules('default')">
+            <div class="wizard-option-icon">⭐</div>
+            <div class="wizard-option-title" data-i18n="wizard.step2.useDefaults">שימוש בחוקים המומלצים</div>
+            <div class="wizard-option-desc" data-i18n="wizard.step2.useDefaults.desc">הגדרות מאוזנות שמתאימות לרוב הקבוצות.</div>
+            <div class="wizard-rules-preview" id="wizard-rules-preview">
+              <!-- Populated by JS based on mode -->
+            </div>
+            <div class="wizard-option-check"><i class="ti ti-check"></i></div>
+          </div>
+
+          <div class="wizard-option-card" data-rules="custom" onclick="wizardSelectRules('custom')">
+            <div class="wizard-option-icon">🎛️</div>
+            <div class="wizard-option-title" data-i18n="wizard.step2.customize">התאמה אישית של החוקים</div>
+            <div class="wizard-option-desc" data-i18n="wizard.step2.customize.desc">קבע בעצמך את הניקוד לכל שלב.</div>
+
+            <div class="wizard-rules-form" id="wizard-rules-form" style="display:none;">
+              <!-- Populated by JS based on mode -->
+            </div>
+            <div class="wizard-option-check"><i class="ti ti-check"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== STEP 3: REVIEW & CREATE ===== -->
+      <div class="wizard-step" id="wizard-step-3" style="display:none;">
+        <h2 class="wizard-step-title" data-i18n="wizard.step3.title">סיכום ויצירה</h2>
+        <p class="wizard-step-subtitle" data-i18n="wizard.step3.subtitle">בדוק את ההגדרות לפני יצירת ההימור</p>
+
+        <div class="wizard-summary">
+          <div class="wizard-summary-row">
+            <span class="wizard-summary-label" data-i18n="wizard.summary.poolName">שם ההימור</span>
+            <span class="wizard-summary-value" id="wizard-summary-pool"></span>
+          </div>
+          <div class="wizard-summary-row">
+            <span class="wizard-summary-label" data-i18n="wizard.summary.admin">המארגן</span>
+            <span class="wizard-summary-value" id="wizard-summary-admin"></span>
+          </div>
+          <div class="wizard-summary-row">
+            <span class="wizard-summary-label" data-i18n="wizard.summary.mode">שיטת הימור</span>
+            <span class="wizard-summary-value" id="wizard-summary-mode"></span>
+          </div>
+          <div class="wizard-summary-row wizard-summary-totals">
+            <span class="wizard-summary-label" data-i18n="wizard.summary.totalPoints">סך נקודות מקסימלי</span>
+            <span class="wizard-summary-value gold" id="wizard-summary-total">—</span>
+          </div>
+          <div class="wizard-summary-row" style="flex-direction:column; align-items:stretch;">
+            <span class="wizard-summary-label" data-i18n="wizard.summary.rules">חוקי הניקוד</span>
+            <div class="wizard-summary-rules" id="wizard-summary-rules"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="wizard-error" class="error-message" style="display: none;"></div>
+
+      <!-- ===== WIZARD FOOTER ===== -->
+      <div class="wizard-footer">
+        <button class="btn-secondary" id="wizard-back-btn" onclick="wizardBack()" style="display:none;">
+          <i class="ti ti-arrow-right"></i>
+          <span data-i18n="wizard.back">חזור</span>
+        </button>
+        <button class="btn-primary btn-large" id="wizard-next-btn" onclick="wizardNext()">
+          <span data-i18n="wizard.next">הבא</span>
+          <i class="ti ti-arrow-left"></i>
+        </button>
+        <button class="btn-primary btn-large" id="wizard-create-btn" onclick="wizardCreatePool()" style="display:none;">
           <i class="ti ti-check"></i>
-          <span data-i18n="adminNickname.createBtn">צור הימור</span>
+          <span data-i18n="wizard.createPool">צור הימור</span>
         </button>
       </div>
     </div>
@@ -787,7 +904,7 @@ function loadTablerFallback() {
           </div>
           <div class="bet-status-subtitle" data-i18n="dashboard.status.notStarted">עדיין לא הימרת</div>
         </div>
-        <button class="btn-small" onclick="startGroupBetting()">
+        <button class="btn-small" onclick="startBettingFromDashboard()">
           <span data-i18n="dashboard.action.start">התחל</span> <i class="ti ti-chevron-left"></i>
         </button>
       </div>
@@ -2027,10 +2144,214 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v1.12.3</span>
+      <span class="menu-version">v2.0.0</span>
     </div>
   </div>
 
+</div>
+
+<!-- ============================================================ -->
+<!-- SINGLE-PHASE BETTING FLOW (v2.0)                              -->
+<!-- ============================================================ -->
+
+<!-- A. GROUP POSITIONS SCREEN -->
+<div id="sp-groups-screen" class="screen">
+  <div class="topbar">
+    <button class="btn-icon" onclick="spExit()" data-i18n-aria="common.back" aria-label="Back">
+      <i class="ti ti-arrow-right"></i>
+    </button>
+    <div class="topbar-center">
+      <div class="topbar-title-small" data-i18n="betting.groupPositions.title">מיקום בבתים</div>
+      <div class="topbar-step" id="sp-groups-step">בית 1 מתוך 12</div>
+    </div>
+    <button class="btn-icon" onclick="spGroupsSaveAndExit()" data-i18n-aria="common.save" aria-label="Save">
+      <i class="ti ti-device-floppy gold"></i>
+    </button>
+  </div>
+
+  <div class="progress-bar-container">
+    <div class="progress-bar"><div id="sp-groups-progress" style="width: 0%"></div></div>
+  </div>
+
+  <div class="container">
+    <div class="sp-section-instructions">
+      <p data-i18n="betting.groupPositions.instructions">דרג את הקבוצות לפי המיקום הצפוי בבית - מהראשון לאחרון.</p>
+    </div>
+
+    <div class="sp-group-header">
+      <div class="sp-group-letter" id="sp-current-group-letter">A</div>
+      <div class="sp-group-title" data-i18n="groups.group">בית</div>
+    </div>
+
+    <div class="sp-positions-list" id="sp-positions-list">
+      <!-- Populated by JS: 4 slots (1st-4th), each can be assigned a team via tap -->
+    </div>
+
+    <div class="sp-teams-pool" id="sp-teams-pool">
+      <!-- Unassigned teams - tap to assign to next empty slot -->
+    </div>
+
+    <div class="sp-group-nav">
+      <button class="btn-secondary" id="sp-groups-prev" onclick="spGroupsPrev()">
+        <i class="ti ti-arrow-right"></i>
+        <span data-i18n="wizard.back">חזור</span>
+      </button>
+      <button class="btn-primary" id="sp-groups-next" onclick="spGroupsNext()">
+        <span data-i18n="wizard.next">הבא</span>
+        <i class="ti ti-arrow-left"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- B. HYPOTHETICAL BRACKET SCREEN -->
+<div id="sp-bracket-screen" class="screen">
+  <div class="topbar">
+    <button class="btn-icon" onclick="spExit()" data-i18n-aria="common.back" aria-label="Back">
+      <i class="ti ti-arrow-right"></i>
+    </button>
+    <div class="topbar-center">
+      <div class="topbar-title-small" data-i18n="betting.bracket.title">הברקאט שלך</div>
+      <div class="topbar-step" id="sp-bracket-step"></div>
+    </div>
+    <div style="width:32px;"></div>
+  </div>
+
+  <div class="container">
+    <div class="sp-section-instructions">
+      <p data-i18n="betting.bracket.instructions">הברקאט נוצר מתוצאות הבתים שלך. בכל משחק - בחר את המנצח.</p>
+    </div>
+
+    <div class="sp-bracket" id="sp-bracket-container">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="sp-group-nav">
+      <button class="btn-secondary" onclick="spBackToGroups()">
+        <i class="ti ti-arrow-right"></i>
+        <span data-i18n="wizard.back">חזור</span>
+      </button>
+      <button class="btn-primary" onclick="spBracketNext()">
+        <span data-i18n="wizard.next">הבא</span>
+        <i class="ti ti-arrow-left"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- C. TOURNAMENT WINNER SCREEN -->
+<div id="sp-winner-screen" class="screen">
+  <div class="topbar">
+    <button class="btn-icon" onclick="showScreen('sp-bracket-screen')" data-i18n-aria="common.back" aria-label="Back">
+      <i class="ti ti-arrow-right"></i>
+    </button>
+    <span class="topbar-title" data-i18n="betting.tournamentWinner.title">מנצחת הטורניר</span>
+    <div style="width:32px;"></div>
+  </div>
+
+  <div class="container">
+    <div class="sp-winner-hero">
+      <div class="sp-winner-icon">🏆</div>
+      <h2 class="form-title" data-i18n="betting.tournamentWinner.question">מי תזכה במונדיאל?</h2>
+      <p class="form-subtitle" data-i18n="betting.tournamentWinner.subtitle">בחר את הקבוצה שלדעתך תרים את הגביע</p>
+    </div>
+
+    <div class="sp-winner-options" id="sp-winner-options">
+      <!-- Populated by JS: SF winners (or all 48 if no bracket yet) -->
+    </div>
+
+    <div class="sp-group-nav">
+      <button class="btn-secondary" onclick="showScreen('sp-bracket-screen')">
+        <i class="ti ti-arrow-right"></i>
+        <span data-i18n="wizard.back">חזור</span>
+      </button>
+      <button class="btn-primary" onclick="spWinnerNext()">
+        <span data-i18n="wizard.next">הבא</span>
+        <i class="ti ti-arrow-left"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- D. PREDICTIONS SUMMARY SCREEN -->
+<div id="sp-summary-screen" class="screen">
+  <div class="topbar">
+    <button class="btn-icon" onclick="showScreen('sp-winner-screen')" data-i18n-aria="common.back" aria-label="Back">
+      <i class="ti ti-arrow-right"></i>
+    </button>
+    <span class="topbar-title" data-i18n="betting.summary.title">סיכום הניחושים</span>
+    <div style="width:32px;"></div>
+  </div>
+
+  <div class="container">
+    <div class="sp-summary-warning">
+      <i class="ti ti-alert-triangle"></i>
+      <span data-i18n="betting.summary.warning">אחרי שליחה ותחילת הטורניר - לא ניתן יהיה לשנות את הניחושים!</span>
+    </div>
+
+    <div class="sp-summary-card">
+      <div class="sp-summary-section-title" data-i18n="betting.summary.groups">תוצאות הבתים</div>
+      <div id="sp-summary-groups"></div>
+    </div>
+
+    <div class="sp-summary-card">
+      <div class="sp-summary-section-title" data-i18n="betting.summary.bracket">ברקאט</div>
+      <div id="sp-summary-bracket"></div>
+    </div>
+
+    <div class="sp-summary-card">
+      <div class="sp-summary-section-title" data-i18n="betting.summary.winner">מנצחת הטורניר</div>
+      <div id="sp-summary-winner"></div>
+    </div>
+
+    <div class="sp-summary-card">
+      <div class="sp-summary-section-title" data-i18n="betting.summary.topScorer">מלך השערים</div>
+      <div id="sp-summary-topscorer"></div>
+      <button class="btn-secondary btn-small" onclick="spEditTopScorer()" id="sp-summary-ts-edit">
+        <i class="ti ti-edit"></i>
+        <span data-i18n="betting.summary.editTopScorer">ערוך מלך שערים</span>
+      </button>
+    </div>
+
+    <button class="btn-primary btn-large" onclick="spSubmitPredictions()" id="sp-submit-btn">
+      <i class="ti ti-rocket"></i>
+      <span data-i18n="betting.summary.submit">שלח ניחושים סופיים</span>
+    </button>
+  </div>
+</div>
+
+<!-- E. LOCKED PREDICTIONS VIEW -->
+<div id="sp-locked-screen" class="screen">
+  <div class="topbar">
+    <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="common.back" aria-label="Back">
+      <i class="ti ti-arrow-right"></i>
+    </button>
+    <span class="topbar-title" data-i18n="betting.locked.title">הניחושים שלך</span>
+    <div style="width:32px;"></div>
+  </div>
+
+  <div class="container">
+    <div class="sp-locked-banner">
+      <i class="ti ti-lock-check gold"></i>
+      <div>
+        <strong data-i18n="betting.locked.heading">הניחושים נשלחו ונעולים</strong>
+        <div data-i18n="betting.locked.message">לא ניתן לשנות יותר. צפה בניחושים שלך למטה.</div>
+      </div>
+    </div>
+    <div id="sp-locked-content"></div>
+  </div>
+</div>
+
+<!-- F. HYPOTHETICAL BRACKET MODAL (used from leaderboard) -->
+<div id="hypo-bracket-modal" class="modal" style="display:none;">
+  <div class="modal-overlay" onclick="closeHypoBracket()"></div>
+  <div class="modal-content modal-large">
+    <button class="modal-close" onclick="closeHypoBracket()" aria-label="Close">
+      <i class="ti ti-x"></i>
+    </button>
+    <h2 class="modal-title" id="hypo-bracket-title" data-i18n="leaderboard.viewBracket">הברקאט של</h2>
+    <div id="hypo-bracket-content" class="modal-body"></div>
+  </div>
 </div>
 
 <!-- ============================================================ -->
