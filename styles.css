@@ -229,16 +229,33 @@ body {
 
 .info-banner {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   gap: 8px;
-  padding: 12px;
+  padding: 12px 14px;
   background: rgba(168, 85, 247, 0.06);
   border: 0.5px solid rgba(168, 85, 247, 0.2);
   border-radius: 8px;
   font-size: 12px;
+  line-height: 1.5;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 16px;
+  text-align: start;
+}
+
+.info-banner > i {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.info-banner a {
+  color: #d4a853;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.info-banner a:hover {
+  color: #e8bd66;
 }
 
 .info-banner i {
@@ -5494,7 +5511,7 @@ body.ltr .menu-item {
   position: absolute;
   top: 16px;
   left: 16px;
-  display: flex;
+  display: none;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -5503,6 +5520,11 @@ body.ltr .menu-item {
   border: 0.5px solid rgba(255, 255, 255, 0.1);
   z-index: 10;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Show home language toggle only for users in Israel timezone */
+body.is-israel .home-lang-toggle {
+  display: flex;
 }
 
 /* In RTL mode (Hebrew default), position on left.
