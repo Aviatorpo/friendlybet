@@ -299,13 +299,19 @@ async function submitNickname() {
     
     // Save nickname for next step
     state.pendingNickname = nickname;
-    
+
     // Generate recovery code
     state.pendingRecoveryCode = generateRecoveryCode();
     document.getElementById('recovery-code-value').textContent = state.pendingRecoveryCode;
-    
-    showScreen('recovery-code-screen');
-    
+
+    // v2.1: Use new dramatic recovery screen for joiners
+    if (typeof showRecoveryCode === 'function') {
+      localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, state.pendingRecoveryCode);
+      showRecoveryCode('joined', state.pendingRecoveryCode, state.currentPool && state.currentPool.name);
+    } else {
+      showScreen('recovery-code-screen');
+    }
+
   } catch (err) {
     console.error('Submit nickname error:', err);
     showError('nickname-error', t('errors.unexpected'));
@@ -5813,11 +5819,9 @@ async function wizardCreatePool() {
 
     document.getElementById('created-pool-code').textContent = poolCode;
     showToast(t('errors.poolCreated'), 'success');
+    // v2.1: persist code so the menu view can find it later
+    localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, adminRecoveryCode);
     showScreen('share-pool-screen');
-
-    setTimeout(() => {
-      alert(t('sharePool.adminCodeAlert', { code: adminRecoveryCode }));
-    }, 500);
   } catch (err) {
     console.error('Create pool error:', err);
     showToast(t('errors.unexpected'), 'error');
@@ -6696,3 +6700,355 @@ window.startBettingFromDashboard = function() {
 // Make the wizard the entry point: keep original createPool() exported as
 // adminCreatePoolLegacy for safety; new flow uses startPoolWizard.
 window.adminCreatePoolLegacy = createPool;
+
+// ============================================================
+// v2.1.0 - DRAMATIC RECOVERY CODE SCREEN
+// ============================================================
+
+const rcState = {
+  mode: 'created',          // 'created' | 'joined' | 'view'
+  code: null,
+  poolName: '',
+  saved: false,             // user copied/emailed/downloaded?
+  confettiTimer: null
+};
+
+function rcFormatCode(raw) {
+  if (!raw) return '';
+  const clean = raw.replace(/-/g, '');
+  return clean.match(/.{1,4}/g)?.join('-') || raw;
+}
+
+function rcRawCode(raw) {
+  return (raw || '').replace(/-/g, '');
+}
+
+// Public entry point
+function showRecoveryCode(mode, recoveryCode, poolName) {
+  rcState.mode = mode || 'created';
+  rcState.code = recoveryCode;
+  rcState.poolName = poolName || (state.currentPool && state.currentPool.name) || 'FriendlyBet';
+  rcState.saved = (mode === 'view'); // view-mode: don't gate continue
+
+  // Set title/subtitle by mode
+  const titleEl = document.getElementById('rc-hero-title');
+  const subEl = document.getElementById('rc-hero-subtitle');
+  const heroEmoji = document.getElementById('rc-hero-emoji');
+  const continueBtn = document.getElementById('rc-continue-btn');
+  const codeCard = document.getElementById('rc-code-card');
+
+  if (mode === 'view') {
+    titleEl.textContent = t('recovery.viewMode.title');
+    subEl.style.display = 'none';
+    heroEmoji.style.display = 'none';
+    continueBtn.querySelector('span').textContent = t('recovery.button.close');
+    // Reduce animation for view mode
+    if (codeCard) codeCard.style.animation = 'none';
+  } else {
+    subEl.style.display = '';
+    heroEmoji.style.display = '';
+    if (mode === 'joined') {
+      titleEl.textContent = t('recovery.joined.title');
+      subEl.textContent = t('recovery.joined.subtitle');
+    } else {
+      titleEl.textContent = t('recovery.poolCreated.title');
+      subEl.textContent = t('recovery.poolCreated.subtitle');
+    }
+    continueBtn.querySelector('span').textContent = t('recovery.button.continue');
+    if (codeCard) codeCard.style.animation = '';
+  }
+
+  // Set code (with reveal animation in non-view modes)
+  const codeEl = document.getElementById('rc-code-text');
+  const formatted = rcFormatCode(rcState.code);
+  if (mode === 'view') {
+    codeEl.textContent = formatted;
+  } else {
+    rcAnimateCodeReveal(codeEl, formatted);
+  }
+
+  // Reset copy/email button states
+  document.getElementById('rc-btn-copy').classList.remove('rc-success');
+  document.getElementById('rc-btn-email').classList.remove('rc-success');
+  document.getElementById('rc-btn-download').classList.remove('rc-success');
+  document.getElementById('rc-btn-copy').querySelector('.rc-action-label').textContent = t('recovery.button.copy');
+
+  // Confetti only in celebration modes
+  rcClearConfetti();
+  if (mode !== 'view') {
+    setTimeout(() => rcCreateConfetti(), 250);
+  }
+
+  showScreen('screen-recovery-code');
+}
+
+function rcAnimateCodeReveal(el, finalText) {
+  // Cycle through random A-Z characters for ~700ms, then settle
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const positions = finalText.length;
+  el.classList.add('rc-reveal');
+  const start = performance.now();
+  const duration = 700;
+
+  const tick = (now) => {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    // Once a position's "settle threshold" has passed, show the real char
+    let out = '';
+    for (let i = 0; i < positions; i++) {
+      const real = finalText[i];
+      // Dashes and known separators settle immediately
+      if (real === '-' || real === ' ') { out += real; continue; }
+      const settleAt = (i / positions) * 0.85;
+      if (progress >= settleAt) {
+        out += real;
+      } else {
+        out += chars[Math.floor(Math.random() * chars.length)];
+      }
+    }
+    el.textContent = out;
+    if (progress < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      el.textContent = finalText;
+      el.classList.remove('rc-reveal');
+    }
+  };
+  requestAnimationFrame(tick);
+}
+
+function rcCreateConfetti() {
+  const layer = document.getElementById('rc-confetti-layer');
+  if (!layer) return;
+  layer.innerHTML = '';
+  const colors = ['#d4a853', '#f5c518', '#10b981', '#3b82f6', '#ef4444', '#a855f7', '#ffffff'];
+  const count = 42;
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement('span');
+    piece.className = 'rc-confetti';
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.background = colors[i % colors.length];
+    const dur = 2.4 + Math.random() * 1.6;
+    const delay = Math.random() * 0.5;
+    piece.style.animationDuration = `${dur}s`;
+    piece.style.animationDelay = `${delay}s`;
+    piece.style.width = `${6 + Math.random() * 6}px`;
+    piece.style.height = `${10 + Math.random() * 8}px`;
+    layer.appendChild(piece);
+  }
+  // Clean up after animations finish (~4s)
+  if (rcState.confettiTimer) clearTimeout(rcState.confettiTimer);
+  rcState.confettiTimer = setTimeout(() => rcClearConfetti(), 4500);
+}
+
+function rcClearConfetti() {
+  const layer = document.getElementById('rc-confetti-layer');
+  if (layer) layer.innerHTML = '';
+  if (rcState.confettiTimer) {
+    clearTimeout(rcState.confettiTimer);
+    rcState.confettiTimer = null;
+  }
+}
+
+function rcCopy() {
+  const raw = rcRawCode(rcState.code);
+  const btn = document.getElementById('rc-btn-copy');
+  const label = btn.querySelector('.rc-action-label');
+  const originalLabel = t('recovery.button.copy');
+
+  const finish = () => {
+    rcState.saved = true;
+    btn.classList.add('rc-success');
+    label.textContent = t('recovery.button.copied');
+    showToast(t('recovery.toast.copied'), 'success');
+    setTimeout(() => {
+      btn.classList.remove('rc-success');
+      label.textContent = originalLabel;
+    }, 2000);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(raw).then(finish).catch(() => rcCopyFallback(raw, finish));
+  } else {
+    rcCopyFallback(raw, finish);
+  }
+}
+
+function rcCopyFallback(text, onSuccess) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    onSuccess && onSuccess();
+  } catch (e) {
+    showToast(t('shareModal.copyError') || 'Copy failed', 'error');
+  }
+}
+
+function rcEmail() {
+  const code = rcFormatCode(rcState.code);
+  const poolName = rcState.poolName;
+  const subject = t('recovery.email.subject');
+  const body = t('recovery.email.body', { code, poolName });
+  const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  // Use location.href so mobile mail clients open reliably
+  window.location.href = url;
+  rcState.saved = true;
+  const btn = document.getElementById('rc-btn-email');
+  btn.classList.add('rc-success');
+  setTimeout(() => btn.classList.remove('rc-success'), 2000);
+}
+
+function rcDownload() {
+  const code = rcFormatCode(rcState.code);
+  const poolName = rcState.poolName || 'FriendlyBet';
+  const now = new Date();
+  const created = now.toLocaleString(currentLanguage === 'he' ? 'he-IL' : 'en-US');
+
+  const header = t('recovery.txt.header');
+  const codeLabel = t('recovery.txt.codeLabel');
+  const poolLabel = t('recovery.txt.poolLabel');
+  const createdLabel = t('recovery.txt.createdLabel');
+  const important = t('recovery.txt.important');
+  const w1 = t('recovery.txt.warning1');
+  const w2 = t('recovery.txt.warning2');
+  const w3 = t('recovery.txt.warning3');
+  const loginAt = t('recovery.txt.loginAt');
+
+  const lines = [
+    '====================================',
+    '   ' + header,
+    '====================================',
+    '',
+    codeLabel,
+    '',
+    '   ' + code,
+    '',
+    poolLabel + ' ' + poolName,
+    createdLabel + ' ' + created,
+    '',
+    '! ' + important,
+    '   - ' + w1,
+    '   - ' + w2,
+    '   - ' + w3,
+    '   - ' + loginAt + ' https://friendlybet.vercel.app',
+    '',
+    '===================================='
+  ];
+  const content = lines.join('\n');
+
+  const safePool = (poolName || 'pool').replace(/[^a-zA-Z0-9֐-׿_-]+/g, '_').slice(0, 40);
+  const filename = `friendlybet-recovery-${safePool}.txt`;
+
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+  rcState.saved = true;
+  const btn = document.getElementById('rc-btn-download');
+  btn.classList.add('rc-success');
+  setTimeout(() => btn.classList.remove('rc-success'), 2000);
+  showToast(t('recovery.toast.downloaded'), 'success');
+}
+
+function rcContinue() {
+  if (rcState.mode === 'view') {
+    rcClearConfetti();
+    goToDashboard();
+    return;
+  }
+  if (!rcState.saved) {
+    const modal = document.getElementById('rc-warning-modal');
+    if (modal) modal.style.display = 'flex';
+    return;
+  }
+  rcProceedToNext();
+}
+
+function rcCloseModal() {
+  const modal = document.getElementById('rc-warning-modal');
+  if (modal) modal.style.display = 'none';
+  // Focus the code card so it's visually obvious where to act
+  const card = document.getElementById('rc-code-card');
+  if (card) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    card.style.animation = 'none';
+    // Force reflow to restart the pulse animation
+    void card.offsetWidth;
+    card.style.animation = '';
+  }
+}
+
+function rcContinueAnyway() {
+  const modal = document.getElementById('rc-warning-modal');
+  if (modal) modal.style.display = 'none';
+  rcProceedToNext();
+}
+
+async function rcProceedToNext() {
+  rcClearConfetti();
+  // 'created' or 'joined': finalize and go to dashboard
+  if (rcState.mode === 'joined' && state.pendingNickname && state.currentPool) {
+    // Still need to register the user in DB
+    await completeRegistration();
+    return;
+  }
+  // 'created' (admin): user already exists in DB - just navigate
+  goToDashboard();
+}
+
+function rcViewFromMenu() {
+  closeMenu && closeMenu();
+  const code = state.pendingRecoveryCode || localStorage.getItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE);
+  if (!code) {
+    showToast(t('recoveryDisplay.notFound'), 'error');
+    return;
+  }
+  showRecoveryCode('view', code, state.currentPool && state.currentPool.name);
+}
+
+// ----- Hooks into existing flows -----
+
+// 1. Admin flow: continueFromSharePool() bridges share-pool-screen -> new recovery screen
+function continueFromSharePool() {
+  const code = state.pendingRecoveryCode;
+  const poolName = state.currentPool && state.currentPool.name;
+  if (code) {
+    // Persist locally so the menu's view-mode can find it later
+    localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, code);
+    showRecoveryCode('created', code, poolName);
+  } else {
+    goToDashboard();
+  }
+}
+
+// 2. Joiner flow: override the old completeRegistration trigger.
+//    The OLD recovery-code-screen had a "I saved, continue" button calling
+//    completeRegistration() directly. We re-route via the NEW screen.
+const _origSubmitNickname = typeof submitNickname === 'function' ? submitNickname : null;
+async function submitNicknameAndShowRecovery() {
+  // Wrapper preserved for any future hook; the OLD function still drives.
+  if (_origSubmitNickname) return _origSubmitNickname();
+}
+
+// Expose
+window.showRecoveryCode = showRecoveryCode;
+window.rcCopy = rcCopy;
+window.rcEmail = rcEmail;
+window.rcDownload = rcDownload;
+window.rcContinue = rcContinue;
+window.rcCloseModal = rcCloseModal;
+window.rcContinueAnyway = rcContinueAnyway;
+window.rcViewFromMenu = rcViewFromMenu;
+window.continueFromSharePool = continueFromSharePool;
