@@ -5485,6 +5485,18 @@ const WC2026_GROUPS = {
 };
 const WC2026_GROUP_LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L'];
 
+// FIFA world ranking snapshot for WC2026 teams (approx. late 2025).
+// Lower number = better rank. Unknown codes fall back to 999.
+const FIFA_RANKINGS = {
+  ARG: 1,  ESP: 2,  FRA: 3,  ENG: 4,  BRA: 5,  POR: 6,  NED: 7,  BEL: 8,
+  CRO: 9,  GER: 12, MAR: 13, URU: 15, USA: 16, MEX: 17, JPN: 18, SUI: 19,
+  SEN: 20, IRN: 21, KOR: 22, AUT: 23, UKR: 24, SWE: 25, AUS: 26, TUR: 27,
+  NOR: 28, TUN: 29, EGY: 30, ALG: 31, CAN: 32, CZE: 33, SCO: 34, CIV: 35,
+  CMR: 36, PAR: 37, PAN: 38, IRQ: 40, RSA: 42, UZB: 43, JOR: 44, GHA: 47,
+  JAM: 50, NZL: 55, SAU: 57, BIH: 59, HAI: 60, CPV: 65, QAT: 66, CUR: 85
+};
+function fifaRankOf(code) { return FIFA_RANKINGS[code] ?? 999; }
+
 // Default scoring rules per mode
 const DEFAULT_SCORING_RULES = {
   single_phase: {
@@ -5924,11 +5936,26 @@ async function spLoadExistingPicks() {
   }
 }
 
+// v2.2.0: Pre-populate a group's positions with FIFA-ranked order
+//         (best rank = position 1). Only fills if the group is empty.
+function spEnsureGroupPrefilled(letter) {
+  const arr = spState.groupPositions[letter];
+  const hasAny = arr && arr.some(x => x);
+  if (hasAny) return false;
+  const teams = WC2026_GROUPS[letter].slice();
+  teams.sort((a, b) => fifaRankOf(a) - fifaRankOf(b));
+  spState.groupPositions[letter] = teams;
+  return true;
+}
+
 function spRenderGroups() {
   const letter = WC2026_GROUP_LETTERS[spState.currentGroupIdx];
   document.getElementById('sp-current-group-letter').textContent = letter;
   document.getElementById('sp-groups-step').textContent =
     t('betting.groupStep', { n: spState.currentGroupIdx + 1, total: 12 });
+
+  // v2.2: pre-populate from FIFA ranking if not yet picked
+  const prefilled = spEnsureGroupPrefilled(letter);
 
   // Progress: how many groups have all 4 slots filled
   const completed = WC2026_GROUP_LETTERS.filter(l =>
@@ -5936,53 +5963,27 @@ function spRenderGroups() {
   ).length;
   document.getElementById('sp-groups-progress').style.width = `${(completed / 12) * 100}%`;
 
-  // Ensure array exists
-  if (!spState.groupPositions[letter]) {
-    spState.groupPositions[letter] = [null, null, null, null];
-  }
   const positions = spState.groupPositions[letter];
-  const teams = WC2026_GROUPS[letter];
 
-  // Render position slots
+  // Render position slots (always filled, draggable)
   const slotsEl = document.getElementById('sp-positions-list');
-  const positionLabels = [
-    t('betting.position.1'),
-    t('betting.position.2'),
-    t('betting.position.3'),
-    t('betting.position.4')
-  ];
-  slotsEl.innerHTML = positions.map((teamCode, i) => {
-    if (teamCode) {
-      return `
-        <div class="sp-position-slot filled">
-          <div class="pos-rank">${i + 1}</div>
-          <div class="pos-flag">${getCountryFlag(teamCode)}</div>
-          <div class="pos-name">${getTeamName(teamCode)}</div>
-          <button class="pos-remove" onclick="spRemoveFromSlot(${i})" aria-label="remove">
-            <i class="ti ti-x"></i>
-          </button>
-        </div>
-      `;
-    }
-    return `
-      <div class="sp-position-slot">
-        <div class="pos-rank">${i + 1}</div>
-        <div class="pos-empty">${positionLabels[i]}</div>
-      </div>
-    `;
-  }).join('');
+  slotsEl.innerHTML = positions.map((teamCode, i) => `
+    <div class="sp-position-slot filled sp-draggable" data-pos="${i}">
+      <div class="pos-drag-handle" aria-label="drag"><i class="ti ti-grip-vertical"></i></div>
+      <div class="pos-rank">${i + 1}</div>
+      <div class="pos-flag">${getCountryFlag(teamCode)}</div>
+      <div class="pos-name">${getTeamName(teamCode)}</div>
+    </div>
+  `).join('');
 
-  // Render teams pool
-  const poolEl = document.getElementById('sp-teams-pool');
-  poolEl.innerHTML = teams.map(code => {
-    const used = positions.includes(code);
-    return `
-      <button class="sp-team-chip ${used ? 'used' : ''}" onclick="spAssignTeam('${code}')">
-        <span class="chip-flag">${getCountryFlag(code)}</span>
-        <span>${getTeamName(code)}</span>
-      </button>
-    `;
-  }).join('');
+  // Wire drag handlers
+  slotsEl.querySelectorAll('.sp-position-slot').forEach((slot, idx) => {
+    slot.addEventListener('pointerdown', e => spSlotPointerDown(e, idx));
+  });
+
+  // If we just pre-filled, persist immediately (so navigating back/forward
+  // doesn't keep "re-suggesting" the same defaults).
+  if (prefilled) spAutoSaveGroups();
 
   // Prev/Next state
   const prev = document.getElementById('sp-groups-prev');
@@ -5994,25 +5995,81 @@ function spRenderGroups() {
   }
 }
 
-function spAssignTeam(teamCode) {
-  const letter = WC2026_GROUP_LETTERS[spState.currentGroupIdx];
-  const positions = spState.groupPositions[letter] || [null,null,null,null];
-  if (positions.includes(teamCode)) return;
-  const emptyIdx = positions.findIndex(x => !x);
-  if (emptyIdx === -1) {
-    showToast(t('betting.groupFull'), 'info');
-    return;
-  }
-  positions[emptyIdx] = teamCode;
-  spState.groupPositions[letter] = positions;
-  spRenderGroups();
-  spAutoSaveGroups();
+// ----- Drag-to-reorder slots (pointer events: works on touch + mouse) -----
+const _spDrag = {
+  active: false, el: null, fromIdx: 0, toIdx: 0,
+  startY: 0, slotPitch: 0, pointerId: null
+};
+
+function spSlotPointerDown(ev, idx) {
+  if (spIsLocked() || spIsUserSubmitted()) return;
+  const slot = ev.currentTarget;
+  // Only respond to primary button / touch
+  if (ev.button !== undefined && ev.button !== 0) return;
+  ev.preventDefault();
+  try { slot.setPointerCapture(ev.pointerId); } catch (e) {}
+  _spDrag.active = true;
+  _spDrag.el = slot;
+  _spDrag.fromIdx = idx;
+  _spDrag.toIdx = idx;
+  _spDrag.startY = ev.clientY;
+  // 10px gap between slots (matches .sp-positions-list gap)
+  _spDrag.slotPitch = slot.offsetHeight + 10;
+  _spDrag.pointerId = ev.pointerId;
+  slot.classList.add('dragging');
+
+  slot.addEventListener('pointermove', spSlotPointerMove);
+  slot.addEventListener('pointerup', spSlotPointerUp);
+  slot.addEventListener('pointercancel', spSlotPointerUp);
 }
 
-function spRemoveFromSlot(idx) {
+function spSlotPointerMove(ev) {
+  if (!_spDrag.active || ev.pointerId !== _spDrag.pointerId) return;
+  const dy = ev.clientY - _spDrag.startY;
+  _spDrag.el.style.transform = `translateY(${dy}px)`;
+  const offsetSlots = Math.round(dy / _spDrag.slotPitch);
+  const newIdx = Math.max(0, Math.min(3, _spDrag.fromIdx + offsetSlots));
+  if (newIdx !== _spDrag.toIdx) {
+    _spDrag.toIdx = newIdx;
+    // Visually shift the other slots to show the gap
+    const all = document.querySelectorAll('#sp-positions-list .sp-position-slot');
+    all.forEach((s, i) => {
+      if (i === _spDrag.fromIdx) return;
+      let shift = 0;
+      if (_spDrag.fromIdx < newIdx && i > _spDrag.fromIdx && i <= newIdx) shift = -_spDrag.slotPitch;
+      else if (_spDrag.fromIdx > newIdx && i < _spDrag.fromIdx && i >= newIdx) shift = _spDrag.slotPitch;
+      s.style.transform = shift ? `translateY(${shift}px)` : '';
+    });
+  }
+}
+
+function spSlotPointerUp(ev) {
+  if (!_spDrag.active || ev.pointerId !== _spDrag.pointerId) return;
+  const { fromIdx, toIdx, el } = _spDrag;
+  // Reset visual transforms
+  document.querySelectorAll('#sp-positions-list .sp-position-slot').forEach(s => {
+    s.style.transform = '';
+  });
+  el.classList.remove('dragging');
+  _spDrag.active = false;
+  _spDrag.el = null;
+
+  if (fromIdx !== toIdx) {
+    const letter = WC2026_GROUP_LETTERS[spState.currentGroupIdx];
+    const arr = spState.groupPositions[letter];
+    const item = arr.splice(fromIdx, 1)[0];
+    arr.splice(toIdx, 0, item);
+    spRenderGroups();
+    spAutoSaveGroups();
+  }
+}
+
+// Legacy no-ops (kept in case any old code path calls them)
+function spAssignTeam(_teamCode) { /* deprecated in v2.2 */ }
+function spRemoveFromSlot(_idx) { /* deprecated in v2.2 */
   const letter = WC2026_GROUP_LETTERS[spState.currentGroupIdx];
   const positions = spState.groupPositions[letter] || [null,null,null,null];
-  positions[idx] = null;
+  positions[_idx] = null;
   spState.groupPositions[letter] = positions;
   spRenderGroups();
   spAutoSaveGroups();

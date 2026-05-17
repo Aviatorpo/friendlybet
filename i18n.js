@@ -930,7 +930,7 @@ const TRANSLATIONS = {
     // === v2.0.0 - Single-phase betting ===
     'betting.singlePhase.title': 'הימור חד-פעמי',
     'betting.groupPositions.title': 'מיקום בבתים',
-    'betting.groupPositions.instructions': 'דרג את הקבוצות לפי המיקום הצפוי בבית - מהראשון לאחרון.',
+    'betting.groupPositions.instructions': 'הקבוצות מסודרות לפי דירוג FIFA. גרור כדי לשנות את הסדר שלהן.',
     'betting.groupStep': 'בית {n} מתוך {total}',
     'betting.position.1': 'מקום ראשון',
     'betting.position.2': 'מקום שני',
@@ -1935,7 +1935,7 @@ const TRANSLATIONS = {
     // === v2.0.0 - Single-phase betting ===
     'betting.singlePhase.title': 'Single Phase Betting',
     'betting.groupPositions.title': 'Group Positions',
-    'betting.groupPositions.instructions': 'Rank the teams by their predicted group finish - 1st to 4th.',
+    'betting.groupPositions.instructions': 'Teams are pre-sorted by FIFA ranking. Drag to reorder them.',
     'betting.groupStep': 'Group {n} of {total}',
     'betting.position.1': 'First place',
     'betting.position.2': 'Second place',
