@@ -967,6 +967,14 @@ const TRANSLATIONS = {
     'leaderboard.breakdown.bonus': 'בונוס',
     'leaderboard.noPicks': 'אין ניחושים להצגה',
 
+    // === v2.1.4 - Dashboard reflow ===
+    'dashboard.preTournament.title': 'המונדיאל עוד לא התחיל',
+    'dashboard.preTournament.subtitle': 'הדירוג יופיע כאן כשהמשחקים יתחילו',
+    'dashboard.startCta.title': 'התחל להמר על המונדיאל',
+    'dashboard.startCta.subtitle': 'בחר את הקבוצות שלך לכל בית',
+    'dashboard.continueCta.title': 'המשך את ההימור',
+    'dashboard.editCta.title': 'ערוך את ההימור שלך',
+
     // === v2.1.0 - Recovery code screen ===
     'recovery.poolCreated.title': 'ההימור נוצר!',
     'recovery.poolCreated.subtitle': 'ברוך הבא להימור שלך!',
@@ -1963,6 +1971,14 @@ const TRANSLATIONS = {
     'leaderboard.breakdown.knockout': 'Knockout',
     'leaderboard.breakdown.bonus': 'Bonus',
     'leaderboard.noPicks': 'No predictions to show',
+
+    // === v2.1.4 - Dashboard reflow ===
+    'dashboard.preTournament.title': 'Tournament hasn\'t started yet',
+    'dashboard.preTournament.subtitle': 'Your rank will appear here once matches begin',
+    'dashboard.startCta.title': 'Start predicting the World Cup',
+    'dashboard.startCta.subtitle': 'Pick your teams for each group',
+    'dashboard.continueCta.title': 'Continue your predictions',
+    'dashboard.editCta.title': 'Edit your predictions',
 
     // === v2.1.0 - Recovery code screen ===
     'recovery.poolCreated.title': 'Pool Created!',

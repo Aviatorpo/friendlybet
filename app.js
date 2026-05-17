@@ -615,22 +615,36 @@ async function goToDashboard() {
   // Load real-world results data
   await loadResultsData();
   
-  // Update dashboard display
+  // Update dashboard display (v2.1.4: pool-code card + stats moved/removed)
   document.getElementById('dashboard-pool-name').textContent = state.currentPool.name;
   document.getElementById('dashboard-user-name').textContent = state.currentUser.nickname;
-  document.getElementById('dashboard-pool-code').textContent = state.currentPool.code;
-  document.getElementById('user-points').textContent = state.currentUser.total_score || 0;
-  
-  // Compute rank
+
+  // Decide pre/post-tournament state by whether any scoring has happened in this pool.
   const { data: allUsers } = await supabaseClient
     .from('users')
     .select('id, total_score')
     .eq('pool_id', state.currentPool.id)
     .order('total_score', { ascending: false });
-  
-  if (allUsers) {
-    const rank = allUsers.findIndex(u => u.id === state.currentUser.id) + 1;
-    document.getElementById('user-rank').textContent = rank;
+  const totalAcrossPool = (allUsers || []).reduce((s, u) => s + (u.total_score || 0), 0);
+  const tournamentStarted = totalAcrossPool > 0;
+
+  const preEl = document.getElementById('dashboard-pre-tournament');
+  const statsEl = document.getElementById('dashboard-stats');
+  if (preEl && statsEl) {
+    if (tournamentStarted) {
+      preEl.style.display = 'none';
+      statsEl.style.display = '';
+      const pointsEl = document.getElementById('user-points');
+      if (pointsEl) pointsEl.textContent = state.currentUser.total_score || 0;
+      if (allUsers) {
+        const rank = allUsers.findIndex(u => u.id === state.currentUser.id) + 1;
+        const rankEl = document.getElementById('user-rank');
+        if (rankEl) rankEl.textContent = rank;
+      }
+    } else {
+      preEl.style.display = '';
+      statsEl.style.display = 'none';
+    }
   }
   
   // Update betting status based on actual picks
@@ -3180,39 +3194,35 @@ function reviewBettingPicks() {
   showScreen('group-betting-screen');
 }
 
-// Update dashboard to show actual betting status
+// Update dashboard CTA card to reflect betting progress (v2.1.4 layout)
 async function updateBettingStatusOnDashboard() {
   if (!state.currentUser || !supabaseClient) return;
-  
+
   const { data: picks } = await supabaseClient
     .from('group_picks')
     .select('id', { count: 'exact' })
     .eq('user_id', state.currentUser.id);
-  
+
   const picksCount = picks ? picks.length : 0;
-  const statusEl = document.getElementById('bet-status-groups');
-  if (!statusEl) return;
-  
-  const titleEl = statusEl.querySelector('.bet-status-title');
-  const subtitleEl = statusEl.querySelector('.bet-status-subtitle');
-  const buttonEl = statusEl.querySelector('button');
-  
-  const groupsLabel = t('dashboard.status.groups');
+  const ctaEl = document.getElementById('bet-status-groups');
+  if (!ctaEl) return;
+
+  const titleEl = ctaEl.querySelector('.bet-cta-title');
+  const subtitleEl = ctaEl.querySelector('.bet-cta-subtitle');
+  if (!titleEl || !subtitleEl) return;
+
   if (picksCount === 0) {
-    titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg> ' + groupsLabel;
-    subtitleEl.textContent = t('dashboard.status.notStarted');
-    statusEl.className = 'bet-status-card pending';
-    if (buttonEl) buttonEl.innerHTML = t('dashboard.action.start') + ' →';
+    titleEl.textContent = t('dashboard.startCta.title');
+    subtitleEl.textContent = t('dashboard.startCta.subtitle');
+    ctaEl.classList.remove('done');
   } else if (picksCount < 32) {
-    titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="6" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> ' + groupsLabel;
+    titleEl.textContent = t('dashboard.continueCta.title');
     subtitleEl.textContent = t('dashboard.status.partialGroups', { n: picksCount });
-    statusEl.className = 'bet-status-card pending';
-    if (buttonEl) buttonEl.innerHTML = t('dashboard.action.continue') + ' →';
+    ctaEl.classList.remove('done');
   } else {
-    titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ' + groupsLabel;
+    titleEl.textContent = t('dashboard.editCta.title');
     subtitleEl.textContent = t('dashboard.status.completedGroups');
-    statusEl.className = 'bet-status-card completed';
-    if (buttonEl) buttonEl.innerHTML = t('dashboard.action.edit') + ' →';
+    ctaEl.classList.add('done');
   }
 }
 

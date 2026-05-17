@@ -811,20 +811,17 @@ function loadTablerFallback() {
     </div>
 
     <div class="container">
-      <!-- Pool Code Card - prominent display -->
-      <div class="pool-code-card" onclick="quickSharePool()">
-        <div class="pool-code-card-content">
-          <div class="text-faint" style="font-size: 11px; letter-spacing: 1px;" data-i18n="dashboard.poolCode">קוד הימור</div>
-          <div class="pool-code-display-inline" id="dashboard-pool-code">XXXXX</div>
-        </div>
-        <div class="pool-code-share">
-          <i class="ti ti-share"></i>
-          <span data-i18n="dashboard.share">שתף</span>
+      <!-- Pre-tournament status (shown until scoring starts) -->
+      <div id="dashboard-pre-tournament" class="pre-tournament-card">
+        <i class="ti ti-trophy"></i>
+        <div class="pre-tournament-text">
+          <div class="pre-tournament-title" data-i18n="dashboard.preTournament.title">המונדיאל עוד לא התחיל</div>
+          <div class="pre-tournament-subtitle" data-i18n="dashboard.preTournament.subtitle">הדירוג יופיע כאן כשהמשחקים יתחילו</div>
         </div>
       </div>
 
-      <!-- User Stats Card -->
-      <div class="dashboard-stats">
+      <!-- User Stats Card (hidden until tournament starts) -->
+      <div class="dashboard-stats" id="dashboard-stats" style="display:none;">
         <div class="stat-block">
           <div class="stat-label" data-i18n="dashboard.myRank">המקום שלך</div>
           <div class="stat-big">#<span id="user-rank">-</span></div>
@@ -835,21 +832,28 @@ function loadTablerFallback() {
         </div>
       </div>
 
+      <!-- Invite friends - moved up, primary CTA -->
+      <button class="invite-friends-btn" onclick="showShareModal()">
+        <div class="invite-friends-icon">🎉</div>
+        <div class="invite-friends-content">
+          <div class="invite-friends-title" data-i18n="dashboard.invite.title">הזמן חברים להימור</div>
+          <div class="invite-friends-subtitle" data-i18n="dashboard.invite.subtitle">שלח קישור ב-WhatsApp · Telegram · קוד QR</div>
+        </div>
+        <i class="ti ti-chevron-left invite-friends-arrow"></i>
+      </button>
+
       <!-- Status sections -->
       <div class="section-title" data-i18n="dashboard.myBets">ההימורים שלי</div>
 
-      <div id="bet-status-groups" class="bet-status-card pending">
-        <div class="bet-status-content">
-          <div class="bet-status-title">
-            <i class="ti ti-flag gold"></i>
-            <span data-i18n="dashboard.status.groups">שלב הבתים</span>
-          </div>
-          <div class="bet-status-subtitle" data-i18n="dashboard.status.notStarted">עדיין לא הימרת</div>
+      <!-- Dominant Start CTA - now a big card -->
+      <button id="bet-status-groups" class="bet-cta-card" onclick="startBettingFromDashboard()">
+        <div class="bet-cta-icon"><i class="ti ti-flag-3-filled"></i></div>
+        <div class="bet-cta-text">
+          <div class="bet-cta-title" data-i18n="dashboard.startCta.title">התחל להמר על המונדיאל</div>
+          <div class="bet-cta-subtitle" data-i18n="dashboard.startCta.subtitle">בחר את הקבוצות שלך לכל בית</div>
         </div>
-        <button class="btn-small" onclick="startBettingFromDashboard()">
-          <span data-i18n="dashboard.action.start">התחל</span> <i class="ti ti-chevron-left"></i>
-        </button>
-      </div>
+        <i class="ti ti-chevron-left bet-cta-arrow"></i>
+      </button>
 
       <div class="bet-status-card locked">
         <div class="bet-status-content">
@@ -870,16 +874,6 @@ function loadTablerFallback() {
           <div class="bet-status-subtitle" data-i18n="dashboard.status.topScorerLocked">נפתח בקרוב</div>
         </div>
       </div>
-
-      <!-- Invite friends - prominent CTA -->
-      <button class="invite-friends-btn" onclick="showShareModal()">
-        <div class="invite-friends-icon">🎉</div>
-        <div class="invite-friends-content">
-          <div class="invite-friends-title" data-i18n="dashboard.invite.title">הזמן חברים להימור</div>
-          <div class="invite-friends-subtitle" data-i18n="dashboard.invite.subtitle">שלח קישור ב-WhatsApp · Telegram · קוד QR</div>
-        </div>
-        <i class="ti ti-chevron-left invite-friends-arrow"></i>
-      </button>
 
       <!-- Quick actions -->
       <div class="quick-actions">
@@ -2086,7 +2080,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.1.3</span>
+      <span class="menu-version">v2.1.4</span>
     </div>
   </div>
 
