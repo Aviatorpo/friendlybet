@@ -488,66 +488,8 @@ function loadTablerFallback() {
     </div>
   </div>
 
-  <!-- POOL CREATED - SHARE SCREEN (M-06) -->
-  <div id="share-pool-screen" class="screen">
-    <div class="topbar">
-      <div style="width: 24px;"></div>
-      <span class="topbar-title" data-i18n="sharePool.created">ההימור נוצר!</span>
-      <div style="width: 24px;"></div>
-    </div>
-
-    <div class="container">
-      <div class="success-section">
-        <div class="success-icon">🎉</div>
-        <h2 class="form-title" data-i18n="sharePool.awesome">מעולה!</h2>
-        <p class="form-subtitle" data-i18n="sharePool.subtitle">ההימור נוצר בהצלחה</p>
-
-        <div class="pool-code-display">
-          <div class="text-faint" style="font-size: 11px; letter-spacing: 2px; margin-bottom: 8px;" data-i18n="invite.code">קוד ההימור</div>
-          <div id="created-pool-code" class="pool-code-large">XXXXX</div>
-        </div>
-
-        <!-- Settings prompt -->
-        <div class="settings-prompt">
-          <div class="settings-prompt-content">
-            <i class="ti ti-info-circle gold"></i>
-            <div>
-              <div class="settings-prompt-title" data-i18n="sharePool.promptTitle">ההימור נוצר עם חוקי Golazo (ברירת מחדל)</div>
-              <div class="settings-prompt-subtitle" data-i18n="sharePool.promptSubtitle">תוכל לערוך את כל החוקים לפני שמישהו מצטרף</div>
-            </div>
-          </div>
-          <button class="btn-settings" onclick="showPoolSettings()">
-            <i class="ti ti-settings"></i>
-            <span data-i18n="sharePool.editSettings">ערוך הגדרות</span>
-          </button>
-        </div>
-
-        <div class="section-divider">
-          <span data-i18n="sharePool.divider">או פשוט שתף ותתחיל לשחק</span>
-        </div>
-
-        <div class="share-actions">
-          <button class="btn-whatsapp btn-large" onclick="shareWhatsApp()">
-            <i class="ti ti-brand-whatsapp"></i>
-            <span data-i18n="sharePool.whatsapp">שתף ב-WhatsApp</span>
-          </button>
-          <button class="btn-telegram btn-large" onclick="shareTelegram()">
-            <i class="ti ti-brand-telegram"></i>
-            <span data-i18n="sharePool.telegram">שתף ב-Telegram</span>
-          </button>
-          <button class="btn-secondary" onclick="copyShareLink()">
-            <i class="ti ti-copy"></i>
-            <span data-i18n="sharePool.copyLink">העתק קישור</span>
-          </button>
-        </div>
-
-        <button class="btn-primary btn-large" style="margin-top: 24px;" onclick="continueFromSharePool()">
-          <i class="ti ti-arrow-left"></i>
-          <span data-i18n="sharePool.toDashboard">לדשבורד שלי</span>
-        </button>
-      </div>
-    </div>
-  </div>
+  <!-- v2.1.3: share-pool-screen removed - admin goes Recovery Code -> Dashboard.
+       Sharing is done from the dashboard's "Invite friends" CTA. -->
 
   <!-- POOL SETTINGS SCREEN (M-12) -->
   <div id="pool-settings-screen" class="screen">
@@ -2144,7 +2086,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.1.2</span>
+      <span class="menu-version">v2.1.3</span>
     </div>
   </div>
 

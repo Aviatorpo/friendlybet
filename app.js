@@ -542,16 +542,14 @@ async function createPool() {
     state.pendingRecoveryCode = adminRecoveryCode;
     saveLocalUser(adminUser);
     
-    // Show share screen
-    document.getElementById('created-pool-code').textContent = poolCode;
-    
     showToast(t('errors.poolCreated'), 'success');
-    showScreen('share-pool-screen');
-
-    // Show recovery code modal (admin can save it later from settings)
-    setTimeout(() => {
-      alert(t('sharePool.adminCodeAlert', { code: adminRecoveryCode }));
-    }, 500);
+    // v2.1.3: legacy path - go straight to dashboard via the new recovery screen
+    localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, adminRecoveryCode);
+    if (typeof showRecoveryCode === 'function') {
+      showRecoveryCode('created', adminRecoveryCode, pool.name);
+    } else {
+      goToDashboard();
+    }
 
   } catch (err) {
     console.error('Create pool error:', err);
@@ -5817,16 +5815,15 @@ async function wizardCreatePool() {
     state.pendingRecoveryCode = adminRecoveryCode;
     saveLocalUser(adminUser);
 
-    document.getElementById('created-pool-code').textContent = poolCode;
     showToast(t('errors.poolCreated'), 'success');
     // v2.1: persist code so the menu view can find it later
     localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, adminRecoveryCode);
-    // v2.1.1: show recovery code screen FIRST (right after wizard),
-    //        then share-pool-screen on continue.
+    // v2.1.3: show recovery code screen, then go straight to dashboard
+    //         (the old share-pool-screen was removed - users share from dashboard).
     if (typeof showRecoveryCode === 'function') {
       showRecoveryCode('created', adminRecoveryCode, pool.name);
     } else {
-      showScreen('share-pool-screen');
+      goToDashboard();
     }
   } catch (err) {
     console.error('Create pool error:', err);
@@ -6988,12 +6985,7 @@ async function rcProceedToNext() {
     await completeRegistration();
     return;
   }
-  // Admin: pool was just created in DB; next stop is the share screen
-  if (rcState.mode === 'created') {
-    showScreen('share-pool-screen');
-    return;
-  }
-  // Fallback / view mode
+  // Admin ('created') and view mode: straight to dashboard (no share screen)
   goToDashboard();
 }
 
