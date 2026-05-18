@@ -6237,10 +6237,30 @@ async function spLoadExistingPicks() {
   let anyDataLoaded = false;
   let anyError = false;
 
+  // v2.5.15: load with pool_id filter. If it returns zero rows for a table,
+  // retry the same query WITHOUT pool_id - this rescues legacy picks saved
+  // before pool_id-aware DELETEs (where existing rows may have a stale or
+  // mismatched pool_id) and bare picks that pre-date the migration.
+  const loadOrFallback = async (table, baseFilter) => {
+    let q = supabaseClient.from(table).select('*').eq('user_id', userId).eq('pool_id', poolId);
+    if (baseFilter) q = baseFilter(q);
+    let { data, error } = await q;
+    if (error) return { data: null, error };
+    if (data && data.length === 0) {
+      // Fallback: same query without pool_id, in case the rows pre-date pool_id
+      let q2 = supabaseClient.from(table).select('*').eq('user_id', userId);
+      if (baseFilter) q2 = baseFilter(q2);
+      const r2 = await q2;
+      if (!r2.error && r2.data && r2.data.length > 0) {
+        console.warn(`spLoadExistingPicks: ${table} matched ${r2.data.length} legacy rows without pool_id filter`);
+        data = r2.data;
+      }
+    }
+    return { data, error: null };
+  };
+
   try {
-    const { data: gpp, error: gppErr } = await supabaseClient
-      .from('group_position_picks').select('*')
-      .eq('user_id', userId).eq('pool_id', poolId);
+    const { data: gpp, error: gppErr } = await loadOrFallback('group_position_picks');
     if (gppErr) { console.warn('load group_position_picks err:', gppErr); anyError = true; }
     else if (gpp) {
       gpp.forEach(p => {
@@ -6250,21 +6270,16 @@ async function spLoadExistingPicks() {
       });
     }
 
-    const { data: kp, error: kpErr } = await supabaseClient
-      .from('knockout_picks').select('*')
-      .eq('user_id', userId).eq('pool_id', poolId)
-      .not('bracket_position', 'is', null);
+    const { data: kp, error: kpErr } = await loadOrFallback('knockout_picks', q => q.not('bracket_position', 'is', null));
     if (kpErr) { console.warn('load knockout_picks err:', kpErr); anyError = true; }
     else (kp || []).forEach(p => {
       newBracket[p.bracket_position] = p.team_code;
       anyDataLoaded = true;
     });
 
-    const { data: twp, error: twpErr } = await supabaseClient
-      .from('tournament_winner_picks').select('*')
-      .eq('user_id', userId).eq('pool_id', poolId).maybeSingle();
+    const { data: twpArr, error: twpErr } = await loadOrFallback('tournament_winner_picks');
     if (twpErr) { console.warn('load tournament_winner_picks err:', twpErr); anyError = true; }
-    else if (twp) { newWinner = twp.team_code; anyDataLoaded = true; }
+    else if (twpArr && twpArr.length > 0) { newWinner = twpArr[0].team_code; anyDataLoaded = true; }
 
     // Commit policy:
     //   - if we got any data, trust DB
@@ -7041,6 +7056,17 @@ async function spRenderSummary() {
   // made all these picks - in-memory IS the source of truth.
   // (The old reload-from-DB call would wipe state if DB queries failed.)
 
+  // v2.5.15: always reset the Save button to its clean state when entering
+  // the summary screen. Previously the button was left in "Saving..." +
+  // disabled after a successful submit (spSubmitPredictions transitioned
+  // to dashboard without restoring it), so returning here via "View your
+  // predictions" found a dead button.
+  const submitBtn = document.getElementById('sp-submit-btn');
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = `<i class="ti ti-rocket"></i><span data-i18n="betting.summary.submit">${t('betting.summary.submit')}</span>`;
+  }
+
   // Groups summary
   const groupsEl = document.getElementById('sp-summary-groups');
   groupsEl.innerHTML = WC2026_GROUP_LETTERS.map(letter => {
@@ -7116,19 +7142,13 @@ async function spRenderSummary() {
   } catch (e) { /* ignore */ }
 }
 
-// v2.4.6: from the summary screen, back goes to the bracket (or to the
-// groups screen if no bracket picks exist). The old back target was the
-// removed sp-winner-screen which left users with a blank/dead view.
+// v2.5.15: Back from the summary screen now goes to the dashboard. The
+// user most often arrives here via the "View your predictions" CTA, so the
+// natural back target is the dashboard, not the middle of the flow.
+// Users who want to edit picks have an explicit "Edit groups & bracket"
+// button below the Save button (spSummaryEditPicks).
 function spSummaryBack() {
-  const hasBracket = spState.bracketPicks && Object.keys(spState.bracketPicks).length > 0;
-  if (hasBracket) {
-    spRenderBracket();
-    showScreen('sp-bracket-screen');
-  } else {
-    spState.currentGroupIdx = 0;
-    spRenderGroups();
-    showScreen('sp-groups-screen');
-  }
+  goToDashboard();
 }
 window.spSummaryBack = spSummaryBack;
 
@@ -8350,7 +8370,7 @@ const _fbScreenBackMap = {
   'sp-groups-screen': 'user-dashboard-screen',
   'sp-bracket-screen': 'sp-groups-screen',
   'sp-winner-screen': 'sp-bracket-screen',
-  'sp-summary-screen': '__spSummaryBack__',
+  'sp-summary-screen': 'user-dashboard-screen',
   'sp-locked-screen': 'user-dashboard-screen',
   // Single-match KO walkthrough handles its own back via koSinglePrev
   'ko-single-screen': '__koSinglePrev__'
