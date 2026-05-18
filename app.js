@@ -2637,15 +2637,24 @@ function getNextGroupIndex() {
 
 function renderGroupBetting() {
   const currentLetter = getCurrentGroupLetter();
-  
+
   // Update title (these are safe - they're not overwritten)
   const currentGroupLetterEl = document.getElementById('current-group-letter');
   const instructionGroupLetterEl = document.getElementById('instruction-group-letter');
   const currentGroupStepEl = document.getElementById('current-group-step');
-  
+
   if (currentGroupLetterEl) currentGroupLetterEl.textContent = currentLetter;
   if (instructionGroupLetterEl) instructionGroupLetterEl.textContent = currentLetter;
   if (currentGroupStepEl) currentGroupStepEl.textContent = t('groups.stepProgress', { current: bettingState.currentGroupIndex + 1, total: 12 });
+
+  // v2.4.6: dynamic points hint - shows the pool's actual reward per
+  // correct advancing team (the legacy two_phase model uses group_first).
+  const ptsHint = document.getElementById('group-points-hint');
+  if (ptsHint) {
+    const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
+    const perTeam = rules.group_first ?? state.currentPool.scoring_group_stage ?? 1;
+    ptsHint.innerHTML = `<span class="pts-pill">${t('groups.pointsPerAdvancingTeam', { pts: perTeam })}</span>`;
+  }
   
   // Note: prev-group-letter and next-group-letter are managed by updateNextButtonState
   // and updatePrevButtonState - don't update them here
@@ -5311,10 +5320,9 @@ function showShareModal() {
   document.getElementById('share-pool-code').textContent = code;
   document.getElementById('share-invite-url').textContent = inviteUrl;
   document.getElementById('share-invite-url').dataset.url = inviteUrl;
-  
-  // Generate QR code
-  generateQRCode(inviteUrl);
-  
+
+  // v2.4.6: QR code section removed from the modal; skip the generator.
+
   // Show modal
   document.getElementById('share-modal-overlay').classList.add('active');
   document.getElementById('share-modal').classList.add('active');
@@ -6170,6 +6178,21 @@ function spRenderGroups() {
   document.getElementById('sp-groups-step').textContent =
     t('betting.groupStep', { n: spState.currentGroupIdx + 1, total: 12 });
 
+  // v2.4.6: populate dynamic points-per-position hint from scoring_rules
+  const ptsHint = document.getElementById('sp-points-hint');
+  if (ptsHint) {
+    const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
+    const pts = {
+      1: rules.group_first ?? 5,
+      2: rules.group_second ?? 3,
+      3: rules.group_third ?? 2,
+      4: rules.group_fourth ?? 1
+    };
+    ptsHint.innerHTML = [1, 2, 3, 4].map(n =>
+      `<span class="pts-pill">${t('groups.pointsForPosition', { pos: n, pts: pts[n] })}</span>`
+    ).join('');
+  }
+
   // v2.2: pre-populate from FIFA ranking if not yet picked
   const prefilled = spEnsureGroupPrefilled(letter);
 
@@ -6304,29 +6327,38 @@ async function spSaveGroupsToDb(showFeedback = true) {
   const userId = state.currentUser.id;
   const poolId = state.currentPool.id;
 
-  // Delete existing for this user, then insert fresh
-  try {
-    const rows = [];
-    Object.entries(spState.groupPositions).forEach(([letter, positions]) => {
-      positions.forEach((teamCode, i) => {
-        if (teamCode) {
-          rows.push({
-            pool_id: poolId,
-            user_id: userId,
-            group_letter: letter,
-            position: i + 1,
-            team_code: teamCode
-          });
-        }
-      });
+  // Build rows from in-memory state
+  const rows = [];
+  Object.entries(spState.groupPositions).forEach(([letter, positions]) => {
+    positions.forEach((teamCode, i) => {
+      if (teamCode) {
+        rows.push({
+          pool_id: poolId,
+          user_id: userId,
+          group_letter: letter,
+          position: i + 1,
+          team_code: teamCode
+        });
+      }
     });
+  });
 
+  // v2.4.6: SAFETY GUARD - if in-memory state is completely empty, do
+  // NOT delete from DB. A truly-empty state during a save call means we
+  // were called with stale/reset state (e.g., a debounced auto-save firing
+  // after spLoadExistingPicks returned empty data). Real "clear all" never
+  // happens in this flow - the lowest valid state has at least 1 team
+  // picked. Without this guard we were wiping good DB data on edge cases.
+  if (rows.length === 0) {
+    console.warn('spSaveGroupsToDb: in-memory state is empty - skipping DB write to avoid wiping real picks');
+    return;
+  }
+
+  try {
     await supabaseClient.from('group_position_picks')
       .delete().eq('user_id', userId);
-    if (rows.length > 0) {
-      const { error } = await supabaseClient.from('group_position_picks').insert(rows);
-      if (error) console.warn('Save group_position_picks error:', error);
-    }
+    const { error } = await supabaseClient.from('group_position_picks').insert(rows);
+    if (error) console.warn('Save group_position_picks error:', error);
     if (showFeedback) showToast(t('groups.picksSaved'), 'success');
   } catch (err) {
     console.warn('spSaveGroupsToDb err:', err);
@@ -6574,6 +6606,21 @@ async function spSaveBracketToDb(showFeedback = true) {
   if (spIsLocked()) return;
   const userId = state.currentUser.id;
   const poolId = state.currentPool.id;
+
+  const rows = Object.entries(spState.bracketPicks).map(([pos, code]) => ({
+    pool_id: poolId,
+    user_id: userId,
+    team_code: code,
+    bracket_position: parseInt(pos, 10)
+  }));
+
+  // v2.4.6: SAFETY GUARD - same logic as spSaveGroupsToDb. Don't wipe DB
+  // when in-memory bracket state is empty (stale auto-save / page reset).
+  if (rows.length === 0) {
+    console.warn('spSaveBracketToDb: in-memory state is empty - skipping DB write to avoid wiping real picks');
+    return;
+  }
+
   try {
     // Delete prior bracket picks for this user
     await supabaseClient.from('knockout_picks')
@@ -6581,16 +6628,9 @@ async function spSaveBracketToDb(showFeedback = true) {
       .eq('user_id', userId)
       .not('bracket_position', 'is', null);
 
-    const rows = Object.entries(spState.bracketPicks).map(([pos, code]) => ({
-      pool_id: poolId,
-      user_id: userId,
-      team_code: code,
-      bracket_position: parseInt(pos, 10)
-    }));
-    if (rows.length > 0) {
-      const { error } = await supabaseClient.from('knockout_picks').insert(rows);
-      if (error) console.warn('Save bracket picks error:', error);
-    }
+    const { error } = await supabaseClient.from('knockout_picks').insert(rows);
+    if (error) console.warn('Save bracket picks error:', error);
+
     if (showFeedback) showToast(t('groups.picksSaved'), 'success');
   } catch (err) {
     console.warn('spSaveBracketToDb err:', err);
@@ -6908,6 +6948,32 @@ async function spRenderSummary() {
     }
   } catch (e) { /* ignore */ }
 }
+
+// v2.4.6: from the summary screen, back goes to the bracket (or to the
+// groups screen if no bracket picks exist). The old back target was the
+// removed sp-winner-screen which left users with a blank/dead view.
+function spSummaryBack() {
+  const hasBracket = spState.bracketPicks && Object.keys(spState.bracketPicks).length > 0;
+  if (hasBracket) {
+    spRenderBracket();
+    showScreen('sp-bracket-screen');
+  } else {
+    spState.currentGroupIdx = 0;
+    spRenderGroups();
+    showScreen('sp-groups-screen');
+  }
+}
+window.spSummaryBack = spSummaryBack;
+
+// v2.4.6: explicit "edit my groups & bracket" entry point from the
+// summary screen. Routes the user back into the flow so they can fix
+// missing picks (the recovery path for the v2.4.5 wipe bug).
+function spSummaryEditPicks() {
+  spState.currentGroupIdx = 0;
+  spRenderGroups();
+  showScreen('sp-groups-screen');
+}
+window.spSummaryEditPicks = spSummaryEditPicks;
 
 function spEditTopScorer() {
   // Edit from summary: use the standalone top-scorer screen.
@@ -7358,45 +7424,43 @@ function rcEmail() {
   const subject = t('recovery.email.subject');
   const body = t('recovery.email.body', { code, poolName });
   const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const fullText = `${subject}\n\n${body}`;
 
-  // v2.4.4: open in a guaranteed new window using window.open(). The
-  // previous anchor-click-with-target=_blank approach was still navigating
-  // the current tab in some Chromium variants when a web mail handler
-  // (e.g. Gmail) was registered for the mailto protocol. window.open
-  // explicitly creates a new browsing context BEFORE the protocol handler
-  // runs, so the user's app tab is preserved no matter what happens next.
-  //
-  // We open about:blank first to claim the popup, then navigate. This
-  // gives the most consistent behavior across Chromium/Firefox/Safari
-  // for mailto: URLs.
+  // v2.4.6: ALWAYS copy the full email content to the clipboard FIRST so
+  // the user has a working path no matter what their browser does with
+  // the mailto:. The previous v2.4.4 approach (about:blank + assign
+  // location) was opening blank tabs on desktop when no mailto handler
+  // was registered. With the clipboard always populated, even a stranded
+  // empty tab is fine - the user can paste into any email they prefer.
+  let clipboardOk = false;
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(fullText);
+      clipboardOk = true;
+    } else {
+      rcCopyFallback(fullText, () => { clipboardOk = true; });
+    }
+  } catch (e) { /* fall through */ }
+
+  // Then try to open the mailto in a new tab. We pass the mailto URL
+  // directly to window.open (not about:blank-then-assign) - this is the
+  // form browsers most reliably hand off to the OS mailto handler. If
+  // the browser/OS has a handler, the tab opens the mail composer; if
+  // not, the tab is blank but the clipboard already has the content.
   let popup = null;
   try {
-    popup = window.open('about:blank', '_blank', 'noopener,noreferrer');
-    if (popup) {
-      // Set location after a tick so the new window has a chance to settle
-      // before navigating to the protocol handler.
-      try { popup.opener = null; } catch (e) {}
-      popup.location.href = mailtoUrl;
-    }
-  } catch (e) {
-    popup = null;
-  }
+    popup = window.open(mailtoUrl, '_blank');
+  } catch (e) { popup = null; }
 
-  // Fallback for popup-blocked / sandboxed environments: copy the email
-  // content to the clipboard so the user can paste it manually. Never
-  // touches window.location.href on the main page so the app stays put.
-  if (!popup) {
-    const fullText = `${subject}\n\n${body}`;
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(fullText);
-      } else {
-        rcCopyFallback(fullText, () => {});
-      }
-      showToast(t('recovery.toast.emailCopied'), 'info');
-    } catch (e) {
-      showToast(t('recovery.toast.popupBlocked'), 'error');
-    }
+  // Toast wording depends on outcome
+  if (popup && clipboardOk) {
+    showToast(t('recovery.toast.emailOpenedWithBackup'), 'success');
+  } else if (clipboardOk) {
+    showToast(t('recovery.toast.emailCopied'), 'info');
+  } else if (popup) {
+    showToast(t('recovery.toast.emailOpened'), 'success');
+  } else {
+    showToast(t('recovery.toast.popupBlocked'), 'error');
   }
 
   rcState.saved = true;

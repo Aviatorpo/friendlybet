@@ -5650,6 +5650,15 @@ body:not(.ltr) .home-lang-toggle {
   transform: scale(0.5);
   transition: all .2s;
 }
+/* v2.4.6: SVG checkmark inside the wizard option circle - the ti-check
+   icon font wasn't always rendering on Windows, leaving an empty yellow
+   ball. SVG is reliable and sharp. */
+.wizard-option-check svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 3;
+  display: block;
+}
 
 .wizard-option-badge {
   position: absolute;
@@ -6736,6 +6745,138 @@ body.ltr .bet-cta-arrow {
   cursor: pointer;
 }
 .ko-single-nav .btn-ghost:hover { color: rgba(255,255,255,0.85); }
+
+/* v2.4.6: simplified share-modal styles. The previous .share-options-grid
+   (2x2) + QR code is replaced with two big WhatsApp + Telegram buttons
+   and an inline URL+copy row. The legacy classes below are kept so any
+   stale references don't break, but no longer used in the visible layout. */
+.share-modal-close-x {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+  width: 34px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  transition: all 0.18s;
+  padding: 0;
+}
+.share-modal-close-x:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+.share-options-primary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 18px 0 14px;
+}
+.share-option-large {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 12px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+}
+.share-option-large:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+.share-option-large:active { transform: scale(0.98); }
+.share-option-whatsapp {
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+}
+.share-option-telegram {
+  background: linear-gradient(135deg, #2AABEE 0%, #229ED9 100%);
+  box-shadow: 0 4px 14px rgba(42, 171, 238, 0.35);
+}
+.share-url-row {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 4px;
+}
+.share-url-row .share-url-display {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 10px 12px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  font-family: 'SFMono-Regular', 'Menlo', 'Consolas', monospace;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: start;
+  user-select: all;
+}
+.share-url-row .share-url-display:hover {
+  color: #fff;
+}
+.share-url-copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(212, 168, 83, 0.18);
+  border: 1px solid rgba(212, 168, 83, 0.45);
+  color: #d4a853;
+  border-radius: 8px;
+  padding: 0 14px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.share-url-copy-btn:hover {
+  background: rgba(212, 168, 83, 0.3);
+  color: #fff;
+}
+.share-url-copy-btn:active { transform: scale(0.97); }
+
+/* v2.4.6: dynamic points-per-position hint shown on group betting screens.
+   Lists what each position / correct team is worth so the user knows the
+   scoring on THIS pool (not a hardcoded default). */
+.sp-points-hint, .group-points-hint {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.55);
+}
+.sp-points-hint .pts-pill, .group-points-hint .pts-pill {
+  background: rgba(212, 168, 83, 0.1);
+  border: 0.5px solid rgba(212, 168, 83, 0.3);
+  color: #d4a853;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
 
 /* v2.4.5: horizontal bracket view modal (single-phase) */
 .sp-bracket-view-modal-content {
