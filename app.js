@@ -5764,7 +5764,7 @@ const DEFAULT_SCORING_RULES = {
     semi_final: 12,
     final: 20,
     tournament_winner: 30,
-    top_scorer: 10
+    top_scorer: 20
   },
   two_phase: {
     // v2.5.8: flat 1 point per correctly-predicted advancing team. Third/fourth
@@ -5778,7 +5778,7 @@ const DEFAULT_SCORING_RULES = {
     semi_final: 12,
     final: 20,
     tournament_winner: 0,
-    top_scorer: 10
+    top_scorer: 20
   }
 };
 
