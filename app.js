@@ -5956,15 +5956,37 @@ function renderWizardRulesStep() {
         <div class="wizard-rules-row">
           <span class="wizard-rules-row-label">${t('wizard.rule.' + k)}</span>
           ${isCustom
-            ? `<input type="number" min="0" max="100" value="${values[k]}"
-                  class="wizard-rules-row-input"
-                  onchange="wizardUpdateCustomRule('${k}', this.value)" />`
+            ? `<div class="wizard-rules-stepper">
+                 <button type="button" class="wizard-rules-stepper-btn" aria-label="−"
+                   onclick="wizardStepRule('${k}', -1)">−</button>
+                 <input type="number" min="0" max="100" value="${values[k]}"
+                   id="wizard-rule-${k}"
+                   class="wizard-rules-row-input"
+                   onchange="wizardUpdateCustomRule('${k}', this.value)" />
+                 <button type="button" class="wizard-rules-stepper-btn" aria-label="+"
+                   onclick="wizardStepRule('${k}', 1)">+</button>
+               </div>`
             : `<span class="wizard-rules-row-pts">${values[k]} ${t('common.points')}</span>`}
         </div>
       `).join('')}
     </div>
   `).join('');
 }
+
+// v2.5.12: +/- stepper buttons for the Custom scoring inputs.
+function wizardStepRule(key, delta) {
+  if (!wizardState.customRules) {
+    wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
+  }
+  const current = parseInt(wizardState.customRules[key] || 0, 10);
+  let next = current + delta;
+  if (next < 0) next = 0;
+  if (next > 100) next = 100;
+  wizardState.customRules[key] = next;
+  const input = document.getElementById('wizard-rule-' + key);
+  if (input) input.value = next;
+}
+window.wizardStepRule = wizardStepRule;
 
 function wizardUpdateCustomRule(key, value) {
   let v = parseInt(value, 10);
