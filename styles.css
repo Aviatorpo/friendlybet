@@ -269,13 +269,16 @@ body.ltr .btn-secondary .ti-arrow-left {
   display: inline-block;
 }
 
-/* v2.5.23: in LTR English, mirror every topbar so the back button (first
-   in DOM order) ends up on the RIGHT and the secondary action (if any)
-   on the LEFT. This matches the Hebrew RTL layout visually and avoids
-   the "left-side arrow pointing right" pattern that confused users. The
-   icon-flip rule above handles the direction; this rule handles the
-   position. RTL is unchanged - it already lays out this way by default. */
-body.ltr .topbar {
+/* v2.5.25: apply row-reverse to EVERY topbar regardless of language.
+   With DOM order [back, title, action]:
+     - LTR row-reverse → visual [action-LEFT, title, back-RIGHT]
+     - RTL row-reverse → visual [back-LEFT, title, action-RIGHT]
+       (RTL's natural reversal is cancelled by row-reverse so back
+        ends up on the visual LEFT of the screen)
+   Combined with the icon-flip rule above:
+     - English: back on RIGHT pointing LEFT
+     - Hebrew:  back on LEFT  pointing RIGHT */
+.topbar {
   flex-direction: row-reverse;
 }
 

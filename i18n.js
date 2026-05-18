@@ -513,7 +513,7 @@ const TRANSLATIONS = {
     'sharePool.toDashboard': 'לדשבורד שלי',
     'sharePool.welcomeToast': 'ברוך הבא ל-{name}!',
     'sharePool.adminCodeAlert': '🔑 קוד השחזור שלך כמארגן:\n\n{code}\n\nשמור אותו במקום בטוח! בלעדיו לא תוכל להתחבר חזרה.',
-    'sharePool.shareText': '🏆 הצטרף להימור "{poolName}" במונדיאל 2026!\n\nקוד ההימור: {code}\n\n👇 לחץ על הקישור כדי להצטרף:\n{url}\n\n📱 FriendlyBet - הימור חברים, חינמי, בלי פרסומות, בלי כסף.',
+    'sharePool.shareText': '🏆 הצטרף להימור "{poolName}" במונדיאל 2026!\n\nקוד ההימור: {code}\n\n👇 לחץ על הקישור כדי להצטרף:\n{url}\n\n⚽ FriendlyBet\nהימור חברים על מונדיאל 2026',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'החוקים נעולים',
@@ -1602,7 +1602,7 @@ const TRANSLATIONS = {
     'sharePool.toDashboard': 'To my dashboard',
     'sharePool.welcomeToast': 'Welcome to {name}!',
     'sharePool.adminCodeAlert': '🔑 Your admin recovery code:\n\n{code}\n\nKeep it safe! Without it you cannot log back in.',
-    'sharePool.shareText': '🏆 Join the "{poolName}" pool for World Cup 2026!\n\nPool code: {code}\n\n👇 Tap the link to join:\n{url}\n\n📱 FriendlyBet — free social predictions, no ads, no money.',
+    'sharePool.shareText': '🏆 Join the "{poolName}" pool for World Cup 2026!\n\nPool code: {code}\n\n👇 Tap the link to join:\n{url}\n\n⚽ FriendlyBet\nWorld Cup 2026 with your friends',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'Rules locked',
