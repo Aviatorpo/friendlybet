@@ -5817,28 +5817,27 @@ function startPoolWizard() {
 }
 
 function renderWizardStep() {
-  // Show only the current step
-  for (let i = 1; i <= 3; i++) {
+  // v2.5.9: wizard is now 2 steps. Step 3 element is removed; loop iterates
+  // only 1..2. Create button shows on step 2 directly (no Review screen).
+  const TOTAL = 2;
+  for (let i = 1; i <= TOTAL; i++) {
     const el = document.getElementById(`wizard-step-${i}`);
     if (el) el.style.display = (i === wizardState.step) ? '' : 'none';
   }
 
-  // Update progress + step label
-  const pct = wizardState.step * 33;
+  const pct = (wizardState.step / TOTAL) * 100;
   const fill = document.getElementById('wizard-progress-fill');
   if (fill) fill.style.width = `${pct}%`;
   const lbl = document.getElementById('wizard-step-label');
-  if (lbl) lbl.textContent = t('wizard.stepLabel', { n: wizardState.step, total: 3 });
+  if (lbl) lbl.textContent = t('wizard.stepLabel', { n: wizardState.step, total: TOTAL });
 
-  // Buttons
   const backBtn = document.getElementById('wizard-back-btn');
   const nextBtn = document.getElementById('wizard-next-btn');
   const createBtn = document.getElementById('wizard-create-btn');
   if (backBtn) backBtn.style.display = wizardState.step > 1 ? '' : 'none';
-  if (nextBtn) nextBtn.style.display = wizardState.step < 3 ? '' : 'none';
-  if (createBtn) createBtn.style.display = wizardState.step === 3 ? '' : 'none';
+  if (nextBtn) nextBtn.style.display = wizardState.step < TOTAL ? '' : 'none';
+  if (createBtn) createBtn.style.display = wizardState.step === TOTAL ? '' : 'none';
 
-  // Per-step rendering
   if (wizardState.step === 1) {
     document.querySelectorAll('#wizard-step-1 .wizard-option-card').forEach(c => {
       c.classList.toggle('selected', c.dataset.mode === wizardState.mode);
@@ -5846,9 +5845,6 @@ function renderWizardStep() {
   }
   if (wizardState.step === 2) {
     renderWizardRulesStep();
-  }
-  if (wizardState.step === 3) {
-    renderWizardSummary();
   }
 }
 
@@ -6014,33 +6010,11 @@ function calcMaxPoints(rules, mode) {
          rules.top_scorer;
 }
 
-function renderWizardSummary() {
-  const rules = getFinalScoringRules();
-  // v2.5.4: multipliers disabled entirely in single_phase mode
-  const multRow = document.getElementById('wizard-summary-multipliers-row');
-  if (multRow) multRow.style.display = (wizardState.mode === 'two_phase') ? '' : 'none';
-  document.getElementById('wizard-summary-pool').textContent = state.pendingPoolName || '—';
-  document.getElementById('wizard-summary-admin').textContent = state.pendingAdminNickname || '—';
-  document.getElementById('wizard-summary-mode').textContent =
-    t('wizard.step1.' + (wizardState.mode === 'single_phase' ? 'singlePhase' : 'twoPhase') + '.title');
-  document.getElementById('wizard-summary-total').textContent = calcMaxPoints(rules, wizardState.mode);
-  const rulesEl = document.getElementById('wizard-summary-rules');
-  // v2.5.7: mirror the grouped layout from step 2 - Group / Knockout / Bonus
-  rulesEl.innerHTML = _wizardRuleGroups().map(group => `
-    <div class="wizard-rules-group wizard-rules-group-compact">
-      <div class="wizard-rules-group-title">${t(group.titleKey)}</div>
-      ${group.rows.map(k => `
-        <div class="wizard-rules-row">
-          <span class="wizard-rules-row-label">${t('wizard.rule.' + k)}</span>
-          <span class="wizard-rules-row-pts">${rules[k]}</span>
-        </div>
-      `).join('')}
-    </div>
-  `).join('');
-}
+// v2.5.9: renderWizardSummary removed - step 3 (Review & Create) was deleted.
 
 function wizardNext() {
-  if (wizardState.step < 3) {
+  // v2.5.9: wizard is now 2 steps. Cap at 2.
+  if (wizardState.step < 2) {
     wizardState.step++;
     renderWizardStep();
   }
