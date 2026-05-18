@@ -224,7 +224,49 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin: 24px 0;
+  margin: 24px 0 10px;
+}
+
+/* v2.5.16: low-visual-weight recovery login link on home screen */
+.welcome-recovery-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: auto;
+  margin: 6px auto 18px;
+  padding: 8px 14px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 13px;
+  font-family: 'Heebo', sans-serif;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(255, 255, 255, 0.25);
+  transition: color 0.15s;
+}
+.welcome-recovery-link:hover {
+  color: #d4a853;
+  text-decoration-color: rgba(212, 168, 83, 0.45);
+}
+.welcome-recovery-link i { font-size: 14px; }
+
+/* v2.5.16: The UI was authored Hebrew-first - every topbar back uses
+   ti-arrow-right and every primary "Continue" button uses ti-arrow-left.
+   That's correct in Hebrew RTL (back points → toward the "back" direction,
+   continue points ← toward the forward direction). In English LTR those
+   directions are inverted, so we flip the icons here. Scoped to topbar
+   icon buttons + primary/secondary CTA buttons so unrelated arrows
+   elsewhere stay untouched. */
+body.ltr .topbar .btn-icon .ti-arrow-right,
+body.ltr .btn-primary .ti-arrow-right,
+body.ltr .btn-secondary .ti-arrow-right,
+body.ltr .btn-primary .ti-arrow-left,
+body.ltr .btn-secondary .ti-arrow-left {
+  transform: scaleX(-1);
+  display: inline-block;
 }
 
 .info-banner {

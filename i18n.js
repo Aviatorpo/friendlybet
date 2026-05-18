@@ -51,6 +51,16 @@ const TRANSLATIONS = {
     'welcome.create': 'צור הימור חדש',
     'welcome.join': 'הצטרף להימור',
     'welcome.recoveryLogin': 'יש לי קוד שחזור',
+    // v2.5.16: recovery login flow
+    'recoveryLogin.title': 'התחבר עם קוד שחזור',
+    'recoveryLogin.heading': 'הזן את הקוד',
+    'recoveryLogin.subtitle': 'הקוד בן 16 תווים שקיבלת בעת ההצטרפות או יצירת ההימור',
+    'recoveryLogin.codeLabel': 'קוד שחזור',
+    'recoveryLogin.submit': 'התחבר',
+    'recoveryLogin.errorShort': 'הקוד קצר מדי - בדוק שהזנת אותו במלואו',
+    'recoveryLogin.errorNotFound': 'קוד לא נמצא. בדוק שהזנת בדיוק את הקוד שקיבלת.',
+    'recoveryLogin.errorNoPool': 'ההימור שמשויך לקוד הזה לא נמצא',
+    'recoveryLogin.success': 'ברוך שובך, {nickname}!',
     'welcome.noSignup': 'קוד פתוח · ללא איסוף מידע אישי · <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a>',
     
     'create.title': 'צור הימור חדש',
@@ -1130,6 +1140,16 @@ const TRANSLATIONS = {
     'welcome.create': 'Create New Pool',
     'welcome.join': 'Join Pool',
     'welcome.recoveryLogin': 'I have a recovery code',
+    // v2.5.16: recovery login flow
+    'recoveryLogin.title': 'Log in with recovery code',
+    'recoveryLogin.heading': 'Enter your code',
+    'recoveryLogin.subtitle': 'The 16-character code you received when you joined or created the pool',
+    'recoveryLogin.codeLabel': 'Recovery code',
+    'recoveryLogin.submit': 'Log in',
+    'recoveryLogin.errorShort': 'Code is too short — make sure you entered it fully',
+    'recoveryLogin.errorNotFound': 'Code not found. Make sure it matches exactly what you received.',
+    'recoveryLogin.errorNoPool': 'The pool linked to this code could not be found',
+    'recoveryLogin.success': 'Welcome back, {nickname}!',
     'welcome.noSignup': 'Open source · No personal data collected · <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a>',
     
     'create.title': 'Create New Pool',

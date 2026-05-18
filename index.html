@@ -104,6 +104,13 @@ function loadTablerFallback() {
         </button>
       </div>
 
+      <!-- v2.5.16: tertiary recovery login - low-visual-weight link
+           positioned below the two primary CTAs. -->
+      <button class="welcome-recovery-link" onclick="showScreen('recovery-login-screen')">
+        <i class="ti ti-key"></i>
+        <span data-i18n="welcome.recoveryLogin">יש לי קוד שחזור</span>
+      </button>
+
       <div class="info-banner">
         <i class="ti ti-shield-check"></i>
         <span data-i18n-html="welcome.noSignup">קוד פתוח · ללא איסוף מידע אישי · <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a></span>
@@ -137,6 +144,37 @@ function loadTablerFallback() {
         <button class="btn-primary btn-large" onclick="checkPoolCode()">
           <i class="ti ti-arrow-left"></i>
           <span data-i18n="common.continue">המשך</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- v2.5.16: Recover an existing account via recovery code -->
+  <div id="recovery-login-screen" class="screen">
+    <div class="topbar">
+      <button class="btn-icon" onclick="showScreen('home-screen')">
+        <i class="ti ti-arrow-right"></i>
+      </button>
+      <span class="topbar-title" data-i18n="recoveryLogin.title">התחבר עם קוד שחזור</span>
+      <div style="width: 24px;"></div>
+    </div>
+
+    <div class="container">
+      <div class="form-section">
+        <div class="form-icon">🔑</div>
+        <h2 class="form-title" data-i18n="recoveryLogin.heading">הזן את הקוד</h2>
+        <p class="form-subtitle" data-i18n="recoveryLogin.subtitle">הקוד בן 16 תווים שקיבלת בעת ההצטרפות או יצירת ההימור</p>
+
+        <div class="form-group">
+          <label class="form-label" data-i18n="recoveryLogin.codeLabel">קוד שחזור</label>
+          <input type="text" id="recovery-login-input" class="form-input form-input-large" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="20" autocomplete="off" autocapitalize="characters" inputmode="text">
+        </div>
+
+        <div id="recovery-login-error" class="error-message" style="display: none;"></div>
+
+        <button class="btn-primary btn-large" onclick="submitRecoveryLogin()">
+          <i class="ti ti-login"></i>
+          <span data-i18n="recoveryLogin.submit">התחבר</span>
         </button>
       </div>
     </div>
@@ -775,19 +813,7 @@ function loadTablerFallback() {
           <input type="number" id="settings-max-members" class="settings-input settings-input-small" min="2" max="500" value="20">
         </div>
 
-        <div class="settings-row">
-          <div class="settings-label">
-            <i class="ti ti-shield"></i>
-            <span data-i18n="poolSettings.approveBefore">אישור משתמשים לפני הימור</span>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="settings-approve-before">
-            <span class="slider"></span>
-          </label>
-        </div>
-        <div class="settings-help">
-          <span data-i18n="poolSettings.approveBeforeHelp">הגנה מבוטים - תאשר כל משתתף ידנית לפני שיוכל להמר</span>
-        </div>
+        <!-- v2.5.16: "Approve users before betting" removed - was unused. -->
       </div>
 
       <!-- Save button (sticky bottom) -->
@@ -2120,7 +2146,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.15</span>
+      <span class="menu-version">v2.5.16</span>
     </div>
   </div>
 

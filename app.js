@@ -88,6 +88,74 @@ async function hashRecoveryCode(code) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+// v2.5.16: log in to an existing account using a recovery code. Strips
+// formatting, hashes, looks up the user by recovery_code_hash, loads the
+// matching pool, and lands the user on the dashboard.
+async function submitRecoveryLogin() {
+  const input = document.getElementById('recovery-login-input');
+  const errEl = document.getElementById('recovery-login-error');
+  if (errEl) errEl.style.display = 'none';
+  if (!input) return;
+
+  const raw = (input.value || '').replace(/[\s-]/g, '').toUpperCase();
+  if (raw.length < 12) {
+    if (errEl) {
+      errEl.textContent = t('recoveryLogin.errorShort');
+      errEl.style.display = '';
+    }
+    return;
+  }
+
+  if (!supabaseClient) {
+    initSupabase();
+    if (errEl) {
+      errEl.textContent = t('errors.serverConnecting');
+      errEl.style.display = '';
+    }
+    return;
+  }
+
+  try {
+    const hash = await hashRecoveryCode(raw);
+    const { data: users, error: userErr } = await supabaseClient
+      .from('users').select('*').eq('recovery_code_hash', hash).limit(1);
+    if (userErr) throw userErr;
+    if (!users || users.length === 0) {
+      if (errEl) {
+        errEl.textContent = t('recoveryLogin.errorNotFound');
+        errEl.style.display = '';
+      }
+      return;
+    }
+    const user = users[0];
+    const { data: pool, error: poolErr } = await supabaseClient
+      .from('pools').select('*').eq('id', user.pool_id).maybeSingle();
+    if (poolErr) throw poolErr;
+    if (!pool) {
+      if (errEl) {
+        errEl.textContent = t('recoveryLogin.errorNoPool');
+        errEl.style.display = '';
+      }
+      return;
+    }
+
+    state.currentUser = user;
+    state.currentPool = pool;
+    saveLocalUser(user);
+    localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, raw);
+
+    showToast(t('recoveryLogin.success', { nickname: user.nickname }), 'success');
+    await goToDashboard();
+  } catch (err) {
+    console.error('submitRecoveryLogin err:', err);
+    if (errEl) {
+      errEl.textContent = t('errors.unexpected');
+      errEl.style.display = '';
+    }
+  }
+}
+window.submitRecoveryLogin = submitRecoveryLogin;
+
 // שמירת מצב משתמש מקומית
 function saveLocalUser(userData) {
   localStorage.setItem(CONFIG.STORAGE_KEYS.USER_ID, userData.id);
@@ -2316,8 +2384,8 @@ async function showPoolSettings() {
     document.getElementById('settings-max-members').value = pool.max_participants;
   }
   
-  document.getElementById('settings-approve-before').checked = pool.approve_before_betting;
-  
+  // v2.5.16: "approve users before betting" toggle removed entirely.
+
   // Lock controls if rules are locked or member count > 1
   const isLocked = pool.rules_locked || (memberCount && memberCount > 1);
   applyLockState(isLocked);
@@ -2436,7 +2504,7 @@ async function savePoolSettings() {
     scoring_final: parseInt(document.getElementById('score-final').textContent) || 8,
     top_scorer_enabled: document.getElementById('settings-top-scorer').checked,
     top_scorer_bonus: parseInt(document.querySelector('.bonus-btn.active')?.dataset.bonus) || 25,
-    approve_before_betting: document.getElementById('settings-approve-before').checked,
+    // v2.5.16: approve_before_betting removed from settings
   };
   
   // Max participants
@@ -8364,6 +8432,7 @@ const _fbScreenBackMap = {
   'create-pool-screen': 'home-screen',
   'join-pool-screen': 'home-screen',
   'login-screen': 'home-screen',
+  'recovery-login-screen': 'home-screen',
   'create-nickname-screen': 'create-pool-screen',
   'join-nickname-screen': 'join-pool-screen',
   // Single-phase flow
