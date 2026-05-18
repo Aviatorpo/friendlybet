@@ -621,6 +621,19 @@ async function goToDashboard() {
     await spAutoLockPoolIfNeeded();
   }
 
+  // v2.4.5: prefetch the squads_released flag into localStorage so that
+  // when the user enters the top-scorer step the cache is already warm
+  // and we don't flash the locked view before the unlocked one.
+  try {
+    const { data: srData } = await supabaseClient
+      .from('app_settings')
+      .select('value')
+      .eq('key', 'squads_released')
+      .maybeSingle();
+    const released = !!(srData && srData.value === 'true');
+    localStorage.setItem('fb_squads_released', released ? 'true' : 'false');
+  } catch (e) { /* ignore - cache stays as-is */ }
+
   // Update dashboard display (v2.1.4: pool-code card + stats moved/removed)
   document.getElementById('dashboard-pool-name').textContent = state.currentPool.name;
   document.getElementById('dashboard-user-name').textContent = state.currentUser.nickname;
@@ -1588,6 +1601,16 @@ async function showTopScorer() {
 
   if (lockedView) lockedView.style.display = 'none';
   if (unlockedView) unlockedView.style.display = 'block';
+
+  // v2.4.5: hero description uses the pool's actual top_scorer scoring
+  // rule, not a hardcoded "+25". Falls back to 25 if the rule is missing
+  // (e.g. legacy pools that predate scoring_rules).
+  const tsBonus = (state.currentPool && state.currentPool.scoring_rules &&
+                   state.currentPool.scoring_rules.top_scorer) || 25;
+  const heroDescEl = document.querySelector('#ts-unlocked-view .ts-hero-desc');
+  if (heroDescEl) {
+    heroDescEl.innerHTML = t('tsUnlocked.heroDesc', { n: tsBonus });
+  }
 
   // Load players if not loaded
   if (topScorerState.allPlayers.length === 0) {
@@ -2786,6 +2809,8 @@ function createTeamCard(team, isSelected) {
   const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
   const teamName = lang === 'he' ? (team.name_he || team.name_en) : (team.name_en || team.name_he);
 
+  // v2.4.5: SVG checkmark inside the team-checkbox - the previous CSS
+  // ::after with "✓" character wasn't reliably visible on Windows.
   card.innerHTML = `
     <div class="team-flag">${flagEmoji}</div>
     <div class="team-info">
@@ -2793,7 +2818,11 @@ function createTeamCard(team, isSelected) {
       ${tierBadge}
     </div>
     ${resultIndicator}
-    <div class="team-checkbox"></div>
+    <div class="team-checkbox">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
   `;
   
   // Use addEventListener instead of onclick for reliability
@@ -3271,25 +3300,34 @@ function reviewBettingPicks() {
   showScreen('group-betting-screen');
 }
 
-// v2.4.3: update the progress ring on the dominant Start CTA. `picked` is
-// how many picks the user has made, `total` is how many they need. Center
-// shows: play arrow (none), percentage (in progress), or check (done).
+// v2.4.5: drive the horizontal progress bar at the bottom of the dominant
+// Start CTA card. Hidden when picked=0 (the "Start" pristine state shows
+// only the play icon). Switches the leading icon to a checkmark at 100%.
 function _fbSetCtaProgress(picked, total) {
-  const wrap = document.getElementById('bet-cta-progress');
-  const fg = wrap && wrap.querySelector('.bet-cta-ring-fg');
-  const center = document.getElementById('bet-cta-ring-center');
-  if (!wrap || !fg || !center) return;
+  const row = document.getElementById('bet-cta-progress-row');
+  const fill = document.getElementById('bet-cta-progress-fill');
+  const text = document.getElementById('bet-cta-progress-text');
+  const icon = document.getElementById('bet-cta-icon-simple');
+  if (!row || !fill || !text || !icon) return;
 
-  const pct = total > 0 ? Math.max(0, Math.min(100, Math.round((picked / total) * 100))) : 0;
-  wrap.setAttribute('data-progress', String(pct));
-  fg.setAttribute('stroke-dasharray', `${pct} 100`);
+  const safePicked = Math.max(0, Math.min(total, picked || 0));
+  const pct = total > 0 ? Math.round((safePicked / total) * 100) : 0;
 
-  if (pct === 0) {
-    center.innerHTML = '<i class="ti ti-player-play-filled"></i>';
-  } else if (pct >= 100) {
-    center.innerHTML = '<i class="ti ti-check"></i>';
+  if (safePicked === 0) {
+    row.style.display = 'none';
   } else {
-    center.innerHTML = `<span>${pct}%</span>`;
+    row.style.display = 'flex';
+    fill.style.width = pct + '%';
+    text.textContent = `${safePicked} / ${total}`;
+  }
+
+  // Swap leading icon: play (start), arrow-right (in progress), check (done)
+  if (safePicked === 0) {
+    icon.innerHTML = '<i class="ti ti-player-play-filled"></i>';
+  } else if (safePicked >= total) {
+    icon.innerHTML = '<i class="ti ti-check"></i>';
+  } else {
+    icon.innerHTML = '<i class="ti ti-flag-3-filled"></i>';
   }
 }
 
@@ -6573,6 +6611,101 @@ function spBracketNext() {
   spStartTopScorerStep();
 }
 
+// v2.4.5: horizontal bracket view modal for the SP (single-phase) flow.
+// Shows the user's picks across R16 -> QF -> SF -> FINAL as columns,
+// with TBD placeholders for positions that depend on undecided matches.
+function _spBvTeamCell(code) {
+  if (!code) {
+    return `
+      <div class="sp-bv-team tbd">
+        <span class="sp-bv-team-flag">·</span>
+        <span class="sp-bv-team-name">${t('knockoutEx.tbdTeam')}</span>
+      </div>`;
+  }
+  // For columns past R16 we mark the team as "picked" because it's only
+  // shown here as a result of the user's pick at the previous round.
+  return `
+    <div class="sp-bv-team picked">
+      <span class="sp-bv-team-flag">${getCountryFlag(code)}</span>
+      <span class="sp-bv-team-name">${getTeamName(code)}</span>
+      <svg class="sp-bv-team-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    </div>`;
+}
+
+function _spBvRenderMatch(match) {
+  const winner = spState.bracketPicks[match.pos];
+  const cell = (code) => {
+    if (!code) {
+      return `<div class="sp-bv-team tbd"><span class="sp-bv-team-flag">·</span><span class="sp-bv-team-name">${t('knockoutEx.tbdTeam')}</span></div>`;
+    }
+    const isPicked = winner === code;
+    return `
+      <div class="sp-bv-team ${isPicked ? 'picked' : ''}">
+        <span class="sp-bv-team-flag">${getCountryFlag(code)}</span>
+        <span class="sp-bv-team-name">${getTeamName(code)}</span>
+        <svg class="sp-bv-team-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>`;
+  };
+  return `
+    <div class="sp-bv-match">
+      ${cell(match.home)}
+      <div class="sp-bv-vs">vs</div>
+      ${cell(match.away)}
+    </div>`;
+}
+
+function openSpBracketView() {
+  const struct = spGetBracketStructure();
+  const grid = document.getElementById('sp-bracket-view-grid');
+  if (!grid) return;
+
+  const champion = struct.final && spState.bracketPicks[15];
+  const championHtml = champion
+    ? `<div class="sp-bv-champion-card">
+         <div class="sp-bv-trophy">🏆</div>
+         <div class="sp-bv-team-flag" style="font-size:28px;">${getCountryFlag(champion)}</div>
+         <div class="sp-bv-champion-name">${getTeamName(champion)}</div>
+       </div>`
+    : `<div class="sp-bv-champion-card tbd">
+         <div class="sp-bv-trophy">🏆</div>
+         <div class="sp-bv-champion-name">${t('betting.notPicked')}</div>
+       </div>`;
+
+  grid.innerHTML = `
+    <div class="sp-bv-column">
+      <div class="sp-bv-column-title">${t('knockout.r16')}</div>
+      ${struct.r16.map(_spBvRenderMatch).join('')}
+    </div>
+    <div class="sp-bv-column">
+      <div class="sp-bv-column-title">${t('knockout.qf')}</div>
+      ${struct.qf.map(_spBvRenderMatch).join('')}
+    </div>
+    <div class="sp-bv-column">
+      <div class="sp-bv-column-title">${t('knockout.sf')}</div>
+      ${struct.sf.map(_spBvRenderMatch).join('')}
+    </div>
+    <div class="sp-bv-column">
+      <div class="sp-bv-column-title">${t('knockout.final')}</div>
+      ${_spBvRenderMatch(struct.final)}
+    </div>
+    <div class="sp-bv-column">
+      <div class="sp-bv-column-title">${t('betting.summary.winner')}</div>
+      ${championHtml}
+    </div>
+  `;
+
+  const modal = document.getElementById('sp-bracket-view-modal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeSpBracketView() {
+  const modal = document.getElementById('sp-bracket-view-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+window.openSpBracketView = openSpBracketView;
+window.closeSpBracketView = closeSpBracketView;
+
 function spRenderWinnerScreen() {
   // Options: SF winners if user picked any; else fallback to all R16-picked teams
   const struct = spGetBracketStructure();
@@ -6644,6 +6777,19 @@ function spWinnerNext() {
 //       inline back/next nav and routes the topbar back button
 //       to the winner screen instead of the dashboard.
 function spStartTopScorerStep() {
+  // v2.4.5: if the top-scorer feature is locked (squads not yet released),
+  // skip this step entirely - jump straight to the summary. Without this
+  // the user was getting a flash of the locked-view hero before being
+  // stuck on it (the in-flow nav was hidden inside the unlocked view).
+  // The cache was warmed when the dashboard loaded.
+  const released = (localStorage.getItem('fb_squads_released') === 'true');
+  if (!released) {
+    state.spInFlow = false;
+    if (typeof spRenderSummary === 'function') spRenderSummary();
+    showScreen('sp-summary-screen');
+    return;
+  }
+
   state.spInFlow = true;
   showTopScorer();  // existing function handles the screen-level logic
   // Defer until after showTopScorer's async DOM updates
@@ -7590,6 +7736,14 @@ function koSingleRender() {
   document.getElementById('ko-single-progress-label').textContent = `${pos} / ${total}`;
   document.getElementById('ko-single-progress-fill').style.width = `${(pos / total) * 100}%`;
 
+  // v2.4.5: show the "view full bracket" floating button once we have any
+  // picks to actually display - or after the user has scrolled past the
+  // first match (so they have context for what the button does).
+  const fbBtn = document.getElementById('ko-single-view-bracket-btn');
+  if (fbBtn) {
+    fbBtn.style.display = pos > 1 ? 'flex' : 'none';
+  }
+
   const points = _koSinglePoints(step.round);
   const card = document.getElementById('ko-single-card');
   const teamHtml = (code, side) => {
@@ -7670,6 +7824,18 @@ function koSingleExit() {
   koSingle.mode = null;
   goToDashboard();
 }
+
+// v2.4.5: floating "view bracket" button on the single-match KO screen.
+// Mode-aware: for single-phase it opens the new sp-bracket-view modal;
+// for two-phase it opens the existing full bracket-screen view.
+function koSingleOpenBracketView() {
+  if (koSingle.mode === 'two-phase') {
+    if (typeof openBracketView === 'function') openBracketView();
+  } else {
+    openSpBracketView();
+  }
+}
+window.koSingleOpenBracketView = koSingleOpenBracketView;
 
 function koSingleFinish() {
   if (koSingle.advanceTimer) { clearTimeout(koSingle.advanceTimer); koSingle.advanceTimer = null; }
@@ -7825,7 +7991,8 @@ function _fbHandleBack() {
     'rc-warning-modal',
     'rc-screenshot-modal',
     'exit-app-modal',
-    'hypo-bracket-modal'
+    'hypo-bracket-modal',
+    'sp-bracket-view-modal'
   ];
   for (const id of openModals) {
     const el = document.getElementById(id);

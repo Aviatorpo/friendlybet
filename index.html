@@ -845,24 +845,23 @@ function loadTablerFallback() {
       <!-- Status sections -->
       <div class="section-title" data-i18n="dashboard.myBets">ההימורים שלי</div>
 
-      <!-- Dominant Start CTA - v2.4.3: solid colored square replaced with a
-           progress ring whose fill % is computed from how many picks the
-           user has made. The center swaps a play arrow / count / checkmark
-           depending on the state, so the visual carries actual meaning. -->
+      <!-- Dominant Start CTA - v2.4.5: replaced the ambiguous progress ring
+           with a clear horizontal progress bar at the bottom of the card
+           plus an explicit "X / N" counter. Universally readable as a
+           progress indicator. -->
       <button id="bet-status-groups" class="bet-cta-card" onclick="startBettingFromDashboard()">
-        <div class="bet-cta-progress" id="bet-cta-progress" data-progress="0">
-          <svg class="bet-cta-ring" viewBox="0 0 36 36" aria-hidden="true">
-            <circle class="bet-cta-ring-bg" cx="18" cy="18" r="15.9155"></circle>
-            <circle class="bet-cta-ring-fg" cx="18" cy="18" r="15.9155"
-                    stroke-dasharray="0 100" stroke-dashoffset="0"></circle>
-          </svg>
-          <div class="bet-cta-ring-center" id="bet-cta-ring-center">
-            <i class="ti ti-player-play-filled"></i>
-          </div>
+        <div class="bet-cta-icon-simple" id="bet-cta-icon-simple">
+          <i class="ti ti-player-play-filled"></i>
         </div>
         <div class="bet-cta-text">
           <div class="bet-cta-title" data-i18n="dashboard.startCta.title">התחל להמר על המונדיאל</div>
           <div class="bet-cta-subtitle" data-i18n="dashboard.startCta.subtitle">בחר את הקבוצות שלך לכל בית</div>
+          <div class="bet-cta-progress-row" id="bet-cta-progress-row" style="display:none;">
+            <div class="bet-cta-progress-bar">
+              <div class="bet-cta-progress-fill" id="bet-cta-progress-fill"></div>
+            </div>
+            <span class="bet-cta-progress-text" id="bet-cta-progress-text">0 / 12</span>
+          </div>
         </div>
         <i class="ti ti-chevron-left bet-cta-arrow"></i>
       </button>
@@ -1597,7 +1596,10 @@ function loadTablerFallback() {
         <div class="ts-hero">
           <div class="ts-hero-trophy">🥇</div>
           <div class="ts-hero-title" data-i18n="topScorer.heroTitle">נחש את מלך השערים</div>
-          <div class="ts-hero-desc" data-i18n-html="tsUnlocked.heroDesc">
+          <!-- v2.4.5: bonus value is dynamic, set by showTopScorer() from
+               state.currentPool.scoring_rules.top_scorer. data-i18n-html
+               removed so applyLanguage() doesn't overwrite the dynamic value. -->
+          <div class="ts-hero-desc">
             מי יבקיע הכי הרבה שערים במונדיאל?<br>
             <strong>+25 נקודות בונוס</strong> אם תנחש נכון!
           </div>
@@ -2107,7 +2109,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.4.4</span>
+      <span class="menu-version">v2.4.5</span>
     </div>
   </div>
 
@@ -2194,6 +2196,12 @@ function loadTablerFallback() {
       </button>
     </div>
   </div>
+
+  <!-- v2.4.5: floating "view full bracket" button -->
+  <button class="floating-bracket-btn" onclick="openSpBracketView()" aria-label="View full bracket">
+    <i class="ti ti-tournament"></i>
+    <span data-i18n="knockoutEx.bracketView">תצוגת ההגרלה</span>
+  </button>
 </div>
 
 <!-- C. TOURNAMENT WINNER SCREEN -->
@@ -2347,6 +2355,37 @@ function loadTablerFallback() {
       <button class="btn-ghost" id="ko-single-skip-btn" onclick="koSingleSkip()">
         <span data-i18n="knockoutFirst.skip">דלג בינתיים</span>
       </button>
+    </div>
+  </div>
+
+  <!-- v2.4.5: floating "view full bracket" button. Mode-aware: opens the
+       single-phase modal for sp picks, the two-phase bracket-screen for
+       two_phase. Hidden while no picks have been made yet (until index 0
+       is clicked through). -->
+  <button class="floating-bracket-btn" id="ko-single-view-bracket-btn" onclick="koSingleOpenBracketView()" aria-label="View full bracket" style="display:none;">
+    <i class="ti ti-tournament"></i>
+    <span data-i18n="knockoutEx.bracketView">תצוגת ההגרלה</span>
+  </button>
+</div>
+
+<!-- v2.4.5: horizontal bracket view modal for single_phase predictions.
+     Rebuilds the user's bracket from spState.bracketPicks and the
+     SP_R16_PAIRS template, showing actual picks where set and "?" for
+     positions the user hasn't decided yet. -->
+<div id="sp-bracket-view-modal" class="rc-modal" style="display:none;">
+  <div class="rc-modal-overlay" onclick="closeSpBracketView()"></div>
+  <div class="rc-modal-content sp-bracket-view-modal-content">
+    <button class="rc-modal-close" onclick="closeSpBracketView()" aria-label="Close">
+      <i class="ti ti-x"></i>
+    </button>
+    <div class="rc-modal-title rc-modal-title-center">
+      <i class="ti ti-tournament gold"></i>
+      <span data-i18n="bracketView.title">עץ ההגרלה</span>
+    </div>
+    <div class="sp-bracket-view-scroll">
+      <div class="sp-bracket-view-grid" id="sp-bracket-view-grid">
+        <!-- columns rendered by JS -->
+      </div>
     </div>
   </div>
 </div>

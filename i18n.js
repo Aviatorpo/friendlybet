@@ -780,7 +780,7 @@ const TRANSLATIONS = {
     'tsLocked.loadingPlayers': 'שגיאה בטעינת שחקנים',
 
     // === Top scorer unlocked ===
-    'tsUnlocked.heroDesc': 'מי יבקיע הכי הרבה שערים במונדיאל?<br><strong>+25 נקודות בונוס</strong> אם תנחש נכון!',
+    'tsUnlocked.heroDesc': 'מי יבקיע הכי הרבה שערים במונדיאל?<br><strong>+{n} נקודות בונוס</strong> אם תנחש נכון!',
     'tsUnlocked.hintTeam': '{code} (קבוצה)',
     'tsUnlocked.searchResults': 'תוצאות חיפוש לפי "{q}"',
     'tsUnlocked.currentLeaders': 'המובילים כרגע',
@@ -1833,7 +1833,7 @@ const TRANSLATIONS = {
     'tsLocked.loadingPlayers': 'Failed to load players',
 
     // === Top scorer unlocked ===
-    'tsUnlocked.heroDesc': 'Who will score the most goals at the World Cup?<br><strong>+25 bonus points</strong> if you predict correctly!',
+    'tsUnlocked.heroDesc': 'Who will score the most goals at the World Cup?<br><strong>+{n} bonus points</strong> if you predict correctly!',
     'tsUnlocked.hintTeam': '{code} (team)',
     'tsUnlocked.searchResults': 'Results for "{q}"',
     'tsUnlocked.currentLeaders': 'Current leaders',

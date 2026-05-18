@@ -1874,8 +1874,8 @@ input:disabled + .slider {
 }
 
 .team-checkbox {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border: 1.5px solid rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   display: flex;
@@ -1883,18 +1883,24 @@ input:disabled + .slider {
   justify-content: center;
   flex-shrink: 0;
   transition: all 0.2s;
+  color: transparent;
 }
 
+/* v2.4.5: the SELECTED state now uses a clear SVG checkmark inside a
+   green-tinted circle. Previously the "✓" character was rendered via a
+   ::after pseudo-element which didn't always render crisply (especially
+   on Windows). The SVG is sharp at any size and reads instantly. */
 .team-card.selected .team-checkbox {
-  background: #d4a853;
-  border-color: #d4a853;
+  background: #10b981;
+  border-color: #10b981;
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
 }
-
-.team-card.selected .team-checkbox::after {
-  content: "✓";
-  color: #0a1628;
-  font-weight: 700;
-  font-size: 14px;
+.team-checkbox svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 3;
+  display: block;
 }
 
 /* Group picks info */
@@ -6241,59 +6247,61 @@ body:not(.ltr) .home-lang-toggle {
   box-shadow: none;
 }
 
-/* v2.4.3: progress ring replaces the solid colored square. Reads its
-   percentage from `data-progress` (0-100) which the dashboard JS sets
-   based on actual picks. The center icon/text swaps too:
-   - 0%   -> play arrow
-   - 1-99 -> the percentage as text (e.g., "42%")
-   - 100% -> green checkmark */
-.bet-cta-progress {
-  position: relative;
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-}
-.bet-cta-ring {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-  display: block;
-}
-.bet-cta-ring-bg {
-  fill: none;
-  stroke: rgba(255,255,255,0.08);
-  stroke-width: 3;
-}
-.bet-cta-ring-fg {
-  fill: none;
-  stroke: #d4a853;
-  stroke-width: 3;
-  stroke-linecap: round;
-  pathLength: 100;
-  transition: stroke-dasharray 0.5s ease-out, stroke 0.2s;
-}
-.bet-cta-card.done .bet-cta-ring-fg {
-  stroke: #10b981;
-}
-.bet-cta-ring-center {
-  position: absolute;
-  inset: 0;
+/* v2.4.5: small leading icon (no longer a solid colored square - just
+   the icon on a transparent background). The actual progress shows as a
+   horizontal bar inside the card body, which is more universally read. */
+.bet-cta-icon-simple {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(212, 168, 83, 0.14);
+  border: 1px solid rgba(212, 168, 83, 0.35);
+  color: #d4a853;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
-  color: #d4a853;
-  letter-spacing: -0.02em;
+  font-size: 20px;
+  flex-shrink: 0;
 }
-.bet-cta-card.done .bet-cta-ring-center {
+.bet-cta-card.done .bet-cta-icon-simple {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: rgba(16, 185, 129, 0.45);
   color: #10b981;
 }
-.bet-cta-ring-center i {
-  font-size: 22px;
+
+/* Horizontal progress bar at the bottom of the CTA card */
+.bet-cta-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
 }
-.bet-cta-progress[data-progress="0"] .bet-cta-ring-center {
-  color: #d4a853;
+.bet-cta-progress-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.bet-cta-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #d4a853, #f5c518);
+  border-radius: 999px;
+  transition: width 0.5s ease-out, background 0.2s;
+}
+.bet-cta-card.done .bet-cta-progress-fill {
+  background: linear-gradient(90deg, #10b981, #34d399);
+}
+.bet-cta-progress-text {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.bet-cta-card.done .bet-cta-progress-text {
+  color: #10b981;
 }
 .bet-cta-text {
   flex: 1;
@@ -6728,6 +6736,125 @@ body.ltr .bet-cta-arrow {
   cursor: pointer;
 }
 .ko-single-nav .btn-ghost:hover { color: rgba(255,255,255,0.85); }
+
+/* v2.4.5: horizontal bracket view modal (single-phase) */
+.sp-bracket-view-modal-content {
+  width: min(96vw, 920px);
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+}
+.sp-bracket-view-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 6px 2px 12px;
+  -webkit-overflow-scrolling: touch;
+}
+.sp-bracket-view-grid {
+  display: flex;
+  gap: 12px;
+  min-width: max-content;
+  align-items: stretch;
+  padding: 8px 2px;
+}
+.sp-bv-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: space-around;
+  min-width: 160px;
+}
+.sp-bv-column-title {
+  font-size: 11px;
+  color: #d4a853;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: center;
+  padding: 6px 0;
+  position: sticky;
+  top: 0;
+  background: linear-gradient(180deg, #142030 70%, transparent);
+}
+.sp-bv-match {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 76px;
+}
+.sp-bv-team {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.2);
+  min-height: 28px;
+}
+.sp-bv-team.picked {
+  background: rgba(16, 185, 129, 0.18);
+  color: #fff;
+  font-weight: 600;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+.sp-bv-team.tbd {
+  color: rgba(255, 255, 255, 0.35);
+  font-style: italic;
+}
+.sp-bv-team-flag {
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.sp-bv-team-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sp-bv-team-check {
+  width: 14px;
+  height: 14px;
+  color: #10b981;
+  flex-shrink: 0;
+}
+.sp-bv-team:not(.picked) .sp-bv-team-check { display: none; }
+.sp-bv-vs {
+  text-align: center;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  padding: 2px 0;
+}
+.sp-bv-champion-card {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.2), rgba(212, 168, 83, 0.05));
+  border: 1px solid rgba(212, 168, 83, 0.5);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  min-height: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.sp-bv-champion-card .sp-bv-trophy { font-size: 24px; }
+.sp-bv-champion-card .sp-bv-champion-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+.sp-bv-champion-card.tbd .sp-bv-champion-name {
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
 
 /* v2.4: exit-app modal */
 .rc-modal-exit {
