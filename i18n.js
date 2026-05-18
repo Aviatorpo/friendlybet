@@ -1049,7 +1049,7 @@ const TRANSLATIONS = {
     'recovery.txt.loginAt': 'היכנס דרך:',
 
     // === v2.4 additions (Hebrew) ===
-    'recovery.button.screenshot': 'צלם מסך',
+    'recovery.button.screenshot': 'שמור כתמונה',
     'recovery.button.email': 'שלח לי במייל',
     'recovery.button.download': 'הורד קובץ טקסט',
     'recovery.button.emailMe': 'שלח את הקוד לאימייל שלי',
@@ -2138,7 +2138,7 @@ const TRANSLATIONS = {
     'recovery.txt.loginAt': 'Login at:',
 
     // === v2.4 additions (English) ===
-    'recovery.button.screenshot': 'Screenshot',
+    'recovery.button.screenshot': 'Save as image',
     'recovery.button.email': 'Email myself',
     'recovery.button.download': 'Download Text File',
     'recovery.button.emailMe': 'Send the code to my email',

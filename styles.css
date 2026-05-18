@@ -4248,32 +4248,33 @@ input:disabled + .slider {
   font-size: 16px;
 }
 
-/* v2.5.14: inline variant of the bracket-view button, placed directly
-   below the team-selection card instead of floating. */
+/* v2.5.17: subtle inline bracket-view link, not a CTA. Sits below the
+   team-selection card as a "view also" option, not a forward action. */
 .ko-bracket-view-inline {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  width: 100%;
-  margin: 14px 0 10px;
-  padding: 10px 14px;
-  background: linear-gradient(135deg, rgba(212, 168, 83, 0.18), rgba(212, 168, 83, 0.08));
-  color: #d4a853;
-  border: 1px solid rgba(212, 168, 83, 0.45);
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
+  gap: 6px;
+  width: auto;
+  margin: 12px auto 4px;
+  padding: 6px 12px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.55);
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
   font-family: 'Heebo', sans-serif;
   cursor: pointer;
-  transition: all 0.2s;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(255, 255, 255, 0.2);
+  transition: color 0.15s;
 }
 .ko-bracket-view-inline:hover {
-  background: linear-gradient(135deg, rgba(212, 168, 83, 0.28), rgba(212, 168, 83, 0.14));
-  border-color: #d4a853;
+  color: #d4a853;
+  text-decoration-color: rgba(212, 168, 83, 0.35);
 }
-.ko-bracket-view-inline:active { transform: scale(0.98); }
-.ko-bracket-view-inline i { font-size: 18px; }
+.ko-bracket-view-inline i { font-size: 14px; }
 
 .floating-bracket-btn:hover, .floating-bracket-btn:active {
   transform: translateY(-1px);

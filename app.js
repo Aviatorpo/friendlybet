@@ -6305,6 +6305,8 @@ async function spLoadExistingPicks() {
   let anyDataLoaded = false;
   let anyError = false;
 
+  console.log('[spLoadExistingPicks] start | user=' + userId + ' | pool=' + poolId);
+
   // v2.5.15: load with pool_id filter. If it returns zero rows for a table,
   // retry the same query WITHOUT pool_id - this rescues legacy picks saved
   // before pool_id-aware DELETEs (where existing rows may have a stale or
@@ -6348,6 +6350,11 @@ async function spLoadExistingPicks() {
     const { data: twpArr, error: twpErr } = await loadOrFallback('tournament_winner_picks');
     if (twpErr) { console.warn('load tournament_winner_picks err:', twpErr); anyError = true; }
     else if (twpArr && twpArr.length > 0) { newWinner = twpArr[0].team_code; anyDataLoaded = true; }
+
+    console.log('[spLoadExistingPicks] result | groups=' + Object.keys(newGroups).length +
+      ' bracket=' + Object.keys(newBracket).length +
+      ' winner=' + (newWinner || 'none') +
+      ' anyDataLoaded=' + anyDataLoaded + ' anyError=' + anyError);
 
     // Commit policy:
     //   - if we got any data, trust DB
@@ -7120,9 +7127,28 @@ window.spTopScorerBack = spTopScorerBack;
 window.spTopScorerNext = spTopScorerNext;
 
 async function spRenderSummary() {
-  // v2.2.1: render directly from in-memory spState. The user just
-  // made all these picks - in-memory IS the source of truth.
-  // (The old reload-from-DB call would wipe state if DB queries failed.)
+  // v2.2.1: render directly from in-memory spState (mid-flow).
+  // v2.5.17: SAFETY NET - if in-memory state is empty (entered summary
+  //          on a fresh page load via View Predictions and the load
+  //          didn't populate state for whatever reason), re-load from
+  //          DB before rendering. This catches edge cases where the
+  //          earlier spLoadExistingPicks ran with stale state.currentUser
+  //          or state.currentPool. Also logs what we have so the user can
+  //          share dev tools output if it still misbehaves.
+  const groupCount = Object.values(spState.groupPositions || {})
+    .reduce((n, arr) => n + (arr || []).filter(Boolean).length, 0);
+  const bracketCount = Object.keys(spState.bracketPicks || {}).length;
+  console.log('[spRenderSummary] in-memory: groups=' + groupCount + ' bracket=' + bracketCount + ' winner=' + (spState.tournamentWinner || 'none') +
+    ' | user=' + (state.currentUser && state.currentUser.id) +
+    ' | pool=' + (state.currentPool && state.currentPool.id));
+  if (groupCount === 0 && bracketCount === 0 && !spState.tournamentWinner) {
+    console.warn('[spRenderSummary] in-memory state empty - re-loading from DB');
+    await spLoadExistingPicks();
+    const recheckGroups = Object.values(spState.groupPositions || {})
+      .reduce((n, arr) => n + (arr || []).filter(Boolean).length, 0);
+    console.log('[spRenderSummary] after reload: groups=' + recheckGroups +
+      ' bracket=' + Object.keys(spState.bracketPicks || {}).length);
+  }
 
   // v2.5.15: always reset the Save button to its clean state when entering
   // the summary screen. Previously the button was left in "Saving..." +
