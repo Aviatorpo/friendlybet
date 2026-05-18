@@ -2108,7 +2108,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.9</span>
+      <span class="menu-version">v2.5.10</span>
     </div>
   </div>
 
@@ -2459,8 +2459,9 @@ function loadTablerFallback() {
       <div class="rc-warning-privacy"><i class="ti ti-lock"></i> <span data-i18n="recovery.privacy">שמור על פרטיות. אל תשתף.</span></div>
     </div>
 
-    <!-- v2.4: three-up action row - Screenshot / Email / Download -->
-    <div class="rc-actions-primary">
+    <!-- v2.5.10: two-up action row - Screenshot + Email myself only.
+         Download Text File option removed at user request. -->
+    <div class="rc-actions-primary rc-actions-primary-two">
       <button class="rc-action-btn" id="rc-btn-screenshot" onclick="rcScreenshot()">
         <i class="ti ti-camera rc-action-icon"></i>
         <span class="rc-action-label" data-i18n="recovery.button.screenshot">צלם מסך</span>
@@ -2468,10 +2469,6 @@ function loadTablerFallback() {
       <button class="rc-action-btn" id="rc-btn-email" onclick="rcEmail()">
         <i class="ti ti-mail rc-action-icon"></i>
         <span class="rc-action-label" data-i18n="recovery.button.email">אימייל</span>
-      </button>
-      <button class="rc-action-btn" id="rc-btn-download" onclick="rcDownload()">
-        <i class="ti ti-download rc-action-icon"></i>
-        <span class="rc-action-label" data-i18n="recovery.button.download">הורד קובץ טקסט</span>
       </button>
     </div>
 

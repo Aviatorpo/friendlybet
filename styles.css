@@ -6634,6 +6634,10 @@ body.ltr .bet-cta-arrow {
   gap: 8px;
   margin-bottom: 8px;
 }
+/* v2.5.10: two-up variant (Screenshot + Email myself only) */
+.rc-actions-primary-two {
+  grid-template-columns: 1fr 1fr;
+}
 /* v2.5.5: small helper line below the 3 action buttons */
 .rc-actions-hint {
   font-size: 12px;
