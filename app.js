@@ -7070,18 +7070,19 @@ async function spSubmitPredictions() {
     return;
   }
 
-  // v2.3: no more "are you sure" - this is a save, not a lock.
-  //       The user can keep editing until the tournament starts.
+  // v2.5.2: groups/bracket/winner are auto-saved on every change throughout
+  //         the flow, so the DB is already current by the time we land here.
+  //         Only the predictions_submitted_at update is actually needed -
+  //         1 round-trip instead of 4, and a button spinner so the user
+  //         sees immediate feedback during that single round-trip.
+  const btn = document.getElementById('sp-submit-btn');
+  const originalBtnHtml = btn ? btn.innerHTML : null;
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<i class="ti ti-loader-2" style="animation: spin 0.8s linear infinite;"></i><span>${t('groups.savingPicks')}</span>`;
+  }
 
   try {
-    // Save everything one more time
-    await spSaveGroupsToDb(false);
-    await spSaveBracketToDb(false);
-    await spSaveWinnerToDb(false);
-
-    // Mark that the user has completed a full pass (informational only).
-    // The hard lock will be applied automatically when the tournament starts
-    // (pool.locked_at via spAutoLockPoolIfNeeded).
     const submittedAt = new Date().toISOString();
     const { error } = await supabaseClient.from('users')
       .update({ predictions_submitted_at: submittedAt })
@@ -7091,13 +7092,14 @@ async function spSubmitPredictions() {
     }
     state.currentUser.predictions_submitted_at = submittedAt;
 
-    // v2.4.2: removed "predictions saved" toast - the dashboard already
-    // flips its CTA to "View your predictions" once submitted_at is set,
-    // which is itself the confirmation.
     goToDashboard();
   } catch (err) {
     console.error('spSubmitPredictions err:', err);
     showToast(t('errors.unexpected'), 'error');
+    if (btn && originalBtnHtml !== null) {
+      btn.disabled = false;
+      btn.innerHTML = originalBtnHtml;
+    }
   }
 }
 
