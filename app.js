@@ -397,12 +397,12 @@ async function completeRegistration() {
     state.pendingNickname = null;
     state.pendingRecoveryCode = null;
 
-    showToast(t('sharePool.welcomeToast', { name: state.currentPool.name }), 'success');
-
+    // v2.4.2: removed "welcomeToast" - the dashboard itself shows the pool
+    // name + greeting on arrival, so the toast was just duplicate noise.
     // Go to dashboard - user can play immediately!
     setTimeout(() => {
       goToDashboard();
-    }, 1000);
+    }, 200);
 
   } catch (err) {
     console.error('Complete registration error:', err);
@@ -541,8 +541,9 @@ async function createPool() {
     state.currentUser = adminUser;
     state.pendingRecoveryCode = adminRecoveryCode;
     saveLocalUser(adminUser);
-    
-    showToast(t('errors.poolCreated'), 'success');
+
+    // v2.4.2: removed "Pool created!" toast - the recovery code screen we're
+    // about to show already announces it in its hero title.
     // v2.1.3: legacy path - go straight to dashboard via the new recovery screen
     localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, adminRecoveryCode);
     if (typeof showRecoveryCode === 'function') {
@@ -2491,8 +2492,10 @@ async function startGroupBetting() {
   // Load results data for "got it right" indicators
   await loadResultsData();
 
-  showToast(t('groups.loadingTeams'), 'info');
-  
+  // v2.4.2: removed "Loading teams..." toast - the screen change to the
+  // group-betting screen is itself the feedback; the toast only confused
+  // when the load was fast.
+
   try {
     // Load all teams grouped by group_letter
     const { data: teams, error: teamsError } = await supabaseClient
@@ -3204,8 +3207,8 @@ async function finishGroupBetting() {
     return;
   }
 
-  // Save final state
-  showToast(t('groups.savingToast'), 'info');
+  // v2.4.2: removed "Saving..." toast - the completion screen we're about
+  // to show is itself the success confirmation.
   await savePicksToDb(false);
   
   // Calculate max possible points
@@ -3361,7 +3364,8 @@ async function startKnockoutBetting() {
     return;
   }
 
-  showToast(t('knockoutEx.loadingKO'), 'info');
+  // v2.4.2: removed "Loading knockout..." toast - the screen change is the
+  // feedback. If load is slow, the screen just appears a beat later.
 
   // Load all teams
   const { data: teams } = await supabaseClient
@@ -5081,7 +5085,8 @@ function filterMatches(filter) {
 }
 
 async function refreshMatches() {
-  showToast(t('matchesEx.syncing'), 'info');
+  // v2.4.2: dropped the back-to-back "syncing..."/"synced" pair; one
+  // success toast at the end is enough feedback for a manual refresh.
   await loadMatches();
   showToast(t('matchesEx.synced'), 'success');
 }
@@ -5927,7 +5932,8 @@ async function wizardCreatePool() {
     state.pendingRecoveryCode = adminRecoveryCode;
     saveLocalUser(adminUser);
 
-    showToast(t('errors.poolCreated'), 'success');
+    // v2.4.2: removed "Pool created!" toast - the recovery code screen
+    // already announces it in its hero title.
     // v2.1: persist code so the menu view can find it later
     localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, adminRecoveryCode);
     // v2.1.3: show recovery code screen, then go straight to dashboard
@@ -6715,7 +6721,9 @@ async function spSubmitPredictions() {
     }
     state.currentUser.predictions_submitted_at = submittedAt;
 
-    showToast(t('betting.saved'), 'success');
+    // v2.4.2: removed "predictions saved" toast - the dashboard already
+    // flips its CTA to "View your predictions" once submitted_at is set,
+    // which is itself the confirmation.
     goToDashboard();
   } catch (err) {
     console.error('spSubmitPredictions err:', err);
@@ -6977,6 +6985,7 @@ function showRecoveryCode(mode, recoveryCode, poolName) {
     titleEl.textContent = t('recovery.viewMode.title');
     subEl.style.display = 'none';
     continueBtn.querySelector('span').textContent = t('recovery.button.close');
+    continueBtn.dataset.rcAction = 'continue';
     // Reduce animation for view mode
     if (codeCard) codeCard.style.animation = 'none';
   } else {
@@ -6984,11 +6993,17 @@ function showRecoveryCode(mode, recoveryCode, poolName) {
     if (mode === 'joined') {
       titleEl.textContent = t('recovery.joined.title');
       subEl.textContent = t('recovery.joined.subtitle');
+      continueBtn.querySelector('span').textContent = t('recovery.button.continue');
+      continueBtn.dataset.rcAction = 'continue';
     } else {
+      // v2.4.2: nudge user to email themselves the code as the primary action.
+      // The button now triggers email + continues, so saving the code is the
+      // default path rather than an afterthought.
       titleEl.textContent = t('recovery.poolCreated.title');
       subEl.textContent = t('recovery.poolCreated.subtitle');
+      continueBtn.querySelector('span').textContent = t('recovery.button.emailMe');
+      continueBtn.dataset.rcAction = 'emailContinue';
     }
-    continueBtn.querySelector('span').textContent = t('recovery.button.continue');
     if (codeCard) codeCard.style.animation = '';
   }
 
@@ -7114,12 +7129,26 @@ function rcEmail() {
   const subject = t('recovery.email.subject');
   const body = t('recovery.email.body', { code, poolName });
   const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  // Use location.href so mobile mail clients open reliably
-  window.location.href = url;
+
+  // v2.4.2: open the mail client in a new window/tab so the app stays open.
+  // The previous `window.location.href = url` reliably opened the mail
+  // client on mobile but on desktop (and some mobile browsers) replaced
+  // the current page, effectively closing the app. Using an anchor with
+  // target=_blank delegates to the OS mailto handler without navigating.
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
   rcState.saved = true;
   const btn = document.getElementById('rc-btn-email');
-  btn.classList.add('rc-success');
-  setTimeout(() => btn.classList.remove('rc-success'), 2000);
+  if (btn) {
+    btn.classList.add('rc-success');
+    setTimeout(() => btn.classList.remove('rc-success'), 2000);
+  }
 }
 
 function rcDownload() {
@@ -7186,6 +7215,20 @@ function rcContinue() {
     goToDashboard();
     return;
   }
+
+  // v2.4.2: for "pool created" mode the primary action is to email the
+  // code to yourself THEN continue. Trigger the email handler so the user
+  // doesn't need to also tap the small Email button. If the user already
+  // saved (screenshot/email/download) the button becomes a plain continue.
+  const continueBtn = document.getElementById('rc-continue-btn');
+  const action = continueBtn && continueBtn.dataset.rcAction;
+  if (action === 'emailContinue' && !rcState.saved) {
+    rcEmail();
+    // Brief beat so the mail client gets to open before we navigate away
+    setTimeout(() => rcProceedToNext(), 400);
+    return;
+  }
+
   if (!rcState.saved) {
     const modal = document.getElementById('rc-warning-modal');
     if (modal) modal.style.display = 'flex';

@@ -1020,6 +1020,7 @@ const TRANSLATIONS = {
     'recovery.button.screenshot': 'צלם מסך',
     'recovery.button.email': 'אימייל',
     'recovery.button.download': 'הורד TXT',
+    'recovery.button.emailMe': 'שלח את הקוד לאימייל שלי',
     'recovery.toast.screenshotDone': '✓ סומן כצולם',
 
     'recovery.screenshot.title': 'צילום מסך של קוד השחזור',
@@ -2067,6 +2068,7 @@ const TRANSLATIONS = {
     'recovery.button.screenshot': 'Screenshot',
     'recovery.button.email': 'Email',
     'recovery.button.download': 'Download TXT',
+    'recovery.button.emailMe': 'Send the code to my email',
     'recovery.toast.screenshotDone': '✓ Marked as captured',
 
     'recovery.screenshot.title': 'Screenshot the recovery code',
