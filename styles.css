@@ -6565,6 +6565,31 @@ body.ltr .bet-cta-arrow {
   background: rgba(239,68,68,0.24);
 }
 
+/* v2.4.4: positive-affirmation "Yes, I saved it - continue" button.
+   Green because it's the happy-path answer to "did you save?" */
+.rc-modal-continue-yes {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  color: #fff;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(16,185,129,0.25);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.rc-modal-continue-yes:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16,185,129,0.4);
+}
+.rc-modal-continue-yes:active { transform: scale(0.98); }
+
 /* v2.4: knockout first-time single-match walkthrough */
 .ko-single-progress-wrap {
   padding: 0 16px;

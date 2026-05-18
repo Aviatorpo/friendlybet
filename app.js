@@ -7079,17 +7079,14 @@ function showRecoveryCode(mode, recoveryCode, poolName) {
     if (mode === 'joined') {
       titleEl.textContent = t('recovery.joined.title');
       subEl.textContent = t('recovery.joined.subtitle');
-      continueBtn.querySelector('span').textContent = t('recovery.button.continue');
-      continueBtn.dataset.rcAction = 'continue';
     } else {
-      // v2.4.2: nudge user to email themselves the code as the primary action.
-      // The button now triggers email + continues, so saving the code is the
-      // default path rather than an afterthought.
       titleEl.textContent = t('recovery.poolCreated.title');
       subEl.textContent = t('recovery.poolCreated.subtitle');
-      continueBtn.querySelector('span').textContent = t('recovery.button.emailMe');
-      continueBtn.dataset.rcAction = 'emailContinue';
     }
+    // v2.4.4: green button is always "Continue to pool". Clicking it opens
+    // the "Did you save the code?" modal so the save step is explicit.
+    continueBtn.querySelector('span').textContent = t('recovery.button.continue');
+    continueBtn.dataset.rcAction = 'continueWithConfirm';
     if (codeCard) codeCard.style.animation = '';
   }
 
@@ -7214,20 +7211,47 @@ function rcEmail() {
   const poolName = rcState.poolName;
   const subject = t('recovery.email.subject');
   const body = t('recovery.email.body', { code, poolName });
-  const url = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-  // v2.4.2: open the mail client in a new window/tab so the app stays open.
-  // The previous `window.location.href = url` reliably opened the mail
-  // client on mobile but on desktop (and some mobile browsers) replaced
-  // the current page, effectively closing the app. Using an anchor with
-  // target=_blank delegates to the OS mailto handler without navigating.
-  const a = document.createElement('a');
-  a.href = url;
-  a.target = '_blank';
-  a.rel = 'noopener noreferrer';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  // v2.4.4: open in a guaranteed new window using window.open(). The
+  // previous anchor-click-with-target=_blank approach was still navigating
+  // the current tab in some Chromium variants when a web mail handler
+  // (e.g. Gmail) was registered for the mailto protocol. window.open
+  // explicitly creates a new browsing context BEFORE the protocol handler
+  // runs, so the user's app tab is preserved no matter what happens next.
+  //
+  // We open about:blank first to claim the popup, then navigate. This
+  // gives the most consistent behavior across Chromium/Firefox/Safari
+  // for mailto: URLs.
+  let popup = null;
+  try {
+    popup = window.open('about:blank', '_blank', 'noopener,noreferrer');
+    if (popup) {
+      // Set location after a tick so the new window has a chance to settle
+      // before navigating to the protocol handler.
+      try { popup.opener = null; } catch (e) {}
+      popup.location.href = mailtoUrl;
+    }
+  } catch (e) {
+    popup = null;
+  }
+
+  // Fallback for popup-blocked / sandboxed environments: copy the email
+  // content to the clipboard so the user can paste it manually. Never
+  // touches window.location.href on the main page so the app stays put.
+  if (!popup) {
+    const fullText = `${subject}\n\n${body}`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(fullText);
+      } else {
+        rcCopyFallback(fullText, () => {});
+      }
+      showToast(t('recovery.toast.emailCopied'), 'info');
+    } catch (e) {
+      showToast(t('recovery.toast.popupBlocked'), 'error');
+    }
+  }
 
   rcState.saved = true;
   const btn = document.getElementById('rc-btn-email');
@@ -7302,25 +7326,11 @@ function rcContinue() {
     return;
   }
 
-  // v2.4.2: for "pool created" mode the primary action is to email the
-  // code to yourself THEN continue. Trigger the email handler so the user
-  // doesn't need to also tap the small Email button. If the user already
-  // saved (screenshot/email/download) the button becomes a plain continue.
-  const continueBtn = document.getElementById('rc-continue-btn');
-  const action = continueBtn && continueBtn.dataset.rcAction;
-  if (action === 'emailContinue' && !rcState.saved) {
-    rcEmail();
-    // Brief beat so the mail client gets to open before we navigate away
-    setTimeout(() => rcProceedToNext(), 400);
-    return;
-  }
-
-  if (!rcState.saved) {
-    const modal = document.getElementById('rc-warning-modal');
-    if (modal) modal.style.display = 'flex';
-    return;
-  }
-  rcProceedToNext();
+  // v2.4.4: ALWAYS open the "Did you save the code?" confirmation modal so
+  // the save step is explicit even if the user thinks they saved. The user
+  // can answer Yes (continue) or No (close modal, save first).
+  const modal = document.getElementById('rc-warning-modal');
+  if (modal) modal.style.display = 'flex';
 }
 
 function rcCloseModal() {

@@ -2107,7 +2107,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.4.3</span>
+      <span class="menu-version">v2.4.4</span>
     </div>
   </div>
 
@@ -2452,18 +2452,21 @@ function loadTablerFallback() {
   </div>
 </div>
 
-<!-- v2.1 Recovery code warning modal -->
+<!-- v2.4.4: explicit "Did you save the code?" confirmation modal. Shown
+     every time the user clicks Continue on the recovery code screen so the
+     save step is never accidentally skipped. -->
 <div id="rc-warning-modal" class="rc-modal" style="display:none;">
   <div class="rc-modal-overlay" onclick="rcCloseModal()"></div>
   <div class="rc-modal-content">
-    <div class="rc-modal-title"><i class="ti ti-alert-triangle"></i> <span data-i18n="recovery.warningModal.title">אתה בטוח?</span></div>
-    <div class="rc-modal-text" data-i18n="recovery.warningModal.text">עדיין לא שמרת את קוד השחזור. בלעדיו, לא תוכל להתחבר ממכשיר אחר.</div>
+    <div class="rc-modal-title"><i class="ti ti-help-circle gold"></i> <span data-i18n="recovery.warningModal.title">שמרת את הקוד?</span></div>
+    <div class="rc-modal-text" data-i18n="recovery.warningModal.text">צריך את קוד השחזור כדי להתחבר ממכשיר אחר. בלעדיו - אין דרך להיכנס לחשבון שלך מחדש.</div>
     <div class="rc-modal-actions">
       <button class="btn-secondary" onclick="rcCloseModal()">
-        <span data-i18n="recovery.warningModal.saveCode">שמור את הקוד</span>
+        <span data-i18n="recovery.warningModal.notYet">עדיין לא, חזור לשמור</span>
       </button>
-      <button class="rc-modal-continue" onclick="rcContinueAnyway()">
-        <span data-i18n="recovery.warningModal.continueAnyway">המשך בכל מקרה</span>
+      <button class="rc-modal-continue-yes" onclick="rcContinueAnyway()">
+        <i class="ti ti-check"></i>
+        <span data-i18n="recovery.warningModal.yesSaved">כן, המשך לבריכה</span>
       </button>
     </div>
   </div>
