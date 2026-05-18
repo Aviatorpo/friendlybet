@@ -47,7 +47,7 @@ const TRANSLATIONS = {
     // === Onboarding ===
     'welcome.title': 'FriendlyBet',
     'welcome.subtitle': 'הימור חברים על מונדיאל 2026',
-    'welcome.tagline': '100% חינמי · ללא פרסומות · ללא הגבלות · ללא תשלום',
+    'welcome.tagline': '100% חינמי · ללא פרסומות · ללא הגבלות',
     'welcome.create': 'צור הימור חדש',
     'welcome.join': 'הצטרף להימור',
     'welcome.recoveryLogin': 'יש לי קוד שחזור',
