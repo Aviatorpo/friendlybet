@@ -415,28 +415,21 @@ function loadTablerFallback() {
         <h2 class="wizard-step-title" data-i18n="wizard.step2.title">חוקי הניקוד</h2>
         <p class="wizard-step-subtitle" data-i18n="wizard.step2.subtitle">איך מחושבות נקודות?</p>
 
-        <div class="wizard-option-cards">
-          <div class="wizard-option-card selected" data-rules="default" onclick="wizardSelectRules('default')">
-            <div class="wizard-option-icon">⭐</div>
-            <div class="wizard-option-title" data-i18n="wizard.step2.useDefaults">שימוש בחוקים המומלצים</div>
-            <div class="wizard-option-desc" data-i18n="wizard.step2.useDefaults.desc">הגדרות מאוזנות שמתאימות לרוב הקבוצות.</div>
-            <div class="wizard-rules-preview" id="wizard-rules-preview">
-              <!-- Populated by JS based on mode -->
-            </div>
-            <div class="wizard-option-check"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          </div>
-
-          <div class="wizard-option-card" data-rules="custom" onclick="wizardSelectRules('custom')">
-            <div class="wizard-option-icon">🎛️</div>
-            <div class="wizard-option-title" data-i18n="wizard.step2.customize">התאמה אישית של החוקים</div>
-            <div class="wizard-option-desc" data-i18n="wizard.step2.customize.desc">קבע בעצמך את הניקוד לכל שלב.</div>
-
-            <div class="wizard-rules-form" id="wizard-rules-form" style="display:none;">
-              <!-- Populated by JS based on mode -->
-            </div>
-            <div class="wizard-option-check"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-          </div>
+        <!-- v2.5.7: pill toggle replaces the two big option cards.
+             Below it: a single grouped list (Group / Knockout / Bonus). -->
+        <div class="wizard-rules-toggle" role="tablist">
+          <button type="button" class="wizard-rules-toggle-btn selected" data-rules="default" onclick="wizardSelectRules('default')">
+            <i class="ti ti-star"></i>
+            <span data-i18n="wizard.step2.useDefaults">מומלץ</span>
+          </button>
+          <button type="button" class="wizard-rules-toggle-btn" data-rules="custom" onclick="wizardSelectRules('custom')">
+            <i class="ti ti-adjustments"></i>
+            <span data-i18n="wizard.step2.customize">התאמה אישית</span>
+          </button>
         </div>
+
+        <!-- Unified rules list. JS builds the 3 grouped sections inside. -->
+        <div class="wizard-rules-list" id="wizard-rules-list"></div>
 
         <!-- v2.5.3: risk multipliers info block (matches pool-settings-screen) -->
         <!-- v2.5.4: hidden in single_phase mode (multipliers disabled there) -->
@@ -592,8 +585,36 @@ function loadTablerFallback() {
         </div>
       </div>
 
-      <!-- Game format -->
-      <div class="settings-section">
+      <!-- v2.5.7: betting mode summary - shown only for v2 (single_phase) pools.
+           Legacy two-phase admin sections (num_stages, group_pick_type, legacy
+           scoring columns) are hidden for v2 because they live in scoring_rules JSONB. -->
+      <div class="settings-section" id="settings-v2-mode-section" style="display:none;">
+        <div class="settings-section-title" data-i18n="poolSettings.bettingMode">שיטת ההימור</div>
+        <div class="settings-row settings-row-display">
+          <div class="settings-label">
+            <i class="ti ti-bolt"></i>
+            <span data-i18n="poolSettings.bettingModeLabel">מצב</span>
+          </div>
+          <div class="settings-value" id="settings-betting-mode-value">—</div>
+        </div>
+        <div class="settings-help">
+          <span data-i18n="poolSettings.bettingModeHelp">הימור חד-שלבי: בתים + נוקאאוט + מלך שערים, הכל לפני הטורניר.</span>
+        </div>
+      </div>
+
+      <!-- v2.5.7: read-only scoring rules from scoring_rules JSONB.
+           Populated by JS from the live pool config. Single-phase only. -->
+      <div class="settings-section" id="settings-v2-scoring-section" style="display:none;">
+        <div class="settings-section-title">
+          <i class="ti ti-trophy gold"></i>
+          <span data-i18n="poolSettings.scoring">ניקוד לכל שלב</span>
+        </div>
+        <div id="settings-v2-scoring-list" class="wizard-rules-list"></div>
+        <div class="settings-help" data-i18n="poolSettings.scoringReadOnly">חוקי הניקוד נקבעו ביצירת ההימור ולא ניתנים לשינוי.</div>
+      </div>
+
+      <!-- Game format (legacy two-phase - shown only for two_phase pools) -->
+      <div class="settings-section" id="settings-legacy-format-section">
         <div class="settings-section-title" data-i18n="poolSettings.format">מבנה ההימור</div>
 
         <div class="settings-row">
@@ -668,8 +689,8 @@ function loadTablerFallback() {
         </div>
       </div>
 
-      <!-- Scoring -->
-      <div class="settings-section">
+      <!-- Scoring (legacy two-phase - hidden for single_phase pools) -->
+      <div class="settings-section" id="settings-legacy-scoring-section">
         <div class="settings-section-title">
           <i class="ti ti-trophy gold"></i>
           <span data-i18n="poolSettings.scoring">ניקוד לכל שלב</span>
@@ -749,8 +770,8 @@ function loadTablerFallback() {
         </button>
       </div>
 
-      <!-- Top scorer -->
-      <div class="settings-section">
+      <!-- Top scorer (legacy two-phase - hidden for single_phase pools) -->
+      <div class="settings-section" id="settings-legacy-topscorer-section">
         <div class="settings-section-title">
           <i class="ti ti-crown gold"></i>
           <span data-i18n="poolSettings.topScorer">מלך השערים</span>
@@ -2084,18 +2105,9 @@ function loadTablerFallback() {
         <span data-i18n="dashboard.menu.matches">לוח משחקים</span>
         <i class="ti ti-chevron-left menu-arrow"></i>
       </button>
-      <button class="menu-item" onclick="showTopScorer()">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-inline-end: 8px;">
-          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-          <path d="M4 22h16"></path>
-          <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
-          <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
-          <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-        </svg>
-        <span data-i18n="dashboard.menu.topScorer">מלך השערים</span>
-        <i class="ti ti-chevron-left menu-arrow"></i>
-      </button>
+      <!-- v2.5.7: removed standalone "Top Scorer" menu item - top scorer is
+           now a step within the SP betting flow, no longer a separate
+           destination from the menu. -->
       <button class="menu-item" onclick="showHelp()">
         <i class="ti ti-help gold"></i>
         <span data-i18n="dashboard.menu.help">עזרה ושאלות נפוצות</span>
@@ -2145,7 +2157,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.6</span>
+      <span class="menu-version">v2.5.7</span>
     </div>
   </div>
 
@@ -2508,13 +2520,8 @@ function loadTablerFallback() {
       </button>
       <button class="rc-action-btn" id="rc-btn-download" onclick="rcDownload()">
         <i class="ti ti-download rc-action-icon"></i>
-        <span class="rc-action-label" data-i18n="recovery.button.download">הורד TXT</span>
+        <span class="rc-action-label" data-i18n="recovery.button.download">הורד קובץ טקסט</span>
       </button>
-    </div>
-
-    <!-- v2.5.5: helper line clarifying that the Email button sends to the user themself -->
-    <div class="rc-actions-hint" data-i18n="recovery.actionsHint">
-      💡 כפתור המייל פותח את אפליקציית המייל שלך עם הקוד מוכן — שלח את ההודעה לעצמך כדי לשמור עותק
     </div>
 
     <!-- Hidden legacy copy button kept so rcCopy() handlers still work if
@@ -2547,7 +2554,7 @@ function loadTablerFallback() {
     <div id="rc-screenshot-preview" class="rc-screenshot-preview"></div>
     <button id="rc-screenshot-save" class="rc-continue-btn rc-modal-continue-btn" onclick="rcSaveScreenshot()" disabled>
       <i class="ti ti-device-floppy"></i>
-      <span data-i18n="recovery.screenshot.save">שמור / שתף תמונה</span>
+      <span data-i18n="recovery.screenshot.save">שמור תמונה למכשיר</span>
     </button>
 
     <!-- Hidden fallback block: shown only if html2canvas fails to load -->

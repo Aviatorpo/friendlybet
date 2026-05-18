@@ -2274,6 +2274,27 @@ async function showPoolSettings() {
   // v2.5.4: hide multipliers entirely for single_phase pools (concept doesn't apply)
   const multSection = document.getElementById('settings-multipliers-section');
   if (multSection) multSection.style.display = (pool.betting_mode === 'single_phase') ? 'none' : '';
+
+  // v2.5.7: gate v2 vs legacy sections based on betting_mode
+  const isV2 = pool.betting_mode === 'single_phase';
+  const v2ModeSection = document.getElementById('settings-v2-mode-section');
+  const v2ScoringSection = document.getElementById('settings-v2-scoring-section');
+  const legacyFormat = document.getElementById('settings-legacy-format-section');
+  const legacyScoring = document.getElementById('settings-legacy-scoring-section');
+  const legacyTopScorer = document.getElementById('settings-legacy-topscorer-section');
+  if (v2ModeSection)   v2ModeSection.style.display   = isV2 ? '' : 'none';
+  if (v2ScoringSection) v2ScoringSection.style.display = isV2 ? '' : 'none';
+  if (legacyFormat)    legacyFormat.style.display    = isV2 ? 'none' : '';
+  if (legacyScoring)   legacyScoring.style.display   = isV2 ? 'none' : '';
+  if (legacyTopScorer) legacyTopScorer.style.display = isV2 ? 'none' : '';
+
+  if (isV2) {
+    // Mode label
+    const modeEl = document.getElementById('settings-betting-mode-value');
+    if (modeEl) modeEl.textContent = t('wizard.step1.singlePhase.title');
+    // Render scoring rules from JSONB into the v2 list
+    _renderV2ScoringList(pool);
+  }
   
   // Scoring
   document.getElementById('score-group-stage').textContent = pool.scoring_group_stage;
@@ -5836,15 +5857,8 @@ function wizardSelectMode(mode) {
 
 function wizardSelectRules(choice) {
   wizardState.rulesChoice = choice;
-  document.querySelectorAll('#wizard-step-2 .wizard-option-card').forEach(c => {
-    c.classList.toggle('selected', c.dataset.rules === choice);
-  });
-  const form = document.getElementById('wizard-rules-form');
-  if (form) form.style.display = (choice === 'custom') ? '' : 'none';
-  if (choice === 'custom' && !wizardState.customRules) {
-    wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
-    renderCustomRulesForm();
-  }
+  // v2.5.7: single render path handles toggle state + list rebuild
+  renderWizardRulesStep();
 }
 
 function getWizardRuleKeys() {
@@ -5856,45 +5870,97 @@ function getWizardRuleKeys() {
           'round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
 }
 
+// v2.5.7: read-only render of a pool's scoring_rules into the Pool Settings
+// screen for single_phase pools. Mirrors the grouped wizard layout so the
+// user sees the same shape they configured in the wizard.
+function _renderV2ScoringList(pool) {
+  const list = document.getElementById('settings-v2-scoring-list');
+  if (!list) return;
+  const rules = (pool && pool.scoring_rules) || DEFAULT_SCORING_RULES.single_phase;
+  const groups = [
+    {
+      titleKey: 'wizard.ruleGroup.group',
+      rows: ['group_first', 'group_second', 'group_third', 'group_fourth']
+    },
+    {
+      titleKey: 'wizard.ruleGroup.knockout',
+      rows: ['round_of_16', 'quarter_final', 'semi_final', 'final']
+    },
+    {
+      titleKey: 'wizard.ruleGroup.bonus',
+      rows: ['tournament_winner', 'top_scorer']
+    }
+  ];
+  list.innerHTML = groups.map(group => `
+    <div class="wizard-rules-group">
+      <div class="wizard-rules-group-title">${t(group.titleKey)}</div>
+      ${group.rows.map(k => `
+        <div class="wizard-rules-row">
+          <span class="wizard-rules-row-label">${t('wizard.rule.' + k)}</span>
+          <span class="wizard-rules-row-pts">${rules[k] != null ? rules[k] : 0} ${t('common.points')}</span>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+// v2.5.7: organize the rule keys into 3 semantic groups for the redesigned
+// scoring-rules screen (and the step-3 summary). Returns only groups that
+// actually have keys in the current mode.
+function _wizardRuleGroups() {
+  const keys = getWizardRuleKeys();
+  const inSet = (k) => keys.includes(k);
+  return [
+    {
+      titleKey: 'wizard.ruleGroup.group',
+      rows: ['group_first', 'group_second', 'group_third', 'group_fourth'].filter(inSet)
+    },
+    {
+      titleKey: 'wizard.ruleGroup.knockout',
+      rows: ['round_of_16', 'quarter_final', 'semi_final', 'final'].filter(inSet)
+    },
+    {
+      titleKey: 'wizard.ruleGroup.bonus',
+      rows: ['tournament_winner', 'top_scorer'].filter(inSet)
+    }
+  ].filter(g => g.rows.length > 0);
+}
+
 function renderWizardRulesStep() {
   // v2.5.4: multipliers disabled entirely in single_phase mode
   const multInfo = document.getElementById('wizard-multipliers-info');
   if (multInfo) multInfo.style.display = (wizardState.mode === 'two_phase') ? '' : 'none';
 
-  // Default preview
-  const preview = document.getElementById('wizard-rules-preview');
-  if (preview) {
-    const defaults = DEFAULT_SCORING_RULES[wizardState.mode];
-    preview.innerHTML = getWizardRuleKeys().map(k => `
-      <div class="rule-row">
-        <span>${t('wizard.rule.' + k)}</span>
-        <span class="pts">${defaults[k]} ${t('common.points')}</span>
-      </div>
-    `).join('');
-  }
-  // Render custom form if needed
-  document.querySelectorAll('#wizard-step-2 .wizard-option-card').forEach(c => {
-    c.classList.toggle('selected', c.dataset.rules === wizardState.rulesChoice);
+  // v2.5.7: pill toggle - active state mirrors rulesChoice
+  document.querySelectorAll('#wizard-step-2 .wizard-rules-toggle-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.rules === wizardState.rulesChoice);
   });
-  const form = document.getElementById('wizard-rules-form');
-  if (form) form.style.display = (wizardState.rulesChoice === 'custom') ? '' : 'none';
-  if (wizardState.rulesChoice === 'custom') {
-    if (!wizardState.customRules) {
-      wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
-    }
-    renderCustomRulesForm();
-  }
-}
 
-function renderCustomRulesForm() {
-  const form = document.getElementById('wizard-rules-form');
-  if (!form) return;
-  form.innerHTML = getWizardRuleKeys().map(k => `
-    <div class="rule-input-row">
-      <label>${t('wizard.rule.' + k)}</label>
-      <input type="number" min="0" max="100" value="${wizardState.customRules[k]}"
-        onchange="wizardUpdateCustomRule('${k}', this.value)"
-        onclick="event.stopPropagation()" />
+  // Seed custom rules from defaults the first time the user enters custom mode
+  if (wizardState.rulesChoice === 'custom' && !wizardState.customRules) {
+    wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
+  }
+
+  // Build the unified grouped list
+  const list = document.getElementById('wizard-rules-list');
+  if (!list) return;
+  const defaults = DEFAULT_SCORING_RULES[wizardState.mode];
+  const values = wizardState.rulesChoice === 'custom' ? wizardState.customRules : defaults;
+  const isCustom = wizardState.rulesChoice === 'custom';
+
+  list.innerHTML = _wizardRuleGroups().map(group => `
+    <div class="wizard-rules-group">
+      <div class="wizard-rules-group-title">${t(group.titleKey)}</div>
+      ${group.rows.map(k => `
+        <div class="wizard-rules-row">
+          <span class="wizard-rules-row-label">${t('wizard.rule.' + k)}</span>
+          ${isCustom
+            ? `<input type="number" min="0" max="100" value="${values[k]}"
+                  class="wizard-rules-row-input"
+                  onchange="wizardUpdateCustomRule('${k}', this.value)" />`
+            : `<span class="wizard-rules-row-pts">${values[k]} ${t('common.points')}</span>`}
+        </div>
+      `).join('')}
     </div>
   `).join('');
 }
@@ -5954,10 +6020,16 @@ function renderWizardSummary() {
     t('wizard.step1.' + (wizardState.mode === 'single_phase' ? 'singlePhase' : 'twoPhase') + '.title');
   document.getElementById('wizard-summary-total').textContent = calcMaxPoints(rules, wizardState.mode);
   const rulesEl = document.getElementById('wizard-summary-rules');
-  rulesEl.innerHTML = getWizardRuleKeys().map(k => `
-    <div class="rule-row">
-      <span>${t('wizard.rule.' + k)}</span>
-      <span class="pts">${rules[k]}</span>
+  // v2.5.7: mirror the grouped layout from step 2 - Group / Knockout / Bonus
+  rulesEl.innerHTML = _wizardRuleGroups().map(group => `
+    <div class="wizard-rules-group wizard-rules-group-compact">
+      <div class="wizard-rules-group-title">${t(group.titleKey)}</div>
+      ${group.rows.map(k => `
+        <div class="wizard-rules-row">
+          <span class="wizard-rules-row-label">${t('wizard.rule.' + k)}</span>
+          <span class="wizard-rules-row-pts">${rules[k]}</span>
+        </div>
+      `).join('')}
     </div>
   `).join('');
 }
@@ -6151,8 +6223,12 @@ async function spLoadExistingPicks() {
   // actually got data back. The previous version wiped spState BEFORE
   // any await, so any failed or empty query would erase the picks the
   // user just made in this session (the "summary shows nothing" bug).
-  if (!state.currentUser) return;
+  // v2.5.7 fix: ALWAYS filter by pool_id. Without it, users in multiple
+  // pools would mix picks across pools, and View Predictions in one pool
+  // could load picks for a different pool (or none at all).
+  if (!state.currentUser || !state.currentPool) return;
   const userId = state.currentUser.id;
+  const poolId = state.currentPool.id;
 
   const newGroups = {};
   const newBracket = {};
@@ -6162,7 +6238,8 @@ async function spLoadExistingPicks() {
 
   try {
     const { data: gpp, error: gppErr } = await supabaseClient
-      .from('group_position_picks').select('*').eq('user_id', userId);
+      .from('group_position_picks').select('*')
+      .eq('user_id', userId).eq('pool_id', poolId);
     if (gppErr) { console.warn('load group_position_picks err:', gppErr); anyError = true; }
     else if (gpp) {
       gpp.forEach(p => {
@@ -6173,7 +6250,8 @@ async function spLoadExistingPicks() {
     }
 
     const { data: kp, error: kpErr } = await supabaseClient
-      .from('knockout_picks').select('*').eq('user_id', userId)
+      .from('knockout_picks').select('*')
+      .eq('user_id', userId).eq('pool_id', poolId)
       .not('bracket_position', 'is', null);
     if (kpErr) { console.warn('load knockout_picks err:', kpErr); anyError = true; }
     else (kp || []).forEach(p => {
@@ -6182,7 +6260,8 @@ async function spLoadExistingPicks() {
     });
 
     const { data: twp, error: twpErr } = await supabaseClient
-      .from('tournament_winner_picks').select('*').eq('user_id', userId).maybeSingle();
+      .from('tournament_winner_picks').select('*')
+      .eq('user_id', userId).eq('pool_id', poolId).maybeSingle();
     if (twpErr) { console.warn('load tournament_winner_picks err:', twpErr); anyError = true; }
     else if (twp) { newWinner = twp.team_code; anyDataLoaded = true; }
 
@@ -6397,8 +6476,10 @@ async function spSaveGroupsToDb(showFeedback = true) {
   }
 
   try {
+    // v2.5.7: scope DELETE to this pool too - otherwise saving in pool B
+    // wipes the user's picks from pool A.
     await supabaseClient.from('group_position_picks')
-      .delete().eq('user_id', userId);
+      .delete().eq('user_id', userId).eq('pool_id', poolId);
     const { error } = await supabaseClient.from('group_position_picks').insert(rows);
     if (error) console.warn('Save group_position_picks error:', error);
     if (showFeedback) showToast(t('groups.picksSaved'), 'success');
@@ -6664,10 +6745,12 @@ async function spSaveBracketToDb(showFeedback = true) {
   }
 
   try {
-    // Delete prior bracket picks for this user
+    // v2.5.7: scope DELETE to this pool. Without pool_id, saving bracket
+    // picks in pool B would wipe pool A's bracket.
     await supabaseClient.from('knockout_picks')
       .delete()
       .eq('user_id', userId)
+      .eq('pool_id', poolId)
       .not('bracket_position', 'is', null);
 
     const { error } = await supabaseClient.from('knockout_picks').insert(rows);
@@ -6870,9 +6953,10 @@ async function spSaveWinnerToDb(showFeedback = true) {
   const userId = state.currentUser.id;
   const poolId = state.currentPool.id;
   try {
-    // Upsert
+    // v2.5.7: scope DELETE to this pool. Without pool_id, picking the
+    // winner in pool B would clear pool A's winner pick.
     await supabaseClient.from('tournament_winner_picks')
-      .delete().eq('user_id', userId);
+      .delete().eq('user_id', userId).eq('pool_id', poolId);
     const { error } = await supabaseClient.from('tournament_winner_picks').insert({
       pool_id: poolId,
       user_id: userId,
@@ -7863,29 +7947,14 @@ function _rcFallbackToInstructions() {
   if (confirmBtn) confirmBtn.style.display = '';
 }
 
-async function rcSaveScreenshot() {
+// v2.5.7: simplified to download-only (no Web Share). User explicitly asked
+// for a single "save to device" path, no share sheet. One click on the Save
+// button triggers a direct PNG download in every browser.
+function rcSaveScreenshot() {
   const blob = rcState._screenshotBlob;
   if (!blob) return;
   const filename = `friendlybet-recovery-${(rcState.code || 'code').replace(/-/g, '')}.png`;
 
-  // Mobile: try Web Share API with file - opens native share sheet so the
-  // user can save to Photos, send to themselves on WhatsApp, etc.
-  if (navigator.canShare && navigator.share) {
-    try {
-      const file = new File([blob], filename, { type: 'image/png' });
-      if (navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: 'FriendlyBet recovery code' });
-        rcConfirmScreenshot();
-        return;
-      }
-    } catch (err) {
-      // AbortError = user dismissed the share sheet; don't double-trigger a download
-      if (err && err.name === 'AbortError') return;
-      // Other errors fall through to the download path
-    }
-  }
-
-  // Desktop / no Web Share file support: trigger PNG download
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;

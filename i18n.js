@@ -509,6 +509,11 @@ const TRANSLATIONS = {
     'poolSettings.lockedTitle': 'החוקים נעולים',
     'poolSettings.lockedText': 'משתתפים כבר הצטרפו - לא ניתן לשנות חוקים',
     'poolSettings.poolInfo': 'פרטי ההימור',
+    // v2.5.7: v2 (single_phase) pool settings sections
+    'poolSettings.bettingMode': 'שיטת ההימור',
+    'poolSettings.bettingModeLabel': 'מצב',
+    'poolSettings.bettingModeHelp': 'הימור חד-שלבי: בתים + נוקאאוט + מלך שערים, הכל לפני תחילת הטורניר.',
+    'poolSettings.scoringReadOnly': 'חוקי הניקוד נקבעו ביצירת ההימור ולא ניתנים לשינוי.',
     'poolSettings.poolName': 'שם ההימור',
     'poolSettings.poolCode': 'קוד ההימור',
     'poolSettings.poolMembers': 'משתתפים',
@@ -935,6 +940,10 @@ const TRANSLATIONS = {
     'wizard.rule.final': 'גמר',
     'wizard.rule.tournament_winner': 'מנצחת הטורניר',
     'wizard.rule.top_scorer': 'מלך השערים',
+    // v2.5.7: scoring rule group titles
+    'wizard.ruleGroup.group': 'שלב הבתים',
+    'wizard.ruleGroup.knockout': 'נוקאאוט',
+    'wizard.ruleGroup.bonus': 'בונוסים',
 
     // === v2.0.0 - Single-phase betting ===
     'betting.singlePhase.title': 'הימור חד-פעמי',
@@ -1032,10 +1041,8 @@ const TRANSLATIONS = {
     // === v2.4 additions (Hebrew) ===
     'recovery.button.screenshot': 'צלם מסך',
     'recovery.button.email': 'שלח לי במייל',
-    'recovery.button.download': 'הורד TXT',
+    'recovery.button.download': 'הורד קובץ טקסט',
     'recovery.button.emailMe': 'שלח את הקוד לאימייל שלי',
-    // v2.5.5: helper line under the action buttons to clarify the email flow
-    'recovery.actionsHint': '💡 כפתור המייל פותח את אפליקציית המייל שלך עם הקוד מוכן — שלח את ההודעה לעצמך כדי לשמור עותק',
     'recovery.toast.screenshotDone': '✓ סומן כצולם',
     'recovery.toast.emailCopied': '✓ תוכן המייל הועתק ללוח - הדבק במייל שלך',
     'recovery.toast.emailOpened': '✓ נפתח חלון מייל',
@@ -1050,7 +1057,7 @@ const TRANSLATIONS = {
     'recovery.screenshot.done': 'צילמתי, המשך',
     // v2.5.6: auto-screenshot strings
     'recovery.screenshot.generating': 'מכין תמונה...',
-    'recovery.screenshot.save': 'שמור / שתף תמונה',
+    'recovery.screenshot.save': 'שמור תמונה למכשיר',
     'recovery.screenshot.ios1': 'לחץ בו-זמנית על {k1} + {k2}',
     'recovery.screenshot.ios2': 'התמונה תיווצר ותופיע לזמן קצר בתחתית המסך',
     'recovery.screenshot.ios3': 'הצילום יישמר אוטומטית באפליקציית התמונות',
@@ -1581,6 +1588,11 @@ const TRANSLATIONS = {
     'poolSettings.lockedTitle': 'Rules locked',
     'poolSettings.lockedText': 'Members already joined — rules cannot be changed',
     'poolSettings.poolInfo': 'Pool info',
+    // v2.5.7: v2 (single_phase) pool settings sections
+    'poolSettings.bettingMode': 'Betting mode',
+    'poolSettings.bettingModeLabel': 'Mode',
+    'poolSettings.bettingModeHelp': 'Single-phase: groups + knockout + top scorer, all picked before the tournament starts.',
+    'poolSettings.scoringReadOnly': 'Scoring rules are locked at pool creation and cannot be changed.',
     'poolSettings.poolName': 'Pool name',
     'poolSettings.poolCode': 'Pool code',
     'poolSettings.poolMembers': 'Members',
@@ -2002,9 +2014,13 @@ const TRANSLATIONS = {
     'wizard.rule.group_third': 'Group 3rd place',
     'wizard.rule.group_fourth': 'Group 4th place',
     'wizard.rule.round_of_16': 'Round of 16',
-    'wizard.rule.quarter_final': 'Quarter Finals',
-    'wizard.rule.semi_final': 'Semi Finals',
+    'wizard.rule.quarter_final': 'Quarter Final',
+    'wizard.rule.semi_final': 'Semi Final',
     'wizard.rule.final': 'Final',
+    // v2.5.7: scoring rule group titles
+    'wizard.ruleGroup.group': 'Group stage',
+    'wizard.ruleGroup.knockout': 'Knockout',
+    'wizard.ruleGroup.bonus': 'Bonus',
     'wizard.rule.tournament_winner': 'Tournament Winner',
     'wizard.rule.top_scorer': 'Top Scorer',
 
@@ -2104,10 +2120,8 @@ const TRANSLATIONS = {
     // === v2.4 additions (English) ===
     'recovery.button.screenshot': 'Screenshot',
     'recovery.button.email': 'Email myself',
-    'recovery.button.download': 'Download TXT',
+    'recovery.button.download': 'Download Text File',
     'recovery.button.emailMe': 'Send the code to my email',
-    // v2.5.5: helper line under the action buttons to clarify the email flow
-    'recovery.actionsHint': '💡 The email button opens your mail app pre-filled — send the message to yourself to keep a copy',
     'recovery.toast.screenshotDone': '✓ Marked as captured',
     'recovery.toast.emailCopied': '✓ Email content copied to clipboard - paste into your email',
     'recovery.toast.emailOpened': '✓ Opened your email client',
@@ -2122,7 +2136,7 @@ const TRANSLATIONS = {
     'recovery.screenshot.done': 'Captured, continue',
     // v2.5.6: auto-screenshot strings
     'recovery.screenshot.generating': 'Generating image...',
-    'recovery.screenshot.save': 'Save / Share image',
+    'recovery.screenshot.save': 'Save image to device',
     'recovery.screenshot.ios1': 'Press {k1} + {k2} at the same time',
     'recovery.screenshot.ios2': 'A thumbnail will briefly appear at the bottom of the screen',
     'recovery.screenshot.ios3': 'The screenshot is saved automatically to the Photos app',
