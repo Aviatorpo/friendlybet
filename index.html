@@ -845,9 +845,21 @@ function loadTablerFallback() {
       <!-- Status sections -->
       <div class="section-title" data-i18n="dashboard.myBets">ההימורים שלי</div>
 
-      <!-- Dominant Start CTA - now a big card -->
+      <!-- Dominant Start CTA - v2.4.3: solid colored square replaced with a
+           progress ring whose fill % is computed from how many picks the
+           user has made. The center swaps a play arrow / count / checkmark
+           depending on the state, so the visual carries actual meaning. -->
       <button id="bet-status-groups" class="bet-cta-card" onclick="startBettingFromDashboard()">
-        <div class="bet-cta-icon"><i class="ti ti-flag-3-filled"></i></div>
+        <div class="bet-cta-progress" id="bet-cta-progress" data-progress="0">
+          <svg class="bet-cta-ring" viewBox="0 0 36 36" aria-hidden="true">
+            <circle class="bet-cta-ring-bg" cx="18" cy="18" r="15.9155"></circle>
+            <circle class="bet-cta-ring-fg" cx="18" cy="18" r="15.9155"
+                    stroke-dasharray="0 100" stroke-dashoffset="0"></circle>
+          </svg>
+          <div class="bet-cta-ring-center" id="bet-cta-ring-center">
+            <i class="ti ti-player-play-filled"></i>
+          </div>
+        </div>
         <div class="bet-cta-text">
           <div class="bet-cta-title" data-i18n="dashboard.startCta.title">התחל להמר על המונדיאל</div>
           <div class="bet-cta-subtitle" data-i18n="dashboard.startCta.subtitle">בחר את הקבוצות שלך לכל בית</div>
@@ -1636,10 +1648,13 @@ function loadTablerFallback() {
         <div class="ts-search-hints" id="ts-search-hints">
           <div class="ts-search-hints-title" data-i18n="topScorer.hintsTitle">💡 דוגמאות לחיפוש:</div>
           <div class="ts-search-hints-examples">
-            <span class="ts-search-hint-chip" onclick="setSearchValue('Messi')">Messi</span>
-            <span class="ts-search-hint-chip" onclick="setSearchValue('Kane')">Kane</span>
-            <span class="ts-search-hint-chip" onclick="setSearchValue('Mbappé')">Mbappé</span>
-            <span class="ts-search-hint-chip" onclick="setSearchValue('Haaland')">Haaland</span>
+            <!-- v2.4.3: player chips pick the player directly; team chips
+                 (ARG / BRA) still pre-fill the search so the user can
+                 browse the squad and pick the right one. -->
+            <span class="ts-search-hint-chip" onclick="pickTopScorerByName('Messi')">Messi</span>
+            <span class="ts-search-hint-chip" onclick="pickTopScorerByName('Kane')">Kane</span>
+            <span class="ts-search-hint-chip" onclick="pickTopScorerByName('Mbappé')">Mbappé</span>
+            <span class="ts-search-hint-chip" onclick="pickTopScorerByName('Haaland')">Haaland</span>
             <span class="ts-search-hint-chip" onclick="setSearchValue('ARG')" id="ts-hint-arg">ARG (קבוצה)</span>
             <span class="ts-search-hint-chip" onclick="setSearchValue('BRA')" id="ts-hint-bra">BRA (קבוצה)</span>
           </div>
@@ -2092,7 +2107,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.4.2</span>
+      <span class="menu-version">v2.4.3</span>
     </div>
   </div>
 

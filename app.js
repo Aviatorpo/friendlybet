@@ -1837,6 +1837,36 @@ function setSearchValue(value) {
   }
 }
 
+// v2.4.3: clicking a player hint chip ("Messi", "Kane", ...) used to
+// only pre-fill the search and ask the user to click the result. That
+// was an extra step for what is essentially an explicit pick. This
+// helper searches and, if it finds a clean match, selects that player
+// directly so the UI flips to "your pick: X" without a middle step.
+async function pickTopScorerByName(name) {
+  const input = document.getElementById('ts-search-input');
+  if (input) input.value = name;
+
+  await performTopScorerSearch(name);
+
+  const results = topScorerState.filteredPlayers || [];
+  if (results.length === 0) {
+    // Nothing matched - just render the empty/no-results state.
+    renderTopScorerList();
+    return;
+  }
+
+  // Prefer an exact match on the English or Hebrew display name; otherwise
+  // take the top sorted result (performTopScorerSearch already puts the
+  // most relevant entry first).
+  const lower = name.toLowerCase();
+  const exact = results.find(p =>
+    (p.name_en && p.name_en.toLowerCase() === lower) ||
+    (p.name_he && p.name_he.toLowerCase() === lower)
+  );
+  await selectTopScorer(exact || results[0]);
+}
+window.pickTopScorerByName = pickTopScorerByName;
+
 async function performTopScorerSearch(query) {
   if (!query) {
     topScorerState.filteredPlayers = [];
@@ -3241,6 +3271,28 @@ function reviewBettingPicks() {
   showScreen('group-betting-screen');
 }
 
+// v2.4.3: update the progress ring on the dominant Start CTA. `picked` is
+// how many picks the user has made, `total` is how many they need. Center
+// shows: play arrow (none), percentage (in progress), or check (done).
+function _fbSetCtaProgress(picked, total) {
+  const wrap = document.getElementById('bet-cta-progress');
+  const fg = wrap && wrap.querySelector('.bet-cta-ring-fg');
+  const center = document.getElementById('bet-cta-ring-center');
+  if (!wrap || !fg || !center) return;
+
+  const pct = total > 0 ? Math.max(0, Math.min(100, Math.round((picked / total) * 100))) : 0;
+  wrap.setAttribute('data-progress', String(pct));
+  fg.setAttribute('stroke-dasharray', `${pct} 100`);
+
+  if (pct === 0) {
+    center.innerHTML = '<i class="ti ti-player-play-filled"></i>';
+  } else if (pct >= 100) {
+    center.innerHTML = '<i class="ti ti-check"></i>';
+  } else {
+    center.innerHTML = `<span>${pct}%</span>`;
+  }
+}
+
 // Update dashboard CTA card to reflect betting progress (v2.3 mode-aware)
 async function updateBettingStatusOnDashboard() {
   if (!state.currentUser || !supabaseClient) return;
@@ -3267,6 +3319,7 @@ async function updateBettingStatusOnDashboard() {
       titleEl.textContent = t('dashboard.viewCta.title');
       subtitleEl.textContent = t('dashboard.viewCta.subtitle');
       ctaEl.classList.add('done');
+      _fbSetCtaProgress(1, 1);
       return;
     }
     // Otherwise count v2 group_position_picks to show progress
@@ -3289,6 +3342,7 @@ async function updateBettingStatusOnDashboard() {
       subtitleEl.textContent = t('dashboard.continueCta.almostDone');
       ctaEl.classList.remove('done');
     }
+    _fbSetCtaProgress(groupsFilled, 12);
     return;
   }
 
@@ -3311,6 +3365,7 @@ async function updateBettingStatusOnDashboard() {
     subtitleEl.textContent = t('dashboard.status.completedGroups');
     ctaEl.classList.add('done');
   }
+  _fbSetCtaProgress(picksCount, 32);
 }
 
 // ============================================================
@@ -6430,6 +6485,14 @@ function spPickBracket(bracketPos, teamCode) {
     spClearDownstream(bracketPos);
   }
 
+  // v2.4.3: the winner of the FINAL match (bracket position 15) IS the
+  // tournament winner - so sync it automatically and persist. This removes
+  // the duplicate sp-winner-screen step from the flow.
+  if (parseInt(bracketPos, 10) === 15) {
+    spState.tournamentWinner = teamCode;
+    spSaveWinnerToDb(false);
+  }
+
   spRenderBracket();
   spAutoSaveBracket();
 }
@@ -6446,6 +6509,18 @@ function spClearDownstream(bracketPos) {
   let p = parents[bracketPos];
   while (p) {
     delete spState.bracketPicks[p];
+    // v2.4.3: bracket position 15 IS the tournament winner. If we just
+    // invalidated that pick, also clear the mirrored tournamentWinner
+    // value (and the row in tournament_winner_picks).
+    if (p === 15) {
+      spState.tournamentWinner = null;
+      try {
+        if (supabaseClient && state.currentUser) {
+          supabaseClient.from('tournament_winner_picks')
+            .delete().eq('user_id', state.currentUser.id);
+        }
+      } catch (e) { /* ignore */ }
+    }
     p = parents[p];
   }
 }
@@ -6485,9 +6560,17 @@ async function spSaveBracketToDb(showFeedback = true) {
 }
 
 function spBracketNext() {
-  // Allow proceeding even if bracket is incomplete - user can come back
-  spRenderWinnerScreen();
-  showScreen('sp-winner-screen');
+  // v2.4.3: skip the (now redundant) sp-winner-screen. The user already
+  // picked the tournament winner when they chose the final match's
+  // winner at bracket position 15. Go straight to the top-scorer step.
+  if (!spState.tournamentWinner) {
+    // Edge case: user advanced without picking the final. Surface a
+    // helpful message rather than silently sending them onward.
+    showToast(t('betting.finalRequired'), 'error');
+    return;
+  }
+  state.spInFlow = true;
+  spStartTopScorerStep();
 }
 
 function spRenderWinnerScreen() {
@@ -6574,7 +6657,10 @@ function spTopScorerBack() {
   state.spInFlow = false;
   const nav = document.getElementById('ts-sp-flow-nav');
   if (nav) nav.style.display = 'none';
-  showScreen('sp-winner-screen');
+  // v2.4.3: back from top-scorer in the SP flow goes to the bracket
+  // (the standalone winner screen is no longer in the flow).
+  spRenderBracket();
+  showScreen('sp-bracket-screen');
 }
 
 function spTopScorerNext() {
@@ -7587,9 +7673,15 @@ function koSingleFinish() {
     showScreen('knockout-screen');
     showToast(t('knockoutFirst.completedToast'), 'success');
   } else {
-    // single-phase: continue the SP flow into winner pick
-    spRenderWinnerScreen();
-    showScreen('sp-winner-screen');
+    // v2.4.3: single-phase - the FINAL match (bracket position 15) is
+    // the tournament winner, so we go straight to top scorer; no
+    // separate "pick the winner" detour.
+    if (!spState.tournamentWinner && spState.bracketPicks && spState.bracketPicks[15]) {
+      spState.tournamentWinner = spState.bracketPicks[15];
+      spSaveWinnerToDb(false);
+    }
+    state.spInFlow = true;
+    spStartTopScorerStep();
   }
 }
 

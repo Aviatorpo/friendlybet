@@ -6240,21 +6240,60 @@ body:not(.ltr) .home-lang-toggle {
   border-color: rgba(16,185,129,0.45);
   box-shadow: none;
 }
-.bet-cta-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: #d4a853;
-  color: #0a1628;
+
+/* v2.4.3: progress ring replaces the solid colored square. Reads its
+   percentage from `data-progress` (0-100) which the dashboard JS sets
+   based on actual picks. The center icon/text swaps too:
+   - 0%   -> play arrow
+   - 1-99 -> the percentage as text (e.g., "42%")
+   - 100% -> green checkmark */
+.bet-cta-progress {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+.bet-cta-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  display: block;
+}
+.bet-cta-ring-bg {
+  fill: none;
+  stroke: rgba(255,255,255,0.08);
+  stroke-width: 3;
+}
+.bet-cta-ring-fg {
+  fill: none;
+  stroke: #d4a853;
+  stroke-width: 3;
+  stroke-linecap: round;
+  pathLength: 100;
+  transition: stroke-dasharray 0.5s ease-out, stroke 0.2s;
+}
+.bet-cta-card.done .bet-cta-ring-fg {
+  stroke: #10b981;
+}
+.bet-cta-ring-center {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #d4a853;
+  letter-spacing: -0.02em;
 }
-.bet-cta-card.done .bet-cta-icon {
-  background: #10b981;
-  color: #fff;
+.bet-cta-card.done .bet-cta-ring-center {
+  color: #10b981;
+}
+.bet-cta-ring-center i {
+  font-size: 22px;
+}
+.bet-cta-progress[data-progress="0"] .bet-cta-ring-center {
+  color: #d4a853;
 }
 .bet-cta-text {
   flex: 1;
