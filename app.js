@@ -1522,6 +1522,11 @@ const topScorerState = {
   showAll: false  // false = show only stars, true = show all
 };
 
+// v2.4.1: localStorage key for caching the squads_released flag so we can
+// show the right initial view BEFORE the app_settings round-trip finishes.
+// Without this cache the screen flashes locked->unlocked on every entry.
+const TS_RELEASED_CACHE_KEY = 'fb_squads_released';
+
 async function showTopScorer() {
   closeMenu();
 
@@ -1539,42 +1544,58 @@ async function showTopScorer() {
   const tsNav = document.getElementById('ts-sp-flow-nav');
   if (tsNav && !state.spInFlow) tsNav.style.display = 'none';
 
+  // v2.4.1: pre-select the correct view from cache so there's no flash on
+  // desktop while we wait for the app_settings query. The cache is refreshed
+  // every time the query returns; it is conservative (defaults to "locked"
+  // when unknown). If we already have players loaded in-memory we know
+  // squads were released - prefer that signal.
+  const lockedView = document.getElementById('ts-locked-view');
+  const unlockedView = document.getElementById('ts-unlocked-view');
+  let initialUnlocked = false;
+  try {
+    initialUnlocked = (
+      localStorage.getItem(TS_RELEASED_CACHE_KEY) === 'true' ||
+      (topScorerState && topScorerState.allPlayers && topScorerState.allPlayers.length > 0)
+    );
+  } catch (e) { /* localStorage disabled - fall through */ }
+  if (lockedView) lockedView.style.display = initialUnlocked ? 'none' : 'block';
+  if (unlockedView) unlockedView.style.display = initialUnlocked ? 'block' : 'none';
+
   showScreen('top-scorer-screen');
-  
-  // Check if feature is unlocked
+
+  // Check if feature is unlocked (fresh state from server)
   const { data: settings } = await supabaseClient
     .from('app_settings')
     .select('*')
     .in('key', ['squads_released', 'squads_player_count', 'squads_last_check']);
-  
+
   const settingsMap = {};
   (settings || []).forEach(s => { settingsMap[s.key] = s.value; });
-  
+
   const isUnlocked = settingsMap.squads_released === 'true';
   const playerCount = parseInt(settingsMap.squads_player_count) || 0;
-  
-  // Toggle locked/unlocked view
-  const lockedView = document.getElementById('ts-locked-view');
-  const unlockedView = document.getElementById('ts-unlocked-view');
-  
+
+  // Refresh the cache (next entry will skip the flash entirely)
+  try { localStorage.setItem(TS_RELEASED_CACHE_KEY, isUnlocked ? 'true' : 'false'); } catch (e) {}
+
   if (!isUnlocked) {
-    lockedView.style.display = 'block';
-    unlockedView.style.display = 'none';
+    if (lockedView) lockedView.style.display = 'block';
+    if (unlockedView) unlockedView.style.display = 'none';
     updateLockedView(settingsMap);
     return;
   }
-  
-  lockedView.style.display = 'none';
-  unlockedView.style.display = 'block';
-  
+
+  if (lockedView) lockedView.style.display = 'none';
+  if (unlockedView) unlockedView.style.display = 'block';
+
   // Load players if not loaded
   if (topScorerState.allPlayers.length === 0) {
     await loadAllPlayers();
   }
-  
+
   // Load existing pick
   await loadMyTopScorerPick();
-  
+
   // Render
   renderTopScorerList();
 }

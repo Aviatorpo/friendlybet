@@ -1987,29 +1987,32 @@ input:disabled + .slider {
   background: #d4a853;
   color: #0a1628;
   border-color: #d4a853;
+  box-shadow: 0 0 0 2px rgba(212, 168, 83, 0.2);
 }
 
-.group-nav-pill.completed::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  inset-inline-end: 2px;
-  width: 6px;
-  height: 6px;
-  background: #4ade80;
-  border-radius: 50%;
+/* v2.4.1: replace tiny 6px colored dots with full-pill tinting so the
+   state is readable at a glance instead of relying on a corner pixel.
+   The `has-two` / `has-three` / `partial` classes are set in app.js
+   based on how many teams were picked in each group. */
+.group-nav-pill.has-three {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.45);
+  color: #6ee7b7;
+}
+.group-nav-pill.has-two {
+  background: rgba(212, 168, 83, 0.12);
+  border-color: rgba(212, 168, 83, 0.4);
+  color: #fff;
+}
+.group-nav-pill.partial {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.45);
+  color: #fca5a5;
 }
 
-.group-nav-pill.partial::after {
-  content: "";
-  position: absolute;
-  top: 2px;
-  inset-inline-end: 2px;
-  width: 6px;
-  height: 6px;
-  background: #fbbf24;
-  border-radius: 50%;
-}
+/* Kill the legacy corner dots - the full-pill tint above replaces them. */
+.group-nav-pill.completed::after,
+.group-nav-pill.partial::after { display: none; }
 
 /* Completion card */
 .completion-card {
@@ -2297,14 +2300,9 @@ input:disabled + .slider {
   line-height: 1.2;
 }
 
-/* Update quick groups nav for new states */
-.group-nav-pill.has-two::after {
-  background: #fbbf24 !important; /* Orange for 2 picks (can add more) */
-}
-
-.group-nav-pill.has-three::after {
-  background: #4ade80 !important; /* Green for 3 picks (full) */
-}
+/* v2.4.1: legacy corner dots removed - states now full-pill tinted above */
+.group-nav-pill.has-two::after,
+.group-nav-pill.has-three::after { display: none !important; }
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
@@ -4854,20 +4852,24 @@ input:disabled + .slider {
 /* Invite Friends - Dashboard CTA                               */
 /* ============================================================ */
 
+/* v2.4.1: Invite-friends CTA now sits at the top of "My bets" and
+   gets a slightly stronger gold glow to feel like the primary first
+   action (alongside the Start CTA below). */
 .invite-friends-btn {
   width: 100%;
-  background: linear-gradient(135deg, rgba(212, 168, 83, 0.18) 0%, rgba(212, 168, 83, 0.06) 100%);
-  border: 1px solid rgba(212, 168, 83, 0.4);
-  border-radius: 14px;
-  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.22) 0%, rgba(212, 168, 83, 0.08) 100%);
+  border: 1.5px solid rgba(212, 168, 83, 0.55);
+  border-radius: 16px;
+  padding: 16px 18px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   cursor: pointer;
   font-family: 'Heebo', sans-serif;
-  margin: 16px 0;
+  margin: 4px 0 12px;
   text-align: start;
   transition: all 0.2s;
+  box-shadow: 0 4px 18px rgba(212, 168, 83, 0.14);
 }
 
 .invite-friends-btn:hover {
@@ -6167,34 +6169,46 @@ body:not(.ltr) .home-lang-toggle {
 /* ============================================================ */
 /* v2.1.4 - Dashboard reflow (pre-tournament + dominant Start)   */
 /* ============================================================ */
+/* v2.4.1: pre-tournament panel slimmed to a single inline notice so the
+   "invite friends" + "start betting" CTAs below are the visual focus. */
 .pre-tournament-card {
   display: flex;
   align-items: center;
-  gap: 14px;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 16px 18px;
-  margin-bottom: 16px;
+  gap: 8px;
+  background: rgba(255,255,255,0.025);
+  border: 0.5px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 7px 10px;
+  margin-bottom: 12px;
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.55);
 }
 .pre-tournament-card > i {
-  font-size: 26px;
-  color: #d4a853;
+  font-size: 13px;
+  color: rgba(212,168,83,0.7);
   flex-shrink: 0;
 }
 .pre-tournament-text {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  line-height: 1.3;
 }
 .pre-tournament-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.7);
 }
 .pre-tournament-subtitle {
-  font-size: 12px;
-  color: rgba(255,255,255,0.55);
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+}
+.pre-tournament-subtitle::before {
+  content: "·";
+  margin: 0 2px;
+  color: rgba(255,255,255,0.25);
 }
 
 /* Dominant Start CTA card (replaces the small "Start" button) */

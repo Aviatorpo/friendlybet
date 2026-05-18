@@ -46,12 +46,12 @@ const TRANSLATIONS = {
 
     // === Onboarding ===
     'welcome.title': 'FriendlyBet',
-    'welcome.subtitle': 'להמר עם חברים על תוצאות המונדיאל.',
+    'welcome.subtitle': 'הימור חברים על מונדיאל 2026',
     'welcome.tagline': '100% חינמי · ללא פרסומות · ללא הגבלות · ללא תשלום',
     'welcome.create': 'צור הימור חדש',
     'welcome.join': 'הצטרף להימור',
     'welcome.recoveryLogin': 'יש לי קוד שחזור',
-    'welcome.noSignup': 'אפליקציה זו היא תוכנה חופשית בקוד פתוח. היא לא אוספת מידע אישי. <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">לצפייה בקוד ב-GitHub</a>.',
+    'welcome.noSignup': 'קוד פתוח · ללא איסוף מידע אישי · <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a>',
     
     'create.title': 'צור הימור חדש',
     'create.poolName': 'שם ההימור',
@@ -1093,12 +1093,12 @@ const TRANSLATIONS = {
 
     // === Onboarding ===
     'welcome.title': 'FriendlyBet',
-    'welcome.subtitle': 'Bet with friends on World Cup results.',
+    'welcome.subtitle': 'World Cup 2026 with your friends',
     'welcome.tagline': '100% FREE · NO ADS · NO LIMITS · NO PAYWALLS',
     'welcome.create': 'Create New Pool',
     'welcome.join': 'Join Pool',
     'welcome.recoveryLogin': 'I have a recovery code',
-    'welcome.noSignup': 'This webapp is Free Open Source Software. It does not collect any personal data. <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">See the code on GitHub</a>.',
+    'welcome.noSignup': 'Open source · No personal data collected · <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a>',
     
     'create.title': 'Create New Pool',
     'create.poolName': 'Pool Name',
