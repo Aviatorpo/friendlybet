@@ -1043,11 +1043,14 @@ const TRANSLATIONS = {
     'recovery.toast.emailOpenedWithBackup': '✓ נפתח חלון מייל - ונשמר גיבוי בלוח',
     'recovery.toast.popupBlocked': 'הדפדפן חסם את הפתיחה. אנא אפשר חלונות קופצים ונסה שוב.',
 
-    'recovery.screenshot.title': 'צילום מסך של קוד השחזור',
-    'recovery.screenshot.intro': 'צילום המסך יישמר בגלריית התמונות של המכשיר שלך. כך עושים זאת:',
+    'recovery.screenshot.title': 'שמור את הקוד כתמונה',
+    'recovery.screenshot.intro': 'יצרנו עבורך תמונה עם קוד השחזור. שמור אותה בגלריה או שתף לעצמך.',
     'recovery.screenshot.codeLabel': 'קוד השחזור שלך',
     'recovery.screenshot.tip': 'אחרי הצילום, בדוק בגלריה שהקוד יצא ברור וקריא.',
     'recovery.screenshot.done': 'צילמתי, המשך',
+    // v2.5.6: auto-screenshot strings
+    'recovery.screenshot.generating': 'מכין תמונה...',
+    'recovery.screenshot.save': 'שמור / שתף תמונה',
     'recovery.screenshot.ios1': 'לחץ בו-זמנית על {k1} + {k2}',
     'recovery.screenshot.ios2': 'התמונה תיווצר ותופיע לזמן קצר בתחתית המסך',
     'recovery.screenshot.ios3': 'הצילום יישמר אוטומטית באפליקציית התמונות',
@@ -2112,11 +2115,14 @@ const TRANSLATIONS = {
     'recovery.toast.emailOpenedWithBackup': '✓ Opened email - content also copied to clipboard as backup',
     'recovery.toast.popupBlocked': 'Your browser blocked the new window. Please allow popups and try again.',
 
-    'recovery.screenshot.title': 'Screenshot the recovery code',
-    'recovery.screenshot.intro': 'The screenshot will be saved to your device\'s photo gallery. Here\'s how:',
+    'recovery.screenshot.title': 'Save your code as an image',
+    'recovery.screenshot.intro': 'We generated an image with your recovery code. Save it to your gallery or share it to yourself.',
     'recovery.screenshot.codeLabel': 'Your recovery code',
     'recovery.screenshot.tip': 'After the screenshot, check the gallery to make sure the code is clear and readable.',
     'recovery.screenshot.done': 'Captured, continue',
+    // v2.5.6: auto-screenshot strings
+    'recovery.screenshot.generating': 'Generating image...',
+    'recovery.screenshot.save': 'Save / Share image',
     'recovery.screenshot.ios1': 'Press {k1} + {k2} at the same time',
     'recovery.screenshot.ios2': 'A thumbnail will briefly appear at the bottom of the screen',
     'recovery.screenshot.ios3': 'The screenshot is saved automatically to the Photos app',

@@ -7698,6 +7698,66 @@ function _fbDetectDevice() {
   return 'desktop';
 }
 
+// v2.5.6: dynamically load html2canvas from CDN on first use so we don't
+// block initial page load. Cached promise so concurrent calls share one load.
+function _ensureHtml2Canvas() {
+  if (window.html2canvas) return Promise.resolve();
+  if (window._h2cPromise) return window._h2cPromise;
+  window._h2cPromise = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = () => resolve();
+    s.onerror = () => {
+      window._h2cPromise = null;
+      reject(new Error('Failed to load html2canvas'));
+    };
+    document.head.appendChild(s);
+  });
+  return window._h2cPromise;
+}
+
+// v2.5.6: build the offscreen "recovery card" that html2canvas captures.
+// Inline styles only - html2canvas reads computed styles from the live DOM,
+// so a self-contained element with all rules inlined renders predictably.
+function _rcBuildCardElement() {
+  const card = document.createElement('div');
+  card.style.cssText = [
+    'position: fixed',
+    'left: -9999px',
+    'top: 0',
+    'width: 600px',
+    'padding: 48px 44px',
+    'background: linear-gradient(135deg, #0a1628 0%, #1a2942 60%, #243a5a 100%)',
+    'color: #fff',
+    'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    'border-radius: 28px',
+    'box-sizing: border-box'
+  ].join(';');
+  const code = rcFormatCode(rcState.code);
+  const pool = rcState.poolName || '—';
+  card.innerHTML = `
+    <div style="font-size: 30px; font-weight: 800; color: #d4a853; letter-spacing: 0.5px;">
+      ⚽ FriendlyBet
+    </div>
+    <div style="margin-top: 34px; font-size: 12px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 2px;">
+      ${t('recovery.screenshot.codeLabel')}
+    </div>
+    <div style="font-family: 'SFMono-Regular', Consolas, monospace; font-size: 36px; font-weight: 700; letter-spacing: 3px; color: #d4a853; margin-top: 10px; word-break: break-all;">
+      ${code}
+    </div>
+    <div style="margin-top: 28px; font-size: 12px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 2px;">
+      Pool
+    </div>
+    <div style="font-size: 22px; font-weight: 600; margin-top: 6px;">
+      ${pool}
+    </div>
+    <div style="margin-top: 36px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.45);">
+      ${t('recovery.txt.loginAt')} friendlybet.vercel.app
+    </div>
+  `;
+  return card;
+}
+
 function _fbScreenshotInstructionsHtml(device) {
   const k = (txt) => `<span class="rc-key-combo">${txt}</span>`;
   const list = [];
@@ -7732,14 +7792,109 @@ function _fbScreenshotInstructionsHtml(device) {
   return '<ol>' + list.map(li => `<li>${li}</li>`).join('') + '</ol>';
 }
 
-function rcScreenshot() {
+// v2.5.6: rcScreenshot now auto-generates a PNG of the recovery code via
+// html2canvas, shows a preview in the modal, then lets the user save it
+// (Web Share API on mobile, plain download otherwise). Falls back to the
+// legacy device-instruction modal if html2canvas fails to load (offline,
+// CSP block, etc.) so the feature is never fully broken.
+async function rcScreenshot() {
+  const modal = document.getElementById('rc-screenshot-modal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+
+  const preview = document.getElementById('rc-screenshot-preview');
+  const saveBtn = document.getElementById('rc-screenshot-save');
+  const instructionsBlock = document.getElementById('rc-screenshot-instructions-block');
+  if (instructionsBlock) instructionsBlock.style.display = 'none';
+  if (saveBtn) saveBtn.disabled = true;
+  if (preview) {
+    preview.style.display = '';
+    preview.innerHTML = `<div class="rc-screenshot-loading">${t('recovery.screenshot.generating')}</div>`;
+  }
+  rcState._screenshotBlob = null;
+
+  try {
+    await _ensureHtml2Canvas();
+    const card = _rcBuildCardElement();
+    document.body.appendChild(card);
+    let canvas;
+    try {
+      canvas = await window.html2canvas(card, {
+        backgroundColor: null,
+        scale: 2,
+        logging: false,
+        useCORS: true
+      });
+    } finally {
+      if (card.parentNode) card.parentNode.removeChild(card);
+    }
+    const dataUrl = canvas.toDataURL('image/png');
+    if (preview) {
+      preview.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = dataUrl;
+      img.className = 'rc-screenshot-img';
+      img.alt = 'Recovery code';
+      preview.appendChild(img);
+    }
+    canvas.toBlob(blob => {
+      rcState._screenshotBlob = blob;
+      if (saveBtn) saveBtn.disabled = false;
+    }, 'image/png');
+  } catch (err) {
+    console.error('rcScreenshot html2canvas failed - falling back to instructions:', err);
+    _rcFallbackToInstructions();
+  }
+}
+
+function _rcFallbackToInstructions() {
+  const preview = document.getElementById('rc-screenshot-preview');
+  if (preview) preview.style.display = 'none';
+  const saveBtn = document.getElementById('rc-screenshot-save');
+  if (saveBtn) saveBtn.style.display = 'none';
+  const block = document.getElementById('rc-screenshot-instructions-block');
+  if (block) block.style.display = '';
   const device = _fbDetectDevice();
   const el = document.getElementById('rc-screenshot-instructions');
   if (el) el.innerHTML = _fbScreenshotInstructionsHtml(device);
   const codeEl = document.getElementById('rc-modal-code-text');
   if (codeEl) codeEl.textContent = rcFormatCode(rcState.code);
-  const modal = document.getElementById('rc-screenshot-modal');
-  if (modal) modal.style.display = 'flex';
+  const confirmBtn = document.getElementById('rc-screenshot-confirm-fallback');
+  if (confirmBtn) confirmBtn.style.display = '';
+}
+
+async function rcSaveScreenshot() {
+  const blob = rcState._screenshotBlob;
+  if (!blob) return;
+  const filename = `friendlybet-recovery-${(rcState.code || 'code').replace(/-/g, '')}.png`;
+
+  // Mobile: try Web Share API with file - opens native share sheet so the
+  // user can save to Photos, send to themselves on WhatsApp, etc.
+  if (navigator.canShare && navigator.share) {
+    try {
+      const file = new File([blob], filename, { type: 'image/png' });
+      if (navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'FriendlyBet recovery code' });
+        rcConfirmScreenshot();
+        return;
+      }
+    } catch (err) {
+      // AbortError = user dismissed the share sheet; don't double-trigger a download
+      if (err && err.name === 'AbortError') return;
+      // Other errors fall through to the download path
+    }
+  }
+
+  // Desktop / no Web Share file support: trigger PNG download
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+  rcConfirmScreenshot();
 }
 
 function rcCloseScreenshotModal() {
@@ -7766,6 +7921,7 @@ window.rcDownload = rcDownload;
 window.rcScreenshot = rcScreenshot;
 window.rcCloseScreenshotModal = rcCloseScreenshotModal;
 window.rcConfirmScreenshot = rcConfirmScreenshot;
+window.rcSaveScreenshot = rcSaveScreenshot;
 window.rcContinue = rcContinue;
 window.rcCloseModal = rcCloseModal;
 window.rcContinueAnyway = rcContinueAnyway;

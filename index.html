@@ -2145,7 +2145,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.5</span>
+      <span class="menu-version">v2.5.6</span>
     </div>
   </div>
 
@@ -2539,24 +2539,35 @@ function loadTablerFallback() {
     </button>
     <div class="rc-modal-title">
       <i class="ti ti-camera"></i>
-      <span data-i18n="recovery.screenshot.title">צלם את הקוד</span>
+      <span data-i18n="recovery.screenshot.title">שמור את הקוד כתמונה</span>
     </div>
-    <div class="rc-modal-text" data-i18n="recovery.screenshot.intro">צילום מסך נשמר בגלריה של המכשיר שלך. כך עושים את זה:</div>
-    <div class="rc-modal-code-card">
-      <div class="rc-modal-code-label" data-i18n="recovery.screenshot.codeLabel">קוד השחזור שלך</div>
-      <div id="rc-modal-code-text" class="rc-modal-code-text">XXXX-XXXX-XXXX-XXXX</div>
-    </div>
-    <div id="rc-screenshot-instructions" class="rc-screenshot-instructions">
-      <!-- populated by JS based on device -->
-    </div>
-    <div class="rc-modal-tip">
-      <i class="ti ti-info-circle"></i>
-      <span data-i18n="recovery.screenshot.tip">לאחר הצילום, בדוק בגלריית התמונות שהקוד ברור וקריא.</span>
-    </div>
-    <button class="rc-continue-btn rc-modal-continue-btn" onclick="rcConfirmScreenshot()">
-      <i class="ti ti-check"></i>
-      <span data-i18n="recovery.screenshot.done">צילמתי, המשך</span>
+    <div class="rc-modal-text" data-i18n="recovery.screenshot.intro">יצרנו עבורך תמונה עם קוד השחזור. שמור אותה בגלריה או שתף לעצמך.</div>
+
+    <!-- v2.5.6: live PNG preview (default flow) -->
+    <div id="rc-screenshot-preview" class="rc-screenshot-preview"></div>
+    <button id="rc-screenshot-save" class="rc-continue-btn rc-modal-continue-btn" onclick="rcSaveScreenshot()" disabled>
+      <i class="ti ti-device-floppy"></i>
+      <span data-i18n="recovery.screenshot.save">שמור / שתף תמונה</span>
     </button>
+
+    <!-- Hidden fallback block: shown only if html2canvas fails to load -->
+    <div id="rc-screenshot-instructions-block" style="display:none;">
+      <div class="rc-modal-code-card">
+        <div class="rc-modal-code-label" data-i18n="recovery.screenshot.codeLabel">קוד השחזור שלך</div>
+        <div id="rc-modal-code-text" class="rc-modal-code-text">XXXX-XXXX-XXXX-XXXX</div>
+      </div>
+      <div id="rc-screenshot-instructions" class="rc-screenshot-instructions">
+        <!-- populated by JS based on device -->
+      </div>
+      <div class="rc-modal-tip">
+        <i class="ti ti-info-circle"></i>
+        <span data-i18n="recovery.screenshot.tip">לאחר הצילום, בדוק בגלריית התמונות שהקוד ברור וקריא.</span>
+      </div>
+      <button id="rc-screenshot-confirm-fallback" class="rc-continue-btn rc-modal-continue-btn" onclick="rcConfirmScreenshot()" style="display:none;">
+        <i class="ti ti-check"></i>
+        <span data-i18n="recovery.screenshot.done">צילמתי, המשך</span>
+      </button>
+    </div>
   </div>
 </div>
 
