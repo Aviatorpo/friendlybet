@@ -4138,35 +4138,75 @@ input:disabled + .slider {
   font-weight: 700;
 }
 
-/* Floating Bracket button - prominent, always visible on knockout screen */
+/* Floating Bracket button - prominent, always visible.
+   v2.5.0: positioned at the TOP end of the screen (inside the topbar area)
+   so it never overlaps the nav buttons at the bottom. Anchored to the END
+   side of the 480px-max app container regardless of viewport width. */
 .floating-bracket-btn {
   position: fixed;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 10px;
+  inset-inline-end: max(12px, calc(50vw - 228px));
+  left: auto;
+  bottom: auto;
   background: linear-gradient(135deg, #d4a853 0%, #b88a3a 100%);
   color: #0a1628;
   border: none;
-  padding: 12px 22px;
+  padding: 7px 13px;
   border-radius: 100px;
-  font-size: 14px;
+  font-size: 12.5px;
   font-weight: 600;
   font-family: 'Heebo', sans-serif;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   z-index: 50;
-  box-shadow: 0 8px 24px rgba(212, 168, 83, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s;
+  box-shadow: 0 6px 18px rgba(212, 168, 83, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+
+.floating-bracket-btn svg,
+.floating-bracket-btn i {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
 }
 
 .floating-bracket-btn:hover, .floating-bracket-btn:active {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(212, 168, 83, 0.55), 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Legacy two-phase knockout-screen keeps its prominent bottom-center pill
+   because its topbar end corner already hosts the simulator icon. */
+#knockout-screen .floating-bracket-btn {
+  position: fixed;
+  top: auto;
+  bottom: 16px;
+  inset-inline-end: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 22px;
+  font-size: 14px;
+  gap: 8px;
+  box-shadow: 0 8px 24px rgba(212, 168, 83, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+#knockout-screen .floating-bracket-btn svg,
+#knockout-screen .floating-bracket-btn i {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+#knockout-screen .floating-bracket-btn:hover,
+#knockout-screen .floating-bracket-btn:active {
   transform: translateX(-50%) translateY(-2px);
   box-shadow: 0 12px 32px rgba(212, 168, 83, 0.55), 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Make sure content has padding when floating button is visible */
+/* Bottom padding so the legacy floating btn doesn't cover the last item */
 #knockout-screen .container {
   padding-bottom: 100px;
 }

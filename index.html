@@ -2095,7 +2095,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.4.9</span>
+      <span class="menu-version">v2.5.0</span>
     </div>
   </div>
 
@@ -2356,11 +2356,11 @@ function loadTablerFallback() {
     </div>
   </div>
 
-  <!-- v2.4.5: floating "view full bracket" button. Mode-aware: opens the
-       single-phase modal for sp picks, the two-phase bracket-screen for
-       two_phase. Hidden while no picks have been made yet (until index 0
-       is clicked through). -->
-  <button class="floating-bracket-btn" id="ko-single-view-bracket-btn" onclick="koSingleOpenBracketView()" aria-label="View full bracket" style="display:none;">
+  <!-- v2.5.0: floating "view full bracket" button - top-anchored pill,
+       visible from the very first match so users can see the full bracket
+       before committing to any pick. Mode-aware: single-phase opens the
+       modal, two-phase opens the legacy bracket-screen. -->
+  <button class="floating-bracket-btn" id="ko-single-view-bracket-btn" onclick="koSingleOpenBracketView()" aria-label="View full bracket">
     <i class="ti ti-tournament"></i>
     <span data-i18n="knockoutEx.bracketView">תצוגת ההגרלה</span>
   </button>

@@ -7874,13 +7874,9 @@ function koSingleRender() {
   document.getElementById('ko-single-progress-label').textContent = `${pos} / ${total}`;
   document.getElementById('ko-single-progress-fill').style.width = `${(pos / total) * 100}%`;
 
-  // v2.4.5: show the "view full bracket" floating button once we have any
-  // picks to actually display - or after the user has scrolled past the
-  // first match (so they have context for what the button does).
-  const fbBtn = document.getElementById('ko-single-view-bracket-btn');
-  if (fbBtn) {
-    fbBtn.style.display = pos > 1 ? 'flex' : 'none';
-  }
+  // v2.5.0: the "view full bracket" floating button is always visible from
+  // the first match - users want to see the full bracket layout before
+  // committing to any pick. The button is declared visible in HTML.
 
   const points = _koSinglePoints(step.round);
   const card = document.getElementById('ko-single-card');
