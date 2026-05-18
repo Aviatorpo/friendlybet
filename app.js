@@ -6295,9 +6295,17 @@ async function spLoadExistingPicks() {
   // v2.5.7 fix: ALWAYS filter by pool_id. Without it, users in multiple
   // pools would mix picks across pools, and View Predictions in one pool
   // could load picks for a different pool (or none at all).
-  if (!state.currentUser || !state.currentPool) return;
+  // v2.5.19: but if currentPool is missing for some reason (early init
+  // race), still load by user_id alone - empty data is worse than mixed.
+  if (!state.currentUser) {
+    console.warn('[spLoadExistingPicks] no currentUser - aborting');
+    return;
+  }
   const userId = state.currentUser.id;
-  const poolId = state.currentPool.id;
+  const poolId = state.currentPool ? state.currentPool.id : null;
+  if (!poolId) {
+    console.warn('[spLoadExistingPicks] no currentPool.id - will load by user_id only');
+  }
 
   const newGroups = {};
   const newBracket = {};
@@ -6312,11 +6320,12 @@ async function spLoadExistingPicks() {
   // before pool_id-aware DELETEs (where existing rows may have a stale or
   // mismatched pool_id) and bare picks that pre-date the migration.
   const loadOrFallback = async (table, baseFilter) => {
-    let q = supabaseClient.from(table).select('*').eq('user_id', userId).eq('pool_id', poolId);
+    let q = supabaseClient.from(table).select('*').eq('user_id', userId);
+    if (poolId) q = q.eq('pool_id', poolId);
     if (baseFilter) q = baseFilter(q);
     let { data, error } = await q;
     if (error) return { data: null, error };
-    if (data && data.length === 0) {
+    if (poolId && data && data.length === 0) {
       // Fallback: same query without pool_id, in case the rows pre-date pool_id
       let q2 = supabaseClient.from(table).select('*').eq('user_id', userId);
       if (baseFilter) q2 = baseFilter(q2);
@@ -7127,28 +7136,23 @@ window.spTopScorerBack = spTopScorerBack;
 window.spTopScorerNext = spTopScorerNext;
 
 async function spRenderSummary() {
-  // v2.2.1: render directly from in-memory spState (mid-flow).
-  // v2.5.17: SAFETY NET - if in-memory state is empty (entered summary
-  //          on a fresh page load via View Predictions and the load
-  //          didn't populate state for whatever reason), re-load from
-  //          DB before rendering. This catches edge cases where the
-  //          earlier spLoadExistingPicks ran with stale state.currentUser
-  //          or state.currentPool. Also logs what we have so the user can
-  //          share dev tools output if it still misbehaves.
+  // v2.5.19: ALWAYS reload from DB at the top of summary render. The
+  //          previous "trust in-memory state" approach kept showing
+  //          Not Picked for users because in some flows spState got
+  //          reset between load and render. A fresh DB read on every
+  //          render is the source of truth - one extra round-trip
+  //          isn't a real cost for a screen the user lands on rarely.
+  //          spLoadExistingPicks already has the pool_id fallback
+  //          (v2.5.15) so legacy data still surfaces.
+  console.log('[spRenderSummary] forcing fresh DB load | user=' +
+    (state.currentUser && state.currentUser.id) +
+    ' | pool=' + (state.currentPool && state.currentPool.id));
+  await spLoadExistingPicks();
   const groupCount = Object.values(spState.groupPositions || {})
     .reduce((n, arr) => n + (arr || []).filter(Boolean).length, 0);
-  const bracketCount = Object.keys(spState.bracketPicks || {}).length;
-  console.log('[spRenderSummary] in-memory: groups=' + groupCount + ' bracket=' + bracketCount + ' winner=' + (spState.tournamentWinner || 'none') +
-    ' | user=' + (state.currentUser && state.currentUser.id) +
-    ' | pool=' + (state.currentPool && state.currentPool.id));
-  if (groupCount === 0 && bracketCount === 0 && !spState.tournamentWinner) {
-    console.warn('[spRenderSummary] in-memory state empty - re-loading from DB');
-    await spLoadExistingPicks();
-    const recheckGroups = Object.values(spState.groupPositions || {})
-      .reduce((n, arr) => n + (arr || []).filter(Boolean).length, 0);
-    console.log('[spRenderSummary] after reload: groups=' + recheckGroups +
-      ' bracket=' + Object.keys(spState.bracketPicks || {}).length);
-  }
+  console.log('[spRenderSummary] after load: groups=' + groupCount +
+    ' bracket=' + Object.keys(spState.bracketPicks || {}).length +
+    ' winner=' + (spState.tournamentWinner || 'none'));
 
   // v2.5.15: always reset the Save button to its clean state when entering
   // the summary screen. Previously the button was left in "Saving..." +
