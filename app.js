@@ -3391,22 +3391,31 @@ async function finishGroupBetting() {
   // to show is itself the success confirmation.
   await savePicksToDb(false);
   
+  // v2.5.28: compute multiplier from team.tier (no .multiplier field on
+  // the teams table - it's derived from the tier). Without this the max
+  // points display ignored the risk multipliers entirely.
+  const tierMult = (tier) => {
+    if (tier === 'underdog') return 2.0;
+    if (tier === 'contender') return 1.5;
+    return 1.0;
+  };
+
   // Calculate max possible points
   let maxPoints = 0;
   const scoringGroupStage = state.currentPool.scoring_group_stage || 1;
-  
+
   bettingState.groupOrder.forEach(letter => {
     const picks = bettingState.picks[letter] || [];
     picks.forEach(teamCode => {
       const team = bettingState.groupedTeams[letter]?.find(t => t.code === teamCode);
       if (team && state.currentPool.use_multipliers) {
-        maxPoints += scoringGroupStage * parseFloat(team.multiplier || 1);
+        maxPoints += scoringGroupStage * tierMult(team.tier);
       } else {
         maxPoints += scoringGroupStage;
       }
     });
   });
-  
+
   // Round to nearest integer
   maxPoints = Math.round(maxPoints);
   
@@ -4769,6 +4778,31 @@ function renderStagesBreakdown(stages) {
 }
 
 // Update dashboard knockout status
+// v2.5.28: real-world group-stage completion check. Knockout opens only
+// when every GROUP_STAGE match has finished. Replaces the old "user
+// finished their group picks" gate, which let users into the knockout
+// flow before the real tournament knockout existed.
+async function _isGroupStageOver() {
+  if (!supabaseClient) return false;
+  try {
+    const { data, error } = await supabaseClient
+      .from('matches')
+      .select('id,status')
+      .eq('stage', 'GROUP_STAGE')
+      .neq('status', 'FINISHED')
+      .limit(1);
+    if (error) {
+      console.warn('_isGroupStageOver query failed:', error);
+      return false;
+    }
+    // No unfinished group-stage matches = group stage is over
+    return Array.isArray(data) && data.length === 0;
+  } catch (err) {
+    console.warn('_isGroupStageOver err:', err);
+    return false;
+  }
+}
+
 async function updateKnockoutStatusOnDashboard() {
   if (!state.currentUser || !supabaseClient) return;
 
@@ -4783,18 +4817,15 @@ async function updateKnockoutStatusOnDashboard() {
   if (cards.length < 2) return;
 
   const koCard = cards[1]; // The second one is knockout
-  
-  // Check if group betting is complete first
-  const { data: groupPicks } = await supabaseClient
-    .from('group_picks')
-    .select('id')
-    .eq('user_id', state.currentUser.id);
-  
-  const groupComplete = groupPicks && groupPicks.length >= 32;
-  
+
+  // v2.5.28: gate on REAL-WORLD group stage completion, not user's own
+  // pick count. Knockout betting is only meaningful once the group stage
+  // is over and the actual R16 matchups are known.
+  const groupStageDone = await _isGroupStageOver();
+
   const koLabel = t('dashboard.status.knockout');
-  if (!groupComplete) {
-    // Still locked
+  if (!groupStageDone) {
+    // Still locked - group stage hasn't finished in the real tournament yet
     koCard.className = 'bet-status-card locked';
     const titleEl = koCard.querySelector('.bet-status-title');
     const subtitleEl = koCard.querySelector('.bet-status-subtitle');
@@ -5431,6 +5462,20 @@ if (document.readyState === 'loading') {
 } else {
   initApp();
 }
+
+// v2.5.28: when the user returns to the tab, refresh the dashboard
+// knockout-lock state. Without this, a user who opened the app at 8pm
+// while the group stage was still running would never see the
+// knockout option unlock unless they navigated away and back. Visibility
+// change is the standard hook for "the user is now looking again".
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState !== 'visible') return;
+  const dash = document.getElementById('user-dashboard-screen');
+  if (!dash || !dash.classList.contains('active')) return;
+  if (typeof updateKnockoutStatusOnDashboard === 'function') {
+    updateKnockoutStatusOnDashboard();
+  }
+});
 
 // Auto-uppercase pool code input
 document.addEventListener('DOMContentLoaded', () => {

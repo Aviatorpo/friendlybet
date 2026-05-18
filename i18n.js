@@ -1716,7 +1716,7 @@ const TRANSLATIONS = {
     'complete.teamsPicked': 'Teams picked',
     'complete.maxPoints': 'Max possible score',
     'complete.info': 'Saved. You can edit until the first match',
-    'complete.toDashboard': 'Back to dashboard',
+    'complete.toDashboard': 'Go to dashboard',
     'complete.review': 'Review my picks',
 
     // === Knockout extras ===
