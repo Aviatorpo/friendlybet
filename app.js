@@ -614,7 +614,12 @@ async function goToDashboard() {
   
   // Load real-world results data
   await loadResultsData();
-  
+
+  // v2.4: auto-lock pool when first match starts (both single_phase and two_phase)
+  if (typeof spAutoLockPoolIfNeeded === 'function') {
+    await spAutoLockPoolIfNeeded();
+  }
+
   // Update dashboard display (v2.1.4: pool-code card + stats moved/removed)
   document.getElementById('dashboard-pool-name').textContent = state.currentPool.name;
   document.getElementById('dashboard-user-name').textContent = state.currentUser.nickname;
@@ -2778,9 +2783,17 @@ function getCountryFlag(code) {
 }
 
 function toggleTeamSelection(teamCode) {
+  // v2.4: soft lock - groups freeze automatically once the tournament starts
+  // (pool.locked_at set by spAutoLockPoolIfNeeded). Admins can still see them
+  // read-only via the leaderboard.
+  if (state.currentPool && state.currentPool.locked_at) {
+    showToast(t('groups.lockedTournamentStarted'), 'error');
+    return;
+  }
+
   const currentLetter = getCurrentGroupLetter();
   const picks = bettingState.picks[currentLetter] || [];
-  
+
   if (picks.includes(teamCode)) {
     // Remove
     bettingState.picks[currentLetter] = picks.filter(c => c !== teamCode);
@@ -3063,7 +3076,13 @@ function autoSavePicks() {
 async function savePicksToDb(showFeedback = true) {
   if (!state.currentUser || !state.currentPool) return;
   if (!supabaseClient) return;
-  
+
+  // v2.4: soft lock - block writes once the tournament has started.
+  if (state.currentPool.locked_at) {
+    if (showFeedback) showToast(t('groups.lockedTournamentStarted'), 'error');
+    return;
+  }
+
   if (bettingState.loading) return;
   bettingState.loading = true;
   
@@ -3209,6 +3228,14 @@ async function updateBettingStatusOnDashboard() {
   if (!titleEl || !subtitleEl) return;
 
   const isSingle = state.currentPool && state.currentPool.betting_mode === 'single_phase';
+
+  // v2.4: single_phase users predict everything in one flow (groups + bracket +
+  // top scorer), so the separate "Knockout stage" / "Top scorer" status cards
+  // on the dashboard are redundant. Hide them entirely for single_phase pools.
+  const koCard = document.getElementById('bet-status-knockout');
+  const tsCard = document.getElementById('bet-status-top-scorer');
+  if (koCard) koCard.style.display = isSingle ? 'none' : '';
+  if (tsCard) tsCard.style.display = isSingle ? 'none' : '';
 
   if (isSingle) {
     // Once the user has done a full pass, the CTA becomes "View your predictions"
@@ -4473,11 +4500,17 @@ function renderStagesBreakdown(stages) {
 // Update dashboard knockout status
 async function updateKnockoutStatusOnDashboard() {
   if (!state.currentUser || !supabaseClient) return;
-  
+
+  // v2.4: knockout/top-scorer cards are hidden in single_phase mode (the user
+  // already predicts these in the unified flow), so nothing to update here.
+  if (state.currentPool && state.currentPool.betting_mode === 'single_phase') {
+    return;
+  }
+
   // Find the knockout status card (second bet-status-card.locked)
   const cards = document.querySelectorAll('.bet-status-card');
   if (cards.length < 2) return;
-  
+
   const koCard = cards[1]; // The second one is knockout
   
   // Check if group betting is complete first
@@ -6727,8 +6760,12 @@ async function spShowLockedView() {
 // AUTO-LOCK POOL when first match has started
 // ============================================================
 async function spAutoLockPoolIfNeeded() {
+  // v2.4: applies to BOTH single_phase and two_phase pools - the soft lock
+  // (block all edits once the tournament starts) is mode-agnostic. For
+  // two_phase pools this only affects group editing; the knockout-stage
+  // flow remains gated by its own legacy admin lock.
   if (!state.currentPool || state.currentPool.locked_at) return;
-  if (state.currentPool.betting_mode !== 'single_phase') return;
+  if (!supabaseClient) return;
 
   try {
     const { data: anyStarted } = await supabaseClient.from('matches')
@@ -6943,11 +6980,13 @@ function showRecoveryCode(mode, recoveryCode, poolName) {
     rcAnimateCodeReveal(codeEl, formatted);
   }
 
-  // Reset copy/email button states
-  document.getElementById('rc-btn-copy').classList.remove('rc-success');
-  document.getElementById('rc-btn-email').classList.remove('rc-success');
-  document.getElementById('rc-btn-download').classList.remove('rc-success');
-  document.getElementById('rc-btn-copy').querySelector('.rc-action-label').textContent = t('recovery.button.copy');
+  // Reset action button states
+  ['rc-btn-screenshot', 'rc-btn-copy', 'rc-btn-email', 'rc-btn-download'].forEach(id => {
+    const b = document.getElementById(id);
+    if (b) b.classList.remove('rc-success');
+  });
+  const copyLabel = document.querySelector('#rc-btn-copy .rc-action-label');
+  if (copyLabel) copyLabel.textContent = t('recovery.button.copy');
 
   // Confetti only in celebration modes
   rcClearConfetti();
@@ -7192,13 +7231,514 @@ async function submitNicknameAndShowRecovery() {
   if (_origSubmitNickname) return _origSubmitNickname();
 }
 
+// v2.4: device detection for screenshot instructions
+function _fbDetectDevice() {
+  const ua = navigator.userAgent || '';
+  if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return 'ios';
+  if (/Android/i.test(ua)) {
+    if (/SAMSUNG|SM-/i.test(ua)) return 'android-samsung';
+    return 'android';
+  }
+  if (/Macintosh/i.test(ua)) return 'mac';
+  if (/Windows/i.test(ua)) return 'windows';
+  return 'desktop';
+}
+
+function _fbScreenshotInstructionsHtml(device) {
+  const k = (txt) => `<span class="rc-key-combo">${txt}</span>`;
+  const list = [];
+  switch (device) {
+    case 'ios':
+      list.push(t('recovery.screenshot.ios1', { k1: k('Side button'), k2: k('Volume Up') }));
+      list.push(t('recovery.screenshot.ios2'));
+      list.push(t('recovery.screenshot.ios3'));
+      break;
+    case 'android-samsung':
+      list.push(t('recovery.screenshot.samsung1', { k1: k('Power'), k2: k('Volume Down') }));
+      list.push(t('recovery.screenshot.android2'));
+      list.push(t('recovery.screenshot.android3'));
+      break;
+    case 'android':
+      list.push(t('recovery.screenshot.android1', { k1: k('Power'), k2: k('Volume Down') }));
+      list.push(t('recovery.screenshot.android2'));
+      list.push(t('recovery.screenshot.android3'));
+      break;
+    case 'mac':
+      list.push(t('recovery.screenshot.mac1', { k1: k('Cmd'), k2: k('Shift'), k3: k('4') }));
+      list.push(t('recovery.screenshot.mac2'));
+      break;
+    case 'windows':
+      list.push(t('recovery.screenshot.win1', { k1: k('Win'), k2: k('Shift'), k3: k('S') }));
+      list.push(t('recovery.screenshot.win2'));
+      break;
+    default:
+      list.push(t('recovery.screenshot.generic1'));
+      list.push(t('recovery.screenshot.generic2'));
+  }
+  return '<ol>' + list.map(li => `<li>${li}</li>`).join('') + '</ol>';
+}
+
+function rcScreenshot() {
+  const device = _fbDetectDevice();
+  const el = document.getElementById('rc-screenshot-instructions');
+  if (el) el.innerHTML = _fbScreenshotInstructionsHtml(device);
+  const modal = document.getElementById('rc-screenshot-modal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function rcCloseScreenshotModal() {
+  const modal = document.getElementById('rc-screenshot-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function rcConfirmScreenshot() {
+  rcState.saved = true;
+  const btn = document.getElementById('rc-btn-screenshot');
+  if (btn) {
+    btn.classList.add('rc-success');
+    setTimeout(() => btn.classList.remove('rc-success'), 2000);
+  }
+  rcCloseScreenshotModal();
+  showToast(t('recovery.toast.screenshotDone'), 'success');
+}
+
 // Expose
 window.showRecoveryCode = showRecoveryCode;
 window.rcCopy = rcCopy;
 window.rcEmail = rcEmail;
 window.rcDownload = rcDownload;
+window.rcScreenshot = rcScreenshot;
+window.rcCloseScreenshotModal = rcCloseScreenshotModal;
+window.rcConfirmScreenshot = rcConfirmScreenshot;
 window.rcContinue = rcContinue;
 window.rcCloseModal = rcCloseModal;
 window.rcContinueAnyway = rcContinueAnyway;
 window.rcViewFromMenu = rcViewFromMenu;
 window.continueFromSharePool = continueFromSharePool;
+
+// ============================================================
+// v2.4: KNOCKOUT FIRST-TIME WALKTHROUGH (one match at a time)
+// ============================================================
+// Active only on a user's first pass through the knockout stage. After that
+// the regular bracket grid takes over. Used in BOTH single_phase (bracket
+// positions 1..15) and two_phase (R32..F, 31 matches).
+
+const koSingle = {
+  mode: null,           // 'two-phase' | 'single-phase'
+  idx: 0,               // current position in sequence
+  sequence: [],         // ordered list of step descriptors
+  advanceTimer: null
+};
+
+function _koTwoPhaseSequence() {
+  const out = [];
+  for (let i = 1; i <= 16; i++) out.push({ round: 'R32', id: `R32_M${i}` });
+  for (let i = 1; i <= 8;  i++) out.push({ round: 'R16', id: `R16_M${i}` });
+  for (let i = 1; i <= 4;  i++) out.push({ round: 'QF',  id: `QF_M${i}`  });
+  for (let i = 1; i <= 2;  i++) out.push({ round: 'SF',  id: `SF_M${i}`  });
+  out.push({ round: 'FINAL', id: 'FINAL_M1' });
+  return out;
+}
+
+function _koSinglePhaseSequence() {
+  const out = [];
+  for (let i = 1; i <= 8;  i++) out.push({ round: 'R16', pos: i });
+  for (let i = 9; i <= 12; i++) out.push({ round: 'QF',  pos: i });
+  for (let i = 13; i <= 14; i++) out.push({ round: 'SF', pos: i });
+  out.push({ round: 'FINAL', pos: 15 });
+  return out;
+}
+
+function _koSingleRoundLabel(round) {
+  return t('knockoutEx.' + ({
+    R32: 'r32Full', R16: 'r16Full', QF: 'qfFull', SF: 'sfFull', FINAL: 'finalFull'
+  }[round] || 'r32Full'));
+}
+
+function _koSinglePoints(round) {
+  if (koSingle.mode === 'two-phase') {
+    return (ROUND_INFO && ROUND_INFO[round] && ROUND_INFO[round].points) || 1;
+  }
+  // single-phase scoring rules
+  const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
+  return ({
+    R16: rules.round_of_16 ?? 5,
+    QF:  rules.quarter_final ?? 8,
+    SF:  rules.semi_final ?? 12,
+    FINAL: rules.final ?? 20
+  })[round] || 5;
+}
+
+function _koSingleCurrentTeams() {
+  const step = koSingle.sequence[koSingle.idx];
+  if (!step) return { home: null, away: null, label: '' };
+
+  if (koSingle.mode === 'two-phase') {
+    const match = (knockoutState.matches[step.round] || []).find(m => m.id === step.id);
+    if (!match) return { home: null, away: null, label: t('knockoutEx.matchNum', { n: koSingle.idx + 1 }) };
+    return {
+      home: match.team1,
+      away: match.team2,
+      label: step.round === 'FINAL' ? t('knockoutEx.finalLabel') : t('knockoutEx.matchNum', { n: match.number })
+    };
+  }
+
+  // single-phase: walk the bracket structure
+  const struct = spGetBracketStructure();
+  const all = [...struct.r16, ...struct.qf, ...struct.sf, struct.final];
+  const m = all.find(x => x.pos === step.pos);
+  if (!m) return { home: null, away: null, label: '' };
+  return {
+    home: m.home,
+    away: m.away,
+    label: step.round === 'FINAL' ? t('knockoutEx.finalLabel') : t('knockoutEx.matchNum', { n: step.pos })
+  };
+}
+
+function _koSingleCurrentPick() {
+  const step = koSingle.sequence[koSingle.idx];
+  if (!step) return null;
+  if (koSingle.mode === 'two-phase') return knockoutState.picks[step.id] || null;
+  return spState.bracketPicks[step.pos] || null;
+}
+
+function _koSingleSetPick(teamCode) {
+  const step = koSingle.sequence[koSingle.idx];
+  if (!step) return;
+  if (koSingle.mode === 'two-phase') {
+    knockoutState.picks[step.id] = teamCode;
+    propagateKnockoutBracket();
+    autoSaveKnockoutPicks();
+  } else {
+    const prev = spState.bracketPicks[step.pos];
+    spState.bracketPicks[step.pos] = teamCode;
+    if (prev && prev !== teamCode) spClearDownstream(step.pos);
+    spAutoSaveBracket();
+  }
+}
+
+function koSingleRender() {
+  const step = koSingle.sequence[koSingle.idx];
+  if (!step) return;
+
+  const { home, away, label } = _koSingleCurrentTeams();
+  const pick = _koSingleCurrentPick();
+  const total = koSingle.sequence.length;
+  const pos = koSingle.idx + 1;
+
+  document.getElementById('ko-single-round-label').textContent = _koSingleRoundLabel(step.round);
+  document.getElementById('ko-single-progress-label').textContent = `${pos} / ${total}`;
+  document.getElementById('ko-single-progress-fill').style.width = `${(pos / total) * 100}%`;
+
+  const points = _koSinglePoints(step.round);
+  const card = document.getElementById('ko-single-card');
+  const teamHtml = (code, side) => {
+    if (!code) {
+      return `
+        <button class="ko-single-team tbd" disabled>
+          <span class="ko-single-flag">⏳</span>
+          <span class="ko-single-name">${t('knockoutEx.tbdTeam')}</span>
+          <span class="ko-single-check"><i class="ti ti-check"></i></span>
+        </button>`;
+    }
+    const selected = pick === code ? ' selected' : '';
+    return `
+      <button class="ko-single-team${selected}" data-team="${code}">
+        <span class="ko-single-flag">${getCountryFlag(code)}</span>
+        <span class="ko-single-name">${getTeamName(code)}</span>
+        <span class="ko-single-check"><i class="ti ti-check"></i></span>
+      </button>`;
+  };
+
+  card.innerHTML = `
+    <div class="ko-single-match-header">${label}</div>
+    <div class="ko-single-points">${t('knockoutFirst.pointsLabel', { n: points })}</div>
+    <div class="ko-single-teams">
+      ${teamHtml(home, 'home')}
+      <div class="ko-single-vs">VS</div>
+      ${teamHtml(away, 'away')}
+    </div>
+  `;
+
+  // Bind clicks
+  card.querySelectorAll('.ko-single-team').forEach(btn => {
+    if (btn.disabled) return;
+    btn.addEventListener('click', () => {
+      const code = btn.getAttribute('data-team');
+      if (!code) return;
+      _koSingleSetPick(code);
+      koSingleRender(); // immediately show checkmark
+      if (koSingle.advanceTimer) clearTimeout(koSingle.advanceTimer);
+      koSingle.advanceTimer = setTimeout(() => {
+        koSingleAdvance();
+      }, 300);
+    });
+  });
+
+  // Back button
+  const backBtn = document.getElementById('ko-single-back-btn');
+  if (backBtn) backBtn.disabled = koSingle.idx === 0;
+}
+
+function koSinglePrev() {
+  if (koSingle.advanceTimer) { clearTimeout(koSingle.advanceTimer); koSingle.advanceTimer = null; }
+  if (koSingle.idx > 0) {
+    koSingle.idx--;
+    koSingleRender();
+  } else {
+    koSingleExit();
+  }
+}
+
+function koSingleSkip() {
+  if (koSingle.advanceTimer) { clearTimeout(koSingle.advanceTimer); koSingle.advanceTimer = null; }
+  koSingleAdvance();
+}
+
+function koSingleAdvance() {
+  if (koSingle.idx < koSingle.sequence.length - 1) {
+    koSingle.idx++;
+    koSingleRender();
+    return;
+  }
+  // End of sequence - exit single mode
+  koSingleFinish();
+}
+
+function koSingleExit() {
+  if (koSingle.advanceTimer) { clearTimeout(koSingle.advanceTimer); koSingle.advanceTimer = null; }
+  koSingle.mode = null;
+  goToDashboard();
+}
+
+function koSingleFinish() {
+  if (koSingle.advanceTimer) { clearTimeout(koSingle.advanceTimer); koSingle.advanceTimer = null; }
+  const wasMode = koSingle.mode;
+  koSingle.mode = null;
+
+  if (wasMode === 'two-phase') {
+    // Hand off to the existing grid view so user can review/edit
+    knockoutState.currentRound = 'R32';
+    renderKnockout();
+    showScreen('knockout-screen');
+    showToast(t('knockoutFirst.completedToast'), 'success');
+  } else {
+    // single-phase: continue the SP flow into winner pick
+    spRenderWinnerScreen();
+    showScreen('sp-winner-screen');
+  }
+}
+
+// Entry-point overrides ----------------------------------------------------
+
+// Wrap startKnockoutBetting so first-time users see single-match walkthrough.
+const _origStartKnockoutBetting = startKnockoutBetting;
+startKnockoutBetting = async function() {
+  if (!state.currentUser || !state.currentPool || !supabaseClient) {
+    return _origStartKnockoutBetting();
+  }
+  // Check if the user has any existing knockout picks (=> NOT first time)
+  let hasPicks = false;
+  try {
+    const { data } = await supabaseClient
+      .from('knockout_picks')
+      .select('id')
+      .eq('user_id', state.currentUser.id)
+      .limit(1);
+    hasPicks = !!(data && data.length);
+  } catch (e) { /* fall through */ }
+
+  if (hasPicks) {
+    return _origStartKnockoutBetting();
+  }
+
+  // First time - run the original loader to set up matches, then route to single mode
+  await _origStartKnockoutBetting();
+  // _origStartKnockoutBetting will have switched to knockout-screen. Override.
+  if (Object.keys(knockoutState.picks || {}).length === 0) {
+    koSingle.mode = 'two-phase';
+    koSingle.sequence = _koTwoPhaseSequence();
+    koSingle.idx = 0;
+    koSingleRender();
+    showScreen('ko-single-screen');
+  }
+};
+
+// Wrap spGroupsNext to route to single-match bracket walkthrough on first pass
+const _origSpGroupsNext = spGroupsNext;
+spGroupsNext = function() {
+  // Let the original handle "not at last group" and validation
+  if (spState.currentGroupIdx < 11) {
+    return _origSpGroupsNext();
+  }
+  // Last group: validate (mirrors original logic)
+  const incomplete = WC2026_GROUP_LETTERS.filter(l =>
+    !spState.groupPositions[l] || !spState.groupPositions[l].every(x => x)
+  );
+  if (incomplete.length > 0) {
+    showToast(t('betting.groupsIncomplete', { letters: incomplete.join(', ') }), 'error');
+    return;
+  }
+  spSaveGroupsToDb(false);
+
+  // First time = no bracket picks yet. Use single-match walkthrough.
+  if (!spState.bracketPicks || Object.keys(spState.bracketPicks).length === 0) {
+    koSingle.mode = 'single-phase';
+    koSingle.sequence = _koSinglePhaseSequence();
+    koSingle.idx = 0;
+    state.spInFlow = true;
+    koSingleRender();
+    showScreen('ko-single-screen');
+    return;
+  }
+  spRenderBracket();
+  showScreen('sp-bracket-screen');
+};
+
+window.koSinglePrev = koSinglePrev;
+window.koSingleSkip = koSingleSkip;
+window.koSingleExit = koSingleExit;
+
+// ============================================================
+// v2.4: BACK-BUTTON HIJACK + EXIT-APP MODAL
+// ============================================================
+// On mobile, the browser/system back button used to navigate the user out
+// of the app entirely. We now intercept it, walk back through the in-app
+// screen history, and only ask "leave the app?" when there's no in-app
+// destination to return to.
+
+const _fbScreenBackMap = {
+  // Source screen -> where Back should go. Root screens map to __exit__.
+  'home-screen': '__exit__',
+  'user-dashboard-screen': '__exit__',
+  'screen-recovery-code': 'user-dashboard-screen',
+  'leaderboard-screen': 'user-dashboard-screen',
+  'matches-screen': 'user-dashboard-screen',
+  'admin-members-screen': 'user-dashboard-screen',
+  'pool-settings-screen': 'user-dashboard-screen',
+  'members-screen': 'user-dashboard-screen',
+  'top-scorer-screen': '__topScorerBack__',
+  'help-screen': 'user-dashboard-screen',
+  'group-betting-screen': 'user-dashboard-screen',
+  'knockout-screen': 'user-dashboard-screen',
+  'bracket-screen': 'knockout-screen',
+  'betting-complete-screen': 'user-dashboard-screen',
+  'pool-wizard-screen': 'create-pool-screen',
+  'create-pool-screen': 'home-screen',
+  'join-pool-screen': 'home-screen',
+  'login-screen': 'home-screen',
+  'create-nickname-screen': 'create-pool-screen',
+  'join-nickname-screen': 'join-pool-screen',
+  // Single-phase flow
+  'sp-groups-screen': 'user-dashboard-screen',
+  'sp-bracket-screen': 'sp-groups-screen',
+  'sp-winner-screen': 'sp-bracket-screen',
+  'sp-summary-screen': '__spSummaryBack__',
+  'sp-locked-screen': 'user-dashboard-screen',
+  // Single-match KO walkthrough handles its own back via koSinglePrev
+  'ko-single-screen': '__koSinglePrev__'
+};
+
+let _fbBackHooked = false;
+function setupBackButtonHijack() {
+  if (_fbBackHooked) return;
+  _fbBackHooked = true;
+
+  // Seed history with a state we own so first Back press triggers popstate
+  try { history.pushState({ fb: true, screen: state.currentScreen }, '', ''); } catch (e) {}
+
+  window.addEventListener('popstate', _fbHandleBack);
+}
+
+function _fbHandleBack() {
+  // Immediately re-push a state so we keep "owning" the back gesture
+  try { history.pushState({ fb: true, screen: state.currentScreen }, '', ''); } catch (e) {}
+
+  // If an open modal is up, close it first
+  const openModals = [
+    'rc-warning-modal',
+    'rc-screenshot-modal',
+    'exit-app-modal',
+    'hypo-bracket-modal'
+  ];
+  for (const id of openModals) {
+    const el = document.getElementById(id);
+    if (el && el.style.display !== 'none' && el.style.display !== '') {
+      el.style.display = 'none';
+      return;
+    }
+  }
+
+  const current = state.currentScreen;
+  const target = _fbScreenBackMap[current];
+
+  if (!target) {
+    // Unknown screen -> default to dashboard if logged in, else home
+    if (state.currentUser && state.currentPool) goToDashboard();
+    else showScreen('home-screen');
+    return;
+  }
+
+  if (target === '__exit__') {
+    showExitAppModal();
+    return;
+  }
+
+  if (target === '__koSinglePrev__') {
+    koSinglePrev();
+    return;
+  }
+
+  if (target === '__topScorerBack__') {
+    if (typeof topScorerBack === 'function') topScorerBack();
+    else goToDashboard();
+    return;
+  }
+
+  if (target === '__spSummaryBack__') {
+    // From summary: go back to top scorer (in flow) or dashboard
+    if (state.spInFlow) {
+      showScreen('top-scorer-screen');
+    } else {
+      goToDashboard();
+    }
+    return;
+  }
+
+  showScreen(target);
+}
+
+function showExitAppModal() {
+  const m = document.getElementById('exit-app-modal');
+  if (m) m.style.display = 'flex';
+}
+function closeExitAppModal() {
+  const m = document.getElementById('exit-app-modal');
+  if (m) m.style.display = 'none';
+}
+function confirmExitApp() {
+  closeExitAppModal();
+  // PWA / mobile: try to close the window. If denied (most cases), navigate to
+  // a blank page so the back gesture next time exits cleanly.
+  try {
+    window.close();
+  } catch (e) { /* ignore */ }
+  // Most browsers block window.close() for pages they didn't open. Fall back
+  // to navigating to about:blank, which effectively "exits" the app context.
+  setTimeout(() => {
+    if (!window.closed) {
+      try { window.location.href = 'about:blank'; } catch (e) {}
+    }
+  }, 100);
+}
+
+window.showExitAppModal = showExitAppModal;
+window.closeExitAppModal = closeExitAppModal;
+window.confirmExitApp = confirmExitApp;
+
+// Wire up the hijack as soon as the DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupBackButtonHijack);
+} else {
+  setupBackButtonHijack();
+}

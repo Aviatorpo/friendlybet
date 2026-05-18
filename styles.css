@@ -5466,6 +5466,12 @@ body.ltr .menu-item {
   margin: 8px 0;
 }
 
+/* v2.4: only show the Hebrew toggle to Israeli users (timezone, browser
+   language, or IP). Everyone else only sees the app in English. */
+body:not(.is-israel) .menu-language-switcher {
+  display: none;
+}
+
 .menu-language-switcher-label {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.85);
@@ -6325,13 +6331,18 @@ body.ltr .bet-cta-arrow {
 }
 .rc-code-text {
   font-family: 'SFMono-Regular', 'Menlo', 'Consolas', 'Courier New', monospace;
-  font-size: clamp(22px, 6.2vw, 30px);
+  /* v2.4: shrink so XXXX-XXXX-XXXX-XXXX always fits on a single line. The
+     code is 19 chars; we want it never to wrap. We use ch units so it scales
+     to the chosen monospace font, plus a vw cap for narrow phones. */
+  font-size: clamp(13px, 4.6vw, 24px);
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   color: #fff;
   text-shadow: 0 0 14px rgba(212,168,83,0.35);
   user-select: all;
-  word-break: break-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
 }
 .rc-code-text.rc-reveal { opacity: 0.7; }
 
@@ -6360,17 +6371,23 @@ body.ltr .bet-cta-arrow {
   color: rgba(255,255,255,0.55);
 }
 
-/* Action buttons */
+/* Action buttons - v2.4: three-up row (screenshot / email / download) */
 .rc-actions-primary {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 10px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 .rc-actions-secondary {
   display: flex;
   justify-content: center;
   margin-bottom: 24px;
+}
+@media (max-width: 360px) {
+  .rc-actions-primary { gap: 6px; }
+  .rc-actions-primary .rc-action-btn { padding: 10px 6px; font-size: 12px; }
+  .rc-actions-primary .rc-action-icon { font-size: 16px; }
+  .rc-action-label { font-size: 11px; }
 }
 .rc-action-btn {
   display: flex;
@@ -6493,6 +6510,224 @@ body.ltr .bet-cta-arrow {
 }
 .rc-modal-continue:hover {
   background: rgba(239,68,68,0.24);
+}
+
+/* v2.4: knockout first-time single-match walkthrough */
+.ko-single-progress-wrap {
+  padding: 0 16px;
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+.ko-single-progress-bar {
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ko-single-progress-bar > div {
+  height: 100%;
+  background: linear-gradient(90deg, #d4a853, #f5c518);
+  transition: width 0.3s ease-out;
+}
+.ko-single-container {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 130px);
+}
+.ko-single-instructions {
+  text-align: center;
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+  margin: 10px 0 16px;
+}
+.ko-single-card {
+  flex: 0 0 auto;
+  background: linear-gradient(140deg, rgba(212,168,83,0.08), rgba(212,168,83,0.02));
+  border: 1px solid rgba(212,168,83,0.25);
+  border-radius: 18px;
+  padding: 22px 16px;
+  margin-bottom: 18px;
+}
+.ko-single-match-header {
+  text-align: center;
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.ko-single-points {
+  text-align: center;
+  font-size: 12px;
+  color: #d4a853;
+  margin-bottom: 18px;
+}
+.ko-single-teams {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ko-single-team {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(0,0,0,0.25);
+  border: 2px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 18px 16px;
+  cursor: pointer;
+  transition: all 0.18s;
+  font-family: inherit;
+  color: #fff;
+  text-align: start;
+  width: 100%;
+}
+.ko-single-team:hover {
+  border-color: rgba(212,168,83,0.5);
+  background: rgba(212,168,83,0.08);
+}
+.ko-single-team:active { transform: scale(0.985); }
+.ko-single-team.tbd {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ko-single-team .ko-single-flag {
+  font-size: 32px;
+  line-height: 1;
+}
+.ko-single-team .ko-single-name {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 700;
+}
+.ko-single-team .ko-single-check {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.ko-single-team.selected {
+  border-color: #10b981;
+  background: rgba(16,185,129,0.12);
+  box-shadow: 0 0 0 1px rgba(16,185,129,0.3), 0 8px 28px rgba(16,185,129,0.18);
+}
+.ko-single-team.selected .ko-single-check {
+  background: #10b981;
+  border-color: #10b981;
+  color: #fff;
+}
+.ko-single-vs {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.15em;
+  margin: -2px 0 -2px;
+}
+.ko-single-nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: auto;
+  padding-bottom: 8px;
+}
+.ko-single-nav .btn-secondary { flex: 1; }
+.ko-single-nav .btn-ghost {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.55);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 12px;
+  cursor: pointer;
+}
+.ko-single-nav .btn-ghost:hover { color: rgba(255,255,255,0.85); }
+
+/* v2.4: exit-app modal */
+.rc-modal-exit {
+  text-align: center;
+}
+.exit-modal-icon {
+  font-size: 38px;
+  margin-bottom: 10px;
+  color: #d4a853;
+}
+.rc-modal-title-center { text-align: center; }
+.rc-modal-text-center { text-align: center; }
+
+/* v2.4: screenshot instructions modal */
+.rc-modal.rc-modal-show { display: flex !important; }
+.rc-modal-screenshot {
+  width: min(94vw, 460px);
+  text-align: start;
+}
+.rc-modal-close {
+  position: absolute;
+  inset-inline-end: 14px;
+  top: 14px;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  font-size: 18px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+.rc-modal-close:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.rc-screenshot-instructions {
+  background: rgba(212,168,83,0.06);
+  border: 1px solid rgba(212,168,83,0.2);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+.rc-screenshot-instructions ol {
+  padding-inline-start: 22px;
+  margin: 0;
+  color: rgba(255,255,255,0.92);
+  font-size: 14px;
+  line-height: 1.65;
+}
+.rc-screenshot-instructions li {
+  margin-bottom: 4px;
+}
+.rc-screenshot-instructions .rc-key-combo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.18);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: 'SFMono-Regular', 'Menlo', 'Consolas', monospace;
+  font-size: 12px;
+  color: #f5c518;
+  margin: 0 2px;
+}
+.rc-modal-tip {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.rc-modal-tip i { color: #d4a853; flex-shrink: 0; margin-top: 2px; }
+.rc-modal-continue-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 /* Minimal gold sparkles (replaces confetti) */

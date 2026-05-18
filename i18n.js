@@ -1015,6 +1015,42 @@ const TRANSLATIONS = {
     'recovery.txt.warning2': 'אל תשתף עם אף אחד',
     'recovery.txt.warning3': 'תצטרך אותו כדי להתחבר לחשבון שלך',
     'recovery.txt.loginAt': 'היכנס דרך:',
+
+    // === v2.4 additions (Hebrew) ===
+    'recovery.button.screenshot': 'צלם מסך',
+    'recovery.button.email': 'אימייל',
+    'recovery.button.download': 'הורד TXT',
+    'recovery.toast.screenshotDone': '✓ סומן כצולם',
+
+    'recovery.screenshot.title': 'צילום מסך של קוד השחזור',
+    'recovery.screenshot.intro': 'צילום המסך יישמר בגלריית התמונות של המכשיר שלך. כך עושים זאת:',
+    'recovery.screenshot.tip': 'אחרי הצילום, בדוק בגלריה שהקוד יצא ברור וקריא.',
+    'recovery.screenshot.done': 'צילמתי, המשך',
+    'recovery.screenshot.ios1': 'לחץ בו-זמנית על {k1} + {k2}',
+    'recovery.screenshot.ios2': 'התמונה תיווצר ותופיע לזמן קצר בתחתית המסך',
+    'recovery.screenshot.ios3': 'הצילום יישמר אוטומטית באפליקציית התמונות',
+    'recovery.screenshot.android1': 'לחץ בו-זמנית על {k1} + {k2} למשך ~1 שנייה',
+    'recovery.screenshot.samsung1': 'לחץ בו-זמנית על {k1} + {k2} (או החלק עם כף היד על המסך)',
+    'recovery.screenshot.android2': 'תוצג תצוגה מקדימה של הצילום',
+    'recovery.screenshot.android3': 'הצילום יישמר אוטומטית בגלריה',
+    'recovery.screenshot.mac1': 'לחץ {k1} + {k2} + {k3} ובחר את אזור הקוד',
+    'recovery.screenshot.mac2': 'הצילום יישמר בשולחן העבודה',
+    'recovery.screenshot.win1': 'לחץ {k1} + {k2} + {k3} ובחר את אזור הקוד',
+    'recovery.screenshot.win2': 'הצילום יועתק ללוח / יישמר בתיקיית "צילומי מסך"',
+    'recovery.screenshot.generic1': 'השתמש בפונקציית צילום המסך של המכשיר שלך',
+    'recovery.screenshot.generic2': 'התמונה תישמר אוטומטית בגלריה / שולחן העבודה',
+
+    'exitApp.title': 'לצאת מהאפליקציה?',
+    'exitApp.text': 'תוכל לחזור בכל זמן וההימור שלך נשמר אוטומטית.',
+    'exitApp.stay': 'הישאר באפליקציה',
+    'exitApp.confirm': 'צא',
+
+    'knockoutFirst.instructions': 'בחר את הקבוצה שלדעתך תעלה לסבב הבא',
+    'knockoutFirst.pointsLabel': '{n} נקודות אם תצדק',
+    'knockoutFirst.skip': 'דלג בינתיים',
+    'knockoutFirst.completedToast': 'מעולה! עכשיו תוכל לערוך כל בחירה',
+
+    'groups.lockedTournamentStarted': 'הטורניר התחיל - לא ניתן יותר לשנות את ההימור',
   },
 
   en: {
@@ -2026,18 +2062,93 @@ const TRANSLATIONS = {
     'recovery.txt.warning2': 'Don\'t share with anyone',
     'recovery.txt.warning3': 'You\'ll need it to access your account',
     'recovery.txt.loginAt': 'Login at:',
+
+    // === v2.4 additions (English) ===
+    'recovery.button.screenshot': 'Screenshot',
+    'recovery.button.email': 'Email',
+    'recovery.button.download': 'Download TXT',
+    'recovery.toast.screenshotDone': '✓ Marked as captured',
+
+    'recovery.screenshot.title': 'Screenshot the recovery code',
+    'recovery.screenshot.intro': 'The screenshot will be saved to your device\'s photo gallery. Here\'s how:',
+    'recovery.screenshot.tip': 'After the screenshot, check the gallery to make sure the code is clear and readable.',
+    'recovery.screenshot.done': 'Captured, continue',
+    'recovery.screenshot.ios1': 'Press {k1} + {k2} at the same time',
+    'recovery.screenshot.ios2': 'A thumbnail will briefly appear at the bottom of the screen',
+    'recovery.screenshot.ios3': 'The screenshot is saved automatically to the Photos app',
+    'recovery.screenshot.android1': 'Press and hold {k1} + {k2} together for ~1 second',
+    'recovery.screenshot.samsung1': 'Press {k1} + {k2} together (or swipe with your palm across the screen)',
+    'recovery.screenshot.android2': 'A preview of the screenshot will appear',
+    'recovery.screenshot.android3': 'The screenshot is saved to your gallery automatically',
+    'recovery.screenshot.mac1': 'Press {k1} + {k2} + {k3} then drag over the code',
+    'recovery.screenshot.mac2': 'The screenshot is saved to your Desktop',
+    'recovery.screenshot.win1': 'Press {k1} + {k2} + {k3} then drag over the code',
+    'recovery.screenshot.win2': 'The screenshot is copied to clipboard / saved in Screenshots folder',
+    'recovery.screenshot.generic1': 'Use your device\'s built-in screenshot function',
+    'recovery.screenshot.generic2': 'The image will be saved to your gallery / desktop automatically',
+
+    'exitApp.title': 'Exit the app?',
+    'exitApp.text': 'You can come back any time - your predictions are saved automatically.',
+    'exitApp.stay': 'Stay in app',
+    'exitApp.confirm': 'Exit',
+
+    'knockoutFirst.instructions': 'Pick the team you think will advance to the next round',
+    'knockoutFirst.pointsLabel': '{n} points if you\'re right',
+    'knockoutFirst.skip': 'Skip for now',
+    'knockoutFirst.completedToast': 'Great! You can now edit any pick',
+
+    'groups.lockedTournamentStarted': 'Tournament started - predictions can no longer be edited',
   }
 };
 
 // ===== Language Detection =====
 
+// v2.4: synchronous Israel detection - timezone OR browser language.
+// Used at first paint; we layer an async IP check on top (geoDetectIsraelAsync)
+// to catch travellers / mis-set locale where neither signal matches.
 function isUserInIsrael() {
   try {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    return tz === 'Asia/Jerusalem' || tz === 'Asia/Tel_Aviv';
-  } catch (e) {
-    return false;
+    if (tz === 'Asia/Jerusalem' || tz === 'Asia/Tel_Aviv') return true;
+  } catch (e) { /* ignore */ }
+
+  const navLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+  if (navLang === 'he' || navLang.startsWith('he-') || navLang === 'iw' || navLang.startsWith('iw-')) {
+    return true;
   }
+  // Browsers can also report region tags like "en-IL" / "ar-IL"
+  if (navLang.endsWith('-il')) return true;
+
+  // Manual override: a previously stored detection from the IP fallback
+  try {
+    if (localStorage.getItem('friendlybet_country') === 'IL') return true;
+  } catch (e) { /* ignore */ }
+
+  return false;
+}
+
+// v2.4: IP-based fallback. Runs asynchronously after page load. If the user
+// turns out to be in Israel, set the body class and the localStorage hint so
+// the next render uses it synchronously. We deliberately don't *un-set*
+// Israel status from the IP lookup - the sync signals already cover that.
+async function geoDetectIsraelAsync() {
+  // Skip if the sync check already said Israel
+  if (isUserInIsrael()) return;
+  // Skip if user has explicitly chosen a language
+  if (localStorage.getItem('friendlybet_language')) return;
+
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 2500);
+    const res = await fetch('https://ipapi.co/json/', { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data && data.country === 'IL') {
+      try { localStorage.setItem('friendlybet_country', 'IL'); } catch (e) {}
+      document.body.classList.add('is-israel');
+    }
+  } catch (e) { /* network/abort - leave as-is */ }
 }
 
 function detectUserLanguage() {
@@ -2045,14 +2156,10 @@ function detectUserLanguage() {
   const saved = localStorage.getItem('friendlybet_language');
   if (saved === 'he' || saved === 'en') return saved;
 
-  // 2. Detect by timezone (most accurate)
+  // 2. Detect by timezone OR browser language (Israel users)
   if (isUserInIsrael()) return 'he';
 
-  // 3. Fallback to browser language
-  const navLang = navigator.language || navigator.userLanguage || '';
-  if (navLang.startsWith('he')) return 'he';
-
-  // 4. Default to English
+  // 3. Default to English
   return 'en';
 }
 
@@ -2254,4 +2361,13 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', applyLanguage);
 } else {
   applyLanguage();
+}
+
+// v2.4: kick off IP-based geo fallback so travelling Israelis still get the
+// Hebrew toggle even if their device locale + timezone don't say so. Result
+// is cached in localStorage as friendlybet_country=IL for next visits.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => { geoDetectIsraelAsync(); });
+} else {
+  geoDetectIsraelAsync();
 }

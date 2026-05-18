@@ -855,7 +855,7 @@ function loadTablerFallback() {
         <i class="ti ti-chevron-left bet-cta-arrow"></i>
       </button>
 
-      <div class="bet-status-card locked">
+      <div class="bet-status-card locked" id="bet-status-knockout">
         <div class="bet-status-content">
           <div class="bet-status-title">
             <i class="ti ti-lock text-faint"></i>
@@ -865,7 +865,7 @@ function loadTablerFallback() {
         </div>
       </div>
 
-      <div class="bet-status-card locked">
+      <div class="bet-status-card locked" id="bet-status-top-scorer">
         <div class="bet-status-content">
           <div class="bet-status-title">
             <i class="ti ti-bolt text-faint"></i>
@@ -2092,7 +2092,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.3.0</span>
+      <span class="menu-version">v2.4.0</span>
     </div>
   </div>
 
@@ -2297,6 +2297,66 @@ function loadTablerFallback() {
 </div>
 
 <!-- ============================================================ -->
+<!-- v2.4 KNOCKOUT FIRST-TIME WALKTHROUGH (one match at a time)    -->
+<!-- ============================================================ -->
+<div id="ko-single-screen" class="screen">
+  <div class="topbar">
+    <button class="btn-icon" onclick="koSingleExit()" data-i18n-aria="common.back" aria-label="Back">
+      <i class="ti ti-arrow-right gold"></i>
+    </button>
+    <div class="topbar-center">
+      <div class="topbar-title-small" id="ko-single-round-label">Round of 32</div>
+      <div class="topbar-step" id="ko-single-progress-label">1 / 31</div>
+    </div>
+    <div style="width:32px;"></div>
+  </div>
+
+  <div class="ko-single-progress-wrap">
+    <div class="ko-single-progress-bar"><div id="ko-single-progress-fill" style="width: 0%"></div></div>
+  </div>
+
+  <div class="container ko-single-container">
+    <div class="ko-single-instructions" data-i18n="knockoutFirst.instructions">
+      בחר את הקבוצה שלדעתך תעלה לסבב הבא
+    </div>
+
+    <div class="ko-single-card" id="ko-single-card">
+      <!-- match content rendered by JS -->
+    </div>
+
+    <div class="ko-single-nav">
+      <button class="btn-secondary" id="ko-single-back-btn" onclick="koSinglePrev()">
+        <i class="ti ti-arrow-right"></i>
+        <span data-i18n="common.back">חזור</span>
+      </button>
+      <button class="btn-ghost" id="ko-single-skip-btn" onclick="koSingleSkip()">
+        <span data-i18n="knockoutFirst.skip">דלג בינתיים</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- v2.4: custom exit-app confirmation modal (gold themed) -->
+<div id="exit-app-modal" class="rc-modal" style="display:none;">
+  <div class="rc-modal-overlay" onclick="closeExitAppModal()"></div>
+  <div class="rc-modal-content rc-modal-exit">
+    <div class="exit-modal-icon">
+      <i class="ti ti-door-exit gold"></i>
+    </div>
+    <div class="rc-modal-title rc-modal-title-center" data-i18n="exitApp.title">לצאת מהאפליקציה?</div>
+    <div class="rc-modal-text rc-modal-text-center" data-i18n="exitApp.text">תוכל לחזור בכל זמן וההימור שלך נשמר אוטומטית.</div>
+    <div class="rc-modal-actions">
+      <button class="btn-secondary" onclick="closeExitAppModal()">
+        <span data-i18n="exitApp.stay">הישאר באפליקציה</span>
+      </button>
+      <button class="rc-modal-continue" onclick="confirmExitApp()">
+        <span data-i18n="exitApp.confirm">צא</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
 <!-- v2.1 NEW RECOVERY CODE SCREEN (dramatic + celebratory)        -->
 <!-- ============================================================ -->
 <div id="screen-recovery-code" class="screen">
@@ -2322,26 +2382,57 @@ function loadTablerFallback() {
       <div class="rc-warning-privacy"><i class="ti ti-lock"></i> <span data-i18n="recovery.privacy">שמור על פרטיות. אל תשתף.</span></div>
     </div>
 
+    <!-- v2.4: three-up action row - Screenshot / Email / Download -->
     <div class="rc-actions-primary">
-      <button class="rc-action-btn" id="rc-btn-copy" onclick="rcCopy()">
-        <i class="ti ti-copy rc-action-icon"></i>
-        <span class="rc-action-label" data-i18n="recovery.button.copy">העתק</span>
+      <button class="rc-action-btn" id="rc-btn-screenshot" onclick="rcScreenshot()">
+        <i class="ti ti-camera rc-action-icon"></i>
+        <span class="rc-action-label" data-i18n="recovery.button.screenshot">צלם מסך</span>
       </button>
       <button class="rc-action-btn" id="rc-btn-email" onclick="rcEmail()">
         <i class="ti ti-mail rc-action-icon"></i>
-        <span class="rc-action-label" data-i18n="recovery.button.email">שלח במייל</span>
+        <span class="rc-action-label" data-i18n="recovery.button.email">אימייל</span>
+      </button>
+      <button class="rc-action-btn" id="rc-btn-download" onclick="rcDownload()">
+        <i class="ti ti-download rc-action-icon"></i>
+        <span class="rc-action-label" data-i18n="recovery.button.download">הורד TXT</span>
       </button>
     </div>
 
-    <div class="rc-actions-secondary">
-      <button class="rc-action-btn rc-action-btn-secondary" id="rc-btn-download" onclick="rcDownload()">
-        <i class="ti ti-download rc-action-icon"></i>
-        <span class="rc-action-label" data-i18n="recovery.button.download">הורד כקובץ</span>
-      </button>
-    </div>
+    <!-- Hidden legacy copy button kept so rcCopy() handlers still work if
+         called from menu paths. v2.4 removed it from the screen UI. -->
+    <button class="rc-action-btn" id="rc-btn-copy" onclick="rcCopy()" style="display:none;">
+      <i class="ti ti-copy rc-action-icon"></i>
+      <span class="rc-action-label" data-i18n="recovery.button.copy">העתק</span>
+    </button>
 
     <button class="rc-continue-btn" id="rc-continue-btn" onclick="rcContinue()">
       <span data-i18n="recovery.button.continue">המשך לבריכה</span>
+    </button>
+  </div>
+</div>
+
+<!-- v2.4: screenshot instructions modal (device-aware) -->
+<div id="rc-screenshot-modal" class="rc-modal" style="display:none;">
+  <div class="rc-modal-overlay" onclick="rcCloseScreenshotModal()"></div>
+  <div class="rc-modal-content rc-modal-screenshot">
+    <button class="rc-modal-close" onclick="rcCloseScreenshotModal()" aria-label="Close">
+      <i class="ti ti-x"></i>
+    </button>
+    <div class="rc-modal-title">
+      <i class="ti ti-camera"></i>
+      <span data-i18n="recovery.screenshot.title">צלם את הקוד</span>
+    </div>
+    <div class="rc-modal-text" data-i18n="recovery.screenshot.intro">צילום מסך נשמר בגלריה של המכשיר שלך. כך עושים את זה:</div>
+    <div id="rc-screenshot-instructions" class="rc-screenshot-instructions">
+      <!-- populated by JS based on device -->
+    </div>
+    <div class="rc-modal-tip">
+      <i class="ti ti-info-circle"></i>
+      <span data-i18n="recovery.screenshot.tip">לאחר הצילום, בדוק בגלריית התמונות שהקוד ברור וקריא.</span>
+    </div>
+    <button class="rc-continue-btn rc-modal-continue-btn" onclick="rcConfirmScreenshot()">
+      <i class="ti ti-check"></i>
+      <span data-i18n="recovery.screenshot.done">צילמתי, המשך</span>
     </button>
   </div>
 </div>
