@@ -954,6 +954,10 @@ const TRANSLATIONS = {
     'wizard.ruleGroup.group': 'שלב הבתים',
     'wizard.ruleGroup.knockout': 'נוקאאוט',
     'wizard.ruleGroup.bonus': 'בונוסים',
+    // v2.5.27: two-phase combined "advancing team" label + multipliers explanation
+    'wizard.rule.advancing_team': 'כל קבוצה שעולה מהבית',
+    'wizard.multipliers.explainTitle': 'איך זה עובד',
+    'wizard.multipliers.explain': 'כל קבוצה מסווגת לאחד משלושה דירוגים לפי דירוג FIFA. הימור על קבוצה חלשה יותר שמתממש מזכה אותך ביותר נקודות: פייבוריטית ×1, מתמודדת ×1.5, אנדרדוג ×2. המכפיל מוחל על הנקודות שמרוויחים על הקבוצה הזו בלבד.',
 
     // === v2.0.0 - Single-phase betting ===
     'betting.singlePhase.title': 'הימור חד-פעמי',
@@ -2041,6 +2045,10 @@ const TRANSLATIONS = {
     'wizard.ruleGroup.group': 'Group stage',
     'wizard.ruleGroup.knockout': 'Knockout',
     'wizard.ruleGroup.bonus': 'Bonus',
+    // v2.5.27: two-phase combined "advancing team" label + multipliers explanation
+    'wizard.rule.advancing_team': 'Each advancing team',
+    'wizard.multipliers.explainTitle': 'How it works',
+    'wizard.multipliers.explain': 'Every team is rated in one of three tiers based on FIFA ranking. Correctly betting on a weaker team scores you more: Favorite ×1, Contender ×1.5, Underdog ×2. The multiplier applies only to points earned from that specific team.',
     'wizard.rule.tournament_winner': 'Tournament Winner',
     'wizard.rule.top_scorer': 'Top Scorer',
 

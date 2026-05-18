@@ -473,7 +473,12 @@ function loadTablerFallback() {
         <!-- v2.5.4: hidden in single_phase mode (multipliers disabled there) -->
         <div class="wizard-multipliers-info" id="wizard-multipliers-info">
           <div class="wizard-multipliers-title">
-            <i class="ti ti-rocket gold"></i>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path>
+              <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path>
+              <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path>
+              <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>
+            </svg>
             <span data-i18n="poolSettings.multipliers">מכפילי סיכון</span>
           </div>
           <div class="wizard-multipliers-help" data-i18n="poolSettings.multipliersHelp">מי שמסתכן יותר — מרוויח יותר 🎲</div>
@@ -493,6 +498,11 @@ function loadTablerFallback() {
               <span class="mult-name" data-i18n="poolSettings.multUnd">אנדרדוג</span>
               <span class="mult-value">×2</span>
             </div>
+          </div>
+          <!-- v2.5.27: explanation of how the multipliers work -->
+          <div class="wizard-multipliers-explain">
+            <div class="wizard-multipliers-explain-title" data-i18n="wizard.multipliers.explainTitle">איך זה עובד</div>
+            <div class="wizard-multipliers-explain-body" data-i18n="wizard.multipliers.explain">כל קבוצה מסווגת לאחד משלושה דירוגים לפי דירוג FIFA. הימור על קבוצה חלשה יותר שמתממש מזכה אותך ביותר נקודות: פייבוריטית ×1, מתמודדת ×1.5, אנדרדוג ×2. המכפיל מוחל על הנקודות שמרוויחים על הקבוצה הזו בלבד.</div>
           </div>
         </div>
       </div>
@@ -2208,7 +2218,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.26</span>
+      <span class="menu-version">v2.5.27</span>
     </div>
   </div>
 

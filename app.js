@@ -5996,7 +5996,28 @@ function _renderV2ScoringList(pool) {
 // v2.5.7: organize the rule keys into 3 semantic groups for the redesigned
 // scoring-rules screen (and the step-3 summary). Returns only groups that
 // actually have keys in the current mode.
+// v2.5.27: in two_phase mode, collapse group_first + group_second into a
+// single "Each advancing team" row - in two-phase the user picks who
+// advances (binary) regardless of position, so per-position labels are
+// misleading. The synthetic key 'advancing_team' is handled specially by
+// renderWizardRulesStep (reads from group_first, writes to BOTH).
 function _wizardRuleGroups() {
+  if (wizardState.mode === 'two_phase') {
+    return [
+      {
+        titleKey: 'wizard.ruleGroup.group',
+        rows: ['advancing_team']
+      },
+      {
+        titleKey: 'wizard.ruleGroup.knockout',
+        rows: ['round_of_16', 'quarter_final', 'semi_final', 'final']
+      },
+      {
+        titleKey: 'wizard.ruleGroup.bonus',
+        rows: ['top_scorer']
+      }
+    ];
+  }
   const keys = getWizardRuleKeys();
   const inSet = (k) => keys.includes(k);
   return [
@@ -6037,6 +6058,9 @@ function renderWizardRulesStep() {
   const values = wizardState.rulesChoice === 'custom' ? wizardState.customRules : defaults;
   const isCustom = wizardState.rulesChoice === 'custom';
 
+  // v2.5.27: synthetic key 'advancing_team' mirrors group_first for two_phase
+  const valueFor = (k) => (k === 'advancing_team') ? (values.group_first || 0) : values[k];
+
   list.innerHTML = _wizardRuleGroups().map(group => `
     <div class="wizard-rules-group">
       <div class="wizard-rules-group-title">${t(group.titleKey)}</div>
@@ -6047,14 +6071,14 @@ function renderWizardRulesStep() {
             ? `<div class="wizard-rules-stepper">
                  <button type="button" class="wizard-rules-stepper-btn" aria-label="−"
                    onclick="wizardStepRule('${k}', -1)">−</button>
-                 <input type="number" min="0" max="100" value="${values[k]}"
+                 <input type="number" min="0" max="100" value="${valueFor(k)}"
                    id="wizard-rule-${k}"
                    class="wizard-rules-row-input"
                    onchange="wizardUpdateCustomRule('${k}', this.value)" />
                  <button type="button" class="wizard-rules-stepper-btn" aria-label="+"
                    onclick="wizardStepRule('${k}', 1)">+</button>
                </div>`
-            : `<span class="wizard-rules-row-pts">${values[k]} ${t('common.points')}</span>`}
+            : `<span class="wizard-rules-row-pts">${valueFor(k)} ${t('common.points')}</span>`}
         </div>
       `).join('')}
     </div>
@@ -6065,6 +6089,20 @@ function renderWizardRulesStep() {
 function wizardStepRule(key, delta) {
   if (!wizardState.customRules) {
     wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
+  }
+  // v2.5.27: synthetic 'advancing_team' key mirrors to both group_first
+  //          and group_second for two_phase, since position-based scoring
+  //          doesn't apply when the user picks "who advances".
+  if (key === 'advancing_team') {
+    const current = parseInt(wizardState.customRules.group_first || 0, 10);
+    let next = current + delta;
+    if (next < 0) next = 0;
+    if (next > 100) next = 100;
+    wizardState.customRules.group_first = next;
+    wizardState.customRules.group_second = next;
+    const input = document.getElementById('wizard-rule-advancing_team');
+    if (input) input.value = next;
+    return;
   }
   const current = parseInt(wizardState.customRules[key] || 0, 10);
   let next = current + delta;
@@ -6081,7 +6119,13 @@ function wizardUpdateCustomRule(key, value) {
   if (isNaN(v) || v < 0) v = 0;
   if (v > 100) v = 100;
   if (!wizardState.customRules) wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
-  wizardState.customRules[key] = v;
+  // v2.5.27: synthetic advancing_team mirrors to both group_first + group_second
+  if (key === 'advancing_team') {
+    wizardState.customRules.group_first = v;
+    wizardState.customRules.group_second = v;
+  } else {
+    wizardState.customRules[key] = v;
+  }
 }
 
 function getFinalScoringRules() {

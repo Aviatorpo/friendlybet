@@ -1629,6 +1629,27 @@ input:disabled + .slider {
   padding: 6px 0;
 }
 
+/* v2.5.27: explanation paragraph for the risk-multipliers block */
+.wizard-multipliers-explain {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 8px;
+}
+.wizard-multipliers-explain-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #d4a853;
+  margin-bottom: 4px;
+}
+.wizard-multipliers-explain-body {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.7);
+}
+
 /* Scoring */
 .scoring-row {
   display: flex;
@@ -2048,6 +2069,14 @@ input:disabled + .slider {
   display: flex;
   gap: 10px;
   margin-bottom: 24px;
+}
+
+/* v2.5.27: prev/next group chevrons were drawn for Hebrew RTL (prev →,
+   next ←). In English LTR that's backwards. Flip both in LTR so they
+   point in the correct logical direction for the reading flow. */
+body.ltr #prev-group-btn svg,
+body.ltr #next-group-btn svg {
+  transform: scaleX(-1);
 }
 
 .btn-half {
