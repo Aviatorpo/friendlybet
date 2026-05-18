@@ -5752,9 +5752,12 @@ function fifaRankOf(code) { return FIFA_RANKINGS[code] ?? 999; }
 // Default scoring rules per mode
 const DEFAULT_SCORING_RULES = {
   single_phase: {
-    group_first: 5,
-    group_second: 3,
-    group_third: 2,
+    // v2.5.8: flat 1 point per correctly-predicted group position. The earlier
+    // 5/3/2/1 weighting was arbitrary - 1 each is the cleaner default and
+    // admins can still customize per pool.
+    group_first: 1,
+    group_second: 1,
+    group_third: 1,
     group_fourth: 1,
     round_of_16: 5,
     quarter_final: 8,
@@ -5764,8 +5767,10 @@ const DEFAULT_SCORING_RULES = {
     top_scorer: 10
   },
   two_phase: {
-    group_first: 5,
-    group_second: 3,
+    // v2.5.8: flat 1 point per correctly-predicted advancing team. Third/fourth
+    // place don't apply in two_phase, so they stay at 0.
+    group_first: 1,
+    group_second: 1,
     group_third: 0,
     group_fourth: 0,
     round_of_16: 5,
