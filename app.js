@@ -6352,7 +6352,8 @@ async function spLoadExistingPicks() {
     const { data: kp, error: kpErr } = await loadOrFallback('knockout_picks', q => q.not('bracket_position', 'is', null));
     if (kpErr) { console.warn('load knockout_picks err:', kpErr); anyError = true; }
     else (kp || []).forEach(p => {
-      newBracket[p.bracket_position] = p.team_code;
+      // v2.5.22: legacy table uses predicted_winner, not team_code.
+      newBracket[p.bracket_position] = p.predicted_winner || p.team_code;
       anyDataLoaded = true;
     });
 
@@ -6541,7 +6542,24 @@ function spAutoSaveGroups() {
   _spSaveTimer = setTimeout(() => { spSaveGroupsToDb(false); }, 600);
 }
 
+// v2.5.22: serialize saves to prevent the DELETE+INSERT race that caused
+// duplicate-key violations. Two autosaves firing close together used to
+// interleave their DELETEs and INSERTs, with the second INSERT colliding
+// on the unique (pool_id, user_id, group_letter, position) constraint.
+let _spGroupsSaveChain = Promise.resolve();
 async function spSaveGroupsToDb(showFeedback = true) {
+  const prev = _spGroupsSaveChain;
+  let resolveDone;
+  _spGroupsSaveChain = new Promise(r => { resolveDone = r; });
+  await prev;
+  try {
+    return await _spSaveGroupsToDbInner(showFeedback);
+  } finally {
+    resolveDone();
+  }
+}
+
+async function _spSaveGroupsToDbInner(showFeedback = true) {
   if (!state.currentPool || !state.currentUser) return;
   if (spIsLocked()) return;
 
@@ -6844,16 +6862,45 @@ function spAutoSaveBracket() {
   _spBracketSaveTimer = setTimeout(() => spSaveBracketToDb(false), 600);
 }
 
+// v2.5.22: serialize bracket saves to prevent the DELETE+INSERT race.
+let _spBracketSaveChain = Promise.resolve();
 async function spSaveBracketToDb(showFeedback = true) {
+  const prev = _spBracketSaveChain;
+  let resolveDone;
+  _spBracketSaveChain = new Promise(r => { resolveDone = r; });
+  await prev;
+  try {
+    return await _spSaveBracketToDbInner(showFeedback);
+  } finally {
+    resolveDone();
+  }
+}
+
+async function _spSaveBracketToDbInner(showFeedback = true) {
   if (!state.currentPool || !state.currentUser) return;
   if (spIsLocked()) return;
   const userId = state.currentUser.id;
   const poolId = state.currentPool.id;
 
+  // v2.5.22: knockout_picks is a LEGACY table from two-phase mode. Its
+  // schema uses `predicted_winner` (text) + `match_id` + `round`, not
+  // `team_code`. v2 single-phase uses the same table with bracket_position
+  // (added in the 2026-05-17 migration). We synthesise match_id/round for
+  // v2 rows so the legacy NOT NULL constraints (if any) are satisfied.
+  const bracketRoundLabel = (pos) => {
+    const p = parseInt(pos, 10);
+    if (p >= 1 && p <= 8) return 'r16';
+    if (p >= 9 && p <= 12) return 'qf';
+    if (p >= 13 && p <= 14) return 'sf';
+    if (p === 15) return 'final';
+    return 'unknown';
+  };
   const rows = Object.entries(spState.bracketPicks).map(([pos, code]) => ({
     pool_id: poolId,
     user_id: userId,
-    team_code: code,
+    predicted_winner: code,
+    match_id: `sp_${pos}`,
+    round: bracketRoundLabel(pos),
     bracket_position: parseInt(pos, 10)
   }));
 
