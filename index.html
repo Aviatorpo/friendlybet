@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0a1628">
-<meta name="description" content="הימור חברים על מונדיאל 2026 - חינמי, בלי פרסומות, בלי כסף">
+<meta name="description" content="Friends World Cup 2026 predictions — free, no ads, no money">
 
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
@@ -17,7 +17,7 @@
 <meta name="apple-mobile-web-app-title" content="FriendlyBet">
 <meta name="mobile-web-app-capable" content="yes">
 
-<title>FriendlyBet · הימור חברים על מונדיאל 2026</title>
+<title>FriendlyBet · Friends World Cup 2026 predictions</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -156,7 +156,7 @@ function loadTablerFallback() {
       <div class="pool-info-card">
         <div class="form-icon">🏆</div>
         <p class="text-faint" style="font-size: 12px; letter-spacing: 1.5px; margin-bottom: 6px;" data-i18n="join.invitedTo">הוזמנת ל</p>
-        <h2 id="found-pool-name" class="pool-name">חברים מהעבודה</h2>
+        <h2 id="found-pool-name" class="pool-name">—</h2>
         <p class="text-faint" style="margin-top: 4px;"><span data-i18n="join.poolCode">קוד</span>: <span id="found-pool-code" class="gold-mono">XXXXX</span></p>
 
         <div class="pool-stats">
@@ -178,7 +178,7 @@ function loadTablerFallback() {
             <div class="stat-icon-wrap"><i class="ti ti-clock gold"></i></div>
             <div>
               <div class="stat-label" data-i18n="common.status">סטטוס</div>
-              <div class="stat-value" id="found-pool-status">פתוח להצטרפות</div>
+              <div class="stat-value" id="found-pool-status">—</div>
             </div>
           </div>
         </div>
@@ -378,7 +378,7 @@ function loadTablerFallback() {
         <i class="ti ti-arrow-right"></i>
       </button>
       <span class="topbar-title" data-i18n="wizard.title">הגדרת ההימור</span>
-      <span class="topbar-step" id="wizard-step-label">שלב 1 מתוך 3</span>
+      <span class="topbar-step" id="wizard-step-label"></span>
     </div>
 
     <div class="progress-bar-container">
@@ -797,7 +797,7 @@ function loadTablerFallback() {
     <div class="topbar">
       <div>
         <div class="text-faint" style="font-size: 10px; letter-spacing: 1px;">
-          <span id="dashboard-pool-name">חברים מהעבודה</span>
+          <span id="dashboard-pool-name">—</span>
         </div>
         <div class="topbar-title-small"><span data-i18n="dashboard.greeting">היי</span>, <span id="dashboard-user-name">דני</span> 👋</div>
       </div>
@@ -922,7 +922,7 @@ function loadTablerFallback() {
       </button>
       <div class="topbar-center">
         <div class="topbar-title-small"><span data-i18n="groups.group">בית</span> <span id="current-group-letter">A</span></div>
-        <div class="topbar-step" id="current-group-step">בית 1 מתוך 12</div>
+        <div class="topbar-step" id="current-group-step"></div>
       </div>
       <button class="btn-icon" onclick="saveProgressAndExit()" data-i18n-aria="common.saveExit" aria-label="שמור וצא">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1064,7 +1064,7 @@ function loadTablerFallback() {
       </button>
       <div class="topbar-center">
         <div class="topbar-title-small" id="ko-round-title" data-i18n="dashboard.status.knockout">שלב הנוקאאוט</div>
-        <div class="topbar-step" id="ko-round-step">סבב 32</div>
+        <div class="topbar-step" id="ko-round-step"></div>
       </div>
       <button class="btn-icon" onclick="openSimulator()" data-i18n-aria="common.simulator" aria-label="סימולטור">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1161,7 +1161,7 @@ function loadTablerFallback() {
       </button>
       <div class="topbar-center">
         <div class="topbar-title-small" data-i18n="bracketView.title">עץ ההגרלה</div>
-        <div class="topbar-step" id="bracket-progress-text">0/31 משחקים</div>
+        <div class="topbar-step" id="bracket-progress-text"></div>
       </div>
       <button class="btn-icon" id="bracket-zoom-btn" onclick="toggleBracketZoom()" data-i18n-aria="common.zoom" aria-label="הגדל">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="bracket-zoom-icon">
@@ -1356,19 +1356,18 @@ function loadTablerFallback() {
       <div class="admin-action-card" id="pool-lock-card">
         <div class="admin-action-icon" id="pool-lock-icon">🔓</div>
         <div class="admin-action-content">
-          <div class="admin-action-title" id="pool-lock-title">ההימור פתוח להצטרפות</div>
-          <div class="admin-action-text" id="pool-lock-text">חברים חדשים יכולים להצטרף עם קוד ההזמנה</div>
+          <div class="admin-action-title" id="pool-lock-title"></div>
+          <div class="admin-action-text" id="pool-lock-text"></div>
         </div>
-        <button class="admin-action-btn" id="pool-lock-btn" onclick="togglePoolLock()">נעל</button>
+        <button class="admin-action-btn" id="pool-lock-btn" onclick="togglePoolLock()"></button>
       </div>
 
       <!-- Pending Approval Banner -->
       <div class="admin-pending-banner" id="admin-pending-banner" style="display: none;">
         <div class="admin-pending-banner-icon">⏳</div>
         <div class="admin-pending-banner-content">
-          <div class="admin-pending-banner-title" id="admin-pending-banner-title">
-            יש <span id="admin-pending-count">0</span> חברים שממתינים לאישור
-          </div>
+          <div class="admin-pending-banner-title" id="admin-pending-banner-title"></div>
+          <span id="admin-pending-count" style="display:none">0</span>
           <div class="admin-pending-banner-subtitle" data-i18n="adminMembersEx.pendingSubtitle">
             הם יכולים לשחק - אבל מומלץ לאשר/להסיר אותם
           </div>
@@ -1416,7 +1415,7 @@ function loadTablerFallback() {
     <div class="admin-action-modal-content">
       <div class="admin-action-user-info">
         <div class="admin-action-user-avatar" id="admin-modal-avatar">?</div>
-        <div class="admin-action-user-name" id="admin-modal-name">משתמש</div>
+        <div class="admin-action-user-name" id="admin-modal-name">—</div>
         <div class="admin-action-user-meta" id="admin-modal-meta"></div>
       </div>
 
@@ -1586,8 +1585,8 @@ function loadTablerFallback() {
                state.currentPool.scoring_rules.top_scorer. data-i18n-html
                removed so applyLanguage() doesn't overwrite the dynamic value. -->
           <div class="ts-hero-desc">
-            מי יבקיע הכי הרבה שערים במונדיאל?<br>
-            <strong>+25 נקודות בונוס</strong> אם תנחש נכון!
+            Who will score the most goals at the World Cup?<br>
+            <strong>+25 bonus points</strong> if you predict correctly!
           </div>
         </div>
 
@@ -1619,7 +1618,7 @@ function loadTablerFallback() {
             type="text"
             id="ts-search-input"
             class="ts-search-input"
-            placeholder="חפש שחקן בעברית או באנגלית..."
+            placeholder="Search player in English or Hebrew..."
             data-i18n-placeholder="topScorer.searchPlaceholder"
             autocomplete="off"
             oninput="onTopScorerSearch(this.value)"
@@ -1643,8 +1642,8 @@ function loadTablerFallback() {
             <span class="ts-search-hint-chip" onclick="pickTopScorerByName('Kane')">Kane</span>
             <span class="ts-search-hint-chip" onclick="pickTopScorerByName('Mbappé')">Mbappé</span>
             <span class="ts-search-hint-chip" onclick="pickTopScorerByName('Haaland')">Haaland</span>
-            <span class="ts-search-hint-chip" onclick="setSearchValue('ARG')" id="ts-hint-arg">ARG (קבוצה)</span>
-            <span class="ts-search-hint-chip" onclick="setSearchValue('BRA')" id="ts-hint-bra">BRA (קבוצה)</span>
+            <span class="ts-search-hint-chip" onclick="setSearchValue('ARG')" id="ts-hint-arg">ARG <span data-i18n="topScorer.teamSuffix">(team)</span></span>
+            <span class="ts-search-hint-chip" onclick="setSearchValue('BRA')" id="ts-hint-bra">BRA <span data-i18n="topScorer.teamSuffix">(team)</span></span>
           </div>
           <div class="ts-search-hints-note" data-i18n="topScorer.hintsNote">
             ניתן לחפש לפי שם השחקן, חלק מהשם, או קוד הקבוצה (3 אותיות באנגלית)
@@ -1703,11 +1702,11 @@ function loadTablerFallback() {
     <div class="container">
       <!-- Pool info -->
       <div class="lb-pool-info">
-        <div class="lb-pool-name" id="lb-pool-name">חברים מהעבודה</div>
+        <div class="lb-pool-name" id="lb-pool-name">—</div>
         <div class="lb-pool-meta">
-          <span id="lb-members-count">0 משתתפים</span>
+          <span id="lb-members-count"></span>
           <span class="lb-dot">·</span>
-          <span id="lb-tournament-status">לפני התחלת הטורניר</span>
+          <span id="lb-tournament-status"></span>
         </div>
       </div>
 
@@ -1931,8 +1930,8 @@ function loadTablerFallback() {
       </button>
 
       <div class="status-modal-icon">🎯</div>
-      <div class="status-modal-title" id="status-modal-title">כמעט סיימת!</div>
-      <div class="status-modal-subtitle" id="status-modal-subtitle">חסרות עוד 4 עולות</div>
+      <div class="status-modal-title" id="status-modal-title"></div>
+      <div class="status-modal-subtitle" id="status-modal-subtitle"></div>
 
       <div class="status-modal-summary">
         <div class="status-summary-item">
@@ -1985,14 +1984,14 @@ function loadTablerFallback() {
     <!-- User info section -->
     <div class="menu-user-section">
       <div class="menu-avatar">
-        <span id="menu-user-initial">א</span>
+        <span id="menu-user-initial">—</span>
       </div>
       <div class="menu-user-details">
-        <div class="menu-user-name" id="menu-user-name">אייל</div>
+        <div class="menu-user-name" id="menu-user-name">—</div>
         <div class="menu-user-role" id="menu-user-role" data-i18n="dashboard.role.member">משתתף</div>
       </div>
       <div class="menu-pool-badge" id="menu-pool-badge-wrap">
-        <div class="menu-pool-name" id="menu-pool-name">החברים</div>
+        <div class="menu-pool-name" id="menu-pool-name">—</div>
         <div class="menu-pool-code-mini" id="menu-pool-code">XXXXX</div>
       </div>
     </div>
@@ -2095,7 +2094,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.0</span>
+      <span class="menu-version">v2.5.1</span>
     </div>
   </div>
 
@@ -2111,7 +2110,7 @@ function loadTablerFallback() {
     </button>
     <div class="topbar-center">
       <div class="topbar-title-small" data-i18n="betting.groupPositions.title">מיקום בבתים</div>
-      <div class="topbar-step" id="sp-groups-step">בית 1 מתוך 12</div>
+      <div class="topbar-step" id="sp-groups-step"></div>
     </div>
     <button class="btn-icon" onclick="spGroupsSaveAndExit()" data-i18n-aria="common.save" aria-label="Save">
       <i class="ti ti-device-floppy gold"></i>

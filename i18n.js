@@ -186,6 +186,9 @@ const TRANSLATIONS = {
     'topScorer.searchPlaceholder': 'חפש שחקן בעברית או באנגלית...',
     'topScorer.hintsTitle': '💡 דוגמאות לחיפוש:',
     'topScorer.hintsNote': 'ניתן לחפש לפי שם השחקן, חלק מהשם, או קוד הקבוצה (3 אותיות באנגלית)',
+    'topScorer.teamSuffix': '(קבוצה)',
+    'page.title': 'FriendlyBet · הימור חברים על מונדיאל 2026',
+    'page.description': 'הימור חברים על מונדיאל 2026 - חינמי, בלי פרסומות, בלי כסף',
     'topScorer.team': 'קבוצה',
     'topScorer.noResults': 'לא נמצאו שחקנים',
     'topScorer.tryOther': 'נסה לחפש שם אחר',
@@ -1250,6 +1253,9 @@ const TRANSLATIONS = {
     'topScorer.searchPlaceholder': 'Search player in English or Hebrew...',
     'topScorer.hintsTitle': '💡 Search examples:',
     'topScorer.hintsNote': 'Search by player name, partial name, or team code (3 letters)',
+    'topScorer.teamSuffix': '(team)',
+    'page.title': 'FriendlyBet · Friends World Cup 2026 predictions',
+    'page.description': 'Friends World Cup 2026 predictions — free, no ads, no money',
     'topScorer.team': 'Team',
     'topScorer.noResults': 'No players found',
     'topScorer.tryOther': 'Try a different name',
@@ -2350,6 +2356,18 @@ function applyLanguage() {
     el.innerHTML = t(key);
   });
   
+  // Update page <title> and meta description so browser tab / share previews
+  // match the active language (prevents Hebrew leaking to English users).
+  try {
+    const pageTitle = t('page.title');
+    if (typeof pageTitle === 'string' && pageTitle) document.title = pageTitle;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) {
+      const desc = t('page.description');
+      if (typeof desc === 'string' && desc) metaDesc.setAttribute('content', desc);
+    }
+  } catch (e) {}
+
   // Dispatch event for app.js to re-render dynamic content
   window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: currentLanguage } }));
 }
