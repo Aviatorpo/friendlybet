@@ -6578,13 +6578,25 @@ async function spSaveGroupsToDb(showFeedback = true) {
   try {
     // v2.5.7: scope DELETE to this pool too - otherwise saving in pool B
     // wipes the user's picks from pool A.
-    await supabaseClient.from('group_position_picks')
+    const { error: delErr } = await supabaseClient.from('group_position_picks')
       .delete().eq('user_id', userId).eq('pool_id', poolId);
+    if (delErr) {
+      console.error('[spSaveGroupsToDb] DELETE error:', delErr);
+      showToast('DB error (groups DELETE): ' + (delErr.message || 'unknown'), 'error');
+    }
     const { error } = await supabaseClient.from('group_position_picks').insert(rows);
-    if (error) console.warn('Save group_position_picks error:', error);
+    if (error) {
+      // v2.5.20: surface save errors loudly. Silent warns were hiding RLS /
+      // migration problems - users would pick teams, see them in the UI,
+      // then find Not Picked on the summary screen with no clue why.
+      console.error('[spSaveGroupsToDb] INSERT error:', error);
+      showToast('DB error (groups): ' + (error.message || 'unknown') + ' - ' + (error.hint || error.details || ''), 'error');
+      return;
+    }
     if (showFeedback) showToast(t('groups.picksSaved'), 'success');
   } catch (err) {
-    console.warn('spSaveGroupsToDb err:', err);
+    console.error('[spSaveGroupsToDb] caught:', err);
+    showToast('DB error (groups): ' + (err.message || err), 'error');
   }
 }
 
@@ -6847,18 +6859,28 @@ async function spSaveBracketToDb(showFeedback = true) {
   try {
     // v2.5.7: scope DELETE to this pool. Without pool_id, saving bracket
     // picks in pool B would wipe pool A's bracket.
-    await supabaseClient.from('knockout_picks')
+    const { error: delErr } = await supabaseClient.from('knockout_picks')
       .delete()
       .eq('user_id', userId)
       .eq('pool_id', poolId)
       .not('bracket_position', 'is', null);
+    if (delErr) {
+      console.error('[spSaveBracketToDb] DELETE error:', delErr);
+      showToast('DB error (bracket DELETE): ' + (delErr.message || 'unknown'), 'error');
+    }
 
     const { error } = await supabaseClient.from('knockout_picks').insert(rows);
-    if (error) console.warn('Save bracket picks error:', error);
+    if (error) {
+      // v2.5.20: surface save errors loudly (same as spSaveGroupsToDb).
+      console.error('[spSaveBracketToDb] INSERT error:', error);
+      showToast('DB error (bracket): ' + (error.message || 'unknown') + ' - ' + (error.hint || error.details || ''), 'error');
+      return;
+    }
 
     if (showFeedback) showToast(t('groups.picksSaved'), 'success');
   } catch (err) {
-    console.warn('spSaveBracketToDb err:', err);
+    console.error('[spSaveBracketToDb] caught:', err);
+    showToast('DB error (bracket): ' + (err.message || err), 'error');
   }
 }
 
