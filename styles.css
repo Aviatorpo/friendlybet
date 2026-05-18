@@ -4206,6 +4206,33 @@ input:disabled + .slider {
   font-size: 16px;
 }
 
+/* v2.5.14: inline variant of the bracket-view button, placed directly
+   below the team-selection card instead of floating. */
+.ko-bracket-view-inline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin: 14px 0 10px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.18), rgba(212, 168, 83, 0.08));
+  color: #d4a853;
+  border: 1px solid rgba(212, 168, 83, 0.45);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Heebo', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ko-bracket-view-inline:hover {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.28), rgba(212, 168, 83, 0.14));
+  border-color: #d4a853;
+}
+.ko-bracket-view-inline:active { transform: scale(0.98); }
+.ko-bracket-view-inline i { font-size: 18px; }
+
 .floating-bracket-btn:hover, .floating-bracket-btn:active {
   transform: translateY(-1px);
   box-shadow: 0 8px 22px rgba(212, 168, 83, 0.55), 0 2px 6px rgba(0, 0, 0, 0.3);
@@ -4962,6 +4989,16 @@ input:disabled + .slider {
   font-size: 32px;
   flex-shrink: 0;
   animation: bounce-icon 2s ease-in-out infinite;
+  /* v2.5.14: switched from emoji to inline SVG - tint to gold */
+  color: #d4a853;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.invite-friends-icon svg {
+  width: 28px;
+  height: 28px;
+  display: block;
 }
 
 @keyframes bounce-icon {

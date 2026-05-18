@@ -110,7 +110,7 @@ const TRANSLATIONS = {
     'dashboard.action.continue': 'המשך',
     'dashboard.action.edit': 'ערוך',
     'dashboard.invite.title': 'הזמן חברים להימור',
-    'dashboard.invite.subtitle': 'שלח קישור ב-WhatsApp · Telegram · קוד QR',
+    'dashboard.invite.subtitle': 'שלח קישור ב-WhatsApp או Telegram',
     'dashboard.quickAction.leaderboard': 'דירוג',
     'dashboard.quickAction.help': 'עזרה',
     
@@ -1189,7 +1189,7 @@ const TRANSLATIONS = {
     'dashboard.action.continue': 'Continue',
     'dashboard.action.edit': 'Edit',
     'dashboard.invite.title': 'Invite friends to pool',
-    'dashboard.invite.subtitle': 'Send link via WhatsApp · Telegram · QR code',
+    'dashboard.invite.subtitle': 'Send a link via WhatsApp or Telegram',
     'dashboard.quickAction.leaderboard': 'Leaderboard',
     'dashboard.quickAction.help': 'Help',
     

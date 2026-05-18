@@ -856,11 +856,20 @@ function loadTablerFallback() {
       </div>
 
       <!-- Invite friends - moved up, primary CTA -->
+      <!-- v2.5.14: icon swapped to a user-plus that matches the action;
+           QR mention removed from subtitle (QR section was dropped in v2.4.6). -->
       <button class="invite-friends-btn" onclick="showShareModal()">
-        <div class="invite-friends-icon">🎉</div>
+        <div class="invite-friends-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" aria-hidden="true">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <line x1="20" y1="8" x2="20" y2="14"></line>
+            <line x1="23" y1="11" x2="17" y2="11"></line>
+          </svg>
+        </div>
         <div class="invite-friends-content">
           <div class="invite-friends-title" data-i18n="dashboard.invite.title">הזמן חברים להימור</div>
-          <div class="invite-friends-subtitle" data-i18n="dashboard.invite.subtitle">שלח קישור ב-WhatsApp · Telegram · קוד QR</div>
+          <div class="invite-friends-subtitle" data-i18n="dashboard.invite.subtitle">שלח קישור ב-WhatsApp או Telegram</div>
         </div>
         <i class="ti ti-chevron-left invite-friends-arrow"></i>
       </button>
@@ -2108,7 +2117,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.13</span>
+      <span class="menu-version">v2.5.14</span>
     </div>
   </div>
 
@@ -2188,6 +2197,13 @@ function loadTablerFallback() {
       <!-- Populated by JS -->
     </div>
 
+    <!-- v2.5.14: bracket-view button moved here, below the bracket grid,
+         instead of the previous floating pill. -->
+    <button class="ko-bracket-view-inline" onclick="openSpBracketView()">
+      <i class="ti ti-tournament"></i>
+      <span data-i18n="knockoutEx.bracketView">תצוגת ההגרלה</span>
+    </button>
+
     <div class="sp-group-nav">
       <button class="btn-secondary" onclick="spBackToGroups()">
         <i class="ti ti-arrow-right"></i>
@@ -2199,12 +2215,6 @@ function loadTablerFallback() {
       </button>
     </div>
   </div>
-
-  <!-- v2.4.5: floating "view full bracket" button -->
-  <button class="floating-bracket-btn" onclick="openSpBracketView()" aria-label="View full bracket">
-    <i class="ti ti-tournament"></i>
-    <span data-i18n="knockoutEx.bracketView">תצוגת ההגרלה</span>
-  </button>
 </div>
 
 <!-- C. TOURNAMENT WINNER SCREEN -->
@@ -2358,6 +2368,13 @@ function loadTablerFallback() {
       <!-- match content rendered by JS -->
     </div>
 
+    <!-- v2.5.14: bracket-view button moved here, below the team selection
+         card, instead of a floating top-anchored pill. -->
+    <button class="ko-bracket-view-inline" id="ko-single-view-bracket-inline" onclick="koSingleOpenBracketView()">
+      <i class="ti ti-tournament"></i>
+      <span data-i18n="knockoutEx.bracketView">תצוגת ההגרלה</span>
+    </button>
+
     <div class="ko-single-nav">
       <button class="btn-secondary" id="ko-single-back-btn" onclick="koSinglePrev()">
         <i class="ti ti-arrow-right"></i>
@@ -2369,14 +2386,8 @@ function loadTablerFallback() {
     </div>
   </div>
 
-  <!-- v2.5.0: floating "view full bracket" button - top-anchored pill,
-       visible from the very first match so users can see the full bracket
-       before committing to any pick. Mode-aware: single-phase opens the
-       modal, two-phase opens the legacy bracket-screen. -->
-  <button class="floating-bracket-btn" id="ko-single-view-bracket-btn" onclick="koSingleOpenBracketView()" aria-label="View full bracket">
-    <i class="ti ti-tournament"></i>
-    <span data-i18n="knockoutEx.bracketView">תצוגת ההגרלה</span>
-  </button>
+  <!-- v2.5.14: floating bracket-view button replaced by an inline button
+       below the team selection card (see .ko-bracket-view-inline above). -->
 </div>
 
 <!-- v2.4.7: bilateral bracket view modal. 7 columns: R16L | QFL | SFL |
