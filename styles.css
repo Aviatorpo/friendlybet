@@ -1514,6 +1514,39 @@ input:disabled + .slider {
   font-family: monospace;
 }
 
+/* v2.5.3: multipliers info block inside wizard step 2 */
+.wizard-multipliers-info {
+  margin-top: 18px;
+  padding: 14px 16px 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(212, 168, 83, 0.18);
+  border-radius: 12px;
+}
+
+.wizard-multipliers-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.wizard-multipliers-title .gold {
+  color: #d4a853;
+}
+
+.wizard-multipliers-help {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 8px;
+}
+
+.wizard-multipliers-rows .multiplier-row {
+  padding: 6px 0;
+}
+
 /* Scoring */
 .scoring-row {
   display: flex;

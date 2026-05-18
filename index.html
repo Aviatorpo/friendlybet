@@ -437,6 +437,32 @@ function loadTablerFallback() {
             <div class="wizard-option-check"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
           </div>
         </div>
+
+        <!-- v2.5.3: risk multipliers info block (matches pool-settings-screen) -->
+        <div class="wizard-multipliers-info">
+          <div class="wizard-multipliers-title">
+            <i class="ti ti-rocket gold"></i>
+            <span data-i18n="poolSettings.multipliers">מכפילי סיכון</span>
+          </div>
+          <div class="wizard-multipliers-help" data-i18n="poolSettings.multipliersHelp">מי שמסתכן יותר — מרוויח יותר 🎲</div>
+          <div class="wizard-multipliers-rows">
+            <div class="multiplier-row">
+              <span class="mult-emoji">⭐</span>
+              <span class="mult-name" data-i18n="poolSettings.multFav">פייבוריטית</span>
+              <span class="mult-value">×1</span>
+            </div>
+            <div class="multiplier-row">
+              <span class="mult-emoji">⚔️</span>
+              <span class="mult-name" data-i18n="poolSettings.multCont">מתמודדת</span>
+              <span class="mult-value">×1.5</span>
+            </div>
+            <div class="multiplier-row">
+              <span class="mult-emoji">🐶</span>
+              <span class="mult-name" data-i18n="poolSettings.multUnd">אנדרדוג</span>
+              <span class="mult-value">×2</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ===== STEP 3: REVIEW & CREATE ===== -->
@@ -464,6 +490,28 @@ function loadTablerFallback() {
           <div class="wizard-summary-row" style="flex-direction:column; align-items:stretch;">
             <span class="wizard-summary-label" data-i18n="wizard.summary.rules">חוקי הניקוד</span>
             <div class="wizard-summary-rules" id="wizard-summary-rules"></div>
+          </div>
+
+          <!-- v2.5.3: multipliers recap in summary -->
+          <div class="wizard-summary-row" style="flex-direction:column; align-items:stretch;">
+            <span class="wizard-summary-label" data-i18n="poolSettings.multipliers">מכפילי סיכון</span>
+            <div class="wizard-summary-rules">
+              <div class="multiplier-row">
+                <span class="mult-emoji">⭐</span>
+                <span class="mult-name" data-i18n="poolSettings.multFav">פייבוריטית</span>
+                <span class="mult-value">×1</span>
+              </div>
+              <div class="multiplier-row">
+                <span class="mult-emoji">⚔️</span>
+                <span class="mult-name" data-i18n="poolSettings.multCont">מתמודדת</span>
+                <span class="mult-value">×1.5</span>
+              </div>
+              <div class="multiplier-row">
+                <span class="mult-emoji">🐶</span>
+                <span class="mult-name" data-i18n="poolSettings.multUnd">אנדרדוג</span>
+                <span class="mult-value">×2</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -610,7 +658,7 @@ function loadTablerFallback() {
             <span class="mult-value">×1.5</span>
           </div>
           <div class="multiplier-row">
-            <span class="mult-emoji">🐴</span>
+            <span class="mult-emoji">🐶</span>
             <span class="mult-name" data-i18n="poolSettings.multUnd">אנדרדוג</span>
             <span class="mult-value">×2</span>
           </div>
@@ -1879,7 +1927,7 @@ function loadTablerFallback() {
           <div class="help-a" data-i18n="helpEx.a5">קבוצות באמצע הדירוג. סיכון בינוני, פרס בינוני.</div>
         </div>
         <div class="help-item">
-          <div class="help-q" data-i18n="helpEx.q6">🐴 אנדרדוג - ×2</div>
+          <div class="help-q" data-i18n="helpEx.q6">🐶 אנדרדוג - ×2</div>
           <div class="help-a" data-i18n="helpEx.a6">קבוצות חלשות. סיכון גבוה אבל נקודה כפולה אם צדקת!</div>
         </div>
       </div>
@@ -2094,7 +2142,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.2</span>
+      <span class="menu-version">v2.5.3</span>
     </div>
   </div>
 
