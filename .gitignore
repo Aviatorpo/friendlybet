@@ -1,0 +1,9 @@
+# Claude Code local settings (personal preferences, not for git)
+.claude/settings.local.json
+
+# Common
+.DS_Store
+Thumbs.db
+node_modules/
+.env
+.env.local
