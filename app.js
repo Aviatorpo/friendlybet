@@ -2271,6 +2271,9 @@ async function showPoolSettings() {
   
   // Multipliers
   document.getElementById('settings-use-multipliers').checked = pool.use_multipliers;
+  // v2.5.4: hide multipliers entirely for single_phase pools (concept doesn't apply)
+  const multSection = document.getElementById('settings-multipliers-section');
+  if (multSection) multSection.style.display = (pool.betting_mode === 'single_phase') ? 'none' : '';
   
   // Scoring
   document.getElementById('score-group-stage').textContent = pool.scoring_group_stage;
@@ -5854,6 +5857,10 @@ function getWizardRuleKeys() {
 }
 
 function renderWizardRulesStep() {
+  // v2.5.4: multipliers disabled entirely in single_phase mode
+  const multInfo = document.getElementById('wizard-multipliers-info');
+  if (multInfo) multInfo.style.display = (wizardState.mode === 'two_phase') ? '' : 'none';
+
   // Default preview
   const preview = document.getElementById('wizard-rules-preview');
   if (preview) {
@@ -5938,6 +5945,9 @@ function calcMaxPoints(rules, mode) {
 
 function renderWizardSummary() {
   const rules = getFinalScoringRules();
+  // v2.5.4: multipliers disabled entirely in single_phase mode
+  const multRow = document.getElementById('wizard-summary-multipliers-row');
+  if (multRow) multRow.style.display = (wizardState.mode === 'two_phase') ? '' : 'none';
   document.getElementById('wizard-summary-pool').textContent = state.pendingPoolName || '—';
   document.getElementById('wizard-summary-admin').textContent = state.pendingAdminNickname || '—';
   document.getElementById('wizard-summary-mode').textContent =

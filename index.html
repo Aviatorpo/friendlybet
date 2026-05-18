@@ -439,7 +439,8 @@ function loadTablerFallback() {
         </div>
 
         <!-- v2.5.3: risk multipliers info block (matches pool-settings-screen) -->
-        <div class="wizard-multipliers-info">
+        <!-- v2.5.4: hidden in single_phase mode (multipliers disabled there) -->
+        <div class="wizard-multipliers-info" id="wizard-multipliers-info">
           <div class="wizard-multipliers-title">
             <i class="ti ti-rocket gold"></i>
             <span data-i18n="poolSettings.multipliers">מכפילי סיכון</span>
@@ -493,7 +494,8 @@ function loadTablerFallback() {
           </div>
 
           <!-- v2.5.3: multipliers recap in summary -->
-          <div class="wizard-summary-row" style="flex-direction:column; align-items:stretch;">
+          <!-- v2.5.4: hidden in single_phase mode -->
+          <div class="wizard-summary-row" id="wizard-summary-multipliers-row" style="flex-direction:column; align-items:stretch;">
             <span class="wizard-summary-label" data-i18n="poolSettings.multipliers">מכפילי סיכון</span>
             <div class="wizard-summary-rules">
               <div class="multiplier-row">
@@ -626,7 +628,8 @@ function loadTablerFallback() {
       </div>
 
       <!-- Multipliers -->
-      <div class="settings-section">
+      <!-- v2.5.4: hidden when pool.betting_mode === 'single_phase' -->
+      <div class="settings-section" id="settings-multipliers-section">
         <div class="settings-section-title">
           <i class="ti ti-rocket gold"></i>
           <span data-i18n="poolSettings.multipliers">מכפילי סיכון</span>
@@ -2142,7 +2145,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.3</span>
+      <span class="menu-version">v2.5.4</span>
     </div>
   </div>
 
