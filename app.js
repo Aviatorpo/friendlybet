@@ -983,12 +983,16 @@ async function showMembers() {
     return;
   }
   
-  // For each member, check if they've placed bets
+  // v2.5.24: pick the correct picks table per betting_mode. The legacy
+  // group_picks belongs to two_phase pools; single_phase pools store
+  // picks in group_position_picks.
+  const isV2 = state.currentPool.betting_mode === 'single_phase';
+  const picksTable = isV2 ? 'group_position_picks' : 'group_picks';
   const { data: allPicks } = await supabaseClient
-    .from('group_picks')
+    .from(picksTable)
     .select('user_id')
     .eq('pool_id', state.currentPool.id);
-  
+
   // Count picks per user
   const picksPerUser = {};
   if (allPicks) {
@@ -1018,26 +1022,30 @@ async function showMembers() {
   
   members.forEach(member => {
     const picks = picksPerUser[member.id] || 0;
-    const card = createMemberCard(member, picks);
+    const card = createMemberCard(member, picks, isV2);
     list.appendChild(card);
   });
 }
 
-function createMemberCard(member, picksCount) {
+function createMemberCard(member, picksCount, isV2) {
   const card = document.createElement('div');
   card.className = 'member-card';
-  
+
   const isMe = state.currentUser && member.id === state.currentUser.id;
   if (isMe) card.classList.add('is-me');
   if (member.is_admin) card.classList.add('is-admin');
-  
+
+  // v2.5.24: completion threshold differs per mode.
+  //  - two_phase: 2 picks per group × 12 groups = 24 (legacy group_picks)
+  //  - single_phase: 4 positions per group × 12 groups = 48 (group_position_picks)
+  const completeThreshold = isV2 ? 48 : 24;
+
   // Status
   let statusClass, statusText, statusEmoji;
   if (picksCount === 0) {
     statusClass = 'not-started';
     statusText = t('membersList.notStarted');
-  } else if (picksCount < 24) {
-    // Minimum is 24 (2 per group × 12 groups)
+  } else if (picksCount < completeThreshold) {
     statusClass = 'partial';
     statusText = t('membersList.partial', { n: picksCount });
   } else {
@@ -1133,12 +1141,19 @@ async function loadAdminMembers() {
     
     if (usersError) throw usersError;
     
+    // v2.5.24: pick the right group-picks table per mode (legacy group_picks
+    // for two_phase, group_position_picks for single_phase). knockout_picks
+    // is shared across both modes (bracket_position column was added in the
+    // 2026-05-17 migration for the v2 flow).
+    const isV2 = pool.betting_mode === 'single_phase';
+    const groupTable = isV2 ? 'group_position_picks' : 'group_picks';
+
     // Load picks stats for each user
     const userIds = users.map(u => u.id);
-    
+
     const [groupPicksRes, knockoutPicksRes] = await Promise.all([
       supabaseClient
-        .from('group_picks')
+        .from(groupTable)
         .select('user_id')
         .in('user_id', userIds),
       supabaseClient
@@ -1146,17 +1161,17 @@ async function loadAdminMembers() {
         .select('user_id')
         .in('user_id', userIds)
     ]);
-    
+
     const groupPicksByUser = {};
     (groupPicksRes.data || []).forEach(p => {
       groupPicksByUser[p.user_id] = (groupPicksByUser[p.user_id] || 0) + 1;
     });
-    
+
     const knockoutPicksByUser = {};
     (knockoutPicksRes.data || []).forEach(p => {
       knockoutPicksByUser[p.user_id] = (knockoutPicksByUser[p.user_id] || 0) + 1;
     });
-    
+
     // Enrich users with stats
     adminState.members = users.map(u => ({
       ...u,
@@ -1164,6 +1179,7 @@ async function loadAdminMembers() {
       knockoutPicksCount: knockoutPicksByUser[u.id] || 0,
       isAdmin: u.is_admin === true
     }));
+    adminState.isV2 = isV2;
     
     renderAdminMembers();
     
@@ -1181,9 +1197,13 @@ function renderAdminMembers() {
   // Stats
   const total = adminState.members.length;
   const pending = adminState.members.filter(m => m.approval_status === 'pending' && !m.isAdmin).length;
-  // "Complete" = at least 24 picks (2 per group × 12 groups minimum)
-  const withGroups = adminState.members.filter(m => m.groupPicksCount >= 24).length;
-  const withKnockout = adminState.members.filter(m => m.knockoutPicksCount >= 16).length;
+  // v2.5.24: completion threshold differs per mode.
+  //  - two_phase legacy: 24 group picks (2 per group × 12) + 16 knockout
+  //  - single_phase: 48 group-position picks (4 × 12) + 15 bracket picks
+  const groupThreshold = adminState.isV2 ? 48 : 24;
+  const knockoutThreshold = adminState.isV2 ? 15 : 16;
+  const withGroups = adminState.members.filter(m => m.groupPicksCount >= groupThreshold).length;
+  const withKnockout = adminState.members.filter(m => m.knockoutPicksCount >= knockoutThreshold).length;
   
   document.getElementById('admin-stat-total').textContent = total;
   document.getElementById('admin-stat-groups').textContent = withGroups;
