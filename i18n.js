@@ -1040,6 +1040,7 @@ const TRANSLATIONS = {
 
     'recovery.screenshot.title': 'צילום מסך של קוד השחזור',
     'recovery.screenshot.intro': 'צילום המסך יישמר בגלריית התמונות של המכשיר שלך. כך עושים זאת:',
+    'recovery.screenshot.codeLabel': 'קוד השחזור שלך',
     'recovery.screenshot.tip': 'אחרי הצילום, בדוק בגלריה שהקוד יצא ברור וקריא.',
     'recovery.screenshot.done': 'צילמתי, המשך',
     'recovery.screenshot.ios1': 'לחץ בו-זמנית על {k1} + {k2}',
@@ -2103,6 +2104,7 @@ const TRANSLATIONS = {
 
     'recovery.screenshot.title': 'Screenshot the recovery code',
     'recovery.screenshot.intro': 'The screenshot will be saved to your device\'s photo gallery. Here\'s how:',
+    'recovery.screenshot.codeLabel': 'Your recovery code',
     'recovery.screenshot.tip': 'After the screenshot, check the gallery to make sure the code is clear and readable.',
     'recovery.screenshot.done': 'Captured, continue',
     'recovery.screenshot.ios1': 'Press {k1} + {k2} at the same time',

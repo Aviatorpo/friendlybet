@@ -7699,6 +7699,8 @@ function rcScreenshot() {
   const device = _fbDetectDevice();
   const el = document.getElementById('rc-screenshot-instructions');
   if (el) el.innerHTML = _fbScreenshotInstructionsHtml(device);
+  const codeEl = document.getElementById('rc-modal-code-text');
+  if (codeEl) codeEl.textContent = rcFormatCode(rcState.code);
   const modal = document.getElementById('rc-screenshot-modal');
   if (modal) modal.style.display = 'flex';
 }

@@ -7232,6 +7232,33 @@ body.ltr .bet-cta-arrow {
   border-radius: 50%;
 }
 .rc-modal-close:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.rc-modal-code-card {
+  background: linear-gradient(135deg, rgba(212,168,83,0.18), rgba(212,168,83,0.08));
+  border: 1px solid rgba(212,168,83,0.45);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 4px 0 14px;
+  text-align: center;
+  box-shadow: 0 0 18px rgba(212,168,83,0.18);
+}
+.rc-modal-code-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(245,197,24,0.95);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.rc-modal-code-text {
+  font-family: 'SFMono-Regular', 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: clamp(15px, 5.2vw, 26px);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #fff;
+  text-shadow: 0 0 14px rgba(212,168,83,0.4);
+  white-space: nowrap;
+  user-select: all;
+}
 .rc-screenshot-instructions {
   background: rgba(212,168,83,0.06);
   border: 1px solid rgba(212,168,83,0.2);
