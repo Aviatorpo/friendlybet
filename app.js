@@ -6590,7 +6590,15 @@ async function spSaveGroupsToDb(showFeedback = true) {
       // migration problems - users would pick teams, see them in the UI,
       // then find Not Picked on the summary screen with no clue why.
       console.error('[spSaveGroupsToDb] INSERT error:', error);
-      showToast('DB error (groups): ' + (error.message || 'unknown') + ' - ' + (error.hint || error.details || ''), 'error');
+      // v2.5.21: special handling for the FK-on-teams violation. The teams
+      // table doesn't have all 48 WC2026 codes (the API-driven sync omits
+      // playoff qualifiers). The fix is the seed-wc2026-teams.sql migration.
+      const msg = (error.message || '') + ' ' + (error.details || '');
+      if (/team_code_fkey/.test(msg) || /not present in table.*teams/.test(msg)) {
+        showToast('Missing team codes in DB. Run migrations/2026-05-18-seed-wc2026-teams.sql in Supabase.', 'error');
+      } else {
+        showToast('DB error (groups): ' + (error.message || 'unknown') + ' - ' + (error.hint || error.details || ''), 'error');
+      }
       return;
     }
     if (showFeedback) showToast(t('groups.picksSaved'), 'success');
@@ -6873,7 +6881,13 @@ async function spSaveBracketToDb(showFeedback = true) {
     if (error) {
       // v2.5.20: surface save errors loudly (same as spSaveGroupsToDb).
       console.error('[spSaveBracketToDb] INSERT error:', error);
-      showToast('DB error (bracket): ' + (error.message || 'unknown') + ' - ' + (error.hint || error.details || ''), 'error');
+      // v2.5.21: friendly hint for the missing-teams FK case.
+      const msg = (error.message || '') + ' ' + (error.details || '');
+      if (/team_code_fkey/.test(msg) || /not present in table.*teams/.test(msg)) {
+        showToast('Missing team codes in DB. Run migrations/2026-05-18-seed-wc2026-teams.sql in Supabase.', 'error');
+      } else {
+        showToast('DB error (bracket): ' + (error.message || 'unknown') + ' - ' + (error.hint || error.details || ''), 'error');
+      }
       return;
     }
 
