@@ -644,6 +644,10 @@ const TRANSLATIONS = {
 
     // === Bracket view ===
     'bracketView.title': 'עץ ההגרלה',
+    'bracketView.full': 'תצוגה מלאה',
+    'bracketView.leftSide': 'חצי שמאל',
+    'bracketView.rightSide': 'חצי ימין',
+    'bracketView.scrollHint': '↔ גלול הצידה כדי לראות את שני הצדדים',
     'bracketView.hint': 'גרור עם האצבע כדי לראות את כל הסבבים',
     'bracketView.r32': 'R32',
     'bracketView.r16': 'שמינית',
@@ -1703,6 +1707,10 @@ const TRANSLATIONS = {
 
     // === Bracket view ===
     'bracketView.title': 'Bracket',
+    'bracketView.full': 'Full view',
+    'bracketView.leftSide': 'Left half',
+    'bracketView.rightSide': 'Right half',
+    'bracketView.scrollHint': '↔ Scroll sideways to see both halves',
     'bracketView.hint': 'Swipe to see all rounds',
     'bracketView.r32': 'R32',
     'bracketView.r16': 'R16',

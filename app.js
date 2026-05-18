@@ -3366,7 +3366,14 @@ async function updateBettingStatusOnDashboard() {
       titleEl.textContent = t('dashboard.viewCta.title');
       subtitleEl.textContent = t('dashboard.viewCta.subtitle');
       ctaEl.classList.add('done');
-      _fbSetCtaProgress(1, 1);
+      // v2.4.7: hide the progress bar entirely once submitted. The previous
+      // "1 / 1" indicator was confusing - the title + green check icon are
+      // already the unambiguous "all done" signal. Showing a counter implied
+      // there was something left to fill.
+      const row = document.getElementById('bet-cta-progress-row');
+      if (row) row.style.display = 'none';
+      const iconWrap = document.getElementById('bet-cta-icon-simple');
+      if (iconWrap) iconWrap.innerHTML = '<i class="ti ti-check"></i>';
       return;
     }
     // Otherwise count v2 group_position_picks to show progress
@@ -6651,27 +6658,12 @@ function spBracketNext() {
   spStartTopScorerStep();
 }
 
-// v2.4.5: horizontal bracket view modal for the SP (single-phase) flow.
-// Shows the user's picks across R16 -> QF -> SF -> FINAL as columns,
-// with TBD placeholders for positions that depend on undecided matches.
-function _spBvTeamCell(code) {
-  if (!code) {
-    return `
-      <div class="sp-bv-team tbd">
-        <span class="sp-bv-team-flag">·</span>
-        <span class="sp-bv-team-name">${t('knockoutEx.tbdTeam')}</span>
-      </div>`;
-  }
-  // For columns past R16 we mark the team as "picked" because it's only
-  // shown here as a result of the user's pick at the previous round.
-  return `
-    <div class="sp-bv-team picked">
-      <span class="sp-bv-team-flag">${getCountryFlag(code)}</span>
-      <span class="sp-bv-team-name">${getTeamName(code)}</span>
-      <svg class="sp-bv-team-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
-    </div>`;
-}
+// v2.4.7: bilateral horizontal bracket view modal. Renders the SP
+// (single-phase) bracket with both sides flanking a central FINAL +
+// CHAMPION card. Each side: R16(4) -> QF(2) -> SF(1) -> FINAL <- SF(1)
+// <- QF(2) <- R16(4). Connector lines drawn via CSS pseudo-elements.
 
+// Match-card renderer used by every column.
 function _spBvRenderMatch(match) {
   const winner = spState.bracketPicks[match.pos];
   const cell = (code) => {
@@ -6689,53 +6681,107 @@ function _spBvRenderMatch(match) {
   return `
     <div class="sp-bv-match">
       ${cell(match.home)}
-      <div class="sp-bv-vs">vs</div>
+      <div class="sp-bv-match-vs">vs</div>
       ${cell(match.away)}
     </div>`;
 }
 
+// Helper: wrap N pairs of matches in pair-wrappers so the CSS vertical
+// connector line spans each feeder pair correctly. side = 'left' | 'right'.
+function _spBvPairColumn(matches, side, perPair = 2) {
+  const out = [];
+  for (let i = 0; i < matches.length; i += perPair) {
+    const slice = matches.slice(i, i + perPair);
+    out.push(
+      `<div class="sp-bv-pair-wrap ${side}">${slice.map(_spBvRenderMatch).join('')}</div>`
+    );
+  }
+  return out.join('');
+}
+
 function openSpBracketView() {
   const struct = spGetBracketStructure();
-  const grid = document.getElementById('sp-bracket-view-grid');
-  if (!grid) return;
+  const tree = document.getElementById('sp-bracket-tree');
+  if (!tree) return;
 
-  const champion = struct.final && spState.bracketPicks[15];
+  // Split positions into the two halves of the bracket
+  // LEFT:  R16 #1-4 → QF #9,10 → SF #13
+  // RIGHT: R16 #5-8 → QF #11,12 → SF #14
+  // FINAL #15 in the middle
+  const r16Left  = struct.r16.filter(m => [1, 2, 3, 4].includes(m.pos));
+  const r16Right = struct.r16.filter(m => [5, 6, 7, 8].includes(m.pos));
+  const qfLeft   = struct.qf.filter(m => [9, 10].includes(m.pos));
+  const qfRight  = struct.qf.filter(m => [11, 12].includes(m.pos));
+  const sfLeft   = struct.sf.filter(m => m.pos === 13);
+  const sfRight  = struct.sf.filter(m => m.pos === 14);
+  const finalMatch = struct.final;
+
+  const champion = spState.bracketPicks[15];
   const championHtml = champion
-    ? `<div class="sp-bv-champion-card">
-         <div class="sp-bv-trophy">🏆</div>
-         <div class="sp-bv-team-flag" style="font-size:28px;">${getCountryFlag(champion)}</div>
+    ? `<div class="sp-bv-champion">
+         <div class="sp-bv-champion-trophy">🏆</div>
+         <div class="sp-bv-champion-label">${t('betting.summary.winner')}</div>
+         <div class="sp-bv-champion-flag">${getCountryFlag(champion)}</div>
          <div class="sp-bv-champion-name">${getTeamName(champion)}</div>
        </div>`
-    : `<div class="sp-bv-champion-card tbd">
-         <div class="sp-bv-trophy">🏆</div>
+    : `<div class="sp-bv-champion tbd">
+         <div class="sp-bv-champion-trophy">🏆</div>
+         <div class="sp-bv-champion-label">${t('betting.summary.winner')}</div>
          <div class="sp-bv-champion-name">${t('betting.notPicked')}</div>
        </div>`;
 
-  grid.innerHTML = `
-    <div class="sp-bv-column">
-      <div class="sp-bv-column-title">${t('knockout.r16')}</div>
-      ${struct.r16.map(_spBvRenderMatch).join('')}
+  tree.innerHTML = `
+    <div class="sp-bv-col sp-bv-col-r16l">
+      <div class="sp-bv-col-title">${t('knockout.r16')}</div>
+      <div class="sp-bv-col-stack">${_spBvPairColumn(r16Left, 'left')}</div>
     </div>
-    <div class="sp-bv-column">
-      <div class="sp-bv-column-title">${t('knockout.qf')}</div>
-      ${struct.qf.map(_spBvRenderMatch).join('')}
+    <div class="sp-bv-col sp-bv-col-qfl">
+      <div class="sp-bv-col-title">${t('knockout.qf')}</div>
+      <div class="sp-bv-col-stack">${_spBvPairColumn(qfLeft, 'left')}</div>
     </div>
-    <div class="sp-bv-column">
-      <div class="sp-bv-column-title">${t('knockout.sf')}</div>
-      ${struct.sf.map(_spBvRenderMatch).join('')}
+    <div class="sp-bv-col sp-bv-col-sfl">
+      <div class="sp-bv-col-title">${t('knockout.sf')}</div>
+      <div class="sp-bv-col-stack">${sfLeft.map(_spBvRenderMatch).join('')}</div>
     </div>
-    <div class="sp-bv-column">
-      <div class="sp-bv-column-title">${t('knockout.final')}</div>
-      ${_spBvRenderMatch(struct.final)}
-    </div>
-    <div class="sp-bv-column">
-      <div class="sp-bv-column-title">${t('betting.summary.winner')}</div>
+    <div class="sp-bv-col sp-bv-col-fin">
+      <div class="sp-bv-col-title">${t('knockout.final')}</div>
+      ${_spBvRenderMatch(finalMatch)}
       ${championHtml}
+    </div>
+    <div class="sp-bv-col sp-bv-col-sfr">
+      <div class="sp-bv-col-title">${t('knockout.sf')}</div>
+      <div class="sp-bv-col-stack">${sfRight.map(_spBvRenderMatch).join('')}</div>
+    </div>
+    <div class="sp-bv-col sp-bv-col-qfr">
+      <div class="sp-bv-col-title">${t('knockout.qf')}</div>
+      <div class="sp-bv-col-stack">${_spBvPairColumn(qfRight, 'right')}</div>
+    </div>
+    <div class="sp-bv-col sp-bv-col-r16r">
+      <div class="sp-bv-col-title">${t('knockout.r16')}</div>
+      <div class="sp-bv-col-stack">${_spBvPairColumn(r16Right, 'right')}</div>
     </div>
   `;
 
+  // Reset side filter (Full view by default each time the modal opens)
+  setSpBracketViewSide('full');
+
   const modal = document.getElementById('sp-bracket-view-modal');
   if (modal) modal.style.display = 'flex';
+}
+
+// Side-tab switcher for narrow screens: focuses on left/right half or
+// shows both. Sets `data-side` on the tree which CSS uses to hide the
+// opposite half.
+function setSpBracketViewSide(side) {
+  const tree = document.getElementById('sp-bracket-tree');
+  if (tree) tree.setAttribute('data-side', side);
+  document.querySelectorAll('.sp-bv-side-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.side === side);
+  });
+  // Scroll the modal back to start when switching sides so the user
+  // doesn't end up looking at a blank gap.
+  const scroller = document.getElementById('sp-bracket-view-scroll');
+  if (scroller) scroller.scrollLeft = 0;
 }
 
 function closeSpBracketView() {
@@ -6745,6 +6791,7 @@ function closeSpBracketView() {
 
 window.openSpBracketView = openSpBracketView;
 window.closeSpBracketView = closeSpBracketView;
+window.setSpBracketViewSide = setSpBracketViewSide;
 
 function spRenderWinnerScreen() {
   // Options: SF winners if user picked any; else fallback to all R16-picked teams

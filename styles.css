@@ -6878,123 +6878,326 @@ body.ltr .bet-cta-arrow {
   font-variant-numeric: tabular-nums;
 }
 
-/* v2.4.5: horizontal bracket view modal (single-phase) */
+/* v2.4.7: bilateral bracket view modal. Shows both sides of the bracket
+   (R16L → QFL → SFL → FINAL ← SFR ← QFR ← R16R) with connector lines so
+   it's instantly readable as a tournament tree. Falls back to side-tabs
+   on narrow screens so users can focus on the half they care about. */
 .sp-bracket-view-modal-content {
-  width: min(96vw, 920px);
-  max-height: 86vh;
+  width: min(98vw, 1080px);
+  max-width: 1080px;
+  max-height: 92vh;
   display: flex;
   flex-direction: column;
+  padding: 14px 14px 12px;
+  overflow: hidden;
 }
-.sp-bracket-view-scroll {
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 6px 2px 12px;
-  -webkit-overflow-scrolling: touch;
-}
-.sp-bracket-view-grid {
+.sp-bv-close-x {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.75);
   display: flex;
-  gap: 12px;
-  min-width: max-content;
-  align-items: stretch;
-  padding: 8px 2px;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 0;
+  transition: all 0.18s;
 }
-.sp-bv-column {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  justify-content: space-around;
-  min-width: 160px;
+.sp-bv-close-x:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
 }
-.sp-bv-column-title {
-  font-size: 11px;
+.sp-bv-header {
+  flex-shrink: 0;
+  padding-bottom: 6px;
+}
+.sp-bv-side-tabs {
+  display: none;
+  gap: 6px;
+  margin-top: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.sp-bv-side-tab {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.sp-bv-side-tab.active {
+  background: rgba(212, 168, 83, 0.18);
+  border-color: rgba(212, 168, 83, 0.5);
   color: #d4a853;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+}
+.sp-bv-hint {
+  flex-shrink: 0;
   text-align: center;
-  padding: 6px 0;
-  position: sticky;
-  top: 0;
-  background: linear-gradient(180deg, #142030 70%, transparent);
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 4px;
+}
+
+.sp-bracket-view-scroll {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 2px;
+  position: relative;
+}
+
+/* The tree: 7-column CSS Grid. The match rows are positioned by
+   justify-content:space-around inside each column, so deeper rounds
+   naturally line up with the midpoint between their feeders. */
+.sp-bracket-tree {
+  display: grid;
+  grid-template-columns:
+    [r16l] minmax(115px, 1fr)
+    [qfl]  minmax(115px, 1fr)
+    [sfl]  minmax(115px, 1fr)
+    [fin]  minmax(140px, 1.2fr)
+    [sfr]  minmax(115px, 1fr)
+    [qfr]  minmax(115px, 1fr)
+    [r16r] minmax(115px, 1fr);
+  gap: 6px;
+  min-width: 880px;
+  align-items: stretch;
+  position: relative;
+}
+.sp-bv-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 4px 0;
+  position: relative;
+  min-height: 460px;
+}
+.sp-bv-col-fin {
+  justify-content: center;
+  gap: 12px;
+}
+.sp-bv-col-title {
+  font-size: 10px;
+  text-align: center;
+  color: #d4a853;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  padding: 3px 0 6px;
+  border-bottom: 1px solid rgba(212, 168, 83, 0.15);
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+.sp-bv-col-stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex: 1;
+  gap: 6px;
 }
 .sp-bv-match {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 6px 7px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-height: 76px;
+  gap: 4px;
+  position: relative;
+  font-size: 11px;
 }
 .sp-bv-team {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  font-size: 12.5px;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(0, 0, 0, 0.2);
-  min-height: 28px;
+  gap: 6px;
+  padding: 5px 7px;
+  border-radius: 5px;
+  color: rgba(255, 255, 255, 0.65);
+  background: rgba(0, 0, 0, 0.22);
+  min-height: 22px;
+  line-height: 1.15;
 }
 .sp-bv-team.picked {
-  background: rgba(16, 185, 129, 0.18);
+  background: rgba(16, 185, 129, 0.16);
   color: #fff;
   font-weight: 600;
-  border: 1px solid rgba(16, 185, 129, 0.4);
+  border: 1px solid rgba(16, 185, 129, 0.45);
 }
 .sp-bv-team.tbd {
-  color: rgba(255, 255, 255, 0.35);
+  color: rgba(255, 255, 255, 0.32);
   font-style: italic;
 }
 .sp-bv-team-flag {
-  font-size: 16px;
+  font-size: 14px;
   flex-shrink: 0;
+  line-height: 1;
 }
 .sp-bv-team-name {
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 11px;
 }
 .sp-bv-team-check {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   color: #10b981;
   flex-shrink: 0;
 }
 .sp-bv-team:not(.picked) .sp-bv-team-check { display: none; }
-.sp-bv-vs {
+.sp-bv-match-vs {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.3);
   text-align: center;
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.35);
   letter-spacing: 0.1em;
-  font-weight: 700;
-  padding: 2px 0;
+  padding: 1px 0;
 }
-.sp-bv-champion-card {
-  background: linear-gradient(135deg, rgba(212, 168, 83, 0.2), rgba(212, 168, 83, 0.05));
-  border: 1px solid rgba(212, 168, 83, 0.5);
+
+/* Champion card - bigger, gold, prominent */
+.sp-bv-champion {
+  background: linear-gradient(135deg, rgba(212, 168, 83, 0.25) 0%, rgba(212, 168, 83, 0.05) 100%);
+  border: 1.5px solid rgba(212, 168, 83, 0.55);
   border-radius: 12px;
-  padding: 14px;
+  padding: 12px 8px;
   text-align: center;
-  min-height: 76px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 6px;
+  gap: 4px;
+  box-shadow: 0 4px 18px rgba(212, 168, 83, 0.15);
 }
-.sp-bv-champion-card .sp-bv-trophy { font-size: 24px; }
-.sp-bv-champion-card .sp-bv-champion-name {
-  font-size: 14px;
+.sp-bv-champion.tbd {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+.sp-bv-champion-trophy { font-size: 22px; }
+.sp-bv-champion-label {
+  font-size: 9.5px;
+  color: #d4a853;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+.sp-bv-champion-flag { font-size: 26px; line-height: 1; }
+.sp-bv-champion-name {
+  font-size: 13px;
   font-weight: 700;
   color: #fff;
 }
-.sp-bv-champion-card.tbd .sp-bv-champion-name {
+.sp-bv-champion.tbd .sp-bv-champion-name {
   color: rgba(255, 255, 255, 0.4);
   font-style: italic;
+}
+
+/* ===== Connector lines via pseudo-elements =====
+   Each non-final match has a short horizontal stub going OUT toward its
+   parent. The vertical "bracket" piece is drawn on the OUTER edge of
+   each match (top half + bottom half) using a 1px right/left border so
+   adjacent feeder pairs visually connect. */
+.sp-bv-col-r16l .sp-bv-match::after,
+.sp-bv-col-qfl  .sp-bv-match::after,
+.sp-bv-col-sfl  .sp-bv-match::after {
+  content: '';
+  position: absolute;
+  inset-inline-end: -7px;
+  top: 50%;
+  width: 7px;
+  height: 1px;
+  background: rgba(212, 168, 83, 0.4);
+  pointer-events: none;
+  z-index: 1;
+}
+.sp-bv-col-r16r .sp-bv-match::before,
+.sp-bv-col-qfr  .sp-bv-match::before,
+.sp-bv-col-sfr  .sp-bv-match::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: -7px;
+  top: 50%;
+  width: 7px;
+  height: 1px;
+  background: rgba(212, 168, 83, 0.4);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Vertical connector spanning each feeder pair to their parent.
+   Implemented on the COLUMN's child wrappers (sp-bv-pair-wrap). */
+.sp-bv-pair-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-around;
+  position: relative;
+  padding: 0;
+}
+.sp-bv-pair-wrap.left::after {
+  content: '';
+  position: absolute;
+  inset-inline-end: 0;
+  top: 25%;
+  bottom: 25%;
+  width: 1px;
+  background: rgba(212, 168, 83, 0.4);
+  pointer-events: none;
+  z-index: 0;
+}
+.sp-bv-pair-wrap.right::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  top: 25%;
+  bottom: 25%;
+  width: 1px;
+  background: rgba(212, 168, 83, 0.4);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== Side-tab focus: hide opposite half on narrow screens ===== */
+.sp-bracket-tree[data-side="left"] .sp-bv-col-sfr,
+.sp-bracket-tree[data-side="left"] .sp-bv-col-qfr,
+.sp-bracket-tree[data-side="left"] .sp-bv-col-r16r {
+  display: none;
+}
+.sp-bracket-tree[data-side="right"] .sp-bv-col-r16l,
+.sp-bracket-tree[data-side="right"] .sp-bv-col-qfl,
+.sp-bracket-tree[data-side="right"] .sp-bv-col-sfl {
+  display: none;
+}
+.sp-bracket-tree[data-side="left"],
+.sp-bracket-tree[data-side="right"] {
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  min-width: 480px;
+}
+
+/* Mobile: show side-tabs, keep grid scrollable */
+@media (max-width: 720px) {
+  .sp-bv-side-tabs { display: flex; }
+  .sp-bracket-view-modal-content {
+    padding: 14px 10px 10px;
+  }
+  .sp-bracket-tree {
+    min-width: 760px;
+  }
+  .sp-bracket-tree[data-side="left"],
+  .sp-bracket-tree[data-side="right"] {
+    min-width: 440px;
+  }
 }
 
 /* v2.4: exit-app modal */
