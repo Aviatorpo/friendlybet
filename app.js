@@ -7422,6 +7422,7 @@ const rcState = {
   code: null,
   poolName: '',
   saved: false,             // user copied/emailed/downloaded?
+  savedScreenshot: false,   // v2.5.13: definitive save - skips warning modal
   confettiTimer: null
 };
 
@@ -7441,6 +7442,7 @@ function showRecoveryCode(mode, recoveryCode, poolName) {
   rcState.code = recoveryCode;
   rcState.poolName = poolName || (state.currentPool && state.currentPool.name) || 'FriendlyBet';
   rcState.saved = (mode === 'view'); // view-mode: don't gate continue
+  rcState.savedScreenshot = false;   // v2.5.13: reset definitive-save flag
 
   // Set title/subtitle by mode
   const titleEl = document.getElementById('rc-hero-title');
@@ -7705,9 +7707,17 @@ function rcContinue() {
     return;
   }
 
-  // v2.4.4: ALWAYS open the "Did you save the code?" confirmation modal so
-  // the save step is explicit even if the user thinks they saved. The user
-  // can answer Yes (continue) or No (close modal, save first).
+  // v2.5.13: if the user successfully downloaded the screenshot PNG, skip
+  // the "Did you save?" confirmation modal - the download is an unambiguous
+  // save action. Other paths (Email myself, legacy copy) remain uncertain
+  // and still trigger the confirmation.
+  if (rcState.savedScreenshot) {
+    rcProceedToNext();
+    return;
+  }
+
+  // v2.4.4: open the "Did you save the code?" confirmation modal so the save
+  // step is explicit. The user can answer Yes (continue) or No (close, save).
   const modal = document.getElementById('rc-warning-modal');
   if (modal) modal.style.display = 'flex';
 }
@@ -7964,6 +7974,9 @@ function rcSaveScreenshot() {
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1500);
+  // v2.5.13: stronger "definitely saved" signal so rcContinue can skip the
+  // "Did you save?" modal - a successful PNG download is unambiguous.
+  rcState.savedScreenshot = true;
   rcConfirmScreenshot();
 }
 
