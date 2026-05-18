@@ -269,6 +269,16 @@ body.ltr .btn-secondary .ti-arrow-left {
   display: inline-block;
 }
 
+/* v2.5.23: in LTR English, mirror every topbar so the back button (first
+   in DOM order) ends up on the RIGHT and the secondary action (if any)
+   on the LEFT. This matches the Hebrew RTL layout visually and avoids
+   the "left-side arrow pointing right" pattern that confused users. The
+   icon-flip rule above handles the direction; this rule handles the
+   position. RTL is unchanged - it already lays out this way by default. */
+body.ltr .topbar {
+  flex-direction: row-reverse;
+}
+
 .info-banner {
   display: flex;
   align-items: flex-start;

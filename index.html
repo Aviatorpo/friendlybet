@@ -1390,24 +1390,25 @@ function loadTablerFallback() {
   <!-- ADMIN MEMBERS MANAGEMENT SCREEN                              -->
   <!-- ============================================================ -->
   <div id="admin-members-screen" class="screen">
-    <!-- v2.5.15: swap DOM order so refresh sits on the left and the back
-         arrow sits on the right. SVG is rotated 180° via CSS so the arrow
-         actually points left (= toward the dashboard, the back direction). -->
+    <!-- v2.5.23: restored standard DOM order [back, title, refresh].
+         The body.ltr flex-direction: row-reverse rule mirrors LTR topbars
+         so back ends up on the right in both languages without per-screen
+         hand-swapping. -->
     <div class="topbar">
+      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="common.back" aria-label="חזור">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12l14 0"></path>
+          <path d="M5 12l6 6"></path>
+          <path d="M5 12l6 -6"></path>
+        </svg>
+      </button>
+      <span class="topbar-title" data-i18n="admin.members.title">ניהול חברים</span>
       <button class="btn-icon" onclick="loadAdminMembers()" data-i18n-aria="common.refresh" aria-label="רענן">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3 12a9 9 0 0 1 9 -9a9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
           <path d="M21 3v5h-5"></path>
           <path d="M21 12a9 9 0 0 1 -9 9a9.75 9.75 0 0 1 -6.74 -2.74L3 16"></path>
           <path d="M3 21v-5h5"></path>
-        </svg>
-      </button>
-      <span class="topbar-title" data-i18n="admin.members.title">ניהול חברים</span>
-      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="common.back" aria-label="חזור">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12l14 0"></path>
-          <path d="M5 12l6 6"></path>
-          <path d="M5 12l6 -6"></path>
         </svg>
       </button>
     </div>
@@ -2146,7 +2147,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.22</span>
+      <span class="menu-version">v2.5.23</span>
     </div>
   </div>
 
