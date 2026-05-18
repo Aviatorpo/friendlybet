@@ -6539,7 +6539,18 @@ body.ltr .bet-cta-arrow {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+}
+/* v2.5.5: small helper line below the 3 action buttons */
+.rc-actions-hint {
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+  margin: 4px 4px 16px;
+  padding: 8px 10px;
+  background: rgba(212, 168, 83, 0.05);
+  border-radius: 8px;
 }
 .rc-actions-secondary {
   display: flex;

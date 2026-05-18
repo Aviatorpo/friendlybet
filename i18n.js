@@ -1031,9 +1031,11 @@ const TRANSLATIONS = {
 
     // === v2.4 additions (Hebrew) ===
     'recovery.button.screenshot': 'צלם מסך',
-    'recovery.button.email': 'אימייל',
+    'recovery.button.email': 'שלח לי במייל',
     'recovery.button.download': 'הורד TXT',
     'recovery.button.emailMe': 'שלח את הקוד לאימייל שלי',
+    // v2.5.5: helper line under the action buttons to clarify the email flow
+    'recovery.actionsHint': '💡 כפתור המייל פותח את אפליקציית המייל שלך עם הקוד מוכן — שלח את ההודעה לעצמך כדי לשמור עותק',
     'recovery.toast.screenshotDone': '✓ סומן כצולם',
     'recovery.toast.emailCopied': '✓ תוכן המייל הועתק ללוח - הדבק במייל שלך',
     'recovery.toast.emailOpened': '✓ נפתח חלון מייל',
@@ -2098,9 +2100,11 @@ const TRANSLATIONS = {
 
     // === v2.4 additions (English) ===
     'recovery.button.screenshot': 'Screenshot',
-    'recovery.button.email': 'Email',
+    'recovery.button.email': 'Email myself',
     'recovery.button.download': 'Download TXT',
     'recovery.button.emailMe': 'Send the code to my email',
+    // v2.5.5: helper line under the action buttons to clarify the email flow
+    'recovery.actionsHint': '💡 The email button opens your mail app pre-filled — send the message to yourself to keep a copy',
     'recovery.toast.screenshotDone': '✓ Marked as captured',
     'recovery.toast.emailCopied': '✓ Email content copied to clipboard - paste into your email',
     'recovery.toast.emailOpened': '✓ Opened your email client',
