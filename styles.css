@@ -6256,26 +6256,46 @@ body:not(.ltr) .home-lang-toggle {
   box-shadow: none;
 }
 
-/* v2.4.5: small leading icon (no longer a solid colored square - just
-   the icon on a transparent background). The actual progress shows as a
-   horizontal bar inside the card body, which is more universally read. */
+/* v2.4.9: striking leading icon - solid gold gradient with bright white
+   inline-SVG glyph + soft outer glow. Replaces the prior faint olive disc
+   that was unreadable on dark backgrounds and depended on Tabler-icons
+   font which sometimes fails to render on Windows/PWA installs. */
 .bet-cta-icon-simple {
-  width: 42px;
-  height: 42px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  background: rgba(212, 168, 83, 0.14);
-  border: 1px solid rgba(212, 168, 83, 0.35);
-  color: #d4a853;
+  background: linear-gradient(135deg, #f5c518 0%, #d4a853 55%, #b88a3a 100%);
+  border: 1px solid rgba(245, 197, 24, 0.65);
+  color: #1a1d2e;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
   flex-shrink: 0;
+  box-shadow:
+    0 0 0 4px rgba(212, 168, 83, 0.10),
+    0 6px 16px rgba(212, 168, 83, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.18);
+}
+.bet-cta-icon-simple .bet-cta-svg {
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.18));
+}
+.bet-cta-card:hover .bet-cta-icon-simple {
+  box-shadow:
+    0 0 0 5px rgba(245, 197, 24, 0.14),
+    0 8px 22px rgba(245, 197, 24, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.2);
 }
 .bet-cta-card.done .bet-cta-icon-simple {
-  background: rgba(16, 185, 129, 0.16);
-  border-color: rgba(16, 185, 129, 0.45);
-  color: #10b981;
+  background: linear-gradient(135deg, #34d399 0%, #10b981 55%, #059669 100%);
+  border-color: rgba(16, 185, 129, 0.7);
+  color: #fff;
+  box-shadow:
+    0 0 0 4px rgba(16, 185, 129, 0.12),
+    0 6px 16px rgba(16, 185, 129, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.18);
 }
 
 /* Horizontal progress bar at the bottom of the CTA card */

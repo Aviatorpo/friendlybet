@@ -3330,14 +3330,39 @@ function _fbSetCtaProgress(picked, total) {
     text.textContent = `${safePicked} / ${total}`;
   }
 
-  // Swap leading icon: play (start), arrow-right (in progress), check (done)
+  // v2.4.9: swap leading glyph using inline SVGs (Tabler-icons font sometimes
+  // fails to render on Windows / fresh PWA installs, leaving a blank disc).
   if (safePicked === 0) {
-    icon.innerHTML = '<i class="ti ti-player-play-filled"></i>';
+    icon.innerHTML = _fbCtaSvgSoccerBall();
   } else if (safePicked >= total) {
-    icon.innerHTML = '<i class="ti ti-check"></i>';
+    icon.innerHTML = _fbCtaSvgCheck();
   } else {
-    icon.innerHTML = '<i class="ti ti-flag-3-filled"></i>';
+    icon.innerHTML = _fbCtaSvgFlag();
   }
+}
+
+// v2.4.9: inline-SVG glyphs for the dominant Start CTA leading icon.
+function _fbCtaSvgSoccerBall() {
+  return '<svg class="bet-cta-svg" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<circle cx="12" cy="12" r="9.5"/>' +
+    '<polygon points="12,7.5 15.8,10.3 14.4,14.8 9.6,14.8 8.2,10.3" fill="currentColor" stroke="none"/>' +
+    '<line x1="12" y1="2.5" x2="12" y2="7.5"/>' +
+    '<line x1="15.8" y1="10.3" x2="20.7" y2="8.7"/>' +
+    '<line x1="8.2" y1="10.3" x2="3.3" y2="8.7"/>' +
+    '<line x1="9.6" y1="14.8" x2="6.7" y2="19.5"/>' +
+    '<line x1="14.4" y1="14.8" x2="17.3" y2="19.5"/>' +
+  '</svg>';
+}
+function _fbCtaSvgFlag() {
+  return '<svg class="bet-cta-svg" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<line x1="6" y1="3.5" x2="6" y2="20.5"/>' +
+    '<path d="M6 4.5 L19 4.5 L16 9 L19 13.5 L6 13.5 Z" fill="currentColor" stroke="none"/>' +
+  '</svg>';
+}
+function _fbCtaSvgCheck() {
+  return '<svg class="bet-cta-svg" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<polyline points="5,12 10,17 19,7"/>' +
+  '</svg>';
 }
 
 // Update dashboard CTA card to reflect betting progress (v2.3 mode-aware)
@@ -3373,7 +3398,7 @@ async function updateBettingStatusOnDashboard() {
       const row = document.getElementById('bet-cta-progress-row');
       if (row) row.style.display = 'none';
       const iconWrap = document.getElementById('bet-cta-icon-simple');
-      if (iconWrap) iconWrap.innerHTML = '<i class="ti ti-check"></i>';
+      if (iconWrap) iconWrap.innerHTML = _fbCtaSvgCheck();
       return;
     }
     // Otherwise count v2 group_position_picks to show progress
