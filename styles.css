@@ -2040,10 +2040,13 @@ input:disabled + .slider {
   text-align: center;
 }
 
+/* v2.5.18: single-row grid of all 12 group pills. The pills are a single
+   letter each (A..L), so 12 columns fit even on a 360px viewport - down
+   to ~26px per pill which still comfortably shows one character. */
 .quick-groups-nav {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 4px;
 }
 
 .group-nav-pill {
@@ -2051,13 +2054,21 @@ input:disabled + .slider {
   background: rgba(255, 255, 255, 0.04);
   border: 0.5px solid rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.7);
-  padding: 8px 4px;
-  border-radius: 8px;
-  font-size: 13px;
+  padding: 7px 0;
+  border-radius: 7px;
+  font-size: 12px;
   font-weight: 600;
   font-family: monospace;
   cursor: pointer;
   transition: all 0.2s;
+  text-align: center;
+  min-width: 0;
+}
+
+/* On very narrow phones (< 360px) tighten further so it still fits one row */
+@media (max-width: 360px) {
+  .quick-groups-nav { gap: 3px; }
+  .group-nav-pill { padding: 6px 0; font-size: 11px; }
 }
 
 .group-nav-pill:hover {
