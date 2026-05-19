@@ -982,6 +982,10 @@ const TRANSLATIONS = {
     'wizard.rule.advancing_team': 'כל קבוצה שעולה מהבית',
     'wizard.multipliers.explainTitle': 'איך זה עובד',
     'wizard.multipliers.explain': 'כל קבוצה מסווגת לאחד משלושה דירוגים לפי דירוג FIFA. הימור על קבוצה חלשה יותר שמתממש מזכה אותך ביותר נקודות: פייבוריטית ×1, מתמודדת ×1.5, אנדרדוג ×2. המכפיל מוחל על הנקודות שמרוויחים על הקבוצה הזו בלבד.',
+    // v2.5.47: single_phase-only note + power-toggle label
+    'wizard.multipliers.singlePhaseNote': 'בהימור חד-שלבי המכפילים משפיעים רק משלב הנוקאאוט. ניחושי הבתים שווים נקודה אחת לכל קבוצה.',
+    'wizard.multipliers.powerOn': 'מכפילים מופעלים',
+    'wizard.multipliers.powerOff': 'מכפילים כבויים',
     'wizard.multipliers.perTeamTitle': 'מכפיל סיכון פר-קבוצה (אופציונלי)',
     'wizard.multipliers.perTeamHelp': 'אפשר להגדיר ידנית מכפיל לקבוצה מסוימת. ערכים שלא נגעת בהם נשארים על מכפיל הקטגוריה.',
     'wizard.multipliers.perTeamReset': 'איפוס לכל הקבוצות',
@@ -2117,6 +2121,10 @@ const TRANSLATIONS = {
     'wizard.rule.advancing_team': 'Each advancing team',
     'wizard.multipliers.explainTitle': 'How it works',
     'wizard.multipliers.explain': 'Every team is rated in one of three tiers based on FIFA ranking. Correctly betting on a weaker team scores you more: Favorite ×1, Contender ×1.5, Underdog ×2. The multiplier applies only to points earned from that specific team.',
+    // v2.5.47: single_phase-only note + power-toggle label
+    'wizard.multipliers.singlePhaseNote': 'In single-phase pools, multipliers apply only from the knockout stage onward. Group-position picks award one flat point per team.',
+    'wizard.multipliers.powerOn': 'Multipliers on',
+    'wizard.multipliers.powerOff': 'Multipliers off',
     'wizard.multipliers.perTeamTitle': 'Per-team multiplier (optional)',
     'wizard.multipliers.perTeamHelp': 'Override the multiplier for a specific team. Untouched teams stay on the category multiplier.',
     'wizard.multipliers.perTeamReset': 'Reset all teams',

@@ -484,16 +484,25 @@ function loadTablerFallback() {
               <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>
             </svg>
             <span data-i18n="poolSettings.multipliers">מכפילי סיכון</span>
+            <!-- v2.5.47: power-toggle next to the title to disable all
+                 multipliers entirely (resolves to ×1 across the board). -->
+            <label class="wizard-mult-power" title="">
+              <input type="checkbox" id="wizard-mult-power" onchange="wizardToggleUseMultipliers(this.checked)" checked>
+              <span class="wizard-mult-power-track"><span class="wizard-mult-power-knob"></span></span>
+            </label>
           </div>
           <div class="wizard-multipliers-help" data-i18n="poolSettings.multipliersHelp">מי שמסתכן יותר — מרוויח יותר 🎲</div>
           <!-- v2.5.34: rows + per-team list rendered by renderWizardMultipliers() -->
-          <div class="wizard-multipliers-rows" id="wizard-multipliers-rows"></div>
+          <div class="wizard-multipliers-body" id="wizard-multipliers-body">
+            <div class="wizard-multipliers-rows" id="wizard-multipliers-rows"></div>
 
-          <!-- v2.5.27: explanation of how the multipliers work -->
-          <div class="wizard-multipliers-explain">
-            <div class="wizard-multipliers-explain-title" data-i18n="wizard.multipliers.explainTitle">איך זה עובד</div>
-            <div class="wizard-multipliers-explain-body" data-i18n="wizard.multipliers.explain">כל קבוצה מסווגת לאחד משלושה דירוגים לפי דירוג FIFA. הימור על קבוצה חלשה יותר שמתממש מזכה אותך ביותר נקודות: פייבוריטית ×1, מתמודדת ×1.5, אנדרדוג ×2. המכפיל מוחל על הנקודות שמרוויחים על הקבוצה הזו בלבד.</div>
-          </div>
+            <!-- v2.5.27: explanation of how the multipliers work -->
+            <div class="wizard-multipliers-explain">
+              <div class="wizard-multipliers-explain-title" data-i18n="wizard.multipliers.explainTitle">איך זה עובד</div>
+              <div class="wizard-multipliers-explain-body" data-i18n="wizard.multipliers.explain">כל קבוצה מסווגת לאחד משלושה דירוגים לפי דירוג FIFA. הימור על קבוצה חלשה יותר שמתממש מזכה אותך ביותר נקודות: פייבוריטית ×1, מתמודדת ×1.5, אנדרדוג ×2. המכפיל מוחל על הנקודות שמרוויחים על הקבוצה הזו בלבד.</div>
+              <!-- v2.5.47: single_phase-only line, shown via JS in renderWizardMultipliers() -->
+              <div class="wizard-multipliers-sp-note" id="wizard-mult-sp-note" style="display:none;" data-i18n="wizard.multipliers.singlePhaseNote">בהימור חד-שלבי המכפילים משפיעים רק משלב הנוקאאוט. ניחושי הבתים שווים נקודה אחת לכל קבוצה.</div>
+            </div>
 
           <!-- v2.5.34: collapsible per-team overrides. Only meaningful when
                rulesChoice === 'custom'; renderWizardMultipliers hides it
@@ -2300,7 +2309,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.46</span>
+      <span class="menu-version">v2.5.47</span>
     </div>
   </div>
 

@@ -6235,6 +6235,9 @@ function getTeamDefaultTier(code) { return _defaultTierFromRank(fifaRankOf(code)
 // wins; otherwise fall back to the pool's category multiplier; otherwise
 // fall back to the global default.
 function getPoolTeamMultiplier(pool, teamCode) {
+  // v2.5.47: master switch - when the admin turned multipliers off,
+  // every team resolves to ×1 regardless of the configured values.
+  if (pool && pool.use_multipliers === false) return 1.0;
   const rules = (pool && pool.scoring_rules) || {};
   const teamMap = rules.team_multipliers || {};
   if (teamMap[teamCode] != null) return parseFloat(teamMap[teamCode]) || 1.0;
@@ -6252,7 +6255,8 @@ const wizardState = {
   step: 1,
   mode: 'single_phase',      // 'single_phase' | 'two_phase'
   rulesChoice: 'default',     // 'default' | 'custom'
-  customRules: null           // populated when user customizes
+  customRules: null,          // populated when user customizes
+  useMultipliers: true        // v2.5.47: master on/off for risk multipliers
 };
 
 function startPoolWizard() {
@@ -6533,6 +6537,15 @@ function renderWizardMultipliers() {
   const rowsEl = document.getElementById('wizard-multipliers-rows');
   const detailsEl = document.getElementById('wizard-team-mults');
   if (!rowsEl) return;
+
+  // v2.5.47: sync the power toggle + single-phase note + dimmed body state
+  const powerToggle = document.getElementById('wizard-mult-power');
+  if (powerToggle) powerToggle.checked = wizardState.useMultipliers !== false;
+  const body = document.getElementById('wizard-multipliers-body');
+  if (body) body.classList.toggle('is-off', wizardState.useMultipliers === false);
+  const spNote = document.getElementById('wizard-mult-sp-note');
+  if (spNote) spNote.style.display = (wizardState.mode === 'single_phase') ? '' : 'none';
+
   const isCustom = wizardState.rulesChoice === 'custom';
   const cat = (isCustom && wizardState.customRules && wizardState.customRules.multipliers)
     ? wizardState.customRules.multipliers
@@ -6677,6 +6690,15 @@ function wizardResetTeamMultipliers() {
 }
 window.wizardResetTeamMultipliers = wizardResetTeamMultipliers;
 
+// v2.5.47: master on/off for the whole risk-multipliers feature. Stored on
+// pool.use_multipliers; when false, getPoolTeamMultiplier(pool, code) falls
+// back to ×1 for every team (see app.js).
+function wizardToggleUseMultipliers(checked) {
+  wizardState.useMultipliers = !!checked;
+  renderWizardMultipliers();
+}
+window.wizardToggleUseMultipliers = wizardToggleUseMultipliers;
+
 function getFinalScoringRules() {
   if (wizardState.rulesChoice === 'custom' && wizardState.customRules) {
     // Make sure all required keys exist (fill unused with 0 for storage)
@@ -6783,7 +6805,9 @@ async function wizardCreatePool() {
       tournament: 'wc2026',
       status: 'open',
       betting_mode: wizardState.mode,
-      scoring_rules: finalRules
+      scoring_rules: finalRules,
+      // v2.5.47: persist the master multiplier on/off the admin picked
+      use_multipliers: wizardState.useMultipliers !== false
     };
 
     let pool, poolError;

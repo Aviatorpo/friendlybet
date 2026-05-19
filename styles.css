@@ -1634,6 +1634,59 @@ input:disabled + .slider {
   color: #fff;
   margin-bottom: 6px;
 }
+/* v2.5.47: power toggle next to the title - turns the whole feature off.
+   When checked: gold filled track. When unchecked: dim grey. */
+.wizard-mult-power {
+  margin-inline-start: auto;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.wizard-mult-power input { display: none; }
+.wizard-mult-power-track {
+  width: 36px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  position: relative;
+  transition: background 0.18s, border-color 0.18s;
+}
+.wizard-mult-power-knob {
+  position: absolute;
+  top: 1px;
+  inset-inline-start: 1px;
+  width: 16px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  transition: inset-inline-start 0.18s, background 0.18s, transform 0.18s;
+}
+.wizard-mult-power input:checked + .wizard-mult-power-track {
+  background: rgba(212, 168, 83, 0.55);
+  border-color: rgba(212, 168, 83, 0.75);
+}
+.wizard-mult-power input:checked + .wizard-mult-power-track .wizard-mult-power-knob {
+  transform: translateX(16px);
+  background: #d4a853;
+}
+body.rtl .wizard-mult-power input:checked + .wizard-mult-power-track .wizard-mult-power-knob {
+  transform: translateX(-16px);
+}
+.wizard-multipliers-body.is-off {
+  opacity: 0.4;
+  pointer-events: none;
+  filter: grayscale(0.6);
+}
+.wizard-multipliers-sp-note {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.12);
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: rgba(212, 168, 83, 0.85);
+}
 
 .wizard-multipliers-title .gold {
   color: #d4a853;
