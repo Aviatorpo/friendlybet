@@ -1139,7 +1139,7 @@ const TRANSLATIONS = {
 
     // === Onboarding ===
     'welcome.title': 'FriendlyBet',
-    'welcome.subtitle': 'World Cup 2026 with your friends',
+    'welcome.subtitle': 'World Cup Predictions with Friends',
     'welcome.tagline': '100% FREE · NO ADS · NO LIMITS · NO PAYWALLS',
     'welcome.create': 'Create New Pool',
     'welcome.join': 'Join Pool',
@@ -1606,7 +1606,7 @@ const TRANSLATIONS = {
     'sharePool.toDashboard': 'To my dashboard',
     'sharePool.welcomeToast': 'Welcome to {name}!',
     'sharePool.adminCodeAlert': '🔑 Your admin recovery code:\n\n{code}\n\nKeep it safe! Without it you cannot log back in.',
-    'sharePool.shareText': '🏆 Join the "{poolName}" pool for World Cup 2026!\n\nPool code: {code}\n\n👇 Tap the link to join:\n{url}\n\n⚽ FriendlyBet\nWorld Cup 2026 with your friends',
+    'sharePool.shareText': '🏆 Join the "{poolName}" pool for World Cup 2026!\n\nPool code: {code}\n\n👇 Tap the link to join:\n{url}\n\n⚽ FriendlyBet\nWorld Cup Predictions with Friends',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'Rules locked',
