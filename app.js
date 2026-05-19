@@ -5287,12 +5287,18 @@ function _fbRenderPoolMultipliersDetail(pool) {
   }
 }
 function _fbRenderHelpMultiplierRows(pool) {
-  const cat = _fbResolveCatMults(pool);
-  // The 3 help-q rows for tiers live at index q4/q5/q6 keys, but we just
-  // grab them by position inside the "risk multipliers" help-section.
   const sections = document.querySelectorAll('#help-screen .help-section');
   if (sections.length < 2) return;
   const tierSection = sections[1]; // the "🎲 מכפילי סיכון" section
+  // v2.5.54: hide the whole multipliers help block when the admin
+  // disabled multipliers for this pool - the explanation would just
+  // confuse users who never see ×N numbers anywhere.
+  if (pool && pool.use_multipliers === false) {
+    tierSection.style.display = 'none';
+    return;
+  }
+  tierSection.style.display = '';
+  const cat = _fbResolveCatMults(pool);
   const qs = tierSection.querySelectorAll('.help-q');
   if (qs.length >= 3) {
     qs[0].textContent = `⭐ ${t('helpEx.tierFav')} - ${_fbFormatMult(cat.favorite)}`;
@@ -6376,12 +6382,20 @@ window.poolUsesDefaultMultipliers = poolUsesDefaultMultipliers;
 // PHASE 1: POOL SETUP WIZARD
 // ============================================================
 
+// v2.5.54: per-mode default for the master multipliers toggle. Single-phase
+// pools start with multipliers OFF (admin opted-in if they want them);
+// two-phase keeps them ON by default, matching the legacy behavior.
+function _defaultUseMultsForMode(mode) {
+  return mode === 'two_phase';
+}
+
 const wizardState = {
   step: 1,
   mode: 'single_phase',      // 'single_phase' | 'two_phase'
   rulesChoice: 'default',     // 'default' | 'custom'
   customRules: null,          // populated when user customizes
-  useMultipliers: true        // v2.5.47: master on/off for risk multipliers
+  // v2.5.47: master on/off for risk multipliers. v2.5.54: per-mode default.
+  useMultipliers: _defaultUseMultsForMode('single_phase')
 };
 
 function startPoolWizard() {
@@ -6402,6 +6416,8 @@ function startPoolWizard() {
   wizardState.mode = 'single_phase';
   wizardState.rulesChoice = 'default';
   wizardState.customRules = null;
+  // v2.5.54: reset master toggle per mode default (single_phase = off)
+  wizardState.useMultipliers = _defaultUseMultsForMode(wizardState.mode);
 
   renderWizardStep();
   showScreen('pool-wizard-screen');
@@ -6442,6 +6458,10 @@ function renderWizardStep() {
 function wizardSelectMode(mode) {
   wizardState.mode = mode;
   wizardState.customRules = null; // reset on mode change
+  // v2.5.54: switching modes resets the master multipliers toggle to the
+  // new mode's default (single_phase = off, two_phase = on). Anything the
+  // admin tweaked on the old mode is dropped along with customRules.
+  wizardState.useMultipliers = _defaultUseMultsForMode(mode);
   document.querySelectorAll('#wizard-step-1 .wizard-option-card').forEach(c => {
     c.classList.toggle('selected', c.dataset.mode === mode);
   });
