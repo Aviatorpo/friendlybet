@@ -253,6 +253,20 @@ body {
 }
 .welcome-recovery-link i { font-size: 14px; }
 
+/* v2.5.29: recovery code input - keep all 19 chars (16 + 3 hyphens) on
+   one line regardless of viewport. Uses clamp() to fit narrow phones. */
+.recovery-code-input {
+  font-family: 'SFMono-Regular', Consolas, 'Courier New', monospace;
+  font-size: clamp(14px, 4.6vw, 22px);
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow-x: auto;
+  -webkit-text-fill-color: #d4a853;
+  color: #d4a853;
+}
+
 /* v2.5.16: The UI was authored Hebrew-first - every topbar back uses
    ti-arrow-right and every primary "Continue" button uses ti-arrow-left.
    That's correct in Hebrew RTL (back points → toward the "back" direction,

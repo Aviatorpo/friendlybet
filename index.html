@@ -167,7 +167,7 @@ function loadTablerFallback() {
 
         <div class="form-group">
           <label class="form-label" data-i18n="recoveryLogin.codeLabel">קוד שחזור</label>
-          <input type="text" id="recovery-login-input" class="form-input form-input-large" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="20" autocomplete="off" autocapitalize="characters" inputmode="text">
+          <input type="text" id="recovery-login-input" class="form-input form-input-large recovery-code-input" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" autocomplete="off" autocapitalize="characters" inputmode="text" oninput="recoveryLoginInputFormat(event)" onpaste="setTimeout(() => recoveryLoginInputFormat({target: this}), 0)" spellcheck="false">
         </div>
 
         <div id="recovery-login-error" class="error-message" style="display: none;"></div>
@@ -2218,7 +2218,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.28</span>
+      <span class="menu-version">v2.5.29</span>
     </div>
   </div>
 

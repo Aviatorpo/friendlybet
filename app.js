@@ -88,17 +88,29 @@ async function hashRecoveryCode(code) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// v2.5.16: log in to an existing account using a recovery code. Strips
-// formatting, hashes, looks up the user by recovery_code_hash, loads the
-// matching pool, and lands the user on the dashboard.
+// v2.5.16: log in to an existing account using a recovery code.
+// v2.5.29: the stored hash is of the ORIGINAL hyphenated format
+// ("ABCD-EFGH-IJKL-MNOP") produced by generateRecoveryCode(). We must
+// re-create that exact format from the user's input before hashing -
+// the previous version stripped hyphens then hashed bare chars, which
+// never matched. We also try both formats (with hyphens and without)
+// for forward-compat in case any user codes were hashed differently.
+function _formatRecoveryCodeForHash(rawInput) {
+  // 1. strip everything that isn't a code character, uppercase
+  const chars = String(rawInput || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  // 2. group into XXXX-XXXX-XXXX-XXXX (matches generateRecoveryCode output)
+  const m = chars.match(/.{1,4}/g);
+  return m ? m.join('-') : chars;
+}
+
 async function submitRecoveryLogin() {
   const input = document.getElementById('recovery-login-input');
   const errEl = document.getElementById('recovery-login-error');
   if (errEl) errEl.style.display = 'none';
   if (!input) return;
 
-  const raw = (input.value || '').replace(/[\s-]/g, '').toUpperCase();
-  if (raw.length < 12) {
+  const bareChars = String(input.value || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  if (bareChars.length < 12) {
     if (errEl) {
       errEl.textContent = t('recoveryLogin.errorShort');
       errEl.style.display = '';
@@ -116,18 +128,30 @@ async function submitRecoveryLogin() {
   }
 
   try {
-    const hash = await hashRecoveryCode(raw);
-    const { data: users, error: userErr } = await supabaseClient
-      .from('users').select('*').eq('recovery_code_hash', hash).limit(1);
-    if (userErr) throw userErr;
-    if (!users || users.length === 0) {
+    // Try the canonical hyphenated format first, then bare-chars as a
+    // fallback. Stored hashes are normally of the hyphenated string.
+    const hyphenated = _formatRecoveryCodeForHash(bareChars);
+    const candidates = [hyphenated, bareChars];
+
+    let user = null;
+    for (const candidate of candidates) {
+      const hash = await hashRecoveryCode(candidate);
+      const { data: users, error: userErr } = await supabaseClient
+        .from('users').select('*').eq('recovery_code_hash', hash).limit(1);
+      if (userErr) throw userErr;
+      if (users && users.length > 0) {
+        user = users[0];
+        break;
+      }
+    }
+
+    if (!user) {
       if (errEl) {
         errEl.textContent = t('recoveryLogin.errorNotFound');
         errEl.style.display = '';
       }
       return;
     }
-    const user = users[0];
     const { data: pool, error: poolErr } = await supabaseClient
       .from('pools').select('*').eq('id', user.pool_id).maybeSingle();
     if (poolErr) throw poolErr;
@@ -142,7 +166,7 @@ async function submitRecoveryLogin() {
     state.currentUser = user;
     state.currentPool = pool;
     saveLocalUser(user);
-    localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, raw);
+    localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, hyphenated);
 
     showToast(t('recoveryLogin.success', { nickname: user.nickname }), 'success');
     await goToDashboard();
@@ -155,6 +179,38 @@ async function submitRecoveryLogin() {
   }
 }
 window.submitRecoveryLogin = submitRecoveryLogin;
+
+// v2.5.29: live auto-format the recovery code input as the user types
+// (and on paste) so it always reads XXXX-XXXX-XXXX-XXXX. The underlying
+// chars + caret position are preserved as best we can.
+function recoveryLoginInputFormat(ev) {
+  const input = ev.target;
+  const before = input.value;
+  const beforeCaret = input.selectionStart || 0;
+
+  // Count alphanumeric chars before the caret in the original string
+  let bareBeforeCaret = 0;
+  for (let i = 0; i < beforeCaret && i < before.length; i++) {
+    if (/[A-Za-z0-9]/.test(before[i])) bareBeforeCaret++;
+  }
+
+  const chars = before.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 16);
+  const groups = chars.match(/.{1,4}/g) || [];
+  const formatted = groups.join('-');
+
+  if (formatted !== before) {
+    input.value = formatted;
+    // Recompute caret: walk formatted until we've passed bareBeforeCaret chars
+    let newCaret = 0;
+    let bareCount = 0;
+    while (newCaret < formatted.length && bareCount < bareBeforeCaret) {
+      if (/[A-Za-z0-9]/.test(formatted[newCaret])) bareCount++;
+      newCaret++;
+    }
+    try { input.setSelectionRange(newCaret, newCaret); } catch (_) { /* IE fallback */ }
+  }
+}
+window.recoveryLoginInputFormat = recoveryLoginInputFormat;
 
 // שמירת מצב משתמש מקומית
 function saveLocalUser(userData) {
@@ -214,9 +270,9 @@ async function checkPoolCode() {
   }
 
   // Search pool
+  // v2.5.29: removed "Searching pool..." info toast - the pool-found
+  // screen is itself the feedback.
   try {
-    showToast(t('errors.searchingPool'), 'info');
-
     const { data, error } = await supabaseClient
       .from('pools')
       .select('*')
@@ -432,7 +488,8 @@ async function completeRegistration() {
   }
 
   try {
-    showToast(t('errors.creatingUser'), 'info');
+    // v2.5.29: removed "Creating user..." info toast - dashboard
+    // transition follows shortly.
 
     // Hash recovery code
     const recoveryHash = await hashRecoveryCode(state.pendingRecoveryCode);
@@ -530,8 +587,9 @@ async function createPool() {
   }
 
   try {
-    showToast(t('errors.creatingPool'), 'info');
-    
+    // v2.5.29: removed "Creating pool..." info toast - the recovery
+    // code screen that follows is the success confirmation.
+
     // Generate unique pool code
     let poolCode;
     let attempts = 0;
@@ -1608,8 +1666,8 @@ function escapeHtml(str) {
 }
 
 function showApprovals() {
+  // v2.5.29: stripped placeholder "Processing..." toast - unimplemented stub
   closeMenu();
-  showToast('🚧 ' + t('common.processing'), 'info');
 }
 
 // ============================================================
@@ -2541,8 +2599,8 @@ async function savePoolSettings() {
   }
 
   try {
-    showToast(t('poolSettings.savingToast'), 'info');
-
+    // v2.5.29: dropped "Saving settings..." info toast - the success toast
+    // 1-2 seconds later is sufficient feedback.
     const { error } = await supabaseClient
       .from('pools')
       .update(newSettings)
@@ -4812,11 +4870,11 @@ async function updateKnockoutStatusOnDashboard() {
     return;
   }
 
-  // Find the knockout status card (second bet-status-card.locked)
-  const cards = document.querySelectorAll('.bet-status-card');
-  if (cards.length < 2) return;
-
-  const koCard = cards[1]; // The second one is knockout
+  // v2.5.29: target by ID. The previous querySelectorAll(.bet-status-card)[1]
+  // was actually picking the top-scorer card (knockout is index 0), causing
+  // both cards to display "knockout" content. Bug shipped since v2.4-ish.
+  const koCard = document.getElementById('bet-status-knockout');
+  if (!koCard) return;
 
   // v2.5.28: gate on REAL-WORLD group stage completion, not user's own
   // pick count. Knockout betting is only meaningful once the group stage
