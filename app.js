@@ -799,10 +799,18 @@ async function goToDashboard() {
     }
   }
   
+  // v2.5.38: only admins see the "invite friends" CTA on the dashboard.
+  // Regular members joined via a link or pool code - they don't need to
+  // recruit. The menu still has a share entry for admins to find anytime.
+  const inviteBtn = document.querySelector('#user-dashboard-screen .invite-friends-btn');
+  if (inviteBtn) {
+    inviteBtn.style.display = (state.currentUser && state.currentUser.is_admin) ? '' : 'none';
+  }
+
   // Update betting status based on actual picks
   updateBettingStatusOnDashboard();
   updateKnockoutStatusOnDashboard();
-  
+
   showScreen('user-dashboard-screen');
 }
 
@@ -3611,23 +3619,34 @@ function _fbCtaSvgCheck() {
 
 // Update dashboard CTA card to reflect betting progress (v2.3 mode-aware)
 // v2.5.36: paint the slim status card above the CTA with state-aware text.
-// state: 'notStarted' | 'partial' | 'allSet'
-function _fbSetDashboardProgressCard(state) {
+// state: 'notStarted' | 'adminInviteFirst' | 'partial' | 'allSet'
+// v2.5.38: adminInviteFirst is a notStarted subvariant for admins, so the
+// CSS keeps the gold "not started" treatment for both.
+function _fbSetDashboardProgressCard(rawState) {
   const card = document.getElementById('dashboard-pre-tournament');
   if (!card) return;
+  // Promote notStarted -> adminInviteFirst for admins so they get the
+  // "invite friends first" copy instead of the generic ready-to-play text.
+  let st = rawState;
+  if (st === 'notStarted' && state.currentUser && state.currentUser.is_admin) {
+    st = 'adminInviteFirst';
+  }
   const titleEl = card.querySelector('.pre-tournament-title');
   const subtitleEl = card.querySelector('.pre-tournament-subtitle');
   if (!titleEl || !subtitleEl) return;
-  titleEl.textContent = t(`dashboard.progress.${state}.title`);
-  subtitleEl.textContent = t(`dashboard.progress.${state}.subtitle`);
-  card.classList.remove('progress-notStarted', 'progress-partial', 'progress-allSet');
-  card.classList.add('progress-' + state);
+  titleEl.textContent = t(`dashboard.progress.${st}.title`);
+  subtitleEl.textContent = t(`dashboard.progress.${st}.subtitle`);
+  card.classList.remove('progress-notStarted', 'progress-adminInviteFirst', 'progress-partial', 'progress-allSet');
+  // adminInviteFirst inherits the notStarted visual class for styling.
+  card.classList.add('progress-' + (st === 'adminInviteFirst' ? 'notStarted' : st));
+  card.classList.add('progress-' + st);
   // Swap icon by state
   const iconEl = card.querySelector('i.ti');
   if (iconEl) {
     iconEl.className = 'ti ' + (
-      state === 'allSet' ? 'ti-circle-check' :
-      state === 'partial' ? 'ti-progress' : 'ti-soccer-field'
+      st === 'allSet' ? 'ti-circle-check' :
+      st === 'partial' ? 'ti-progress' :
+      st === 'adminInviteFirst' ? 'ti-user-plus' : 'ti-soccer-field'
     );
   }
 }

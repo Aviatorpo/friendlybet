@@ -1611,10 +1611,18 @@ function loadTablerFallback() {
       </button>
 
       <!-- Header -->
-      <!-- v2.5.37: 🎉 (party popper) didn't fit the context. 🤝 reads as
-           "invite/team up", closer to the actual action. -->
+      <!-- v2.5.38: matched the dashboard CTA's user-plus SVG so it's
+           visually unambiguous "invite a person" rather than the previous
+           confetti / handshake guesses. -->
       <div class="share-header">
-        <div class="share-icon">🤝</div>
+        <div class="share-icon share-icon-svg">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="40" height="40" aria-hidden="true">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <line x1="20" y1="8" x2="20" y2="14"></line>
+            <line x1="23" y1="11" x2="17" y2="11"></line>
+          </svg>
+        </div>
         <div class="share-title" data-i18n="dashboard.invite.title">הזמן חברים להימור</div>
         <div class="share-subtitle" data-i18n="shareModal.subtitle">שלח להם את הקישור והם יצטרפו בלחיצה אחת</div>
       </div>
@@ -2292,7 +2300,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.37</span>
+      <span class="menu-version">v2.5.38</span>
     </div>
   </div>
 
@@ -2326,6 +2334,10 @@ function loadTablerFallback() {
            state.currentPool.scoring_rules so the user knows what each
            position is worth on THIS pool. -->
       <div class="sp-points-hint" id="sp-points-hint"></div>
+      <!-- v2.5.38: tiny one-liner clarifying that risk multipliers don't
+           apply to group-position picks - they only kick in from knockout.
+           Height ≤14px so the screen stays above the fold on mobile. -->
+      <div class="sp-mult-note" data-i18n="groups.multStartsKO">מכפילי הסיכון מתחילים להשפיע משלב הנוקאאוט</div>
     </div>
 
     <div class="sp-group-header">

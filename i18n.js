@@ -598,6 +598,7 @@ const TRANSLATIONS = {
     'groups.tierContender': '⚔️ מתמודדת ×1.5',
     'groups.tierUnderdog': '🐶 אנדרדוג ×2',
     'groups.pointsForPosition': '#{pos}: {pts} נק׳',
+    'groups.multStartsKO': 'מכפילי הסיכון מתחילים להשפיע משלב הנוקאאוט',
     'groups.pointsPerAdvancingTeam': 'כל קבוצה שעולה: {pts} נק׳ × מכפיל הסיכון שלה',
     'groups.tooltipAdvanced': 'הקבוצה עלתה!',
     'groups.tooltipEliminated': 'הקבוצה הודחה',
@@ -1031,10 +1032,16 @@ const TRANSLATIONS = {
     // v2.5.36: state-aware progress card text
     'dashboard.progress.notStarted.title': 'מוכן/ה להמר? 🎯',
     'dashboard.progress.notStarted.subtitle': 'בחר את הקבוצות שלך וצא לדרך — לוקח רק כמה דקות',
+    // v2.5.38: admin-specific first-time CTA. Admins should invite friends
+    // first so there\'s a pool to bet against, then make their own picks.
+    'dashboard.progress.adminInviteFirst.title': 'מוכן/ה להמר? 🎯',
+    'dashboard.progress.adminInviteFirst.subtitle': 'קודם כל הזמן/י חברים, ואחר כך תתחיל/י להמר בעצמך — לוקח רק כמה דקות',
     'dashboard.progress.partial.title': 'אתה בעיצומו 💪',
     'dashboard.progress.partial.subtitle': 'עוד כמה בחירות ואתה גמרת',
+    // v2.5.38: predictions aren\'t actually locked at submit time - they\'re
+    // editable until the tournament kicks off. Text reflects that.
     'dashboard.progress.allSet.title': 'סגרת הכל! 🎉',
-    'dashboard.progress.allSet.subtitle': 'ההימור שלך נשמר. עכשיו רק נשאר לחכות לשריקת הפתיחה',
+    'dashboard.progress.allSet.subtitle': 'ההימור שלך בפנים. עוד אפשר לערוך עד שריקת הפתיחה של המונדיאל',
     'dashboard.startCta.title': 'התחל להמר על המונדיאל',
     'dashboard.startCta.subtitle': 'בחר את הקבוצות שלך לכל בית',
     'dashboard.continueCta.title': 'המשך את ההימור',
@@ -1723,6 +1730,7 @@ const TRANSLATIONS = {
     'groups.tierContender': '⚔️ Contender ×1.5',
     'groups.tierUnderdog': '🐶 Underdog ×2',
     'groups.pointsForPosition': '#{pos}: {pts} pts',
+    'groups.multStartsKO': 'Risk multipliers kick in from the knockout stage',
     'groups.pointsPerAdvancingTeam': 'Each advancing team: {pts} pts × its risk multiplier',
     'groups.tooltipAdvanced': 'Team advanced!',
     'groups.tooltipEliminated': 'Team eliminated',
@@ -2156,10 +2164,16 @@ const TRANSLATIONS = {
     // v2.5.36: state-aware progress card text
     'dashboard.progress.notStarted.title': 'Ready to play? 🎯',
     'dashboard.progress.notStarted.subtitle': 'Pick your teams and lock it in — takes just a few minutes',
+    // v2.5.38: admin-specific first-time CTA. Admins should invite friends
+    // first so there\'s a pool to bet against, then make their own picks.
+    'dashboard.progress.adminInviteFirst.title': 'Ready to play? 🎯',
+    'dashboard.progress.adminInviteFirst.subtitle': 'First invite your friends, then make your own picks — takes just a few minutes',
     'dashboard.progress.partial.title': 'You\'re cooking 💪',
     'dashboard.progress.partial.subtitle': 'A few more picks and you\'re done',
+    // v2.5.38: picks aren\'t actually locked at submit time - they\'re
+    // editable until the tournament kicks off. Text reflects that.
     'dashboard.progress.allSet.title': 'ALL SET! 🎉',
-    'dashboard.progress.allSet.subtitle': 'Your bets are locked. Now just kick back and wait for kickoff',
+    'dashboard.progress.allSet.subtitle': 'Your picks are in. Still tweakable right up to the opening whistle',
     'dashboard.startCta.title': 'Start predicting the World Cup',
     'dashboard.startCta.subtitle': 'Pick your teams for each group',
     'dashboard.continueCta.title': 'Continue your predictions',
