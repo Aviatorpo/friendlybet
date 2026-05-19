@@ -1034,12 +1034,12 @@ const TRANSLATIONS = {
     'dashboard.preTournament.title': 'המונדיאל עוד לא התחיל',
     'dashboard.preTournament.subtitle': 'הדירוג יופיע כאן כשהמשחקים יתחילו',
     // v2.5.36: state-aware progress card text
-    'dashboard.progress.notStarted.title': 'מוכן/ה להמר? 🎯',
+    'dashboard.progress.notStarted.title': 'מוכן להמר? 🎯',
     'dashboard.progress.notStarted.subtitle': 'בחר את הקבוצות שלך וצא לדרך — לוקח רק כמה דקות',
     // v2.5.38: admin-specific first-time CTA. Admins should invite friends
     // first so there\'s a pool to bet against, then make their own picks.
-    'dashboard.progress.adminInviteFirst.title': 'מוכן/ה להמר? 🎯',
-    'dashboard.progress.adminInviteFirst.subtitle': 'קודם כל הזמן/י חברים, ואחר כך תתחיל/י להמר בעצמך — לוקח רק כמה דקות',
+    'dashboard.progress.adminInviteFirst.title': 'מוכן להמר? 🎯',
+    'dashboard.progress.adminInviteFirst.subtitle': 'קודם כל הזמן חברים, ואחר כך תתחיל להמר בעצמך — לוקח רק כמה דקות',
     'dashboard.progress.partial.title': 'אתה בעיצומו 💪',
     'dashboard.progress.partial.subtitle': 'עוד כמה בחירות ואתה גמרת',
     // v2.5.38: predictions aren\'t actually locked at submit time - they\'re
