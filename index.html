@@ -484,6 +484,9 @@ function loadTablerFallback() {
               <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>
             </svg>
             <span data-i18n="poolSettings.multipliers">מכפילי סיכון</span>
+            <!-- v2.5.56: explicit "Optional" tag so admins know they can
+                 skip this entirely. Complements the on/off power toggle. -->
+            <span class="wizard-mult-optional-tag" data-i18n="wizard.multipliers.optional">אופציונלי</span>
             <!-- v2.5.47: power-toggle next to the title to disable all
                  multipliers entirely (resolves to ×1 across the board). -->
             <label class="wizard-mult-power" title="">
@@ -2310,7 +2313,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.55</span>
+      <span class="menu-version">v2.5.56</span>
     </div>
   </div>
 

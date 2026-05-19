@@ -986,6 +986,8 @@ const TRANSLATIONS = {
     'wizard.multipliers.singlePhaseNote': 'בהימור חד-שלבי המכפילים משפיעים רק משלב הנוקאאוט. ניחושי הבתים שווים נקודה אחת לכל קבוצה.',
     'wizard.multipliers.powerOn': 'מכפילים מופעלים',
     'wizard.multipliers.powerOff': 'מכפילים כבויים',
+    // v2.5.56: "Optional" tag next to the multipliers title in the wizard
+    'wizard.multipliers.optional': 'אופציונלי',
     'wizard.multipliers.perTeamTitle': 'מכפיל סיכון פר-קבוצה (אופציונלי)',
     'wizard.multipliers.perTeamHelp': 'אפשר להגדיר ידנית מכפיל לקבוצה מסוימת. ערכים שלא נגעת בהם נשארים על מכפיל הקטגוריה.',
     'wizard.multipliers.perTeamReset': 'איפוס לכל הקבוצות',
@@ -2125,6 +2127,8 @@ const TRANSLATIONS = {
     'wizard.multipliers.singlePhaseNote': 'In single-phase pools, multipliers apply only from the knockout stage onward. Group-position picks award one flat point per team.',
     'wizard.multipliers.powerOn': 'Multipliers on',
     'wizard.multipliers.powerOff': 'Multipliers off',
+    // v2.5.56: "Optional" tag next to the multipliers title in the wizard
+    'wizard.multipliers.optional': 'Optional',
     'wizard.multipliers.perTeamTitle': 'Per-team multiplier (optional)',
     'wizard.multipliers.perTeamHelp': 'Override the multiplier for a specific team. Untouched teams stay on the category multiplier.',
     'wizard.multipliers.perTeamReset': 'Reset all teams',

@@ -1634,6 +1634,24 @@ input:disabled + .slider {
   color: #fff;
   margin-bottom: 6px;
 }
+/* v2.5.56: "Optional" badge next to the multipliers title. Sits between
+   the title text and the power toggle so admins immediately see this
+   section can be skipped. */
+.wizard-mult-optional-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #d4a853;
+  background: rgba(212, 168, 83, 0.10);
+  border: 1px solid rgba(212, 168, 83, 0.32);
+  border-radius: 999px;
+  line-height: 1;
+}
+
 /* v2.5.47: power toggle next to the title - turns the whole feature off.
    When checked: gold filled track. When unchecked: dim grey. */
 .wizard-mult-power {
