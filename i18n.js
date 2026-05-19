@@ -1010,6 +1010,8 @@ const TRANSLATIONS = {
     // v2.5.62: softer "info" variant - the flow no longer blocks here
     'betting.groupsIncompleteHint': 'התקדמת עם בתים חסרים: {letters}. תמיד אפשר לחזור ולהשלים.',
     'betting.finalMissingHint': 'התקדמת בלי לבחור את מנצחת הגמר. תמיד אפשר לחזור.',
+    // v2.5.64: partial-save toast from the summary screen
+    'betting.partialSaveHint': '✓ ההימור נשמר. עוד נשאר: {details}',
     'betting.continueToBracket': 'המשך לברקאט',
     'betting.bracket.title': 'שלב הנוקאאוט שלך',
     'betting.bracket.instructions': 'שלב הנוקאאוט נוצר מתוצאות הבתים שלך. בכל משחק - בחר את המנצח.',
@@ -2163,6 +2165,8 @@ const TRANSLATIONS = {
     // v2.5.62: softer "info" variant - the flow no longer blocks here
     'betting.groupsIncompleteHint': 'Moved on with incomplete groups: {letters}. You can always come back.',
     'betting.finalMissingHint': 'Moved on without picking the final winner. You can always come back.',
+    // v2.5.64: partial-save toast from the summary screen
+    'betting.partialSaveHint': '✓ Picks saved. Still left: {details}',
     'betting.continueToBracket': 'Continue to bracket',
     'betting.bracket.title': 'Your Bracket',
     'betting.bracket.instructions': 'Your bracket is built from your group predictions. For each match - pick the winner.',

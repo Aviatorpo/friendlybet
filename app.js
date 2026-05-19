@@ -8211,24 +8211,21 @@ function spEditTopScorer() {
 }
 
 async function spSubmitPredictions() {
-  // Final validation - must have winner + all groups filled
-  if (!spState.tournamentWinner) {
-    showToast(t('betting.winnerRequired'), 'error');
-    return;
-  }
+  // v2.5.64: save+exit from summary is permissive — the rest of the flow
+  // is permissive end-to-end (v2.5.62), so the final landing screen had
+  // to follow. Behavior:
+  //   • All picks complete → set predictions_submitted_at so the dashboard
+  //     flips to "ALL SET" and the user gets the View-predictions CTA.
+  //   • Anything missing → skip the predictions_submitted_at update so the
+  //     dashboard correctly stays on the "partial" state. The user lands
+  //     on the dashboard either way. A soft info toast tells them what's
+  //     still open. Auto-save has already persisted the partial picks.
   const incompleteGroups = WC2026_GROUP_LETTERS.filter(l =>
     !spState.groupPositions[l] || !spState.groupPositions[l].every(x => x)
   );
-  if (incompleteGroups.length > 0) {
-    showToast(t('betting.groupsIncomplete', { letters: incompleteGroups.join(', ') }), 'error');
-    return;
-  }
+  const missingWinner = !spState.tournamentWinner;
+  const allComplete = incompleteGroups.length === 0 && !missingWinner;
 
-  // v2.5.2: groups/bracket/winner are auto-saved on every change throughout
-  //         the flow, so the DB is already current by the time we land here.
-  //         Only the predictions_submitted_at update is actually needed -
-  //         1 round-trip instead of 4, and a button spinner so the user
-  //         sees immediate feedback during that single round-trip.
   const btn = document.getElementById('sp-submit-btn');
   const originalBtnHtml = btn ? btn.innerHTML : null;
   if (btn) {
@@ -8237,14 +8234,23 @@ async function spSubmitPredictions() {
   }
 
   try {
-    const submittedAt = new Date().toISOString();
-    const { error } = await supabaseClient.from('users')
-      .update({ predictions_submitted_at: submittedAt })
-      .eq('id', state.currentUser.id);
-    if (error && !/column .* does not exist/i.test(error.message || '')) {
-      console.warn('predictions_submitted_at update warning:', error);
+    if (allComplete) {
+      const submittedAt = new Date().toISOString();
+      const { error } = await supabaseClient.from('users')
+        .update({ predictions_submitted_at: submittedAt })
+        .eq('id', state.currentUser.id);
+      if (error && !/column .* does not exist/i.test(error.message || '')) {
+        console.warn('predictions_submitted_at update warning:', error);
+      }
+      state.currentUser.predictions_submitted_at = submittedAt;
+    } else {
+      // Partial save - don't set predictions_submitted_at so the dashboard
+      // stays in "partial" mode with the Continue CTA. Surface what's left.
+      const bits = [];
+      if (incompleteGroups.length > 0) bits.push(t('betting.groupsIncomplete', { letters: incompleteGroups.join(', ') }));
+      if (missingWinner) bits.push(t('betting.winnerRequired'));
+      showToast(t('betting.partialSaveHint', { details: bits.join(' · ') }), 'info');
     }
-    state.currentUser.predictions_submitted_at = submittedAt;
 
     goToDashboard();
   } catch (err) {
