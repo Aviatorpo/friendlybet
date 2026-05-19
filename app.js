@@ -6309,13 +6309,19 @@ function fifaRankOf(code) { return FIFA_RANKINGS[code] ?? 999; }
 //  32 pt ×  1 champion              =  32
 const DEFAULT_SCORING_RULES = {
   single_phase: {
-    // v2.5.57: every correctly-predicted group position earns 1 point -
-    // single_phase asks for the full 1st-4th ordering, so 3rd/4th picks
-    // are real predictions and deserve a reward when they land.
+    // v2.5.61: scoring follows a doubling progression by stage, awarded
+    // only for teams that ADVANCE. 3rd/4th group placements don't advance,
+    // so they score 0 in the default. Admin can still customize.
+    //   1pt × 32 group qualifiers     = 32
+    //   2pt × 16 R16 advancers        = 32
+    //   4pt ×  8 QF advancers         = 32
+    //   8pt ×  4 SF advancers         = 32
+    //  16pt ×  2 finalists            = 32
+    //  32pt ×  1 champion             = 32
     group_first: 1,
     group_second: 1,
-    group_third: 1,
-    group_fourth: 1,
+    group_third: 0,
+    group_fourth: 0,
     round_of_16: 2,
     quarter_final: 4,
     semi_final: 8,
@@ -7207,12 +7213,17 @@ function spRenderGroups() {
     const pts = {
       1: rules.group_first ?? 1,
       2: rules.group_second ?? 1,
-      3: rules.group_third ?? 1,
-      4: rules.group_fourth ?? 1
+      3: rules.group_third ?? 0,
+      4: rules.group_fourth ?? 0
     };
-    ptsHint.innerHTML = [1, 2, 3, 4].map(n =>
-      `<span class="pts-pill">${t('groups.pointsForPosition', { pos: n, pts: pts[n] })}</span>`
-    ).join('');
+    // v2.5.61: drop pills with 0 points - showing "#3: 0" / "#4: 0" reads
+    // as "your 3rd/4th pick doesn't matter" rather than the intended
+    // "only advancing teams score". A zero pill is more confusing than
+    // omitting it, since the row already only lists scoring positions.
+    ptsHint.innerHTML = [1, 2, 3, 4]
+      .filter(n => pts[n] > 0)
+      .map(n => `<span class="pts-pill">${t('groups.pointsForPosition', { pos: n, pts: pts[n] })}</span>`)
+      .join('');
   }
 
   // v2.5.58: hide the "Risk multipliers kick in from knockout" hint when
