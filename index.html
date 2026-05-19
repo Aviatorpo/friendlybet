@@ -959,7 +959,18 @@ function loadTablerFallback() {
       <div class="bet-status-card locked" id="bet-status-top-scorer">
         <div class="bet-status-content">
           <div class="bet-status-title">
-            <i class="ti ti-ball-football text-faint"></i>
+            <!-- v2.5.37: inline SVG soccer ball. ti-ball-football may not be
+                 in the bundled Tabler v2.40 icon font on all CDN responses;
+                 inline SVG always renders. -->
+            <svg class="bet-status-icon-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9.5"/>
+              <polygon points="12,7.5 15.8,10.3 14.4,14.8 9.6,14.8 8.2,10.3" fill="currentColor" stroke="none"/>
+              <line x1="12" y1="2.5" x2="12" y2="7.5"/>
+              <line x1="15.8" y1="10.3" x2="20.7" y2="8.7"/>
+              <line x1="8.2" y1="10.3" x2="3.3" y2="8.7"/>
+              <line x1="9.6" y1="14.8" x2="6.7" y2="19.5"/>
+              <line x1="14.4" y1="14.8" x2="17.3" y2="19.5"/>
+            </svg>
             <span data-i18n="dashboard.status.topScorer">מלך השערים</span>
           </div>
           <div class="bet-status-subtitle" data-i18n="dashboard.status.afterGroups">נפתח אחרי שלב הבתים</div>
@@ -1600,8 +1611,10 @@ function loadTablerFallback() {
       </button>
 
       <!-- Header -->
+      <!-- v2.5.37: 🎉 (party popper) didn't fit the context. 🤝 reads as
+           "invite/team up", closer to the actual action. -->
       <div class="share-header">
-        <div class="share-icon">🎉</div>
+        <div class="share-icon">🤝</div>
         <div class="share-title" data-i18n="dashboard.invite.title">הזמן חברים להימור</div>
         <div class="share-subtitle" data-i18n="shareModal.subtitle">שלח להם את הקישור והם יצטרפו בלחיצה אחת</div>
       </div>
@@ -1856,7 +1869,7 @@ function loadTablerFallback() {
 
       <!-- Empty state -->
       <div id="lb-empty" class="lb-empty" style="display: none;">
-        <div class="lb-empty-icon">🎯</div>
+        <div class="lb-empty-icon">🏆</div>
         <div class="lb-empty-title" data-i18n="leaderboard.emptyTitle">הטורניר עוד לא התחיל</div>
         <div class="lb-empty-text" data-i18n="leaderboard.emptyText">הניקוד יחושב אחרי שיתחילו המשחקים</div>
       </div>
@@ -2279,7 +2292,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.36</span>
+      <span class="menu-version">v2.5.37</span>
     </div>
   </div>
 
@@ -2634,6 +2647,17 @@ function loadTablerFallback() {
       <div class="rc-warning-title"><i class="ti ti-alert-triangle"></i> <span data-i18n="recovery.warning.title">שמור את הקוד!</span></div>
       <div class="rc-warning-text" data-i18n="recovery.warning.text">תצטרך אותו כדי להתחבר ממכשיר אחר או אם המכשיר הנוכחי יתנתק.</div>
       <div class="rc-warning-privacy"><i class="ti ti-lock"></i> <span data-i18n="recovery.privacy">שמור על פרטיות. אל תשתף.</span></div>
+    </div>
+
+    <!-- v2.5.37: only shown when mode === 'joined' (a regular member joining
+         a pool, not the admin who just created it). Tells them they can ask
+         the pool admin to send a fresh recovery link in case of emergency. -->
+    <div class="rc-admin-help-note" id="rc-admin-help-note" style="display:none;">
+      <i class="ti ti-shield"></i>
+      <div>
+        <div class="rc-admin-help-title" data-i18n="recovery.adminHelp.title">איבדת את הקוד? אין בעיה.</div>
+        <div class="rc-admin-help-text" data-i18n="recovery.adminHelp.text">תמיד אפשר לבקש מהאדמין של ההימור שישלח לך קוד שחזור חדש בוואטסאפ או בטלגרם.</div>
+      </div>
     </div>
 
     <!-- v2.5.10: two-up action row - Screenshot + Email myself only.

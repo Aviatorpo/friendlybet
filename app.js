@@ -19,11 +19,18 @@ const state = {
 // ============================================================
 
 function showScreen(screenId) {
+  // v2.5.37: stop any auto-refresh that was running on the previous screen.
+  // Currently only matches-screen registers timers; this hook keeps it
+  // simple to add others later.
+  if (state.currentScreen === 'matches-screen' && screenId !== 'matches-screen') {
+    if (typeof _stopMatchesAutoRefresh === 'function') _stopMatchesAutoRefresh();
+  }
+
   // Hide all screens
   document.querySelectorAll('.screen').forEach(s => {
     s.classList.remove('active');
   });
-  
+
   // Show target screen
   const target = document.getElementById(screenId);
   if (target) {
@@ -1044,48 +1051,53 @@ async function showMembers() {
   // v2.5.24: pick the correct picks table per betting_mode. The legacy
   // group_picks belongs to two_phase pools; single_phase pools store
   // picks in group_position_picks.
+  // v2.5.37: also fetch knockout picks so the per-member status can reflect
+  // "groups done but knockout not done" vs. "everything done".
   const isV2 = state.currentPool.betting_mode === 'single_phase';
   const picksTable = isV2 ? 'group_position_picks' : 'group_picks';
-  const { data: allPicks } = await supabaseClient
-    .from(picksTable)
-    .select('user_id')
-    .eq('pool_id', state.currentPool.id);
+  const [groupRes, koRes] = await Promise.all([
+    supabaseClient.from(picksTable).select('user_id').eq('pool_id', state.currentPool.id),
+    supabaseClient.from('knockout_picks').select('user_id').eq('pool_id', state.currentPool.id)
+  ]);
 
-  // Count picks per user
+  // Count group + knockout picks per user
   const picksPerUser = {};
-  if (allPicks) {
-    allPicks.forEach(p => {
-      picksPerUser[p.user_id] = (picksPerUser[p.user_id] || 0) + 1;
-    });
-  }
-  
+  const koPerUser = {};
+  (groupRes.data || []).forEach(p => {
+    picksPerUser[p.user_id] = (picksPerUser[p.user_id] || 0) + 1;
+  });
+  (koRes.data || []).forEach(p => {
+    koPerUser[p.user_id] = (koPerUser[p.user_id] || 0) + 1;
+  });
+
   // Build summary
   const total = members.length;
   let betted = 0;
   let notBetted = 0;
-  
+
   members.forEach(m => {
     const picks = picksPerUser[m.id] || 0;
     if (picks > 0) betted++;
     else notBetted++;
   });
-  
+
   document.getElementById('members-total').textContent = total;
   document.getElementById('members-betted').textContent = betted;
   document.getElementById('members-not-betted').textContent = notBetted;
-  
+
   // Render list
   const list = document.getElementById('members-list');
   list.innerHTML = '';
-  
+
   members.forEach(member => {
     const picks = picksPerUser[member.id] || 0;
-    const card = createMemberCard(member, picks, isV2);
+    const koPicks = koPerUser[member.id] || 0;
+    const card = createMemberCard(member, picks, koPicks, isV2);
     list.appendChild(card);
   });
 }
 
-function createMemberCard(member, picksCount, isV2) {
+function createMemberCard(member, picksCount, koPicksCount, isV2) {
   const card = document.createElement('div');
   card.className = 'member-card';
 
@@ -1093,22 +1105,26 @@ function createMemberCard(member, picksCount, isV2) {
   if (isMe) card.classList.add('is-me');
   if (member.is_admin) card.classList.add('is-admin');
 
-  // v2.5.24: completion threshold differs per mode.
-  //  - two_phase: 2 picks per group × 12 groups = 24 (legacy group_picks)
-  //  - single_phase: 4 positions per group × 12 groups = 48 (group_position_picks)
-  const completeThreshold = isV2 ? 48 : 24;
+  // v2.5.37: precise status reflects groups + knockout (and, for single_phase,
+  // the predictions_submitted_at flag). Three states only:
+  //  - noBets: hasn't picked anything (0 group + 0 knockout)
+  //  - inProgress: has some picks but not all
+  //  - allDone: every required pick is in
+  const groupComplete = isV2 ? (picksCount >= 48) : (picksCount >= 24);
+  const koComplete = isV2 ? (koPicksCount >= 15) : (koPicksCount >= 16);
+  const submitted = !!member.predictions_submitted_at;
+  const allDone = isV2 ? (submitted || (groupComplete && koComplete)) : (groupComplete && koComplete);
 
-  // Status
-  let statusClass, statusText, statusEmoji;
-  if (picksCount === 0) {
+  let statusClass, statusText;
+  if (picksCount === 0 && koPicksCount === 0) {
     statusClass = 'not-started';
-    statusText = t('membersList.notStarted');
-  } else if (picksCount < completeThreshold) {
-    statusClass = 'partial';
-    statusText = t('membersList.partial', { n: picksCount });
-  } else {
+    statusText = t('membersList.noBets');
+  } else if (allDone) {
     statusClass = 'completed';
-    statusText = t('membersList.complete');
+    statusText = t('membersList.allDone');
+  } else {
+    statusClass = 'partial';
+    statusText = t('membersList.inProgress');
   }
 
   // Joined date
@@ -5217,38 +5233,96 @@ const matchesState = {
   allMatches: [],
   currentFilter: 'all',
   loading: false,
-  lastSync: null
+  lastSync: null,
+  // v2.5.37: auto-refresh handles. refreshTimer pulls fresh rows from
+  // Supabase every 60s; tickTimer re-renders cards every 20s so the
+  // computed live minute updates without a DB round-trip.
+  refreshTimer: null,
+  tickTimer: null
 };
+
+// v2.5.37: compute "live minute" label from match_date. football-data
+// updates the DB through smart-sync every 10 min, but minute granularity
+// only changes if we tick locally. Cap at 90 + 5 of injury time; beyond
+// that fall back to the generic "Live" label until status flips to
+// FINISHED on the next sync.
+function _liveMinuteLabel(match) {
+  if (!match.match_date) return null;
+  const start = new Date(match.match_date).getTime();
+  const now = Date.now();
+  if (isNaN(start)) return null;
+  const elapsedMin = Math.floor((now - start) / 60000);
+  if (elapsedMin < 1) return t('matchesEx.minute', { n: 1 });
+  if (elapsedMin <= 45) return t('matchesEx.minute', { n: elapsedMin });
+  if (elapsedMin < 60) return t('matchesEx.halftime');
+  // Second half: 60min real → minute 46. Up to ~105min real → 90+ stoppage.
+  const secondHalfMin = 45 + (elapsedMin - 60);
+  if (secondHalfMin <= 90) return t('matchesEx.minute', { n: secondHalfMin });
+  if (secondHalfMin <= 95) return t('matchesEx.minute', { n: secondHalfMin });
+  // Past regulation, assume extra time
+  const etMin = secondHalfMin - 90;
+  if (etMin <= 30) return t('matchesEx.extraTime', { n: 90 + etMin });
+  return null;
+}
+
+function _stopMatchesAutoRefresh() {
+  if (matchesState.refreshTimer) {
+    clearInterval(matchesState.refreshTimer);
+    matchesState.refreshTimer = null;
+  }
+  if (matchesState.tickTimer) {
+    clearInterval(matchesState.tickTimer);
+    matchesState.tickTimer = null;
+  }
+}
+
+function _startMatchesAutoRefresh() {
+  _stopMatchesAutoRefresh();
+  // 60s: re-fetch from Supabase. The smart-sync GitHub Action writes
+  // every 10 min, so 60s is enough to surface changes promptly without
+  // hammering the DB. Skip the loading spinner on background refreshes.
+  matchesState.refreshTimer = setInterval(() => {
+    if (state.currentScreen !== 'matches-screen' || document.hidden) return;
+    loadMatches(true).catch(() => {});
+  }, 60000);
+  // 20s: re-render cards locally so the live minute ticks even when no
+  // new DB rows have arrived yet.
+  matchesState.tickTimer = setInterval(() => {
+    if (state.currentScreen !== 'matches-screen' || document.hidden) return;
+    renderMatches();
+  }, 20000);
+}
 
 async function showMatches() {
   closeMenu();
   showScreen('matches-screen');
-  
+
   // Show loading
   document.getElementById('matches-loading').style.display = 'block';
   document.getElementById('matches-list').style.display = 'none';
   document.getElementById('matches-empty').style.display = 'none';
-  
+
   await loadMatches();
+  _startMatchesAutoRefresh();
 }
 
-async function loadMatches() {
+async function loadMatches(silent = false) {
   if (!supabaseClient) {
-    showToast(t('errors.serverConnectingShort'), 'error');
+    if (!silent) showToast(t('errors.serverConnectingShort'), 'error');
     return;
   }
-  
+
   matchesState.loading = true;
-  
+
   try {
     const { data: matches, error } = await supabaseClient
       .from('matches')
       .select('*')
       .order('match_date', { ascending: true });
-    
+
     if (error) {
       console.error('Matches load error:', error);
-      showToast(t('matchesEx.loadError'), 'error');
+      if (!silent) showToast(t('matchesEx.loadError'), 'error');
       return;
     }
     
@@ -5340,10 +5414,13 @@ function createMatchCard(match) {
   const stageLabel = getStageLabel(match.stage, match.group_letter);
   
   // Status text
+  // v2.5.37: live matches show the computed minute ("47'") instead of just
+  // "Live". Halftime + extra-time accounted for. Client computes from
+  // match_date so the label ticks every refresh without an API call.
   let statusText;
   let statusClass;
   if (isLive) {
-    statusText = t('matchesEx.live');
+    statusText = _liveMinuteLabel(match) || t('matchesEx.live');
     statusClass = 'live';
   } else if (isFinished) {
     statusText = t('matchesEx.finished');
@@ -8172,6 +8249,11 @@ function showRecoveryCode(mode, recoveryCode, poolName) {
   if (mode !== 'view') {
     setTimeout(() => rcCreateConfetti(), 250);
   }
+
+  // v2.5.37: show the admin-help note only for regular members (joined a
+  // pool). Admins/view-mode already know they can self-serve everything.
+  const adminHelpNote = document.getElementById('rc-admin-help-note');
+  if (adminHelpNote) adminHelpNote.style.display = (mode === 'joined') ? '' : 'none';
 
   showScreen('screen-recovery-code');
 }

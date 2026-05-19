@@ -708,6 +708,10 @@ const TRANSLATIONS = {
     'matchesEx.filterLive': '🔴 חי',
     'matchesEx.live': 'משחק חי',
     'matchesEx.finished': 'הסתיים',
+    // v2.5.37: live minute labels (client-computed from match_date)
+    'matchesEx.minute': "דקה {n}'",
+    'matchesEx.halftime': 'מחצית',
+    'matchesEx.extraTime': "תוספת זמן · דקה {n}'",
     'matchesEx.lastUpdated': 'עודכן: {time}',
     'matchesEx.notSynced': 'עוד לא סונכרן',
     'matchesEx.emptyTitle': 'המשחקים עוד לא פורסמו',
@@ -839,6 +843,10 @@ const TRANSLATIONS = {
     'membersList.partial': 'הימר על {n} בחירות',
     'membersList.complete': 'השלים את הבתים',
     'membersList.notStarted': 'עדיין לא הימר',
+    // v2.5.37: precise status per the new "groups + knockout" check
+    'membersList.allDone': '✓ סיים את כל ההימור',
+    'membersList.inProgress': 'התחיל לבחור, עוד לא סיים',
+    'membersList.noBets': 'עוד לא הימר',
     'membersList.fallbackUser': 'משתמש',
     'membersList.joinedToday': 'הצטרף היום',
     'membersList.joinedYesterday': 'הצטרף אתמול',
@@ -1045,6 +1053,9 @@ const TRANSLATIONS = {
     'recovery.warning.title': 'שמור את הקוד!',
     'recovery.warning.text': 'תצטרך אותו כדי להתחבר ממכשיר אחר או אם המכשיר הנוכחי יתנתק.',
     'recovery.privacy': 'שמור על פרטיות. אל תשתף.',
+    // v2.5.37: shown only to members (not admin) on the recovery code screen
+    'recovery.adminHelp.title': 'איבדת את הקוד? אין בעיה.',
+    'recovery.adminHelp.text': 'תמיד אפשר לבקש מהאדמין של ההימור שישלח לך קוד שחזור חדש בוואטסאפ או בטלגרם.',
     'recovery.button.copy': 'העתק',
     'recovery.button.email': 'שלח במייל',
     'recovery.button.download': 'הורד כקובץ',
@@ -1822,6 +1833,10 @@ const TRANSLATIONS = {
     'matchesEx.filterLive': '🔴 Live',
     'matchesEx.live': 'Live',
     'matchesEx.finished': 'Final',
+    // v2.5.37: live minute labels (client-computed from match_date)
+    'matchesEx.minute': "{n}'",
+    'matchesEx.halftime': 'Half-time',
+    'matchesEx.extraTime': "ET · {n}'",
     'matchesEx.lastUpdated': 'Updated: {time}',
     'matchesEx.notSynced': 'Not synced yet',
     'matchesEx.emptyTitle': 'Matches not yet published',
@@ -1953,6 +1968,10 @@ const TRANSLATIONS = {
     'membersList.partial': 'Made {n} picks',
     'membersList.complete': 'Completed groups',
     'membersList.notStarted': 'Not started yet',
+    // v2.5.37: precise status per the new "groups + knockout" check
+    'membersList.allDone': '✓ Locked in — all picks made',
+    'membersList.inProgress': 'Started picking, not done yet',
+    'membersList.noBets': 'Hasn\'t bet yet',
     'membersList.fallbackUser': 'User',
     'membersList.joinedToday': 'Joined today',
     'membersList.joinedYesterday': 'Joined yesterday',
@@ -2159,6 +2178,9 @@ const TRANSLATIONS = {
     'recovery.warning.title': 'Save this code!',
     'recovery.warning.text': 'You\'ll need it to access your account from another device or if this one is disconnected.',
     'recovery.privacy': 'Keep it private. Don\'t share.',
+    // v2.5.37: shown only to members (not admin) on the recovery code screen
+    'recovery.adminHelp.title': 'Lost the code? No worries.',
+    'recovery.adminHelp.text': 'You can always ask the pool admin to send you a fresh recovery link on WhatsApp or Telegram.',
     'recovery.button.copy': 'Copy',
     'recovery.button.email': 'Email',
     'recovery.button.download': 'Download TXT',
