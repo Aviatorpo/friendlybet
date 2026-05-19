@@ -517,7 +517,7 @@ const TRANSLATIONS = {
     'sharePool.toDashboard': 'לדשבורד שלי',
     'sharePool.welcomeToast': 'ברוך הבא ל-{name}!',
     'sharePool.adminCodeAlert': '🔑 קוד השחזור שלך כמארגן:\n\n{code}\n\nשמור אותו במקום בטוח! בלעדיו לא תוכל להתחבר חזרה.',
-    'sharePool.shareText': '🏆 הצטרף להימור "{poolName}" במונדיאל 2026!\n\nקוד ההימור: {code}\n\n👇 לחץ על הקישור כדי להצטרף:\n{url}\n\n⚽ FriendlyBet\nהימור חברים על מונדיאל 2026',
+    'sharePool.shareText': 'הוזמנת להצטרף להימור "{poolName}" 🏆\n\nבא ננחש ביחד את מונדיאל 2026 — חינם לגמרי, רק בשביל הכיף והכבוד.\n\nקוד הצטרפות: {code}\n👉 {url}\n\n⚽ FriendlyBet — הימור חברים על מונדיאל 2026',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'החוקים נעולים',
@@ -876,6 +876,10 @@ const TRANSLATIONS = {
     'helpEx.a3': 'תקבל נקודה (או יותר עם מכפילים) על כל קבוצה שניחשת נכון שתעלה לשלב הבא.',
     'helpEx.section2Title': '🎲 מכפילי סיכון',
     'helpEx.q4': '⭐ פייבוריטית - ×1',
+    // v2.5.40: tier names alone (no ×N suffix) - JS appends the live value
+    'helpEx.tierFav': 'פייבוריטית',
+    'helpEx.tierCont': 'מתמודדת',
+    'helpEx.tierUnd': 'אנדרדוג',
     'helpEx.a4': 'קבוצות חזקות. ניחוש "בטוח" אבל נקודה אחת בלבד.',
     'helpEx.q5': '⚔️ מתמודדת - ×1.5',
     'helpEx.a5': 'קבוצות באמצע הדירוג. סיכון בינוני, פרס בינוני.',
@@ -1649,7 +1653,7 @@ const TRANSLATIONS = {
     'sharePool.toDashboard': 'To my dashboard',
     'sharePool.welcomeToast': 'Welcome to {name}!',
     'sharePool.adminCodeAlert': '🔑 Your admin recovery code:\n\n{code}\n\nKeep it safe! Without it you cannot log back in.',
-    'sharePool.shareText': '🏆 Join the "{poolName}" pool for World Cup 2026!\n\nPool code: {code}\n\n👇 Tap the link to join:\n{url}\n\n⚽ FriendlyBet\nWorld Cup Predictions with Friends',
+    'sharePool.shareText': 'You\'ve been invited to the "{poolName}" pool 🏆\n\nLet\'s predict World Cup 2026 together — totally free, just bragging rights on the line.\n\nJoin code: {code}\n👉 {url}\n\n⚽ FriendlyBet — World Cup Predictions with Friends',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'Rules locked',
@@ -2008,6 +2012,10 @@ const TRANSLATIONS = {
     'helpEx.a3': 'You earn a point (more with multipliers) for each correct prediction that advances.',
     'helpEx.section2Title': '🎲 Risk multipliers',
     'helpEx.q4': '⭐ Favorite — ×1',
+    // v2.5.40: tier names alone (no ×N suffix) - JS appends the live value
+    'helpEx.tierFav': 'Favorite',
+    'helpEx.tierCont': 'Contender',
+    'helpEx.tierUnd': 'Underdog',
     'helpEx.a4': 'Strong teams. Safe pick, one point only.',
     'helpEx.q5': '⚔️ Contender — ×1.5',
     'helpEx.a5': 'Mid-tier teams. Medium risk, medium reward.',

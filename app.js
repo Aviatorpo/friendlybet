@@ -2497,6 +2497,9 @@ async function showPoolSettings() {
   // v2.5.4: hide multipliers entirely for single_phase pools (concept doesn't apply)
   const multSection = document.getElementById('settings-multipliers-section');
   if (multSection) multSection.style.display = (pool.betting_mode === 'single_phase') ? 'none' : '';
+  // v2.5.40: paint the three category multiplier values from the pool's
+  // scoring_rules instead of the hardcoded ×1 / ×1.5 / ×2 markup.
+  _fbRenderPoolMultipliersDetail(pool);
 
   // v2.5.7: gate v2 vs legacy sections based on betting_mode
   const isV2 = pool.betting_mode === 'single_phase';
@@ -3021,17 +3024,21 @@ function createTeamCard(team, isSelected) {
   card.setAttribute('role', 'button');
   card.setAttribute('tabindex', '0');
   
-  // Tier badge text
-  const usesMultipliers = state.currentPool.use_multipliers;
+  // v2.5.40: show the actual resolved multiplier per pool settings instead
+  // of a static tier label. The number reflects per-team overrides,
+  // pool category multipliers, and finally global defaults - whatever the
+  // admin configured wins.
+  const usesMultipliers = state.currentPool.use_multipliers !== false;
   let tierBadge = '';
   if (usesMultipliers) {
-    if (team.tier === 'favorite') {
-      tierBadge = `<span class="team-tier-badge team-tier-favorite">${t('groups.tierFavorite')}</span>`;
-    } else if (team.tier === 'contender') {
-      tierBadge = `<span class="team-tier-badge team-tier-contender">${t('groups.tierContender')}</span>`;
-    } else {
-      tierBadge = `<span class="team-tier-badge team-tier-underdog">${t('groups.tierUnderdog')}</span>`;
-    }
+    const tierClass = team.tier === 'favorite' ? 'team-tier-favorite' :
+                      team.tier === 'contender' ? 'team-tier-contender' :
+                      'team-tier-underdog';
+    const mult = (typeof getPoolTeamMultiplier === 'function')
+      ? getPoolTeamMultiplier(state.currentPool, team.code)
+      : (team.tier === 'underdog' ? 2 : team.tier === 'contender' ? 1.5 : 1);
+    const multStr = (mult % 1 === 0) ? mult.toFixed(0) : mult.toFixed(1);
+    tierBadge = `<span class="team-tier-badge ${tierClass}">×${multStr}</span>`;
   }
 
   // Check real-world result if user selected this team
@@ -5241,7 +5248,46 @@ function shareLeaderboard() {
 
 function showHelp() {
   closeMenu();
+  // v2.5.40: paint the help "risk multipliers" rows from the pool's
+  // scoring_rules so the values match what the admin actually configured.
+  if (state.currentPool) _fbRenderHelpMultiplierRows(state.currentPool);
   showScreen('help-screen');
+}
+
+// v2.5.40: dynamic multiplier values per pool.
+function _fbResolveCatMults(pool) {
+  const rules = (pool && pool.scoring_rules) || {};
+  return rules.multipliers || (typeof DEFAULT_MULTIPLIERS !== 'undefined'
+    ? DEFAULT_MULTIPLIERS
+    : { favorite: 1, contender: 1.5, underdog: 2 });
+}
+function _fbFormatMult(v) {
+  const n = parseFloat(v);
+  if (isNaN(n)) return '×1';
+  return '×' + (n % 1 === 0 ? n.toFixed(0) : n.toFixed(1));
+}
+function _fbRenderPoolMultipliersDetail(pool) {
+  const cat = _fbResolveCatMults(pool);
+  const rows = document.querySelectorAll('#multipliers-detail .multiplier-row .mult-value');
+  if (rows.length >= 3) {
+    rows[0].textContent = _fbFormatMult(cat.favorite);
+    rows[1].textContent = _fbFormatMult(cat.contender);
+    rows[2].textContent = _fbFormatMult(cat.underdog);
+  }
+}
+function _fbRenderHelpMultiplierRows(pool) {
+  const cat = _fbResolveCatMults(pool);
+  // The 3 help-q rows for tiers live at index q4/q5/q6 keys, but we just
+  // grab them by position inside the "risk multipliers" help-section.
+  const sections = document.querySelectorAll('#help-screen .help-section');
+  if (sections.length < 2) return;
+  const tierSection = sections[1]; // the "🎲 מכפילי סיכון" section
+  const qs = tierSection.querySelectorAll('.help-q');
+  if (qs.length >= 3) {
+    qs[0].textContent = `⭐ ${t('helpEx.tierFav')} - ${_fbFormatMult(cat.favorite)}`;
+    qs[1].textContent = `⚔️ ${t('helpEx.tierCont')} - ${_fbFormatMult(cat.contender)}`;
+    qs[2].textContent = `🐶 ${t('helpEx.tierUnd')} - ${_fbFormatMult(cat.underdog)}`;
+  }
 }
 
 // ============================================================
