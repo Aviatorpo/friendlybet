@@ -7246,13 +7246,22 @@ function spRenderGroups() {
   const positions = spState.groupPositions[letter];
 
   // Render position slots (always filled, draggable)
+  // v2.5.67: each slot includes a hidden green check pip. When the user
+  // clicks Next, spGroupsNext flips on the .confirmed class with a small
+  // stagger so all four slots animate-in their checkmarks before the
+  // group advances. Pure visual feedback — no functional change.
   const slotsEl = document.getElementById('sp-positions-list');
   slotsEl.innerHTML = positions.map((teamCode, i) => `
     <div class="sp-position-slot filled sp-draggable" data-pos="${i}">
       <div class="pos-drag-handle" aria-label="drag"><i class="ti ti-grip-vertical"></i></div>
       <div class="pos-rank">${i + 1}</div>
       <div class="pos-flag">${getCountryFlag(teamCode)}</div>
-      <div class="pos-name">${getTeamName(teamCode)}</div>
+      <div class="pos-name">${teamCode ? getTeamName(teamCode) : ''}</div>
+      <div class="pos-check" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
     </div>
   `).join('');
 
@@ -7452,13 +7461,15 @@ function spGroupsPrev() {
   }
 }
 
-function spGroupsNext() {
+// v2.5.67: real advance logic split out so spGroupsNext can play a brief
+// confirmation animation on the slot rows first.
+function _spGroupsAdvance() {
   if (spState.currentGroupIdx < 11) {
     spState.currentGroupIdx++;
     spRenderGroups();
     return;
   }
-  // v2.5.62: last group → bracket transition is now PERMISSIVE. Users can
+  // Last group → bracket transition is permissive (v2.5.62). Users can
   // advance even if some groups aren't complete — the bracket will show
   // TBD slots for missing positions and the summary screen will surface
   // "Not picked" lines for anything skipped. A soft info toast tells the
@@ -7472,6 +7483,33 @@ function spGroupsNext() {
   spSaveGroupsToDb(false);
   spRenderBracket();
   showScreen('sp-bracket-screen');
+}
+
+function spGroupsNext() {
+  // v2.5.67: play a quick confirmation animation on the slot rows when the
+  // user advances. Only when the current group has all 4 positions filled
+  // (otherwise nothing to confirm visually — just advance).
+  const letter = WC2026_GROUP_LETTERS[spState.currentGroupIdx];
+  const positions = spState.groupPositions[letter];
+  const allFilled = positions && positions.every(x => !!x);
+
+  if (!allFilled) {
+    _spGroupsAdvance();
+    return;
+  }
+
+  // Guard against double-clicks while the animation is mid-flight.
+  const nextBtn = document.getElementById('sp-groups-next');
+  if (nextBtn) nextBtn.disabled = true;
+  const slots = document.querySelectorAll('#sp-positions-list .sp-position-slot');
+  slots.forEach((s, i) => {
+    setTimeout(() => s.classList.add('confirmed'), i * 70);
+  });
+  // Total animation time = (4-1)*70 + ~250 settle. Then advance.
+  setTimeout(() => {
+    if (nextBtn) nextBtn.disabled = false;
+    _spGroupsAdvance();
+  }, 500);
 }
 
 function spGroupsSaveAndExit() {

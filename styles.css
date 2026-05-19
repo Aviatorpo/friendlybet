@@ -6503,6 +6503,32 @@ body:not(.ltr) .home-lang-toggle {
   border-color: rgba(212,168,83,0.5);
   background: rgba(212,168,83,0.07);
 }
+/* v2.5.67: green check pip on each slot, hidden by default, animates in
+   when the user clicks Next so all four slots flash a quick "confirmed"
+   before the group advances. */
+.sp-position-slot .pos-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-start: auto;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.sp-position-slot.confirmed {
+  border-color: rgba(16, 185, 129, 0.55);
+  background: rgba(16, 185, 129, 0.10);
+}
+.sp-position-slot.confirmed .pos-check {
+  opacity: 1;
+  transform: scale(1);
+}
 .sp-position-slot.sp-draggable {
   cursor: grab;
 }
