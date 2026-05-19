@@ -7447,15 +7447,34 @@ body.ltr .bet-cta-arrow {
   font-size: 32px;
   line-height: 1;
 }
-.ko-single-team .ko-single-name {
+/* v2.5.59: name + multiplier badge live inside a flex-column info
+   container that takes the remaining width. Without this, the badge
+   was a sibling of name + check and competed for horizontal space,
+   so badges of different widths (favorite vs underdog tier labels)
+   pushed the check button around. */
+.ko-single-team .ko-single-info {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.ko-single-team .ko-single-name {
   font-size: 17px;
   font-weight: 700;
+  /* keep the name on one line so the row height stays consistent */
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 /* v2.5.44: small ×N badge next to the team name showing the pool-resolved
    risk multiplier (per-team override → category → default).
    v2.5.48: extended to optionally include the tier emoji + name when the
-   pool uses default multipliers (so users learn the tier system). */
+   pool uses default multipliers (so users learn the tier system).
+   v2.5.59: badge now sits UNDER the name (inside .ko-single-info column)
+   so it never affects the position of the flag or checkmark. */
 .ko-single-team .ko-single-mult {
   display: inline-flex;
   align-items: center;
@@ -7467,8 +7486,7 @@ body.ltr .bet-cta-arrow {
   color: #d4a853;
   background: rgba(212, 168, 83, 0.12);
   border: 1px solid rgba(212, 168, 83, 0.32);
-  margin-inline-end: 8px;
-  flex-shrink: 0;
+  max-width: 100%;
 }
 .ko-single-team .ko-single-mult-emoji { font-size: 13px; line-height: 1; }
 .ko-single-team .ko-single-mult-name {

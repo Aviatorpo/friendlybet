@@ -9140,7 +9140,9 @@ function koSingleRender() {
       return `
         <button class="ko-single-team tbd" disabled>
           <span class="ko-single-flag">⏳</span>
-          <span class="ko-single-name">${t('knockoutEx.tbdTeam')}</span>
+          <span class="ko-single-info">
+            <span class="ko-single-name">${t('knockoutEx.tbdTeam')}</span>
+          </span>
           <span class="ko-single-check"><i class="ti ti-check"></i></span>
         </button>`;
     }
@@ -9160,11 +9162,18 @@ function koSingleRender() {
         multBadge = `<span class="ko-single-mult">${formatMult(mult)}</span>`;
       }
     }
+    // v2.5.59: name + badge wrapped in a flex-column info block so the
+    // badge sits BELOW the name. Previously the badge sat to the right of
+    // the name competing with the checkmark, which pushed the check
+    // around depending on badge width (favorite/contender/underdog labels
+    // are different lengths). Now the row stays stable: flag · info · check.
     return `
       <button class="ko-single-team${selected}" data-team="${code}">
         <span class="ko-single-flag">${getCountryFlag(code)}</span>
-        <span class="ko-single-name">${getTeamName(code)}</span>
-        ${multBadge}
+        <span class="ko-single-info">
+          <span class="ko-single-name">${getTeamName(code)}</span>
+          ${multBadge}
+        </span>
         <span class="ko-single-check"><i class="ti ti-check"></i></span>
       </button>`;
   };
