@@ -1143,6 +1143,9 @@ const TRANSLATIONS = {
 
     'knockoutFirst.instructions': 'בחר את הקבוצה שלדעתך תעלה לסבב הבא',
     'knockoutFirst.pointsLabel': '{n} נקודות עבור הימור מדוייק',
+    // v2.5.60: shown when the two teams have different risk multipliers,
+    // so a correct pick earns different totals depending on the team.
+    'knockoutFirst.pointsLabelRange': '{min} או {max} נקודות עבור הימור מדוייק (לפי מכפיל הסיכון של הקבוצה)',
     'knockoutFirst.skip': 'דלג בינתיים',
     'knockoutFirst.completedToast': 'מעולה! עכשיו תוכל לערוך כל בחירה',
 
@@ -2286,6 +2289,9 @@ const TRANSLATIONS = {
 
     'knockoutFirst.instructions': 'Pick the team you think will advance to the next round',
     'knockoutFirst.pointsLabel': '{n} points if you\'re right',
+    // v2.5.60: shown when the two teams have different risk multipliers,
+    // so a correct pick earns different totals depending on the team.
+    'knockoutFirst.pointsLabelRange': '{min} or {max} points if you\'re right (depending on the team\'s risk multiplier)',
     'knockoutFirst.skip': 'Skip for now',
     'knockoutFirst.completedToast': 'Great! You can now edit any pick',
 

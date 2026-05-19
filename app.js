@@ -9134,6 +9134,30 @@ function koSingleRender() {
   const tierMeta = (t) => t === 'favorite'  ? { emoji: '⭐', nameKey: 'poolSettings.multFav', cls: 'fav'  }
                        : t === 'contender' ? { emoji: '⚔️', nameKey: 'poolSettings.multCont', cls: 'cont' }
                        :                      { emoji: '🐶', nameKey: 'poolSettings.multUnd', cls: 'und'  };
+
+  // v2.5.60: header label now reflects the multiplier when the pool uses
+  // multipliers. With both teams having (potentially) different multipliers,
+  // a correct pick earns a different total depending on which team you bet
+  // on. We surface that as "X or Y points" if the totals differ, or fall
+  // back to the flat "N points" label when they happen to match (or
+  // multipliers are off).
+  let headerPointsLabel;
+  if (useMult && home && away) {
+    const hMult = getPoolTeamMultiplier(state.currentPool, home);
+    const aMult = getPoolTeamMultiplier(state.currentPool, away);
+    const hPts = Math.round(points * hMult);
+    const aPts = Math.round(points * aMult);
+    if (hPts === aPts) {
+      headerPointsLabel = t('knockoutFirst.pointsLabel', { n: hPts });
+    } else {
+      const lo = Math.min(hPts, aPts);
+      const hi = Math.max(hPts, aPts);
+      headerPointsLabel = t('knockoutFirst.pointsLabelRange', { min: lo, max: hi });
+    }
+  } else {
+    headerPointsLabel = t('knockoutFirst.pointsLabel', { n: points });
+  }
+
   const card = document.getElementById('ko-single-card');
   const teamHtml = (code, side) => {
     if (!code) {
@@ -9180,7 +9204,7 @@ function koSingleRender() {
 
   card.innerHTML = `
     <div class="ko-single-match-header">${label}</div>
-    <div class="ko-single-points">${t('knockoutFirst.pointsLabel', { n: points })}</div>
+    <div class="ko-single-points">${headerPointsLabel}</div>
     <div class="ko-single-teams">
       ${teamHtml(home, 'home')}
       <div class="ko-single-vs">VS</div>
