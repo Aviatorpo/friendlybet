@@ -6542,17 +6542,42 @@ function renderWizardTeamMultipliers() {
     const valStr = Number(val).toFixed(val % 1 === 0 ? 0 : 1);
     const flag = (typeof getCountryFlag === 'function') ? getCountryFlag(code) : '';
     const name = (typeof getTeamName === 'function') ? getTeamName(code) : code;
+    // v2.5.39: +/- buttons with 0.5 step on each side of the value, so
+    // mobile users don\'t need to bring up the numeric keyboard for a
+    // common adjustment. The input is still editable directly.
     return `
       <div class="wizard-team-mult-row ${overridden ? 'overridden' : ''}" data-tier="${tier}">
         <span class="wizard-team-mult-flag">${flag}</span>
         <span class="wizard-team-mult-name">${name}</span>
-        <input type="number" min="0.5" max="5" step="0.1" value="${valStr}"
-          class="wizard-team-mult-input"
-          onchange="wizardSetTeamMultiplier('${code}', this.value)" />
+        <div class="wizard-team-mult-stepper">
+          <button type="button" class="wizard-team-mult-btn" aria-label="−"
+            onclick="wizardStepTeamMultiplier('${code}', -1)">−</button>
+          <input type="number" min="0.5" max="5" step="0.5" value="${valStr}"
+            class="wizard-team-mult-input"
+            onchange="wizardSetTeamMultiplier('${code}', this.value)" />
+          <button type="button" class="wizard-team-mult-btn" aria-label="+"
+            onclick="wizardStepTeamMultiplier('${code}', 1)">+</button>
+        </div>
       </div>
     `;
   }).join('');
 }
+
+// v2.5.39: +/- step by 0.5 per click. Reuses wizardSetTeamMultiplier so
+// the "matches category default → drop override" cleanup still applies.
+function wizardStepTeamMultiplier(code, dir) {
+  const overrides = (wizardState.customRules && wizardState.customRules.team_multipliers) || {};
+  const cat = (wizardState.customRules && wizardState.customRules.multipliers) || DEFAULT_MULTIPLIERS;
+  const tier = getTeamDefaultTier(code);
+  const current = overrides[code] != null
+    ? parseFloat(overrides[code])
+    : parseFloat(cat[tier] || DEFAULT_MULTIPLIERS[tier]);
+  let next = Math.round((current + dir * 0.5) * 10) / 10;
+  if (next < 0.5) next = 0.5;
+  if (next > 5) next = 5;
+  wizardSetTeamMultiplier(code, next);
+}
+window.wizardStepTeamMultiplier = wizardStepTeamMultiplier;
 
 function wizardStepMultiplier(key, delta) {
   if (!wizardState.customRules) wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
@@ -8721,6 +8746,19 @@ window.rcEmail = rcEmail;
 window.rcDownload = rcDownload;
 window.rcScreenshot = rcScreenshot;
 window.rcContinue = rcContinue;
+// v2.5.39: topbar back arrow on screen-recovery-code. Goes straight to
+// the dashboard without showing the "Did you save?" gate - if the user
+// hits back, they presumably know what they\'re doing (they can always
+// re-open the code from the menu).
+function rcBackToDashboard() {
+  rcClearConfetti();
+  if (state.currentPool && state.currentUser) {
+    goToDashboard();
+  } else {
+    showScreen('home-screen');
+  }
+}
+window.rcBackToDashboard = rcBackToDashboard;
 window.rcCloseModal = rcCloseModal;
 window.rcContinueAnyway = rcContinueAnyway;
 window.rcViewFromMenu = rcViewFromMenu;

@@ -2300,7 +2300,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.38</span>
+      <span class="menu-version">v2.5.39</span>
     </div>
   </div>
 
@@ -2639,6 +2639,16 @@ function loadTablerFallback() {
 <!-- v2.1 NEW RECOVERY CODE SCREEN (dramatic + celebratory)        -->
 <!-- ============================================================ -->
 <div id="screen-recovery-code" class="screen">
+  <!-- v2.5.39: topbar with back button. Arrow direction + position flip
+       automatically per language (body.ltr / body.rtl rules in styles.css). -->
+  <div class="topbar topbar-recovery">
+    <button class="btn-icon" onclick="rcBackToDashboard()" data-i18n-aria="common.back" aria-label="Back">
+      <i class="ti ti-arrow-right"></i>
+    </button>
+    <div style="flex:1;"></div>
+    <div style="width:32px;"></div>
+  </div>
+
   <div class="rc-confetti-layer" id="rc-confetti-layer"></div>
 
   <div class="container rc-container">

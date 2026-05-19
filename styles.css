@@ -1724,12 +1724,18 @@ input:disabled + .slider {
 .wizard-team-mults-grid {
   padding: 6px 8px 10px;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* v2.5.39: stepper buttons (-/+ around the value) make each row wider,
+     so collapse to a single column on narrow phones and let it grow on
+     wider viewports. */
+  grid-template-columns: 1fr;
   gap: 4px 8px;
-  max-height: 320px;
+  max-height: 360px;
   overflow-y: auto;
 }
-@media (min-width: 540px) {
+@media (min-width: 420px) {
+  .wizard-team-mults-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 640px) {
   .wizard-team-mults-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 .wizard-team-mult-row {
@@ -1754,8 +1760,35 @@ input:disabled + .slider {
   text-overflow: ellipsis;
   color: rgba(255, 255, 255, 0.85);
 }
+/* v2.5.39: stepper wraps the input with -/+ buttons */
+.wizard-team-mult-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.wizard-team-mult-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid rgba(212, 168, 83, 0.35);
+  background: rgba(212, 168, 83, 0.08);
+  color: #d4a853;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.12s;
+}
+.wizard-team-mult-btn:hover { background: rgba(212, 168, 83, 0.2); }
+.wizard-team-mult-btn:active { transform: scale(0.92); }
 .wizard-team-mult-input {
-  width: 50px;
+  width: 42px;
   text-align: center;
   font-size: 12.5px;
   font-weight: 600;
@@ -6959,8 +6992,16 @@ body.ltr .bet-cta-arrow {
 }
 .rc-container {
   position: relative;
-  padding-top: 28px;
+  padding-top: 16px;
   padding-bottom: 32px;
+}
+/* v2.5.39: topbar on screen-recovery-code sits above the confetti layer */
+.topbar-recovery {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  border-bottom: none;
+  backdrop-filter: none;
 }
 
 /* Hero */
