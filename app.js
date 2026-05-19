@@ -5685,6 +5685,32 @@ function showError(elementId, message) {
 // Initialization
 // ============================================================
 
+// v2.5.50: belt-and-braces safety net. If no screen is active 8 seconds
+// after the page loads (i.e. init either hung or threw silently), force
+// the home-screen on so the user never stares at a blank background.
+// Also catches any uncaught error during boot and recovers the same way.
+function _fbForceHomeIfBlank(reason) {
+  const anyActive = document.querySelector('.screen.active');
+  if (anyActive) return;
+  console.warn('Forcing home-screen — ' + (reason || 'no active screen'));
+  // Clear stale local session: if the user was supposed to auto-login but
+  // we got stuck on the way, they probably have bad localStorage state.
+  // Cheap to wipe; they can reauth with their recovery code from home.
+  try { if (typeof clearLocalUser === 'function') clearLocalUser(); } catch (_) {}
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const home = document.getElementById('home-screen');
+  if (home) home.classList.add('active');
+}
+setTimeout(() => _fbForceHomeIfBlank('init timeout'), 8000);
+window.addEventListener('error', (e) => {
+  console.error('[GLOBAL ERROR]', e && e.error || e);
+  _fbForceHomeIfBlank('global error: ' + (e && e.message));
+});
+window.addEventListener('unhandledrejection', (e) => {
+  console.error('[UNHANDLED REJECTION]', e && e.reason);
+  _fbForceHomeIfBlank('unhandled rejection');
+});
+
 async function initApp() {
   console.log('FriendlyBet v' + CONFIG.APP_VERSION + ' starting...');
   console.log('Language:', typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'unknown');
