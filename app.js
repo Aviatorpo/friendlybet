@@ -6309,12 +6309,13 @@ function fifaRankOf(code) { return FIFA_RANKINGS[code] ?? 999; }
 //  32 pt ×  1 champion              =  32
 const DEFAULT_SCORING_RULES = {
   single_phase: {
-    // "Each advancing team" = group positions 1 + 2 (the two teams that
-    // qualify to the knockout). 3rd/4th place picks earn nothing.
+    // v2.5.57: every correctly-predicted group position earns 1 point -
+    // single_phase asks for the full 1st-4th ordering, so 3rd/4th picks
+    // are real predictions and deserve a reward when they land.
     group_first: 1,
     group_second: 1,
-    group_third: 0,
-    group_fourth: 0,
+    group_third: 1,
+    group_fourth: 1,
     round_of_16: 2,
     quarter_final: 4,
     semi_final: 8,
@@ -7206,8 +7207,8 @@ function spRenderGroups() {
     const pts = {
       1: rules.group_first ?? 1,
       2: rules.group_second ?? 1,
-      3: rules.group_third ?? 0,
-      4: rules.group_fourth ?? 0
+      3: rules.group_third ?? 1,
+      4: rules.group_fourth ?? 1
     };
     ptsHint.innerHTML = [1, 2, 3, 4].map(n =>
       `<span class="pts-pill">${t('groups.pointsForPosition', { pos: n, pts: pts[n] })}</span>`

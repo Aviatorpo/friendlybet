@@ -20,7 +20,10 @@ if (!SUPABASE_KEY) {
 // v2.5.55: doubling-progression defaults (1 / 2 / 4 / 8 / 16 / 32) so each
 // stage maxes at ~32 pts across the pool.
 const DEFAULT_RULES_SINGLE = {
-  group_first: 1, group_second: 1, group_third: 0, group_fourth: 0,
+  // v2.5.57: 1pt for every correct position (1st-4th) since single_phase
+  // asks for the full ordering. Two-phase only has advance/not, so keeps
+  // 3rd/4th at 0 below.
+  group_first: 1, group_second: 1, group_third: 1, group_fourth: 1,
   round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
   tournament_winner: 32, top_scorer: 20
 };
