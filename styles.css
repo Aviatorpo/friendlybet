@@ -6411,6 +6411,16 @@ body:not(.ltr) .home-lang-toggle {
   display: flex;
   gap: 10px;
   margin-top: 8px;
+  /* v2.5.51: pin the Continue/Create button to the bottom of the
+     viewport so short desktop windows (or zoomed-in pages) can't
+     push it off-screen. Backed by the app's dark background so the
+     content scrolls underneath without bleeding through. */
+  position: sticky;
+  bottom: 0;
+  padding-top: 12px;
+  padding-bottom: 16px;
+  background: linear-gradient(180deg, rgba(10, 22, 40, 0) 0%, rgba(10, 22, 40, 0.95) 30%, #0a1628 100%);
+  z-index: 5;
 }
 .wizard-footer button { flex: 1; }
 
