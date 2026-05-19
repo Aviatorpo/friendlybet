@@ -967,6 +967,7 @@ const TRANSLATIONS = {
     'wizard.rule.group_second': 'מקום שני בבית',
     'wizard.rule.group_third': 'מקום שלישי בבית',
     'wizard.rule.group_fourth': 'מקום רביעי בבית',
+    'wizard.rule.round_of_32': 'סבב 32',
     'wizard.rule.round_of_16': 'שמינית גמר',
     'wizard.rule.quarter_final': 'רבע גמר',
     'wizard.rule.semi_final': 'חצי גמר',
@@ -1154,9 +1155,6 @@ const TRANSLATIONS = {
 
     'knockoutFirst.instructions': 'בחר את הקבוצה שלדעתך תעלה לסבב הבא',
     'knockoutFirst.pointsLabel': '{n} נקודות עבור הימור מדוייק',
-    // v2.5.69: shown on R32 picks - they propagate into R16 but aren't
-    // scored directly (reaching R32 is already what the group rules reward).
-    'knockoutFirst.unscoredLabel': 'הבחירה הזו לא נספרת לנקודות — היא רק קובעת את היריב בשמינית הגמר',
     // v2.5.60: shown when the two teams have different risk multipliers,
     // so a correct pick earns different totals depending on the team.
     'knockoutFirst.pointsLabelRange': '{min} או {max} נקודות עבור הימור מדוייק (לפי מכפיל הסיכון של הקבוצה)',
@@ -2129,6 +2127,7 @@ const TRANSLATIONS = {
     'wizard.rule.group_second': 'Group 2nd place',
     'wizard.rule.group_third': 'Group 3rd place',
     'wizard.rule.group_fourth': 'Group 4th place',
+    'wizard.rule.round_of_32': 'Round of 32',
     'wizard.rule.round_of_16': 'Round of 16',
     'wizard.rule.quarter_final': 'Quarter Final',
     'wizard.rule.semi_final': 'Semi Final',
@@ -2316,9 +2315,6 @@ const TRANSLATIONS = {
 
     'knockoutFirst.instructions': 'Pick the team you think will advance to the next round',
     'knockoutFirst.pointsLabel': '{n} points if you\'re right',
-    // v2.5.69: shown on R32 picks - they propagate into R16 but aren't
-    // scored directly (reaching R32 is already what the group rules reward).
-    'knockoutFirst.unscoredLabel': 'No points for this pick — it only sets the Round of 16 matchup',
     // v2.5.60: shown when the two teams have different risk multipliers,
     // so a correct pick earns different totals depending on the team.
     'knockoutFirst.pointsLabelRange': '{min} or {max} points if you\'re right (depending on the team\'s risk multiplier)',

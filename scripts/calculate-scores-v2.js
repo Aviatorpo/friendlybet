@@ -21,16 +21,16 @@ if (!SUPABASE_KEY) {
 // stage maxes at ~32 pts across the pool.
 const DEFAULT_RULES_SINGLE = {
   // v2.5.63: every correct group POSITION (1st-4th) earns 1 pt.
-  // v2.5.69: R32 is intentionally NOT scored. Reaching R32 = being top 2
-  // (or one of the 8 best 3rd-places), which is what the group-position
-  // rules already reward. Scoring it as its own row would double-count.
+  // v2.5.70: each correct knockout pick = "team reached the NEXT round".
+  // R32 pick = team in R16 (2 pts), R16 pick = team in QF (4 pts), and so
+  // on - doubling progression so every stage maxes out at ~32 pts.
   group_first: 1, group_second: 1, group_third: 1, group_fourth: 1,
-  round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
+  round_of_32: 2, round_of_16: 4, quarter_final: 8, semi_final: 16, final: 32,
   tournament_winner: 32, top_scorer: 20
 };
 const DEFAULT_RULES_TWO = {
   group_first: 1, group_second: 1, group_third: 0, group_fourth: 0,
-  round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
+  round_of_32: 2, round_of_16: 4, quarter_final: 8, semi_final: 16, final: 32,
   tournament_winner: 32, top_scorer: 20
 };
 
@@ -136,10 +136,10 @@ function stageRuleKey(stage) {
 //   25-28 = QF    (4 matches)
 //   29-30 = SF    (2 matches)
 //   31    = Final
-// v2.5.69: R32 picks return null - they propagate into R16 but are not
-// scored on their own.
+// v2.5.70: each round is scored as "team reached the NEXT round" (R32 pick
+// rewards reaching R16, R16 pick rewards reaching QF, etc).
 function bracketPosRuleKey(pos) {
-  if (pos >= 1  && pos <= 16) return null;
+  if (pos >= 1  && pos <= 16) return 'round_of_32';
   if (pos >= 17 && pos <= 24) return 'round_of_16';
   if (pos >= 25 && pos <= 28) return 'quarter_final';
   if (pos >= 29 && pos <= 30) return 'semi_final';
