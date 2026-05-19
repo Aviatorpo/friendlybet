@@ -283,18 +283,14 @@ body.ltr .btn-secondary .ti-arrow-left {
   display: inline-block;
 }
 
-/* v2.5.25: apply row-reverse to EVERY topbar regardless of language.
-   With DOM order [back, title, action]:
-     - LTR row-reverse → visual [action-LEFT, title, back-RIGHT]
-     - RTL row-reverse → visual [back-LEFT, title, action-RIGHT]
-       (RTL's natural reversal is cancelled by row-reverse so back
-        ends up on the visual LEFT of the screen)
-   Combined with the icon-flip rule above:
-     - English: back on RIGHT pointing LEFT
-     - Hebrew:  back on LEFT  pointing RIGHT */
-.topbar {
-  flex-direction: row-reverse;
-}
+/* v2.5.33: back arrow follows the language convention.
+   DOM order [back, title, action]; natural flex direction per language:
+     - LTR English: back on LEFT  (visually first)
+     - RTL Hebrew:  back on RIGHT (browser flips flex visually)
+   Combined with the icon-flip rules below:
+     - English: back on LEFT  pointing LEFT  (Tabler ti-arrow-right is flipped)
+     - Hebrew:  back on RIGHT pointing RIGHT (Tabler ti-arrow-right unflipped;
+                inline back-SVGs that draw a left-pointing arrow get flipped). */
 
 .info-banner {
   display: flex;
@@ -5629,7 +5625,9 @@ body.ltr .topbar {
   /* The back arrow flips */
 }
 
-body.ltr [data-i18n-aria="common.back"] svg {
+/* v2.5.33: inline back-arrow SVGs are authored pointing LEFT (correct for
+   English). In Hebrew RTL, flip them to point RIGHT. */
+body.rtl [data-i18n-aria="common.back"] svg {
   transform: scaleX(-1);
 }
 
