@@ -5968,10 +5968,37 @@ const DEFAULT_SCORING_RULES = {
     quarter_final: 8,
     semi_final: 12,
     final: 20,
-    tournament_winner: 0,
+    // v2.5.34: bonus on top of the final-correct pick for predicting the
+    // tournament champion (the team that wins position 15).
+    tournament_winner: 30,
     top_scorer: 20
   }
 };
+
+// v2.5.34: default category multipliers + per-team tier classification.
+// Custom pools can override either or both via scoring_rules.multipliers
+// and scoring_rules.team_multipliers.
+const DEFAULT_MULTIPLIERS = { favorite: 1.0, contender: 1.5, underdog: 2.0 };
+
+function _defaultTierFromRank(rank) {
+  if (rank <= 10) return 'favorite';
+  if (rank <= 30) return 'contender';
+  return 'underdog';
+}
+function getTeamDefaultTier(code) { return _defaultTierFromRank(fifaRankOf(code)); }
+
+// Resolve the multiplier for a team for a given pool. Per-team override
+// wins; otherwise fall back to the pool's category multiplier; otherwise
+// fall back to the global default.
+function getPoolTeamMultiplier(pool, teamCode) {
+  const rules = (pool && pool.scoring_rules) || {};
+  const teamMap = rules.team_multipliers || {};
+  if (teamMap[teamCode] != null) return parseFloat(teamMap[teamCode]) || 1.0;
+  const cat = rules.multipliers || DEFAULT_MULTIPLIERS;
+  const tier = getTeamDefaultTier(teamCode);
+  return parseFloat(cat[tier]) || DEFAULT_MULTIPLIERS[tier];
+}
+window.getPoolTeamMultiplier = getPoolTeamMultiplier;
 
 // ============================================================
 // PHASE 1: POOL SETUP WIZARD
@@ -6056,7 +6083,7 @@ function wizardSelectRules(choice) {
 function getWizardRuleKeys() {
   // Two_phase doesn't use 3rd/4th place or tournament_winner
   if (wizardState.mode === 'two_phase') {
-    return ['group_first','group_second','round_of_16','quarter_final','semi_final','final','top_scorer'];
+    return ['group_first','group_second','round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
   }
   return ['group_first','group_second','group_third','group_fourth',
           'round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
@@ -6117,7 +6144,9 @@ function _wizardRuleGroups() {
       },
       {
         titleKey: 'wizard.ruleGroup.bonus',
-        rows: ['top_scorer']
+        // v2.5.34: tournament_winner row is now exposed in two_phase too,
+        // as a bonus on top of the final-correct pick.
+        rows: ['tournament_winner', 'top_scorer']
       }
     ];
   }
@@ -6153,6 +6182,15 @@ function renderWizardRulesStep() {
   if (wizardState.rulesChoice === 'custom' && !wizardState.customRules) {
     wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
   }
+  // v2.5.34: seed multipliers + team-overrides bag the first time we go custom
+  if (wizardState.rulesChoice === 'custom' && wizardState.customRules &&
+      !wizardState.customRules.multipliers) {
+    wizardState.customRules.multipliers = { ...DEFAULT_MULTIPLIERS };
+    wizardState.customRules.team_multipliers = {};
+  }
+
+  // v2.5.34: only two_phase exposes multipliers; render them whenever visible
+  if (wizardState.mode === 'two_phase') renderWizardMultipliers();
 
   // Build the unified grouped list
   const list = document.getElementById('wizard-rules-list');
@@ -6231,12 +6269,144 @@ function wizardUpdateCustomRule(key, value) {
   }
 }
 
+// v2.5.34: render the 3 category multipliers (editable when custom, read-only
+// otherwise) + the collapsible per-team overrides grid.
+function renderWizardMultipliers() {
+  const rowsEl = document.getElementById('wizard-multipliers-rows');
+  const detailsEl = document.getElementById('wizard-team-mults');
+  if (!rowsEl) return;
+  const isCustom = wizardState.rulesChoice === 'custom';
+  const cat = (isCustom && wizardState.customRules && wizardState.customRules.multipliers)
+    ? wizardState.customRules.multipliers
+    : DEFAULT_MULTIPLIERS;
+
+  const tiers = [
+    { key: 'favorite',  emoji: '⭐', nameKey: 'poolSettings.multFav' },
+    { key: 'contender', emoji: '⚔️', nameKey: 'poolSettings.multCont' },
+    { key: 'underdog',  emoji: '🐶', nameKey: 'poolSettings.multUnd' }
+  ];
+  rowsEl.innerHTML = tiers.map(tier => {
+    const val = (cat[tier.key] != null ? cat[tier.key] : DEFAULT_MULTIPLIERS[tier.key]);
+    const valStr = Number(val).toFixed(val % 1 === 0 ? 0 : 1);
+    return `
+      <div class="multiplier-row">
+        <span class="mult-emoji">${tier.emoji}</span>
+        <span class="mult-name">${t(tier.nameKey)}</span>
+        ${isCustom
+          ? `<div class="wizard-rules-stepper mult-stepper">
+               <button type="button" class="wizard-rules-stepper-btn" aria-label="−"
+                 onclick="wizardStepMultiplier('${tier.key}', -1)">−</button>
+               <input type="number" min="0.5" max="5" step="0.1" value="${valStr}"
+                 class="wizard-rules-row-input mult-input"
+                 onchange="wizardUpdateMultiplier('${tier.key}', this.value)" />
+               <button type="button" class="wizard-rules-stepper-btn" aria-label="+"
+                 onclick="wizardStepMultiplier('${tier.key}', 1)">+</button>
+             </div>`
+          : `<span class="mult-value">×${valStr}</span>`}
+      </div>
+    `;
+  }).join('');
+
+  if (detailsEl) {
+    detailsEl.style.display = isCustom ? '' : 'none';
+    // Populate the per-team grid only when needed; cheap to rebuild on every render.
+    if (isCustom) renderWizardTeamMultipliers();
+  }
+}
+
+function renderWizardTeamMultipliers() {
+  const grid = document.getElementById('wizard-team-mults-grid');
+  if (!grid || !wizardState.customRules) return;
+  const cat = wizardState.customRules.multipliers || DEFAULT_MULTIPLIERS;
+  const overrides = wizardState.customRules.team_multipliers || {};
+
+  // Iterate every WC2026 team, sorted by FIFA rank for a sensible reading order.
+  const allCodes = WC2026_GROUP_LETTERS.flatMap(L => WC2026_GROUPS[L]);
+  const sorted = [...allCodes].sort((a, b) => fifaRankOf(a) - fifaRankOf(b));
+
+  grid.innerHTML = sorted.map(code => {
+    const tier = getTeamDefaultTier(code);
+    const overridden = overrides[code] != null;
+    const val = overridden ? parseFloat(overrides[code]) : parseFloat(cat[tier] || DEFAULT_MULTIPLIERS[tier]);
+    const valStr = Number(val).toFixed(val % 1 === 0 ? 0 : 1);
+    const flag = (typeof getCountryFlag === 'function') ? getCountryFlag(code) : '';
+    const name = (typeof getTeamName === 'function') ? getTeamName(code) : code;
+    return `
+      <div class="wizard-team-mult-row ${overridden ? 'overridden' : ''}" data-tier="${tier}">
+        <span class="wizard-team-mult-flag">${flag}</span>
+        <span class="wizard-team-mult-name">${name}</span>
+        <input type="number" min="0.5" max="5" step="0.1" value="${valStr}"
+          class="wizard-team-mult-input"
+          onchange="wizardSetTeamMultiplier('${code}', this.value)" />
+      </div>
+    `;
+  }).join('');
+}
+
+function wizardStepMultiplier(key, delta) {
+  if (!wizardState.customRules) wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
+  if (!wizardState.customRules.multipliers) wizardState.customRules.multipliers = { ...DEFAULT_MULTIPLIERS };
+  const cur = parseFloat(wizardState.customRules.multipliers[key]) || DEFAULT_MULTIPLIERS[key];
+  let next = Math.round((cur + delta * 0.1) * 10) / 10;
+  if (next < 0.5) next = 0.5;
+  if (next > 5) next = 5;
+  wizardState.customRules.multipliers[key] = next;
+  renderWizardMultipliers();
+}
+window.wizardStepMultiplier = wizardStepMultiplier;
+
+function wizardUpdateMultiplier(key, value) {
+  let v = parseFloat(value);
+  if (isNaN(v) || v < 0.5) v = 0.5;
+  if (v > 5) v = 5;
+  v = Math.round(v * 10) / 10;
+  if (!wizardState.customRules) wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
+  if (!wizardState.customRules.multipliers) wizardState.customRules.multipliers = { ...DEFAULT_MULTIPLIERS };
+  wizardState.customRules.multipliers[key] = v;
+  renderWizardMultipliers();
+}
+window.wizardUpdateMultiplier = wizardUpdateMultiplier;
+
+function wizardSetTeamMultiplier(code, value) {
+  let v = parseFloat(value);
+  if (isNaN(v) || v < 0.5) v = 0.5;
+  if (v > 5) v = 5;
+  v = Math.round(v * 10) / 10;
+  if (!wizardState.customRules) wizardState.customRules = { ...DEFAULT_SCORING_RULES[wizardState.mode] };
+  if (!wizardState.customRules.team_multipliers) wizardState.customRules.team_multipliers = {};
+  // If the value matches the category default for this team, drop the override
+  // so the row reverts to "inherits category" — keeps the saved JSONB clean.
+  const tier = getTeamDefaultTier(code);
+  const catVal = parseFloat((wizardState.customRules.multipliers || DEFAULT_MULTIPLIERS)[tier]) || DEFAULT_MULTIPLIERS[tier];
+  if (Math.abs(v - catVal) < 0.01) {
+    delete wizardState.customRules.team_multipliers[code];
+  } else {
+    wizardState.customRules.team_multipliers[code] = v;
+  }
+  renderWizardTeamMultipliers();
+}
+window.wizardSetTeamMultiplier = wizardSetTeamMultiplier;
+
+function wizardResetTeamMultipliers() {
+  if (!wizardState.customRules) return;
+  wizardState.customRules.team_multipliers = {};
+  renderWizardTeamMultipliers();
+}
+window.wizardResetTeamMultipliers = wizardResetTeamMultipliers;
+
 function getFinalScoringRules() {
   if (wizardState.rulesChoice === 'custom' && wizardState.customRules) {
     // Make sure all required keys exist (fill unused with 0 for storage)
     const merged = { ...DEFAULT_SCORING_RULES.single_phase };
     Object.keys(merged).forEach(k => merged[k] = 0);
     Object.keys(wizardState.customRules).forEach(k => merged[k] = wizardState.customRules[k]);
+    // v2.5.34: ensure multipliers + team_multipliers ride along (deep copy of objects)
+    if (wizardState.customRules.multipliers) {
+      merged.multipliers = { ...wizardState.customRules.multipliers };
+    }
+    if (wizardState.customRules.team_multipliers) {
+      merged.team_multipliers = { ...wizardState.customRules.team_multipliers };
+    }
     return merged;
   }
   // Default for current mode — but always return full shape (zero-fill unused)
@@ -6244,6 +6414,10 @@ function getFinalScoringRules() {
   Object.keys(full).forEach(k => full[k] = 0);
   const d = DEFAULT_SCORING_RULES[wizardState.mode];
   Object.keys(d).forEach(k => full[k] = d[k]);
+  // v2.5.34: also include defaults so consumers can read .multipliers blindly
+  if (wizardState.mode === 'two_phase') {
+    full.multipliers = { ...DEFAULT_MULTIPLIERS };
+  }
   return full;
 }
 

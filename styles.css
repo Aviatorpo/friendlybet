@@ -253,16 +253,21 @@ body {
 }
 .welcome-recovery-link i { font-size: 14px; }
 
-/* v2.5.29: recovery code input - keep all 19 chars (16 + 3 hyphens) on
-   one line regardless of viewport. Uses clamp() to fit narrow phones. */
-.recovery-code-input {
+/* v2.5.34: recovery code input - keep all 19 chars (16 + 3 hyphens) on
+   one line on every viewport including narrow phones. Specificity
+   .form-input.recovery-code-input beats the .form-input-large rule
+   (24px + 6px letter-spacing) that previously won by source order. */
+.form-input.recovery-code-input {
   font-family: 'SFMono-Regular', Consolas, 'Courier New', monospace;
-  font-size: clamp(14px, 4.6vw, 22px);
-  letter-spacing: 1px;
+  font-size: clamp(13px, 4vw, 20px);
+  letter-spacing: 0;
+  font-weight: 600;
   text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
-  overflow-x: auto;
+  overflow-x: hidden;
+  text-overflow: clip;
+  padding-inline: 10px;
   -webkit-text-fill-color: #d4a853;
   color: #d4a853;
 }
@@ -1637,6 +1642,118 @@ input:disabled + .slider {
 
 .wizard-multipliers-rows .multiplier-row {
   padding: 6px 0;
+}
+
+/* v2.5.34: stepper inside multiplier row (custom mode) - tighter than the
+   scoring-rules stepper since the row is denser. */
+.wizard-multipliers-rows .mult-stepper {
+  margin-inline-start: auto;
+}
+.wizard-multipliers-rows .mult-input {
+  width: 56px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 4px 4px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(212, 168, 83, 0.35);
+  border-radius: 8px;
+  color: #d4a853;
+}
+
+/* v2.5.34: collapsible per-team multipliers - visually minimal until opened. */
+.wizard-team-mults {
+  margin-top: 14px;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 10px;
+  border: 1px solid rgba(212, 168, 83, 0.18);
+  overflow: hidden;
+}
+.wizard-team-mults-summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  user-select: none;
+}
+.wizard-team-mults-summary::-webkit-details-marker { display: none; }
+.wizard-team-mults-summary > i:first-child { color: #d4a853; font-size: 16px; }
+.wizard-team-mults-summary > span { flex: 1; }
+.wizard-team-mults-chevron {
+  transition: transform 0.18s ease;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 16px;
+}
+.wizard-team-mults[open] .wizard-team-mults-chevron { transform: rotate(180deg); }
+.wizard-team-mults-hint {
+  padding: 0 12px 8px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.55);
+}
+.wizard-team-mults-grid {
+  padding: 6px 8px 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+@media (min-width: 540px) {
+  .wizard-team-mults-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.wizard-team-mult-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 6px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid transparent;
+  font-size: 12px;
+}
+.wizard-team-mult-row.overridden {
+  background: rgba(212, 168, 83, 0.08);
+  border-color: rgba(212, 168, 83, 0.35);
+}
+.wizard-team-mult-flag { font-size: 16px; line-height: 1; }
+.wizard-team-mult-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgba(255, 255, 255, 0.85);
+}
+.wizard-team-mult-input {
+  width: 50px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 3px 2px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(212, 168, 83, 0.3);
+  border-radius: 6px;
+  color: #d4a853;
+  flex-shrink: 0;
+}
+.wizard-team-mults-reset {
+  display: block;
+  margin: 4px 10px 10px auto;
+  background: transparent;
+  border: 1px solid rgba(212, 168, 83, 0.35);
+  color: #d4a853;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.wizard-team-mults-reset:hover {
+  background: rgba(212, 168, 83, 0.08);
 }
 
 /* v2.5.27: explanation paragraph for the risk-multipliers block */
