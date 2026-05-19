@@ -6592,6 +6592,24 @@ body:not(.ltr) .home-lang-toggle {
   margin-top: 12px;
 }
 .sp-group-nav button { flex: 1; }
+/* v2.5.66: tertiary "Skip for now" link under the prev/next nav.
+   Ghost-style so it doesn't compete with the primary "Next" button. */
+.sp-skip-link {
+  display: block;
+  margin: 10px auto 0;
+  padding: 6px 12px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12.5px;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.2);
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+.sp-skip-link:hover { color: rgba(212, 168, 83, 0.9); text-decoration-color: rgba(212, 168, 83, 0.5); }
 
 .sp-bracket {
   display: flex;

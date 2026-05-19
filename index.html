@@ -2313,7 +2313,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.65</span>
+      <span class="menu-version">v2.5.66</span>
     </div>
   </div>
 
@@ -2378,6 +2378,12 @@ function loadTablerFallback() {
         <i class="ti ti-arrow-left"></i>
       </button>
     </div>
+    <!-- v2.5.66: "Skip for now" - clears this group's picks and advances.
+         Lets the user defer hard groups; the summary will show "Not picked"
+         for skipped groups. Pre-filled FIFA order re-suggests on revisit. -->
+    <button class="sp-skip-link" id="sp-groups-skip" onclick="spGroupsSkip()" type="button">
+      <span data-i18n="betting.skipForNow">דלג בינתיים — נחזור לזה אחר כך</span>
+    </button>
   </div>
 </div>
 

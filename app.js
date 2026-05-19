@@ -7479,6 +7479,52 @@ function spGroupsSaveAndExit() {
   setTimeout(() => goToDashboard(), 400);
 }
 
+// v2.5.66: "Skip for now" - clear THIS group's picks and advance. The
+// FIFA pre-fill that auto-saves on first entry made it hard to truly
+// defer a group ("just look at it but don't commit"). This button gives
+// the user an explicit out: drop the row, move on, summary shows "Not
+// picked" for that group. Pre-fill still re-suggests on revisit (so the
+// skip is "for now", not permanent).
+async function spGroupsSkip() {
+  if (spIsLocked && spIsLocked()) {
+    showToast(t('betting.locked'), 'error');
+    return;
+  }
+  const letter = WC2026_GROUP_LETTERS[spState.currentGroupIdx];
+  // Clear in-memory positions so the user sees an immediate "blank" state
+  // if they navigate right back. spEnsureGroupPrefilled will re-suggest
+  // the FIFA order on next entry — that's by design.
+  spState.groupPositions[letter] = [null, null, null, null];
+  // Best-effort DB delete: don't block UX, but make sure any auto-saved
+  // FIFA row from a previous prefill is gone so summary shows "Not picked".
+  if (state.currentPool && state.currentUser && supabaseClient) {
+    try {
+      await supabaseClient.from('group_position_picks')
+        .delete()
+        .eq('pool_id', state.currentPool.id)
+        .eq('user_id', state.currentUser.id)
+        .eq('group_letter', letter);
+    } catch (e) {
+      console.warn('spGroupsSkip DB delete failed (non-fatal):', e);
+    }
+  }
+  // Cancel any pending auto-save so it doesn't re-save the FIFA order
+  // we just deleted.
+  if (typeof _spSaveTimer !== 'undefined' && _spSaveTimer) {
+    clearTimeout(_spSaveTimer);
+    _spSaveTimer = null;
+  }
+  // Advance — last group → bracket (existing permissive transition).
+  if (spState.currentGroupIdx < 11) {
+    spState.currentGroupIdx++;
+    spRenderGroups();
+  } else {
+    spRenderBracket();
+    showScreen('sp-bracket-screen');
+  }
+}
+window.spGroupsSkip = spGroupsSkip;
+
 // v2.5.62: pause mid-bracket and return to dashboard. Auto-save already
 // runs on each pick (spAutoSaveBracket), so this is mostly a polite
 // confirmation that the picks are stored.

@@ -1013,6 +1013,8 @@ const TRANSLATIONS = {
     // v2.5.64: partial-save toast from the summary screen
     'betting.partialSaveHint': '✓ ההימור נשמר. עוד נשאר: {details}',
     'betting.continueToBracket': 'המשך לברקאט',
+    // v2.5.66: tertiary "skip" option on the sp-groups-screen
+    'betting.skipForNow': 'דלג בינתיים — נחזור לזה אחר כך',
     'betting.bracket.title': 'שלב הנוקאאוט שלך',
     'betting.bracket.instructions': 'שלב הנוקאאוט נוצר מתוצאות הבתים שלך. בכל משחק - בחר את המנצח.',
     'betting.tournamentWinner.title': 'מנצחת הטורניר',
@@ -2170,6 +2172,8 @@ const TRANSLATIONS = {
     // v2.5.64: partial-save toast from the summary screen
     'betting.partialSaveHint': '✓ Picks saved. Still left: {details}',
     'betting.continueToBracket': 'Continue to bracket',
+    // v2.5.66: tertiary "skip" option on the sp-groups-screen
+    'betting.skipForNow': 'Skip for now — I\'ll come back',
     'betting.bracket.title': 'Your Bracket',
     'betting.bracket.instructions': 'Your bracket is built from your group predictions. For each match - pick the winner.',
     'betting.tournamentWinner.title': 'Tournament Winner',
