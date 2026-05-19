@@ -1,15 +1,15 @@
 {
-  "name": "FriendlyBet - הימור חברים על מונדיאל 2026",
+  "name": "FriendlyBet — World Cup 2026 Predictions",
   "short_name": "FriendlyBet",
-  "description": "הימור חברים על מונדיאל 2026 - חינמי, בלי פרסומות, בלי כסף",
+  "description": "Free World Cup 2026 prediction app to play with your friends — no ads, no money, just bragging rights.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0a1628",
   "theme_color": "#0a1628",
-  "lang": "he",
-  "dir": "rtl",
+  "lang": "en",
+  "dir": "ltr",
   "categories": ["sports", "games", "entertainment"],
   "icons": [
     {
@@ -39,16 +39,16 @@
   ],
   "shortcuts": [
     {
-      "name": "ההימור שלי",
-      "short_name": "הימור",
-      "description": "פתח את ההימור הראשי",
+      "name": "My Pool",
+      "short_name": "Pool",
+      "description": "Open your pool dashboard",
       "url": "/?action=dashboard",
       "icons": [{ "src": "/icon-192.svg", "sizes": "192x192" }]
     },
     {
-      "name": "לוח דירוגים",
-      "short_name": "דירוג",
-      "description": "צפה בלוח הדירוגים",
+      "name": "Leaderboard",
+      "short_name": "Ranks",
+      "description": "View the leaderboard",
       "url": "/?action=leaderboard",
       "icons": [{ "src": "/icon-192.svg", "sizes": "192x192" }]
     }
