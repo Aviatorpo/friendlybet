@@ -2313,7 +2313,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.61</span>
+      <span class="menu-version">v2.5.62</span>
     </div>
   </div>
 
@@ -2387,7 +2387,11 @@ function loadTablerFallback() {
       <div class="topbar-title-small" data-i18n="betting.bracket.title">שלב הנוקאאוט שלך</div>
       <div class="topbar-step" id="sp-bracket-step"></div>
     </div>
-    <div style="width:32px;"></div>
+    <!-- v2.5.62: save-and-exit icon mirroring sp-groups-screen so the
+         user can pause the bracket mid-pick and return to the dashboard. -->
+    <button class="btn-icon" onclick="spBracketSaveAndExit()" data-i18n-aria="common.save" aria-label="Save">
+      <i class="ti ti-device-floppy gold"></i>
+    </button>
   </div>
 
   <div class="container">

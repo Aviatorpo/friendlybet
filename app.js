@@ -7459,13 +7459,16 @@ function spGroupsNext() {
     spRenderGroups();
     return;
   }
-  // Last group: validate all groups have all 4 filled before advancing to bracket
+  // v2.5.62: last group → bracket transition is now PERMISSIVE. Users can
+  // advance even if some groups aren't complete — the bracket will show
+  // TBD slots for missing positions and the summary screen will surface
+  // "Not picked" lines for anything skipped. A soft info toast tells the
+  // user what they still owe without blocking them.
   const incomplete = WC2026_GROUP_LETTERS.filter(l =>
     !spState.groupPositions[l] || !spState.groupPositions[l].every(x => x)
   );
   if (incomplete.length > 0) {
-    showToast(t('betting.groupsIncomplete', { letters: incomplete.join(', ') }), 'error');
-    return;
+    showToast(t('betting.groupsIncompleteHint', { letters: incomplete.join(', ') }), 'info');
   }
   spSaveGroupsToDb(false);
   spRenderBracket();
@@ -7476,6 +7479,17 @@ function spGroupsSaveAndExit() {
   spSaveGroupsToDb(true);
   setTimeout(() => goToDashboard(), 400);
 }
+
+// v2.5.62: pause mid-bracket and return to dashboard. Auto-save already
+// runs on each pick (spAutoSaveBracket), so this is mostly a polite
+// confirmation that the picks are stored.
+function spBracketSaveAndExit() {
+  if (typeof spSaveBracketToDb === 'function') {
+    spSaveBracketToDb(true);
+  }
+  setTimeout(() => goToDashboard(), 400);
+}
+window.spBracketSaveAndExit = spBracketSaveAndExit;
 
 function spExit() {
   goToDashboard();
@@ -7788,14 +7802,12 @@ async function _spSaveBracketToDbInner(showFeedback = true) {
 }
 
 function spBracketNext() {
-  // v2.4.3: skip the (now redundant) sp-winner-screen. The user already
-  // picked the tournament winner when they chose the final match's
-  // winner at bracket position 15. Go straight to the top-scorer step.
+  // v2.5.62: also permissive. Users can advance past the bracket even
+  // without picking position 15 / the tournament winner — the summary
+  // will simply show "Not picked" for the champion. A soft info toast
+  // surfaces what's missing without trapping the user on this screen.
   if (!spState.tournamentWinner) {
-    // Edge case: user advanced without picking the final. Surface a
-    // helpful message rather than silently sending them onward.
-    showToast(t('betting.finalRequired'), 'error');
-    return;
+    showToast(t('betting.finalMissingHint'), 'info');
   }
   state.spInFlow = true;
   spStartTopScorerStep();
@@ -8048,13 +8060,18 @@ function spTopScorerNext() {
   showScreen('sp-summary-screen');
 }
 
-// Smart back handler for the standalone top-scorer screen
+// Smart back handler for the standalone top-scorer screen.
+// v2.5.62: the topbar back arrow now ALWAYS goes to the dashboard so the
+// behavior matches every other SP-flow screen (sp-groups, sp-bracket,
+// sp-summary all already do this). Stepping back through the flow itself
+// is available via the in-flow bottom nav bar's "back to bracket" button.
 function topScorerBack() {
-  if (state.spInFlow) {
-    spTopScorerBack();
-  } else {
-    goToDashboard();
-  }
+  // Make sure we clean up the in-flow nav and flag so the next entry
+  // into the standalone top-scorer screen starts clean.
+  state.spInFlow = false;
+  const nav = document.getElementById('ts-sp-flow-nav');
+  if (nav) nav.style.display = 'none';
+  goToDashboard();
 }
 window.topScorerBack = topScorerBack;
 window.spTopScorerBack = spTopScorerBack;
