@@ -2313,7 +2313,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.57</span>
+      <span class="menu-version">v2.5.58</span>
     </div>
   </div>
 
@@ -2349,8 +2349,10 @@ function loadTablerFallback() {
       <div class="sp-points-hint" id="sp-points-hint"></div>
       <!-- v2.5.38: tiny one-liner clarifying that risk multipliers don't
            apply to group-position picks - they only kick in from knockout.
-           Height ≤14px so the screen stays above the fold on mobile. -->
-      <div class="sp-mult-note" data-i18n="groups.multStartsKO">מכפילי הסיכון מתחילים להשפיע משלב הנוקאאוט</div>
+           Height ≤14px so the screen stays above the fold on mobile.
+           v2.5.58: hidden via JS when the pool has multipliers turned off
+           - the note would be confusing on a pool that never uses them. -->
+      <div class="sp-mult-note" id="sp-mult-note" data-i18n="groups.multStartsKO">מכפילי הסיכון מתחילים להשפיע משלב הנוקאאוט</div>
     </div>
 
     <div class="sp-group-header">

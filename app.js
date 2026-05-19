@@ -7215,6 +7215,15 @@ function spRenderGroups() {
     ).join('');
   }
 
+  // v2.5.58: hide the "Risk multipliers kick in from knockout" hint when
+  // the pool has multipliers turned off entirely - the note would be
+  // talking about a feature that simply isn't in use here.
+  const multNote = document.getElementById('sp-mult-note');
+  if (multNote) {
+    const off = state.currentPool && state.currentPool.use_multipliers === false;
+    multNote.style.display = off ? 'none' : '';
+  }
+
   // v2.2: pre-populate from FIFA ranking if not yet picked
   const prefilled = spEnsureGroupPrefilled(letter);
 
