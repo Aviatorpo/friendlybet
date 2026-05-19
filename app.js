@@ -716,32 +716,42 @@ function copyShareLink() {
 // ============================================================
 
 async function goToDashboard() {
+  // v2.5.49: defensive guards. If we hit this without a supabase client
+  // (very slow network) or any of the DB reads fail, fall back to the
+  // home-screen instead of half-rendering a blank dashboard.
+  if (!supabaseClient) {
+    console.warn('goToDashboard: no supabase client; routing home.');
+    showScreen('home-screen');
+    return;
+  }
   if (!state.currentUser || !state.currentPool) {
     const local = loadLocalUser();
     if (!local) {
       showScreen('home-screen');
       return;
     }
-    
-    // Reload from DB
-    const { data: pool } = await supabaseClient
-      .from('pools')
-      .select('*')
-      .eq('id', local.pool_id)
-      .maybeSingle();
-    
-    const { data: user } = await supabaseClient
-      .from('users')
-      .select('*')
-      .eq('id', local.id)
-      .maybeSingle();
-    
-    if (!pool || !user) {
+
+    let pool, user;
+    try {
+      ({ data: pool } = await supabaseClient
+        .from('pools').select('*').eq('id', local.pool_id).maybeSingle());
+      ({ data: user } = await supabaseClient
+        .from('users').select('*').eq('id', local.id).maybeSingle());
+    } catch (err) {
+      console.error('goToDashboard: failed to hydrate user/pool', err);
       clearLocalUser();
       showScreen('home-screen');
       return;
     }
-    
+
+    if (!pool || !user) {
+      // Account or pool no longer exists - drop the stale local session
+      // and send the user back to home so they can rejoin or sign in.
+      clearLocalUser();
+      showScreen('home-screen');
+      return;
+    }
+
     state.currentPool = pool;
     state.currentUser = user;
   }
@@ -5713,8 +5723,32 @@ async function initApp() {
   // Check if user is logged in
   const localUser = loadLocalUser();
 
-  // Small delay for loading screen aesthetics
-  setTimeout(async () => {
+  // v2.5.49: wait for the Supabase client to actually be ready before
+  // routing. Previously a fixed 1s delay meant slow networks left
+  // supabaseClient null when goToDashboard() ran, throwing inside the
+  // unhandled-promise callback and leaving the user on a blank screen
+  // after the loading splash. Now we poll up to 12s and fall back to
+  // home-screen if it never wakes up.
+  const waitForSupabase = (timeoutMs = 12000) => new Promise(resolve => {
+    const start = Date.now();
+    const tick = () => {
+      if (supabaseClient) return resolve(true);
+      if (Date.now() - start > timeoutMs) return resolve(false);
+      setTimeout(tick, 100);
+    };
+    tick();
+  });
+
+  // Show the loading splash for at least 700ms (visual stability) but no
+  // more than waitForSupabase needs. Both promises resolve, then we route.
+  const minSplash = new Promise(resolve => setTimeout(resolve, 700));
+  await Promise.all([minSplash, waitForSupabase()]);
+
+  // v2.5.49: every routing branch wrapped in try/catch. If anything
+  // throws (network failure, schema mismatch, missing DOM node) we
+  // bail out to home-screen instead of leaving the splash up forever
+  // or showing a blank dashboard with no error indication.
+  try {
     if (recoveryFromUrl && !(localUser && localUser.pool_id)) {
       showScreen('recovery-login-screen');
       const input = document.getElementById('recovery-login-input');
@@ -5728,7 +5762,7 @@ async function initApp() {
       if (poolNameFromUrl) {
         sessionStorage.setItem('invite_pool_name', decodeURIComponent(poolNameFromUrl));
       }
-      
+
       // If user already has an account
       if (localUser && localUser.pool_id) {
         const confirmed = window.confirm(t('errors.alreadyMember'));
@@ -5742,20 +5776,27 @@ async function initApp() {
           return;
         }
       }
-      
+
       // Direct join via link
-      document.getElementById('pool-code-input').value = codeFromUrl.toUpperCase();
+      const codeInput = document.getElementById('pool-code-input');
+      if (codeInput) codeInput.value = codeFromUrl.toUpperCase();
       showScreen('join-pool-screen');
-      // Auto-check
-      setTimeout(() => checkPoolCode(), 300);
-    } else if (localUser && localUser.pool_id) {
-      // User has account - go to dashboard
+      setTimeout(() => { try { checkPoolCode(); } catch (e) { console.error(e); } }, 300);
+    } else if (localUser && localUser.pool_id && supabaseClient) {
+      // User has account AND supabase is online - try to load the dashboard
       await goToDashboard();
     } else {
-      // First visit - show home
+      // First visit (or no working supabase) - show home
+      if (localUser && localUser.pool_id && !supabaseClient) {
+        console.warn('Supabase never came online; falling back to home-screen.');
+      }
       showScreen('home-screen');
     }
-  }, 1000);
+  } catch (err) {
+    console.error('initApp routing failed:', err);
+    // Last-resort fallback so users never stare at a blank splash.
+    try { showScreen('home-screen'); } catch (_) {}
+  }
 }
 
 // Start when DOM is ready
