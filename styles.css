@@ -7884,21 +7884,24 @@ body.ltr .bet-cta-arrow {
   position: relative;
 }
 
-/* The tree: 7-column CSS Grid. The match rows are positioned by
-   justify-content:space-around inside each column, so deeper rounds
-   naturally line up with the midpoint between their feeders. */
+/* v2.5.68: 9-column bilateral bracket for the official WC 2026 format
+   (R32 → R16 → QF → SF → FINAL ← SF ← QF ← R16 ← R32). Match rows are
+   positioned by justify-content:space-around inside each column, so
+   deeper rounds naturally line up with the midpoint between their feeders. */
 .sp-bracket-tree {
   display: grid;
   grid-template-columns:
-    [r16l] minmax(115px, 1fr)
-    [qfl]  minmax(115px, 1fr)
-    [sfl]  minmax(115px, 1fr)
+    [r32l] minmax(110px, 1fr)
+    [r16l] minmax(110px, 1fr)
+    [qfl]  minmax(110px, 1fr)
+    [sfl]  minmax(110px, 1fr)
     [fin]  minmax(140px, 1.2fr)
-    [sfr]  minmax(115px, 1fr)
-    [qfr]  minmax(115px, 1fr)
-    [r16r] minmax(115px, 1fr);
+    [sfr]  minmax(110px, 1fr)
+    [qfr]  minmax(110px, 1fr)
+    [r16r] minmax(110px, 1fr)
+    [r32r] minmax(110px, 1fr);
   gap: 6px;
-  min-width: 880px;
+  min-width: 1100px;
   align-items: stretch;
   position: relative;
 }
@@ -8034,6 +8037,7 @@ body.ltr .bet-cta-arrow {
    parent. The vertical "bracket" piece is drawn on the OUTER edge of
    each match (top half + bottom half) using a 1px right/left border so
    adjacent feeder pairs visually connect. */
+.sp-bv-col-r32l .sp-bv-match::after,
 .sp-bv-col-r16l .sp-bv-match::after,
 .sp-bv-col-qfl  .sp-bv-match::after,
 .sp-bv-col-sfl  .sp-bv-match::after {
@@ -8047,6 +8051,7 @@ body.ltr .bet-cta-arrow {
   pointer-events: none;
   z-index: 1;
 }
+.sp-bv-col-r32r .sp-bv-match::before,
 .sp-bv-col-r16r .sp-bv-match::before,
 .sp-bv-col-qfr  .sp-bv-match::before,
 .sp-bv-col-sfr  .sp-bv-match::before {
@@ -8097,9 +8102,11 @@ body.ltr .bet-cta-arrow {
 /* ===== Side-tab focus: hide opposite half on narrow screens ===== */
 .sp-bracket-tree[data-side="left"] .sp-bv-col-sfr,
 .sp-bracket-tree[data-side="left"] .sp-bv-col-qfr,
-.sp-bracket-tree[data-side="left"] .sp-bv-col-r16r {
+.sp-bracket-tree[data-side="left"] .sp-bv-col-r16r,
+.sp-bracket-tree[data-side="left"] .sp-bv-col-r32r {
   display: none;
 }
+.sp-bracket-tree[data-side="right"] .sp-bv-col-r32l,
 .sp-bracket-tree[data-side="right"] .sp-bv-col-r16l,
 .sp-bracket-tree[data-side="right"] .sp-bv-col-qfl,
 .sp-bracket-tree[data-side="right"] .sp-bv-col-sfl {
@@ -8107,8 +8114,8 @@ body.ltr .bet-cta-arrow {
 }
 .sp-bracket-tree[data-side="left"],
 .sp-bracket-tree[data-side="right"] {
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
-  min-width: 480px;
+  grid-template-columns: repeat(5, minmax(110px, 1fr));
+  min-width: 580px;
 }
 
 /* Mobile: show side-tabs, keep grid scrollable */
@@ -8118,11 +8125,13 @@ body.ltr .bet-cta-arrow {
     padding: 14px 10px 10px;
   }
   .sp-bracket-tree {
-    min-width: 760px;
+    /* v2.5.68: 9 columns means the full view is wider; default to "left"
+       side via the tabs so users start on a manageable subset. */
+    min-width: 980px;
   }
   .sp-bracket-tree[data-side="left"],
   .sp-bracket-tree[data-side="right"] {
-    min-width: 440px;
+    min-width: 520px;
   }
 }
 

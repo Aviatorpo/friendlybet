@@ -6311,18 +6311,22 @@ const DEFAULT_SCORING_RULES = {
   single_phase: {
     // v2.5.63: single_phase asks for the full 1st-4th group ordering, so
     // every correctly-predicted position earns 1 point regardless of
-    // whether the team actually advances. 3rd/4th picks are real
-    // predictions and deserve a reward when they land.
+    // whether the team actually advances.
+    // v2.5.68: knockout starts at R32 (WC 2026 expanded the knockout stage
+    // from 16 teams to 32). Each round doubles the per-match value so the
+    // pool maxes out at roughly the same total per stage.
     //   1pt × 48 correct group positions (12 groups × 4) = up to 48
-    //   2pt × 16 R16 advancers                           = 32
-    //   4pt ×  8 QF advancers                            = 32
-    //   8pt ×  4 SF advancers                            = 32
+    //   1pt × 16 R32 advancers                           = 16
+    //   2pt ×  8 R16 advancers                           = 16
+    //   4pt ×  4 QF advancers                            = 16
+    //   8pt ×  2 SF advancers                            = 16
     //  16pt ×  2 finalists                               = 32
     //  32pt ×  1 champion                                = 32
     group_first: 1,
     group_second: 1,
     group_third: 1,
     group_fourth: 1,
+    round_of_32: 1,
     round_of_16: 2,
     quarter_final: 4,
     semi_final: 8,
@@ -6337,12 +6341,13 @@ const DEFAULT_SCORING_RULES = {
     group_second: 1,
     group_third: 0,
     group_fourth: 0,
+    round_of_32: 1,
     round_of_16: 2,
     quarter_final: 4,
     semi_final: 8,
     final: 16,
     // v2.5.34: bonus on top of the final-correct pick for predicting the
-    // tournament champion (the team that wins position 15).
+    // tournament champion (the team that wins position 31 in v2.5.68).
     tournament_winner: 32,
     top_scorer: 20
   }
@@ -6490,12 +6495,13 @@ function wizardSelectRules(choice) {
 }
 
 function getWizardRuleKeys() {
-  // Two_phase doesn't use 3rd/4th place or tournament_winner
+  // Two_phase doesn't use 3rd/4th place
+  // v2.5.68: round_of_32 added for the WC 2026 expanded knockout stage.
   if (wizardState.mode === 'two_phase') {
-    return ['group_first','group_second','round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
+    return ['group_first','group_second','round_of_32','round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
   }
   return ['group_first','group_second','group_third','group_fourth',
-          'round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
+          'round_of_32','round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
 }
 
 // v2.5.7: read-only render of a pool's scoring_rules into the Pool Settings
@@ -6512,7 +6518,7 @@ function _renderV2ScoringList(pool) {
     },
     {
       titleKey: 'wizard.ruleGroup.knockout',
-      rows: ['round_of_16', 'quarter_final', 'semi_final', 'final']
+      rows: ['round_of_32', 'round_of_16', 'quarter_final', 'semi_final', 'final']
     },
     {
       titleKey: 'wizard.ruleGroup.winner',
@@ -6553,7 +6559,7 @@ function _wizardRuleGroups() {
       },
       {
         titleKey: 'wizard.ruleGroup.knockout',
-        rows: ['round_of_16', 'quarter_final', 'semi_final', 'final']
+        rows: ['round_of_32', 'round_of_16', 'quarter_final', 'semi_final', 'final']
       },
       {
         titleKey: 'wizard.ruleGroup.winner',
@@ -6577,7 +6583,7 @@ function _wizardRuleGroups() {
     },
     {
       titleKey: 'wizard.ruleGroup.knockout',
-      rows: ['round_of_16', 'quarter_final', 'semi_final', 'final'].filter(inSet)
+      rows: ['round_of_32', 'round_of_16', 'quarter_final', 'semi_final', 'final'].filter(inSet)
     },
     {
       titleKey: 'wizard.ruleGroup.winner',
@@ -6886,23 +6892,26 @@ function getFinalScoringRules() {
 }
 
 function calcMaxPoints(rules, mode) {
+  // v2.5.68: WC 2026 knockout = 16 R32 + 8 R16 + 4 QF + 2 SF + 1 Final
+  const r32 = rules.round_of_32 || 0;
   if (mode === 'single_phase') {
-    // 12 groups × (1st+2nd+3rd+4th) + 8 R16 + 4 QF + 2 SF + 1 Final + winner + top scorer
-    return 12 * (rules.group_first + rules.group_second + rules.group_third + rules.group_fourth) +
-           8 * rules.round_of_16 +
-           4 * rules.quarter_final +
-           2 * rules.semi_final +
-           1 * rules.final +
-           rules.tournament_winner +
-           rules.top_scorer;
+    return 12 * ((rules.group_first||0) + (rules.group_second||0) + (rules.group_third||0) + (rules.group_fourth||0)) +
+           16 * r32 +
+           8 * (rules.round_of_16 || 0) +
+           4 * (rules.quarter_final || 0) +
+           2 * (rules.semi_final || 0) +
+           1 * (rules.final || 0) +
+           (rules.tournament_winner || 0) +
+           (rules.top_scorer || 0);
   }
-  // two_phase: 16 advancing per stage (2 per group * 12 groups) but simpler approximation
-  return 12 * (rules.group_first + rules.group_second) +
-         8 * rules.round_of_16 +
-         4 * rules.quarter_final +
-         2 * rules.semi_final +
-         1 * rules.final +
-         rules.top_scorer;
+  // two_phase
+  return 12 * ((rules.group_first||0) + (rules.group_second||0)) +
+         16 * r32 +
+         8 * (rules.round_of_16 || 0) +
+         4 * (rules.quarter_final || 0) +
+         2 * (rules.semi_final || 0) +
+         1 * (rules.final || 0) +
+         (rules.top_scorer || 0);
 }
 
 // v2.5.9: renderWizardSummary removed - step 3 (Review & Create) was deleted.
@@ -7584,61 +7593,130 @@ function spBackToGroups() {
   showScreen('sp-groups-screen');
 }
 
-// ----- Hypothetical bracket -----
-// Real WC bracket pairings (R16, by position):
-//   1: A1 vs B2
-//   2: C1 vs D2
-//   3: E1 vs F2
-//   4: G1 vs H2
-//   5: I1 vs J2
-//   6: K1 vs L2
-//   7: B1 vs A2   (cross)
-//   8: D1 vs C2
-// Wait - need 8 R16 matches but 12 groups. The real WC2026 has 32 advancing
-// (top 2 + best 8 third-placed). For simplicity in MVP, we'll use top 2
-// from each group = 24 teams, then need 32 for R16... Actually the real
-// format is: top 2 from each of 12 groups = 24 teams, plus 8 best
-// third-placed teams. To keep this simple and deterministic, we use a
-// canonical mapping that pairs winners of one group with runners-up of
-// another - producing 16 advancing teams from top 2 only is too few.
-// We follow the official WC2026 R16 bracket: 12 group winners + 12 runners-up
-// + 8 best 3rd places = 32, then knockout starts at Round-of-32 (R32).
-// To match the existing app's structure (R16 = 8 matches) we'll compute
-// R16 from 16 teams: the 12 group winners + the top 4 runners-up.
-// Simpler approach: pair adjacent groups' winners vs runners-up.
-//   R16 #1: A1 vs B2
-//   R16 #2: C1 vs D2
-//   ...continuing the pattern across 12 groups produces 12 matches which
-// is too many for R16. We need to switch to R16-as-8 by reducing.
+// ----- Hypothetical bracket (Official WC 2026 R32 → Final format) -----
 //
-// For this v2 hypothetical bracket, we simulate R16 = 8 matches by taking
-// only the 8 "favorite" group winners + 8 second-best. But to keep it
-// truly user-driven from their predictions, we use the simpler convention:
-//   Slot S (1..8) is determined by groups paired in WC2026 order:
-//     1: A1 vs B2
-//     2: C1 vs D2
-//     3: E1 vs F2
-//     4: G1 vs H2
-//     5: I1 vs J2
-//     6: K1 vs L2
-//     7: B1 vs A2
-//     8: D1 vs C2
-// This yields 8 R16 matches sourced from each of the 12 groups' top 2.
-// (Groups E,F,G,H,I,J,K,L runners-up not yet used; in real WC 2026 the
-// third-place teams fill remaining slots. For an MVP hypothetical bracket
-// this convention is acceptable and intuitive.)
+// The 2026 World Cup expanded the knockout stage to 32 teams: the top 2
+// from each of the 12 groups (24 teams) plus the 8 best third-placed
+// teams (chosen across 12 groups by FIFA's tie-breaker criteria). The
+// bracket published in FIFA's official Competition Regulations defines:
+//
+//   R32 (positions 1-16)   = 16 matches (M73..M88)
+//   R16 (positions 17-24)  = 8  matches (M89..M96)
+//   QF  (positions 25-28)  = 4  matches (M97..M100)
+//   SF  (positions 29-30)  = 2  matches (M101..M102)
+//   Final (position 31)    = 1  match  (M104)
+//
+// SP_R32_DEF: for each R32 position, defines the two "feeds" that fill
+// the slot. A feed is one of:
+//   { type: 'gp',    g: 'A', p: 1 }  group position (p=1 winner, 2 runner-up)
+//   { type: 'third', allowed: [...] }  best 3rd-place team from this group set
+//
+// Slots accepting a 3rd-placed team carry the FIFA-defined "allowed groups"
+// set (each slot is restricted to 5 of the 12 groups). At runtime we
+// auto-assign 8 of the user's 12 predicted 3rd-place teams into these
+// slots using a greedy pass (lowest available group letter first). Four
+// 3rd-place teams will not be assigned - they're the "didn't advance"
+// teams in this prediction.
+const SP_R32_DEF = {
+  1:  [{type:'gp',g:'A',p:2}, {type:'gp',g:'B',p:2}],                          // M73: 2A vs 2B
+  2:  [{type:'gp',g:'E',p:1}, {type:'third',allowed:['A','B','C','D','F']}],   // M74: 1E vs 3(ABCDF)
+  3:  [{type:'gp',g:'F',p:1}, {type:'gp',g:'C',p:2}],                          // M75: 1F vs 2C
+  4:  [{type:'gp',g:'C',p:1}, {type:'gp',g:'F',p:2}],                          // M76: 1C vs 2F
+  5:  [{type:'gp',g:'I',p:1}, {type:'third',allowed:['C','D','F','G','H']}],   // M77: 1I vs 3(CDFGH)
+  6:  [{type:'gp',g:'E',p:2}, {type:'gp',g:'I',p:2}],                          // M78: 2E vs 2I
+  7:  [{type:'gp',g:'A',p:1}, {type:'third',allowed:['C','E','F','H','I']}],   // M79: 1A vs 3(CEFHI)
+  8:  [{type:'gp',g:'L',p:1}, {type:'third',allowed:['E','H','I','J','K']}],   // M80: 1L vs 3(EHIJK)
+  9:  [{type:'gp',g:'D',p:1}, {type:'third',allowed:['B','E','F','I','J']}],   // M81: 1D vs 3(BEFIJ)
+  10: [{type:'gp',g:'G',p:1}, {type:'third',allowed:['A','E','H','I','J']}],   // M82: 1G vs 3(AEHIJ)
+  11: [{type:'gp',g:'K',p:2}, {type:'gp',g:'L',p:2}],                          // M83: 2K vs 2L
+  12: [{type:'gp',g:'H',p:1}, {type:'gp',g:'J',p:2}],                          // M84: 1H vs 2J
+  13: [{type:'gp',g:'B',p:1}, {type:'third',allowed:['E','F','G','I','J']}],   // M85: 1B vs 3(EFGIJ)
+  14: [{type:'gp',g:'J',p:1}, {type:'gp',g:'H',p:2}],                          // M86: 1J vs 2H
+  15: [{type:'gp',g:'K',p:1}, {type:'third',allowed:['D','E','I','J','L']}],   // M87: 1K vs 3(DEIJL)
+  16: [{type:'gp',g:'D',p:2}, {type:'gp',g:'G',p:2}]                           // M88: 2D vs 2G
+};
 
-const SP_R16_PAIRS = [
-  ['A',1,'B',2], ['C',1,'D',2], ['E',1,'F',2], ['G',1,'H',2],
-  ['I',1,'J',2], ['K',1,'L',2], ['B',1,'A',2], ['D',1,'C',2]
-];
+// R16 (positions 17-24): each match feeds from two R32 winners, per the
+// official FIFA bracket (M89=W74 vs W77, etc).
+const SP_R16_DEF = {
+  17: [2, 5],   // M89: W(M74)=pos2  vs W(M77)=pos5
+  18: [1, 3],   // M90: W(M73)=pos1  vs W(M75)=pos3
+  19: [4, 6],   // M91: W(M76)=pos4  vs W(M78)=pos6
+  20: [7, 8],   // M92: W(M79)=pos7  vs W(M80)=pos8
+  21: [11, 12], // M93: W(M83)=pos11 vs W(M84)=pos12
+  22: [9, 10],  // M94: W(M81)=pos9  vs W(M82)=pos10
+  23: [14, 16], // M95: W(M86)=pos14 vs W(M88)=pos16
+  24: [13, 15]  // M96: W(M85)=pos13 vs W(M87)=pos15
+};
 
-function spGetR16Teams() {
-  // Returns 8 pairs of {home, away} team codes (or null if user hasn't picked yet)
-  return SP_R16_PAIRS.map(([g1, p1, g2, p2]) => ({
-    home: spState.groupPositions[g1] ? spState.groupPositions[g1][p1 - 1] : null,
-    away: spState.groupPositions[g2] ? spState.groupPositions[g2][p2 - 1] : null
-  }));
+// QF (25-28), SF (29-30), Final (31)
+const SP_QF_DEF = {
+  25: [17, 18], // M97
+  26: [21, 22], // M98
+  27: [19, 20], // M99
+  28: [23, 24]  // M100
+};
+const SP_SF_DEF = {
+  29: [25, 26], // M101
+  30: [27, 28]  // M102
+};
+const SP_FINAL_DEF = {
+  31: [29, 30]  // M104
+};
+
+// Reverse "child of" map (position → next-round position it feeds into).
+// Used by spClearDownstream when a pick changes.
+const SP_BRACKET_PARENTS = (() => {
+  const m = {};
+  Object.entries(SP_R16_DEF).forEach(([dst, [a,b]]) => { m[a] = +dst; m[b] = +dst; });
+  Object.entries(SP_QF_DEF ).forEach(([dst, [a,b]]) => { m[a] = +dst; m[b] = +dst; });
+  Object.entries(SP_SF_DEF ).forEach(([dst, [a,b]]) => { m[a] = +dst; m[b] = +dst; });
+  Object.entries(SP_FINAL_DEF).forEach(([dst, [a,b]]) => { m[a] = +dst; m[b] = +dst; });
+  return m;
+})();
+
+// Greedy auto-assignment of 8 of 12 predicted 3rd-place teams into the
+// R32 slots that accept a 3rd-placed team. Walks the slots in R32-position
+// order (2, 5, 7, 8, 9, 10, 13, 15). For each slot, takes the lowest-letter
+// group from the slot's allowed set whose 3rd-place team isn't already
+// assigned. Returns { [pos]: groupLetter, _used: Set<groupLetter> }.
+function _spResolveThirdPlaceSlots() {
+  const slotPositions = [2, 5, 7, 8, 9, 10, 13, 15];
+  const used = new Set();
+  const assignment = {};
+  slotPositions.forEach(pos => {
+    const def = SP_R32_DEF[pos];
+    const thirdFeed = def.find(f => f.type === 'third');
+    if (!thirdFeed) return;
+    const allowed = thirdFeed.allowed;
+    let chosen = null;
+    for (const g of allowed) {
+      if (used.has(g)) continue;
+      // The 3rd-place team for this group must be predicted by the user.
+      // If not yet predicted, still claim the slot (returns null team at render time).
+      chosen = g;
+      break;
+    }
+    if (chosen) {
+      assignment[pos] = chosen;
+      used.add(chosen);
+    }
+  });
+  return { assignment, used };
+}
+
+function _spResolveFeed(feed, thirdSlots, slotPos) {
+  if (feed.type === 'gp') {
+    const arr = spState.groupPositions[feed.g];
+    return arr ? arr[feed.p - 1] : null;
+  }
+  if (feed.type === 'third') {
+    const g = thirdSlots.assignment[slotPos];
+    if (!g) return null;
+    const arr = spState.groupPositions[g];
+    return arr ? arr[2] : null; // index 2 = 3rd place
+  }
+  return null;
 }
 
 function spGetMatchWinner(bracketPos) {
@@ -7646,33 +7724,56 @@ function spGetMatchWinner(bracketPos) {
 }
 
 function spGetBracketStructure() {
-  // R16 (1-8), QF (9-12), SF (13-14), Final (15)
-  const r16Teams = spGetR16Teams();
-  const r16Matches = r16Teams.map((m, i) => ({
-    pos: i + 1,
-    round: 'R16',
-    home: m.home,
-    away: m.away
+  const thirdSlots = _spResolveThirdPlaceSlots();
+
+  // R32 (1-16)
+  const r32Matches = [];
+  for (let pos = 1; pos <= 16; pos++) {
+    const [a, b] = SP_R32_DEF[pos];
+    r32Matches.push({
+      pos, round: 'R32',
+      home: _spResolveFeed(a, thirdSlots, pos),
+      away: _spResolveFeed(b, thirdSlots, pos)
+    });
+  }
+
+  // R16 (17-24)
+  const r16Matches = Object.entries(SP_R16_DEF).map(([pos, [a, b]]) => ({
+    pos: +pos, round: 'R16',
+    home: spGetMatchWinner(a),
+    away: spGetMatchWinner(b)
   }));
 
-  const qfMatches = [
-    { pos: 9,  round: 'QF', home: spGetMatchWinner(1), away: spGetMatchWinner(2) },
-    { pos: 10, round: 'QF', home: spGetMatchWinner(3), away: spGetMatchWinner(4) },
-    { pos: 11, round: 'QF', home: spGetMatchWinner(5), away: spGetMatchWinner(6) },
-    { pos: 12, round: 'QF', home: spGetMatchWinner(7), away: spGetMatchWinner(8) }
-  ];
+  // QF (25-28)
+  const qfMatches = Object.entries(SP_QF_DEF).map(([pos, [a, b]]) => ({
+    pos: +pos, round: 'QF',
+    home: spGetMatchWinner(a),
+    away: spGetMatchWinner(b)
+  }));
 
-  const sfMatches = [
-    { pos: 13, round: 'SF', home: spGetMatchWinner(9),  away: spGetMatchWinner(10) },
-    { pos: 14, round: 'SF', home: spGetMatchWinner(11), away: spGetMatchWinner(12) }
-  ];
+  // SF (29-30)
+  const sfMatches = Object.entries(SP_SF_DEF).map(([pos, [a, b]]) => ({
+    pos: +pos, round: 'SF',
+    home: spGetMatchWinner(a),
+    away: spGetMatchWinner(b)
+  }));
 
+  // Final (31)
+  const [fa, fb] = SP_FINAL_DEF[31];
   const finalMatch = {
-    pos: 15, round: 'FINAL',
-    home: spGetMatchWinner(13), away: spGetMatchWinner(14)
+    pos: 31, round: 'FINAL',
+    home: spGetMatchWinner(fa),
+    away: spGetMatchWinner(fb)
   };
 
-  return { r16: r16Matches, qf: qfMatches, sf: sfMatches, final: finalMatch };
+  return {
+    r32: r32Matches,
+    r16: r16Matches,
+    qf: qfMatches,
+    sf: sfMatches,
+    final: finalMatch,
+    thirdSlots // expose so render can show "3rd of X" hints if needed
+  };
 }
 
 function spRenderBracket() {
@@ -7691,8 +7792,10 @@ function spRenderBracket() {
 
   // v2.5.36: pull per-stage points from scoring_rules so each round title
   // shows what a correct pick is worth on this pool.
+  // v2.5.68: R32 round renders first (16 matches) per the official WC 2026 format.
   const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
   container.innerHTML =
+    renderRound('knockout.r32', struct.r32, rules.round_of_32) +
     renderRound('knockout.r16', struct.r16, rules.round_of_16) +
     renderRound('knockout.qf', struct.qf, rules.quarter_final) +
     renderRound('knockout.sf', struct.sf, rules.semi_final) +
@@ -7702,6 +7805,7 @@ function spRenderBracket() {
   const hint = document.getElementById('sp-bracket-points-hint');
   if (hint) {
     const stages = [
+      { label: t('knockout.r32'), pts: rules.round_of_32 },
       { label: t('knockout.r16'), pts: rules.round_of_16 },
       { label: t('knockout.qf'),  pts: rules.quarter_final },
       { label: t('knockout.sf'),  pts: rules.semi_final },
@@ -7714,8 +7818,8 @@ function spRenderBracket() {
       .join('');
   }
 
-  // Update step counter
-  const total = 15;
+  // Update step counter (31 = 16 R32 + 8 R16 + 4 QF + 2 SF + 1 Final)
+  const total = 31;
   const picked = Object.keys(spState.bracketPicks).length;
   document.getElementById('sp-bracket-step').textContent = `${picked}/${total}`;
 }
@@ -7755,10 +7859,10 @@ function spPickBracket(bracketPos, teamCode) {
     spClearDownstream(bracketPos);
   }
 
-  // v2.4.3: the winner of the FINAL match (bracket position 15) IS the
-  // tournament winner - so sync it automatically and persist. This removes
+  // v2.5.68: the winner of the FINAL match (bracket position 31) IS the
+  // tournament winner - sync automatically and persist. This removes
   // the duplicate sp-winner-screen step from the flow.
-  if (parseInt(bracketPos, 10) === 15) {
+  if (parseInt(bracketPos, 10) === 31) {
     spState.tournamentWinner = teamCode;
     spSaveWinnerToDb(false);
   }
@@ -7768,21 +7872,18 @@ function spPickBracket(bracketPos, teamCode) {
 }
 
 function spClearDownstream(bracketPos) {
-  // R16 (1-8) feeds QF: 1,2->9; 3,4->10; 5,6->11; 7,8->12
-  // QF (9-12) feeds SF: 9,10->13; 11,12->14
-  // SF (13,14) feeds Final: 15
-  const parents = {
-    1: 9, 2: 9, 3: 10, 4: 10, 5: 11, 6: 11, 7: 12, 8: 12,
-    9: 13, 10: 13, 11: 14, 12: 14,
-    13: 15, 14: 15
-  };
-  let p = parents[bracketPos];
+  // v2.5.68: parents map is derived from SP_BRACKET_PARENTS (built off the
+  // official R32 → R16 → QF → SF → Final pairings). Walks up the tree from
+  // the changed position, clearing any downstream picks that were derived
+  // from it.
+  const startPos = parseInt(bracketPos, 10);
+  let p = SP_BRACKET_PARENTS[startPos];
   while (p) {
     delete spState.bracketPicks[p];
-    // v2.4.3: bracket position 15 IS the tournament winner. If we just
+    // The Final (pos 31) winner mirrors as tournament champion. If we
     // invalidated that pick, also clear the mirrored tournamentWinner
     // value (and the row in tournament_winner_picks).
-    if (p === 15) {
+    if (p === 31) {
       spState.tournamentWinner = null;
       try {
         if (supabaseClient && state.currentUser) {
@@ -7791,7 +7892,7 @@ function spClearDownstream(bracketPos) {
         }
       } catch (e) { /* ignore */ }
     }
-    p = parents[p];
+    p = SP_BRACKET_PARENTS[p];
   }
 }
 
@@ -7826,12 +7927,15 @@ async function _spSaveBracketToDbInner(showFeedback = true) {
   // `team_code`. v2 single-phase uses the same table with bracket_position
   // (added in the 2026-05-17 migration). We synthesise match_id/round for
   // v2 rows so the legacy NOT NULL constraints (if any) are satisfied.
+  // v2.5.68: position numbering now follows the official WC 2026 bracket:
+  //   1-16 = R32, 17-24 = R16, 25-28 = QF, 29-30 = SF, 31 = Final
   const bracketRoundLabel = (pos) => {
     const p = parseInt(pos, 10);
-    if (p >= 1 && p <= 8) return 'r16';
-    if (p >= 9 && p <= 12) return 'qf';
-    if (p >= 13 && p <= 14) return 'sf';
-    if (p === 15) return 'final';
+    if (p >= 1 && p <= 16) return 'r32';
+    if (p >= 17 && p <= 24) return 'r16';
+    if (p >= 25 && p <= 28) return 'qf';
+    if (p >= 29 && p <= 30) return 'sf';
+    if (p === 31) return 'final';
     return 'unknown';
   };
   const rows = Object.entries(spState.bracketPicks).map(([pos, code]) => ({
@@ -7942,19 +8046,37 @@ function openSpBracketView() {
   const tree = document.getElementById('sp-bracket-tree');
   if (!tree) return;
 
-  // Split positions into the two halves of the bracket
-  // LEFT:  R16 #1-4 → QF #9,10 → SF #13
-  // RIGHT: R16 #5-8 → QF #11,12 → SF #14
-  // FINAL #15 in the middle
-  const r16Left  = struct.r16.filter(m => [1, 2, 3, 4].includes(m.pos));
-  const r16Right = struct.r16.filter(m => [5, 6, 7, 8].includes(m.pos));
-  const qfLeft   = struct.qf.filter(m => [9, 10].includes(m.pos));
-  const qfRight  = struct.qf.filter(m => [11, 12].includes(m.pos));
-  const sfLeft   = struct.sf.filter(m => m.pos === 13);
-  const sfRight  = struct.sf.filter(m => m.pos === 14);
+  // v2.5.68: WC 2026 format - 9-column bilateral bracket (R32 → R16 → QF →
+  // SF → FINAL ← SF ← QF ← R16 ← R32). R16 #17 (W74 vs W77) feeds from
+  // the M89 side, and per the official FIFA bracket the "left half" lands
+  // at M97 (QF), M101 (SF). Splitting by which R32 positions feed into
+  // each SF:
+  //   LEFT  half feeds SF #29 (M101): R32 pos 1-6 + R16 pos 17,18 + QF pos 25
+  //         and R16 pos 21,22 + QF pos 26 + R32 pos 9-12  ALSO feed SF 29.
+  //   RIGHT half feeds SF #30 (M102): R32 pos 4-8 + R16 19,20 + QF 27
+  //         and R16 23,24 + QF 28 + R32 13-16  ALSO feed SF 30.
+  //
+  // Walk parents up to find which R32 positions ultimately reach SF 29 vs SF 30.
+  const leftR16  = [17, 18, 21, 22];           // feeds QF 25, 26 → SF 29
+  const rightR16 = [19, 20, 23, 24];           // feeds QF 27, 28 → SF 30
+  const leftR32 = []; const rightR32 = [];
+  for (let p = 1; p <= 16; p++) {
+    const parent = SP_BRACKET_PARENTS[p];
+    if (leftR16.includes(parent)) leftR32.push(p);
+    else if (rightR16.includes(parent)) rightR32.push(p);
+  }
+
+  const r32Left  = struct.r32.filter(m => leftR32.includes(m.pos));
+  const r32Right = struct.r32.filter(m => rightR32.includes(m.pos));
+  const r16Left  = struct.r16.filter(m => leftR16.includes(m.pos));
+  const r16Right = struct.r16.filter(m => rightR16.includes(m.pos));
+  const qfLeft   = struct.qf.filter(m => [25, 26].includes(m.pos));
+  const qfRight  = struct.qf.filter(m => [27, 28].includes(m.pos));
+  const sfLeft   = struct.sf.filter(m => m.pos === 29);
+  const sfRight  = struct.sf.filter(m => m.pos === 30);
   const finalMatch = struct.final;
 
-  const champion = spState.bracketPicks[15];
+  const champion = spState.bracketPicks[31];
   const championHtml = champion
     ? `<div class="sp-bv-champion">
          <div class="sp-bv-champion-trophy">🏆</div>
@@ -7969,6 +8091,10 @@ function openSpBracketView() {
        </div>`;
 
   tree.innerHTML = `
+    <div class="sp-bv-col sp-bv-col-r32l">
+      <div class="sp-bv-col-title">${t('knockout.r32')}</div>
+      <div class="sp-bv-col-stack">${_spBvPairColumn(r32Left, 'left')}</div>
+    </div>
     <div class="sp-bv-col sp-bv-col-r16l">
       <div class="sp-bv-col-title">${t('knockout.r16')}</div>
       <div class="sp-bv-col-stack">${_spBvPairColumn(r16Left, 'left')}</div>
@@ -7997,6 +8123,10 @@ function openSpBracketView() {
     <div class="sp-bv-col sp-bv-col-r16r">
       <div class="sp-bv-col-title">${t('knockout.r16')}</div>
       <div class="sp-bv-col-stack">${_spBvPairColumn(r16Right, 'right')}</div>
+    </div>
+    <div class="sp-bv-col sp-bv-col-r32r">
+      <div class="sp-bv-col-title">${t('knockout.r32')}</div>
+      <div class="sp-bv-col-stack">${_spBvPairColumn(r32Right, 'right')}</div>
     </div>
   `;
 
@@ -8032,17 +8162,17 @@ window.closeSpBracketView = closeSpBracketView;
 window.setSpBracketViewSide = setSpBracketViewSide;
 
 function spRenderWinnerScreen() {
-  // Options: SF winners if user picked any; else fallback to all R16-picked teams
+  // Options: SF winners if user picked any; else fallback to QF-picked teams
   const struct = spGetBracketStructure();
   let candidates = [];
-  // Prefer the two SF winners (positions 13, 14)
-  [13, 14].forEach(pos => {
+  // v2.5.68: SF positions are now 29, 30 (was 13, 14 in the pre-R32 layout).
+  [29, 30].forEach(pos => {
     const w = spGetMatchWinner(pos);
     if (w) candidates.push(w);
   });
   if (candidates.length < 2) {
-    // Fallback: include QF winners (9-12)
-    [9,10,11,12].forEach(pos => {
+    // Fallback: QF winners (positions 25-28)
+    [25, 26, 27, 28].forEach(pos => {
       const w = spGetMatchWinner(pos);
       if (w && !candidates.includes(w)) candidates.push(w);
     });
@@ -8234,6 +8364,7 @@ async function spRenderSummary() {
     `;
   };
   bracketEl.innerHTML =
+    renderBracketRound(t('knockout.r32'), struct.r32) +
     renderBracketRound(t('knockout.r16'), struct.r16) +
     renderBracketRound(t('knockout.qf'), struct.qf) +
     renderBracketRound(t('knockout.sf'), struct.sf) +
@@ -8375,7 +8506,7 @@ async function spShowLockedView() {
   const struct = spGetBracketStructure();
   html += `<div class="sp-summary-card">
     <div class="sp-summary-section-title">${t('betting.summary.bracket')}</div>`;
-  [['knockout.r16', struct.r16], ['knockout.qf', struct.qf],
+  [['knockout.r32', struct.r32], ['knockout.r16', struct.r16], ['knockout.qf', struct.qf],
    ['knockout.sf', struct.sf], ['knockout.final', [struct.final]]].forEach(([key, matches]) => {
     html += `<div style="font-weight:600;color:#d4a853;font-size:12px;margin:6px 0 3px;">${t(key)}</div>`;
     matches.forEach(m => {
@@ -8477,27 +8608,58 @@ async function showUserHypotheticalBracket(userId, userName) {
     }
 
     if (Object.keys(bracket).length > 0) {
-      // Build matches list with home/away from positions
+      // v2.5.68: build the bracket from the official WC 2026 R32 structure
+      // using this user's predicted group positions + bracket picks. Mirrors
+      // spGetBracketStructure() but parameterised on the loaded `positions`
+      // and `bracket` instead of the live spState.
       const getMatchWinner = (pos) => bracket[pos];
-      const r16 = SP_R16_PAIRS.map(([g1,p1,g2,p2], i) => ({
-        pos: i+1,
-        home: positions[g1] ? positions[g1][p1-1] : null,
-        away: positions[g2] ? positions[g2][p2-1] : null
+      const resolveFeed = (feed, thirdSlots, slotPos) => {
+        if (feed.type === 'gp') {
+          const arr = positions[feed.g];
+          return arr ? arr[feed.p - 1] : null;
+        }
+        if (feed.type === 'third') {
+          const g = thirdSlots.assignment[slotPos];
+          if (!g) return null;
+          const arr = positions[g];
+          return arr ? arr[2] : null;
+        }
+        return null;
+      };
+      // Reuse the same 3rd-place greedy assignment as the live flow
+      const slotPositions = [2, 5, 7, 8, 9, 10, 13, 15];
+      const used = new Set();
+      const assignment = {};
+      slotPositions.forEach(pos => {
+        const def = SP_R32_DEF[pos];
+        const thirdFeed = def.find(f => f.type === 'third');
+        if (!thirdFeed) return;
+        for (const g of thirdFeed.allowed) {
+          if (used.has(g)) continue;
+          assignment[pos] = g; used.add(g); break;
+        }
+      });
+      const thirdSlots = { assignment, used };
+
+      const r32 = [];
+      for (let pos = 1; pos <= 16; pos++) {
+        const [a, b] = SP_R32_DEF[pos];
+        r32.push({ pos, home: resolveFeed(a, thirdSlots, pos), away: resolveFeed(b, thirdSlots, pos) });
+      }
+      const r16 = Object.entries(SP_R16_DEF).map(([pos, [a, b]]) => ({
+        pos: +pos, home: getMatchWinner(a), away: getMatchWinner(b)
       }));
-      const qf = [
-        { pos: 9,  home: getMatchWinner(1), away: getMatchWinner(2) },
-        { pos: 10, home: getMatchWinner(3), away: getMatchWinner(4) },
-        { pos: 11, home: getMatchWinner(5), away: getMatchWinner(6) },
-        { pos: 12, home: getMatchWinner(7), away: getMatchWinner(8) }
-      ];
-      const sf = [
-        { pos: 13, home: getMatchWinner(9),  away: getMatchWinner(10) },
-        { pos: 14, home: getMatchWinner(11), away: getMatchWinner(12) }
-      ];
-      const fin = { pos: 15, home: getMatchWinner(13), away: getMatchWinner(14) };
+      const qf = Object.entries(SP_QF_DEF).map(([pos, [a, b]]) => ({
+        pos: +pos, home: getMatchWinner(a), away: getMatchWinner(b)
+      }));
+      const sf = Object.entries(SP_SF_DEF).map(([pos, [a, b]]) => ({
+        pos: +pos, home: getMatchWinner(a), away: getMatchWinner(b)
+      }));
+      const [fa, fb] = SP_FINAL_DEF[31];
+      const fin = { pos: 31, home: getMatchWinner(fa), away: getMatchWinner(fb) };
 
       html += `<div class="sp-summary-card"><div class="sp-summary-section-title">${t('betting.summary.bracket')}</div>`;
-      [['knockout.r16', r16], ['knockout.qf', qf], ['knockout.sf', sf], ['knockout.final', [fin]]].forEach(([key, matches]) => {
+      [['knockout.r32', r32], ['knockout.r16', r16], ['knockout.qf', qf], ['knockout.sf', sf], ['knockout.final', [fin]]].forEach(([key, matches]) => {
         html += `<div style="font-weight:600;color:#d4a853;font-size:12px;margin:6px 0 3px;">${t(key)}</div>`;
         matches.forEach(m => {
           const w = getMatchWinner(m.pos);
@@ -9140,11 +9302,14 @@ function _koTwoPhaseSequence() {
 }
 
 function _koSinglePhaseSequence() {
+  // v2.5.68: WC 2026 official format - 31 picks total
+  // (16 R32 + 8 R16 + 4 QF + 2 SF + 1 Final).
   const out = [];
-  for (let i = 1; i <= 8;  i++) out.push({ round: 'R16', pos: i });
-  for (let i = 9; i <= 12; i++) out.push({ round: 'QF',  pos: i });
-  for (let i = 13; i <= 14; i++) out.push({ round: 'SF', pos: i });
-  out.push({ round: 'FINAL', pos: 15 });
+  for (let i = 1;  i <= 16; i++) out.push({ round: 'R32',   pos: i });
+  for (let i = 17; i <= 24; i++) out.push({ round: 'R16',   pos: i });
+  for (let i = 25; i <= 28; i++) out.push({ round: 'QF',    pos: i });
+  for (let i = 29; i <= 30; i++) out.push({ round: 'SF',    pos: i });
+  out.push({ round: 'FINAL', pos: 31 });
   return out;
 }
 
@@ -9168,11 +9333,12 @@ function _koSinglePoints(round) {
   // separately on the FINAL match (see koSingleRender).
   const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
   return ({
+    R32: rules.round_of_32 ?? 1,
     R16: rules.round_of_16 ?? 2,
     QF:  rules.quarter_final ?? 4,
     SF:  rules.semi_final ?? 8,
     FINAL: rules.final ?? 16
-  })[round] || 2;
+  })[round] || 1;
 }
 
 function _koSingleCurrentTeams() {
@@ -9191,7 +9357,7 @@ function _koSingleCurrentTeams() {
 
   // single-phase: walk the bracket structure
   const struct = spGetBracketStructure();
-  const all = [...struct.r16, ...struct.qf, ...struct.sf, struct.final];
+  const all = [...struct.r32, ...struct.r16, ...struct.qf, ...struct.sf, struct.final];
   const m = all.find(x => x.pos === step.pos);
   if (!m) return { home: null, away: null, label: '' };
   return {
@@ -9424,8 +9590,8 @@ function koSingleFinish() {
     // v2.4.3: single-phase - the FINAL match (bracket position 15) is
     // the tournament winner, so we go straight to top scorer; no
     // separate "pick the winner" detour.
-    if (!spState.tournamentWinner && spState.bracketPicks && spState.bracketPicks[15]) {
-      spState.tournamentWinner = spState.bracketPicks[15];
+    if (!spState.tournamentWinner && spState.bracketPicks && spState.bracketPicks[31]) {
+      spState.tournamentWinner = spState.bracketPicks[31];
       spSaveWinnerToDb(false);
     }
     state.spInFlow = true;

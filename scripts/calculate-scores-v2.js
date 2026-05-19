@@ -22,14 +22,14 @@ if (!SUPABASE_KEY) {
 const DEFAULT_RULES_SINGLE = {
   // v2.5.63: every correct group POSITION (1st-4th) earns 1 pt - the user
   // is predicting the full ordering, so 3rd/4th picks count too.
-  // Knockout still follows the doubling progression.
+  // v2.5.68: knockout now starts at R32 (16 matches per WC 2026 format).
   group_first: 1, group_second: 1, group_third: 1, group_fourth: 1,
-  round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
+  round_of_32: 1, round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
   tournament_winner: 32, top_scorer: 20
 };
 const DEFAULT_RULES_TWO = {
   group_first: 1, group_second: 1, group_third: 0, group_fourth: 0,
-  round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
+  round_of_32: 1, round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
   tournament_winner: 32, top_scorer: 20
 };
 
@@ -119,6 +119,7 @@ function groupIsComplete(matches) {
 // Map a stage string to a scoring rule key
 function stageRuleKey(stage) {
   switch ((stage || '').toUpperCase()) {
+    case 'ROUND_OF_32': case 'R32': case 'LAST_32': return 'round_of_32';
     case 'LAST_16': case 'ROUND_OF_16': case 'R16': return 'round_of_16';
     case 'QUARTER_FINALS': case 'QF': return 'quarter_final';
     case 'SEMI_FINALS': case 'SF': return 'semi_final';
@@ -127,12 +128,19 @@ function stageRuleKey(stage) {
   }
 }
 
-// Bracket position -> rule key for hypothetical bracket scoring
+// v2.5.68: bracket position -> rule key for hypothetical bracket scoring.
+// New numbering (official WC 2026):
+//   1-16  = R32   (16 matches)
+//   17-24 = R16   (8 matches)
+//   25-28 = QF    (4 matches)
+//   29-30 = SF    (2 matches)
+//   31    = Final
 function bracketPosRuleKey(pos) {
-  if (pos >= 1 && pos <= 8) return 'round_of_16';
-  if (pos >= 9 && pos <= 12) return 'quarter_final';
-  if (pos >= 13 && pos <= 14) return 'semi_final';
-  if (pos === 15) return 'final';
+  if (pos >= 1  && pos <= 16) return 'round_of_32';
+  if (pos >= 17 && pos <= 24) return 'round_of_16';
+  if (pos >= 25 && pos <= 28) return 'quarter_final';
+  if (pos >= 29 && pos <= 30) return 'semi_final';
+  if (pos === 31) return 'final';
   return null;
 }
 
@@ -213,7 +221,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
   // For hypothetical bracket: we check whether the team the user picked as
   // a R16/QF/SF/Final winner actually won SOME match at that level.
   const realKnockoutWinners = {}; // 'R16': Set of winner codes, etc.
-  ['LAST_16','ROUND_OF_16','QUARTER_FINALS','SEMI_FINALS','FINAL'].forEach(s => { realKnockoutWinners[s] = new Set(); });
+  ['ROUND_OF_32','LAST_32','R32','LAST_16','ROUND_OF_16','R16','QUARTER_FINALS','QF','SEMI_FINALS','SF','FINAL'].forEach(s => { realKnockoutWinners[s] = new Set(); });
   finishedMatches.forEach(m => {
     if (!m.stage || m.stage === 'GROUP_STAGE' || m.stage === 'THIRD_PLACE') return;
     const winner = m.home_score > m.away_score ? m.home_team_code
@@ -264,8 +272,13 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
       const ruleKey = bracketPosRuleKey(p.bracket_position);
       if (!ruleKey) return;
       // Did user's picked team win their actual real-world match at this stage?
-      const stageMap = { round_of_16: ['LAST_16','ROUND_OF_16'], quarter_final: ['QUARTER_FINALS'],
-                         semi_final: ['SEMI_FINALS'], final: ['FINAL'] };
+      const stageMap = {
+        round_of_32:  ['ROUND_OF_32','LAST_32','R32'],
+        round_of_16:  ['LAST_16','ROUND_OF_16','R16'],
+        quarter_final:['QUARTER_FINALS','QF'],
+        semi_final:   ['SEMI_FINALS','SF'],
+        final:        ['FINAL']
+      };
       const stages = stageMap[ruleKey] || [];
       const won = stages.some(s => realKnockoutWinners[s] && realKnockoutWinners[s].has(p.team_code));
       if (won) {

@@ -179,7 +179,7 @@ const TRANSLATIONS = {
     
     // === Knockout ===
     'knockout.title': 'הימור על נוקאאוט',
-    'knockout.r32': 'שמינית גמר',
+    'knockout.r32': 'סבב 32',
     'knockout.r16': 'שמינית גמר',
     'knockout.qf': 'רבע גמר',
     'knockout.sf': 'חצי גמר',
@@ -967,6 +967,7 @@ const TRANSLATIONS = {
     'wizard.rule.group_second': 'מקום שני בבית',
     'wizard.rule.group_third': 'מקום שלישי בבית',
     'wizard.rule.group_fourth': 'מקום רביעי בבית',
+    'wizard.rule.round_of_32': 'סבב 32',
     'wizard.rule.round_of_16': 'שמינית גמר',
     'wizard.rule.quarter_final': 'רבע גמר',
     'wizard.rule.semi_final': 'חצי גמר',
@@ -2126,6 +2127,7 @@ const TRANSLATIONS = {
     'wizard.rule.group_second': 'Group 2nd place',
     'wizard.rule.group_third': 'Group 3rd place',
     'wizard.rule.group_fourth': 'Group 4th place',
+    'wizard.rule.round_of_32': 'Round of 32',
     'wizard.rule.round_of_16': 'Round of 16',
     'wizard.rule.quarter_final': 'Quarter Final',
     'wizard.rule.semi_final': 'Semi Final',
