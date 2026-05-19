@@ -25,8 +25,34 @@ const DEFAULT_RULES_SINGLE = {
 const DEFAULT_RULES_TWO = {
   group_first: 5, group_second: 3, group_third: 0, group_fourth: 0,
   round_of_16: 5, quarter_final: 8, semi_final: 12, final: 20,
-  tournament_winner: 0, top_scorer: 10
+  tournament_winner: 30, top_scorer: 10
 };
+
+// v2.5.36: shared multiplier resolver. Looks up (in order): the
+// multiplier_applied snapshot persisted on the pick row → the pool's
+// per-team override → the pool's category multiplier (favorite /
+// contender / underdog, classified by FIFA rank) → global defaults.
+const FIFA_RANK = {
+  ARG:1, ESP:2, FRA:3, ENG:4, BRA:5, POR:6, NED:7, BEL:8, CRO:9, GER:12, MAR:13, URU:15,
+  USA:16, MEX:17, JPN:18, SUI:19, SEN:20, IRN:21, KOR:22, AUT:23, UKR:24, SWE:25, AUS:26,
+  TUR:27, NOR:28, TUN:29, EGY:30, ALG:31, CAN:32, CZE:33, SCO:34, CIV:35, CMR:36, PAR:37,
+  PAN:38, IRQ:40, RSA:42, UZB:43, JOR:44, GHA:47, JAM:50, NZL:55, SAU:57, BIH:59, HAI:60,
+  CPV:65, QAT:66, CUR:85
+};
+const DEFAULT_CAT_MULT = { favorite: 1.0, contender: 1.5, underdog: 2.0 };
+function poolMultResolver(pool, rules) {
+  const enabled = pool.use_multipliers !== false;
+  const cat = rules.multipliers || DEFAULT_CAT_MULT;
+  const overrides = rules.team_multipliers || {};
+  return (teamCode, persisted) => {
+    if (!enabled) return 1.0;
+    if (persisted != null && !isNaN(parseFloat(persisted))) return parseFloat(persisted);
+    if (overrides[teamCode] != null) return parseFloat(overrides[teamCode]) || 1.0;
+    const rank = FIFA_RANK[teamCode] || 999;
+    const tier = rank <= 10 ? 'favorite' : rank <= 30 ? 'contender' : 'underdog';
+    return parseFloat(cat[tier]) || DEFAULT_CAT_MULT[tier];
+  };
+}
 
 // ---- Supabase fetch helper ----
 async function sb(method, table, options = {}) {
@@ -207,6 +233,9 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     let knockoutPoints = 0;
     let bonusPoints = 0;
 
+    // v2.5.36: pool-aware multiplier resolver
+    const resolveMult = poolMultResolver(pool, rules);
+
     // Group position picks
     const gpp = await sb('GET', 'group_position_picks',
       { query: `?user_id=eq.${user.id}&select=*` });
@@ -214,10 +243,12 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
       const real = standings[p.group_letter];
       if (!real) return; // group not done
       if (real[p.position - 1] === p.team_code) {
-        if (p.position === 1) groupPoints += rules.group_first || 0;
-        else if (p.position === 2) groupPoints += rules.group_second || 0;
-        else if (p.position === 3) groupPoints += rules.group_third || 0;
-        else if (p.position === 4) groupPoints += rules.group_fourth || 0;
+        let pts = 0;
+        if (p.position === 1) pts = rules.group_first || 0;
+        else if (p.position === 2) pts = rules.group_second || 0;
+        else if (p.position === 3) pts = rules.group_third || 0;
+        else if (p.position === 4) pts = rules.group_fourth || 0;
+        groupPoints += pts * resolveMult(p.team_code, p.multiplier_applied);
       }
     });
 
@@ -232,14 +263,17 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
                          semi_final: ['SEMI_FINALS'], final: ['FINAL'] };
       const stages = stageMap[ruleKey] || [];
       const won = stages.some(s => realKnockoutWinners[s] && realKnockoutWinners[s].has(p.team_code));
-      if (won) knockoutPoints += rules[ruleKey] || 0;
+      if (won) {
+        const pts = rules[ruleKey] || 0;
+        knockoutPoints += pts * resolveMult(p.team_code, p.multiplier_applied);
+      }
     });
 
-    // Tournament winner
+    // Tournament winner (multiplied by the champion's multiplier too)
     const twp = await sb('GET', 'tournament_winner_picks',
       { query: `?user_id=eq.${user.id}&select=*&limit=1` });
     if (twp && twp[0] && realChampion && twp[0].team_code === realChampion) {
-      bonusPoints += rules.tournament_winner || 0;
+      bonusPoints += (rules.tournament_winner || 0) * resolveMult(twp[0].team_code, twp[0].multiplier_applied);
     }
 
     // Top scorer
@@ -248,6 +282,10 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
       bonusPoints += rules.top_scorer || 0;
     }
 
+    // v2.5.36: round multiplied totals to integers for clean leaderboard display
+    groupPoints = Math.round(groupPoints);
+    knockoutPoints = Math.round(knockoutPoints);
+    bonusPoints = Math.round(bonusPoints);
     const total = groupPoints + knockoutPoints + bonusPoints;
 
     // Persist
@@ -294,24 +332,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
 // so historical picks aren't retroactively re-scored when the admin tweaks
 // values mid-tournament.
 async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer) {
-  const useMult = pool.use_multipliers !== false;
-  const catMult = rules.multipliers || { favorite: 1.0, contender: 1.5, underdog: 2.0 };
-  const teamOverrides = rules.team_multipliers || {};
-  const tierOf = (rank) => rank <= 10 ? 'favorite' : rank <= 30 ? 'contender' : 'underdog';
-  const FIFA = {
-    ARG:1, ESP:2, FRA:3, ENG:4, BRA:5, POR:6, NED:7, BEL:8, CRO:9, GER:12, MAR:13, URU:15,
-    USA:16, MEX:17, JPN:18, SUI:19, SEN:20, IRN:21, KOR:22, AUT:23, UKR:24, SWE:25, AUS:26,
-    TUR:27, NOR:28, TUN:29, EGY:30, ALG:31, CAN:32, CZE:33, SCO:34, CIV:35, CMR:36, PAR:37,
-    PAN:38, IRQ:40, RSA:42, UZB:43, JOR:44, GHA:47, JAM:50, NZL:55, SAU:57, BIH:59, HAI:60,
-    CPV:65, QAT:66, CUR:85
-  };
-  const resolveMult = (teamCode, persisted) => {
-    if (!useMult) return 1.0;
-    if (persisted != null && !isNaN(parseFloat(persisted))) return parseFloat(persisted);
-    if (teamOverrides[teamCode] != null) return parseFloat(teamOverrides[teamCode]) || 1.0;
-    const tier = tierOf(FIFA[teamCode] || 999);
-    return parseFloat(catMult[tier]) || 1.0;
-  };
+  const resolveMult = poolMultResolver(pool, rules);
 
   for (const user of users) {
     let groupPoints = 0;

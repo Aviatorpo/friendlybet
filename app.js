@@ -1590,23 +1590,76 @@ async function adminGenerateNewCode() {
   }
 }
 
+// v2.5.36: opens the admin-share-code modal instead of a plain alert.
+// Modal lets the admin push the code to the user via WhatsApp/Telegram
+// with a prefilled message, or copy a direct /?recovery=… link.
 function showNewRecoveryCode(userName, code) {
-  // Show in a nice prompt with copy option
-  const message = t('adminMembersEx.newCodeMsg', { name: userName, code });
+  adminShareCodeState.code = code;
+  adminShareCodeState.userName = userName;
+  adminShareCodeState.poolName = (state.currentPool && state.currentPool.name) || '';
+  adminShareCodeState.link = `${window.location.origin}/?recovery=${encodeURIComponent(code)}`;
 
-  // Try to copy to clipboard
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(code).then(() => {
-      alert(message);
-    }).catch(() => {
-      alert(message);
-    });
-  } else {
-    alert(message);
-  }
+  const subtitleEl = document.getElementById('admin-share-code-subtitle');
+  if (subtitleEl) subtitleEl.textContent = t('adminShareCode.subtitle', { name: userName });
+  const codeEl = document.getElementById('admin-share-code-value');
+  if (codeEl) codeEl.textContent = code;
+  const linkEl = document.getElementById('admin-share-code-link');
+  if (linkEl) linkEl.textContent = adminShareCodeState.link;
 
-  showToast(t('adminMembersEx.newCodeCopied'), 'success');
+  document.getElementById('admin-share-code-overlay').classList.add('active');
+  document.getElementById('admin-share-code-modal').classList.add('active');
 }
+
+const adminShareCodeState = { code: '', userName: '', poolName: '', link: '' };
+
+function closeAdminShareCodeModal() {
+  document.getElementById('admin-share-code-overlay').classList.remove('active');
+  document.getElementById('admin-share-code-modal').classList.remove('active');
+}
+window.closeAdminShareCodeModal = closeAdminShareCodeModal;
+
+function _adminShareCodeMessage() {
+  return t('adminShareCode.message', {
+    name: adminShareCodeState.userName,
+    pool: adminShareCodeState.poolName,
+    code: adminShareCodeState.code,
+    link: adminShareCodeState.link
+  });
+}
+
+function adminShareCodeWhatsApp() {
+  const text = encodeURIComponent(_adminShareCodeMessage());
+  window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+window.adminShareCodeWhatsApp = adminShareCodeWhatsApp;
+
+function adminShareCodeTelegram() {
+  const url = encodeURIComponent(adminShareCodeState.link);
+  const text = encodeURIComponent(_adminShareCodeMessage());
+  window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+}
+window.adminShareCodeTelegram = adminShareCodeTelegram;
+
+function adminCopyCodeLink() {
+  const link = adminShareCodeState.link;
+  if (!link) return;
+  const ok = (text) => {
+    showToast(t('adminShareCode.linkCopied'), 'success');
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(link).then(() => ok(link)).catch(() => ok(link));
+  } else {
+    // Fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = link;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    ok(link);
+  }
+}
+window.adminCopyCodeLink = adminCopyCodeLink;
 
 function adminConfirmRemove() {
   const member = adminState.selectedMember;
@@ -3541,6 +3594,28 @@ function _fbCtaSvgCheck() {
 }
 
 // Update dashboard CTA card to reflect betting progress (v2.3 mode-aware)
+// v2.5.36: paint the slim status card above the CTA with state-aware text.
+// state: 'notStarted' | 'partial' | 'allSet'
+function _fbSetDashboardProgressCard(state) {
+  const card = document.getElementById('dashboard-pre-tournament');
+  if (!card) return;
+  const titleEl = card.querySelector('.pre-tournament-title');
+  const subtitleEl = card.querySelector('.pre-tournament-subtitle');
+  if (!titleEl || !subtitleEl) return;
+  titleEl.textContent = t(`dashboard.progress.${state}.title`);
+  subtitleEl.textContent = t(`dashboard.progress.${state}.subtitle`);
+  card.classList.remove('progress-notStarted', 'progress-partial', 'progress-allSet');
+  card.classList.add('progress-' + state);
+  // Swap icon by state
+  const iconEl = card.querySelector('i.ti');
+  if (iconEl) {
+    iconEl.className = 'ti ' + (
+      state === 'allSet' ? 'ti-circle-check' :
+      state === 'partial' ? 'ti-progress' : 'ti-soccer-field'
+    );
+  }
+}
+
 async function updateBettingStatusOnDashboard() {
   if (!state.currentUser || !supabaseClient) return;
 
@@ -3574,6 +3649,7 @@ async function updateBettingStatusOnDashboard() {
       if (row) row.style.display = 'none';
       const iconWrap = document.getElementById('bet-cta-icon-simple');
       if (iconWrap) iconWrap.innerHTML = _fbCtaSvgCheck();
+      _fbSetDashboardProgressCard('allSet');
       return;
     }
     // Otherwise count v2 group_position_picks to show progress
@@ -3587,37 +3663,49 @@ async function updateBettingStatusOnDashboard() {
       titleEl.textContent = t('dashboard.startCta.title');
       subtitleEl.textContent = t('dashboard.startCta.subtitle');
       ctaEl.classList.remove('done');
+      _fbSetDashboardProgressCard('notStarted');
     } else if (groupsFilled < 12) {
       titleEl.textContent = t('dashboard.continueCta.title');
       subtitleEl.textContent = t('dashboard.continueCta.partialGroups', { n: groupsFilled, total: 12 });
       ctaEl.classList.remove('done');
+      _fbSetDashboardProgressCard('partial');
     } else {
       titleEl.textContent = t('dashboard.continueCta.title');
       subtitleEl.textContent = t('dashboard.continueCta.almostDone');
       ctaEl.classList.remove('done');
+      _fbSetDashboardProgressCard('partial');
     }
     _fbSetCtaProgress(groupsFilled, 12);
     return;
   }
 
-  // Two-phase (legacy) - use group_picks
+  // Two-phase (legacy) - use group_picks AND knockout_picks for full state
   const { data: picks } = await supabaseClient
     .from('group_picks').select('id', { count: 'exact' })
     .eq('user_id', state.currentUser.id);
   const picksCount = picks ? picks.length : 0;
+  const { data: koPicks } = await supabaseClient
+    .from('knockout_picks').select('id', { count: 'exact' })
+    .eq('user_id', state.currentUser.id);
+  const koCount = koPicks ? koPicks.length : 0;
+  // v2.5.36: "all set" in two_phase requires groups (32) + knockout (16)
+  const twoPhaseAllSet = picksCount >= 32 && koCount >= 16;
 
   if (picksCount === 0) {
     titleEl.textContent = t('dashboard.startCta.title');
     subtitleEl.textContent = t('dashboard.startCta.subtitle');
     ctaEl.classList.remove('done');
+    _fbSetDashboardProgressCard('notStarted');
   } else if (picksCount < 32) {
     titleEl.textContent = t('dashboard.continueCta.title');
     subtitleEl.textContent = t('dashboard.status.partialGroups', { n: picksCount });
     ctaEl.classList.remove('done');
+    _fbSetDashboardProgressCard('partial');
   } else {
     titleEl.textContent = t('dashboard.editCta.title');
     subtitleEl.textContent = t('dashboard.status.completedGroups');
     ctaEl.classList.add('done');
+    _fbSetDashboardProgressCard(twoPhaseAllSet ? 'allSet' : 'partial');
   }
   _fbSetCtaProgress(picksCount, 32);
 }
@@ -5473,12 +5561,25 @@ async function initApp() {
   const urlParams = new URLSearchParams(window.location.search);
   const codeFromUrl = urlParams.get('code') || urlParams.get('join');
   const poolNameFromUrl = urlParams.get('pool');
-  
+  // v2.5.36: admin-shared recovery link (?recovery=XXXX-XXXX-XXXX-XXXX) -
+  // prefill the login input and jump straight to the recovery screen so the
+  // user only has to confirm. If they're already signed in, this falls
+  // through to the regular auto-dashboard route below.
+  const recoveryFromUrl = urlParams.get('recovery');
+
   // Check if user is logged in
   const localUser = loadLocalUser();
-  
+
   // Small delay for loading screen aesthetics
   setTimeout(async () => {
+    if (recoveryFromUrl && !(localUser && localUser.pool_id)) {
+      showScreen('recovery-login-screen');
+      const input = document.getElementById('recovery-login-input');
+      if (input) {
+        input.value = _formatRecoveryCodeForHash(recoveryFromUrl);
+      }
+      return;
+    }
     if (codeFromUrl) {
       // Store invite info in case user already logged in elsewhere
       if (poolNameFromUrl) {
@@ -6106,8 +6207,12 @@ function _renderV2ScoringList(pool) {
       rows: ['round_of_16', 'quarter_final', 'semi_final', 'final']
     },
     {
+      titleKey: 'wizard.ruleGroup.winner',
+      rows: ['tournament_winner']
+    },
+    {
       titleKey: 'wizard.ruleGroup.bonus',
-      rows: ['tournament_winner', 'top_scorer']
+      rows: ['top_scorer']
     }
   ];
   list.innerHTML = groups.map(group => `
@@ -6143,10 +6248,15 @@ function _wizardRuleGroups() {
         rows: ['round_of_16', 'quarter_final', 'semi_final', 'final']
       },
       {
+        titleKey: 'wizard.ruleGroup.winner',
+        // v2.5.36: tournament_winner is a prediction in its own right, not a
+        // bonus on top of something else. Promoted to its own section so the
+        // user sees it as a first-class scoring row.
+        rows: ['tournament_winner']
+      },
+      {
         titleKey: 'wizard.ruleGroup.bonus',
-        // v2.5.34: tournament_winner row is now exposed in two_phase too,
-        // as a bonus on top of the final-correct pick.
-        rows: ['tournament_winner', 'top_scorer']
+        rows: ['top_scorer']
       }
     ];
   }
@@ -6162,8 +6272,12 @@ function _wizardRuleGroups() {
       rows: ['round_of_16', 'quarter_final', 'semi_final', 'final'].filter(inSet)
     },
     {
+      titleKey: 'wizard.ruleGroup.winner',
+      rows: ['tournament_winner'].filter(inSet)
+    },
+    {
       titleKey: 'wizard.ruleGroup.bonus',
-      rows: ['tournament_winner', 'top_scorer'].filter(inSet)
+      rows: ['top_scorer'].filter(inSet)
     }
   ].filter(g => g.rows.length > 0);
 }
@@ -7102,18 +7216,40 @@ function spRenderBracket() {
   const container = document.getElementById('sp-bracket-container');
   const struct = spGetBracketStructure();
 
-  const renderRound = (titleKey, matches) => `
+  const renderRound = (titleKey, matches, ptsForStage) => `
     <div class="sp-bracket-round">
-      <div class="sp-bracket-round-title">${t(titleKey)}</div>
+      <div class="sp-bracket-round-title">
+        <span>${t(titleKey)}</span>
+        ${ptsForStage != null ? `<span class="sp-bracket-round-pts">+${ptsForStage}</span>` : ''}
+      </div>
       ${matches.map(m => spRenderBracketMatch(m)).join('')}
     </div>
   `;
 
+  // v2.5.36: pull per-stage points from scoring_rules so each round title
+  // shows what a correct pick is worth on this pool.
+  const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
   container.innerHTML =
-    renderRound('knockout.r16', struct.r16) +
-    renderRound('knockout.qf', struct.qf) +
-    renderRound('knockout.sf', struct.sf) +
-    renderRound('knockout.final', [struct.final]);
+    renderRound('knockout.r16', struct.r16, rules.round_of_16) +
+    renderRound('knockout.qf', struct.qf, rules.quarter_final) +
+    renderRound('knockout.sf', struct.sf, rules.semi_final) +
+    renderRound('knockout.final', [struct.final], rules.final);
+
+  // v2.5.36: render the points-hint row above the bracket
+  const hint = document.getElementById('sp-bracket-points-hint');
+  if (hint) {
+    const stages = [
+      { label: t('knockout.r16'), pts: rules.round_of_16 },
+      { label: t('knockout.qf'),  pts: rules.quarter_final },
+      { label: t('knockout.sf'),  pts: rules.semi_final },
+      { label: t('knockout.final'), pts: rules.final },
+      { label: t('betting.tournamentWinner.title'), pts: rules.tournament_winner, winner: true }
+    ];
+    hint.innerHTML = stages
+      .filter(s => s.pts != null && s.pts > 0)
+      .map(s => `<span class="pts-pill${s.winner ? ' pts-pill-winner' : ''}">${s.label}: ${s.pts}</span>`)
+      .join('');
+  }
 
   // Update step counter
   const total = 15;
