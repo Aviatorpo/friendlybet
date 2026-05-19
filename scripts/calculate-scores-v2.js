@@ -20,10 +20,10 @@ if (!SUPABASE_KEY) {
 // v2.5.55: doubling-progression defaults (1 / 2 / 4 / 8 / 16 / 32) so each
 // stage maxes at ~32 pts across the pool.
 const DEFAULT_RULES_SINGLE = {
-  // v2.5.61: only advancing teams (top 2 of each group = the qualifiers)
-  // score; 3rd/4th = 0. Matches the doubling progression where each stage
-  // tops out at ~32 pts across the pool.
-  group_first: 1, group_second: 1, group_third: 0, group_fourth: 0,
+  // v2.5.63: every correct group POSITION (1st-4th) earns 1 pt - the user
+  // is predicting the full ordering, so 3rd/4th picks count too.
+  // Knockout still follows the doubling progression.
+  group_first: 1, group_second: 1, group_third: 1, group_fourth: 1,
   round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
   tournament_winner: 32, top_scorer: 20
 };

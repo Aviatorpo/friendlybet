@@ -2313,7 +2313,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.62</span>
+      <span class="menu-version">v2.5.63</span>
     </div>
   </div>
 
@@ -2342,7 +2342,11 @@ function loadTablerFallback() {
 
   <div class="container">
     <div class="sp-section-instructions">
-      <p data-i18n="betting.groupPositions.instructions">הקבוצות מסודרות לפי דירוג FIFA. גרור כדי לשנות את הסדר שלהן.</p>
+      <p data-i18n="betting.groupPositions.instructions">הקבוצות מסודרות לפי דירוג FIFA. גרור כדי לשנות את הסדר.</p>
+      <!-- v2.5.63: clarifies that points are awarded per correctly-predicted
+           position regardless of advance. Sits above the pills so the rule
+           is established before the per-position values. -->
+      <p class="sp-scoring-note" data-i18n="betting.groupPositions.scoringNote">נקודה על כל מיקום שניחשת נכון בסיום שלב הבתים, בלי קשר לקבוצות שעלו.</p>
       <!-- v2.4.6: dynamic points-per-position hint, populated by JS from
            state.currentPool.scoring_rules so the user knows what each
            position is worth on THIS pool. -->

@@ -6444,6 +6444,15 @@ body:not(.ltr) .home-lang-toggle {
   font-size: 13px;
   color: rgba(255,255,255,0.8);
 }
+/* v2.5.63: secondary explainer paragraph clarifying the scoring rule
+   ("1pt per correctly-predicted position"). Slightly dimmer than the
+   primary instruction so the eye still leads with the drag-to-reorder. */
+.sp-section-instructions .sp-scoring-note {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.6);
+}
 
 .sp-group-header {
   display: flex;

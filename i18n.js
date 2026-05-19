@@ -995,7 +995,11 @@ const TRANSLATIONS = {
     // === v2.0.0 - Single-phase betting ===
     'betting.singlePhase.title': 'הימור חד-פעמי',
     'betting.groupPositions.title': 'מיקום בבתים',
-    'betting.groupPositions.instructions': 'הקבוצות מסודרות לפי דירוג FIFA. גרור כדי לשנות את הסדר שלהן.',
+    'betting.groupPositions.instructions': 'הקבוצות מסודרות לפי דירוג FIFA. גרור כדי לשנות את הסדר.',
+    // v2.5.63: explains that the points are awarded for correctly
+    // predicting each POSITION at the end of the group stage, not just
+    // for picking advancing teams.
+    'betting.groupPositions.scoringNote': 'נקודה על כל מיקום שניחשת נכון בסיום שלב הבתים, בלי קשר לקבוצות שעלו.',
     'betting.groupStep': 'בית {n} מתוך {total}',
     'betting.position.1': 'מקום ראשון',
     'betting.position.2': 'מקום שני',
@@ -2145,6 +2149,10 @@ const TRANSLATIONS = {
     'betting.singlePhase.title': 'Single Phase Betting',
     'betting.groupPositions.title': 'Group Positions',
     'betting.groupPositions.instructions': 'Teams are pre-sorted by FIFA ranking. Drag to reorder them.',
+    // v2.5.63: explains that the points are awarded for correctly
+    // predicting each POSITION at the end of the group stage, not just
+    // for picking advancing teams.
+    'betting.groupPositions.scoringNote': '1 point for each position you correctly predict at the end of the group stage — regardless of which teams advance.',
     'betting.groupStep': 'Group {n} of {total}',
     'betting.position.1': 'First place',
     'betting.position.2': 'Second place',
