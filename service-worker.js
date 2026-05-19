@@ -5,7 +5,7 @@
 // Strategy: Cache-first for assets, Network-first for API
 // ============================================================
 
-const CACHE_VERSION = 'friendlybet-v2.5.51';
+const CACHE_VERSION = 'friendlybet-v2.5.52';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -87,41 +87,55 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
-  
+
   // Skip non-GET requests
   if (request.method !== 'GET') return;
-  
+
   // Skip Supabase API calls (always fetch fresh)
   if (url.hostname.includes('supabase.co')) {
     return;
   }
-  
+
   // Skip football-data.org API
   if (url.hostname.includes('football-data.org')) {
     return;
   }
-  
-  // Strategy 1: Cache-first for static assets
+
+  // v2.5.52: our own JS / config / i18n use network-first so a bug-fix
+  // deploy reaches the user on the *next* page load instead of two loads
+  // later (the previous cache-first kept serving stale code with the
+  // updated cache only effective on the load after that). Fallback to
+  // cache when offline.
+  if (request.destination === 'script' ||
+      url.pathname.endsWith('/app.js') ||
+      url.pathname.endsWith('/config.js') ||
+      url.pathname.endsWith('/i18n.js') ||
+      url.pathname.endsWith('/service-worker.js')) {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  // Strategy 1: Cache-first for other static assets (CSS, icons, manifest)
   if (STATIC_ASSETS.some(asset => url.pathname === asset || url.pathname === asset.replace(/^\//, ''))) {
     event.respondWith(cacheFirst(request));
     return;
   }
-  
+
   // Strategy 2: Cache-first for fonts and icons
-  if (url.hostname.includes('fonts.googleapis.com') || 
+  if (url.hostname.includes('fonts.googleapis.com') ||
       url.hostname.includes('fonts.gstatic.com') ||
       url.hostname.includes('cdn.jsdelivr.net') ||
       url.hostname.includes('esm.sh')) {
     event.respondWith(cacheFirst(request));
     return;
   }
-  
+
   // Strategy 3: Network-first for HTML
   if (request.destination === 'document' || request.mode === 'navigate') {
     event.respondWith(networkFirst(request));
     return;
   }
-  
+
   // Default: try cache, fallback to network
   event.respondWith(cacheFirst(request));
 });

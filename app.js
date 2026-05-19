@@ -5685,13 +5685,18 @@ function showError(elementId, message) {
 // Initialization
 // ============================================================
 
-// v2.5.50: belt-and-braces safety net. If no screen is active 8 seconds
-// after the page loads (i.e. init either hung or threw silently), force
-// the home-screen on so the user never stares at a blank background.
-// Also catches any uncaught error during boot and recovers the same way.
+// v2.5.50: belt-and-braces safety net. If init hangs (loading-screen is
+// still active well past the splash) or any uncaught error happens during
+// boot, force the home-screen on so the user is never trapped on a blank
+// or stuck screen.
+// v2.5.52: also fires when loading-screen is the *only* active screen.
+// The previous check returned early on ANY active screen, which meant a
+// hung init left the splash up forever (and on the next showScreen call
+// nothing else activated, leaving a blank dark-blue background).
 function _fbForceHomeIfBlank(reason) {
   const anyActive = document.querySelector('.screen.active');
-  if (anyActive) return;
+  // Only consider real screens; the loading splash counts as "still stuck".
+  if (anyActive && anyActive.id !== 'loading-screen') return;
   console.warn('Forcing home-screen — ' + (reason || 'no active screen'));
   // Clear stale local session: if the user was supposed to auto-login but
   // we got stuck on the way, they probably have bad localStorage state.
@@ -5701,7 +5706,10 @@ function _fbForceHomeIfBlank(reason) {
   const home = document.getElementById('home-screen');
   if (home) home.classList.add('active');
 }
-setTimeout(() => _fbForceHomeIfBlank('init timeout'), 8000);
+// 6s instead of 8: previous timeout was longer than typical Supabase init,
+// so a quick recovery is fine. Still gives the loading splash a reasonable
+// dwell time on a slow first paint.
+setTimeout(() => _fbForceHomeIfBlank('init timeout'), 6000);
 window.addEventListener('error', (e) => {
   console.error('[GLOBAL ERROR]', e && e.error || e);
   _fbForceHomeIfBlank('global error: ' + (e && e.message));
@@ -5710,10 +5718,42 @@ window.addEventListener('unhandledrejection', (e) => {
   console.error('[UNHANDLED REJECTION]', e && e.reason);
   _fbForceHomeIfBlank('unhandled rejection');
 });
+// v2.5.52: if the user taps the loading splash after 3 seconds of being
+// stuck on it, treat that as an explicit "get me out" request. Belt-and-
+// suspenders behavior — useful on devices where the timeout above is for
+// some reason inhibited (background tab throttling, etc.).
+document.addEventListener('DOMContentLoaded', () => {
+  const splash = document.getElementById('loading-screen');
+  if (!splash) return;
+  let stuckSince = Date.now();
+  splash.addEventListener('click', () => {
+    if (Date.now() - stuckSince > 3000) _fbForceHomeIfBlank('user tap on splash');
+  });
+});
 
 async function initApp() {
   console.log('FriendlyBet v' + CONFIG.APP_VERSION + ' starting...');
   console.log('Language:', typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'unknown');
+
+  // v2.5.52: emergency escape hatch — visiting /?reset=1 wipes all local
+  // storage, unregisters the service worker, and reloads. Lets a user
+  // recover from a stuck-on-blank-screen state by typing the URL.
+  if (new URLSearchParams(window.location.search).get('reset') === '1') {
+    console.warn('[reset=1] wiping local state and SW caches');
+    try { localStorage.clear(); } catch (_) {}
+    try { sessionStorage.clear(); } catch (_) {}
+    try {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r => r.unregister()));
+    } catch (_) {}
+    try {
+      const names = await caches.keys();
+      await Promise.all(names.map(n => caches.delete(n)));
+    } catch (_) {}
+    // Strip the reset param so reload lands clean
+    window.location.replace(window.location.origin + '/');
+    return;
+  }
   
   // Listen for language changes - re-render current screen
   window.addEventListener('languageChanged', () => {
