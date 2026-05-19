@@ -1139,7 +1139,7 @@ const TRANSLATIONS = {
 
     // === Onboarding ===
     'welcome.title': 'FriendlyBet',
-    'welcome.subtitle': 'World Cup Predictions with Friends',
+    'welcome.subtitle': 'World Cup Predictions with Your Friends',
     'welcome.tagline': '100% FREE · NO ADS · NO LIMITS · NO PAYWALLS',
     'welcome.create': 'Create New Pool',
     'welcome.join': 'Join Pool',
