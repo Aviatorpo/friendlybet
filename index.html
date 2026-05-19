@@ -387,7 +387,7 @@ function loadTablerFallback() {
 
         <div class="form-group">
           <label class="form-label" data-i18n="join.nickname">הכינוי שלך</label>
-          <input type="text" id="admin-nickname-input" class="form-input" placeholder="לדוגמה: אסף" data-i18n-placeholder="adminNickname.placeholder" maxlength="30" autocomplete="off">
+          <input type="text" id="admin-nickname-input" class="form-input" placeholder="לדוגמה: אסף" data-i18n-placeholder="adminNickname.placeholder" maxlength="30" autocomplete="off" enterkeyhint="go" onkeydown="if(event.key==='Enter'){event.preventDefault();startPoolWizard();}">
         </div>
 
         <div class="admin-permissions-card">
@@ -438,7 +438,7 @@ function loadTablerFallback() {
             <div class="wizard-option-badge wizard-badge-recommended" data-i18n="wizard.recommended">מומלץ ⭐</div>
             <div class="wizard-option-icon">🎯</div>
             <div class="wizard-option-title" data-i18n="wizard.step1.singlePhase.title">הימור חד-פעמי</div>
-            <div class="wizard-option-desc" data-i18n="wizard.step1.singlePhase.description">השחקנים מהמרים פעם אחת לפני תחילת המונדיאל. הם מנחשים הכל: מיקום בבתים, הברקאט המלא, מנצחת הטורניר, ומלך השערים. קל יותר - לא צריך לחזור!</div>
+            <div class="wizard-option-desc" data-i18n="wizard.step1.singlePhase.description">השחקנים מהמרים פעם אחת לפני תחילת המונדיאל. הם מנחשים הכל: מיקום בבתים, הברקאט המלא, מנצחת הטורניר, ומלך השערים.</div>
             <div class="wizard-option-check"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
           </div>
 
@@ -446,7 +446,7 @@ function loadTablerFallback() {
             <div class="wizard-option-badge wizard-badge-advanced" data-i18n="wizard.advanced">מתקדם</div>
             <div class="wizard-option-icon">⚡</div>
             <div class="wizard-option-title" data-i18n="wizard.step1.twoPhase.title">הימור דו-שלבי</div>
-            <div class="wizard-option-desc" data-i18n="wizard.step1.twoPhase.description">השחקנים מהמרים פעמיים: פעם לפני הבתים (רק מנצחי בתים), ופעם נוספת אחרי הבתים על הנוקאאוט ומלך השערים. יותר ריאלי, אבל דורש חזרה.</div>
+            <div class="wizard-option-desc" data-i18n="wizard.step1.twoPhase.description">השחקנים מהמרים פעמיים: פעם לפני הבתים (רק על הקבוצות שיעלו מהבית), ופעם נוספת אחרי הבתים על הנוקאאוט ומלך השערים. יותר ריאלי, אבל דורש כניסה להמר בשני זמנים שונים.</div>
             <div class="wizard-option-check"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
           </div>
         </div>
@@ -2300,7 +2300,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.40</span>
+      <span class="menu-version">v2.5.41</span>
     </div>
   </div>
 
