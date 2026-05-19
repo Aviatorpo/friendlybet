@@ -1097,7 +1097,7 @@ const TRANSLATIONS = {
 
     // === v2.4 additions (Hebrew) ===
     'recovery.button.screenshot': 'שמור כתמונה',
-    'recovery.button.email': 'שלח לי במייל',
+    'recovery.button.email': 'שלח לעצמי באימייל',
     'recovery.button.download': 'הורד קובץ טקסט',
     'recovery.button.emailMe': 'שלח את הקוד לאימייל שלי',
     'recovery.toast.screenshotDone': '✓ סומן כצולם',
