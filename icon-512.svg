@@ -6,8 +6,8 @@
     </linearGradient>
     <radialGradient id="ballGrad512" cx="35%" cy="30%" r="80%">
       <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="75%" stop-color="#f4f4f4"/>
-      <stop offset="100%" stop-color="#c8c8c8"/>
+      <stop offset="75%" stop-color="#f1f1f1"/>
+      <stop offset="100%" stop-color="#c2c2c2"/>
     </radialGradient>
   </defs>
 
@@ -19,22 +19,16 @@
   <g transform="translate(256, 256)">
     <circle r="165" fill="url(#ballGrad512)" stroke="#0a1628" stroke-width="8"/>
 
-    <polygon points="0,-61 58.4,-18.9 36,49.6 -36,49.6 -58.4,-18.9" fill="#0a1628"/>
-
-    <g stroke="#0a1628" stroke-width="13" stroke-linecap="round" fill="none">
-      <line x1="0"     y1="-61"  x2="0"     y2="-141"/>
-      <line x1="58.4"  y1="-18.9" x2="134.4" y2="-43.7"/>
-      <line x1="36"    y1="49.6"  x2="82.9"  y2="114.1"/>
-      <line x1="-36"   y1="49.6"  x2="-82.9" y2="114.1"/>
-      <line x1="-58.4" y1="-18.9" x2="-134.4" y2="-43.7"/>
-    </g>
-
+    <!-- Five rim pentagons (r_o=37, D=117) -->
     <g fill="#0a1628">
-      <circle cx="0"      cy="-141"  r="16"/>
-      <circle cx="134.4"  cy="-43.7" r="16"/>
-      <circle cx="82.9"   cy="114.1" r="16"/>
-      <circle cx="-82.9"  cy="114.1" r="16"/>
-      <circle cx="-134.4" cy="-43.7" r="16"/>
+      <polygon id="rimPent512" points="0,-80 35.19,-105.57 21.76,-146.93 -21.76,-146.93 -35.19,-105.57"/>
+      <use href="#rimPent512" transform="rotate(72)"/>
+      <use href="#rimPent512" transform="rotate(144)"/>
+      <use href="#rimPent512" transform="rotate(216)"/>
+      <use href="#rimPent512" transform="rotate(288)"/>
     </g>
+
+    <!-- Central pentagon (r_c=50) -->
+    <polygon points="0,-50 47.55,-15.45 29.39,40.45 -29.39,40.45 -47.55,-15.45" fill="#0a1628"/>
   </g>
 </svg>
