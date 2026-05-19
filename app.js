@@ -6247,6 +6247,24 @@ function getPoolTeamMultiplier(pool, teamCode) {
 }
 window.getPoolTeamMultiplier = getPoolTeamMultiplier;
 
+// v2.5.48: returns true when the pool uses the out-of-the-box multipliers
+// (no per-team overrides AND category values match DEFAULT_MULTIPLIERS).
+// Used by UIs that show "⭐ Favorite ×1" full labels only when the values
+// haven't been customised - if the admin tweaked anything, those labels
+// would be misleading, so we collapse to bare "×N".
+function poolUsesDefaultMultipliers(pool) {
+  if (!pool || pool.use_multipliers === false) return false;
+  const rules = pool.scoring_rules || {};
+  const teamMap = rules.team_multipliers || {};
+  if (Object.keys(teamMap).length > 0) return false;
+  const cat = rules.multipliers;
+  if (!cat) return true; // nothing stored → defaults are in effect
+  return ['favorite', 'contender', 'underdog'].every(k =>
+    Math.abs(parseFloat(cat[k]) - DEFAULT_MULTIPLIERS[k]) < 0.01
+  );
+}
+window.poolUsesDefaultMultipliers = poolUsesDefaultMultipliers;
+
 // ============================================================
 // PHASE 1: POOL SETUP WIZARD
 // ============================================================
@@ -8960,11 +8978,17 @@ function koSingleRender() {
   // committing to any pick. The button is declared visible in HTML.
 
   const points = _koSinglePoints(step.round);
-  // v2.5.44: pool-aware multiplier (per-team override → category → default)
-  // shown as a small ×N badge under each team name so users see exactly
-  // what the admin configured for this team.
+  // v2.5.44: pool-aware multiplier (per-team override → category → default).
+  // v2.5.48: when the pool uses default multipliers AND has no per-team
+  // overrides, show the tier emoji + name + ×N. Once the admin customizes
+  // anything, those labels would lie about which tier a number belongs to,
+  // so we collapse to just ×N.
   const useMult = state.currentPool && state.currentPool.use_multipliers !== false;
+  const showTierLabels = useMult && poolUsesDefaultMultipliers(state.currentPool);
   const formatMult = (m) => '×' + ((m % 1 === 0) ? m.toFixed(0) : m.toFixed(1));
+  const tierMeta = (t) => t === 'favorite'  ? { emoji: '⭐', nameKey: 'poolSettings.multFav', cls: 'fav'  }
+                       : t === 'contender' ? { emoji: '⚔️', nameKey: 'poolSettings.multCont', cls: 'cont' }
+                       :                      { emoji: '🐶', nameKey: 'poolSettings.multUnd', cls: 'und'  };
   const card = document.getElementById('ko-single-card');
   const teamHtml = (code, side) => {
     if (!code) {
@@ -8976,8 +9000,21 @@ function koSingleRender() {
         </button>`;
     }
     const selected = pick === code ? ' selected' : '';
-    const mult = useMult ? getPoolTeamMultiplier(state.currentPool, code) : 1;
-    const multBadge = useMult ? `<span class="ko-single-mult">${formatMult(mult)}</span>` : '';
+    let multBadge = '';
+    if (useMult) {
+      const mult = getPoolTeamMultiplier(state.currentPool, code);
+      if (showTierLabels) {
+        const tier = getTeamDefaultTier(code);
+        const meta = tierMeta(tier);
+        multBadge = `<span class="ko-single-mult ko-single-mult-${meta.cls}">
+            <span class="ko-single-mult-emoji">${meta.emoji}</span>
+            <span class="ko-single-mult-name">${t(meta.nameKey)}</span>
+            <span class="ko-single-mult-x">${formatMult(mult)}</span>
+          </span>`;
+      } else {
+        multBadge = `<span class="ko-single-mult">${formatMult(mult)}</span>`;
+      }
+    }
     return `
       <button class="ko-single-team${selected}" data-team="${code}">
         <span class="ko-single-flag">${getCountryFlag(code)}</span>

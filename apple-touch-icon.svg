@@ -4,11 +4,6 @@
       <stop offset="0%" stop-color="#1a2942"/>
       <stop offset="100%" stop-color="#0a1628"/>
     </linearGradient>
-    <radialGradient id="ballA" cx="35%" cy="30%" r="80%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="75%" stop-color="#f1f1f1"/>
-      <stop offset="100%" stop-color="#c2c2c2"/>
-    </radialGradient>
   </defs>
 
   <rect width="180" height="180" fill="url(#bgA)" rx="34"/>
@@ -16,19 +11,9 @@
   <circle cx="90" cy="90" r="71" fill="#d4a853" opacity="0.10"/>
   <circle cx="90" cy="90" r="68" fill="none" stroke="#d4a853" stroke-width="2" opacity="0.55"/>
 
-  <g transform="translate(90, 90)">
-    <circle r="58" fill="url(#ballA)" stroke="#0a1628" stroke-width="3"/>
-
-    <!-- Five rim pentagons (r_o=13, D=41) -->
-    <g fill="#0a1628">
-      <polygon id="rimPentA" points="0,-28 12.36,-36.83 7.64,-51.52 -7.64,-51.52 -12.36,-36.83"/>
-      <use href="#rimPentA" transform="rotate(72)"/>
-      <use href="#rimPentA" transform="rotate(144)"/>
-      <use href="#rimPentA" transform="rotate(216)"/>
-      <use href="#rimPentA" transform="rotate(288)"/>
-    </g>
-
-    <!-- Central pentagon (r_c=18) -->
-    <polygon points="0,-18 17.12,-5.56 10.58,14.56 -10.58,14.56 -17.12,-5.56" fill="#0a1628"/>
-  </g>
+  <text x="90" y="90"
+        font-size="116"
+        text-anchor="middle"
+        dominant-baseline="central"
+        font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Twemoji Mozilla',sans-serif">⚽</text>
 </svg>
