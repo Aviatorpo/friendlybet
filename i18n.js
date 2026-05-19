@@ -598,7 +598,7 @@ const TRANSLATIONS = {
     'groups.tierContender': '⚔️ מתמודדת ×1.5',
     'groups.tierUnderdog': '🐶 אנדרדוג ×2',
     'groups.pointsForPosition': 'מקום {pos}: {pts} נק׳',
-    'groups.pointsPerAdvancingTeam': 'כל קבוצה שעולה: {pts} נק׳',
+    'groups.pointsPerAdvancingTeam': 'כל קבוצה שעולה: {pts} נק׳ × מכפיל הסיכון שלה',
     'groups.tooltipAdvanced': 'הקבוצה עלתה!',
     'groups.tooltipEliminated': 'הקבוצה הודחה',
     'groups.maxReachedToast': 'כבר בחרת 3 קבוצות. הסר אחת לפני שתוסיף עוד',
@@ -1698,7 +1698,7 @@ const TRANSLATIONS = {
     'groups.tierContender': '⚔️ Contender ×1.5',
     'groups.tierUnderdog': '🐶 Underdog ×2',
     'groups.pointsForPosition': 'Place {pos}: {pts} pts',
-    'groups.pointsPerAdvancingTeam': 'Each advancing team: {pts} pts',
+    'groups.pointsPerAdvancingTeam': 'Each advancing team: {pts} pts × its risk multiplier',
     'groups.tooltipAdvanced': 'Team advanced!',
     'groups.tooltipEliminated': 'Team eliminated',
     'groups.maxReachedToast': 'Already picked 3 teams. Remove one before adding another',
@@ -2161,7 +2161,7 @@ const TRANSLATIONS = {
 
     // === v2.4 additions (English) ===
     'recovery.button.screenshot': 'Save as image',
-    'recovery.button.email': 'Email myself',
+    'recovery.button.email': 'Email yourself',
     'recovery.button.download': 'Download Text File',
     'recovery.button.emailMe': 'Send the code to my email',
     'recovery.toast.screenshotDone': '✓ Marked as captured',

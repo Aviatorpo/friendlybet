@@ -3360,10 +3360,13 @@ async function savePicksToDb(showFeedback = true) {
     bettingState.groupOrder.forEach(letter => {
       const teams = bettingState.picks[letter] || [];
       teams.forEach(teamCode => {
-        // Find team data for multiplier
-        const team = bettingState.groupedTeams[letter]?.find(t => t.code === teamCode);
-        const multiplier = (team && state.currentPool.use_multipliers) ? team.multiplier : 1.0;
-        
+        // v2.5.35: persist the pool-resolved multiplier (per-team override →
+        // category → default). Server-side scoring reads this value directly,
+        // so a snapshot at save time is the authoritative number per pick.
+        const multiplier = (state.currentPool.use_multipliers !== false)
+          ? getPoolTeamMultiplier(state.currentPool, teamCode)
+          : 1.0;
+
         newPicks.push({
           user_id: state.currentUser.id,
           pool_id: state.currentPool.id,
@@ -3449,25 +3452,18 @@ async function finishGroupBetting() {
   // to show is itself the success confirmation.
   await savePicksToDb(false);
   
-  // v2.5.28: compute multiplier from team.tier (no .multiplier field on
-  // the teams table - it's derived from the tier). Without this the max
-  // points display ignored the risk multipliers entirely.
-  const tierMult = (tier) => {
-    if (tier === 'underdog') return 2.0;
-    if (tier === 'contender') return 1.5;
-    return 1.0;
-  };
-
-  // Calculate max possible points
+  // v2.5.35: use pool-aware multiplier resolver (scoring_rules.team_multipliers
+  // override → scoring_rules.multipliers[tier] → global default). Falls back
+  // to legacy tier-only lookup when the pool has no custom multipliers config.
   let maxPoints = 0;
   const scoringGroupStage = state.currentPool.scoring_group_stage || 1;
+  const useMult = state.currentPool.use_multipliers !== false;
 
   bettingState.groupOrder.forEach(letter => {
     const picks = bettingState.picks[letter] || [];
     picks.forEach(teamCode => {
-      const team = bettingState.groupedTeams[letter]?.find(t => t.code === teamCode);
-      if (team && state.currentPool.use_multipliers) {
-        maxPoints += scoringGroupStage * tierMult(team.tier);
+      if (useMult) {
+        maxPoints += scoringGroupStage * getPoolTeamMultiplier(state.currentPool, teamCode);
       } else {
         maxPoints += scoringGroupStage;
       }
@@ -4102,8 +4098,10 @@ async function saveKnockoutPicksToDb(showFeedback = true) {
     Object.keys(knockoutState.picks).forEach(matchId => {
       const round = matchId.split('_')[0];
       const winnerCode = knockoutState.picks[matchId];
-      const team = knockoutState.allTeams[winnerCode];
-      const multiplier = team && state.currentPool.use_multipliers ? team.multiplier : 1.0;
+      // v2.5.35: pool-aware multiplier (per-team override → category → default)
+      const multiplier = (state.currentPool.use_multipliers !== false)
+        ? getPoolTeamMultiplier(state.currentPool, winnerCode)
+        : 1.0;
       
       newPicks.push({
         user_id: state.currentUser.id,
@@ -4212,7 +4210,9 @@ function analyzeKnockoutStrategy() {
       if (winner) {
         picked++;
         const team = knockoutState.allTeams[winner];
-        const multiplier = team && state.currentPool?.use_multipliers ? parseFloat(team.multiplier) : 1.0;
+        const multiplier = (state.currentPool && state.currentPool.use_multipliers !== false)
+          ? getPoolTeamMultiplier(state.currentPool, winner)
+          : 1.0;
         const tierProbability = getTeamWinProbability(team);
         
         // Expected = points * multiplier * probability
@@ -6169,9 +6169,10 @@ function _wizardRuleGroups() {
 }
 
 function renderWizardRulesStep() {
-  // v2.5.4: multipliers disabled entirely in single_phase mode
+  // v2.5.35: multipliers now apply to single_phase too. Admins can configure
+  // the three category values and per-team overrides in both modes.
   const multInfo = document.getElementById('wizard-multipliers-info');
-  if (multInfo) multInfo.style.display = (wizardState.mode === 'two_phase') ? '' : 'none';
+  if (multInfo) multInfo.style.display = '';
 
   // v2.5.7: pill toggle - active state mirrors rulesChoice
   document.querySelectorAll('#wizard-step-2 .wizard-rules-toggle-btn').forEach(b => {
@@ -6189,8 +6190,8 @@ function renderWizardRulesStep() {
     wizardState.customRules.team_multipliers = {};
   }
 
-  // v2.5.34: only two_phase exposes multipliers; render them whenever visible
-  if (wizardState.mode === 'two_phase') renderWizardMultipliers();
+  // v2.5.35: multipliers apply to single_phase too now
+  renderWizardMultipliers();
 
   // Build the unified grouped list
   const list = document.getElementById('wizard-rules-list');
@@ -6414,10 +6415,8 @@ function getFinalScoringRules() {
   Object.keys(full).forEach(k => full[k] = 0);
   const d = DEFAULT_SCORING_RULES[wizardState.mode];
   Object.keys(d).forEach(k => full[k] = d[k]);
-  // v2.5.34: also include defaults so consumers can read .multipliers blindly
-  if (wizardState.mode === 'two_phase') {
-    full.multipliers = { ...DEFAULT_MULTIPLIERS };
-  }
+  // v2.5.35: always include default multipliers so consumers can read .multipliers blindly
+  full.multipliers = { ...DEFAULT_MULTIPLIERS };
   return full;
 }
 
@@ -8138,13 +8137,10 @@ function rcEmail() {
   const body = t('recovery.email.body', { code, poolName });
   const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   const fullText = `${subject}\n\n${body}`;
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
 
-  // v2.4.6: ALWAYS copy the full email content to the clipboard FIRST so
-  // the user has a working path no matter what their browser does with
-  // the mailto:. The previous v2.4.4 approach (about:blank + assign
-  // location) was opening blank tabs on desktop when no mailto handler
-  // was registered. With the clipboard always populated, even a stranded
-  // empty tab is fine - the user can paste into any email they prefer.
+  // v2.5.35: always copy the full content to clipboard as a backup so even
+  // if the OS has no mailto handler the user has the message ready to paste.
   let clipboardOk = false;
   try {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -8155,26 +8151,27 @@ function rcEmail() {
     }
   } catch (e) { /* fall through */ }
 
-  // Then try to open the mailto in a new tab. We pass the mailto URL
-  // directly to window.open (not about:blank-then-assign) - this is the
-  // form browsers most reliably hand off to the OS mailto handler. If
-  // the browser/OS has a handler, the tab opens the mail composer; if
-  // not, the tab is blank but the clipboard already has the content.
-  let popup = null;
-  try {
-    popup = window.open(mailtoUrl, '_blank');
-  } catch (e) { popup = null; }
-
-  // Toast wording depends on outcome
-  if (popup && clipboardOk) {
-    showToast(t('recovery.toast.emailOpenedWithBackup'), 'success');
-  } else if (clipboardOk) {
-    showToast(t('recovery.toast.emailCopied'), 'info');
-  } else if (popup) {
-    showToast(t('recovery.toast.emailOpened'), 'success');
+  // v2.5.35: device-aware open path.
+  //   Mobile - navigate the current page to the mailto: URL. The phone's OS
+  //   intercepts and opens the native mail app; nothing visible changes in
+  //   the browser (no blank tab to clean up).
+  //   Desktop - synthesize an <a target="_blank"> click. If a mailto handler
+  //   is registered (or the user has Gmail set as default), a new tab opens
+  //   the compose window with subject + body prefilled. If not, the new tab
+  //   is blank, but the clipboard already has the full message.
+  if (isMobile) {
+    window.location.href = mailtoUrl;
   } else {
-    showToast(t('recovery.toast.popupBlocked'), 'error');
+    const a = document.createElement('a');
+    a.href = mailtoUrl;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
+
+  showToast(t(clipboardOk ? 'recovery.toast.emailOpenedWithBackup' : 'recovery.toast.emailOpened'), 'success');
 
   rcState.saved = true;
   const btn = document.getElementById('rc-btn-email');
@@ -8429,27 +8426,11 @@ function _fbScreenshotInstructionsHtml(device) {
   return '<ol>' + list.map(li => `<li>${li}</li>`).join('') + '</ol>';
 }
 
-// v2.5.6: rcScreenshot now auto-generates a PNG of the recovery code via
-// html2canvas, shows a preview in the modal, then lets the user save it
-// (Web Share API on mobile, plain download otherwise). Falls back to the
-// legacy device-instruction modal if html2canvas fails to load (offline,
-// CSP block, etc.) so the feature is never fully broken.
+// v2.5.35: rcScreenshot now bypasses the preview modal entirely. The
+// previous flow (modal → preview → "Save" button) was friction the user
+// didn't want. Now: click → generate PNG → download → toast. Done.
 async function rcScreenshot() {
-  const modal = document.getElementById('rc-screenshot-modal');
-  if (!modal) return;
-  modal.style.display = 'flex';
-
-  const preview = document.getElementById('rc-screenshot-preview');
-  const saveBtn = document.getElementById('rc-screenshot-save');
-  const instructionsBlock = document.getElementById('rc-screenshot-instructions-block');
-  if (instructionsBlock) instructionsBlock.style.display = 'none';
-  if (saveBtn) saveBtn.disabled = true;
-  if (preview) {
-    preview.style.display = '';
-    preview.innerHTML = `<div class="rc-screenshot-loading">${t('recovery.screenshot.generating')}</div>`;
-  }
-  rcState._screenshotBlob = null;
-
+  const btn = document.getElementById('rc-btn-screenshot');
   try {
     await _ensureHtml2Canvas();
     const card = _rcBuildCardElement();
@@ -8465,77 +8446,35 @@ async function rcScreenshot() {
     } finally {
       if (card.parentNode) card.parentNode.removeChild(card);
     }
-    const dataUrl = canvas.toDataURL('image/png');
-    if (preview) {
-      preview.innerHTML = '';
-      const img = document.createElement('img');
-      img.src = dataUrl;
-      img.className = 'rc-screenshot-img';
-      img.alt = 'Recovery code';
-      preview.appendChild(img);
+
+    await new Promise((resolve) => {
+      canvas.toBlob(blob => {
+        if (!blob) { resolve(); return; }
+        const filename = `friendlybet-recovery-${(rcState.code || 'code').replace(/-/g, '')}.png`;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+        resolve();
+      }, 'image/png');
+    });
+
+    // Saved → skip the "Did you save?" gate when the user hits Continue.
+    rcState.saved = true;
+    rcState.savedScreenshot = true;
+    if (btn) {
+      btn.classList.add('rc-success');
+      setTimeout(() => btn.classList.remove('rc-success'), 2000);
     }
-    canvas.toBlob(blob => {
-      rcState._screenshotBlob = blob;
-      if (saveBtn) saveBtn.disabled = false;
-    }, 'image/png');
+    showToast(t('recovery.toast.screenshotDone'), 'success');
   } catch (err) {
-    console.error('rcScreenshot html2canvas failed - falling back to instructions:', err);
-    _rcFallbackToInstructions();
+    console.error('rcScreenshot failed:', err);
+    showToast(t('errors.generic'), 'error');
   }
-}
-
-function _rcFallbackToInstructions() {
-  const preview = document.getElementById('rc-screenshot-preview');
-  if (preview) preview.style.display = 'none';
-  const saveBtn = document.getElementById('rc-screenshot-save');
-  if (saveBtn) saveBtn.style.display = 'none';
-  const block = document.getElementById('rc-screenshot-instructions-block');
-  if (block) block.style.display = '';
-  const device = _fbDetectDevice();
-  const el = document.getElementById('rc-screenshot-instructions');
-  if (el) el.innerHTML = _fbScreenshotInstructionsHtml(device);
-  const codeEl = document.getElementById('rc-modal-code-text');
-  if (codeEl) codeEl.textContent = rcFormatCode(rcState.code);
-  const confirmBtn = document.getElementById('rc-screenshot-confirm-fallback');
-  if (confirmBtn) confirmBtn.style.display = '';
-}
-
-// v2.5.7: simplified to download-only (no Web Share). User explicitly asked
-// for a single "save to device" path, no share sheet. One click on the Save
-// button triggers a direct PNG download in every browser.
-function rcSaveScreenshot() {
-  const blob = rcState._screenshotBlob;
-  if (!blob) return;
-  const filename = `friendlybet-recovery-${(rcState.code || 'code').replace(/-/g, '')}.png`;
-
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 1500);
-  // v2.5.13: stronger "definitely saved" signal so rcContinue can skip the
-  // "Did you save?" modal - a successful PNG download is unambiguous.
-  rcState.savedScreenshot = true;
-  rcConfirmScreenshot();
-}
-
-function rcCloseScreenshotModal() {
-  const modal = document.getElementById('rc-screenshot-modal');
-  if (modal) modal.style.display = 'none';
-}
-
-function rcConfirmScreenshot() {
-  rcState.saved = true;
-  const btn = document.getElementById('rc-btn-screenshot');
-  if (btn) {
-    btn.classList.add('rc-success');
-    setTimeout(() => btn.classList.remove('rc-success'), 2000);
-  }
-  rcCloseScreenshotModal();
-  showToast(t('recovery.toast.screenshotDone'), 'success');
 }
 
 // Expose
@@ -8544,9 +8483,6 @@ window.rcCopy = rcCopy;
 window.rcEmail = rcEmail;
 window.rcDownload = rcDownload;
 window.rcScreenshot = rcScreenshot;
-window.rcCloseScreenshotModal = rcCloseScreenshotModal;
-window.rcConfirmScreenshot = rcConfirmScreenshot;
-window.rcSaveScreenshot = rcSaveScreenshot;
 window.rcContinue = rcContinue;
 window.rcCloseModal = rcCloseModal;
 window.rcContinueAnyway = rcContinueAnyway;

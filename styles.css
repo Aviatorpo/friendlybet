@@ -2023,7 +2023,8 @@ input:disabled + .slider {
 /* Group instructions */
 .group-instructions {
   text-align: center;
-  margin-bottom: 20px;
+  /* v2.5.35: tighter so the betting screen fits above the fold on mobile */
+  margin-bottom: 12px;
 }
 
 .group-title-row {
@@ -2054,7 +2055,8 @@ input:disabled + .slider {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 16px;
+  /* v2.5.35: tighter for above-the-fold mobile layout */
+  margin-bottom: 10px;
 }
 
 .team-card {
@@ -2170,8 +2172,9 @@ input:disabled + .slider {
 .group-picks-info {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 8px;
-  padding: 10px 12px;
-  margin-bottom: 16px;
+  /* v2.5.35: slimmer to keep two-phase betting page above the fold */
+  padding: 7px 12px;
+  margin-bottom: 10px;
   font-size: 12px;
   display: flex;
   align-items: center;
@@ -2195,7 +2198,8 @@ input:disabled + .slider {
 .group-nav-buttons {
   display: flex;
   gap: 10px;
-  margin-bottom: 24px;
+  /* v2.5.35: slimmer to keep this row above the fold */
+  margin-bottom: 14px;
 }
 
 /* v2.5.27: prev/next group chevrons were drawn for Hebrew RTL (prev →,

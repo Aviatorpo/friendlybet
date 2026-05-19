@@ -288,9 +288,31 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
 }
 
 // ---- TWO PHASE scoring (legacy-style) ----
+// v2.5.35: applies risk multipliers from scoring_rules (per-team override →
+// category by FIFA-rank-derived tier → global default). Persisted
+// multiplier_applied on each pick row takes priority (snapshot at pick time)
+// so historical picks aren't retroactively re-scored when the admin tweaks
+// values mid-tournament.
 async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer) {
-  // For two-phase, the existing group_picks/knockout_picks logic applies.
-  // We score per-match outcomes using the new pool.scoring_rules.
+  const useMult = pool.use_multipliers !== false;
+  const catMult = rules.multipliers || { favorite: 1.0, contender: 1.5, underdog: 2.0 };
+  const teamOverrides = rules.team_multipliers || {};
+  const tierOf = (rank) => rank <= 10 ? 'favorite' : rank <= 30 ? 'contender' : 'underdog';
+  const FIFA = {
+    ARG:1, ESP:2, FRA:3, ENG:4, BRA:5, POR:6, NED:7, BEL:8, CRO:9, GER:12, MAR:13, URU:15,
+    USA:16, MEX:17, JPN:18, SUI:19, SEN:20, IRN:21, KOR:22, AUT:23, UKR:24, SWE:25, AUS:26,
+    TUR:27, NOR:28, TUN:29, EGY:30, ALG:31, CAN:32, CZE:33, SCO:34, CIV:35, CMR:36, PAR:37,
+    PAN:38, IRQ:40, RSA:42, UZB:43, JOR:44, GHA:47, JAM:50, NZL:55, SAU:57, BIH:59, HAI:60,
+    CPV:65, QAT:66, CUR:85
+  };
+  const resolveMult = (teamCode, persisted) => {
+    if (!useMult) return 1.0;
+    if (persisted != null && !isNaN(parseFloat(persisted))) return parseFloat(persisted);
+    if (teamOverrides[teamCode] != null) return parseFloat(teamOverrides[teamCode]) || 1.0;
+    const tier = tierOf(FIFA[teamCode] || 999);
+    return parseFloat(catMult[tier]) || 1.0;
+  };
+
   for (const user of users) {
     let groupPoints = 0;
     let knockoutPoints = 0;
@@ -299,37 +321,55 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     // Group picks
     const gp = await sb('GET', 'group_picks',
       { query: `?user_id=eq.${user.id}&select=*` });
-    // For each finished group match, +group_first if user picked the actual winner (heuristic)
     finishedMatches.forEach(m => {
       if (m.stage !== 'GROUP_STAGE') return;
       const winner = m.home_score > m.away_score ? m.home_team_code
                    : m.away_score > m.home_score ? m.away_team_code
                    : null;
       if (!winner) return;
-      const userPicked = (gp || []).some(p => p.team_code === winner);
-      if (userPicked) groupPoints += rules.group_first || 0;
+      const pick = (gp || []).find(p => p.team_code === winner);
+      if (!pick) return;
+      const mult = resolveMult(winner, pick.multiplier_applied);
+      groupPoints += (rules.group_first || 0) * mult;
     });
 
     // Knockout picks - per-match
     const kp = await sb('GET', 'knockout_picks',
       { query: `?user_id=eq.${user.id}&select=*` });
+    let finalWinnerPredicted = false;
+    let finalWinnerMult = 1.0;
     finishedMatches.forEach(m => {
       if (!m.stage || m.stage === 'GROUP_STAGE' || m.stage === 'THIRD_PLACE') return;
       const winner = m.home_score > m.away_score ? m.home_team_code
                    : m.away_score > m.home_score ? m.away_team_code
                    : null;
       if (!winner) return;
-      const userPicked = (kp || []).some(p => p.team_code === winner);
-      if (!userPicked) return;
+      const pick = (kp || []).find(p => p.predicted_winner === winner || p.team_code === winner);
+      if (!pick) return;
       const key = stageRuleKey(m.stage);
-      if (key) knockoutPoints += rules[key] || 0;
+      if (!key) return;
+      const mult = resolveMult(winner, pick.multiplier_applied);
+      knockoutPoints += (rules[key] || 0) * mult;
+      if (m.stage === 'FINAL') {
+        finalWinnerPredicted = true;
+        finalWinnerMult = mult;
+      }
     });
+
+    // Tournament-winner bonus on top of FINAL (applies the same multiplier)
+    if (finalWinnerPredicted && rules.tournament_winner) {
+      bonusPoints += rules.tournament_winner * finalWinnerMult;
+    }
 
     // Top scorer
     const tsp = tsMap.get(user.id);
     if (tsp && realTopScorer && tsp.player_id === realTopScorer) {
       bonusPoints += rules.top_scorer || 0;
     }
+
+    groupPoints = Math.round(groupPoints);
+    knockoutPoints = Math.round(knockoutPoints);
+    bonusPoints = Math.round(bonusPoints);
 
     const total = groupPoints + knockoutPoints + bonusPoints;
     try {
