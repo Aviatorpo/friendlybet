@@ -2392,8 +2392,9 @@ async function selectTopScorer(player) {
     updateCurrentPickDisplay();
     renderTopScorerList();
 
-    const displayName = player.name_he || player.name_en || t('tsUnlocked.fallbackThePlayer');
-    showToast(t('tsUnlocked.pickedToast', { name: displayName }), 'success');
+    // v2.5.44: removed the "✓ You picked X" toast - the "current pick"
+    // panel at the top already reflects the new selection, so the toast
+    // was just visual noise that obscured the underlying screen state.
 
     // Clear search
     const searchInput = document.getElementById('ts-search-input');
@@ -8149,7 +8150,7 @@ async function showUserHypotheticalBracket(userId, userName) {
     const topScorer = tsp.data ? tsp.data : null;
 
     document.getElementById('hypo-bracket-title').textContent =
-      t('leaderboard.viewBracket') + ' ' + (userName || '');
+      t('leaderboard.bracketOfTitle', { name: userName || '' });
 
     // Render content
     let html = '';
@@ -8855,11 +8856,17 @@ function _koSinglePoints(round) {
   }
   // single-phase scoring rules
   const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
+  // v2.5.44: the FINAL match in single_phase rewards BOTH the final-correct
+  // pick and the tournament_winner bonus (the winner of the final IS the
+  // tournament champion). Show the combined total so the displayed number
+  // matches what a correct pick actually earns.
+  if (round === 'FINAL') {
+    return (rules.final ?? 20) + (rules.tournament_winner ?? 0);
+  }
   return ({
     R16: rules.round_of_16 ?? 5,
     QF:  rules.quarter_final ?? 8,
-    SF:  rules.semi_final ?? 12,
-    FINAL: rules.final ?? 20
+    SF:  rules.semi_final ?? 12
   })[round] || 5;
 }
 
@@ -8929,6 +8936,11 @@ function koSingleRender() {
   // committing to any pick. The button is declared visible in HTML.
 
   const points = _koSinglePoints(step.round);
+  // v2.5.44: pool-aware multiplier (per-team override → category → default)
+  // shown as a small ×N badge under each team name so users see exactly
+  // what the admin configured for this team.
+  const useMult = state.currentPool && state.currentPool.use_multipliers !== false;
+  const formatMult = (m) => '×' + ((m % 1 === 0) ? m.toFixed(0) : m.toFixed(1));
   const card = document.getElementById('ko-single-card');
   const teamHtml = (code, side) => {
     if (!code) {
@@ -8940,10 +8952,13 @@ function koSingleRender() {
         </button>`;
     }
     const selected = pick === code ? ' selected' : '';
+    const mult = useMult ? getPoolTeamMultiplier(state.currentPool, code) : 1;
+    const multBadge = useMult ? `<span class="ko-single-mult">${formatMult(mult)}</span>` : '';
     return `
       <button class="ko-single-team${selected}" data-team="${code}">
         <span class="ko-single-flag">${getCountryFlag(code)}</span>
         <span class="ko-single-name">${getTeamName(code)}</span>
+        ${multBadge}
         <span class="ko-single-check"><i class="ti ti-check"></i></span>
       </button>`;
   };

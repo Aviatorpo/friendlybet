@@ -438,7 +438,7 @@ function loadTablerFallback() {
             <div class="wizard-option-badge wizard-badge-recommended" data-i18n="wizard.recommended">מומלץ ⭐</div>
             <div class="wizard-option-icon">🎯</div>
             <div class="wizard-option-title" data-i18n="wizard.step1.singlePhase.title">הימור חד-פעמי</div>
-            <div class="wizard-option-desc" data-i18n="wizard.step1.singlePhase.description">השחקנים מהמרים פעם אחת לפני תחילת המונדיאל. הם מנחשים הכל: מיקום בבתים, הברקאט המלא, מנצחת הטורניר, ומלך השערים.</div>
+            <div class="wizard-option-desc" data-i18n="wizard.step1.singlePhase.description">השחקנים מהמרים פעם אחת לפני תחילת המונדיאל. הם מנחשים הכל: מיקום בבתים, שלב הנוקאאוט המלא, מנצחת הטורניר, ומלך השערים.</div>
             <div class="wizard-option-check"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
           </div>
 
@@ -446,7 +446,7 @@ function loadTablerFallback() {
             <div class="wizard-option-badge wizard-badge-advanced" data-i18n="wizard.advanced">מתקדם</div>
             <div class="wizard-option-icon">⚡</div>
             <div class="wizard-option-title" data-i18n="wizard.step1.twoPhase.title">הימור דו-שלבי</div>
-            <div class="wizard-option-desc" data-i18n="wizard.step1.twoPhase.description">השחקנים מהמרים פעמיים: פעם לפני הבתים (רק על הקבוצות שיעלו מהבית), ופעם נוספת אחרי הבתים על הנוקאאוט ומלך השערים. יותר ריאלי, אבל דורש כניסה להמר בשני זמנים שונים.</div>
+            <div class="wizard-option-desc" data-i18n="wizard.step1.twoPhase.description">השחקנים מהמרים פעמיים: פעם לפני הבתים (רק על הקבוצות שיעלו מהבית), ופעם נוספת אחרי הבתים על שלב הנוקאאוט ומלך השערים. יותר ריאלי, אבל דורש כניסה להימור בשני זמנים שונים.</div>
             <div class="wizard-option-check"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
           </div>
         </div>
@@ -1772,7 +1772,7 @@ function loadTablerFallback() {
             type="text"
             id="ts-search-input"
             class="ts-search-input"
-            placeholder="Search player in English or Hebrew..."
+            placeholder="Search player (English only)..."
             data-i18n-placeholder="topScorer.searchPlaceholder"
             autocomplete="off"
             oninput="onTopScorerSearch(this.value)"
@@ -2300,7 +2300,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.43</span>
+      <span class="menu-version">v2.5.44</span>
     </div>
   </div>
 
@@ -2369,7 +2369,7 @@ function loadTablerFallback() {
       <i class="ti ti-arrow-right"></i>
     </button>
     <div class="topbar-center">
-      <div class="topbar-title-small" data-i18n="betting.bracket.title">הברקאט שלך</div>
+      <div class="topbar-title-small" data-i18n="betting.bracket.title">שלב הנוקאאוט שלך</div>
       <div class="topbar-step" id="sp-bracket-step"></div>
     </div>
     <div style="width:32px;"></div>
@@ -2377,7 +2377,7 @@ function loadTablerFallback() {
 
   <div class="container">
     <div class="sp-section-instructions">
-      <p data-i18n="betting.bracket.instructions">הברקאט נוצר מתוצאות הבתים שלך. בכל משחק - בחר את המנצח.</p>
+      <p data-i18n="betting.bracket.instructions">שלב הנוקאאוט נוצר מתוצאות הבתים שלך. בכל משחק - בחר את המנצח.</p>
       <!-- v2.5.36: per-stage points + tournament-winner bonus, populated from
            the pool's scoring_rules so users see what each correct pick is
            worth on THIS pool. -->
@@ -2526,7 +2526,7 @@ function loadTablerFallback() {
     <button class="modal-close" onclick="closeHypoBracket()" aria-label="Close">
       <i class="ti ti-x"></i>
     </button>
-    <h2 class="modal-title" id="hypo-bracket-title" data-i18n="leaderboard.viewBracket">הברקאט של</h2>
+    <h2 class="modal-title" id="hypo-bracket-title" data-i18n="leaderboard.viewBracket">ניחושי הנוקאאוט של</h2>
     <div id="hypo-bracket-content" class="modal-body"></div>
   </div>
 </div>

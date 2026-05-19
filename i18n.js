@@ -135,7 +135,7 @@ const TRANSLATIONS = {
     'dashboard.menu.members': 'רשימת משתתפים',
     'dashboard.menu.leaderboard': 'לוח דירוגים',
     'dashboard.menu.matches': 'לוח משחקים',
-    'dashboard.menu.bracket': 'הבראקט',
+    'dashboard.menu.bracket': 'שלב הנוקאאוט',
     'dashboard.menu.topScorer': 'מלך השערים',
     'dashboard.menu.help': 'עזרה ושאלות נפוצות',
     'dashboard.menu.admin': 'אזור מארגן',
@@ -193,7 +193,7 @@ const TRANSLATIONS = {
     'topScorer.heroDesc': 'מי יבקיע הכי הרבה שערים במונדיאל?',
     'topScorer.heroBonus': '+25 נקודות בונוס',
     'topScorer.heroBonusEnd': 'אם תנחש נכון!',
-    'topScorer.searchPlaceholder': 'חפש שחקן בעברית או באנגלית...',
+    'topScorer.searchPlaceholder': 'חיפוש שחקן (באנגלית בלבד)...',
     'topScorer.hintsTitle': '💡 דוגמאות לחיפוש:',
     'topScorer.hintsNote': 'ניתן לחפש לפי שם השחקן, חלק מהשם, או קוד הקבוצה (3 אותיות באנגלית)',
     'topScorer.teamSuffix': '(קבוצה)',
@@ -268,7 +268,7 @@ const TRANSLATIONS = {
     'matches.wrongPrediction': 'לא ניחשת נכון',
     
     // === Bracket ===
-    'bracket.title': 'הבראקט',
+    'bracket.title': 'שלב הנוקאאוט',
     'bracket.r16': 'שמינית גמר',
     'bracket.qf': 'רבע גמר',
     'bracket.sf': 'חצי גמר',
@@ -947,9 +947,9 @@ const TRANSLATIONS = {
     'wizard.step1.title': 'בחר את שיטת ההימור',
     'wizard.step1.subtitle': 'איך השחקנים שלך יהמרו?',
     'wizard.step1.singlePhase.title': 'הימור חד-פעמי',
-    'wizard.step1.singlePhase.description': 'השחקנים מהמרים פעם אחת לפני תחילת המונדיאל. הם מנחשים הכל: מיקום בבתים, הברקאט המלא, מנצחת הטורניר, ומלך השערים.',
+    'wizard.step1.singlePhase.description': 'השחקנים מהמרים פעם אחת לפני תחילת המונדיאל. הם מנחשים הכל: מיקום בבתים, שלב הנוקאאוט המלא, מנצחת הטורניר, ומלך השערים.',
     'wizard.step1.twoPhase.title': 'הימור דו-שלבי',
-    'wizard.step1.twoPhase.description': 'השחקנים מהמרים פעמיים: פעם לפני הבתים (רק על הקבוצות שיעלו מהבית), ופעם נוספת אחרי הבתים על הנוקאאוט ומלך השערים. יותר ריאלי, אבל דורש כניסה להמר בשני זמנים שונים.',
+    'wizard.step1.twoPhase.description': 'השחקנים מהמרים פעמיים: פעם לפני הבתים (רק על הקבוצות שיעלו מהבית), ופעם נוספת אחרי הבתים על שלב הנוקאאוט ומלך השערים. יותר ריאלי, אבל דורש כניסה להימור בשני זמנים שונים.',
     'wizard.step2.title': 'חוקי הניקוד',
     'wizard.step2.subtitle': 'איך מחושבות נקודות?',
     'wizard.step2.useDefaults': 'שימוש בחוקים המומלצים',
@@ -998,8 +998,8 @@ const TRANSLATIONS = {
     'betting.groupFull': 'הבית מלא. הסר קבוצה כדי להחליף.',
     'betting.groupsIncomplete': 'חסרות תוצאות בבתים: {letters}',
     'betting.continueToBracket': 'המשך לברקאט',
-    'betting.bracket.title': 'הברקאט שלך',
-    'betting.bracket.instructions': 'הברקאט נוצר מתוצאות הבתים שלך. בכל משחק - בחר את המנצח.',
+    'betting.bracket.title': 'שלב הנוקאאוט שלך',
+    'betting.bracket.instructions': 'שלב הנוקאאוט נוצר מתוצאות הבתים שלך. בכל משחק - בחר את המנצח.',
     'betting.tournamentWinner.title': 'מנצחת הטורניר',
     'betting.tournamentWinner.question': 'מי תזכה במונדיאל?',
     'betting.tournamentWinner.subtitle': 'בחר את הקבוצה שלדעתך תרים את הגביע',
@@ -1024,7 +1024,8 @@ const TRANSLATIONS = {
     'betting.locked.message': 'לא ניתן לשנות יותר. צפה בניחושים שלך למטה.',
 
     // === v2.0.0 - Leaderboard breakdown ===
-    'leaderboard.viewBracket': 'צפה בברקאט',
+    'leaderboard.viewBracket': 'צפה בניחושי הנוקאאוט',
+    'leaderboard.bracketOfTitle': 'ניחושי הנוקאאוט של {name}',
     'leaderboard.breakdown.group': 'בתים',
     'leaderboard.breakdown.knockout': 'נוקאאוט',
     'leaderboard.breakdown.bonus': 'בונוס',
@@ -1135,7 +1136,7 @@ const TRANSLATIONS = {
     'exitApp.confirm': 'צא',
 
     'knockoutFirst.instructions': 'בחר את הקבוצה שלדעתך תעלה לסבב הבא',
-    'knockoutFirst.pointsLabel': '{n} נקודות אם תצדק',
+    'knockoutFirst.pointsLabel': '{n} נקודות עבור הימור מדוייק',
     'knockoutFirst.skip': 'דלג בינתיים',
     'knockoutFirst.completedToast': 'מעולה! עכשיו תוכל לערוך כל בחירה',
 
@@ -1329,7 +1330,7 @@ const TRANSLATIONS = {
     'topScorer.heroDesc': 'Who will score the most goals at the World Cup?',
     'topScorer.heroBonus': '+25 bonus points',
     'topScorer.heroBonusEnd': 'if you predict correctly!',
-    'topScorer.searchPlaceholder': 'Search player in English or Hebrew...',
+    'topScorer.searchPlaceholder': 'Search player (English only)...',
     'topScorer.hintsTitle': '💡 Search examples:',
     'topScorer.hintsNote': 'Search by player name, partial name, or team code (3 letters)',
     'topScorer.teamSuffix': '(team)',
@@ -2160,7 +2161,8 @@ const TRANSLATIONS = {
     'betting.locked.message': 'No more changes allowed. View your predictions below.',
 
     // === v2.0.0 - Leaderboard breakdown ===
-    'leaderboard.viewBracket': 'View Bracket',
+    'leaderboard.viewBracket': 'View knockout picks',
+    'leaderboard.bracketOfTitle': 'Knockout picks · {name}',
     'leaderboard.breakdown.group': 'Groups',
     'leaderboard.breakdown.knockout': 'Knockout',
     'leaderboard.breakdown.bonus': 'Bonus',
