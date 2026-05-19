@@ -17,15 +17,17 @@ if (!SUPABASE_KEY) {
 }
 
 // ---- Defaults (mirror app's DEFAULT_SCORING_RULES) ----
+// v2.5.55: doubling-progression defaults (1 / 2 / 4 / 8 / 16 / 32) so each
+// stage maxes at ~32 pts across the pool.
 const DEFAULT_RULES_SINGLE = {
-  group_first: 5, group_second: 3, group_third: 2, group_fourth: 1,
-  round_of_16: 5, quarter_final: 8, semi_final: 12, final: 20,
-  tournament_winner: 30, top_scorer: 10
+  group_first: 1, group_second: 1, group_third: 0, group_fourth: 0,
+  round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
+  tournament_winner: 32, top_scorer: 20
 };
 const DEFAULT_RULES_TWO = {
-  group_first: 5, group_second: 3, group_third: 0, group_fourth: 0,
-  round_of_16: 5, quarter_final: 8, semi_final: 12, final: 20,
-  tournament_winner: 30, top_scorer: 10
+  group_first: 1, group_second: 1, group_third: 0, group_fourth: 0,
+  round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
+  tournament_winner: 32, top_scorer: 20
 };
 
 // v2.5.36: shared multiplier resolver. Looks up (in order): the

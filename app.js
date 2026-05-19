@@ -6297,37 +6297,45 @@ const FIFA_RANKINGS = {
 };
 function fifaRankOf(code) { return FIFA_RANKINGS[code] ?? 999; }
 
-// Default scoring rules per mode
+// Default scoring rules per mode.
+// v2.5.55: rebalanced to a clean doubling progression so each stage's
+// max-points-per-pool is roughly equal (~32 pts per stage), and the
+// later rounds are clearly more valuable than earlier ones:
+//   1 pt × 32 advancing teams      =  32
+//   2 pt × 16 R16 advancers        =  32
+//   4 pt ×  8 QF advancers         =  32
+//   8 pt ×  4 SF advancers         =  32
+//  16 pt ×  2 finalists             =  32
+//  32 pt ×  1 champion              =  32
 const DEFAULT_SCORING_RULES = {
   single_phase: {
-    // v2.5.8: flat 1 point per correctly-predicted group position. The earlier
-    // 5/3/2/1 weighting was arbitrary - 1 each is the cleaner default and
-    // admins can still customize per pool.
-    group_first: 1,
-    group_second: 1,
-    group_third: 1,
-    group_fourth: 1,
-    round_of_16: 5,
-    quarter_final: 8,
-    semi_final: 12,
-    final: 20,
-    tournament_winner: 30,
-    top_scorer: 20
-  },
-  two_phase: {
-    // v2.5.8: flat 1 point per correctly-predicted advancing team. Third/fourth
-    // place don't apply in two_phase, so they stay at 0.
+    // "Each advancing team" = group positions 1 + 2 (the two teams that
+    // qualify to the knockout). 3rd/4th place picks earn nothing.
     group_first: 1,
     group_second: 1,
     group_third: 0,
     group_fourth: 0,
-    round_of_16: 5,
-    quarter_final: 8,
-    semi_final: 12,
-    final: 20,
+    round_of_16: 2,
+    quarter_final: 4,
+    semi_final: 8,
+    final: 16,
+    tournament_winner: 32,
+    top_scorer: 20
+  },
+  two_phase: {
+    // Two-phase users pick "who qualifies" without ordering, so the same
+    // 1pt-per-advancer rule applies. 3rd/4th aren't even a question here.
+    group_first: 1,
+    group_second: 1,
+    group_third: 0,
+    group_fourth: 0,
+    round_of_16: 2,
+    quarter_final: 4,
+    semi_final: 8,
+    final: 16,
     // v2.5.34: bonus on top of the final-correct pick for predicting the
     // tournament champion (the team that wins position 15).
-    tournament_winner: 30,
+    tournament_winner: 32,
     top_scorer: 20
   }
 };
@@ -7196,10 +7204,10 @@ function spRenderGroups() {
   if (ptsHint) {
     const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
     const pts = {
-      1: rules.group_first ?? 5,
-      2: rules.group_second ?? 3,
-      3: rules.group_third ?? 2,
-      4: rules.group_fourth ?? 1
+      1: rules.group_first ?? 1,
+      2: rules.group_second ?? 1,
+      3: rules.group_third ?? 0,
+      4: rules.group_fourth ?? 0
     };
     ptsHint.innerHTML = [1, 2, 3, 4].map(n =>
       `<span class="pts-pill">${t('groups.pointsForPosition', { pos: n, pts: pts[n] })}</span>`
@@ -8691,7 +8699,7 @@ function rcDownload() {
     '   - ' + w1,
     '   - ' + w2,
     '   - ' + w3,
-    '   - ' + loginAt + ' https://friendlybet.vercel.app',
+    '   - ' + loginAt + ' https://friendlybet.live',
     '',
     '===================================='
   ];
@@ -8864,7 +8872,7 @@ function _rcBuildCardElement() {
       ${pool}
     </div>
     <div style="margin-top: 36px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.45);">
-      ${t('recovery.txt.loginAt')} friendlybet.vercel.app
+      ${t('recovery.txt.loginAt')} friendlybet.live
     </div>
   `;
   return card;
@@ -9030,13 +9038,13 @@ function _koSinglePoints(round) {
   // tournament champion). Show the combined total so the displayed number
   // matches what a correct pick actually earns.
   if (round === 'FINAL') {
-    return (rules.final ?? 20) + (rules.tournament_winner ?? 0);
+    return (rules.final ?? 16) + (rules.tournament_winner ?? 0);
   }
   return ({
-    R16: rules.round_of_16 ?? 5,
-    QF:  rules.quarter_final ?? 8,
-    SF:  rules.semi_final ?? 12
-  })[round] || 5;
+    R16: rules.round_of_16 ?? 2,
+    QF:  rules.quarter_final ?? 4,
+    SF:  rules.semi_final ?? 8
+  })[round] || 2;
 }
 
 function _koSingleCurrentTeams() {
