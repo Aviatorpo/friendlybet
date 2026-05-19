@@ -6312,11 +6312,13 @@ const DEFAULT_SCORING_RULES = {
     // v2.5.63: single_phase asks for the full 1st-4th group ordering, so
     // every correctly-predicted position earns 1 point regardless of
     // whether the team actually advances.
-    // v2.5.68: knockout starts at R32 (WC 2026 expanded the knockout stage
-    // from 16 teams to 32). Each round doubles the per-match value so the
-    // pool maxes out at roughly the same total per stage.
+    // v2.5.68: knockout structure now follows the official WC 2026 format
+    // (R32 → R16 → QF → SF → Final).
+    // v2.5.69: R32 itself is NOT scored - "reaching R32" is already what
+    // the group-position prediction rewards (top 2 automatically + the 8
+    // best 3rd-place teams). Users still pick R32 winners (those picks
+    // propagate to R16) but no points are awarded for them.
     //   1pt × 48 correct group positions (12 groups × 4) = up to 48
-    //   1pt × 16 R32 advancers                           = 16
     //   2pt ×  8 R16 advancers                           = 16
     //   4pt ×  4 QF advancers                            = 16
     //   8pt ×  2 SF advancers                            = 16
@@ -6326,7 +6328,6 @@ const DEFAULT_SCORING_RULES = {
     group_second: 1,
     group_third: 1,
     group_fourth: 1,
-    round_of_32: 1,
     round_of_16: 2,
     quarter_final: 4,
     semi_final: 8,
@@ -6341,7 +6342,6 @@ const DEFAULT_SCORING_RULES = {
     group_second: 1,
     group_third: 0,
     group_fourth: 0,
-    round_of_32: 1,
     round_of_16: 2,
     quarter_final: 4,
     semi_final: 8,
@@ -6495,13 +6495,15 @@ function wizardSelectRules(choice) {
 }
 
 function getWizardRuleKeys() {
-  // Two_phase doesn't use 3rd/4th place
-  // v2.5.68: round_of_32 added for the WC 2026 expanded knockout stage.
+  // Two_phase doesn't use 3rd/4th place.
+  // v2.5.69: R32 is intentionally excluded - reaching R32 is just being top 2
+  // (or one of the 8 best 3rd-place teams), which is already rewarded by the
+  // group-position rules. Scoring it separately would be double-counting.
   if (wizardState.mode === 'two_phase') {
-    return ['group_first','group_second','round_of_32','round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
+    return ['group_first','group_second','round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
   }
   return ['group_first','group_second','group_third','group_fourth',
-          'round_of_32','round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
+          'round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
 }
 
 // v2.5.7: read-only render of a pool's scoring_rules into the Pool Settings
@@ -6518,7 +6520,7 @@ function _renderV2ScoringList(pool) {
     },
     {
       titleKey: 'wizard.ruleGroup.knockout',
-      rows: ['round_of_32', 'round_of_16', 'quarter_final', 'semi_final', 'final']
+      rows: ['round_of_16', 'quarter_final', 'semi_final', 'final']
     },
     {
       titleKey: 'wizard.ruleGroup.winner',
@@ -6559,7 +6561,7 @@ function _wizardRuleGroups() {
       },
       {
         titleKey: 'wizard.ruleGroup.knockout',
-        rows: ['round_of_32', 'round_of_16', 'quarter_final', 'semi_final', 'final']
+        rows: ['round_of_16', 'quarter_final', 'semi_final', 'final']
       },
       {
         titleKey: 'wizard.ruleGroup.winner',
@@ -6583,7 +6585,7 @@ function _wizardRuleGroups() {
     },
     {
       titleKey: 'wizard.ruleGroup.knockout',
-      rows: ['round_of_32', 'round_of_16', 'quarter_final', 'semi_final', 'final'].filter(inSet)
+      rows: ['round_of_16', 'quarter_final', 'semi_final', 'final'].filter(inSet)
     },
     {
       titleKey: 'wizard.ruleGroup.winner',
@@ -6893,10 +6895,11 @@ function getFinalScoringRules() {
 
 function calcMaxPoints(rules, mode) {
   // v2.5.68: WC 2026 knockout = 16 R32 + 8 R16 + 4 QF + 2 SF + 1 Final
-  const r32 = rules.round_of_32 || 0;
+  // v2.5.69: R32 itself is not scored (it's just "reaching the knockout",
+  // which the group-position rules already reward). The knockout total
+  // here starts at R16.
   if (mode === 'single_phase') {
     return 12 * ((rules.group_first||0) + (rules.group_second||0) + (rules.group_third||0) + (rules.group_fourth||0)) +
-           16 * r32 +
            8 * (rules.round_of_16 || 0) +
            4 * (rules.quarter_final || 0) +
            2 * (rules.semi_final || 0) +
@@ -6906,7 +6909,6 @@ function calcMaxPoints(rules, mode) {
   }
   // two_phase
   return 12 * ((rules.group_first||0) + (rules.group_second||0)) +
-         16 * r32 +
          8 * (rules.round_of_16 || 0) +
          4 * (rules.quarter_final || 0) +
          2 * (rules.semi_final || 0) +
@@ -7793,9 +7795,11 @@ function spRenderBracket() {
   // v2.5.36: pull per-stage points from scoring_rules so each round title
   // shows what a correct pick is worth on this pool.
   // v2.5.68: R32 round renders first (16 matches) per the official WC 2026 format.
+  // v2.5.69: R32 is unscored - render the round without a "+pts" badge so the
+  // user understands these picks just feed into R16. Other rounds keep theirs.
   const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
   container.innerHTML =
-    renderRound('knockout.r32', struct.r32, rules.round_of_32) +
+    renderRound('knockout.r32', struct.r32, null) +
     renderRound('knockout.r16', struct.r16, rules.round_of_16) +
     renderRound('knockout.qf', struct.qf, rules.quarter_final) +
     renderRound('knockout.sf', struct.sf, rules.semi_final) +
@@ -7804,8 +7808,8 @@ function spRenderBracket() {
   // v2.5.36: render the points-hint row above the bracket
   const hint = document.getElementById('sp-bracket-points-hint');
   if (hint) {
+    // v2.5.69: R32 intentionally omitted - it's unscored.
     const stages = [
-      { label: t('knockout.r32'), pts: rules.round_of_32 },
       { label: t('knockout.r16'), pts: rules.round_of_16 },
       { label: t('knockout.qf'),  pts: rules.quarter_final },
       { label: t('knockout.sf'),  pts: rules.semi_final },
@@ -9332,13 +9336,15 @@ function _koSinglePoints(round) {
   // scoring_rules value, and the tournament_winner bonus is surfaced
   // separately on the FINAL match (see koSingleRender).
   const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
+  // v2.5.69: R32 is unscored - reaching it is already rewarded by the
+  // group-position rules (top 2 + best 8 third-places).
   return ({
-    R32: rules.round_of_32 ?? 1,
+    R32: 0,
     R16: rules.round_of_16 ?? 2,
     QF:  rules.quarter_final ?? 4,
     SF:  rules.semi_final ?? 8,
     FINAL: rules.final ?? 16
-  })[round] || 1;
+  })[round] ?? 0;
 }
 
 function _koSingleCurrentTeams() {
@@ -9425,8 +9431,12 @@ function koSingleRender() {
   // on. We surface that as "X or Y points" if the totals differ, or fall
   // back to the flat "N points" label when they happen to match (or
   // multipliers are off).
+  // v2.5.69: R32 is unscored. Show a dedicated label so users understand
+  // the R32 pick just propagates the team into R16, not a scoring round.
   let headerPointsLabel;
-  if (useMult && home && away) {
+  if (points === 0) {
+    headerPointsLabel = t('knockoutFirst.unscoredLabel');
+  } else if (useMult && home && away) {
     const hMult = getPoolTeamMultiplier(state.currentPool, home);
     const aMult = getPoolTeamMultiplier(state.currentPool, away);
     const hPts = Math.round(points * hMult);

@@ -20,16 +20,17 @@ if (!SUPABASE_KEY) {
 // v2.5.55: doubling-progression defaults (1 / 2 / 4 / 8 / 16 / 32) so each
 // stage maxes at ~32 pts across the pool.
 const DEFAULT_RULES_SINGLE = {
-  // v2.5.63: every correct group POSITION (1st-4th) earns 1 pt - the user
-  // is predicting the full ordering, so 3rd/4th picks count too.
-  // v2.5.68: knockout now starts at R32 (16 matches per WC 2026 format).
+  // v2.5.63: every correct group POSITION (1st-4th) earns 1 pt.
+  // v2.5.69: R32 is intentionally NOT scored. Reaching R32 = being top 2
+  // (or one of the 8 best 3rd-places), which is what the group-position
+  // rules already reward. Scoring it as its own row would double-count.
   group_first: 1, group_second: 1, group_third: 1, group_fourth: 1,
-  round_of_32: 1, round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
+  round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
   tournament_winner: 32, top_scorer: 20
 };
 const DEFAULT_RULES_TWO = {
   group_first: 1, group_second: 1, group_third: 0, group_fourth: 0,
-  round_of_32: 1, round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
+  round_of_16: 2, quarter_final: 4, semi_final: 8, final: 16,
   tournament_winner: 32, top_scorer: 20
 };
 
@@ -129,14 +130,16 @@ function stageRuleKey(stage) {
 }
 
 // v2.5.68: bracket position -> rule key for hypothetical bracket scoring.
-// New numbering (official WC 2026):
+// Position numbering (official WC 2026):
 //   1-16  = R32   (16 matches)
 //   17-24 = R16   (8 matches)
 //   25-28 = QF    (4 matches)
 //   29-30 = SF    (2 matches)
 //   31    = Final
+// v2.5.69: R32 picks return null - they propagate into R16 but are not
+// scored on their own.
 function bracketPosRuleKey(pos) {
-  if (pos >= 1  && pos <= 16) return 'round_of_32';
+  if (pos >= 1  && pos <= 16) return null;
   if (pos >= 17 && pos <= 24) return 'round_of_16';
   if (pos >= 25 && pos <= 28) return 'quarter_final';
   if (pos >= 29 && pos <= 30) return 'semi_final';
