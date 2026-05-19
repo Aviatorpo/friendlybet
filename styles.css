@@ -7423,6 +7423,17 @@ body.ltr .bet-cta-arrow {
   color: #d4a853;
   margin-bottom: 18px;
 }
+/* v2.5.65: secondary "+N winner bonus" line, shown only on the FINAL
+   match. Slimmer than the main points line so the hierarchy is clear. */
+.ko-single-bonus {
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.4;
+  color: rgba(212, 168, 83, 0.85);
+  margin-top: -12px;
+  margin-bottom: 16px;
+  font-style: italic;
+}
 .ko-single-teams {
   display: flex;
   flex-direction: column;

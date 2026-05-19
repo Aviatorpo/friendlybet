@@ -1155,6 +1155,8 @@ const TRANSLATIONS = {
     // v2.5.60: shown when the two teams have different risk multipliers,
     // so a correct pick earns different totals depending on the team.
     'knockoutFirst.pointsLabelRange': '{min} או {max} נקודות עבור הימור מדוייק (לפי מכפיל הסיכון של הקבוצה)',
+    // v2.5.65: extra line on the FINAL match - tournament winner bonus
+    'knockoutFirst.winnerBonus': '+ {n} נקודות בונוס על ניחוש מנצחת הטורניר',
     'knockoutFirst.skip': 'דלג בינתיים',
     'knockoutFirst.completedToast': 'מעולה! עכשיו תוכל לערוך כל בחירה',
 
@@ -2310,6 +2312,8 @@ const TRANSLATIONS = {
     // v2.5.60: shown when the two teams have different risk multipliers,
     // so a correct pick earns different totals depending on the team.
     'knockoutFirst.pointsLabelRange': '{min} or {max} points if you\'re right (depending on the team\'s risk multiplier)',
+    // v2.5.65: extra line on the FINAL match - tournament winner bonus
+    'knockoutFirst.winnerBonus': '+ {n} bonus points for picking the tournament champion',
     'knockoutFirst.skip': 'Skip for now',
     'knockoutFirst.completedToast': 'Great! You can now edit any pick',
 

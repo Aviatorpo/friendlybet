@@ -9074,19 +9074,20 @@ function _koSinglePoints(round) {
   if (koSingle.mode === 'two-phase') {
     return (ROUND_INFO && ROUND_INFO[round] && ROUND_INFO[round].points) || 1;
   }
-  // single-phase scoring rules
+  // single-phase scoring rules — return ONLY the stage value from the
+  // pool's scoring_rules. v2.5.65: previously this summed rules.final +
+  // rules.tournament_winner on the FINAL match, which showed users "48
+  // points" while the bracket overview's points-hint showed "Final: 16"
+  // and "Tournament Winner: 32" as separate stages. The two displays
+  // disagreed. Each stage label now reflects only that stage's
+  // scoring_rules value, and the tournament_winner bonus is surfaced
+  // separately on the FINAL match (see koSingleRender).
   const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
-  // v2.5.44: the FINAL match in single_phase rewards BOTH the final-correct
-  // pick and the tournament_winner bonus (the winner of the final IS the
-  // tournament champion). Show the combined total so the displayed number
-  // matches what a correct pick actually earns.
-  if (round === 'FINAL') {
-    return (rules.final ?? 16) + (rules.tournament_winner ?? 0);
-  }
   return ({
     R16: rules.round_of_16 ?? 2,
     QF:  rules.quarter_final ?? 4,
-    SF:  rules.semi_final ?? 8
+    SF:  rules.semi_final ?? 8,
+    FINAL: rules.final ?? 16
   })[round] || 2;
 }
 
@@ -9235,9 +9236,25 @@ function koSingleRender() {
       </button>`;
   };
 
+  // v2.5.65: on the FINAL match, surface the tournament-winner bonus as a
+  // secondary line so the user understands picking the final winner ALSO
+  // earns the champion bonus. The main label still shows just rules.final.
+  // Applies to both single_phase and two_phase since the scoring script
+  // awards the tournament_winner bonus in both modes when the final pick
+  // is correct (see scripts/calculate-scores-v2.js).
+  let finalBonusLabel = '';
+  if (step.round === 'FINAL') {
+    const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
+    const bonus = rules.tournament_winner ?? 0;
+    if (bonus > 0) {
+      finalBonusLabel = `<div class="ko-single-bonus">${t('knockoutFirst.winnerBonus', { n: bonus })}</div>`;
+    }
+  }
+
   card.innerHTML = `
     <div class="ko-single-match-header">${label}</div>
     <div class="ko-single-points">${headerPointsLabel}</div>
+    ${finalBonusLabel}
     <div class="ko-single-teams">
       ${teamHtml(home, 'home')}
       <div class="ko-single-vs">VS</div>
