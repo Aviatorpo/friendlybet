@@ -7,3 +7,8 @@ Thumbs.db
 node_modules/
 .env
 .env.local
+
+# Hebrew-text review exports (internal working docs, not for the public repo)
+HEBREW_TEXTS*.md
+HEBREW_TEXTS*.csv
+_apply_hebrew.js

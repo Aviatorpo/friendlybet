@@ -171,7 +171,7 @@ const TRANSLATIONS = {
     'groups.minPicks': 'בחר לפחות 2',
     'groups.maxReached': 'כבר בחרת 3 קבוצות. הסר אחת לפני שתוסיף עוד',
     'groups.finishBetting': 'סיים את ההימור',
-    'groups.nextGroup': 'בית',
+    'groups.nextGroup': 'בית {letter}',
     'groups.completed': 'השלמת את כל הבתים!',
     'groups.savingPicks': 'שומר...',
     'groups.savedPicks': 'נשמר ✓',
@@ -185,7 +185,7 @@ const TRANSLATIONS = {
     'knockout.sf': 'חצי גמר',
     'knockout.final': 'גמר',
     'knockout.pickWinner': 'בחר את המנצח',
-    'knockout.tbd': 'להיקבע',
+    'knockout.tbd': 'יעודכן בהמשך',
     
     // === Top Scorer ===
     'topScorer.title': 'מלך השערים',
@@ -507,7 +507,7 @@ const TRANSLATIONS = {
     'sharePool.created': 'ההימור נוצר!',
     'sharePool.awesome': 'מעולה!',
     'sharePool.subtitle': 'ההימור נוצר בהצלחה',
-    'sharePool.promptTitle': 'ההימור נוצר עם חוקי Golazo (ברירת מחדל)',
+    'sharePool.promptTitle': 'ההימור נוצר עם חוקי ברירת מחדל',
     'sharePool.promptSubtitle': 'תוכל לערוך את כל החוקים לפני שמישהו מצטרף',
     'sharePool.editSettings': 'ערוך הגדרות',
     'sharePool.divider': 'או פשוט שתף ותתחיל לשחק',
@@ -517,7 +517,7 @@ const TRANSLATIONS = {
     'sharePool.toDashboard': 'לדשבורד שלי',
     'sharePool.welcomeToast': 'ברוך הבא ל-{name}!',
     'sharePool.adminCodeAlert': '🔑 קוד השחזור שלך כמארגן:\n\n{code}\n\nשמור אותו במקום בטוח! בלעדיו לא תוכל להתחבר חזרה.',
-    'sharePool.shareText': 'הוזמנת להצטרף להימור "{poolName}" 🏆\n\nבא ננחש ביחד את מונדיאל 2026 — חינם לגמרי, רק בשביל הכיף והכבוד.\n\nקוד הצטרפות: {code}\n👉 {url}\n\n⚽ FriendlyBet — הימור חברים על מונדיאל 2026',
+    'sharePool.shareText': 'הוזמנת להצטרף להימור "{poolName}" 🏆\n\nבואו ננחש ביחד את מונדיאל 2026 — חינם לגמרי, בלי פרסומות, בלי מגבלות. .\n\nקוד הצטרפות: {code}\n👉 {url}\n\n⚽ FriendlyBet — הימור חברים על מונדיאל 2026',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'החוקים נעולים',
@@ -555,7 +555,7 @@ const TRANSLATIONS = {
     'poolSettings.scoreQF': 'רבע גמר',
     'poolSettings.scoreSF': 'חצי גמר',
     'poolSettings.scoreFinal': 'גמר',
-    'poolSettings.resetGolazo': 'איפוס לחוקי Golazo',
+    'poolSettings.resetGolazo': 'איפוס לחוקי ברירת מחדל',
     'poolSettings.topScorer': 'מלך השערים',
     'poolSettings.topScorerActive': 'פעיל',
     'poolSettings.bonusPoints': 'בונוס נקודות',
@@ -575,7 +575,7 @@ const TRANSLATIONS = {
     'poolSettings.notAdmin': 'רק המארגן יכול לערוך הגדרות',
     'poolSettings.loadError': 'שגיאה בטעינת ההגדרות',
     'poolSettings.notFound': 'לא נמצא הימור',
-    'poolSettings.resetToast': 'הוחזר לחוקי Golazo המקוריים',
+    'poolSettings.resetToast': 'הוחזר לחוקים המקוריים',
     'poolSettings.bonusToast': 'בונוס מלך השערים: {n} נקודות',
     'poolSettings.deleteWarning': '⚠️ אזהרה!\n\nאתה עומד למחוק את ההימור "{name}".\n\nכל הנתונים, ההימורים והניקוד יימחקו לצמיתות.\n\nפעולה זו לא ניתנת לביטול.\n\nהאם להמשיך?',
     'poolSettings.deletePrompt': 'כדי לאשר, הקלד את שם ההימור:\n"{name}"',
@@ -1062,8 +1062,8 @@ const TRANSLATIONS = {
     // first so there\'s a pool to bet against, then make their own picks.
     'dashboard.progress.adminInviteFirst.title': 'מוכן להמר? 🎯',
     'dashboard.progress.adminInviteFirst.subtitle': 'קודם כל הזמן חברים, ואחר כך תתחיל להמר בעצמך — לוקח רק כמה דקות',
-    'dashboard.progress.partial.title': 'אתה בעיצומו 💪',
-    'dashboard.progress.partial.subtitle': 'עוד כמה בחירות ואתה גמרת',
+    'dashboard.progress.partial.title': 'אתה בעיצומו של ההימור💪',
+    'dashboard.progress.partial.subtitle': 'עוד כמה בחירות וסיימת',
     // v2.5.38: predictions aren\'t actually locked at submit time - they\'re
     // editable until the tournament kicks off. Text reflects that.
     'dashboard.progress.allSet.title': 'סגרת הכל! 🎉',
@@ -1090,8 +1090,8 @@ const TRANSLATIONS = {
     'recovery.adminHelp.title': 'איבדת את הקוד? אין בעיה.',
     'recovery.adminHelp.text': 'תמיד אפשר לבקש מהאדמין של ההימור שישלח לך קוד שחזור חדש בוואטסאפ או בטלגרם.',
     'recovery.button.copy': 'העתק',
-    'recovery.button.email': 'שלח במייל',
-    'recovery.button.download': 'הורד כקובץ',
+    'recovery.button.email': 'שלח לעצמי באימייל',
+    'recovery.button.download': 'הורד קובץ טקסט',
     'recovery.button.copied': '✓ הועתק!',
     'recovery.toast.copied': '✓ הועתק ללוח!',
     'recovery.toast.downloaded': '✓ הקובץ הורד!',
