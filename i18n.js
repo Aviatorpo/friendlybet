@@ -517,7 +517,7 @@ const TRANSLATIONS = {
     'sharePool.toDashboard': 'לדשבורד שלי',
     'sharePool.welcomeToast': 'ברוך הבא ל-{name}!',
     'sharePool.adminCodeAlert': '🔑 קוד השחזור שלך כמארגן:\n\n{code}\n\nשמור אותו במקום בטוח! בלעדיו לא תוכל להתחבר חזרה.',
-    'sharePool.shareText': 'הוזמנת להצטרף להימור "{poolName}" 🏆\n\nבואו ננחש ביחד את מונדיאל 2026 — חינם לגמרי, בלי פרסומות, בלי מגבלות. .\n\nקוד הצטרפות: {code}\n👉 {url}\n\n⚽ FriendlyBet — הימור חברים על מונדיאל 2026',
+    'sharePool.shareText': 'הוזמנת להצטרף להימור "{poolName}" 🏆\n\nבואו ננחש ביחד את מונדיאל 2026 — חינם לגמרי, בלי פרסומות, בלי מגבלות.\n\nקוד הצטרפות: {code}\n👉 {url}\n\n⚽ FriendlyBet — הימור חברים על מונדיאל 2026',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'החוקים נעולים',
