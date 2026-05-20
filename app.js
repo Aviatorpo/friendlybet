@@ -8382,7 +8382,6 @@ async function spRenderSummary() {
     <div class="sp-bracket-view-scroll" id="sp-summary-bracket-scroll">
       <div class="sp-bracket-tree" id="sp-summary-bracket-tree" data-side="full">${_spBuildBracketTreeHtml()}</div>
     </div>
-    <div class="sp-bv-hint" data-i18n="bracketView.scrollHint">${t('bracketView.scrollHint')}</div>
   `;
 
   // Winner
@@ -8520,7 +8519,10 @@ async function spShowLockedView() {
   // Bracket - v2.5.75: read-only horizontal tree (same widget as the summary
   // + bracket-view modal) instead of a flat per-round list.
   html += `<div class="sp-summary-card">
-    <div class="sp-summary-section-title">${t('betting.summary.bracket')}</div>
+    <div class="sp-summary-section-title sp-summary-title-row">
+      <span>${t('betting.summary.bracket')}</span>
+      <span class="sp-scroll-chip">${t('bracketView.scrollChip')}</span>
+    </div>
     <div class="sp-bv-side-tabs sp-summary-bv-tabs">
       <button class="sp-bv-side-tab active" data-side="full" onclick="setSpSummaryBracketSide('full')">${t('bracketView.full')}</button>
       <button class="sp-bv-side-tab" data-side="left" onclick="setSpSummaryBracketSide('left')">${t('bracketView.leftSide')}</button>
@@ -8529,7 +8531,6 @@ async function spShowLockedView() {
     <div class="sp-bracket-view-scroll" id="sp-summary-bracket-scroll">
       <div class="sp-bracket-tree" id="sp-summary-bracket-tree" data-side="full">${_spBuildBracketTreeHtml()}</div>
     </div>
-    <div class="sp-bv-hint">${t('bracketView.scrollHint')}</div>
   </div>`;
 
   // Winner
