@@ -7863,6 +7863,18 @@ body.ltr .bet-cta-arrow {
   justify-content: center;
   flex-wrap: wrap;
 }
+/* v2.5.75: the summary embeds the bracket tree inside a ~480px-wide card, so
+   the Full/Left/Right tabs are always useful there (not just on mobile). */
+.sp-summary-bv-tabs {
+  display: flex;
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+#sp-summary-bracket-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#sp-summary-bracket-tree .sp-bv-col { min-height: 360px; }
 .sp-bv-side-tab {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.1);

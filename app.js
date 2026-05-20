@@ -8045,22 +8045,15 @@ function _spBvPairColumn(matches, side, perPair = 2) {
   return out.join('');
 }
 
-function openSpBracketView() {
+// v2.5.75: build the 9-column bilateral bracket-tree inner HTML. Shared by
+// the bracket-view modal (openSpBracketView) and the summary screen
+// (spRenderSummary) so both render the identical horizontal tree.
+//
+// WC 2026 format: R32 → R16 → QF → SF → FINAL ← SF ← QF ← R16 ← R32.
+// The "left half" feeds SF #29 (M101); the "right half" feeds SF #30 (M102).
+// We walk SP_BRACKET_PARENTS to find which R32 positions reach each SF side.
+function _spBuildBracketTreeHtml() {
   const struct = spGetBracketStructure();
-  const tree = document.getElementById('sp-bracket-tree');
-  if (!tree) return;
-
-  // v2.5.68: WC 2026 format - 9-column bilateral bracket (R32 → R16 → QF →
-  // SF → FINAL ← SF ← QF ← R16 ← R32). R16 #17 (W74 vs W77) feeds from
-  // the M89 side, and per the official FIFA bracket the "left half" lands
-  // at M97 (QF), M101 (SF). Splitting by which R32 positions feed into
-  // each SF:
-  //   LEFT  half feeds SF #29 (M101): R32 pos 1-6 + R16 pos 17,18 + QF pos 25
-  //         and R16 pos 21,22 + QF pos 26 + R32 pos 9-12  ALSO feed SF 29.
-  //   RIGHT half feeds SF #30 (M102): R32 pos 4-8 + R16 19,20 + QF 27
-  //         and R16 23,24 + QF 28 + R32 13-16  ALSO feed SF 30.
-  //
-  // Walk parents up to find which R32 positions ultimately reach SF 29 vs SF 30.
   const leftR16  = [17, 18, 21, 22];           // feeds QF 25, 26 → SF 29
   const rightR16 = [19, 20, 23, 24];           // feeds QF 27, 28 → SF 30
   const leftR32 = []; const rightR32 = [];
@@ -8094,7 +8087,7 @@ function openSpBracketView() {
          <div class="sp-bv-champion-name">${t('betting.notPicked')}</div>
        </div>`;
 
-  tree.innerHTML = `
+  return `
     <div class="sp-bv-col sp-bv-col-r32l">
       <div class="sp-bv-col-title">${t('knockout.r32')}</div>
       <div class="sp-bv-col-stack">${_spBvPairColumn(r32Left, 'left')}</div>
@@ -8133,6 +8126,12 @@ function openSpBracketView() {
       <div class="sp-bv-col-stack">${_spBvPairColumn(r32Right, 'right')}</div>
     </div>
   `;
+}
+
+function openSpBracketView() {
+  const tree = document.getElementById('sp-bracket-tree');
+  if (!tree) return;
+  tree.innerHTML = _spBuildBracketTreeHtml();
 
   // Reset side filter (Full view by default each time the modal opens)
   setSpBracketViewSide('full');
@@ -8161,9 +8160,22 @@ function closeSpBracketView() {
   if (modal) modal.style.display = 'none';
 }
 
+// v2.5.75: side-tab switcher for the bracket tree embedded in the summary
+// screen (separate DOM ids from the modal so both can coexist).
+function setSpSummaryBracketSide(side) {
+  const tree = document.getElementById('sp-summary-bracket-tree');
+  if (tree) tree.setAttribute('data-side', side);
+  document.querySelectorAll('.sp-summary-bv-tabs .sp-bv-side-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.side === side);
+  });
+  const scroller = document.getElementById('sp-summary-bracket-scroll');
+  if (scroller) scroller.scrollLeft = 0;
+}
+
 window.openSpBracketView = openSpBracketView;
 window.closeSpBracketView = closeSpBracketView;
 window.setSpBracketViewSide = setSpBracketViewSide;
+window.setSpSummaryBracketSide = setSpSummaryBracketSide;
 
 function spRenderWinnerScreen() {
   // Options: SF winners if user picked any; else fallback to QF-picked teams
@@ -8347,32 +8359,22 @@ async function spRenderSummary() {
     `;
   }).join('');
 
-  // Bracket summary
-  const struct = spGetBracketStructure();
+  // v2.5.75: bracket summary is now the horizontal bracket tree (same widget
+  // as the bracket-view modal) instead of a flat per-round list. Reads far
+  // more naturally with 5 knockout rounds. Side-tabs (Full/Left/Right) let
+  // the user focus on one half on narrow screens.
   const bracketEl = document.getElementById('sp-summary-bracket');
-  const renderBracketRound = (label, matches) => {
-    return `
-      <div style="font-weight:600;color:#d4a853;font-size:12px;letter-spacing:.5px;margin:8px 0 4px;">
-        ${label}
-      </div>
-      ${matches.map(m => {
-        const winner = spGetMatchWinner(m.pos);
-        return `
-          <div class="sp-summary-row">
-            <span class="sr-flag">${winner ? getCountryFlag(winner) : '—'}</span>
-            <span class="sr-value">${winner ? getTeamName(winner) : t('betting.notPicked')}</span>
-            <span class="sr-label">(${m.home ? getTeamName(m.home) : '?'} vs ${m.away ? getTeamName(m.away) : '?'})</span>
-          </div>
-        `;
-      }).join('')}
-    `;
-  };
-  bracketEl.innerHTML =
-    renderBracketRound(t('knockout.r32'), struct.r32) +
-    renderBracketRound(t('knockout.r16'), struct.r16) +
-    renderBracketRound(t('knockout.qf'), struct.qf) +
-    renderBracketRound(t('knockout.sf'), struct.sf) +
-    renderBracketRound(t('knockout.final'), [struct.final]);
+  bracketEl.innerHTML = `
+    <div class="sp-bv-side-tabs sp-summary-bv-tabs">
+      <button class="sp-bv-side-tab active" data-side="full" onclick="setSpSummaryBracketSide('full')" data-i18n="bracketView.full">${t('bracketView.full')}</button>
+      <button class="sp-bv-side-tab" data-side="left" onclick="setSpSummaryBracketSide('left')" data-i18n="bracketView.leftSide">${t('bracketView.leftSide')}</button>
+      <button class="sp-bv-side-tab" data-side="right" onclick="setSpSummaryBracketSide('right')" data-i18n="bracketView.rightSide">${t('bracketView.rightSide')}</button>
+    </div>
+    <div class="sp-bracket-view-scroll" id="sp-summary-bracket-scroll">
+      <div class="sp-bracket-tree" id="sp-summary-bracket-tree" data-side="full">${_spBuildBracketTreeHtml()}</div>
+    </div>
+    <div class="sp-bv-hint" data-i18n="bracketView.scrollHint">${t('bracketView.scrollHint')}</div>
+  `;
 
   // Winner
   const w = spState.tournamentWinner;
@@ -8506,22 +8508,20 @@ async function spShowLockedView() {
   });
   html += '</div>';
 
-  // Bracket
-  const struct = spGetBracketStructure();
+  // Bracket - v2.5.75: read-only horizontal tree (same widget as the summary
+  // + bracket-view modal) instead of a flat per-round list.
   html += `<div class="sp-summary-card">
-    <div class="sp-summary-section-title">${t('betting.summary.bracket')}</div>`;
-  [['knockout.r32', struct.r32], ['knockout.r16', struct.r16], ['knockout.qf', struct.qf],
-   ['knockout.sf', struct.sf], ['knockout.final', [struct.final]]].forEach(([key, matches]) => {
-    html += `<div style="font-weight:600;color:#d4a853;font-size:12px;margin:6px 0 3px;">${t(key)}</div>`;
-    matches.forEach(m => {
-      const w = spGetMatchWinner(m.pos);
-      html += `<div class="sp-summary-row">
-        <span class="sr-flag">${w ? getCountryFlag(w) : '—'}</span>
-        <span class="sr-value">${w ? getTeamName(w) : '—'}</span>
-      </div>`;
-    });
-  });
-  html += '</div>';
+    <div class="sp-summary-section-title">${t('betting.summary.bracket')}</div>
+    <div class="sp-bv-side-tabs sp-summary-bv-tabs">
+      <button class="sp-bv-side-tab active" data-side="full" onclick="setSpSummaryBracketSide('full')">${t('bracketView.full')}</button>
+      <button class="sp-bv-side-tab" data-side="left" onclick="setSpSummaryBracketSide('left')">${t('bracketView.leftSide')}</button>
+      <button class="sp-bv-side-tab" data-side="right" onclick="setSpSummaryBracketSide('right')">${t('bracketView.rightSide')}</button>
+    </div>
+    <div class="sp-bracket-view-scroll" id="sp-summary-bracket-scroll">
+      <div class="sp-bracket-tree" id="sp-summary-bracket-tree" data-side="full">${_spBuildBracketTreeHtml()}</div>
+    </div>
+    <div class="sp-bv-hint">${t('bracketView.scrollHint')}</div>
+  </div>`;
 
   // Winner
   const w = spState.tournamentWinner;
