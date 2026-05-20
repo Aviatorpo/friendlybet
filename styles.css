@@ -6700,6 +6700,19 @@ body:not(.ltr) .home-lang-toggle {
   letter-spacing: 1px;
   padding: 2px 0;
 }
+/* v2.5.71: champion-points note on the FINAL match (final pts + champion bonus). */
+.sp-bracket-final-note {
+  margin-top: 6px;
+  text-align: center;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #d4a853;
+  background: rgba(212,168,83,0.10);
+  border: 1px solid rgba(212,168,83,0.25);
+  border-radius: 8px;
+  padding: 6px 8px;
+  line-height: 1.35;
+}
 
 .sp-winner-hero { text-align: center; margin-bottom: 24px; }
 .sp-winner-icon { font-size: 56px; margin-bottom: 8px; }

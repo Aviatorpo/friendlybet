@@ -1018,6 +1018,10 @@ const TRANSLATIONS = {
     'betting.skipForNow': 'דלג בינתיים — נחזור לזה אחר כך',
     'betting.bracket.title': 'שלב הנוקאאוט שלך',
     'betting.bracket.instructions': 'שלב הנוקאאוט נוצר מתוצאות הבתים שלך. בכל משחק - בחר את המנצח.',
+    // v2.5.71: shown on the FINAL match - the winner is also the champion,
+    // so the pick is worth final points + champion bonus (from scoring_rules).
+    'betting.bracket.finalPoints': '🏆 ניחוש מדויק = {final} נק\' (גמר) + {bonus} בונוס אלופה = {total} נק\'',
+    'betting.bracket.finalPointsNoBonus': '🏆 ניחוש מדויק = {final} נק\'',
     'betting.tournamentWinner.title': 'מנצחת הטורניר',
     'betting.tournamentWinner.question': 'מי תזכה במונדיאל?',
     'betting.tournamentWinner.subtitle': 'בחר את הקבוצה שלדעתך תרים את הגביע',
@@ -2178,6 +2182,10 @@ const TRANSLATIONS = {
     'betting.skipForNow': 'Skip for now — I\'ll come back',
     'betting.bracket.title': 'Your Bracket',
     'betting.bracket.instructions': 'Your bracket is built from your group predictions. For each match - pick the winner.',
+    // v2.5.71: shown on the FINAL match - the winner is also the champion,
+    // so the pick is worth final points + champion bonus (from scoring_rules).
+    'betting.bracket.finalPoints': '🏆 Correct pick = {final} pts (final) + {bonus} champion bonus = {total} pts',
+    'betting.bracket.finalPointsNoBonus': '🏆 Correct pick = {final} pts',
     'betting.tournamentWinner.title': 'Tournament Winner',
     'betting.tournamentWinner.question': 'Who wins the World Cup?',
     'betting.tournamentWinner.subtitle': 'Pick the team you think will lift the trophy',

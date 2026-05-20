@@ -7847,11 +7847,30 @@ function spRenderBracketMatch(m) {
       <span class="bt-check"><i class="ti ti-check"></i></span>
     </button>`;
   };
+
+  // v2.5.71: the FINAL match (pos 31) is also the tournament-winner pick, so
+  // a correct pick earns BOTH the final points AND the champion bonus. Show
+  // the combined total inline, read live from scoring_rules so it always
+  // reflects this pool's settings.
+  let finalNote = '';
+  if (m.round === 'FINAL') {
+    const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
+    const finalPts = rules.final ?? 0;
+    const bonus = rules.tournament_winner ?? 0;
+    const total = finalPts + bonus;
+    if (total > 0) {
+      finalNote = bonus > 0
+        ? `<div class="sp-bracket-final-note">${t('betting.bracket.finalPoints', { final: finalPts, bonus: bonus, total: total })}</div>`
+        : `<div class="sp-bracket-final-note">${t('betting.bracket.finalPointsNoBonus', { final: finalPts })}</div>`;
+    }
+  }
+
   return `
     <div class="sp-bracket-match">
       ${teamBtn(m.home, 'home')}
       <div class="sp-bracket-vs">VS</div>
       ${teamBtn(m.away, 'away')}
+      ${finalNote}
     </div>
   `;
 }
