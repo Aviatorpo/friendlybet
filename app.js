@@ -7487,8 +7487,8 @@ function _spGroupsAdvance() {
     showToast(t('betting.groupsIncompleteHint', { letters: incomplete.join(', ') }), 'info');
   }
   spSaveGroupsToDb(false);
-  spRenderBracket();
-  showScreen('sp-bracket-screen');
+  // v2.5.81: route through the third-place selection step before the knockout.
+  spStartThirdPlaceStep();
 }
 
 function spGroupsNext() {
@@ -7558,13 +7558,12 @@ async function spGroupsSkip() {
     clearTimeout(_spSaveTimer);
     _spSaveTimer = null;
   }
-  // Advance — last group → bracket (existing permissive transition).
+  // Advance — last group → third-place selection step (v2.5.81).
   if (spState.currentGroupIdx < 11) {
     spState.currentGroupIdx++;
     spRenderGroups();
   } else {
-    spRenderBracket();
-    showScreen('sp-bracket-screen');
+    spStartThirdPlaceStep();
   }
 }
 window.spGroupsSkip = spGroupsSkip;
@@ -7865,14 +7864,59 @@ function spToggleThirdPlace(letter) {
     set.add(letter);
   }
   spState.thirdPlaceAdvancers = [...set];
-  // The set of advancing 3rd-place teams changed → R32 opponents change, so
-  // any downstream bracket picks that depended on them may be stale. Clearing
-  // is heavy-handed; instead we just re-render and let the user re-pick where
-  // a slot's team changed. (Scoring is per-team-advanced, so this is safe.)
-  spRenderBracket();
+  // Re-render whichever screen is hosting the selector. (Scoring is
+  // per-team-advanced, so changing the set is safe — no need to wipe picks.)
+  if (state.currentScreen === 'sp-third-place-screen') spRenderThirdPlaceStep();
+  else spRenderBracket();
   spSaveThirdPlaceToDb();
 }
 window.spToggleThirdPlace = spToggleThirdPlace;
+
+// v2.5.81: dedicated "pick your 8 third-place advancers" step, shown after
+// the groups and BEFORE the knockout (so first-time users who go through the
+// single-match walkthrough still get to choose). Reuses _spRenderThirdPlacePanel.
+function spRenderThirdPlaceStep() {
+  spEnsureThirdPlaceSeeded();
+  const c = document.getElementById('sp-third-place-container');
+  if (c) c.innerHTML = _spRenderThirdPlacePanel();
+  const next = document.getElementById('sp-third-place-next');
+  if (next) next.disabled = (spState.thirdPlaceAdvancers || []).length !== 8;
+}
+
+function spStartThirdPlaceStep() {
+  spRenderThirdPlaceStep();
+  showScreen('sp-third-place-screen');
+}
+window.spStartThirdPlaceStep = spStartThirdPlaceStep;
+
+function spThirdPlaceBack() {
+  spState.currentGroupIdx = 11;
+  spRenderGroups();
+  showScreen('sp-groups-screen');
+}
+window.spThirdPlaceBack = spThirdPlaceBack;
+
+function spThirdPlaceContinue() {
+  if ((spState.thirdPlaceAdvancers || []).length !== 8) {
+    showToast(t('thirdPlace.selectExactly', { n: (spState.thirdPlaceAdvancers || []).length }), 'error');
+    return;
+  }
+  spSaveThirdPlaceToDb();
+  // First time (no bracket picks yet) → single-match walkthrough; otherwise
+  // the full grid bracket.
+  if (!spState.bracketPicks || Object.keys(spState.bracketPicks).length === 0) {
+    koSingle.mode = 'single-phase';
+    koSingle.sequence = _koSinglePhaseSequence();
+    koSingle.idx = 0;
+    state.spInFlow = true;
+    koSingleRender();
+    showScreen('ko-single-screen');
+  } else {
+    spRenderBracket();
+    showScreen('sp-bracket-screen');
+  }
+}
+window.spThirdPlaceContinue = spThirdPlaceContinue;
 
 function spRenderBracket() {
   const container = document.getElementById('sp-bracket-container');
@@ -9775,18 +9819,9 @@ spGroupsNext = function() {
   }
   spSaveGroupsToDb(false);
 
-  // First time = no bracket picks yet. Use single-match walkthrough.
-  if (!spState.bracketPicks || Object.keys(spState.bracketPicks).length === 0) {
-    koSingle.mode = 'single-phase';
-    koSingle.sequence = _koSinglePhaseSequence();
-    koSingle.idx = 0;
-    state.spInFlow = true;
-    koSingleRender();
-    showScreen('ko-single-screen');
-    return;
-  }
-  spRenderBracket();
-  showScreen('sp-bracket-screen');
+  // v2.5.81: always go through the "pick your 8 third-place advancers" step
+  // first (it routes onward to the walkthrough or the grid bracket).
+  spStartThirdPlaceStep();
 };
 
 window.koSinglePrev = koSinglePrev;
@@ -9826,6 +9861,7 @@ const _fbScreenBackMap = {
   'join-nickname-screen': 'join-pool-screen',
   // Single-phase flow
   'sp-groups-screen': 'user-dashboard-screen',
+  'sp-third-place-screen': 'sp-groups-screen',
   'sp-bracket-screen': 'sp-groups-screen',
   'sp-winner-screen': 'sp-bracket-screen',
   'sp-summary-screen': 'user-dashboard-screen',

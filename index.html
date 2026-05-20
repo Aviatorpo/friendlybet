@@ -2313,7 +2313,7 @@ function loadTablerFallback() {
     <!-- Footer -->
     <div class="menu-footer">
       <span>FriendlyBet</span>
-      <span class="menu-version">v2.5.80</span>
+      <span class="menu-version">v2.5.81</span>
     </div>
   </div>
 
@@ -2384,6 +2384,32 @@ function loadTablerFallback() {
     <button class="sp-skip-link" id="sp-groups-skip" onclick="spGroupsSkip()" type="button">
       <span data-i18n="betting.skipForNow">דלג בינתיים — נחזור לזה אחר כך</span>
     </button>
+  </div>
+</div>
+
+<!-- A2. THIRD-PLACE ADVANCERS SCREEN (pick 8 of 12 before the knockout) -->
+<div id="sp-third-place-screen" class="screen">
+  <div class="topbar">
+    <button class="btn-icon" onclick="spThirdPlaceBack()" data-i18n-aria="common.back" aria-label="Back">
+      <i class="ti ti-arrow-right"></i>
+    </button>
+    <div class="topbar-center">
+      <div class="topbar-title-small" data-i18n="thirdPlace.title">איזה 8 שלישיות עולות?</div>
+    </div>
+    <div style="width:32px;"></div>
+  </div>
+  <div class="container">
+    <div id="sp-third-place-container"></div>
+    <div class="sp-group-nav">
+      <button class="btn-secondary" onclick="spThirdPlaceBack()">
+        <i class="ti ti-arrow-right"></i>
+        <span data-i18n="wizard.back">חזור</span>
+      </button>
+      <button class="btn-primary" id="sp-third-place-next" onclick="spThirdPlaceContinue()">
+        <span data-i18n="wizard.next">הבא</span>
+        <i class="ti ti-arrow-left"></i>
+      </button>
+    </div>
   </div>
 </div>
 
