@@ -8,10 +8,11 @@
 -- Run once in the Supabase SQL editor. Idempotent.
 -- ============================================================
 
+-- NOTE: pools.id and users.id are UUID in this project, so the FKs use UUID.
 CREATE TABLE IF NOT EXISTS sp_third_place_picks (
   id           SERIAL PRIMARY KEY,
-  pool_id      INTEGER REFERENCES pools(id) ON DELETE CASCADE,
-  user_id      INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  pool_id      UUID REFERENCES pools(id) ON DELETE CASCADE,
+  user_id      UUID REFERENCES users(id) ON DELETE CASCADE,
   group_letter TEXT NOT NULL,
   created_at   TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE (pool_id, user_id, group_letter)
