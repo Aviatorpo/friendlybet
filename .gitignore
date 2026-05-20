@@ -12,3 +12,6 @@ node_modules/
 HEBREW_TEXTS*.md
 HEBREW_TEXTS*.csv
 _apply_hebrew.js
+
+# Marketing scout - lives in its own PRIVATE repo, never in the public app repo
+marketing-scout/
