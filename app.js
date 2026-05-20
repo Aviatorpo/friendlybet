@@ -6315,15 +6315,15 @@ const DEFAULT_SCORING_RULES = {
     // v2.5.70: scoring follows the "correct pick = team reached NEXT round"
     // convention. A correct R32 winner pick means the team advanced to R16
     // (worth 2 pts); a correct R16 pick = team in QF (4 pts); ...; correct
-    // Final pick = team is champion (32 pts). Doubling-progression keeps each
-    // stage maxing at ~32 across the pool:
+    // Final pick = team is champion (32 pts).
+    // v2.5.72: NO separate tournament_winner bonus - a correct Final pick IS
+    // the champion prediction, rewarded once via `final`.
     //   1pt × 48 correct group positions (12 groups × 4) = up to 48
     //   2pt × 16 R32 winners (reached R16)               = 32
     //   4pt ×  8 R16 winners (reached QF)                = 32
     //   8pt ×  4 QF winners  (reached SF)                = 32
     //  16pt ×  2 SF winners  (reached Final)             = 32
-    //  32pt ×  1 Final winner (champion)                 = 32
-    //  32pt champion bonus (on top of Final)             = 32
+    //  32pt ×  1 Final winner (= champion)               = 32
     group_first: 1,
     group_second: 1,
     group_third: 1,
@@ -6333,7 +6333,6 @@ const DEFAULT_SCORING_RULES = {
     quarter_final: 8,
     semi_final: 16,
     final: 32,
-    tournament_winner: 32,
     top_scorer: 20
   },
   two_phase: {
@@ -6348,9 +6347,6 @@ const DEFAULT_SCORING_RULES = {
     quarter_final: 8,
     semi_final: 16,
     final: 32,
-    // v2.5.34: bonus on top of the final-correct pick for predicting the
-    // tournament champion (the team that wins position 31 in v2.5.68).
-    tournament_winner: 32,
     top_scorer: 20
   }
 };
@@ -6501,11 +6497,13 @@ function getWizardRuleKeys() {
   // v2.5.70: round_of_32 restored - each correct R32 winner pick means the
   // team reached R16, which is a meaningful achievement beyond just being
   // top 2 of a group (since 8 of 12 third-place teams also advance to R32).
+  // v2.5.72: tournament_winner removed - a correct Final pick already IS the
+  // champion prediction, so it's scored once via `final`.
   if (wizardState.mode === 'two_phase') {
-    return ['group_first','group_second','round_of_32','round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
+    return ['group_first','group_second','round_of_32','round_of_16','quarter_final','semi_final','final','top_scorer'];
   }
   return ['group_first','group_second','group_third','group_fourth',
-          'round_of_32','round_of_16','quarter_final','semi_final','final','tournament_winner','top_scorer'];
+          'round_of_32','round_of_16','quarter_final','semi_final','final','top_scorer'];
 }
 
 // v2.5.7: read-only render of a pool's scoring_rules into the Pool Settings
@@ -6523,10 +6521,6 @@ function _renderV2ScoringList(pool) {
     {
       titleKey: 'wizard.ruleGroup.knockout',
       rows: ['round_of_32', 'round_of_16', 'quarter_final', 'semi_final', 'final']
-    },
-    {
-      titleKey: 'wizard.ruleGroup.winner',
-      rows: ['tournament_winner']
     },
     {
       titleKey: 'wizard.ruleGroup.bonus',
@@ -6566,13 +6560,6 @@ function _wizardRuleGroups() {
         rows: ['round_of_32', 'round_of_16', 'quarter_final', 'semi_final', 'final']
       },
       {
-        titleKey: 'wizard.ruleGroup.winner',
-        // v2.5.36: tournament_winner is a prediction in its own right, not a
-        // bonus on top of something else. Promoted to its own section so the
-        // user sees it as a first-class scoring row.
-        rows: ['tournament_winner']
-      },
-      {
         titleKey: 'wizard.ruleGroup.bonus',
         rows: ['top_scorer']
       }
@@ -6588,10 +6575,6 @@ function _wizardRuleGroups() {
     {
       titleKey: 'wizard.ruleGroup.knockout',
       rows: ['round_of_32', 'round_of_16', 'quarter_final', 'semi_final', 'final'].filter(inSet)
-    },
-    {
-      titleKey: 'wizard.ruleGroup.winner',
-      rows: ['tournament_winner'].filter(inSet)
     },
     {
       titleKey: 'wizard.ruleGroup.bonus',
@@ -6907,7 +6890,6 @@ function calcMaxPoints(rules, mode) {
            4 * (rules.quarter_final || 0) +
            2 * (rules.semi_final || 0) +
            1 * (rules.final || 0) +
-           (rules.tournament_winner || 0) +
            (rules.top_scorer || 0);
   }
   // two_phase
@@ -7811,17 +7793,18 @@ function spRenderBracket() {
   // v2.5.36: render the points-hint row above the bracket
   const hint = document.getElementById('sp-bracket-points-hint');
   if (hint) {
+    // v2.5.72: tournament-winner pill removed - the Final pick IS the champion
+    // pick, already represented by the Final stage.
     const stages = [
       { label: t('knockout.r32'), pts: rules.round_of_32 },
       { label: t('knockout.r16'), pts: rules.round_of_16 },
       { label: t('knockout.qf'),  pts: rules.quarter_final },
       { label: t('knockout.sf'),  pts: rules.semi_final },
-      { label: t('knockout.final'), pts: rules.final },
-      { label: t('betting.tournamentWinner.title'), pts: rules.tournament_winner, winner: true }
+      { label: t('knockout.final'), pts: rules.final }
     ];
     hint.innerHTML = stages
       .filter(s => s.pts != null && s.pts > 0)
-      .map(s => `<span class="pts-pill${s.winner ? ' pts-pill-winner' : ''}">${s.label}: ${s.pts}</span>`)
+      .map(s => `<span class="pts-pill">${s.label}: ${s.pts}</span>`)
       .join('');
   }
 
@@ -7848,20 +7831,15 @@ function spRenderBracketMatch(m) {
     </button>`;
   };
 
-  // v2.5.71: the FINAL match (pos 31) is also the tournament-winner pick, so
-  // a correct pick earns BOTH the final points AND the champion bonus. Show
-  // the combined total inline, read live from scoring_rules so it always
-  // reflects this pool's settings.
+  // v2.5.72: the FINAL match (pos 31) winner is the tournament champion. A
+  // correct pick is rewarded once via the `final` points (no separate
+  // champion bonus). Show that value inline, read live from scoring_rules.
   let finalNote = '';
   if (m.round === 'FINAL') {
     const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
     const finalPts = rules.final ?? 0;
-    const bonus = rules.tournament_winner ?? 0;
-    const total = finalPts + bonus;
-    if (total > 0) {
-      finalNote = bonus > 0
-        ? `<div class="sp-bracket-final-note">${t('betting.bracket.finalPoints', { final: finalPts, bonus: bonus, total: total })}</div>`
-        : `<div class="sp-bracket-final-note">${t('betting.bracket.finalPointsNoBonus', { final: finalPts })}</div>`;
+    if (finalPts > 0) {
+      finalNote = `<div class="sp-bracket-final-note">${t('betting.bracket.finalPoints', { n: finalPts })}</div>`;
     }
   }
 
@@ -9349,14 +9327,9 @@ function _koSinglePoints(round) {
   if (koSingle.mode === 'two-phase') {
     return (ROUND_INFO && ROUND_INFO[round] && ROUND_INFO[round].points) || 1;
   }
-  // single-phase scoring rules — return ONLY the stage value from the
-  // pool's scoring_rules. v2.5.65: previously this summed rules.final +
-  // rules.tournament_winner on the FINAL match, which showed users "48
-  // points" while the bracket overview's points-hint showed "Final: 16"
-  // and "Tournament Winner: 32" as separate stages. The two displays
-  // disagreed. Each stage label now reflects only that stage's
-  // scoring_rules value, and the tournament_winner bonus is surfaced
-  // separately on the FINAL match (see koSingleRender).
+  // single-phase scoring rules — return the stage value from the pool's
+  // scoring_rules. v2.5.72: the FINAL value is the full champion reward
+  // (there is no separate tournament_winner bonus anymore).
   const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
   // v2.5.70: every round is scored. A correct pick = the team reached the
   // NEXT round, so R32 = 2 pts (reached R16), R16 = 4 pts (reached QF), etc.
@@ -9514,19 +9487,11 @@ function koSingleRender() {
       </button>`;
   };
 
-  // v2.5.65: on the FINAL match, surface the tournament-winner bonus as a
-  // secondary line so the user understands picking the final winner ALSO
-  // earns the champion bonus. The main label still shows just rules.final.
-  // Applies to both single_phase and two_phase since the scoring script
-  // awards the tournament_winner bonus in both modes when the final pick
-  // is correct (see scripts/calculate-scores-v2.js).
+  // v2.5.72: on the FINAL match, clarify that the winner is the champion -
+  // the points are awarded once (no separate champion bonus).
   let finalBonusLabel = '';
   if (step.round === 'FINAL') {
-    const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
-    const bonus = rules.tournament_winner ?? 0;
-    if (bonus > 0) {
-      finalBonusLabel = `<div class="ko-single-bonus">${t('knockoutFirst.winnerBonus', { n: bonus })}</div>`;
-    }
+    finalBonusLabel = `<div class="ko-single-bonus">${t('knockoutFirst.finalIsChampion')}</div>`;
   }
 
   card.innerHTML = `

@@ -1018,10 +1018,9 @@ const TRANSLATIONS = {
     'betting.skipForNow': 'דלג בינתיים — נחזור לזה אחר כך',
     'betting.bracket.title': 'שלב הנוקאאוט שלך',
     'betting.bracket.instructions': 'שלב הנוקאאוט נוצר מתוצאות הבתים שלך. בכל משחק - בחר את המנצח.',
-    // v2.5.71: shown on the FINAL match - the winner is also the champion,
-    // so the pick is worth final points + champion bonus (from scoring_rules).
-    'betting.bracket.finalPoints': '🏆 ניחוש מדויק = {final} נק\' (גמר) + {bonus} בונוס אלופה = {total} נק\'',
-    'betting.bracket.finalPointsNoBonus': '🏆 ניחוש מדויק = {final} נק\'',
+    // v2.5.72: shown on the FINAL match - the winner is the champion, worth
+    // the final points (no separate bonus). Read live from scoring_rules.
+    'betting.bracket.finalPoints': '🏆 המנצחת בגמר היא אלופת הטורניר — ניחוש מדויק = {n} נק\'',
     'betting.tournamentWinner.title': 'מנצחת הטורניר',
     'betting.tournamentWinner.question': 'מי תזכה במונדיאל?',
     'betting.tournamentWinner.subtitle': 'בחר את הקבוצה שלדעתך תרים את הגביע',
@@ -1163,7 +1162,7 @@ const TRANSLATIONS = {
     // so a correct pick earns different totals depending on the team.
     'knockoutFirst.pointsLabelRange': '{min} או {max} נקודות עבור הימור מדוייק (לפי מכפיל הסיכון של הקבוצה)',
     // v2.5.65: extra line on the FINAL match - tournament winner bonus
-    'knockoutFirst.winnerBonus': '+ {n} נקודות בונוס על ניחוש מנצחת הטורניר',
+    'knockoutFirst.finalIsChampion': '🏆 המנצחת בגמר היא אלופת הטורניר',
     'knockoutFirst.skip': 'דלג בינתיים',
     'knockoutFirst.completedToast': 'מעולה! עכשיו תוכל לערוך כל בחירה',
 
@@ -2182,10 +2181,9 @@ const TRANSLATIONS = {
     'betting.skipForNow': 'Skip for now — I\'ll come back',
     'betting.bracket.title': 'Your Bracket',
     'betting.bracket.instructions': 'Your bracket is built from your group predictions. For each match - pick the winner.',
-    // v2.5.71: shown on the FINAL match - the winner is also the champion,
-    // so the pick is worth final points + champion bonus (from scoring_rules).
-    'betting.bracket.finalPoints': '🏆 Correct pick = {final} pts (final) + {bonus} champion bonus = {total} pts',
-    'betting.bracket.finalPointsNoBonus': '🏆 Correct pick = {final} pts',
+    // v2.5.72: shown on the FINAL match - the winner is the champion, worth
+    // the final points (no separate bonus). Read live from scoring_rules.
+    'betting.bracket.finalPoints': '🏆 The final winner is the champion — correct pick = {n} pts',
     'betting.tournamentWinner.title': 'Tournament Winner',
     'betting.tournamentWinner.question': 'Who wins the World Cup?',
     'betting.tournamentWinner.subtitle': 'Pick the team you think will lift the trophy',
@@ -2327,7 +2325,7 @@ const TRANSLATIONS = {
     // so a correct pick earns different totals depending on the team.
     'knockoutFirst.pointsLabelRange': '{min} or {max} points if you\'re right (depending on the team\'s risk multiplier)',
     // v2.5.65: extra line on the FINAL match - tournament winner bonus
-    'knockoutFirst.winnerBonus': '+ {n} bonus points for picking the tournament champion',
+    'knockoutFirst.finalIsChampion': '🏆 The final winner is the tournament champion',
     'knockoutFirst.skip': 'Skip for now',
     'knockoutFirst.completedToast': 'Great! You can now edit any pick',
 

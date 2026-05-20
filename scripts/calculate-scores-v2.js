@@ -22,16 +22,17 @@ if (!SUPABASE_KEY) {
 const DEFAULT_RULES_SINGLE = {
   // v2.5.63: every correct group POSITION (1st-4th) earns 1 pt.
   // v2.5.70: each correct knockout pick = "team reached the NEXT round".
-  // R32 pick = team in R16 (2 pts), R16 pick = team in QF (4 pts), and so
-  // on - doubling progression so every stage maxes out at ~32 pts.
+  // R32 pick = team in R16 (2 pts), R16 pick = team in QF (4 pts), and so on.
+  // v2.5.72: NO tournament_winner bonus - a correct Final pick IS the champion
+  // prediction, rewarded once via `final`.
   group_first: 1, group_second: 1, group_third: 1, group_fourth: 1,
   round_of_32: 2, round_of_16: 4, quarter_final: 8, semi_final: 16, final: 32,
-  tournament_winner: 32, top_scorer: 20
+  top_scorer: 20
 };
 const DEFAULT_RULES_TWO = {
   group_first: 1, group_second: 1, group_third: 0, group_fourth: 0,
   round_of_32: 2, round_of_16: 4, quarter_final: 8, semi_final: 16, final: 32,
-  tournament_winner: 32, top_scorer: 20
+  top_scorer: 20
 };
 
 // v2.5.36: shared multiplier resolver. Looks up (in order): the
@@ -234,15 +235,6 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     if (realKnockoutWinners[m.stage]) realKnockoutWinners[m.stage].add(winner);
   });
 
-  // Final winner = winner of FINAL match
-  let realChampion = null;
-  const finalMatch = finishedMatches.find(m => m.stage === 'FINAL');
-  if (finalMatch && finalMatch.home_score != null) {
-    realChampion = finalMatch.home_score > finalMatch.away_score ? finalMatch.home_team_code
-                 : finalMatch.away_score > finalMatch.home_score ? finalMatch.away_team_code
-                 : null;
-  }
-
   // Score each user
   for (const user of users) {
     let groupPoints = 0;
@@ -290,12 +282,9 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
       }
     });
 
-    // Tournament winner (multiplied by the champion's multiplier too)
-    const twp = await sb('GET', 'tournament_winner_picks',
-      { query: `?user_id=eq.${user.id}&select=*&limit=1` });
-    if (twp && twp[0] && realChampion && twp[0].team_code === realChampion) {
-      bonusPoints += (rules.tournament_winner || 0) * resolveMult(twp[0].team_code, twp[0].multiplier_applied);
-    }
+    // v2.5.72: no separate tournament_winner bonus - a correct Final pick
+    // (bracket position 31) already rewards `final` points via the bracket
+    // loop above, and that pick IS the champion prediction.
 
     // Top scorer
     const tsp = tsMap.get(user.id);
@@ -378,8 +367,6 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     // Knockout picks - per-match
     const kp = await sb('GET', 'knockout_picks',
       { query: `?user_id=eq.${user.id}&select=*` });
-    let finalWinnerPredicted = false;
-    let finalWinnerMult = 1.0;
     finishedMatches.forEach(m => {
       if (!m.stage || m.stage === 'GROUP_STAGE' || m.stage === 'THIRD_PLACE') return;
       const winner = m.home_score > m.away_score ? m.home_team_code
@@ -392,16 +379,10 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
       if (!key) return;
       const mult = resolveMult(winner, pick.multiplier_applied);
       knockoutPoints += (rules[key] || 0) * mult;
-      if (m.stage === 'FINAL') {
-        finalWinnerPredicted = true;
-        finalWinnerMult = mult;
-      }
     });
 
-    // Tournament-winner bonus on top of FINAL (applies the same multiplier)
-    if (finalWinnerPredicted && rules.tournament_winner) {
-      bonusPoints += rules.tournament_winner * finalWinnerMult;
-    }
+    // v2.5.72: no separate tournament_winner bonus - the FINAL pick already
+    // rewards `final` points above, and that pick IS the champion prediction.
 
     // Top scorer
     const tsp = tsMap.get(user.id);
