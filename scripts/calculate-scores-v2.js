@@ -20,13 +20,12 @@ if (!SUPABASE_KEY) {
 // v2.5.55: doubling-progression defaults (1 / 2 / 4 / 8 / 16 / 32) so each
 // stage maxes at ~32 pts across the pool.
 const DEFAULT_RULES_SINGLE = {
-  // v2.5.63: every correct group POSITION (1st-4th) earns 1 pt.
-  // v2.5.70: each correct knockout pick = "team reached the NEXT round".
-  // R32 pick = team in R16 (2 pts), R16 pick = team in QF (4 pts), and so on.
-  // v2.5.72: NO tournament_winner bonus - a correct Final pick IS the champion
-  // prediction, rewarded once via `final`.
-  group_first: 1, group_second: 1, group_third: 1, group_fourth: 1,
-  round_of_32: 2, round_of_16: 4, quarter_final: 8, semi_final: 16, final: 32,
+  // v2.5.78: Eyal's tuned default scale (mirror app.js DEFAULT_SCORING_RULES).
+  //   Groups: 1st=4, 2nd=3, 3rd=2, 4th=1.
+  //   Knockout (correct winner = team reached next round): R32=1, R16=2,
+  //   QF=3, SF=4, Final=8. No separate tournament_winner bonus.
+  group_first: 4, group_second: 3, group_third: 2, group_fourth: 1,
+  round_of_32: 1, round_of_16: 2, quarter_final: 3, semi_final: 4, final: 8,
   top_scorer: 20
 };
 const DEFAULT_RULES_TWO = {

@@ -6309,30 +6309,20 @@ function fifaRankOf(code) { return FIFA_RANKINGS[code] ?? 999; }
 //  32 pt ×  1 champion              =  32
 const DEFAULT_SCORING_RULES = {
   single_phase: {
-    // v2.5.63: single_phase asks for the full 1st-4th group ordering, so
-    // every correctly-predicted position earns 1 point regardless of
-    // whether the team actually advances.
-    // v2.5.70: scoring follows the "correct pick = team reached NEXT round"
-    // convention. A correct R32 winner pick means the team advanced to R16
-    // (worth 2 pts); a correct R16 pick = team in QF (4 pts); ...; correct
-    // Final pick = team is champion (32 pts).
-    // v2.5.72: NO separate tournament_winner bonus - a correct Final pick IS
-    // the champion prediction, rewarded once via `final`.
-    //   1pt × 48 correct group positions (12 groups × 4) = up to 48
-    //   2pt × 16 R32 winners (reached R16)               = 32
-    //   4pt ×  8 R16 winners (reached QF)                = 32
-    //   8pt ×  4 QF winners  (reached SF)                = 32
-    //  16pt ×  2 SF winners  (reached Final)             = 32
-    //  32pt ×  1 Final winner (= champion)               = 32
-    group_first: 1,
-    group_second: 1,
-    group_third: 1,
+    // v2.5.78: Eyal's tuned default scale.
+    //   Groups: 1st=4, 2nd=3, 3rd=2, 4th=1 (rewards getting the exact order).
+    //   Knockout (correct winner pick = team reached NEXT round):
+    //     R32=1, R16=2, QF=3, SF=4, Final=8.
+    //   No separate tournament_winner bonus (the Final pick IS the champion).
+    group_first: 4,
+    group_second: 3,
+    group_third: 2,
     group_fourth: 1,
-    round_of_32: 2,
-    round_of_16: 4,
-    quarter_final: 8,
-    semi_final: 16,
-    final: 32,
+    round_of_32: 1,
+    round_of_16: 2,
+    quarter_final: 3,
+    semi_final: 4,
+    final: 8,
     top_scorer: 20
   },
   two_phase: {
@@ -7213,9 +7203,9 @@ function spRenderGroups() {
   if (ptsHint) {
     const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
     const pts = {
-      1: rules.group_first ?? 1,
-      2: rules.group_second ?? 1,
-      3: rules.group_third ?? 1,
+      1: rules.group_first ?? 4,
+      2: rules.group_second ?? 3,
+      3: rules.group_third ?? 2,
       4: rules.group_fourth ?? 1
     };
     const present = [1, 2, 3, 4].filter(n => pts[n] > 0);
@@ -9341,14 +9331,14 @@ function _koSinglePoints(round) {
   // scoring_rules. v2.5.72: the FINAL value is the full champion reward
   // (there is no separate tournament_winner bonus anymore).
   const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
-  // v2.5.70: every round is scored. A correct pick = the team reached the
-  // NEXT round, so R32 = 2 pts (reached R16), R16 = 4 pts (reached QF), etc.
+  // v2.5.78: a correct pick = the team reached the NEXT round. Fallbacks
+  // mirror DEFAULT_SCORING_RULES.single_phase (R32=1, R16=2, QF=3, SF=4, Final=8).
   return ({
-    R32: rules.round_of_32 ?? 2,
-    R16: rules.round_of_16 ?? 4,
-    QF:  rules.quarter_final ?? 8,
-    SF:  rules.semi_final ?? 16,
-    FINAL: rules.final ?? 32
+    R32: rules.round_of_32 ?? 1,
+    R16: rules.round_of_16 ?? 2,
+    QF:  rules.quarter_final ?? 3,
+    SF:  rules.semi_final ?? 4,
+    FINAL: rules.final ?? 8
   })[round] ?? 0;
 }
 
