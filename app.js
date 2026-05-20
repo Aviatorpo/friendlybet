@@ -8707,13 +8707,15 @@ async function spAutoLockPoolIfNeeded() {
 async function showUserHypotheticalBracket(userId, userName) {
   if (!supabaseClient) return;
   try {
-    // Load groups + bracket + winner + top scorer for that user
-    const [gpp, kp, twp, tsp] = await Promise.all([
+    // Load groups + bracket + winner + top scorer + chosen 3rd-place advancers
+    const [gpp, kp, twp, tsp, tpp] = await Promise.all([
       supabaseClient.from('group_position_picks').select('*').eq('user_id', userId),
       supabaseClient.from('knockout_picks').select('*').eq('user_id', userId).not('bracket_position', 'is', null),
       supabaseClient.from('tournament_winner_picks').select('*').eq('user_id', userId).maybeSingle(),
-      supabaseClient.from('top_scorer_picks').select('*').eq('user_id', userId).maybeSingle()
+      supabaseClient.from('top_scorer_picks').select('*').eq('user_id', userId).maybeSingle(),
+      supabaseClient.from('sp_third_place_picks').select('group_letter').eq('user_id', userId)
     ]);
+    const chosenThird = (tpp && tpp.data ? tpp.data.map(r => r.group_letter) : []);
 
     const positions = {};
     (gpp.data || []).forEach(p => {
@@ -8767,20 +8769,12 @@ async function showUserHypotheticalBracket(userId, userName) {
         }
         return null;
       };
-      // Reuse the same 3rd-place greedy assignment as the live flow
-      const slotPositions = [2, 5, 7, 8, 9, 10, 13, 15];
-      const used = new Set();
-      const assignment = {};
-      slotPositions.forEach(pos => {
-        const def = SP_R32_DEF[pos];
-        const thirdFeed = def.find(f => f.type === 'third');
-        if (!thirdFeed) return;
-        for (const g of thirdFeed.allowed) {
-          if (used.has(g)) continue;
-          assignment[pos] = g; used.add(g); break;
-        }
-      });
-      const thirdSlots = { assignment, used };
+      // v2.5.80: use THIS user's chosen 8 third-place advancers (matched to
+      // the R32 slots), exactly like the live flow. Fall back to the greedy
+      // default only if they haven't chosen 8 / the set can't be matched.
+      const matched = chosenThird.length === 8 ? _spMatchThirdPlace(chosenThird) : null;
+      const assignment = matched || _spGreedyThirdPlaceSlots();
+      const thirdSlots = { assignment };
 
       const r32 = [];
       for (let pos = 1; pos <= 16; pos++) {
