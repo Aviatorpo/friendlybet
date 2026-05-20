@@ -1,18 +1,18 @@
 # ============================================================
-# FriendlyBet - Score Calculation Workflow
+# FriendlyBet - Score Calculation Workflow (LEGACY / v1)
 # ============================================================
-# Runs every 30 minutes during the tournament
-# Calculates points for all users based on finished matches
+# DISABLED on schedule as of v2.5.76. The v2 workflow
+# (calculate-scores-v2.yml) supersedes this and scores BOTH
+# single_phase and two_phase pools. Running both on the same
+# cron caused them to overwrite each other's user score columns
+# (total_score / groups_score / knockout_score) every 30 min.
+# Kept here for reference + manual dispatch only.
 # ============================================================
 
-name: Calculate User Scores
+name: Calculate User Scores (LEGACY v1 - manual only)
 
 on:
-  schedule:
-    # Every 30 minutes
-    - cron: '*/30 * * * *'
-  
-  # Allow manual triggering
+  # Schedule removed - v2 owns scoring now. Manual trigger only.
   workflow_dispatch:
 
 jobs:

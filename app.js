@@ -7205,6 +7205,10 @@ function spRenderGroups() {
     t('betting.groupStep', { n: spState.currentGroupIdx + 1, total: 12 });
 
   // v2.4.6: populate dynamic points-per-position hint from scoring_rules
+  // v2.5.76: hide the per-position pills entirely when every position is
+  // worth the same (the default: each correct pick = 1 pt). The bubbles
+  // only convey information when positions are scored differently (a custom
+  // pool), so for the default they were just noise.
   const ptsHint = document.getElementById('sp-points-hint');
   if (ptsHint) {
     const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
@@ -7214,12 +7218,17 @@ function spRenderGroups() {
       3: rules.group_third ?? 1,
       4: rules.group_fourth ?? 1
     };
-    // v2.5.63: any position the admin explicitly zeroed in custom rules
-    // is dropped from the row so it doesn't look like a pointless slot.
-    ptsHint.innerHTML = [1, 2, 3, 4]
-      .filter(n => pts[n] > 0)
-      .map(n => `<span class="pts-pill">${t('groups.pointsForPosition', { pos: n, pts: pts[n] })}</span>`)
-      .join('');
+    const present = [1, 2, 3, 4].filter(n => pts[n] > 0);
+    const allEqual = present.every(n => pts[n] === pts[present[0]]);
+    if (present.length === 0 || allEqual) {
+      ptsHint.innerHTML = '';
+      ptsHint.style.display = 'none';
+    } else {
+      ptsHint.style.display = '';
+      ptsHint.innerHTML = present
+        .map(n => `<span class="pts-pill">${t('groups.pointsForPosition', { pos: n, pts: pts[n] })}</span>`)
+        .join('');
+    }
   }
 
   // v2.5.58: hide the "Risk multipliers kick in from knockout" hint when
