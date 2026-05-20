@@ -7037,6 +7037,8 @@ const spState = {
   groupPositions: {},
   // bracketPicks: { [bracket_position]: 'TEAM_CODE' }
   bracketPicks: {},
+  // v2.5.79: group letters whose predicted 3rd-place team advances (pick 8)
+  thirdPlaceAdvancers: [],
   tournamentWinner: null,
   topScorerLoaded: false
 };
@@ -7104,6 +7106,7 @@ async function spLoadExistingPicks() {
   const newGroups = {};
   const newBracket = {};
   let newWinner = null;
+  let newThirdPlace = null;
   let anyDataLoaded = false;
   let anyError = false;
 
@@ -7155,6 +7158,12 @@ async function spLoadExistingPicks() {
     if (twpErr) { console.warn('load tournament_winner_picks err:', twpErr); anyError = true; }
     else if (twpArr && twpArr.length > 0) { newWinner = twpArr[0].team_code; anyDataLoaded = true; }
 
+    // v2.5.79: chosen 8 third-place advancers (group letters). Table may not
+    // exist yet (migration not run) → treated as no-data, seeded on render.
+    const { data: tpArr, error: tpErr } = await loadOrFallback('sp_third_place_picks');
+    if (tpErr) { console.warn('load sp_third_place_picks err:', tpErr); }
+    else if (tpArr && tpArr.length > 0) { newThirdPlace = tpArr.map(r => r.group_letter); anyDataLoaded = true; }
+
     console.log('[spLoadExistingPicks] result | groups=' + Object.keys(newGroups).length +
       ' bracket=' + Object.keys(newBracket).length +
       ' winner=' + (newWinner || 'none') +
@@ -7168,6 +7177,7 @@ async function spLoadExistingPicks() {
       spState.groupPositions = newGroups;
       spState.bracketPicks = newBracket;
       spState.tournamentWinner = newWinner;
+      spState.thirdPlaceAdvancers = newThirdPlace || [];
     } else {
       console.warn('spLoadExistingPicks: DB errors and no data — keeping in-memory state');
     }
@@ -7662,34 +7672,85 @@ const SP_BRACKET_PARENTS = (() => {
   return m;
 })();
 
-// Greedy auto-assignment of 8 of 12 predicted 3rd-place teams into the
-// R32 slots that accept a 3rd-placed team. Walks the slots in R32-position
-// order (2, 5, 7, 8, 9, 10, 13, 15). For each slot, takes the lowest-letter
-// group from the slot's allowed set whose 3rd-place team isn't already
-// assigned. Returns { [pos]: groupLetter, _used: Set<groupLetter> }.
-function _spResolveThirdPlaceSlots() {
-  const slotPositions = [2, 5, 7, 8, 9, 10, 13, 15];
+// The 8 R32 slots that take a best-third-place team, each with the FIFA
+// "allowed groups" set (a 3rd-place team from one of these groups fills it).
+const SP_THIRD_PLACE_SLOTS = [2, 5, 7, 8, 9, 10, 13, 15].map(pos => ({
+  pos,
+  allowed: SP_R32_DEF[pos].find(f => f.type === 'third').allowed
+}));
+
+// v2.5.79: user picks WHICH 8 of the 12 group 3rd-place teams advance
+// (spState.thirdPlaceAdvancers = array of group letters). Given those 8
+// groups, assign each to exactly one R32 slot respecting the slot's allowed
+// set (a bipartite perfect matching). Backtracking; slots ordered by fewest
+// options first. Returns { [pos]: letter } or null if no perfect matching
+// exists for that combination.
+function _spMatchThirdPlace(chosenGroups) {
+  const chosen = new Set(chosenGroups);
+  const slots = SP_THIRD_PLACE_SLOTS
+    .map(s => ({ pos: s.pos, opts: s.allowed.filter(g => chosen.has(g)) }))
+    .sort((a, b) => a.opts.length - b.opts.length); // most-constrained first
+  const assignment = {};
+  const used = new Set();
+  const bt = (i) => {
+    if (i === slots.length) return true;
+    for (const g of slots[i].opts) {
+      if (used.has(g)) continue;
+      assignment[slots[i].pos] = g; used.add(g);
+      if (bt(i + 1)) return true;
+      used.delete(g); delete assignment[slots[i].pos];
+    }
+    return false;
+  };
+  return bt(0) ? assignment : null;
+}
+
+// Greedy fallback: lowest-letter group per slot (used before the user has
+// chosen 8, or if a chosen combination can't be matched to the slots).
+function _spGreedyThirdPlaceSlots() {
   const used = new Set();
   const assignment = {};
-  slotPositions.forEach(pos => {
-    const def = SP_R32_DEF[pos];
-    const thirdFeed = def.find(f => f.type === 'third');
-    if (!thirdFeed) return;
-    const allowed = thirdFeed.allowed;
-    let chosen = null;
-    for (const g of allowed) {
-      if (used.has(g)) continue;
-      // The 3rd-place team for this group must be predicted by the user.
-      // If not yet predicted, still claim the slot (returns null team at render time).
-      chosen = g;
-      break;
-    }
-    if (chosen) {
-      assignment[pos] = chosen;
-      used.add(chosen);
-    }
+  SP_THIRD_PLACE_SLOTS.forEach(({ pos, allowed }) => {
+    const g = allowed.find(x => !used.has(x));
+    if (g) { assignment[pos] = g; used.add(g); }
   });
-  return { assignment, used };
+  return assignment;
+}
+
+function _spResolveThirdPlaceSlots() {
+  const picks = (spState.thirdPlaceAdvancers || []).filter(Boolean);
+  if (picks.length === 8) {
+    const matched = _spMatchThirdPlace(picks);
+    if (matched) return { assignment: matched, used: new Set(Object.values(matched)) };
+  }
+  // Not enough chosen (or unmatchable) → fall back to a deterministic set.
+  const assignment = _spGreedyThirdPlaceSlots();
+  return { assignment, used: new Set(Object.values(assignment)) };
+}
+
+// Seed a sensible default the first time: the 8 third-place teams with the
+// best FIFA rank among the user's predicted 3rd-placers, as long as that
+// set is matchable; otherwise the greedy set. Only fills if empty.
+function spEnsureThirdPlaceSeeded() {
+  // Only seed when there's NO selection yet. Once the user starts choosing
+  // (even a partial set mid-edit), never overwrite it.
+  if ((spState.thirdPlaceAdvancers || []).length > 0) return false;
+  const letters = WC2026_GROUP_LETTERS.filter(l => {
+    const arr = spState.groupPositions[l];
+    return arr && arr[2]; // has a predicted 3rd-place team
+  });
+  // best-ranked 8 by their predicted 3rd-place team's FIFA rank
+  const byRank = letters.slice().sort((a, b) =>
+    fifaRankOf(spState.groupPositions[a][2]) - fifaRankOf(spState.groupPositions[b][2]));
+  const best8 = byRank.slice(0, 8);
+  if (best8.length === 8 && _spMatchThirdPlace(best8)) {
+    spState.thirdPlaceAdvancers = best8;
+  } else {
+    spState.thirdPlaceAdvancers = Object.values(_spGreedyThirdPlaceSlots());
+  }
+  // persist the seeded default so it survives reloads (debounced, lock-safe)
+  if (typeof spSaveThirdPlaceToDb === 'function') spSaveThirdPlaceToDb();
+  return true;
 }
 
 function _spResolveFeed(feed, thirdSlots, slotPos) {
@@ -7763,8 +7824,61 @@ function spGetBracketStructure() {
   };
 }
 
+// v2.5.79: the "which 8 third-place teams advance" selector, rendered atop
+// the bracket. One chip per group showing that group's predicted 3rd-place
+// team; the user toggles exactly 8 on. Selecting a 9th is blocked until one
+// is removed. Changing the set re-derives the R32 matchups live.
+function _spRenderThirdPlacePanel() {
+  const chosen = new Set(spState.thirdPlaceAdvancers || []);
+  const chips = WC2026_GROUP_LETTERS.map(letter => {
+    const arr = spState.groupPositions[letter];
+    const code = arr && arr[2];
+    if (!code) return ''; // no 3rd-place predicted for this group yet
+    const on = chosen.has(letter);
+    return `<button class="sp-tp-chip ${on ? 'on' : ''}" onclick="spToggleThirdPlace('${letter}')">
+      <span class="sp-tp-grp">${t('groups.group')} ${letter}</span>
+      <span class="sp-tp-flag">${getCountryFlag(code)}</span>
+      <span class="sp-tp-name">${getTeamName(code)}</span>
+      <span class="sp-tp-check"><i class="ti ti-check"></i></span>
+    </button>`;
+  }).join('');
+  const n = chosen.size;
+  const warn = n !== 8
+    ? `<div class="sp-tp-warn">${t('thirdPlace.selectExactly', { n })}</div>` : '';
+  return `
+    <div class="sp-tp-panel">
+      <div class="sp-tp-title">${t('thirdPlace.title')}</div>
+      <div class="sp-tp-sub">${t('thirdPlace.subtitle')}</div>
+      <div class="sp-tp-count">${n} / 8</div>
+      <div class="sp-tp-chips">${chips}</div>
+      ${warn}
+    </div>`;
+}
+
+function spToggleThirdPlace(letter) {
+  if (spIsLocked && spIsLocked()) return;
+  const set = new Set(spState.thirdPlaceAdvancers || []);
+  if (set.has(letter)) {
+    set.delete(letter);
+  } else {
+    if (set.size >= 8) { showToast(t('thirdPlace.maxReached'), 'info'); return; }
+    set.add(letter);
+  }
+  spState.thirdPlaceAdvancers = [...set];
+  // The set of advancing 3rd-place teams changed → R32 opponents change, so
+  // any downstream bracket picks that depended on them may be stale. Clearing
+  // is heavy-handed; instead we just re-render and let the user re-pick where
+  // a slot's team changed. (Scoring is per-team-advanced, so this is safe.)
+  spRenderBracket();
+  spSaveThirdPlaceToDb();
+}
+window.spToggleThirdPlace = spToggleThirdPlace;
+
 function spRenderBracket() {
   const container = document.getElementById('sp-bracket-container');
+  // v2.5.79: make sure the user has a starting set of 8 third-place advancers
+  // (best-ranked by default) so the R32 isn't empty; they can change it.
+  spEnsureThirdPlaceSeeded();
   const struct = spGetBracketStructure();
 
   const renderRound = (titleKey, matches, ptsForStage) => `
@@ -7783,6 +7897,7 @@ function spRenderBracket() {
   // the team that reached the NEXT round.
   const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
   container.innerHTML =
+    _spRenderThirdPlacePanel() +
     renderRound('knockout.r32', struct.r32, rules.round_of_32) +
     renderRound('knockout.r16', struct.r16, rules.round_of_16) +
     renderRound('knockout.qf', struct.qf, rules.quarter_final) +
@@ -7903,6 +8018,28 @@ let _spBracketSaveTimer = null;
 function spAutoSaveBracket() {
   if (_spBracketSaveTimer) clearTimeout(_spBracketSaveTimer);
   _spBracketSaveTimer = setTimeout(() => spSaveBracketToDb(false), 600);
+}
+
+// v2.5.79: persist the 8 chosen third-place advancer group letters.
+let _spTpSaveTimer = null;
+function spSaveThirdPlaceToDb() {
+  if (_spTpSaveTimer) clearTimeout(_spTpSaveTimer);
+  _spTpSaveTimer = setTimeout(() => _spSaveThirdPlaceInner(), 600);
+}
+async function _spSaveThirdPlaceInner() {
+  if (!state.currentPool || !state.currentUser || !supabaseClient) return;
+  if (spIsLocked()) return;
+  const userId = state.currentUser.id;
+  const poolId = state.currentPool.id;
+  const letters = (spState.thirdPlaceAdvancers || []).filter(Boolean);
+  if (letters.length === 0) return; // never wipe to empty
+  try {
+    await supabaseClient.from('sp_third_place_picks')
+      .delete().eq('user_id', userId).eq('pool_id', poolId);
+    const rows = letters.map(l => ({ pool_id: poolId, user_id: userId, group_letter: l }));
+    const { error } = await supabaseClient.from('sp_third_place_picks').insert(rows);
+    if (error) console.warn('[spSaveThirdPlace] insert error:', error);
+  } catch (e) { console.warn('[spSaveThirdPlace] caught:', e); }
 }
 
 // v2.5.22: serialize bracket saves to prevent the DELETE+INSERT race.

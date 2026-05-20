@@ -186,6 +186,11 @@ const TRANSLATIONS = {
     'knockout.final': 'גמר',
     'knockout.pickWinner': 'בחר את המנצח',
     'knockout.tbd': 'יעודכן בהמשך',
+    // v2.5.79: third-place advancers selector
+    'thirdPlace.title': 'איזה 8 שלישיות עולות?',
+    'thirdPlace.subtitle': 'במונדיאל 2026 עולות 8 הקבוצות הטובות ביותר שסיימו במקום השלישי. בחר אילו 8 לדעתך יעלו — הן ישובצו אוטומטית לסיבוב ה-32.',
+    'thirdPlace.selectExactly': 'בחר בדיוק 8 שלישיות (נבחרו {n})',
+    'thirdPlace.maxReached': 'כבר נבחרו 8 — הסר אחת כדי לבחור אחרת',
     
     // === Top Scorer ===
     'topScorer.title': 'מלך השערים',
@@ -1350,6 +1355,11 @@ const TRANSLATIONS = {
     'knockout.final': 'Final',
     'knockout.pickWinner': 'Pick the winner',
     'knockout.tbd': 'TBD',
+    // v2.5.79: third-place advancers selector
+    'thirdPlace.title': 'Which 8 third-place teams advance?',
+    'thirdPlace.subtitle': 'At WC 2026 the 8 best third-placed teams advance. Pick which 8 you think go through — they\'ll be slotted into the Round of 32 automatically.',
+    'thirdPlace.selectExactly': 'Pick exactly 8 third-place teams ({n} selected)',
+    'thirdPlace.maxReached': '8 already selected — remove one to pick another',
     
     // === Top Scorer ===
     'topScorer.title': 'Top Scorer',
