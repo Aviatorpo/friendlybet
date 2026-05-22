@@ -5217,7 +5217,6 @@ function renderFullLeaderboard(users) {
           ${escapeHtml(user.nickname)}
           ${user.is_admin ? `<span class="admin-badge">${t('common.admin')}</span>` : ''}
           ${isMe ? `<span class="lb-badge">${t('common.you')}</span>` : ''}
-          ${isSinglePhase ? `<button class="lb-view-bracket-btn" onclick="showUserHypotheticalBracket(${user.id}, '${escapeHtml(user.nickname).replace(/'/g, "\\'")}')">${t('leaderboard.viewBracket')}</button>` : ''}
         </div>
         <div class="lb-breakdown">
           <span>${t('leaderboard.breakdown.group')}: <span class="lb-bd-gold">${groupPts}</span></span>
