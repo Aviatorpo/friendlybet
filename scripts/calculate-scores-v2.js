@@ -25,6 +25,7 @@ const DEFAULT_RULES_SINGLE = {
   //   Knockout (correct winner = team reached next round): R32=1, R16=2,
   //   QF=3, SF=4, Final=8. No separate tournament_winner bonus.
   group_first: 4, group_second: 3, group_third: 2, group_fourth: 1,
+  third_place_advance: 2,
   round_of_32: 1, round_of_16: 2, quarter_final: 3, semi_final: 4, final: 8,
   top_scorer: 20
 };
@@ -211,14 +212,26 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     if (m.home_team_code) groupCodes[letter].add(m.home_team_code);
     if (m.away_team_code) groupCodes[letter].add(m.away_team_code);
   });
+  const thirdStats = {}; // letter -> stat object of the 3rd-placed team
   Object.keys(groupCodes).forEach(letter => {
     const teams = [...groupCodes[letter]];
     if (teams.length !== 4) return;
     const groupMatches = allGroupMatchesAny.filter(m => (m.group_letter || m.group) === letter);
     if (!groupIsComplete(groupMatches)) return;
-    const ordered = computeGroupStandings(groupMatches, teams).map(s => s.code);
-    standings[letter] = ordered;
+    const orderedStats = computeGroupStandings(groupMatches, teams);
+    standings[letter] = orderedStats.map(s => s.code);
+    thirdStats[letter] = orderedStats[2]; // {code, points, gd, gf, ...}
   });
+
+  // v2.5.82: the real "best 8 third-place teams" (only determinable once ALL
+  // groups are complete). FIFA order: points -> goal difference -> goals for
+  // (-> deterministic code tiebreak, since we don't track discipline/lots).
+  let realBest8Thirds = null;
+  if (Object.keys(thirdStats).length === 12) {
+    const thirds = Object.values(thirdStats).slice().sort((x, y) =>
+      (y.points - x.points) || (y.gd - x.gd) || (y.gf - x.gf) || x.code.localeCompare(y.code));
+    realBest8Thirds = new Set(thirds.slice(0, 8).map(s => s.code));
+  }
 
   // Knockout results (real-world) - by stage
   // For hypothetical bracket: we check whether the team the user picked as
@@ -284,6 +297,21 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     // v2.5.72: no separate tournament_winner bonus - a correct Final pick
     // (bracket position 31) already rewards `final` points via the bracket
     // loop above, and that pick IS the champion prediction.
+
+    // v2.5.82: third-place-advance bonus. For each group the user tagged as
+    // "its 3rd-place team advances", check whether the team THEY put 3rd in
+    // that group is actually one of the real best-8 third places. Team-based,
+    // flat bonus (not multiplied). Only once all 12 groups are complete.
+    if (realBest8Thirds && (rules.third_place_advance || 0) > 0) {
+      const tpp = await sb('GET', 'sp_third_place_picks',
+        { query: `?user_id=eq.${user.id}&select=group_letter` });
+      (tpp || []).forEach(row => {
+        const pick = (gpp || []).find(p => p.group_letter === row.group_letter && p.position === 3);
+        if (pick && realBest8Thirds.has(pick.team_code)) {
+          bonusPoints += (rules.third_place_advance || 0);
+        }
+      });
+    }
 
     // Top scorer
     const tsp = tsMap.get(user.id);

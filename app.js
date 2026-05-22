@@ -6318,6 +6318,9 @@ const DEFAULT_SCORING_RULES = {
     group_second: 3,
     group_third: 2,
     group_fourth: 1,
+    // v2.5.82: bonus per 3rd-place team you tagged that actually advances
+    // to the R32 (one of the 8 best third places). Team-based, max 8 teams.
+    third_place_advance: 2,
     round_of_32: 1,
     round_of_16: 2,
     quarter_final: 3,
@@ -6492,7 +6495,7 @@ function getWizardRuleKeys() {
   if (wizardState.mode === 'two_phase') {
     return ['group_first','group_second','round_of_32','round_of_16','quarter_final','semi_final','final','top_scorer'];
   }
-  return ['group_first','group_second','group_third','group_fourth',
+  return ['group_first','group_second','group_third','group_fourth','third_place_advance',
           'round_of_32','round_of_16','quarter_final','semi_final','final','top_scorer'];
 }
 
@@ -6506,7 +6509,7 @@ function _renderV2ScoringList(pool) {
   const groups = [
     {
       titleKey: 'wizard.ruleGroup.group',
-      rows: ['group_first', 'group_second', 'group_third', 'group_fourth']
+      rows: ['group_first', 'group_second', 'group_third', 'group_fourth', 'third_place_advance']
     },
     {
       titleKey: 'wizard.ruleGroup.knockout',
@@ -6560,7 +6563,7 @@ function _wizardRuleGroups() {
   return [
     {
       titleKey: 'wizard.ruleGroup.group',
-      rows: ['group_first', 'group_second', 'group_third', 'group_fourth'].filter(inSet)
+      rows: ['group_first', 'group_second', 'group_third', 'group_fourth', 'third_place_advance'].filter(inSet)
     },
     {
       titleKey: 'wizard.ruleGroup.knockout',
@@ -6875,6 +6878,7 @@ function calcMaxPoints(rules, mode) {
   // earn round_of_16 points (= reached QF), etc.
   if (mode === 'single_phase') {
     return 12 * ((rules.group_first||0) + (rules.group_second||0) + (rules.group_third||0) + (rules.group_fourth||0)) +
+           8 * (rules.third_place_advance || 0) +
            16 * (rules.round_of_32 || 0) +
            8 * (rules.round_of_16 || 0) +
            4 * (rules.quarter_final || 0) +
@@ -7727,30 +7731,6 @@ function _spResolveThirdPlaceSlots() {
   return { assignment, used: new Set(Object.values(assignment)) };
 }
 
-// Seed a sensible default the first time: the 8 third-place teams with the
-// best FIFA rank among the user's predicted 3rd-placers, as long as that
-// set is matchable; otherwise the greedy set. Only fills if empty.
-function spEnsureThirdPlaceSeeded() {
-  // Only seed when there's NO selection yet. Once the user starts choosing
-  // (even a partial set mid-edit), never overwrite it.
-  if ((spState.thirdPlaceAdvancers || []).length > 0) return false;
-  const letters = WC2026_GROUP_LETTERS.filter(l => {
-    const arr = spState.groupPositions[l];
-    return arr && arr[2]; // has a predicted 3rd-place team
-  });
-  // best-ranked 8 by their predicted 3rd-place team's FIFA rank
-  const byRank = letters.slice().sort((a, b) =>
-    fifaRankOf(spState.groupPositions[a][2]) - fifaRankOf(spState.groupPositions[b][2]));
-  const best8 = byRank.slice(0, 8);
-  if (best8.length === 8 && _spMatchThirdPlace(best8)) {
-    spState.thirdPlaceAdvancers = best8;
-  } else {
-    spState.thirdPlaceAdvancers = Object.values(_spGreedyThirdPlaceSlots());
-  }
-  // persist the seeded default so it survives reloads (debounced, lock-safe)
-  if (typeof spSaveThirdPlaceToDb === 'function') spSaveThirdPlaceToDb();
-  return true;
-}
 
 function _spResolveFeed(feed, thirdSlots, slotPos) {
   if (feed.type === 'gp') {
@@ -7823,34 +7803,43 @@ function spGetBracketStructure() {
   };
 }
 
-// v2.5.79: the "which 8 third-place teams advance" selector, rendered atop
-// the bracket. One chip per group showing that group's predicted 3rd-place
-// team; the user toggles exactly 8 on. Selecting a 9th is blocked until one
-// is removed. Changing the set re-derives the R32 matchups live.
+// v2.5.79/82: the "which 8 third-place teams advance" selector. One card per
+// group showing that group's predicted 3rd-place team PLUS the other teams in
+// the group (rivals) so the user can judge how strong the 3rd-placer is in its
+// own group. The user toggles exactly 8 on; a 9th is blocked until one drops.
 function _spRenderThirdPlacePanel() {
   const chosen = new Set(spState.thirdPlaceAdvancers || []);
-  const chips = WC2026_GROUP_LETTERS.map(letter => {
-    const arr = spState.groupPositions[letter];
-    const code = arr && arr[2];
+  const cards = WC2026_GROUP_LETTERS.map(letter => {
+    const arr = spState.groupPositions[letter] || [];
+    const code = arr[2];
     if (!code) return ''; // no 3rd-place predicted for this group yet
     const on = chosen.has(letter);
-    return `<button class="sp-tp-chip ${on ? 'on' : ''}" onclick="spToggleThirdPlace('${letter}')">
-      <span class="sp-tp-grp">${t('groups.group')} ${letter}</span>
-      <span class="sp-tp-flag">${getCountryFlag(code)}</span>
-      <span class="sp-tp-name">${getTeamName(code)}</span>
-      <span class="sp-tp-check"><i class="ti ti-check"></i></span>
+    // Rivals = the other teams in the group (1st/2nd/4th in the user's order).
+    const rivals = arr.filter((c, i) => c && i !== 2)
+      .map(c => `<span class="sp-tp-rival" title="${getTeamName(c)}">${getCountryFlag(c)}<span class="sp-tp-rcode">${c}</span></span>`)
+      .join('');
+    return `<button class="sp-tp-card ${on ? 'on' : ''}" onclick="spToggleThirdPlace('${letter}')">
+      <span class="sp-tp-card-top">
+        <span class="sp-tp-grp">${t('groups.group')} ${letter}</span>
+        <span class="sp-tp-check"><i class="ti ti-check"></i></span>
+      </span>
+      <span class="sp-tp-team">
+        <span class="sp-tp-flag">${getCountryFlag(code)}</span>
+        <span class="sp-tp-name">${getTeamName(code)}</span>
+      </span>
+      <span class="sp-tp-rivals"><span class="sp-tp-vs">${t('thirdPlace.vs')}</span>${rivals}</span>
     </button>`;
   }).join('');
   const n = chosen.size;
-  const warn = n !== 8
-    ? `<div class="sp-tp-warn">${t('thirdPlace.selectExactly', { n })}</div>` : '';
+  const ok = n === 8;
   return `
     <div class="sp-tp-panel">
-      <div class="sp-tp-title">${t('thirdPlace.title')}</div>
+      <div class="sp-tp-head">
+        <div class="sp-tp-title">${t('thirdPlace.title')}</div>
+        <div class="sp-tp-count ${ok ? 'ok' : ''}">${n} / 8</div>
+      </div>
       <div class="sp-tp-sub">${t('thirdPlace.subtitle')}</div>
-      <div class="sp-tp-count">${n} / 8</div>
-      <div class="sp-tp-chips">${chips}</div>
-      ${warn}
+      <div class="sp-tp-cards">${cards}</div>
     </div>`;
 }
 
@@ -7876,7 +7865,6 @@ window.spToggleThirdPlace = spToggleThirdPlace;
 // the groups and BEFORE the knockout (so first-time users who go through the
 // single-match walkthrough still get to choose). Reuses _spRenderThirdPlacePanel.
 function spRenderThirdPlaceStep() {
-  spEnsureThirdPlaceSeeded();
   const c = document.getElementById('sp-third-place-container');
   if (c) c.innerHTML = _spRenderThirdPlacePanel();
   const next = document.getElementById('sp-third-place-next');
@@ -7920,9 +7908,6 @@ window.spThirdPlaceContinue = spThirdPlaceContinue;
 
 function spRenderBracket() {
   const container = document.getElementById('sp-bracket-container');
-  // v2.5.79: make sure the user has a starting set of 8 third-place advancers
-  // (best-ranked by default) so the R32 isn't empty; they can change it.
-  spEnsureThirdPlaceSeeded();
   const struct = spGetBracketStructure();
 
   const renderRound = (titleKey, matches, ptsForStage) => `

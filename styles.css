@@ -6656,7 +6656,7 @@ body:not(.ltr) .home-lang-toggle {
   color: #d4a853;
   margin-bottom: 10px;
 }
-/* v2.5.79: "which 8 third-place teams advance" selector atop the bracket */
+/* v2.5.82: "which 8 third-place teams advance" selector — cards with rivals */
 .sp-tp-panel {
   background: rgba(212,168,83,0.06);
   border: 1px solid rgba(212,168,83,0.25);
@@ -6664,29 +6664,54 @@ body:not(.ltr) .home-lang-toggle {
   padding: 12px;
   margin-bottom: 14px;
 }
-.sp-tp-title { font-weight: 700; color: #d4a853; font-size: 14px; }
-.sp-tp-sub { color: rgba(255,255,255,0.6); font-size: 12px; line-height: 1.5; margin: 4px 0 8px; }
-.sp-tp-count { font-weight: 700; color: #fff; font-size: 13px; margin-bottom: 8px; }
-.sp-tp-chips { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-.sp-tp-chip {
-  display: flex; align-items: center; gap: 6px;
+.sp-tp-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sp-tp-title { font-weight: 700; color: #d4a853; font-size: 15px; }
+.sp-tp-count {
+  font-weight: 800; font-size: 14px; color: #fff;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 999px; padding: 3px 12px; flex-shrink: 0;
+}
+.sp-tp-count.ok { background: rgba(16,185,129,0.2); border-color: rgba(16,185,129,0.55); color: #6ee7b7; }
+.sp-tp-sub { color: rgba(255,255,255,0.6); font-size: 12px; line-height: 1.5; margin: 4px 0 10px; }
+.sp-tp-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
+.sp-tp-card {
+  display: flex; flex-direction: column; gap: 5px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px; padding: 7px 9px;
-  color: rgba(255,255,255,0.7); font-family: inherit; font-size: 12px;
-  cursor: pointer; text-align: start; width: 100%;
+  border-radius: 10px; padding: 8px 9px;
+  color: #fff; font-family: inherit; cursor: pointer; text-align: start; width: 100%;
+  transition: background .12s, border-color .12s;
 }
-.sp-tp-chip.on {
-  background: rgba(16,185,129,0.16);
-  border-color: rgba(16,185,129,0.5);
-  color: #fff; font-weight: 600;
+.sp-tp-card:hover { background: rgba(212,168,83,0.08); }
+.sp-tp-card.on {
+  background: rgba(16,185,129,0.15);
+  border-color: rgba(16,185,129,0.55);
+  box-shadow: 0 0 0 1px rgba(16,185,129,0.25) inset;
 }
-.sp-tp-chip .sp-tp-grp { color: #d4a853; font-weight: 700; flex-shrink: 0; }
-.sp-tp-chip .sp-tp-flag { font-size: 15px; }
-.sp-tp-chip .sp-tp-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sp-tp-chip .sp-tp-check { color: #10b981; opacity: 0; flex-shrink: 0; }
-.sp-tp-chip.on .sp-tp-check { opacity: 1; }
-.sp-tp-warn { color: #f59e0b; font-size: 12px; margin-top: 8px; text-align: center; }
+.sp-tp-card-top { display: flex; align-items: center; justify-content: space-between; }
+.sp-tp-card .sp-tp-grp {
+  font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  color: #d4a853;
+}
+.sp-tp-card .sp-tp-check {
+  width: 18px; height: 18px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.08); color: transparent; font-size: 11px;
+}
+.sp-tp-card.on .sp-tp-check { background: #10b981; color: #fff; }
+.sp-tp-team { display: flex; align-items: center; gap: 7px; }
+.sp-tp-team .sp-tp-flag { font-size: 20px; line-height: 1; }
+.sp-tp-team .sp-tp-name {
+  font-size: 13px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sp-tp-rivals {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.07);
+}
+.sp-tp-vs { font-size: 9.5px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: .05em; }
+.sp-tp-rival { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; opacity: .75; }
+.sp-tp-rival .sp-tp-rcode { font-size: 9px; color: rgba(255,255,255,0.5); font-weight: 600; }
 
 .sp-bracket-match {
   display: flex;

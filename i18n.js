@@ -191,6 +191,7 @@ const TRANSLATIONS = {
     'thirdPlace.subtitle': 'במונדיאל 2026 עולות 8 הקבוצות הטובות ביותר שסיימו במקום השלישי. בחר אילו 8 לדעתך יעלו — הן ישובצו אוטומטית לסיבוב ה-32.',
     'thirdPlace.selectExactly': 'בחר בדיוק 8 שלישיות (נבחרו {n})',
     'thirdPlace.maxReached': 'כבר נבחרו 8 — הסר אחת כדי לבחור אחרת',
+    'thirdPlace.vs': 'מול',
     
     // === Top Scorer ===
     'topScorer.title': 'מלך השערים',
@@ -973,6 +974,7 @@ const TRANSLATIONS = {
     'wizard.rule.group_second': 'מקום שני בבית',
     'wizard.rule.group_third': 'מקום שלישי בבית',
     'wizard.rule.group_fourth': 'מקום רביעי בבית',
+    'wizard.rule.third_place_advance': 'שלישית שעולה לשלב הבא',
     'wizard.rule.round_of_32': 'סבב 32',
     'wizard.rule.round_of_16': 'שמינית גמר',
     'wizard.rule.quarter_final': 'רבע גמר',
@@ -1360,6 +1362,7 @@ const TRANSLATIONS = {
     'thirdPlace.subtitle': 'At WC 2026 the 8 best third-placed teams advance. Pick which 8 you think go through — they\'ll be slotted into the Round of 32 automatically.',
     'thirdPlace.selectExactly': 'Pick exactly 8 third-place teams ({n} selected)',
     'thirdPlace.maxReached': '8 already selected — remove one to pick another',
+    'thirdPlace.vs': 'vs',
     
     // === Top Scorer ===
     'topScorer.title': 'Top Scorer',
@@ -1371,8 +1374,8 @@ const TRANSLATIONS = {
     'topScorer.hintsTitle': '💡 Search examples:',
     'topScorer.hintsNote': 'Search by player name, partial name, or team code (3 letters)',
     'topScorer.teamSuffix': '(team)',
-    'page.title': 'FriendlyBet · Friends World Cup 2026 predictions',
-    'page.description': 'Friends World Cup 2026 predictions — free, no ads, no money',
+    'page.title': 'FriendlyBet — Free World Cup 2026 Prediction Game with Friends',
+    'page.description': 'Create a free World Cup 2026 prediction pool with friends. Predict every group and the full knockout bracket, then climb a live leaderboard. No ads, no money, no sign-up — just bragging rights. Open source.',
     'topScorer.team': 'Team',
     'topScorer.noResults': 'No players found',
     'topScorer.tryOther': 'Try a different name',
@@ -2142,6 +2145,7 @@ const TRANSLATIONS = {
     'wizard.rule.group_second': 'Group 2nd place',
     'wizard.rule.group_third': 'Group 3rd place',
     'wizard.rule.group_fourth': 'Group 4th place',
+    'wizard.rule.third_place_advance': '3rd place that advances',
     'wizard.rule.round_of_32': 'Round of 32',
     'wizard.rule.round_of_16': 'Round of 16',
     'wizard.rule.quarter_final': 'Quarter Final',
@@ -2564,12 +2568,18 @@ function applyLanguage() {
   // match the active language (prevents Hebrew leaking to English users).
   try {
     const pageTitle = t('page.title');
+    const desc = t('page.description');
     if (typeof pageTitle === 'string' && pageTitle) document.title = pageTitle;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      const desc = t('page.description');
-      if (typeof desc === 'string' && desc) metaDesc.setAttribute('content', desc);
-    }
+    // v2.5.82: keep description + social-share + locale meta in sync with the
+    // active language. English stays English for the world; Hebrew is applied
+    // only for Israeli visitors (currentLanguage === 'he').
+    const setMeta = (sel, val) => { const el = document.querySelector(sel); if (el && val) el.setAttribute('content', val); };
+    setMeta('meta[name="description"]', desc);
+    setMeta('meta[property="og:title"]', pageTitle);
+    setMeta('meta[property="og:description"]', desc);
+    setMeta('meta[name="twitter:title"]', pageTitle);
+    setMeta('meta[name="twitter:description"]', desc);
+    setMeta('meta[property="og:locale"]', currentLanguage === 'he' ? 'he_IL' : 'en_US');
   } catch (e) {}
 
   // Dispatch event for app.js to re-render dynamic content
