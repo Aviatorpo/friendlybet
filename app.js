@@ -6577,10 +6577,13 @@ function _wizardRuleGroups() {
 }
 
 function renderWizardRulesStep() {
-  // v2.5.35: multipliers now apply to single_phase too. Admins can configure
-  // the three category values and per-team overrides in both modes.
+  // v2.5.84: risk multipliers are an ADVANCED option. For single_phase they're
+  // off by default and the whole multipliers section is hidden on the default
+  // rules view — it only appears under "custom" (advanced). two_phase keeps
+  // them visible (legacy: on by default).
   const multInfo = document.getElementById('wizard-multipliers-info');
-  if (multInfo) multInfo.style.display = '';
+  const showMult = (wizardState.rulesChoice === 'custom') || (wizardState.mode === 'two_phase');
+  if (multInfo) multInfo.style.display = showMult ? '' : 'none';
 
   // v2.5.7: pill toggle - active state mirrors rulesChoice
   document.querySelectorAll('#wizard-step-2 .wizard-rules-toggle-btn').forEach(b => {
