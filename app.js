@@ -7832,6 +7832,12 @@ function _spRenderThirdPlacePanel() {
   }).join('');
   const n = chosen.size;
   const ok = n === 8;
+  // v2.5.83: show what each correct pick is worth, read live from this pool's
+  // scoring_rules (default 2).
+  const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
+  const pts = rules.third_place_advance ?? 2;
+  const ptsHint = pts > 0
+    ? `<div class="sp-tp-pts"><i class="ti ti-coin"></i> ${t('thirdPlace.pointsEach', { pts })}</div>` : '';
   return `
     <div class="sp-tp-panel">
       <div class="sp-tp-head">
@@ -7839,6 +7845,7 @@ function _spRenderThirdPlacePanel() {
         <div class="sp-tp-count ${ok ? 'ok' : ''}">${n} / 8</div>
       </div>
       <div class="sp-tp-sub">${t('thirdPlace.subtitle')}</div>
+      ${ptsHint}
       <div class="sp-tp-cards">${cards}</div>
     </div>`;
 }

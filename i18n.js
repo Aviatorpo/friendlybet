@@ -192,6 +192,7 @@ const TRANSLATIONS = {
     'thirdPlace.selectExactly': 'בחר בדיוק 8 שלישיות (נבחרו {n})',
     'thirdPlace.maxReached': 'כבר נבחרו 8 — הסר אחת כדי לבחור אחרת',
     'thirdPlace.vs': 'מול',
+    'thirdPlace.pointsEach': 'כל ניחוש מדויק = {pts} נקודות',
     
     // === Top Scorer ===
     'topScorer.title': 'מלך השערים',
@@ -1363,6 +1364,7 @@ const TRANSLATIONS = {
     'thirdPlace.selectExactly': 'Pick exactly 8 third-place teams ({n} selected)',
     'thirdPlace.maxReached': '8 already selected — remove one to pick another',
     'thirdPlace.vs': 'vs',
+    'thirdPlace.pointsEach': 'Each correct pick = {pts} points',
     
     // === Top Scorer ===
     'topScorer.title': 'Top Scorer',

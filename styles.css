@@ -6672,7 +6672,13 @@ body:not(.ltr) .home-lang-toggle {
   border-radius: 999px; padding: 3px 12px; flex-shrink: 0;
 }
 .sp-tp-count.ok { background: rgba(16,185,129,0.2); border-color: rgba(16,185,129,0.55); color: #6ee7b7; }
-.sp-tp-sub { color: rgba(255,255,255,0.6); font-size: 12px; line-height: 1.5; margin: 4px 0 10px; }
+.sp-tp-sub { color: rgba(255,255,255,0.6); font-size: 12px; line-height: 1.5; margin: 4px 0 8px; }
+.sp-tp-pts {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(212,168,83,0.14); border: 1px solid rgba(212,168,83,0.35);
+  color: #e7c574; font-weight: 700; font-size: 12px;
+  border-radius: 999px; padding: 4px 11px; margin-bottom: 10px;
+}
 .sp-tp-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
 .sp-tp-card {
   display: flex; flex-direction: column; gap: 5px;
