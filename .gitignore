@@ -21,3 +21,15 @@ landing-preview*.html
 
 # App redesign mockup GALLERY - local only, not public until approved
 design-gallery*.html
+
+# Brand avatar generator (local)
+brand-avatar.html
+friendlybet-avatar*.png
+
+# Brand banner generator (local)
+brand-banner.html
+friendlybet-banner*.png
+
+# brand source images (kept in private repo, not the public site)
+friendlybet-avatar.png
+friendlybet-banner.png
