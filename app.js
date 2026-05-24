@@ -3321,7 +3321,7 @@ function openStatusModal() {
     const sectionTitle = document.querySelector('.status-section-title');
     if (sectionTitle) {
       sectionTitle.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -3px; margin-left: 4px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ecd49a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -3px; margin-left: 4px;">
           <circle cx="12" cy="12" r="10"></circle>
           <line x1="12" y1="8" x2="12" y2="12"></line>
           <line x1="12" y1="16" x2="12.01" y2="16"></line>
@@ -5049,17 +5049,17 @@ async function updateKnockoutStatusOnDashboard() {
   
   if (koCount === 0) {
     koCard.className = 'bet-status-card pending';
-    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> ' + koLabel;
+    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> ' + koLabel;
     if (subtitleEl) subtitleEl.textContent = t('dashboard.status.koReady');
     existingBtn.innerHTML = t('dashboard.action.start') + ' →';
   } else if (koCount < 31) {
     koCard.className = 'bet-status-card pending';
-    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="6" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> ' + koLabel;
+    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ecd49a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="6" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> ' + koLabel;
     if (subtitleEl) subtitleEl.textContent = t('dashboard.status.partialKo', { n: koCount });
     existingBtn.innerHTML = t('dashboard.action.continue') + ' →';
   } else {
     koCard.className = 'bet-status-card completed';
-    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ' + koLabel;
+    if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3ddc97" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ' + koLabel;
     if (subtitleEl) subtitleEl.textContent = t('dashboard.status.completedKo');
     existingBtn.innerHTML = t('dashboard.action.edit') + ' →';
   }
@@ -6019,7 +6019,7 @@ function generateQRCode(text) {
   
   // Use a free QR API as fallback
   const size = 200;
-  const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}&bgcolor=ffffff&color=0a1628&margin=8&format=svg`;
+  const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}&bgcolor=ffffff&color=08090c&margin=8&format=svg`;
   
   // Try to fetch and embed
   fetch(apiUrl)
@@ -8506,7 +8506,7 @@ async function spRenderSummary() {
     const positions = spState.groupPositions[letter] || [];
     return `
       <div style="margin-bottom:10px;">
-        <div style="font-weight:600;color:#d4a853;font-size:12px;letter-spacing:.5px;margin-bottom:4px;">
+        <div style="font-weight:600;color:#d9b46a;font-size:12px;letter-spacing:.5px;margin-bottom:4px;">
           ${t('groups.group')} ${letter}
         </div>
         ${[0,1,2,3].map(i => {
@@ -8658,7 +8658,7 @@ async function spShowLockedView() {
   WC2026_GROUP_LETTERS.forEach(letter => {
     const positions = spState.groupPositions[letter] || [];
     html += `<div style="margin-bottom:8px;">
-      <div style="font-weight:600;color:#d4a853;font-size:12px;">${t('groups.group')} ${letter}</div>
+      <div style="font-weight:600;color:#d9b46a;font-size:12px;">${t('groups.group')} ${letter}</div>
       ${[0,1,2,3].map(i => {
         const code = positions[i];
         return `<div class="sp-summary-row">
@@ -8765,7 +8765,7 @@ async function showUserHypotheticalBracket(userId, userName) {
       WC2026_GROUP_LETTERS.forEach(letter => {
         if (!positions[letter]) return;
         html += `<div style="margin-bottom:8px;">
-          <div style="font-weight:600;color:#d4a853;font-size:12px;">${t('groups.group')} ${letter}</div>`;
+          <div style="font-weight:600;color:#d9b46a;font-size:12px;">${t('groups.group')} ${letter}</div>`;
         positions[letter].forEach((code, i) => {
           html += `<div class="sp-summary-row">
             <span class="sr-pos">${i+1}.</span>
@@ -8823,7 +8823,7 @@ async function showUserHypotheticalBracket(userId, userName) {
 
       html += `<div class="sp-summary-card"><div class="sp-summary-section-title">${t('betting.summary.bracket')}</div>`;
       [['knockout.r32', r32], ['knockout.r16', r16], ['knockout.qf', qf], ['knockout.sf', sf], ['knockout.final', [fin]]].forEach(([key, matches]) => {
-        html += `<div style="font-weight:600;color:#d4a853;font-size:12px;margin:6px 0 3px;">${t(key)}</div>`;
+        html += `<div style="font-weight:600;color:#d9b46a;font-size:12px;margin:6px 0 3px;">${t(key)}</div>`;
         matches.forEach(m => {
           const w = getMatchWinner(m.pos);
           html += `<div class="sp-summary-row">
@@ -9299,7 +9299,7 @@ function _rcBuildCardElement() {
     'top: 0',
     'width: 600px',
     'padding: 48px 44px',
-    'background: linear-gradient(135deg, #0a1628 0%, #1a2942 60%, #243a5a 100%)',
+    'background: linear-gradient(135deg, #08090c 0%, #12141b 60%, #243a5a 100%)',
     'color: #fff',
     'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     'border-radius: 28px',
@@ -9308,13 +9308,13 @@ function _rcBuildCardElement() {
   const code = rcFormatCode(rcState.code);
   const pool = rcState.poolName || '—';
   card.innerHTML = `
-    <div style="font-size: 30px; font-weight: 800; color: #d4a853; letter-spacing: 0.5px;">
+    <div style="font-size: 30px; font-weight: 800; color: #d9b46a; letter-spacing: 0.5px;">
       ⚽ FriendlyBet
     </div>
     <div style="margin-top: 34px; font-size: 12px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 2px;">
       ${t('recovery.screenshot.codeLabel')}
     </div>
-    <div style="font-family: 'SFMono-Regular', Consolas, monospace; font-size: 36px; font-weight: 700; letter-spacing: 3px; color: #d4a853; margin-top: 10px; word-break: break-all;">
+    <div style="font-family: 'SFMono-Regular', Consolas, monospace; font-size: 36px; font-weight: 700; letter-spacing: 3px; color: #d9b46a; margin-top: 10px; word-break: break-all;">
       ${code}
     </div>
     <div style="margin-top: 28px; font-size: 12px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 2px;">
