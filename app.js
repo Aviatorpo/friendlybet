@@ -1836,10 +1836,10 @@ async function showTopScorer() {
   if (unlockedView) unlockedView.style.display = 'block';
 
   // v2.4.5: hero description uses the pool's actual top_scorer scoring
-  // rule, not a hardcoded "+25". Falls back to 25 if the rule is missing
-  // (e.g. legacy pools that predate scoring_rules).
+  // rule, not a hardcoded number. Falls back to the default (10) if the rule
+  // is missing (e.g. legacy pools that predate scoring_rules).
   const tsBonus = (state.currentPool && state.currentPool.scoring_rules &&
-                   state.currentPool.scoring_rules.top_scorer) || 25;
+                   state.currentPool.scoring_rules.top_scorer) || 10;
   const heroDescEl = document.querySelector('#ts-unlocked-view .ts-hero-desc');
   if (heroDescEl) {
     heroDescEl.innerHTML = t('tsUnlocked.heroDesc', { n: tsBonus });
@@ -6316,7 +6316,7 @@ const DEFAULT_SCORING_RULES = {
     quarter_final: 3,
     semi_final: 4,
     final: 8,
-    top_scorer: 20
+    top_scorer: 10
   },
   two_phase: {
     // Two-phase users pick "who qualifies" without ordering, so the same
@@ -6330,7 +6330,7 @@ const DEFAULT_SCORING_RULES = {
     quarter_final: 8,
     semi_final: 16,
     final: 32,
-    top_scorer: 20
+    top_scorer: 10
   }
 };
 

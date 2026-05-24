@@ -27,12 +27,12 @@ const DEFAULT_RULES_SINGLE = {
   group_first: 4, group_second: 3, group_third: 2, group_fourth: 1,
   third_place_advance: 1,
   round_of_32: 1, round_of_16: 2, quarter_final: 3, semi_final: 4, final: 8,
-  top_scorer: 20
+  top_scorer: 10
 };
 const DEFAULT_RULES_TWO = {
   group_first: 1, group_second: 1, group_third: 0, group_fourth: 0,
   round_of_32: 2, round_of_16: 4, quarter_final: 8, semi_final: 16, final: 32,
-  top_scorer: 20
+  top_scorer: 10
 };
 
 // v2.5.36: shared multiplier resolver. Looks up (in order): the
