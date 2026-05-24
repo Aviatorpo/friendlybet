@@ -116,7 +116,7 @@
   .meter { display:flex; align-items:center; gap:10px; margin:7px 0; font-size:14px; }
   .meter .label { width:96px; color:var(--muted); flex:none; }
   .meter .track { flex:1; height:9px; background:rgba(255,255,255,.08); border-radius:6px; overflow:hidden; }
-  .meter .fill  { height:100%; background:linear-gradient(90deg,var(--gold),#f0c87f); border-radius:6px; }
+  .meter .fill  { display:block; height:100%; min-width:6px; background:linear-gradient(90deg,var(--gold),#f0c87f); border-radius:6px; }
   .meter .val { width:34px; text-align:end; color:var(--ink); flex:none; font-weight:700; }
 
   /* Callouts */

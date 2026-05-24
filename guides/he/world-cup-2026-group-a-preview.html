@@ -114,7 +114,7 @@
   .meter { display:flex; align-items:center; gap:10px; margin:7px 0; font-size:14px; }
   .meter .label { width:104px; color:var(--muted); flex:none; }
   .meter .track { flex:1; height:9px; background:rgba(255,255,255,.08); border-radius:6px; overflow:hidden; }
-  .meter .fill  { height:100%; background:linear-gradient(270deg,var(--gold),#f0c87f); border-radius:6px; }
+  .meter .fill  { display:block; height:100%; min-width:6px; background:linear-gradient(270deg,var(--gold),#f0c87f); border-radius:6px; }
   .meter .val { width:34px; text-align:start; color:var(--ink); flex:none; font-weight:700; }
 
   .hot-take { border-inline-start:4px solid var(--gold); background:rgba(212,168,83,.08);
