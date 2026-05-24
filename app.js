@@ -7810,14 +7810,15 @@ function _spRenderThirdPlacePanel() {
     // v2.5.86: rivals shown as plain muted codes (no extra flags) to cut the
     // flag clutter — only the 3rd-placer's own flag is shown, prominently.
     const rivals = arr.filter((c, i) => c && i !== 2).map(c => c).join(' · ');
-    const meta = `<span class="sp-tp-grp">${t('groups.group')} ${letter}</span>`
-      + (rivals ? ` · ${t('thirdPlace.vs')} ${rivals}` : '');
     return `<button class="sp-tp-card ${on ? 'on' : ''}" onclick="spToggleThirdPlace('${letter}')">
       <span class="sp-tp-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
       <span class="sp-tp-flag">${getCountryFlag(code)}</span>
       <span class="sp-tp-info">
-        <span class="sp-tp-name">${getTeamName(code)}</span>
-        <span class="sp-tp-meta">${meta}</span>
+        <span class="sp-tp-line1">
+          <span class="sp-tp-name">${getTeamName(code)}</span>
+          <span class="sp-tp-grp">${t('groups.group')} ${letter}</span>
+        </span>
+        ${rivals ? `<span class="sp-tp-rivals"><span class="sp-tp-vs">${t('thirdPlace.vs')}</span>${rivals}</span>` : ''}
       </span>
     </button>`;
   }).join('');
