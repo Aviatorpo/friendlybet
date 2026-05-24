@@ -15,3 +15,6 @@ _apply_hebrew.js
 
 # Marketing scout - lives in its own PRIVATE repo, never in the public app repo
 marketing-scout/
+
+# Landing-page makeover PREVIEW - local only, not public until approved
+landing-preview*.html
