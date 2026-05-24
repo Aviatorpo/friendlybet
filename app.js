@@ -4485,7 +4485,10 @@ function openBracketView() {
 }
 
 function closeBracketView() {
-  showScreen('knockout-screen');
+  // v2.5.86: return to the modern single-match walkthrough, not the old grid.
+  _koOpenTwoPhaseWalkthrough(
+    (koSingle.mode === 'two-phase' && koSingle.sequence.length) ? koSingle.idx : _koFirstIncompleteTwoPhaseIdx()
+  );
 }
 
 function toggleBracketZoom() {
@@ -4926,24 +4929,11 @@ function jumpToRound(round) {
 }
 
 function jumpToMatch(matchId) {
-  const round = matchId.split('_')[0];
-  
-  knockoutState.currentRound = round;
-  renderKnockout();
-  showScreen('knockout-screen');
-  
-  setTimeout(() => {
-    const matchEls = document.querySelectorAll('.ko-match-card');
-    const matchIndex = knockoutState.matches[round].findIndex(m => m.id === matchId);
-    if (matchEls[matchIndex]) {
-      matchEls[matchIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-      matchEls[matchIndex].style.transition = 'box-shadow 0.3s';
-      matchEls[matchIndex].style.boxShadow = '0 0 0 2px #d4a853';
-      setTimeout(() => {
-        matchEls[matchIndex].style.boxShadow = '';
-      }, 1500);
-    }
-  }, 100);
+  // v2.5.86: open the modern single-match walkthrough at the tapped match
+  // instead of the retired all-on-one-page grid.
+  const seq = _koTwoPhaseSequence();
+  const idx = seq.findIndex(s => s.id === matchId);
+  _koOpenTwoPhaseWalkthrough(idx >= 0 ? idx : 0);
 }
 
 function renderBracketConnectors() {
@@ -7816,20 +7806,18 @@ function _spRenderThirdPlacePanel() {
     const code = arr[2];
     if (!code) return ''; // no 3rd-place predicted for this group yet
     const on = chosen.has(letter);
-    // Rivals = the other teams in the group (1st/2nd/4th in the user's order).
-    const rivals = arr.filter((c, i) => c && i !== 2)
-      .map(c => `<span class="sp-tp-rival" title="${getTeamName(c)}">${getCountryFlag(c)}<span class="sp-tp-rcode">${c}</span></span>`)
-      .join('');
+    // v2.5.86: rivals shown as plain muted codes (no extra flags) to cut the
+    // flag clutter — only the 3rd-placer's own flag is shown, prominently.
+    const rivals = arr.filter((c, i) => c && i !== 2).map(c => c).join(' · ');
+    const meta = `<span class="sp-tp-grp">${t('groups.group')} ${letter}</span>`
+      + (rivals ? ` · ${t('thirdPlace.vs')} ${rivals}` : '');
     return `<button class="sp-tp-card ${on ? 'on' : ''}" onclick="spToggleThirdPlace('${letter}')">
-      <span class="sp-tp-card-top">
-        <span class="sp-tp-grp">${t('groups.group')} ${letter}</span>
-        <span class="sp-tp-check"><i class="ti ti-check"></i></span>
-      </span>
-      <span class="sp-tp-team">
-        <span class="sp-tp-flag">${getCountryFlag(code)}</span>
+      <span class="sp-tp-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+      <span class="sp-tp-flag">${getCountryFlag(code)}</span>
+      <span class="sp-tp-info">
         <span class="sp-tp-name">${getTeamName(code)}</span>
+        <span class="sp-tp-meta">${meta}</span>
       </span>
-      <span class="sp-tp-rivals"><span class="sp-tp-vs">${t('thirdPlace.vs')}</span>${rivals}</span>
     </button>`;
   }).join('');
   const n = chosen.size;
@@ -9743,11 +9731,10 @@ function koSingleFinish() {
   koSingle.mode = null;
 
   if (wasMode === 'two-phase') {
-    // Hand off to the existing grid view so user can review/edit
-    knockoutState.currentRound = 'R32';
-    renderKnockout();
-    showScreen('knockout-screen');
+    // v2.5.86: the old grid review screen is retired. Return to the dashboard;
+    // the user can re-enter the walkthrough (or the bracket view) to edit.
     showToast(t('knockoutFirst.completedToast'), 'success');
+    goToDashboard();
   } else {
     // v2.4.3: single-phase - the FINAL match (bracket position 15) is
     // the tournament winner, so we go straight to top scorer; no
@@ -9763,37 +9750,40 @@ function koSingleFinish() {
 
 // Entry-point overrides ----------------------------------------------------
 
-// Wrap startKnockoutBetting so first-time users see single-match walkthrough.
+// Open the modern two-phase single-match walkthrough at a given step.
+function _koOpenTwoPhaseWalkthrough(startIdx) {
+  koSingle.mode = 'two-phase';
+  koSingle.sequence = _koTwoPhaseSequence();
+  const len = koSingle.sequence.length;
+  koSingle.idx = (typeof startIdx === 'number' && startIdx >= 0 && startIdx < len) ? startIdx : 0;
+  koSingleRender();
+  showScreen('ko-single-screen');
+}
+
+// First match in the two-phase sequence the user hasn't picked yet (else 0).
+function _koFirstIncompleteTwoPhaseIdx() {
+  const seq = _koTwoPhaseSequence();
+  for (let i = 0; i < seq.length; i++) {
+    if (!(knockoutState.picks && knockoutState.picks[seq[i].id])) return i;
+  }
+  return 0;
+}
+
+// Wrap startKnockoutBetting so EVERY entry uses the modern single-match
+// walkthrough (ko-single-screen) instead of the old all-on-one-page grid
+// (knockout-screen). The grid is no longer part of the flow.
 const _origStartKnockoutBetting = startKnockoutBetting;
 startKnockoutBetting = async function() {
   if (!state.currentUser || !state.currentPool || !supabaseClient) {
     return _origStartKnockoutBetting();
   }
-  // Check if the user has any existing knockout picks (=> NOT first time)
-  let hasPicks = false;
-  try {
-    const { data } = await supabaseClient
-      .from('knockout_picks')
-      .select('id')
-      .eq('user_id', state.currentUser.id)
-      .limit(1);
-    hasPicks = !!(data && data.length);
-  } catch (e) { /* fall through */ }
-
-  if (hasPicks) {
-    return _origStartKnockoutBetting();
-  }
-
-  // First time - run the original loader to set up matches, then route to single mode
+  // Run the original loader to set up matches & load existing picks. It only
+  // switches to knockout-screen on success; if it bailed (e.g. groups
+  // incomplete) leave the user where they are.
   await _origStartKnockoutBetting();
-  // _origStartKnockoutBetting will have switched to knockout-screen. Override.
-  if (Object.keys(knockoutState.picks || {}).length === 0) {
-    koSingle.mode = 'two-phase';
-    koSingle.sequence = _koTwoPhaseSequence();
-    koSingle.idx = 0;
-    koSingleRender();
-    showScreen('ko-single-screen');
-  }
+  if (state.currentScreen !== 'knockout-screen') return;
+  // Override the grid: start at the first match still missing a pick.
+  _koOpenTwoPhaseWalkthrough(_koFirstIncompleteTwoPhaseIdx());
 };
 
 // Wrap spGroupsNext to route to single-match bracket walkthrough on first pass

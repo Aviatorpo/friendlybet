@@ -6679,12 +6679,13 @@ body:not(.ltr) .home-lang-toggle {
   color: #e7c574; font-weight: 700; font-size: 12px;
   border-radius: 999px; padding: 4px 11px; margin-bottom: 10px;
 }
-.sp-tp-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
+/* v2.5.86: clean single-column list — one flag per row, rivals as muted text. */
+.sp-tp-cards { display: flex; flex-direction: column; gap: 6px; }
 .sp-tp-card {
-  display: flex; flex-direction: column; gap: 5px;
+  display: flex; align-items: center; gap: 11px;
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 10px; padding: 8px 9px;
+  border-radius: 10px; padding: 9px 12px;
   color: #fff; font-family: inherit; cursor: pointer; text-align: start; width: 100%;
   transition: background .12s, border-color .12s;
 }
@@ -6694,30 +6695,25 @@ body:not(.ltr) .home-lang-toggle {
   border-color: rgba(16,185,129,0.55);
   box-shadow: 0 0 0 1px rgba(16,185,129,0.25) inset;
 }
-.sp-tp-card-top { display: flex; align-items: center; justify-content: space-between; }
-.sp-tp-card .sp-tp-grp {
-  font-size: 10px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
-  color: #d4a853;
-}
 .sp-tp-card .sp-tp-check {
-  width: 18px; height: 18px; border-radius: 50%;
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,0.08); color: transparent; font-size: 11px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  color: transparent; transition: background .12s, border-color .12s;
 }
-.sp-tp-card.on .sp-tp-check { background: #10b981; color: #fff; }
-.sp-tp-team { display: flex; align-items: center; gap: 7px; }
-.sp-tp-team .sp-tp-flag { font-size: 20px; line-height: 1; }
-.sp-tp-team .sp-tp-name {
-  font-size: 13px; font-weight: 600;
+.sp-tp-card .sp-tp-check svg { width: 13px; height: 13px; }
+.sp-tp-card.on .sp-tp-check { background: #10b981; border-color: #10b981; color: #fff; }
+.sp-tp-card .sp-tp-flag { font-size: 26px; line-height: 1; flex-shrink: 0; }
+.sp-tp-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.sp-tp-card .sp-tp-name {
+  font-size: 14px; font-weight: 700;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.sp-tp-rivals {
-  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-  padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.07);
+.sp-tp-meta {
+  font-size: 11px; color: rgba(255,255,255,0.45);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.sp-tp-vs { font-size: 9.5px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: .05em; }
-.sp-tp-rival { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; opacity: .75; }
-.sp-tp-rival .sp-tp-rcode { font-size: 9px; color: rgba(255,255,255,0.5); font-weight: 600; }
+.sp-tp-meta .sp-tp-grp { color: #d4a853; font-weight: 700; }
 
 .sp-bracket-match {
   display: flex;
