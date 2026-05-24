@@ -8,12 +8,15 @@
 
   <rect width="180" height="180" fill="url(#bgA)" rx="34"/>
 
-  <circle cx="90" cy="90" r="71" fill="#d4a853" opacity="0.10"/>
-  <circle cx="90" cy="90" r="68" fill="none" stroke="#d4a853" stroke-width="2" opacity="0.55"/>
-
-  <text x="90" y="90"
-        font-size="116"
-        text-anchor="middle"
-        dominant-baseline="central"
-        font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Twemoji Mozilla',sans-serif">⚽</text>
+  <!-- v2.5.90: drawn soccer ball (no emoji) so it renders everywhere,
+       including Google search & social link previews. -->
+  <circle cx="90" cy="90" r="62" fill="#d4a853"/>
+  <g stroke="#0a1628" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="90,62 117.5,82 107,114.5 73,114.5 62.5,82" fill="#0a1628"/>
+    <line x1="90" y1="62" x2="90" y2="34"/>
+    <line x1="117.5" y1="82" x2="145" y2="73"/>
+    <line x1="62.5" y1="82" x2="35" y2="73"/>
+    <line x1="73" y1="114.5" x2="56" y2="143"/>
+    <line x1="107" y1="114.5" x2="124" y2="143"/>
+  </g>
 </svg>

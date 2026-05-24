@@ -9,17 +9,16 @@
   <!-- Dark rounded background -->
   <rect width="192" height="192" fill="url(#bg)" rx="36"/>
 
-  <!-- Subtle gold halo -->
-  <circle cx="96" cy="96" r="76" fill="#d4a853" opacity="0.10"/>
-  <circle cx="96" cy="96" r="73" fill="none" stroke="#d4a853" stroke-width="2" opacity="0.55"/>
-
-  <!-- Soccer ball: identical to the home-page logo (⚽). The OS renders
-       its native emoji font (Apple Color Emoji on iOS, Noto Color Emoji
-       on Android, Segoe UI Emoji on Windows), so the icon matches what
-       the user sees inside the app on every platform. -->
-  <text x="96" y="96"
-        font-size="124"
-        text-anchor="middle"
-        dominant-baseline="central"
-        font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Twemoji Mozilla',sans-serif">⚽</text>
+  <!-- v2.5.90: drawn vector soccer ball instead of an emoji glyph. The old emoji-text
+       glyph relied on an OS emoji font; Googlebot and some Android
+       launchers don't render it, leaving a blank icon. -->
+  <circle cx="96" cy="96" r="67" fill="#d4a853"/>
+  <g stroke="#0a1628" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="96,66 126,87 115,122 77,122 66,87" fill="#0a1628"/>
+    <line x1="96" y1="66" x2="96" y2="36"/>
+    <line x1="126" y1="87" x2="155" y2="78"/>
+    <line x1="66" y1="87" x2="37" y2="78"/>
+    <line x1="77" y1="122" x2="59" y2="152"/>
+    <line x1="115" y1="122" x2="133" y2="152"/>
+  </g>
 </svg>

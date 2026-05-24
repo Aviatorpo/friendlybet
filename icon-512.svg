@@ -8,12 +8,14 @@
 
   <rect width="512" height="512" fill="url(#bg512)" rx="96"/>
 
-  <circle cx="256" cy="256" r="203" fill="#d4a853" opacity="0.10"/>
-  <circle cx="256" cy="256" r="195" fill="none" stroke="#d4a853" stroke-width="5" opacity="0.55"/>
-
-  <text x="256" y="256"
-        font-size="330"
-        text-anchor="middle"
-        dominant-baseline="central"
-        font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji','Twemoji Mozilla',sans-serif">⚽</text>
+  <!-- v2.5.90: drawn soccer ball (no emoji) for reliable PWA/search rendering. -->
+  <circle cx="256" cy="256" r="178" fill="#d4a853"/>
+  <g stroke="#0a1628" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="256,176 335,233 305,326 207,326 177,233" fill="#0a1628"/>
+    <line x1="256" y1="176" x2="256" y2="98"/>
+    <line x1="335" y1="233" x2="413" y2="207"/>
+    <line x1="177" y1="233" x2="99" y2="207"/>
+    <line x1="207" y1="326" x2="158" y2="406"/>
+    <line x1="305" y1="326" x2="354" y2="406"/>
+  </g>
 </svg>
