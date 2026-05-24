@@ -1,0 +1,102 @@
+/* ============================================================
+   FriendlyBet — shared stylesheet for all /guides/ content pages.
+   SINGLE SOURCE OF TRUTH for content-page design.
+
+   When the main site's palette or fonts change, update the tokens
+   in :root (and the @import font) HERE ONCE — every guide page that
+   links this file updates automatically. Guide pages must NOT inline
+   their own colours/fonts; they link this file so they never drift
+   from the current site look.
+
+   Tokens below mirror the current site: navy #0a1628→#1a2942,
+   gold #d4a853, Heebo.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --navy:  #0a1628;
+  --navy2: #15233c;
+  --navy3: #1d2f4d;
+  --gold:  #d4a853;
+  --gold-soft: #e9c178;
+  --ink:   #e8eef7;
+  --muted: #9fb0c8;
+  --green: #4ade80;
+  --blue:  #7cc4ff;
+  --red:   #ff8a8a;
+  --line:  rgba(212,168,83,.2);
+  --font:  'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { margin:0; font-family:var(--font); background:var(--navy); color:var(--ink); line-height:1.8; }
+
+header.site { background:linear-gradient(135deg,var(--navy3),var(--navy)); border-bottom:1px solid rgba(212,168,83,.25); }
+.wrap { max-width:780px; margin:0 auto; padding:0 20px; }
+header.site .wrap { display:flex; align-items:center; gap:10px; padding:14px 20px; }
+.logo { display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--ink); font-weight:800; }
+.logo svg { width:28px; height:28px; }
+
+nav.crumbs { font-size:13px; color:var(--muted); padding:14px 0 0; }
+nav.crumbs a { color:var(--gold); text-decoration:none; }
+
+main { padding:8px 0 48px; }
+h1 { font-size:clamp(28px,5.2vw,40px); line-height:1.25; margin:14px 0 10px; font-weight:800; }
+h2 { font-size:clamp(20px,3.6vw,27px); margin:36px 0 12px; color:var(--gold); font-weight:700; }
+h3 { margin:0; font-size:20px; font-weight:700; }
+p { margin:14px 0; }
+a { color:var(--gold); }
+.lead { font-size:19px; color:var(--muted); }
+
+/* Teams/topic at a glance */
+.hero-strip { display:flex; gap:8px; flex-wrap:wrap; margin:20px 0 8px; }
+.hero-team { flex:1 1 120px; background:var(--navy2); border:1px solid rgba(212,168,83,.18); border-radius:14px; padding:14px 12px; }
+.hero-team .name { font-weight:800; font-size:17px; }
+.hero-team .seed { font-size:12px; color:var(--muted); margin-top:2px; }
+
+/* Per-team / per-topic deep-dive card */
+.team-card { background:var(--navy2); border:1px solid var(--line); border-radius:16px; padding:18px; margin:18px 0; }
+.team-head { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; }
+.team-head .meta { flex:1; min-width:0; }
+.badge { display:inline-block; font-size:12px; font-weight:700; padding:3px 11px; border-radius:999px; letter-spacing:.2px; }
+.badge.fav   { background:rgba(212,168,83,.18); color:var(--gold);  border:1px solid rgba(212,168,83,.6); }
+.badge.dark  { background:rgba(124,196,255,.14); color:var(--blue); border:1px solid rgba(124,196,255,.5); }
+.badge.solid { background:rgba(74,222,128,.12); color:var(--green); border:1px solid rgba(74,222,128,.45); }
+.badge.under { background:rgba(255,138,138,.12); color:var(--red);  border:1px solid rgba(255,138,138,.45); }
+
+/* Strength bars */
+.meters { margin:14px 0 6px; }
+.meter { display:flex; align-items:center; gap:10px; margin:7px 0; font-size:14px; }
+.meter .label { width:128px; color:var(--muted); flex:none; }
+.meter .track { flex:1; height:9px; background:rgba(255,255,255,.08); border-radius:6px; overflow:hidden; }
+.meter .fill  { display:block; height:100%; min-width:6px; background:linear-gradient(90deg,var(--gold),var(--gold-soft)); border-radius:6px; }
+.meter .val   { width:34px; text-align:end; color:var(--ink); flex:none; font-weight:700; }
+/* RTL pages flip the bar direction automatically */
+[dir="rtl"] .meter .fill { background:linear-gradient(270deg,var(--gold),var(--gold-soft)); }
+[dir="rtl"] .meter .val  { text-align:start; }
+
+/* Callout + pull-quote */
+.callout { border-inline-start:4px solid var(--gold); background:rgba(212,168,83,.08); padding:13px 16px; border-radius:10px; margin:18px 0; }
+.callout b { color:var(--gold); }
+.pull { font-size:22px; font-weight:700; line-height:1.5; color:var(--ink); border-top:1px solid rgba(212,168,83,.25); border-bottom:1px solid rgba(212,168,83,.25); padding:18px 0; margin:24px 0; }
+.pull span { color:var(--gold); }
+
+/* Tables */
+table.standings { width:100%; border-collapse:collapse; margin:14px 0; background:var(--navy2); border-radius:12px; overflow:hidden; }
+table.standings th, table.standings td { text-align:start; padding:11px 13px; border-bottom:1px solid rgba(255,255,255,.07); }
+table.standings th { color:var(--gold); font-size:13px; letter-spacing:.4px; }
+table.standings .pos { font-weight:800; color:var(--gold); width:34px; }
+
+/* CTA + lists */
+.cta { display:inline-block; margin:20px 0; background:linear-gradient(135deg,var(--gold),var(--gold-soft)); color:#1a1205; font-weight:800; text-decoration:none; padding:15px 26px; border-radius:14px; font-size:17px; }
+.faq dt { font-weight:700; margin-top:16px; }
+.faq dd { margin:4px 0 0; color:var(--muted); }
+.related a { display:block; padding:7px 0; font-weight:600; }
+
+/* Guides hub list */
+ul.guide-list { list-style:none; padding:0; margin:22px 0; }
+ul.guide-list li { background:var(--navy2); border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin:10px 0; }
+ul.guide-list a { font-weight:700; font-size:17px; }
+
+footer.site { border-top:1px solid rgba(212,168,83,.2); padding:24px 0; color:var(--muted); font-size:14px; }
+footer.site a { color:var(--gold); text-decoration:none; }
