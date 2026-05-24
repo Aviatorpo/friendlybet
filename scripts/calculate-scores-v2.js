@@ -25,7 +25,7 @@ const DEFAULT_RULES_SINGLE = {
   //   Knockout (correct winner = team reached next round): R32=1, R16=2,
   //   QF=3, SF=4, Final=8. No separate tournament_winner bonus.
   group_first: 4, group_second: 3, group_third: 2, group_fourth: 1,
-  third_place_advance: 2,
+  third_place_advance: 1,
   round_of_32: 1, round_of_16: 2, quarter_final: 3, semi_final: 4, final: 8,
   top_scorer: 20
 };

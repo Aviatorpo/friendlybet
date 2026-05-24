@@ -6309,7 +6309,8 @@ const DEFAULT_SCORING_RULES = {
     group_fourth: 1,
     // v2.5.82: bonus per 3rd-place team you tagged that actually advances
     // to the R32 (one of the 8 best third places). Team-based, max 8 teams.
-    third_place_advance: 2,
+    // v2.5.87: lowered from 2 → 1 point.
+    third_place_advance: 1,
     round_of_32: 1,
     round_of_16: 2,
     quarter_final: 3,
@@ -7825,7 +7826,7 @@ function _spRenderThirdPlacePanel() {
   // v2.5.83: show what each correct pick is worth, read live from this pool's
   // scoring_rules (default 2).
   const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
-  const pts = rules.third_place_advance ?? 2;
+  const pts = rules.third_place_advance ?? 1;
   const ptsHint = pts > 0
     ? `<div class="sp-tp-pts"><i class="ti ti-coin"></i> ${t('thirdPlace.pointsEach', { pts })}</div>` : '';
   return `
