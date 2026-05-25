@@ -11,11 +11,13 @@
 
 html, body {
   font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
-  /* v2.6.0 premium: dark atmospheric background with gold + green glows */
+  /* v2.6.5 premium: clean warm near-black with a single subtle gold glow at
+     the top (where the hero/content sits) and a faint one at the very bottom.
+     No green/blue tints, no patchy center — empty areas stay clean. */
   background:
-    radial-gradient(720px 520px at 85% 0%, rgba(217,180,106,.14), transparent 60%),
-    radial-gradient(680px 560px at 8% 34%, rgba(61,220,151,.06), transparent 60%),
-    radial-gradient(1100px 820px at 50% 48%, #131210 0%, #0b0b09 55%, #070705 100%);
+    radial-gradient(820px 560px at 50% -8%, rgba(217,180,106,.12), transparent 62%),
+    radial-gradient(700px 560px at 50% 112%, rgba(217,180,106,.05), transparent 60%),
+    #0b0a08;
   background-attachment: fixed;
   color: white;
   min-height: 100vh;
@@ -7223,7 +7225,7 @@ body.ltr .bet-cta-arrow {
 /* v2.1.0 - RECOVERY CODE SCREEN (dramatic + celebratory)        */
 /* ============================================================ */
 #screen-recovery-code {
-  background: linear-gradient(180deg, #0a0a08 0%, #141310 100%);
+  background: transparent; /* v2.6.5: inherit the clean body background */
 }
 .rc-container {
   position: relative;

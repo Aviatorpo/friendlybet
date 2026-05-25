@@ -2106,7 +2106,7 @@ function loadTablerFallback() {
         </svg>
       </button>
       <span class="topbar-title" data-i18n="topScorer.title">מלך השערים</span>
-      <div style="width: 44px;"></div>
+      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד"><i class="ti ti-home gold"></i></button>
     </div>
 
     <div class="container">
@@ -2732,7 +2732,7 @@ function loadTablerFallback() {
       <span>FriendlyBet</span>
       <!-- SEO:guides-footer — crawlable link to the guides hub (maintained by the SEO agent) -->
       <a href="/guides/" class="menu-version" style="text-decoration:none">Guides</a>
-      <span class="menu-version">v2.6.4</span>
+      <span class="menu-version">v2.6.5</span>
     </div>
   </div>
 
@@ -2750,8 +2750,8 @@ function loadTablerFallback() {
       <div class="topbar-title-small" data-i18n="betting.groupPositions.title">מיקום בבתים</div>
       <div class="topbar-step" id="sp-groups-step"></div>
     </div>
-    <button class="btn-icon" onclick="spGroupsSaveAndExit()" data-i18n-aria="common.save" aria-label="Save">
-      <i class="ti ti-device-floppy gold"></i>
+    <button class="btn-icon" onclick="spGroupsSaveAndExit()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד">
+      <i class="ti ti-home gold"></i>
     </button>
   </div>
 
@@ -2815,7 +2815,7 @@ function loadTablerFallback() {
     <div class="topbar-center">
       <div class="topbar-title-small" data-i18n="thirdPlace.title">איזה 8 שלישיות עולות?</div>
     </div>
-    <div style="width:32px;"></div>
+    <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד"><i class="ti ti-home gold"></i></button>
   </div>
   <div class="container">
     <div id="sp-third-place-container"></div>
@@ -2844,8 +2844,8 @@ function loadTablerFallback() {
     </div>
     <!-- v2.5.62: save-and-exit icon mirroring sp-groups-screen so the
          user can pause the bracket mid-pick and return to the dashboard. -->
-    <button class="btn-icon" onclick="spBracketSaveAndExit()" data-i18n-aria="common.save" aria-label="Save">
-      <i class="ti ti-device-floppy gold"></i>
+    <button class="btn-icon" onclick="spBracketSaveAndExit()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד">
+      <i class="ti ti-home gold"></i>
     </button>
   </div>
 
@@ -2924,7 +2924,7 @@ function loadTablerFallback() {
       <i class="ti ti-arrow-right"></i>
     </button>
     <span class="topbar-title" data-i18n="betting.summary.title">סיכום הניחושים</span>
-    <div style="width:32px;"></div>
+    <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד"><i class="ti ti-home gold"></i></button>
   </div>
 
   <div class="container">
@@ -3020,7 +3020,7 @@ function loadTablerFallback() {
       <div class="topbar-title-small" id="ko-single-round-label">Round of 32</div>
       <div class="topbar-step" id="ko-single-progress-label">1 / 31</div>
     </div>
-    <div style="width:32px;"></div>
+    <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד"><i class="ti ti-home gold"></i></button>
   </div>
 
   <div class="ko-single-progress-wrap">
