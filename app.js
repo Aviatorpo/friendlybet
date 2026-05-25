@@ -7178,21 +7178,32 @@ async function startSinglePhaseBetting() {
   const championDone = !!spState.tournamentWinner ||
                        !!(spState.bracketPicks && spState.bracketPicks[31]);
 
-  if (spHasUserSubmitted() || (groupsComplete && championDone)) {
-    spRenderSummary();
-    showScreen('sp-summary-screen');
+  // v2.6.10: top-scorer completion (gated on squad release, like the dashboard CTA).
+  let tsRequired = false;
+  try { tsRequired = localStorage.getItem('fb_squads_released') === 'true'; } catch (e) {}
+  let tsChosen = false;
+  if (tsRequired) {
+    try {
+      const { data: tsp } = await supabaseClient.from('top_scorer_picks')
+        .select('id').eq('user_id', state.currentUser.id).eq('pool_id', state.currentPool.id);
+      tsChosen = (tsp || []).length >= 1;
+    } catch (e) {}
+  }
+
+  // Route to the FIRST incomplete stage so the dashboard CTA's promise matches.
+  if (!groupsComplete) {
+    spState.currentGroupIdx = 0;
+    spRenderGroups();
+    showScreen('sp-groups-screen');
     return;
   }
-  if (groupsComplete && !championDone) {
-    // Groups done, knockout still open. The knockout is picked in the
-    // single-match walkthrough (two teams at a time), NOT the full grid.
-    // First make sure the 8 third-place advancers are chosen (needed to build
-    // the R32); if not, send them to that dedicated step first.
+  if (!championDone) {
+    // Knockout is picked in the single-match walkthrough (two teams at a time),
+    // not the full grid. Third-place advancers must be chosen first to build R32.
     if ((spState.thirdPlaceAdvancers || []).length !== 8) {
       spStartThirdPlaceStep();
       return;
     }
-    // Resume the walkthrough at the first match without a pick.
     koSingle.mode = 'single-phase';
     koSingle.sequence = _koSinglePhaseSequence();
     const firstIncomplete = koSingle.sequence.findIndex(
@@ -7203,9 +7214,15 @@ async function startSinglePhaseBetting() {
     showScreen('ko-single-screen');
     return;
   }
-  spState.currentGroupIdx = 0;
-  spRenderGroups();
-  showScreen('sp-groups-screen');
+  if (tsRequired && !tsChosen) {
+    // Only the top scorer is left → the in-flow top-scorer step (which shows
+    // the Continue→summary button), NOT the summary.
+    spStartTopScorerStep();
+    return;
+  }
+  // Everything complete (or already submitted) → the summary review.
+  spRenderSummary();
+  showScreen('sp-summary-screen');
 }
 
 async function spLoadExistingPicks() {
@@ -8716,12 +8733,10 @@ function spSummaryEditPicks() {
 window.spSummaryEditPicks = spSummaryEditPicks;
 
 function spEditTopScorer() {
-  // Edit from summary: use the standalone top-scorer screen.
-  // (No SP-flow nav - the user goes back to dashboard via the topbar.)
-  state.spInFlow = false;
-  const nav = document.getElementById('ts-sp-flow-nav');
-  if (nav) nav.style.display = 'none';
-  if (typeof showTopScorer === 'function') showTopScorer();
+  // v2.6.10: edit from summary now uses the in-flow top-scorer step so the
+  // "Continue" button (→ back to summary) is present after picking. Previously
+  // it opened the screen with no nav, leaving the user with no way forward.
+  spStartTopScorerStep();
 }
 
 async function spSubmitPredictions() {
