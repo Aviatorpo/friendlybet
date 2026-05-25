@@ -8021,8 +8021,10 @@ function spRenderBracket() {
   // v2.5.70: every round (R32 included) is scored. Each correct pick rewards
   // the team that reached the NEXT round.
   const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
+  // v2.6.6: the third-place selector has its own dedicated step
+  // (sp-third-place-screen), so it's no longer rendered atop the bracket —
+  // showing it here too was a confusing duplicate above the knockout rounds.
   container.innerHTML =
-    _spRenderThirdPlacePanel() +
     renderRound('knockout.r32', struct.r32, rules.round_of_32) +
     renderRound('knockout.r16', struct.r16, rules.round_of_16) +
     renderRound('knockout.qf', struct.qf, rules.quarter_final) +
