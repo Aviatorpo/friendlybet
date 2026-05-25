@@ -7418,9 +7418,9 @@ function spRenderGroups() {
     slot.addEventListener('pointerdown', e => spSlotPointerDown(e, idx));
   });
 
-  // If we just pre-filled, persist immediately (so navigating back/forward
-  // doesn't keep "re-suggesting" the same defaults).
-  if (prefilled) spAutoSaveGroups();
+  // v2.6.11: groups persist ONLY when the user taps Next (see _spGroupsAdvance).
+  // We no longer auto-save the pre-fill or drags — so an unconfirmed order isn't
+  // written to the DB and won't show in the summary until the group is committed.
 
   // Prev/Next state
   const prev = document.getElementById('sp-groups-prev');
@@ -7428,7 +7428,7 @@ function spRenderGroups() {
   if (prev) prev.disabled = (spState.currentGroupIdx === 0);
   if (next) {
     const isLast = spState.currentGroupIdx === 11;
-    next.querySelector('span').textContent = isLast ? t('betting.continueToBracket') : t('wizard.next');
+    next.querySelector('span').textContent = isLast ? t('betting.continueToBracket') : t('groups.saveAndNext');
   }
 }
 
@@ -7497,7 +7497,7 @@ function spSlotPointerUp(ev) {
     const item = arr.splice(fromIdx, 1)[0];
     arr.splice(toIdx, 0, item);
     spRenderGroups();
-    spAutoSaveGroups();
+    // v2.6.11: no auto-save on drag — the order is committed only on Next.
   }
 }
 
@@ -7509,7 +7509,6 @@ function spRemoveFromSlot(_idx) { /* deprecated in v2.2 */
   positions[_idx] = null;
   spState.groupPositions[letter] = positions;
   spRenderGroups();
-  spAutoSaveGroups();
 }
 
 let _spSaveTimer = null;
@@ -7612,6 +7611,9 @@ function spGroupsPrev() {
 // v2.5.67: real advance logic split out so spGroupsNext can play a brief
 // confirmation animation on the slot rows first.
 function _spGroupsAdvance() {
+  // v2.6.11: commit the current group (and everything ranked so far) to the DB
+  // here — this is the single save point for the groups stage.
+  spSaveGroupsToDb(false);
   if (spState.currentGroupIdx < 11) {
     spState.currentGroupIdx++;
     spRenderGroups();
