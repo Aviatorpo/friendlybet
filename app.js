@@ -3689,15 +3689,39 @@ async function updateBettingStatusOnDashboard() {
   if (tsCard) tsCard.style.display = isSingle ? 'none' : '';
 
   if (isSingle) {
-    // Once the user has done a full pass, the CTA becomes "View your predictions"
-    if (state.currentUser.predictions_submitted_at) {
+    // v2.6.3: compute the TRUE completion state across EVERY stage so the CTA
+    // always matches reality — groups → knockout bracket → champion → top
+    // scorer. We read the DB directly (not in-memory spState) so it's accurate
+    // even right after a page load. `predictions_submitted_at` is no longer the
+    // sole gate; the actual picks decide the label.
+    const uid = state.currentUser.id;
+    const [gpp, kop, twp, tsp] = await Promise.all([
+      supabaseClient.from('group_position_picks').select('id').eq('user_id', uid),
+      supabaseClient.from('knockout_picks').select('bracket_position').eq('user_id', uid),
+      supabaseClient.from('tournament_winner_picks').select('id').eq('user_id', uid),
+      supabaseClient.from('top_scorer_picks').select('id').eq('user_id', uid)
+    ]);
+    const groupRows    = (gpp.data || []).length;                 // 4 per group, max 48
+    const groupsFilled = Math.floor(groupRows / 4);                // 0..12
+    const groupsDone   = groupRows >= 48;
+    const bracketCount = (kop.data || []).filter(r => r.bracket_position != null).length; // 0..31
+    const bracketDone  = bracketCount >= 31;
+    const winnerChosen = (twp.data || []).length >= 1;
+    const championDone = winnerChosen || bracketDone;              // final pick = champion
+    const tsChosen     = (tsp.data || []).length >= 1;
+    let tsRequired = false;
+    try { tsRequired = localStorage.getItem('fb_squads_released') === 'true'; } catch (e) {}
+
+    const allComplete = groupsDone && championDone && (!tsRequired || tsChosen);
+
+    // Overall progress (drives the bar): groups + bracket (+ top scorer if open).
+    const total  = 48 + 31 + (tsRequired ? 1 : 0);
+    const picked = Math.min(groupRows, 48) + Math.min(bracketCount, 31) + (tsRequired ? (tsChosen ? 1 : 0) : 0);
+
+    if (allComplete) {
       titleEl.textContent = t('dashboard.viewCta.title');
       subtitleEl.textContent = t('dashboard.viewCta.subtitle');
       ctaEl.classList.add('done');
-      // v2.4.7: hide the progress bar entirely once submitted. The previous
-      // "1 / 1" indicator was confusing - the title + green check icon are
-      // already the unambiguous "all done" signal. Showing a counter implied
-      // there was something left to fill.
       const row = document.getElementById('bet-cta-progress-row');
       if (row) row.style.display = 'none';
       const iconWrap = document.getElementById('bet-cta-icon-simple');
@@ -3705,30 +3729,30 @@ async function updateBettingStatusOnDashboard() {
       _fbSetDashboardProgressCard('allSet');
       return;
     }
-    // Otherwise count v2 group_position_picks to show progress
-    const { data: gpp } = await supabaseClient
-      .from('group_position_picks')
-      .select('id')
-      .eq('user_id', state.currentUser.id);
-    const rows = (gpp || []).length;          // 4 per group, max 48
-    const groupsFilled = Math.floor(rows / 4);  // 0..12
-    if (rows === 0) {
+
+    ctaEl.classList.remove('done');
+    if (groupRows === 0) {
+      // Hasn't started at all
       titleEl.textContent = t('dashboard.startCta.title');
       subtitleEl.textContent = t('dashboard.startCta.subtitle');
-      ctaEl.classList.remove('done');
       _fbSetDashboardProgressCard('notStarted');
-    } else if (groupsFilled < 12) {
+    } else if (!groupsDone) {
+      // Mid-groups
       titleEl.textContent = t('dashboard.continueCta.title');
       subtitleEl.textContent = t('dashboard.continueCta.partialGroups', { n: groupsFilled, total: 12 });
-      ctaEl.classList.remove('done');
+      _fbSetDashboardProgressCard('partial');
+    } else if (!championDone) {
+      // Groups done; knockout bracket / champion still open
+      titleEl.textContent = t('dashboard.continueCta.title');
+      subtitleEl.textContent = t('dashboard.continueCta.bracket');
       _fbSetDashboardProgressCard('partial');
     } else {
+      // Bracket + champion done; only the (now-unlocked) top scorer is left
       titleEl.textContent = t('dashboard.continueCta.title');
-      subtitleEl.textContent = t('dashboard.continueCta.almostDone');
-      ctaEl.classList.remove('done');
+      subtitleEl.textContent = t('dashboard.continueCta.topScorer');
       _fbSetDashboardProgressCard('partial');
     }
-    _fbSetCtaProgress(groupsFilled, 12);
+    _fbSetCtaProgress(picked, total);
     return;
   }
 
@@ -7125,11 +7149,27 @@ async function startSinglePhaseBetting() {
     return;
   }
   await spLoadExistingPicks();
-  // v2.3: if the user has already gone through the full flow once,
-  //       land them on the summary so they can review + edit.
-  if (spHasUserSubmitted()) {
+  // v2.6.3: route to the FIRST incomplete stage so where we land matches the
+  // dashboard CTA's promise (groups → bracket → summary). Submitted or fully
+  // complete users land on the summary to review + edit.
+  const groupsComplete = WC2026_GROUP_LETTERS.every(l => {
+    const arr = spState.groupPositions[l];
+    return arr && arr.length >= 4 && arr.slice(0, 4).every(x => x);
+  });
+  const championDone = !!spState.tournamentWinner ||
+                       !!(spState.bracketPicks && spState.bracketPicks[31]);
+
+  if (spHasUserSubmitted() || (groupsComplete && championDone)) {
     spRenderSummary();
     showScreen('sp-summary-screen');
+    return;
+  }
+  if (groupsComplete && !championDone) {
+    // Groups done, knockout still open → jump to the bracket (it also hosts
+    // the third-place selector), so "finish your bracket" lands correctly.
+    spState.currentGroupIdx = 11;
+    spRenderBracket();
+    showScreen('sp-bracket-screen');
     return;
   }
   spState.currentGroupIdx = 0;
