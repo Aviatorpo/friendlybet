@@ -7165,11 +7165,23 @@ async function startSinglePhaseBetting() {
     return;
   }
   if (groupsComplete && !championDone) {
-    // Groups done, knockout still open → jump to the bracket (it also hosts
-    // the third-place selector), so "finish your bracket" lands correctly.
-    spState.currentGroupIdx = 11;
-    spRenderBracket();
-    showScreen('sp-bracket-screen');
+    // Groups done, knockout still open. The knockout is picked in the
+    // single-match walkthrough (two teams at a time), NOT the full grid.
+    // First make sure the 8 third-place advancers are chosen (needed to build
+    // the R32); if not, send them to that dedicated step first.
+    if ((spState.thirdPlaceAdvancers || []).length !== 8) {
+      spStartThirdPlaceStep();
+      return;
+    }
+    // Resume the walkthrough at the first match without a pick.
+    koSingle.mode = 'single-phase';
+    koSingle.sequence = _koSinglePhaseSequence();
+    const firstIncomplete = koSingle.sequence.findIndex(
+      s => !(spState.bracketPicks && spState.bracketPicks[s.pos]));
+    koSingle.idx = firstIncomplete >= 0 ? firstIncomplete : 0;
+    state.spInFlow = true;
+    koSingleRender();
+    showScreen('ko-single-screen');
     return;
   }
   spState.currentGroupIdx = 0;
