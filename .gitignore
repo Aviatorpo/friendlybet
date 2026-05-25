@@ -33,3 +33,9 @@ friendlybet-banner*.png
 # brand source images (kept in private repo, not the public site)
 friendlybet-avatar.png
 friendlybet-banner.png
+
+# diagnostic screenshots (local)
+_diag-*.png
+
+# local marketing media samples (not part of the site)
+samples/
