@@ -80,6 +80,7 @@ function loadTablerFallback() {
 }
 </script>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="landing.css">
 </head>
 <body>
 
@@ -101,6 +102,270 @@ function loadTablerFallback() {
       <line x1="6" y1="6" x2="18" y2="18"></line>
     </svg>
   </button>
+</div>
+
+<!-- ============================================================ -->
+<!-- Premium landing page (first-time visitors). CTAs enter app.  -->
+<!-- ============================================================ -->
+<div id="fb-landing" style="display:none">
+  <div class="atmos"></div>
+  <div class="topline"></div>
+
+  <!-- ===== HEBREW ===== -->
+  <div class="fb-block" data-lang="he" dir="rtl">
+    <header>
+      <div class="wrap nav">
+        <span class="brand" onclick="scrollTo(0,0)"><span class="ball">⚽</span> FriendlyBet</span>
+        <nav class="nav-links">
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=how]').scrollIntoView({behavior:'smooth'})">איך זה עובד</a>
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=features]').scrollIntoView({behavior:'smooth'})">מה יש בפנים</a>
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=free]').scrollIntoView({behavior:'smooth'})">למה זה חינם</a>
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=faq]').scrollIntoView({behavior:'smooth'})">שאלות נפוצות</a>
+          <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+        <div class="nav-cta">
+          <div class="lang"><button onclick="setLanguage('en')">EN</button><button class="on">עב</button></div>
+          <button class="btn btn-gold btn-sm" onclick="fbEnterApp('create')">פתחו הימור</button>
+        </div>
+      </div>
+    </header>
+    <section class="hero wrap">
+      <div class="ring">⚽</div>
+      <div class="eyebrow">מונדיאל 2026 · 48 נבחרות · אלופה אחת</div>
+      <h1>FriendlyBet</h1>
+      <p class="sub">הימור חברים על מונדיאל 2026</p>
+      <div class="taglines">
+        <span class="pill"><span class="dot"></span> 100% חינמי</span>
+        <span class="pill"><span class="dot"></span> בלי פרסומות</span>
+        <span class="pill"><span class="dot"></span> בלי הרשמה</span>
+        <span class="pill"><span class="dot"></span> קוד פתוח</span>
+      </div>
+      <div class="hero-cta">
+        <button class="btn btn-gold" onclick="fbEnterApp('create')">🏆 פתחו הימור</button>
+        <button class="btn btn-ghost" onclick="fbEnterApp('join')">👥 הצטרפו עם קוד</button>
+      </div>
+      <div><button class="recovery" onclick="fbEnterApp('recovery')">🔑 יש לי קוד שחזור</button></div>
+      <div class="trust">🛡️ לא נאסף שום מידע אישי · <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">הקוד פתוח ב-GitHub</a></div>
+    </section>
+    <section class="section" data-sec="how">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker"><span class="rule"></span><span class="lbl">איך זה עובד</span><span class="rule"></span></div>
+          <h2>מתחילים תוך <em>פחות מדקה</em></h2>
+          <p>בלי הרשמה, בלי הורדות, בלי כאב ראש. פותחים הימור ושולחים קישור אחד.</p>
+        </div>
+        <div class="steps">
+          <div class="step reveal d1"><span class="ghost">1</span><span class="tag">פתיחה</span><h3>פותחים הימור</h3><p>בוחרים שם, קובעים את שיטת הניקוד, וזהו. שולחים לחברים קישור אחד — וזו כל ההתעסקות.</p></div>
+          <div class="step reveal d2"><span class="ghost">2</span><span class="tag">ניחוש</span><h3>מנחשים את כל הטורניר</h3><p>מדרגים את כל 12 הבתים ובונים את הדרך בנוקאאוט עד הגמר — ועוד ניחוש קטן: מי יהיה מלך השערים.</p></div>
+          <div class="step reveal d3"><span class="ghost">3</span><span class="tag">תחרות</span><h3>מטפסים ומשוויצים</h3><p>הנקודות מתעדכנות לבד עם כל תוצאה, וטבלת המובילים החיה קובעת מי צדק הכי הרבה.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" data-sec="features" style="padding-top:36px">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker"><span class="rule"></span><span class="lbl">מה יש בפנים</span><span class="rule"></span></div>
+          <h2>כל מה שהחבורה צריכה</h2>
+          <p>חוויית הימור מלוטשת, משלב הבתים ועד שריקת הסיום.</p>
+        </div>
+        <div class="features">
+          <div class="feat reveal d1"><div class="ico">📊</div><h3>טבלת מובילים חיה</h3><p>הנקודות מחושבות מחדש אחרי כל משחק. תמיד רואים בדיוק איפה אתם עומדים מול כולם.</p></div>
+          <div class="feat reveal d2"><div class="ico">🗂️</div><h3>ניחוש כל 12 הבתים</h3><p>מדרגים כל בית מהמקום הראשון עד הרביעי — כולל אילו נבחרות מהמקום השלישי ממשיכות הלאה.</p></div>
+          <div class="feat reveal d3"><div class="ico">🏆</div><h3>כל הדרך לגמר</h3><p>בונים את המסלול משמינית הגמר ועד הגמר עצמו — ומכתירים אלופה עוד לפני שנשרקה השריקה הראשונה.</p></div>
+          <div class="feat reveal d1"><div class="ico">⚽</div><h3>בונוס מלך השערים</h3><p>מנחשים מי יסיים כמלך השערים של הטורניר — וזוכים בנקודות בונוס ויתרון על החברים.</p></div>
+          <div class="feat reveal d2"><div class="ico">🎚️</div><h3>החוקים שלכם, הניקוד שלכם</h3><p>המארגן קובע כמה שווה כל שלב, כך שכל הימור מתנהל בדיוק לפי הטעם של החבורה.</p></div>
+          <div class="feat reveal d3"><div class="ico">📱</div><h3>אפליקציה להתקנה (PWA)</h3><p>מוסיפים למסך הבית והיא עובדת כמו אפליקציה רגילה — בלי חנות אפליקציות, בלי הורדות, ומתאימה לכל מסך.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section free" data-sec="free">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker"><span class="rule"></span><span class="lbl">בלי אותיות קטנות</span><span class="rule"></span></div>
+          <h2>חינמי, פתוח, <em>ושלכם</em></h2>
+          <p>FriendlyBet הוא פרויקט אהבה, לא עסק. אין מה לקנות, אין מה למכור, ואין שום דבר חבוי באותיות הקטנות.</p>
+        </div>
+        <div class="badges">
+          <div class="badge reveal d1"><div class="bi">💸</div><div class="bt"><b>חינמי לחלוטין</b><span>בלי תשלום, בלי פרימיום</span></div></div>
+          <div class="badge reveal d1"><div class="bi">🚫</div><div class="bt"><b>אפס פרסומות</b><span>כלום לא רודף אחריכם</span></div></div>
+          <div class="badge reveal d2"><div class="bi">⚡</div><div class="bt"><b>בלי הרשמה</b><span>רק כינוי וקוד שחזור</span></div></div>
+          <div class="badge reveal d2"><div class="bi">🔓</div><div class="bt"><b>קוד פתוח</b><span>כל שורה גלויה ב-GitHub</span></div></div>
+          <div class="badge reveal d3"><div class="bi">🛡️</div><div class="bt"><b>פרטיות לפני הכול</b><span>לא נאסף שום מידע אישי</span></div></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" data-sec="faq">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker"><span class="rule"></span><span class="lbl">כדאי לדעת</span><span class="rule"></span></div>
+          <h2>שאלות נפוצות</h2>
+          <p>כל מה שאולי מתחשק לכם לדעת לפני שפותחים הימור.</p>
+        </div>
+        <div class="faq-list">
+          <details class="faq-item reveal d1"><summary><span class="q">FriendlyBet באמת חינמי?</span><span class="pm">+</span></summary><p class="a">כן, ולגמרי. אין מסלול פרימיום, אין עמלות ואין הפתעות באותיות הקטנות. זה פרויקט אהבה לכדורגל, לא עסק.</p></details>
+          <details class="faq-item reveal d1"><summary><span class="q">צריך להירשם או להוריד משהו?</span><span class="pm">+</span></summary><p class="a">לא. אין חשבון, אין אימייל ואין חנות אפליקציות — בוחרים כינוי, מקבלים קוד שחזור פרטי, וזהו. הכול רץ בדפדפן, ואפשר גם להוסיף למסך הבית כמו אפליקציה רגילה.</p></details>
+          <details class="faq-item reveal d2"><summary><span class="q">איך החברים מצטרפים להימור שלי?</span><span class="pm">+</span></summary><p class="a">כשפותחים הימור מקבלים קוד קצר וקישור. שולחים בוואטסאפ, בטלגרם או איפה שבא לכם — לוחצים, בוחרים כינוי, ובפנים. בלי הגבלה על מספר המשתתפים.</p></details>
+          <details class="faq-item reveal d2"><summary><span class="q">מה בעצם מנחשים?</span><span class="pm">+</span></summary><p class="a">מדרגים את כל 12 הבתים (מהמקום הראשון עד הרביעי, כולל אילו נבחרות מהמקום השלישי ממשיכות הלאה), בונים את כל הדרך בנוקאאוט עד האלופה, ובוחרים את מלך השערים של הטורניר לנקודות בונוס.</p></details>
+          <details class="faq-item reveal d3"><summary><span class="q">איך נקבע הניקוד?</span><span class="pm">+</span></summary><p class="a">המארגן קובע כמה שווה כל ניחוש נכון — מיקומים בבתים, כל שלב בנוקאאוט ובונוס מלך השערים. מרגע שהטורניר מתחיל, הנקודות מתעדכנות לבד אחרי כל משחק והטבלה מסתדרת מחדש.</p></details>
+          <details class="faq-item reveal d3"><summary><span class="q">מתי הניחושים ננעלים?</span><span class="pm">+</span></summary><p class="a">אפשר לשנות את הבחירות בחופשיות עד שריקת הפתיחה של המשחק הראשון. מאותו רגע הכול ננעל כדי שיהיה הוגן לכולם, ומכאן רק עוקבים אחרי התוצאות.</p></details>
+          <details class="faq-item reveal d3"><summary><span class="q">זה באמת קוד פתוח?</span><span class="pm">+</span></summary><p class="a">לגמרי. כל שורת קוד גלויה ב-<a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a> — מוזמנים לקרוא, ללמוד, או להריץ עותק משלכם.</p></details>
+        </div>
+      </div>
+    </section>
+    <section class="section final">
+      <div class="wrap">
+        <div class="final-card reveal">
+          <span class="eyebrow">שריקת הפתיחה מתקרבת</span>
+          <h2>החבורה שלכם. הניחושים שלכם. אלופה אחת.</h2>
+          <p>מקימים הימור בפחות מדקה ושולחים לחברים קישור אחד. המונדיאל פשוט יותר כיף כשיש על מה להתווכח ועל מה להשוויץ.</p>
+          <div class="hero-cta" style="animation:none;opacity:1">
+            <button class="btn btn-gold" onclick="fbEnterApp('create')">🏆 פתחו הימור</button>
+            <button class="btn btn-ghost" onclick="fbEnterApp('join')">👥 הצטרפו עם קוד</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="wrap foot">
+        <span class="brand" onclick="scrollTo(0,0)"><span class="ball">⚽</span> FriendlyBet</span>
+        <div class="foot-links">
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=how]').scrollIntoView({behavior:'smooth'})">איך זה עובד</a>
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=features]').scrollIntoView({behavior:'smooth'})">מה יש בפנים</a>
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=free]').scrollIntoView({behavior:'smooth'})">למה זה חינם</a>
+          <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <div class="copy">נוצר מתוך אהבה למשחק · מונדיאל 2026</div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ===== ENGLISH ===== -->
+  <div class="fb-block" data-lang="en" dir="ltr" style="display:none">
+    <header>
+      <div class="wrap nav">
+        <span class="brand" onclick="scrollTo(0,0)"><span class="ball">⚽</span> FriendlyBet</span>
+        <nav class="nav-links">
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=how]').scrollIntoView({behavior:'smooth'})">How it works</a>
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=features]').scrollIntoView({behavior:'smooth'})">Features</a>
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=free]').scrollIntoView({behavior:'smooth'})">Why it's free</a>
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=faq]').scrollIntoView({behavior:'smooth'})">FAQ</a>
+          <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+        <div class="nav-cta">
+          <div class="lang"><button class="on">EN</button><button onclick="setLanguage('he')">עב</button></div>
+          <button class="btn btn-gold btn-sm" onclick="fbEnterApp('create')">Create a pool</button>
+        </div>
+      </div>
+    </header>
+    <section class="hero wrap">
+      <div class="ring">⚽</div>
+      <div class="eyebrow">World Cup 2026 · 48 Teams · 1 Winner</div>
+      <h1>FriendlyBet</h1>
+      <p class="sub">The World Cup prediction game you play with your friends.</p>
+      <div class="taglines">
+        <span class="pill"><span class="dot"></span> 100% Free</span>
+        <span class="pill"><span class="dot"></span> No Ads</span>
+        <span class="pill"><span class="dot"></span> No Signup</span>
+        <span class="pill"><span class="dot"></span> Open Source</span>
+      </div>
+      <div class="hero-cta">
+        <button class="btn btn-gold" onclick="fbEnterApp('create')">🏆 Create a pool</button>
+        <button class="btn btn-ghost" onclick="fbEnterApp('join')">👥 Join with a code</button>
+      </div>
+      <div><button class="recovery" onclick="fbEnterApp('recovery')">🔑 I have a recovery code</button></div>
+      <div class="trust">🛡️ No personal data collected · <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">View the source on GitHub</a></div>
+    </section>
+    <section class="section" data-sec="how">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker"><span class="rule"></span><span class="lbl">How it works</span><span class="rule"></span></div>
+          <h2>Up and running in <em>under a minute</em></h2>
+          <p>No accounts, no downloads, no setup headaches. Start a pool and send one link.</p>
+        </div>
+        <div class="steps">
+          <div class="step reveal d1"><span class="ghost">1</span><span class="tag">Create</span><h3>Make your pool</h3><p>Pick a name, choose your scoring, done. Share one invite link — that's the whole setup.</p></div>
+          <div class="step reveal d2"><span class="ghost">2</span><span class="tag">Predict</span><h3>Call the tournament</h3><p>Rank all 12 groups and fill the full 32-team bracket to the final — plus your top-scorer pick.</p></div>
+          <div class="step reveal d3"><span class="ghost">3</span><span class="tag">Compete</span><h3>Climb &amp; brag</h3><p>Points update automatically as results land. A live leaderboard crowns whoever called it best.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" data-sec="features" style="padding-top:36px">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker"><span class="rule"></span><span class="lbl">Features</span><span class="rule"></span></div>
+          <h2>Everything your group needs</h2>
+          <p>A polished prediction experience from the group stage to the final whistle.</p>
+        </div>
+        <div class="features">
+          <div class="feat reveal d1"><div class="ico">📊</div><h3>Live leaderboard</h3><p>Scores recalculate automatically after every match. See exactly where you stand all tournament long.</p></div>
+          <div class="feat reveal d2"><div class="ico">🗂️</div><h3>Predict all 12 groups</h3><p>Order every group from 1st to 4th, including which third-placed teams sneak through to the knockouts.</p></div>
+          <div class="feat reveal d3"><div class="ico">🏆</div><h3>Full 32-team bracket</h3><p>Build your path from the Round of 32 to the final — and crown your champion before a ball is kicked.</p></div>
+          <div class="feat reveal d1"><div class="ico">⚽</div><h3>Top-scorer bonus</h3><p>Predict the tournament's Golden Boot for bonus points and an extra edge over your friends.</p></div>
+          <div class="feat reveal d2"><div class="ico">🎚️</div><h3>Your rules, your scoring</h3><p>The organizer tunes the points for every stage, so each pool plays exactly the way your group likes it.</p></div>
+          <div class="feat reveal d3"><div class="ico">📱</div><h3>Installable app (PWA)</h3><p>Add it to your home screen and it works like a native app — no app store, no download, fully responsive.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section free" data-sec="free">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker"><span class="rule"></span><span class="lbl">No catch, ever</span><span class="rule"></span></div>
+          <h2>Free, open, and <em>yours</em></h2>
+          <p>FriendlyBet is a passion project, not a business. Nothing to buy, nothing to upsell, nothing hiding in the fine print.</p>
+        </div>
+        <div class="badges">
+          <div class="badge reveal d1"><div class="bi">💸</div><div class="bt"><b>Completely free</b><span>No fees, no premium tier</span></div></div>
+          <div class="badge reveal d1"><div class="bi">🚫</div><div class="bt"><b>Zero ads</b><span>Nothing tracking you around</span></div></div>
+          <div class="badge reveal d2"><div class="bi">⚡</div><div class="bt"><b>No signup</b><span>Just a name and a recovery code</span></div></div>
+          <div class="badge reveal d2"><div class="bi">🔓</div><div class="bt"><b>Open source</b><span>Every line is on GitHub</span></div></div>
+          <div class="badge reveal d3"><div class="bi">🛡️</div><div class="bt"><b>Privacy first</b><span>No personal data collected</span></div></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" data-sec="faq">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker"><span class="rule"></span><span class="lbl">Good to know</span><span class="rule"></span></div>
+          <h2>Frequently asked questions</h2>
+          <p>Everything you might be wondering before you start your pool.</p>
+        </div>
+        <div class="faq-list">
+          <details class="faq-item reveal d1"><summary><span class="q">Is FriendlyBet really free?</span><span class="pm">+</span></summary><p class="a">Yes — 100% free, forever. There's no premium tier, no fees, and no hidden upsells. It's a passion project for the love of the game, not a business.</p></details>
+          <details class="faq-item reveal d1"><summary><span class="q">Do I need to sign up or download anything?</span><span class="pm">+</span></summary><p class="a">No account, no email, no app store. You just pick a nickname and get a private recovery code to get back in. It runs in your browser, and you can add it to your home screen like a real app (PWA).</p></details>
+          <details class="faq-item reveal d2"><summary><span class="q">How do my friends join my pool?</span><span class="pm">+</span></summary><p class="a">When you create a pool you get a short code and a share link. Send it on WhatsApp, Telegram, or anywhere — they tap it, pick a nickname, and they're in. There's no limit on how many friends can join.</p></details>
+          <details class="faq-item reveal d2"><summary><span class="q">What exactly do we predict?</span><span class="pm">+</span></summary><p class="a">You rank all 12 groups (1st to 4th, including which third-placed teams advance), fill in the entire 32-team knockout bracket up to the champion, and pick the tournament's top scorer for bonus points.</p></details>
+          <details class="faq-item reveal d3"><summary><span class="q">How is scoring decided?</span><span class="pm">+</span></summary><p class="a">The organizer chooses how many points each correct call is worth — group positions, each knockout round, and the top-scorer bonus. Once the tournament starts, scores update automatically after every match and the leaderboard re-ranks itself.</p></details>
+          <details class="faq-item reveal d3"><summary><span class="q">When do predictions lock?</span><span class="pm">+</span></summary><p class="a">You can edit your picks freely right up until the first match kicks off. After that everything locks in so it's fair for everyone, and it's all about following the results.</p></details>
+          <details class="faq-item reveal d3"><summary><span class="q">Is it really open source?</span><span class="pm">+</span></summary><p class="a">Completely. Every line of code is public on <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a> — you're welcome to read it, learn from it, or host your own copy.</p></details>
+        </div>
+      </div>
+    </section>
+    <section class="section final">
+      <div class="wrap">
+        <div class="final-card reveal">
+          <span class="eyebrow">Kickoff awaits</span>
+          <h2>Your group. Your bracket. One winner.</h2>
+          <p>Set up a pool in under a minute and send your friends a single link. The World Cup is more fun with bragging rights on the line.</p>
+          <div class="hero-cta" style="animation:none;opacity:1">
+            <button class="btn btn-gold" onclick="fbEnterApp('create')">🏆 Create your pool</button>
+            <button class="btn btn-ghost" onclick="fbEnterApp('join')">👥 Join with a code</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="wrap foot">
+        <span class="brand" onclick="scrollTo(0,0)"><span class="ball">⚽</span> FriendlyBet</span>
+        <div class="foot-links">
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=how]').scrollIntoView({behavior:'smooth'})">How it works</a>
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=features]').scrollIntoView({behavior:'smooth'})">Features</a>
+          <a onclick="this.closest('.fb-block').querySelector('[data-sec=free]').scrollIntoView({behavior:'smooth'})">Why it's free</a>
+          <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <div class="copy">Made for the love of the game · World Cup 2026</div>
+      </div>
+    </footer>
+  </div>
 </div>
 
 <!-- ============================================================ -->

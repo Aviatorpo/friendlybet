@@ -14,6 +14,7 @@ const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/styles.css',
+  '/landing.css',
   '/app.js',
   '/config.js',
   '/i18n.js',

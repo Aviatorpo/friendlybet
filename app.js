@@ -5726,6 +5726,62 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// ============================================================
+// v2.6.0 - Premium marketing landing page (first-time visitors)
+// ============================================================
+// #fb-landing is a body-level, full-bleed element with two language
+// blocks (he/en). Shown to new visitors; CTAs call fbEnterApp() which
+// hides the landing and drops the user into the app flow.
+function _fbLandingApplyLang() {
+  const wrap = document.getElementById('fb-landing');
+  if (!wrap) return;
+  const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+  wrap.querySelectorAll('.fb-block').forEach(b => {
+    b.style.display = (b.getAttribute('data-lang') === lang) ? 'block' : 'none';
+  });
+  // (Re)arm scroll-reveal for the now-visible block.
+  const els = wrap.querySelectorAll('.fb-block:not([style*="display: none"]) .reveal, .fb-block[style*="display: block"] .reveal');
+  if (!('IntersectionObserver' in window)) {
+    wrap.querySelectorAll('.reveal').forEach(e => e.classList.add('in'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: .12 });
+  els.forEach(e => { if (!e.classList.contains('in')) io.observe(e); });
+}
+
+function showLanding() {
+  const app = document.getElementById('app');
+  const wrap = document.getElementById('fb-landing');
+  if (!wrap) { showScreen('home-screen'); return; }
+  if (app) app.style.display = 'none';
+  wrap.style.display = 'block';
+  document.body.classList.add('on-landing');
+  window.scrollTo(0, 0);
+  _fbLandingApplyLang();
+}
+window.showLanding = showLanding;
+
+function fbEnterApp(target) {
+  const wrap = document.getElementById('fb-landing');
+  const app = document.getElementById('app');
+  if (wrap) wrap.style.display = 'none';
+  if (app) app.style.display = '';
+  document.body.classList.remove('on-landing');
+  window.scrollTo(0, 0);
+  if (target === 'create') showScreen('create-pool-screen');
+  else if (target === 'join') showScreen('join-pool-screen');
+  else if (target === 'recovery') showScreen('recovery-login-screen');
+  else showScreen('home-screen');
+}
+window.fbEnterApp = fbEnterApp;
+
+// Keep the landing language in sync with the app's toggle.
+window.addEventListener('languageChanged', () => {
+  if (document.body.classList.contains('on-landing')) _fbLandingApplyLang();
+});
+
 async function initApp() {
   console.log('FriendlyBet v' + CONFIG.APP_VERSION + ' starting...');
   console.log('Language:', typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'unknown');
@@ -5846,12 +5902,13 @@ async function initApp() {
     } else if (localUser && localUser.pool_id && supabaseClient) {
       // User has account AND supabase is online - try to load the dashboard
       await goToDashboard();
-    } else {
-      // First visit (or no working supabase) - show home
-      if (localUser && localUser.pool_id && !supabaseClient) {
-        console.warn('Supabase never came online; falling back to home-screen.');
-      }
+    } else if (localUser && localUser.pool_id && !supabaseClient) {
+      console.warn('Supabase never came online; falling back to home-screen.');
       showScreen('home-screen');
+    } else {
+      // v2.6.0: first-time visitor → the premium marketing landing page.
+      // CTAs (fbEnterApp) drop them into the app's create/join/recovery flow.
+      showLanding();
     }
   } catch (err) {
     console.error('initApp routing failed:', err);
