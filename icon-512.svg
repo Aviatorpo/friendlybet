@@ -1,21 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <defs>
-    <linearGradient id="bg512" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1a2942"/>
-      <stop offset="100%" stop-color="#0a1628"/>
-    </linearGradient>
-  </defs>
-
-  <rect width="512" height="512" fill="url(#bg512)" rx="96"/>
-
-  <!-- v2.5.90: drawn soccer ball (no emoji) for reliable PWA/search rendering. -->
-  <circle cx="256" cy="256" r="178" fill="#d4a853"/>
-  <g stroke="#0a1628" stroke-width="20" stroke-linecap="round" stroke-linejoin="round">
-    <polygon points="256,176 335,233 305,326 207,326 177,233" fill="#0a1628"/>
-    <line x1="256" y1="176" x2="256" y2="98"/>
-    <line x1="335" y1="233" x2="413" y2="207"/>
-    <line x1="177" y1="233" x2="99" y2="207"/>
-    <line x1="207" y1="326" x2="158" y2="406"/>
-    <line x1="305" y1="326" x2="354" y2="406"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="512" height="512">
+  <!-- v2.6.1: classic soccer ball in a gold ring (matches the home screen). -->
+  <rect width="48" height="48" rx="11" fill="#0c0e13"/>
+  <circle cx="24" cy="24" r="16.4" fill="none" stroke="#d9b46a" stroke-width="2"/>
+  <circle cx="24" cy="24" r="13.2" fill="#f4f3ee"/>
+  <g stroke="#11141b" stroke-width="1.5" stroke-linecap="round" fill="none">
+    <line x1="24" y1="17.8" x2="24" y2="11.4"/>
+    <line x1="29.9" y1="22.1" x2="35.6" y2="19.4"/>
+    <line x1="18.1" y1="22.1" x2="12.4" y2="19.4"/>
+    <line x1="27.6" y1="29.1" x2="31.3" y2="34.8"/>
+    <line x1="20.4" y1="29.1" x2="16.7" y2="34.8"/>
+  </g>
+  <g fill="#11141b">
+    <polygon points="24,17.8 29.9,22.1 27.6,29.1 20.4,29.1 18.1,22.1"/>
+    <circle cx="24" cy="11.2" r="2.1"/>
+    <circle cx="36" cy="19.6" r="2.1"/>
+    <circle cx="12" cy="19.6" r="2.1"/>
+    <circle cx="31.5" cy="35.2" r="2.1"/>
+    <circle cx="16.5" cy="35.2" r="2.1"/>
   </g>
 </svg>

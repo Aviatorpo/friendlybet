@@ -1,24 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
-  <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1a2942"/>
-      <stop offset="100%" stop-color="#0a1628"/>
-    </linearGradient>
-  </defs>
-
-  <!-- Dark rounded background -->
-  <rect width="192" height="192" fill="url(#bg)" rx="36"/>
-
-  <!-- v2.5.90: drawn vector soccer ball instead of an emoji glyph. The old emoji-text
-       glyph relied on an OS emoji font; Googlebot and some Android
-       launchers don't render it, leaving a blank icon. -->
-  <circle cx="96" cy="96" r="67" fill="#d4a853"/>
-  <g stroke="#0a1628" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round">
-    <polygon points="96,66 126,87 115,122 77,122 66,87" fill="#0a1628"/>
-    <line x1="96" y1="66" x2="96" y2="36"/>
-    <line x1="126" y1="87" x2="155" y2="78"/>
-    <line x1="66" y1="87" x2="37" y2="78"/>
-    <line x1="77" y1="122" x2="59" y2="152"/>
-    <line x1="115" y1="122" x2="133" y2="152"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="192" height="192">
+  <!-- v2.6.1: classic soccer ball in a gold ring (matches the home screen). -->
+  <rect width="48" height="48" rx="11" fill="#0c0e13"/>
+  <circle cx="24" cy="24" r="16.4" fill="none" stroke="#d9b46a" stroke-width="2"/>
+  <circle cx="24" cy="24" r="13.2" fill="#f4f3ee"/>
+  <g stroke="#11141b" stroke-width="1.5" stroke-linecap="round" fill="none">
+    <line x1="24" y1="17.8" x2="24" y2="11.4"/>
+    <line x1="29.9" y1="22.1" x2="35.6" y2="19.4"/>
+    <line x1="18.1" y1="22.1" x2="12.4" y2="19.4"/>
+    <line x1="27.6" y1="29.1" x2="31.3" y2="34.8"/>
+    <line x1="20.4" y1="29.1" x2="16.7" y2="34.8"/>
+  </g>
+  <g fill="#11141b">
+    <polygon points="24,17.8 29.9,22.1 27.6,29.1 20.4,29.1 18.1,22.1"/>
+    <circle cx="24" cy="11.2" r="2.1"/>
+    <circle cx="36" cy="19.6" r="2.1"/>
+    <circle cx="12" cy="19.6" r="2.1"/>
+    <circle cx="31.5" cy="35.2" r="2.1"/>
+    <circle cx="16.5" cy="35.2" r="2.1"/>
   </g>
 </svg>
