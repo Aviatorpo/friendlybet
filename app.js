@@ -5801,6 +5801,25 @@ function fbEnterApp(target) {
 }
 window.fbEnterApp = fbEnterApp;
 
+// v2.6.9: "View my picks" — opens the summary (the unified review of every
+// completed pick) from the dashboard menu OR any betting screen, without
+// disturbing the in-flow state. Single-phase pools use the rich summary; a
+// returning user's picks are loaded fresh from the DB first.
+async function fbViewMyPicks() {
+  if (typeof closeMenu === 'function') closeMenu();
+  if (!state.currentPool || !state.currentUser) { showToast(t('errors.reconnect'), 'error'); return; }
+  if (state.currentPool.betting_mode === 'single_phase') {
+    state.spInFlow = false;
+    // spRenderSummary() reloads picks fresh from the DB itself.
+    spRenderSummary();
+    showScreen('sp-summary-screen');
+  } else {
+    // Two-phase has no unified summary screen — fall back to the dashboard.
+    await goToDashboard();
+  }
+}
+window.fbViewMyPicks = fbViewMyPicks;
+
 // Keep the landing language in sync with the app's toggle.
 window.addEventListener('languageChanged', () => {
   if (document.body.classList.contains('on-landing')) _fbLandingApplyLang();

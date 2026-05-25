@@ -2106,7 +2106,10 @@ function loadTablerFallback() {
         </svg>
       </button>
       <span class="topbar-title" data-i18n="topScorer.title">מלך השערים</span>
-      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10v10h14V10"></path></svg></button>
+      <div style="display:flex;align-items:center;gap:2px">
+        <button class="btn-icon" onclick="fbViewMyPicks()" data-i18n-aria="nav.myPicks" aria-label="הבחירות שלי"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1"></rect><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path><path d="M9 12h6M9 16h4"></path></svg></button>
+        <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10v10h14V10"></path></svg></button>
+      </div>
     </div>
 
     <div class="container">
@@ -2614,6 +2617,17 @@ function loadTablerFallback() {
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
       </button>
+      <button class="menu-item" onclick="fbViewMyPicks()">
+        <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="8" y="3" width="8" height="4" rx="1"></rect>
+          <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+          <path d="M9 12h6M9 16h4"></path>
+        </svg>
+        <span data-i18n="nav.myPicks">הבחירות שלי</span>
+        <svg class="menu-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
       <button class="menu-item" onclick="showMembers()">
         <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -2732,7 +2746,7 @@ function loadTablerFallback() {
       <span>FriendlyBet</span>
       <!-- SEO:guides-footer — crawlable link to the guides hub (maintained by the SEO agent) -->
       <a href="/guides/" class="menu-version" style="text-decoration:none">Guides</a>
-      <span class="menu-version">v2.6.8</span>
+      <span class="menu-version">v2.6.9</span>
     </div>
   </div>
 
@@ -2750,9 +2764,10 @@ function loadTablerFallback() {
       <div class="topbar-title-small" data-i18n="betting.groupPositions.title">מיקום בבתים</div>
       <div class="topbar-step" id="sp-groups-step"></div>
     </div>
-    <button class="btn-icon" onclick="spGroupsSaveAndExit()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10v10h14V10"></path></svg>
-    </button>
+    <div style="display:flex;align-items:center;gap:2px">
+      <button class="btn-icon" onclick="fbViewMyPicks()" data-i18n-aria="nav.myPicks" aria-label="הבחירות שלי"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1"></rect><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path><path d="M9 12h6M9 16h4"></path></svg></button>
+      <button class="btn-icon" onclick="spGroupsSaveAndExit()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10v10h14V10"></path></svg></button>
+    </div>
   </div>
 
   <div class="progress-bar-container">
@@ -2815,7 +2830,10 @@ function loadTablerFallback() {
     <div class="topbar-center">
       <div class="topbar-title-small" data-i18n="thirdPlace.title">איזה 8 שלישיות עולות?</div>
     </div>
-    <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10v10h14V10"></path></svg></button>
+    <div style="display:flex;align-items:center;gap:2px">
+      <button class="btn-icon" onclick="fbViewMyPicks()" data-i18n-aria="nav.myPicks" aria-label="הבחירות שלי"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1"></rect><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path><path d="M9 12h6M9 16h4"></path></svg></button>
+      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10v10h14V10"></path></svg></button>
+    </div>
   </div>
   <div class="container">
     <div id="sp-third-place-container"></div>
@@ -2844,9 +2862,10 @@ function loadTablerFallback() {
     </div>
     <!-- v2.5.62: save-and-exit icon mirroring sp-groups-screen so the
          user can pause the bracket mid-pick and return to the dashboard. -->
-    <button class="btn-icon" onclick="spBracketSaveAndExit()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10v10h14V10"></path></svg>
-    </button>
+    <div style="display:flex;align-items:center;gap:2px">
+      <button class="btn-icon" onclick="fbViewMyPicks()" data-i18n-aria="nav.myPicks" aria-label="הבחירות שלי"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1"></rect><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path><path d="M9 12h6M9 16h4"></path></svg></button>
+      <button class="btn-icon" onclick="spBracketSaveAndExit()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10v10h14V10"></path></svg></button>
+    </div>
   </div>
 
   <div class="container">
@@ -3020,7 +3039,10 @@ function loadTablerFallback() {
       <div class="topbar-title-small" id="ko-single-round-label">Round of 32</div>
       <div class="topbar-step" id="ko-single-progress-label">1 / 31</div>
     </div>
-    <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10v10h14V10"></path></svg></button>
+    <div style="display:flex;align-items:center;gap:2px">
+      <button class="btn-icon" onclick="fbViewMyPicks()" data-i18n-aria="nav.myPicks" aria-label="הבחירות שלי"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1"></rect><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path><path d="M9 12h6M9 16h4"></path></svg></button>
+      <button class="btn-icon" onclick="goToDashboard()" data-i18n-aria="nav.dashboard" aria-label="חזרה לדשבורד"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5 10v10h14V10"></path></svg></button>
+    </div>
   </div>
 
   <div class="ko-single-progress-wrap">
