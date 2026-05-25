@@ -6076,7 +6076,7 @@ function generateQRCode(text) {
   
   // Use a free QR API as fallback
   const size = 200;
-  const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}&bgcolor=ffffff&color=08090c&margin=8&format=svg`;
+  const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}&bgcolor=ffffff&color=0a0a08&margin=8&format=svg`;
   
   // Try to fetch and embed
   fetch(apiUrl)
@@ -9356,7 +9356,7 @@ function _rcBuildCardElement() {
     'top: 0',
     'width: 600px',
     'padding: 48px 44px',
-    'background: linear-gradient(135deg, #08090c 0%, #12141b 60%, #243a5a 100%)',
+    'background: linear-gradient(135deg, #0a0a08 0%, #141310 60%, #243a5a 100%)',
     'color: #fff',
     'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     'border-radius: 28px',
