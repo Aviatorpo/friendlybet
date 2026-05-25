@@ -13,6 +13,7 @@ const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const STATIC_ASSETS = [
   '/',
   '/index.html',
+  '/privacy.html',
   '/styles.css',
   '/landing.css',
   '/app.js',
