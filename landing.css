@@ -73,8 +73,8 @@
 #fb-landing .btn-ghost:hover{background:rgba(255,255,255,.085);border-color:rgba(217,180,106,.45)}
 #fb-landing .btn-sm{padding:10px 18px;font-size:14px;border-radius:11px}
 
-#fb-landing .hero{position:relative;text-align:center;padding:84px 0 64px}
-#fb-landing .hero .ring{width:118px;height:118px;margin:0 auto 28px;border-radius:50%;display:grid;place-items:center;font-size:58px;
+#fb-landing .hero{position:relative;text-align:center;padding:60px 0 56px;max-width:760px;margin:0 auto}
+#fb-landing .hero .ring{width:104px;height:104px;margin:0 auto 22px;border-radius:50%;display:grid;place-items:center;font-size:52px;
   background:radial-gradient(circle at 32% 26%,rgba(255,255,255,.16),rgba(255,255,255,.015));
   border:1px solid rgba(217,180,106,.45);
   box-shadow:0 0 0 10px rgba(217,180,106,.05),0 0 0 1px rgba(217,180,106,.2),0 26px 60px -16px rgba(217,180,106,.55);
@@ -88,7 +88,7 @@
 @keyframes lpShine{to{background-position:240% center}}
 #fb-landing .hero .sub{font-size:clamp(18px,2.7vw,24px);color:#e9e7df;font-weight:500;margin:22px auto 0;max-width:620px;
   opacity:0;animation:lpRise .8s var(--ease) .28s forwards}
-#fb-landing .taglines{display:flex;flex-wrap:wrap;gap:11px 26px;justify-content:center;margin:28px 0 38px;
+#fb-landing .taglines{display:flex;flex-wrap:wrap;gap:11px 28px;justify-content:center;margin:24px 0 32px;
   opacity:0;animation:lpRise .8s var(--ease) .38s forwards}
 #fb-landing .pill{display:inline-flex;align-items:center;gap:9px;font-size:15.5px;font-weight:600;color:#f0eee6}
 #fb-landing .pill .dot{width:21px;height:21px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
@@ -182,7 +182,8 @@
   border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
 #fb-landing .badges{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
 #fb-landing .badge{display:flex;align-items:center;gap:13px;background:var(--panel);border:1px solid var(--line-2);
-  border-radius:14px;padding:16px 20px;min-width:212px;transition:border-color .25s,transform .25s var(--ease)}
+  border-radius:14px;padding:16px 20px;width:232px;flex:0 0 auto;transition:border-color .25s,transform .25s var(--ease)}
+@media(max-width:520px){#fb-landing .badge{width:100%;max-width:320px}}
 #fb-landing .badge:hover{border-color:rgba(61,220,151,.32);transform:translateY(-3px)}
 #fb-landing .badge .bi{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;flex:0 0 auto;
   background:radial-gradient(circle at 30% 25%,rgba(61,220,151,.22),rgba(61,220,151,.05));border:1px solid rgba(61,220,151,.28)}
