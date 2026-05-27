@@ -39,3 +39,7 @@ _diag-*.png
 
 # local marketing media samples (not part of the site)
 samples/
+
+# local video previews (not for publishing/commit)
+DEMO-dynamic-video.mp4
+DEMO-dynamic-thumb.png
