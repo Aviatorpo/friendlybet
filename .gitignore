@@ -43,3 +43,5 @@ samples/
 # local video previews (not for publishing/commit)
 DEMO-dynamic-video.mp4
 DEMO-dynamic-thumb.png
+DEMO-*.mp4
+DEMO-*.png
