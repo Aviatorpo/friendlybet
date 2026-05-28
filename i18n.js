@@ -2392,10 +2392,11 @@ function isUserInIsrael() {
 // the next render uses it synchronously. We deliberately don't *un-set*
 // Israel status from the IP lookup - the sync signals already cover that.
 async function geoDetectIsraelAsync() {
-  // Skip if the sync check already said Israel
-  if (isUserInIsrael()) return;
-  // Skip if user has explicitly chosen a language
-  if (localStorage.getItem('friendlybet_language')) return;
+  // Detect & cache the visitor's country (2-letter ISO) for: (a) auto-Hebrew toggle for IL,
+  // (b) signup-time country capture in app.js. Stores the code for ANY country, not only IL.
+  // Skip if we already have it cached AND it's IL (the only case that needs no network).
+  if (localStorage.getItem('friendlybet_country') === 'IL' && isUserInIsrael()) return;
+  if (localStorage.getItem('friendlybet_language') && localStorage.getItem('friendlybet_country')) return;
 
   try {
     const ctrl = new AbortController();
@@ -2404,9 +2405,9 @@ async function geoDetectIsraelAsync() {
     clearTimeout(timer);
     if (!res.ok) return;
     const data = await res.json();
-    if (data && data.country === 'IL') {
-      try { localStorage.setItem('friendlybet_country', 'IL'); } catch (e) {}
-      document.body.classList.add('is-israel');
+    if (data && typeof data.country === 'string' && data.country.length === 2) {
+      try { localStorage.setItem('friendlybet_country', data.country.toUpperCase()); } catch (e) {}
+      if (data.country === 'IL') document.body.classList.add('is-israel');
     }
   } catch (e) { /* network/abort - leave as-is */ }
 }

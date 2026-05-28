@@ -514,7 +514,8 @@ async function completeRegistration() {
       signup_referrer: _src.referrer,
       utm_source: _src.utm_source,
       utm_medium: _src.utm_medium,
-      utm_campaign: _src.utm_campaign
+      utm_campaign: _src.utm_campaign,
+      country: _fbGetCountry()
     };
     let { data: user, error } = await supabaseClient
       .from('users').insert(_joinerInsert).select().single();
@@ -522,6 +523,7 @@ async function completeRegistration() {
       console.warn('signup_source columns missing on users - falling back');
       delete _joinerInsert.signup_source; delete _joinerInsert.signup_referrer;
       delete _joinerInsert.utm_source; delete _joinerInsert.utm_medium; delete _joinerInsert.utm_campaign;
+      delete _joinerInsert.country;
       ({ data: user, error } = await supabaseClient
         .from('users').insert(_joinerInsert).select().single());
     }
@@ -5854,6 +5856,13 @@ function _fbIsMissingColumnError(err) {
          /schema cache/i.test(msg);
 }
 
+function _fbGetCountry() {
+  // 2-letter ISO country, captured by i18n's geoDetectCountryAsync (ipapi.co). null if not detected.
+  try {
+    const c = localStorage.getItem('friendlybet_country');
+    return (c && /^[A-Z]{2}$/.test(c)) ? c : null;
+  } catch (_) { return null; }
+}
 function _fbGetSignupSource() {
   try {
     const cached = sessionStorage.getItem('fb_signup_source');
@@ -7162,7 +7171,8 @@ async function wizardCreatePool() {
       signup_referrer: _src.referrer,
       utm_source: _src.utm_source,
       utm_medium: _src.utm_medium,
-      utm_campaign: _src.utm_campaign
+      utm_campaign: _src.utm_campaign,
+      country: _fbGetCountry()
     };
     let { data: adminUser, error: userError } = await supabaseClient
       .from('users').insert(_adminInsert).select().single();
@@ -7170,6 +7180,7 @@ async function wizardCreatePool() {
       console.warn('signup_source columns missing on users - falling back');
       delete _adminInsert.signup_source; delete _adminInsert.signup_referrer;
       delete _adminInsert.utm_source; delete _adminInsert.utm_medium; delete _adminInsert.utm_campaign;
+      delete _adminInsert.country;
       ({ data: adminUser, error: userError } = await supabaseClient
         .from('users').insert(_adminInsert).select().single());
     }
