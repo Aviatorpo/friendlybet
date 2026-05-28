@@ -119,9 +119,23 @@ async function fetchPlayers() {
   const filters = ['select=id,name_en,team_code,photo_synced_at'];
   if (TEAM_FILTER) filters.push(`team_code=eq.${TEAM_FILTER}`);
   if (!FORCE) filters.push('photo_synced_at=is.null');
-  const limit = LIMIT > 0 ? LIMIT : 9999;
-  const query = `?${filters.join('&')}&order=team_code.asc,name_en.asc&limit=${limit}`;
-  return (await callSupabase('GET', 'players', { query })) || [];
+  const baseQuery = `?${filters.join('&')}&order=team_code.asc,name_en.asc`;
+
+  // PostgREST caps responses at 1000 rows by default — paginate manually.
+  const PAGE = 1000;
+  const cap = LIMIT > 0 ? LIMIT : Infinity;
+  const all = [];
+  let offset = 0;
+  while (all.length < cap) {
+    const want = Math.min(PAGE, cap - all.length);
+    const page = await callSupabase('GET', 'players', {
+      query: `${baseQuery}&offset=${offset}&limit=${want}`,
+    }) || [];
+    all.push(...page);
+    if (page.length < want) break;
+    offset += page.length;
+  }
+  return all;
 }
 
 async function updatePlayer(id, patch) {
