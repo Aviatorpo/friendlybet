@@ -48,3 +48,6 @@ DEMO-*.png
 
 # YouTube batch local workspace (large MP4s + intermediates, not for the public repo)
 youtube-videos/
+
+# Downloaded Wikipedia player portraits (~96MB, local only — fetched via scripts/download-player-photos.js)
+player-photos/
