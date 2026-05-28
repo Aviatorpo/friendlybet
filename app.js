@@ -2338,9 +2338,13 @@ function createPlayerCard(player, searchQuery = '') {
   }
   
   const positionBadge = player.position ? `<span class="ts-player-position">${player.position}</span>` : '';
-  
+
+  const avatarHtml = player.photo_url
+    ? `<span class="ts-player-avatar"><img src="${escapeHtml(player.photo_url)}" alt="" loading="lazy" onerror="this.parentNode.innerHTML='${flag.replace(/'/g, "\\'")}'"><span class="ts-player-avatar-flag">${flag}</span></span>`
+    : `<span class="ts-player-flag">${flag}</span>`;
+
   card.innerHTML = `
-    <span class="ts-player-flag">${flag}</span>
+    ${avatarHtml}
     <div class="ts-player-info">
       <div class="ts-player-name">${badges}${displayName}</div>
       <div class="ts-player-meta">

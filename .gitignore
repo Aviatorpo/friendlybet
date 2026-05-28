@@ -45,3 +45,6 @@ DEMO-dynamic-video.mp4
 DEMO-dynamic-thumb.png
 DEMO-*.mp4
 DEMO-*.png
+
+# YouTube batch local workspace (large MP4s + intermediates, not for the public repo)
+youtube-videos/
