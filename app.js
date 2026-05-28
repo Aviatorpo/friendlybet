@@ -502,18 +502,29 @@ async function completeRegistration() {
     const recoveryHash = await hashRecoveryCode(state.pendingRecoveryCode);
 
     // Create user - joins immediately, admin can approve/remove later
-    const { data: user, error } = await supabaseClient
-      .from('users')
-      .insert({
-        pool_id: state.currentPool.id,
-        nickname: state.pendingNickname,
-        recovery_code_hash: recoveryHash,
-        is_admin: false,
-        is_approved: true, // Legacy field - keep true
-        approval_status: 'pending' // New: admin can approve later
-      })
-      .select()
-      .single();
+    const _src = _fbGetSignupSource();
+    const _joinerInsert = {
+      pool_id: state.currentPool.id,
+      nickname: state.pendingNickname,
+      recovery_code_hash: recoveryHash,
+      is_admin: false,
+      is_approved: true, // Legacy field - keep true
+      approval_status: 'pending', // New: admin can approve later
+      signup_source: _src.source,
+      signup_referrer: _src.referrer,
+      utm_source: _src.utm_source,
+      utm_medium: _src.utm_medium,
+      utm_campaign: _src.utm_campaign
+    };
+    let { data: user, error } = await supabaseClient
+      .from('users').insert(_joinerInsert).select().single();
+    if (error && /column .* does not exist/i.test(error.message || '')) {
+      console.warn('signup_source columns missing on users - falling back');
+      delete _joinerInsert.signup_source; delete _joinerInsert.signup_referrer;
+      delete _joinerInsert.utm_source; delete _joinerInsert.utm_medium; delete _joinerInsert.utm_campaign;
+      ({ data: user, error } = await supabaseClient
+        .from('users').insert(_joinerInsert).select().single());
+    }
 
     if (error) {
       console.error('User creation error:', error);
@@ -5825,8 +5836,53 @@ window.addEventListener('languageChanged', () => {
   if (document.body.classList.contains('on-landing')) _fbLandingApplyLang();
 });
 
+// v2.6.16: capture where the user came from on first visit. Result is cached in
+// sessionStorage so subsequent reads (across the app flow) return the same
+// thing — important because by the time the user creates/joins, the referrer
+// header is gone and they've navigated within the SPA.
+function _fbGetSignupSource() {
+  try {
+    const cached = sessionStorage.getItem('fb_signup_source');
+    if (cached) return JSON.parse(cached);
+  } catch (_) {}
+  const params = new URLSearchParams(window.location.search);
+  const ref = document.referrer || '';
+  const utm = (params.get('utm_source') || '').toLowerCase();
+  const code = params.get('code');
+  let source = 'direct';
+  if (utm) source = utm;
+  else if (code) source = 'invite';
+  else if (ref) {
+    let h = '';
+    try { h = new URL(ref).hostname.toLowerCase(); } catch (_) {}
+    if (/reddit/.test(h)) source = 'reddit';
+    else if (/youtube|youtu\.be/.test(h)) source = 'youtube';
+    else if (/twitter|x\.com|t\.co/.test(h)) source = 'twitter';
+    else if (/facebook|fb\./.test(h)) source = 'facebook';
+    else if (/instagram/.test(h)) source = 'instagram';
+    else if (/whatsapp|wa\.me/.test(h)) source = 'whatsapp';
+    else if (/t\.me|telegram/.test(h)) source = 'telegram';
+    else if (/bsky|bluesky/.test(h)) source = 'bluesky';
+    else if (/news\.ycombinator/.test(h)) source = 'hackernews';
+    else if (/producthunt/.test(h)) source = 'producthunt';
+    else if (/google\./.test(h)) source = 'google';
+    else if (/bing\./.test(h)) source = 'bing';
+    else if (h) source = h.replace(/^www\./, '');
+  }
+  const detail = {
+    source,
+    referrer: ref || null,
+    utm_source: params.get('utm_source') || null,
+    utm_medium: params.get('utm_medium') || null,
+    utm_campaign: params.get('utm_campaign') || null
+  };
+  try { sessionStorage.setItem('fb_signup_source', JSON.stringify(detail)); } catch (_) {}
+  return detail;
+}
+
 async function initApp() {
   console.log('FriendlyBet v' + CONFIG.APP_VERSION + ' starting...');
+  _fbGetSignupSource();
   console.log('Language:', typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'unknown');
 
   // v2.5.52: emergency escape hatch — visiting /?reset=1 wipes all local
@@ -7081,16 +7137,30 @@ async function wizardCreatePool() {
     // Admin user
     const adminRecoveryCode = generateRecoveryCode();
     const adminRecoveryHash = await hashRecoveryCode(adminRecoveryCode);
-    const { data: adminUser, error: userError } = await supabaseClient
-      .from('users').insert({
-        pool_id: pool.id,
-        nickname: adminNickname,
-        recovery_code_hash: adminRecoveryHash,
-        is_admin: true,
-        is_approved: true,
-        approval_status: 'approved',
-        approved_at: new Date().toISOString()
-      }).select().single();
+    const _src = _fbGetSignupSource();
+    const _adminInsert = {
+      pool_id: pool.id,
+      nickname: adminNickname,
+      recovery_code_hash: adminRecoveryHash,
+      is_admin: true,
+      is_approved: true,
+      approval_status: 'approved',
+      approved_at: new Date().toISOString(),
+      signup_source: _src.source,
+      signup_referrer: _src.referrer,
+      utm_source: _src.utm_source,
+      utm_medium: _src.utm_medium,
+      utm_campaign: _src.utm_campaign
+    };
+    let { data: adminUser, error: userError } = await supabaseClient
+      .from('users').insert(_adminInsert).select().single();
+    if (userError && /column .* does not exist/i.test(userError.message || '')) {
+      console.warn('signup_source columns missing on users - falling back');
+      delete _adminInsert.signup_source; delete _adminInsert.signup_referrer;
+      delete _adminInsert.utm_source; delete _adminInsert.utm_medium; delete _adminInsert.utm_campaign;
+      ({ data: adminUser, error: userError } = await supabaseClient
+        .from('users').insert(_adminInsert).select().single());
+    }
 
     if (userError) {
       console.error('Admin user creation error:', userError);

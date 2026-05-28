@@ -5,7 +5,7 @@
 // Strategy: Cache-first for assets, Network-first for API
 // ============================================================
 
-const CACHE_VERSION = 'friendlybet-v2.6.15';
+const CACHE_VERSION = 'friendlybet-v2.6.16';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -100,6 +100,11 @@ self.addEventListener('fetch', event => {
 
   // Skip football-data.org API
   if (url.hostname.includes('football-data.org')) {
+    return;
+  }
+
+  // Skip Vercel Analytics — let the browser hit it directly so beacons fire
+  if (url.pathname.startsWith('/_vercel/')) {
     return;
   }
 
