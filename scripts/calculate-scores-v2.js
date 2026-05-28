@@ -20,13 +20,12 @@ if (!SUPABASE_KEY) {
 // v2.5.55: doubling-progression defaults (1 / 2 / 4 / 8 / 16 / 32) so each
 // stage maxes at ~32 pts across the pool.
 const DEFAULT_RULES_SINGLE = {
-  // v2.5.78: Eyal's tuned default scale (mirror app.js DEFAULT_SCORING_RULES).
+  // v2.6.17: doubling progression (mirror app.js DEFAULT_SCORING_RULES).
   //   Groups: 1st=4, 2nd=3, 3rd=2, 4th=1.
-  //   Knockout (correct winner = team reached next round): R32=1, R16=2,
-  //   QF=3, SF=4, Final=8. No separate tournament_winner bonus.
+  //   Knockout: R32=2, R16=4, QF=8, SF=16, Final=32 (~32 pts max per stage).
   group_first: 4, group_second: 3, group_third: 2, group_fourth: 1,
   third_place_advance: 1,
-  round_of_32: 1, round_of_16: 2, quarter_final: 3, semi_final: 4, final: 8,
+  round_of_32: 2, round_of_16: 4, quarter_final: 8, semi_final: 16, final: 32,
   top_scorer: 10
 };
 const DEFAULT_RULES_TWO = {

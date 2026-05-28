@@ -6454,24 +6454,22 @@ function fifaRankOf(code) { return FIFA_RANKINGS[code] ?? 999; }
 //  32 pt ×  1 champion              =  32
 const DEFAULT_SCORING_RULES = {
   single_phase: {
-    // v2.5.78: Eyal's tuned default scale.
-    //   Groups: 1st=4, 2nd=3, 3rd=2, 4th=1 (rewards getting the exact order).
-    //   Knockout (correct winner pick = team reached NEXT round):
-    //     R32=1, R16=2, QF=3, SF=4, Final=8.
+    // v2.6.17: doubling progression so each stage caps at ~32 pts and the
+    // later rounds reward the harder predictions in line with their odds:
+    //   Groups: 1st=4, 2nd=3, 3rd=2, 4th=1 (10 pts/group × 12 = 120).
+    //   Knockout (correct winner = team reached NEXT round):
+    //     R32=2, R16=4, QF=8, SF=16, Final=32  (32 pts max per stage).
     //   No separate tournament_winner bonus (the Final pick IS the champion).
     group_first: 4,
     group_second: 3,
     group_third: 2,
     group_fourth: 1,
-    // v2.5.82: bonus per 3rd-place team you tagged that actually advances
-    // to the R32 (one of the 8 best third places). Team-based, max 8 teams.
-    // v2.5.87: lowered from 2 → 1 point.
     third_place_advance: 1,
-    round_of_32: 1,
-    round_of_16: 2,
-    quarter_final: 3,
-    semi_final: 4,
-    final: 8,
+    round_of_32: 2,
+    round_of_16: 4,
+    quarter_final: 8,
+    semi_final: 16,
+    final: 32,
     top_scorer: 10
   },
   two_phase: {
@@ -9707,14 +9705,14 @@ function _koSinglePoints(round) {
   // scoring_rules. v2.5.72: the FINAL value is the full champion reward
   // (there is no separate tournament_winner bonus anymore).
   const rules = (state.currentPool && state.currentPool.scoring_rules) || {};
-  // v2.5.78: a correct pick = the team reached the NEXT round. Fallbacks
-  // mirror DEFAULT_SCORING_RULES.single_phase (R32=1, R16=2, QF=3, SF=4, Final=8).
+  // v2.6.17: doubling-progression defaults mirror DEFAULT_SCORING_RULES.single_phase
+  // (R32=2, R16=4, QF=8, SF=16, Final=32).
   return ({
-    R32: rules.round_of_32 ?? 1,
-    R16: rules.round_of_16 ?? 2,
-    QF:  rules.quarter_final ?? 3,
-    SF:  rules.semi_final ?? 4,
-    FINAL: rules.final ?? 8
+    R32: rules.round_of_32 ?? 2,
+    R16: rules.round_of_16 ?? 4,
+    QF:  rules.quarter_final ?? 8,
+    SF:  rules.semi_final ?? 16,
+    FINAL: rules.final ?? 32
   })[round] ?? 0;
 }
 
