@@ -518,7 +518,7 @@ async function completeRegistration() {
     };
     let { data: user, error } = await supabaseClient
       .from('users').insert(_joinerInsert).select().single();
-    if (error && /column .* does not exist/i.test(error.message || '')) {
+    if (error && _fbIsMissingColumnError(error)) {
       console.warn('signup_source columns missing on users - falling back');
       delete _joinerInsert.signup_source; delete _joinerInsert.signup_referrer;
       delete _joinerInsert.utm_source; delete _joinerInsert.utm_medium; delete _joinerInsert.utm_campaign;
@@ -5840,6 +5840,20 @@ window.addEventListener('languageChanged', () => {
 // sessionStorage so subsequent reads (across the app flow) return the same
 // thing — important because by the time the user creates/joins, the referrer
 // header is gone and they've navigated within the SPA.
+// v2.6.18: detect "missing column" inserts regardless of whether the error
+// came from raw Postgres ("column X does not exist") or from PostgREST's
+// schema cache ("Could not find the 'X' column ... in the schema cache",
+// code PGRST204). Used to trigger the legacy-shape fallback inserts when
+// a migration hasn't been applied yet.
+function _fbIsMissingColumnError(err) {
+  if (!err) return false;
+  if (err.code === 'PGRST204') return true;
+  const msg = (err.message || '') + ' ' + (err.details || '') + ' ' + (err.hint || '');
+  return /column .* does not exist/i.test(msg) ||
+         /could not find .* column/i.test(msg) ||
+         /schema cache/i.test(msg);
+}
+
 function _fbGetSignupSource() {
   try {
     const cached = sessionStorage.getItem('fb_signup_source');
@@ -7113,7 +7127,7 @@ async function wizardCreatePool() {
     ({ data: pool, error: poolError } = await supabaseClient
       .from('pools').insert(fullInsert).select().single());
 
-    if (poolError && /column .* does not exist/i.test(poolError.message || '')) {
+    if (poolError && _fbIsMissingColumnError(poolError)) {
       // Migration not applied yet - insert legacy shape
       console.warn('v2 columns missing on pools - falling back to legacy insert');
       ({ data: pool, error: poolError } = await supabaseClient
@@ -7152,7 +7166,7 @@ async function wizardCreatePool() {
     };
     let { data: adminUser, error: userError } = await supabaseClient
       .from('users').insert(_adminInsert).select().single();
-    if (userError && /column .* does not exist/i.test(userError.message || '')) {
+    if (userError && _fbIsMissingColumnError(userError)) {
       console.warn('signup_source columns missing on users - falling back');
       delete _adminInsert.signup_source; delete _adminInsert.signup_referrer;
       delete _adminInsert.utm_source; delete _adminInsert.utm_medium; delete _adminInsert.utm_campaign;
