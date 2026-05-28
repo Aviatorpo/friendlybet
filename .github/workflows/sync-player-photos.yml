@@ -1,0 +1,48 @@
+name: Sync Player Photos
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Re-sync even players who already have a photo'
+        type: boolean
+        default: false
+      team:
+        description: 'Limit to one team code (e.g. ARG). Leave blank for all.'
+        type: string
+        default: ''
+      limit:
+        description: 'Max players to process (0 = no limit)'
+        type: string
+        default: '0'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Sync player photos from Wikipedia
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: |
+          FLAGS=""
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            FLAGS="$FLAGS --force"
+          fi
+          if [ -n "${{ github.event.inputs.team }}" ]; then
+            FLAGS="$FLAGS --team=${{ github.event.inputs.team }}"
+          fi
+          if [ "${{ github.event.inputs.limit }}" != "0" ] && [ -n "${{ github.event.inputs.limit }}" ]; then
+            FLAGS="$FLAGS --limit=${{ github.event.inputs.limit }}"
+          fi
+          echo "Running with flags: $FLAGS"
+          node scripts/sync-player-photos.js $FLAGS
