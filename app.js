@@ -515,7 +515,7 @@ async function completeRegistration() {
       utm_source: _src.utm_source,
       utm_medium: _src.utm_medium,
       utm_campaign: _src.utm_campaign,
-      country: _fbGetCountry()
+      country: await _fbEnsureCountry()
     };
     let { data: user, error } = await supabaseClient
       .from('users').insert(_joinerInsert).select().single();
@@ -5863,6 +5863,30 @@ function _fbGetCountry() {
     return (c && /^[A-Z]{2}$/.test(c)) ? c : null;
   } catch (_) { return null; }
 }
+async function _fbEnsureCountry() {
+  // Sync path: use the cached value if i18n already detected it.
+  const cached = _fbGetCountry();
+  if (cached) return cached;
+  // Race-condition fix (v2.6.22): if a user lands AND signs up before the async
+  // ipapi.co fetch from i18n finishes (faster than ~2.5s), the country would be
+  // null. Block briefly on our own /api/geo route (same-origin, ~50ms) so the
+  // signup insert always carries a country.
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 1500);
+    const res = await fetch('/api/geo', { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (res.ok) {
+      const data = await res.json();
+      const c = (data && data.country || '').toUpperCase();
+      if (/^[A-Z]{2}$/.test(c)) {
+        try { localStorage.setItem('friendlybet_country', c); } catch (_) {}
+        return c;
+      }
+    }
+  } catch (_) {}
+  return null;
+}
 function _fbGetSignupSource() {
   try {
     const cached = sessionStorage.getItem('fb_signup_source');
@@ -7172,7 +7196,7 @@ async function wizardCreatePool() {
       utm_source: _src.utm_source,
       utm_medium: _src.utm_medium,
       utm_campaign: _src.utm_campaign,
-      country: _fbGetCountry()
+      country: await _fbEnsureCountry()
     };
     let { data: adminUser, error: userError } = await supabaseClient
       .from('users').insert(_adminInsert).select().single();

@@ -2398,18 +2398,27 @@ async function geoDetectIsraelAsync() {
   if (localStorage.getItem('friendlybet_country') === 'IL' && isUserInIsrael()) return;
   if (localStorage.getItem('friendlybet_language') && localStorage.getItem('friendlybet_country')) return;
 
-  try {
+  // Primary: ipapi.co (gives lots of fields, but blocked by some adblockers / has free-tier limits).
+  // Fallback: our own /api/geo route, which reads the Vercel edge x-vercel-ip-country header.
+  // Same-origin, no rate limit, no third-party - so coverage approaches 100% for Vercel visitors.
+  async function _try(url, timeoutMs) {
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 2500);
-    const res = await fetch('https://ipapi.co/json/', { signal: ctrl.signal });
-    clearTimeout(timer);
-    if (!res.ok) return;
-    const data = await res.json();
-    if (data && typeof data.country === 'string' && data.country.length === 2) {
-      try { localStorage.setItem('friendlybet_country', data.country.toUpperCase()); } catch (e) {}
-      if (data.country === 'IL') document.body.classList.add('is-israel');
-    }
-  } catch (e) { /* network/abort - leave as-is */ }
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, { signal: ctrl.signal });
+      if (!res.ok) return null;
+      const data = await res.json();
+      const c = data && typeof data.country === 'string' ? data.country.toUpperCase() : '';
+      return /^[A-Z]{2}$/.test(c) ? c : null;
+    } catch (e) { return null; }
+    finally { clearTimeout(timer); }
+  }
+  let country = await _try('https://ipapi.co/json/', 2500);
+  if (!country) country = await _try('/api/geo', 1500);
+  if (country) {
+    try { localStorage.setItem('friendlybet_country', country); } catch (e) {}
+    if (country === 'IL') document.body.classList.add('is-israel');
+  }
 }
 
 function detectUserLanguage() {
