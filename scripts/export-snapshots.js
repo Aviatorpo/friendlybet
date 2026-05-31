@@ -62,7 +62,7 @@ function writeIfChanged(file, payloadKey, payload) {
 async function exportMatches() {
   let matches;
   try {
-    matches = await sb('matches', '?select=*&order=utc_date.asc,id.asc');
+    matches = await sb('matches', '?select=*&order=match_date.asc,id.asc');
   } catch (e) {
     console.error('matches fetch failed, keeping last-good snapshot:', e.message);
     return 0;
