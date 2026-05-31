@@ -2187,7 +2187,7 @@ function updateCurrentPickDisplay() {
   const pick = topScorerState.currentPick;
   
   currentPickEl.style.display = 'block';
-  document.getElementById('ts-current-flag').textContent = getCountryFlag(pick.team_code);
+  document.getElementById('ts-current-flag').innerHTML = getCountryFlag(pick.team_code); // returns an <img> now
   document.getElementById('ts-current-name').textContent = pick.name_he;
   document.getElementById('ts-current-club').textContent = `${getTeamName(pick.team_code)} · ${pick.club || ''}`.replace(/ · $/, '');
 }
@@ -3249,32 +3249,24 @@ function createTeamCard(team, isSelected) {
   return card;
 }
 
+// 3-letter team code -> flagcdn code (ISO-3166 alpha-2, or gb-eng/gb-sct for home nations).
+const FLAG_ISO = {
+  ARG: 'ar', FRA: 'fr', BRA: 'br', ENG: 'gb-eng', ESP: 'es', POR: 'pt', NED: 'nl', GER: 'de',
+  BEL: 'be', CRO: 'hr', URU: 'uy', USA: 'us', MEX: 'mx', SUI: 'ch', AUT: 'at', SWE: 'se',
+  SEN: 'sn', MAR: 'ma', JPN: 'jp', KOR: 'kr', AUS: 'au', CAN: 'ca', UKR: 'ua', TUR: 'tr',
+  NOR: 'no', IRN: 'ir', SCO: 'gb-sct', CZE: 'cz', ALG: 'dz', CIV: 'ci', TUN: 'tn', EGY: 'eg',
+  CMR: 'cm', GHA: 'gh', PAN: 'pa', JAM: 'jm', PAR: 'py', NZL: 'nz', UZB: 'uz', IRQ: 'iq',
+  SAU: 'sa', JOR: 'jo', RSA: 'za', HAI: 'ht', BIH: 'ba', CPV: 'cv', COD: 'cd', QAT: 'qa', CUR: 'cw'
+};
 function getCountryFlag(code) {
-  // Map country codes to flag emojis using regional indicator characters
-  // ISO codes to flag emoji mapping
-  const flagMap = {
-    // Tier 1 - Favorites
-    'ARG': '🇦🇷', 'FRA': '🇫🇷', 'BRA': '🇧🇷', 'ENG': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    'ESP': '🇪🇸', 'POR': '🇵🇹', 'NED': '🇳🇱', 'GER': '🇩🇪',
-    
-    // Tier 2 - Contenders
-    'BEL': '🇧🇪', 'CRO': '🇭🇷', 'URU': '🇺🇾',
-    'USA': '🇺🇸', 'MEX': '🇲🇽', 'SUI': '🇨🇭',
-    'AUT': '🇦🇹', 'SWE': '🇸🇪', 'SEN': '🇸🇳', 'MAR': '🇲🇦',
-    'JPN': '🇯🇵', 'KOR': '🇰🇷', 'AUS': '🇦🇺', 'CAN': '🇨🇦',
-    'UKR': '🇺🇦', 'TUR': '🇹🇷', 'NOR': '🇳🇴',
-    'IRN': '🇮🇷',
-    'SCO': '🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'CZE': '🇨🇿', 'ALG': '🇩🇿', 'CIV': '🇨🇮',
-    
-    // Tier 3 - Underdogs
-    'TUN': '🇹🇳', 'EGY': '🇪🇬', 'CMR': '🇨🇲', 'GHA': '🇬🇭',
-    'PAN': '🇵🇦', 'JAM': '🇯🇲',
-    'PAR': '🇵🇾', 'NZL': '🇳🇿',
-    'UZB': '🇺🇿', 'IRQ': '🇮🇶', 'SAU': '🇸🇦', 'JOR': '🇯🇴',
-    'RSA': '🇿🇦', 'HAI': '🇭🇹', 'BIH': '🇧🇦', 'CPV': '🇨🇻',
-    'COD': '🇨🇩', 'QAT': '🇶🇦', 'CUR': '🇨🇼',
-  };
-  return flagMap[code] || '⚽';
+  // Use flag IMAGES, not emoji: flag emoji do NOT render on Windows / Chrome desktop
+  // (they fall back to the 2-letter code), so an <img> is the only cross-platform way to
+  // actually show a flag. On image-load failure we drop back to the team code text.
+  const iso = FLAG_ISO[code];
+  if (!iso) return '<span class="flag-img-fallback">⚽</span>';
+  return `<img class="flag-img" src="https://flagcdn.com/${iso}.svg" alt="${code}" loading="lazy" ` +
+    `style="height:1.05em;width:1.55em;object-fit:cover;border-radius:3px;vertical-align:middle;display:inline-block;box-shadow:0 0 0 1px rgba(0,0,0,0.25)" ` +
+    `onerror="this.replaceWith(document.createTextNode('${code}'))">`;
 }
 
 function toggleTeamSelection(teamCode) {
