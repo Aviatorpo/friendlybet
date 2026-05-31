@@ -144,7 +144,11 @@ FriendlyBet is deliberately engineered to be **lean, transparent, and privacy-pr
 
 ## 🚀 Deployment & Self-Hosting
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FAviatorpo%2Ffriendlybet)
+
 Because FriendlyBet is **pure static files with no build step**, you can clone, inspect, or self-host it in about 30 seconds on Vercel, Netlify, GitHub Pages, or any static host.
+
+> **One thing to know about the Deploy button:** there is no build step, so Vercel environment variables are *not* injected into the static files at runtime. After deploying (or cloning), point the app at **your own** backend by editing the two keys in [`config.js`](./config.js) — that's the only required change. (The repo ships with the public anon key of the official instance; the anon key is safe to expose because Row-Level Security gates the data, but for your own pool you should use your own Supabase project.)
 
 ```bash
 # 1. Clone the repository
