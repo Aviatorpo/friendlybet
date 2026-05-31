@@ -9,6 +9,9 @@ const TRANSLATIONS = {
   he: {
     // === General / Common ===
     'app.name': 'FriendlyBet',
+    'openInBrowser.android': 'פתח ב-Chrome כדי להישאר מחובר גם אחרי שתסגור את וואטסאפ.',
+    'openInBrowser.ios': 'לחוויה הטובה ביותר פתח ב-Safari (אייקון החץ למעלה), כך תישאר מחובר.',
+    'openInBrowser.button': 'פתח ב-Chrome',
     'common.loading': 'טוען...',
     'common.save': 'שמור',
     'common.cancel': 'ביטול',
@@ -1186,6 +1189,9 @@ const TRANSLATIONS = {
   en: {
     // === General / Common ===
     'app.name': 'FriendlyBet',
+    'openInBrowser.android': 'Open in Chrome to stay signed in after you close WhatsApp.',
+    'openInBrowser.ios': 'For the best experience, open in Safari (the arrow icon up top) so you stay signed in.',
+    'openInBrowser.button': 'Open in Chrome',
     'common.loading': 'Loading...',
     'common.save': 'Save',
     'common.cancel': 'Cancel',

@@ -266,6 +266,57 @@ function saveLocalUser(userData) {
   fbMirrorSession(); // back the session up to a cookie for webview resilience
 }
 
+// Pillar 3 (preventive): detect an in-app browser (WhatsApp/Instagram/FB/Android WebView).
+// These isolated, often-ephemeral webviews are why a user "isn't recognized later". On
+// Android we can break OUT to Chrome via an intent: URL (one tap, reliable — Android blocks
+// silent gesture-less intents). On iOS there is no API to open Safari, so we instruct.
+function _fbIsAndroidInApp() {
+  const ua = navigator.userAgent || '';
+  return /Android/.test(ua) && (/;\s*wv\)/.test(ua) || /(FBAN|FBAV|FB_IAB|Instagram|Line\/|GSA\/)/.test(ua));
+}
+function _fbIsIOSInApp() {
+  const ua = navigator.userAgent || '';
+  const iOS = /(iPhone|iPod|iPad)/.test(ua);
+  // A raw in-app WKWebView lacks the "Safari" token that real Safari carries.
+  return iOS && !/Safari/.test(ua) && !window.navigator.standalone;
+}
+function _fbOpenInChrome() {
+  // intent: URL that hands the current page to Chrome, with a plain-https fallback if
+  // Chrome isn't installed. Must run from a user gesture (tap) to be honoured by Android.
+  try {
+    const target = location.href.replace(/^https?:\/\//, '');
+    const fallback = encodeURIComponent(location.href);
+    location.href = `intent://${target}#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=${fallback};end`;
+  } catch (_) {}
+}
+function maybeShowOpenInBrowserBanner() {
+  try { if (sessionStorage.getItem('fb_oib_dismissed') === '1') return; } catch (_) {}
+  const android = _fbIsAndroidInApp();
+  const ios = !android && _fbIsIOSInApp();
+  if (!android && !ios) return;
+  if (document.getElementById('fb-oib-banner')) return;
+  const bar = document.createElement('div');
+  bar.id = 'fb-oib-banner';
+  bar.dir = (typeof getCurrentLanguage === 'function' && getCurrentLanguage() === 'en') ? 'ltr' : 'rtl';
+  bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:99999;display:flex;align-items:center;gap:12px;' +
+    'padding:12px 16px;background:rgba(16,16,22,0.98);border-top:1px solid rgba(217,180,106,0.45);' +
+    'box-shadow:0 -10px 30px rgba(0,0,0,0.5);font-family:inherit';
+  const msg = android ? t('openInBrowser.android') : t('openInBrowser.ios');
+  const btn = android
+    ? `<button id="fb-oib-open" type="button" style="flex:0 0 auto;background:linear-gradient(100deg,#d9b46a,#f0d493);color:#0a0a0a;font-weight:800;font-size:14px;border:0;border-radius:10px;padding:10px 16px;cursor:pointer">${t('openInBrowser.button')}</button>`
+    : '';
+  bar.innerHTML = `<span style="flex:1;color:#f5f3ee;font-size:13px;line-height:1.4">${msg}</span>${btn}` +
+    `<button id="fb-oib-x" type="button" aria-label="close" style="flex:0 0 auto;background:transparent;color:#8d8d8d;border:0;font-size:18px;cursor:pointer;padding:4px 8px">✕</button>`;
+  document.body.appendChild(bar);
+  const openBtn = document.getElementById('fb-oib-open');
+  if (openBtn) openBtn.addEventListener('click', _fbOpenInChrome);
+  const x = document.getElementById('fb-oib-x');
+  if (x) x.addEventListener('click', () => {
+    try { sessionStorage.setItem('fb_oib_dismissed', '1'); } catch (_) {}
+    bar.remove();
+  });
+}
+
 // טעינת מצב משתמש מקומי
 function loadLocalUser() {
   const userId = localStorage.getItem(CONFIG.STORAGE_KEYS.USER_ID);
@@ -6083,6 +6134,10 @@ async function initApp() {
   // more than waitForSupabase needs. Both promises resolve, then we route.
   const minSplash = new Promise(resolve => setTimeout(resolve, 700));
   await Promise.all([minSplash, waitForSupabase()]);
+
+  // Pillar 3 (preventive): if we're inside an in-app browser, nudge the user into the real
+  // browser so their session survives (Android: one-tap to Chrome; iOS: instruction).
+  try { maybeShowOpenInBrowserBanner(); } catch (_) {}
 
   // v2.5.49: every routing branch wrapped in try/catch. If anything
   // throws (network failure, schema mismatch, missing DOM node) we
