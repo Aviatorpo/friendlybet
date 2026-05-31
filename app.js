@@ -283,6 +283,9 @@ function loadLocalUser() {
 function clearLocalUser() {
   Object.values(CONFIG.STORAGE_KEYS).forEach(key => {
     localStorage.removeItem(key);
+    // Pillar 3 fix: also clear the cookie mirror, otherwise the boot-time heal would
+    // resurrect a session the user just left (the "you're already a member" bug).
+    try { document.cookie = `${key}=; path=/; max-age=0; SameSite=Lax`; } catch (_) {}
   });
 }
 
