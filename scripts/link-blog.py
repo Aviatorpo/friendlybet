@@ -98,9 +98,12 @@ def process(path, lang, is_index=False):
         print('  unchanged %s' % os.path.relpath(path, ROOT))
 
 
+# index.html keeps a single hand-placed CTA; standalone pages are fully hand-built.
+SKIP = {'index.html', 'friendlybet-live-vs-org.html'}
+
 print('EN articles:')
 for p in sorted(glob.glob(os.path.join(ROOT, 'guides', '*.html'))):
-    if os.path.basename(p) == 'index.html':
+    if os.path.basename(p) in SKIP:
         continue
     process(p, 'en')
 print('HE articles:')
