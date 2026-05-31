@@ -6169,6 +6169,19 @@ async function initApp() {
 
       // If user already has an account
       if (localUser && localUser.pool_id) {
+        // If the link is for the pool they're ALREADY in, just open the dashboard —
+        // re-tapping your own invite link should never ask you to "leave another pool".
+        let samePool = false;
+        try {
+          const { data: linkPool } = await supabaseClient
+            .from('pools').select('id').eq('code', codeFromUrl.toUpperCase()).maybeSingle();
+          if (linkPool && linkPool.id === localUser.pool_id) samePool = true;
+        } catch (_) {}
+        if (samePool) {
+          await goToDashboard();
+          return;
+        }
+        // Different pool — confirm the switch.
         const confirmed = window.confirm(t('errors.alreadyMember'));
         if (confirmed) {
           clearLocalUser();
