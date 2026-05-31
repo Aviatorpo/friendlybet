@@ -20,6 +20,10 @@ Pick the groups. Build your bracket. Climb the leaderboard. Win the bragging rig
 [![JavaScript](https://img.shields.io/badge/Vanilla_JS-zero_frameworks-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](#%EF%B8%8F-tech-stack)
 [![i18n](https://img.shields.io/badge/i18n-English_%2B_Hebrew-d9b46a?style=flat-square)](#-multilingual)
 
+<br/>
+
+**⭐ Enjoying FriendlyBet? [Give us a star](https://github.com/Aviatorpo/friendlybet) to help other football fans find it!**
+
 </div>
 
 ---
