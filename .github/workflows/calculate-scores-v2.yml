@@ -16,6 +16,12 @@ on:
 permissions:
   contents: write
 
+# Pillar 4: never let two score runs overlap — a new run queues instead of racing the
+# writer (the recompute is idempotent, so we just need them serialized, not cancelled).
+concurrency:
+  group: calculate-scores-v2
+  cancel-in-progress: false
+
 jobs:
   calculate:
     runs-on: ubuntu-latest

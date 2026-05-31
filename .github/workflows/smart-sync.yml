@@ -8,6 +8,11 @@ on:
 permissions:
   contents: write
 
+# Serialize sync runs so the snapshot commit/push can't race a second run.
+concurrency:
+  group: smart-sync
+  cancel-in-progress: false
+
 jobs:
   smart-sync:
     runs-on: ubuntu-latest

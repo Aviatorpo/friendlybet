@@ -219,12 +219,51 @@ function recoveryLoginInputFormat(ev) {
 }
 window.recoveryLoginInputFormat = recoveryLoginInputFormat;
 
+// Pillar 3: in-app browser (WhatsApp/Telegram/Instagram webview) resilience.
+// These webviews frequently sandbox or wipe localStorage between visits, logging the
+// user out of a link opened from a group chat. So we MIRROR the session keys into a
+// first-party cookie (which survives more of those cases) and, at boot, HEAL a wiped
+// localStorage from the cookie. localStorage stays the primary store; cookies are a
+// transparent backup — if either is unavailable the app still works.
+const _FB_SESSION_KEYS = [
+  CONFIG.STORAGE_KEYS.USER_ID, CONFIG.STORAGE_KEYS.POOL_ID, CONFIG.STORAGE_KEYS.NICKNAME,
+  CONFIG.STORAGE_KEYS.IS_ADMIN, CONFIG.STORAGE_KEYS.RECOVERY_CODE, CONFIG.STORAGE_KEYS.LANGUAGE
+];
+function _fbCookieSet(k, v) {
+  try {
+    const secure = location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `${k}=${encodeURIComponent(v)}; path=/; max-age=31536000; SameSite=Lax${secure}`;
+  } catch (_) {}
+}
+function _fbCookieGet(k) {
+  try {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + k.replace(/[.$?*|{}()[\]\\/+^]/g, '\\$&') + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+  } catch (_) { return null; }
+}
+function fbMirrorSession() {
+  for (const k of _FB_SESSION_KEYS) {
+    let v = null; try { v = localStorage.getItem(k); } catch (_) {}
+    if (v != null) _fbCookieSet(k, v);
+  }
+}
+function fbHealSessionFromCookies() {
+  for (const k of _FB_SESSION_KEYS) {
+    let v = null; try { v = localStorage.getItem(k); } catch (_) {}
+    if (v == null) {
+      const c = _fbCookieGet(k);
+      if (c != null) { try { localStorage.setItem(k, c); } catch (_) {} }
+    }
+  }
+}
+
 // שמירת מצב משתמש מקומית
 function saveLocalUser(userData) {
   localStorage.setItem(CONFIG.STORAGE_KEYS.USER_ID, userData.id);
   localStorage.setItem(CONFIG.STORAGE_KEYS.POOL_ID, userData.pool_id);
   localStorage.setItem(CONFIG.STORAGE_KEYS.NICKNAME, userData.nickname);
   localStorage.setItem(CONFIG.STORAGE_KEYS.IS_ADMIN, userData.is_admin ? '1' : '0');
+  fbMirrorSession(); // back the session up to a cookie for webview resilience
 }
 
 // טעינת מצב משתמש מקומי
@@ -5967,6 +6006,7 @@ async function initApp() {
     console.warn('[reset=1] wiping local state and SW caches');
     try { localStorage.clear(); } catch (_) {}
     try { sessionStorage.clear(); } catch (_) {}
+    try { for (const k of _FB_SESSION_KEYS) document.cookie = `${k}=; path=/; max-age=0`; } catch (_) {}
     try {
       const regs = await navigator.serviceWorker.getRegistrations();
       await Promise.all(regs.map(r => r.unregister()));
@@ -5979,7 +6019,13 @@ async function initApp() {
     window.location.replace(window.location.origin + '/');
     return;
   }
-  
+
+  // Pillar 3: heal a webview-wiped localStorage session from the cookie backup BEFORE the
+  // app reads the session, then mirror back so an existing localStorage-only session also
+  // gains a cookie backup. (Not reached on /?reset=1, which clears those cookies above.)
+  fbHealSessionFromCookies();
+  fbMirrorSession();
+
   // Listen for language changes - re-render current screen
   window.addEventListener('languageChanged', () => {
     // Re-render visible dynamic content
