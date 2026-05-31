@@ -1381,13 +1381,23 @@ async function loadAdminMembers() {
     // Load picks stats for each user
     const userIds = users.map(u => u.id);
 
-    const [groupPicksRes, knockoutPicksRes] = await Promise.all([
+    // Also load the champion (tournament winner) + top-scorer picks so we can tell a
+    // FINISHED member (everything incl. champion + Golden Boot) from one who only STARTED.
+    const [groupPicksRes, knockoutPicksRes, winnerPicksRes, topScorerPicksRes] = await Promise.all([
       supabaseClient
         .from(groupTable)
         .select('user_id')
         .in('user_id', userIds),
       supabaseClient
         .from('knockout_picks')
+        .select('user_id')
+        .in('user_id', userIds),
+      supabaseClient
+        .from('tournament_winner_picks')
+        .select('user_id')
+        .in('user_id', userIds),
+      supabaseClient
+        .from('top_scorer_picks')
         .select('user_id')
         .in('user_id', userIds)
     ]);
@@ -1402,11 +1412,18 @@ async function loadAdminMembers() {
       knockoutPicksByUser[p.user_id] = (knockoutPicksByUser[p.user_id] || 0) + 1;
     });
 
+    const hasWinnerByUser = {};
+    (winnerPicksRes.data || []).forEach(p => { hasWinnerByUser[p.user_id] = true; });
+    const hasTopScorerByUser = {};
+    (topScorerPicksRes.data || []).forEach(p => { hasTopScorerByUser[p.user_id] = true; });
+
     // Enrich users with stats
     adminState.members = users.map(u => ({
       ...u,
       groupPicksCount: groupPicksByUser[u.id] || 0,
       knockoutPicksCount: knockoutPicksByUser[u.id] || 0,
+      hasWinner: !!hasWinnerByUser[u.id],
+      hasTopScorer: !!hasTopScorerByUser[u.id],
       isAdmin: u.is_admin === true
     }));
     adminState.isV2 = isV2;
@@ -1421,23 +1438,42 @@ async function loadAdminMembers() {
   }
 }
 
+// Per-member betting status for the admin dashboard.
+//  - started:  has begun (at least one group pick, or any later pick / submission)
+//  - finished: EVERYTHING is in — all groups + full bracket + champion + top scorer
+//    (top scorer is only required once squads are released, since the flow skips that
+//    step until then).
+function _adminMemberProgress(member) {
+  const isV2 = adminState.isV2;
+  const groupsFull = member.groupPicksCount >= (isV2 ? 48 : 24);
+  const bracketFull = member.knockoutPicksCount >= (isV2 ? 31 : 16);
+  let squadsReleased = false;
+  try { squadsReleased = localStorage.getItem('fb_squads_released') === 'true'; } catch (_) {}
+
+  const started = member.groupPicksCount >= 1 || member.knockoutPicksCount >= 1 ||
+    member.hasWinner || member.hasTopScorer || !!member.predictions_submitted_at;
+
+  const finished = isV2
+    ? (groupsFull && bracketFull && member.hasWinner && (member.hasTopScorer || !squadsReleased))
+    : (groupsFull && bracketFull);
+
+  return { started, finished };
+}
+
 function renderAdminMembers() {
   const list = document.getElementById('admin-members-list');
   
   // Stats
   const total = adminState.members.length;
   const pending = adminState.members.filter(m => m.approval_status === 'pending' && !m.isAdmin).length;
-  // v2.5.24: completion threshold differs per mode.
-  //  - two_phase legacy: 24 group picks (2 per group × 12) + 16 knockout
-  //  - single_phase: 48 group-position picks (4 × 12) + 15 bracket picks
-  const groupThreshold = adminState.isV2 ? 48 : 24;
-  const knockoutThreshold = adminState.isV2 ? 15 : 16;
-  const withGroups = adminState.members.filter(m => m.groupPicksCount >= groupThreshold).length;
-  const withKnockout = adminState.members.filter(m => m.knockoutPicksCount >= knockoutThreshold).length;
-  
+  // Aggregate counts that mirror the per-member statuses: how many STARTED (>=1 group)
+  // and how many FINISHED (all groups + full bracket + champion + top scorer).
+  const startedCount = adminState.members.filter(m => _adminMemberProgress(m).started).length;
+  const finishedCount = adminState.members.filter(m => _adminMemberProgress(m).finished).length;
+
   document.getElementById('admin-stat-total').textContent = total;
-  document.getElementById('admin-stat-groups').textContent = withGroups;
-  document.getElementById('admin-stat-knockout').textContent = withKnockout;
+  document.getElementById('admin-stat-groups').textContent = startedCount;
+  document.getElementById('admin-stat-knockout').textContent = finishedCount;
   
   // Show pending banner if any
   const pendingBanner = document.getElementById('admin-pending-banner');
@@ -1478,9 +1514,8 @@ function renderAdminMembers() {
       ? `<span class="admin-member-pending-badge">${t('adminMembersEx.pendingBadge')}</span>`
       : '';
 
-    // Progress dots
-    const groupsDone = member.groupPicksCount >= 24;
-    const knockoutDone = member.knockoutPicksCount >= 16;
+    // Two distinct statuses: Started (>=1 group) and Finished (everything incl. champion + top scorer)
+    const { started, finished } = _adminMemberProgress(member);
 
     // Quick action buttons for pending users
     let quickActions = '';
@@ -1511,11 +1546,11 @@ function renderAdminMembers() {
       <div class="admin-member-info">
         <div class="admin-member-name">${adminBadge}${pendingBadge}${escapeHtml(member.nickname || t('membersList.fallbackUser'))}</div>
         <div class="admin-member-progress">
-          <span class="admin-member-progress-dot ${groupsDone ? 'done' : ''}">
-            ${t('adminMembersEx.groupsPicks', { n: member.groupPicksCount, check: groupsDone ? '✓' : '' })}
+          <span class="admin-member-progress-dot ${started ? 'done' : ''}">
+            ${started ? t('adminMembersEx.startedYes') : t('adminMembersEx.startedNo')}
           </span>
-          <span class="admin-member-progress-dot ${knockoutDone ? 'done' : ''}">
-            ${t('adminMembersEx.koPicks', { n: member.knockoutPicksCount, check: knockoutDone ? '✓' : '' })}
+          <span class="admin-member-progress-dot ${finished ? 'done' : ''}">
+            ${finished ? t('adminMembersEx.finishedYes') : t('adminMembersEx.finishedNo')}
           </span>
         </div>
       </div>
