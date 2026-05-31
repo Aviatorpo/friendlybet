@@ -18,7 +18,7 @@ Pick the groups. Build your bracket. Climb the leaderboard. Win the bragging rig
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
 [![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com)
 [![JavaScript](https://img.shields.io/badge/Vanilla_JS-zero_frameworks-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](#%EF%B8%8F-tech-stack)
-[![i18n](https://img.shields.io/badge/i18n-English_%2B_עברית-d9b46a?style=flat-square)](#-multilingual)
+[![i18n](https://img.shields.io/badge/i18n-English_%2B_Hebrew-d9b46a?style=flat-square)](#-multilingual)
 
 </div>
 
