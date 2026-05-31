@@ -4,25 +4,27 @@
 
 # FriendlyBet Live ⚽🚀
 
-### A 100% Free, Open-Source (MIT), and Privacy-First World Cup 2026 Prediction Pool Application.
+### The free, open-source, privacy-first way to run a FIFA World Cup 2026 prediction pool with your friends.
 
-**Built with pure Vanilla JavaScript and Supabase.** Pick the groups, build your bracket, climb the live leaderboard, win the bragging rights.
+Create a private pool, share one link, predict the groups and the full knockout bracket, and climb a live leaderboard. No signups, no ads, no trackers, no money. Built with pure Vanilla JavaScript and Supabase, shipped as an installable PWA.
 
 <br/>
 
 [![Live](https://img.shields.io/badge/▶_Live-friendlybet.live-d9b46a?style=for-the-badge)](https://friendlybet.live)
-[![Version](https://img.shields.io/badge/version-2.6.25-d9b46a?style=for-the-badge)](https://friendlybet.live)
+[![Version](https://img.shields.io/badge/version-2.6.41-d9b46a?style=for-the-badge)](https://friendlybet.live)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](./LICENSE)
+[![Deploy with Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?style=for-the-badge&logo=vercel)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FAviatorpo%2Ffriendlybet)
 
 [![PWA](https://img.shields.io/badge/PWA-installable-5A0FC8?style=flat-square&logo=pwa&logoColor=white)](https://friendlybet.live)
-[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
-[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com)
-[![JavaScript](https://img.shields.io/badge/Vanilla_JS-zero_frameworks-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](#-technical-architecture--privacy-blueprint)
-[![i18n](https://img.shields.io/badge/i18n-English_%2B_Hebrew-d9b46a?style=flat-square)](#-multilingual)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL_+_RLS-3ECF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
+[![Vercel](https://img.shields.io/badge/Edge-Vercel_CDN-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com)
+[![JavaScript](https://img.shields.io/badge/Vanilla_JS-zero_frameworks-F7DF1E?style=flat-square&logo=javascript&logoColor=black)](#%EF%B8%8F-architecture)
+[![No build step](https://img.shields.io/badge/build_step-none-44cc88?style=flat-square)](#-self-hosting-in-about-2-minutes)
+[![i18n](https://img.shields.io/badge/i18n-English_%2B_Hebrew_(RTL)-d9b46a?style=flat-square)](#-internationalization)
 
 <br/>
 
-**⭐ Enjoying FriendlyBet? [Give it a star](https://github.com/Aviatorpo/friendlybet) to help other football fans find it!**
+**⭐ Enjoying FriendlyBet? [Star the repo](https://github.com/Aviatorpo/friendlybet) to help other football fans (and developers) find it.**
 
 ### 👉 [**Play now at friendlybet.live**](https://friendlybet.live) 👈
 
@@ -30,28 +32,60 @@
 
 ---
 
+## 📑 Table of contents
+
+- [What is FriendlyBet?](#-what-is-friendlybet)
+- [Why FriendlyBet?](#-why-friendlybet)
+- [Features](#-features)
+- [How it works](#-how-it-works)
+- [Scoring model](#-scoring-model)
+- [Architecture](#%EF%B8%8F-architecture)
+- [Performance: surviving kickoff traffic spikes](#-performance-surviving-kickoff-traffic-spikes)
+- [Privacy &amp; authentication blueprint](#-privacy--authentication-blueprint)
+- [Tech stack](#-tech-stack)
+- [Project structure](#-project-structure)
+- [Self-hosting](#-self-hosting-in-about-2-minutes)
+- [Local development](#-local-development)
+- [Internationalization](#-internationalization)
+- [Roadmap](#-roadmap)
+- [FAQ](#-faq)
+- [Contributing](#-contributing)
+- [License &amp; disclaimer](#-license--disclaimer)
+
+---
+
+## 🎯 What is FriendlyBet?
+
+**FriendlyBet** is a free, social prediction game for the **FIFA World Cup 2026**. You create a private pool, invite friends with a short code or a one-tap link, and everyone forecasts the tournament: the standings in all 12 groups, the entire knockout bracket from the Round of 32 to the Final, and the Golden Boot top scorer. As real results arrive, scores recalculate automatically and a live leaderboard crowns the sharpest mind in your group.
+
+It is purpose-built for **office pools, family brackets, fantasy leagues, and group-chat sweepstakes**: the kind of friendly competition that needs zero friction and zero setup. No money changes hands inside the app, ever.
+
+> Fully bilingual in **Hebrew and English** with native right-to-left support, and ready for football fans anywhere in the world.
+
+---
+
 ## 🤔 Why FriendlyBet?
 
-**FriendlyBet Live ([friendlybet.live](https://friendlybet.live)) is a non-commercial, open-source hobby project** built for one reason: to make running an office, family, or group World Cup 2026 prediction pool genuinely fun and completely free. It is an independent project and is not affiliated with any other similarly named commercial service (e.g. `friendlybet.org`).
-
-Unlike legacy or ad-supported prediction platforms, FriendlyBet was never designed to monetize your attention or your data. There is nothing to buy, no money handled inside the app, and nothing tracking you across the web.
+**FriendlyBet Live ([friendlybet.live](https://friendlybet.live)) is an independent, non-commercial, open-source hobby project.** It is not affiliated with any other similarly named commercial service (for example `friendlybet.org`). It was built for one reason: to make running a World Cup 2026 prediction pool genuinely fun and completely free, without monetizing your attention or your data.
 
 | | FriendlyBet Live | Typical commercial alternatives |
 |:--|:--:|:--:|
 | **Price** | 100% free, forever | Freemium / paid tiers |
-| **Sign-up** | ❌ None required | ✅ Email / phone / OAuth |
-| **Ads & trackers** | ❌ Zero | Often ad-supported |
-| **Source code** | ✅ Open (MIT) | Usually closed |
+| **Sign-up** | ❌ None (nickname only) | ✅ Email / phone / OAuth |
+| **Ads &amp; trackers** | ❌ Zero | Often ad-supported |
 | **Real money** | ❌ Never | Sometimes |
+| **Source code** | ✅ Open (MIT) | Usually closed |
+| **Install** | ✅ PWA, any device | App-store gated |
 
-**What makes it different, in one breath:**
+**In one breath:**
 
-- **🚫 Zero signups / registration** — pick a nickname and play. No email, no phone, no OAuth.
-- **🚫 No ads. No trackers. No analytics SDKs.** Nothing follows you around.
-- **🆓 Genuinely free & non-commercial** — a hobby project, MIT-licensed, no paid tiers.
-- **🎯 Predict the whole tournament** — group standings, the full FIFA-format knockout bracket, and the Golden Boot.
-- **🔥 Optional Underdog Multiplier** — pool creators can switch on a risk multiplier so calling an upset is worth more. Reward the bold predictions, not just the safe ones.
-- **🌍 Bilingual** — full Hebrew + English with native RTL support.
+- **🚫 Zero signups.** Pick a nickname and play. No email, no phone, no OAuth, no PII.
+- **🚫 No ads. No trackers. No analytics SDKs following you around.**
+- **🆓 Genuinely free and non-commercial.** A hobby project, MIT-licensed, no paid tiers.
+- **🎯 Predict the whole tournament.** Group standings, the full FIFA-format knockout bracket, and the Golden Boot.
+- **🔥 Optional Underdog multiplier.** Pool creators can switch on a risk multiplier so calling an upset is worth more, rewarding bold predictions over safe ones.
+- **⚡ Built to survive a kickoff spike.** Live data is served from the edge CDN, not hammered out of the database (see [Performance](#-performance-surviving-kickoff-traffic-spikes)).
+- **🌍 Bilingual** with full RTL Hebrew support.
 
 > No money changes hands inside the app. Any friendly side bets stay between friends, outside the platform.
 
@@ -61,129 +95,265 @@ Unlike legacy or ad-supported prediction platforms, FriendlyBet was never design
 
 ### 🎲 Predict the entire tournament, your way
 - **Group stage** — rank all four teams in each of the 12 groups.
-- **Knockout bracket** — build the full Round of 32 → Final, exactly as the official FIFA 2026 format works.
+- **Round of 32 bracket** — build the full official WC 2026 knockout tree (R32 → R16 → QF → SF → Final), including assigning the eight best third-placed teams to their slots.
 - **Top scorer** — call the Golden Boot winner for bonus points.
-- **Your bracket, your logic** — the knockout tree is built from *your* group predictions, so it is a true test of your own forecast.
+- **Your bracket, your logic** — the knockout tree is built from *your own* group predictions, so it is a true test of your forecast, not a copy of the real draw.
 
 ### 🏅 Smart, transparent scoring
-- **Doubling knockout progression** — R32 = 2 pts, R16 = 4, QF = 8, SF = 16, Final = 32. Harder, later calls are rewarded proportionally to the odds.
-- **Group points** — 4 / 3 / 2 / 1 points per correctly placed position.
+- **Doubling knockout progression** — each round you survive is worth more: R32 = 2, R16 = 4, QF = 8, SF = 16, Final = 32. Later, harder calls are rewarded in proportion to their odds.
+- **Group points** — 4 / 3 / 2 / 1 per correctly placed position.
 - **Third-place bonus** — predict which of the best third-placed teams advance.
-- **Optional Underdog / risk multiplier** — pool creators can reward predicted upsets with multiplied points.
-- **Automatic & fair** — results sync and scores recalculate on a schedule. No manual tallying, no arguments.
+- **Optional Underdog / risk multiplier** — reward predicted upsets with multiplied points.
+- **Automatic and fair** — results sync and scores recalculate on a schedule. No manual tallying, no arguments. See the [scoring model](#-scoring-model).
 
 ### 👥 Built for groups
-- **One-tap invites** — share a join link or short pool code via WhatsApp or Telegram.
+- **One-tap invites** — share a join link or a 5-character pool code over WhatsApp or Telegram.
 - **Live leaderboard** — see exactly where you rank, with a per-stage points breakdown for every player.
-- **Private pools** — your league, your friends, your rules.
+- **Private pools** — your league, your friends, your rules. Pool creators tune the scoring.
 
 ### 📱 Installable PWA
 - **Works like a native app** — add it to your home screen on iOS or Android.
 - **Mobile-first** — a premium dark + gold interface tuned for the phone in your hand.
-- **Offline-aware** — a service worker caches the app so it loads instantly.
+- **Offline-aware** — a service worker caches the app shell so it loads instantly, with a network-first strategy for code so fixes reach you on the next load.
 
 ---
 
-## 🏛️ Technical Architecture & Privacy Blueprint
+## 🎮 How it works
 
-FriendlyBet is deliberately engineered to be **lean, transparent, and privacy-preserving by design** — not by policy. The architecture itself is the privacy guarantee.
+| | Step | What happens |
+|:--:|:--|:--|
+| **1** | **Create or join a pool** | Start your own league, or join a friend's with a 5-character code or invite link. |
+| **2** | **Pick a nickname &amp; save your recovery code** | No email needed. Your 16-character recovery code is your key back in. |
+| **3** | **Invite your friends** | Send the join link over WhatsApp or Telegram with one tap. |
+| **4** | **Make your predictions** | Rank the groups, build your knockout bracket, and call the top scorer. |
+| **5** | **Climb the leaderboard** | Scores update automatically as results come in. Last one standing wins the bragging rights. |
+
+You can edit your predictions any time, right up until the tournament kicks off. Once the first match starts, picks lock and the race is on.
+
+---
+
+## 🧮 Scoring model
+
+Every pool ships with balanced defaults, and pool creators can tune any rule. The defaults:
+
+| Stage | Points (each correct pick) | Pool max |
+|:--|:--:|:--:|
+| Group position (1st / 2nd / 3rd / 4th) | 4 / 3 / 2 / 1 | 48 (12 groups) |
+| Third-place advance bonus | 2 per advancing pick | 16 |
+| Round of 32 | 2 | 32 |
+| Round of 16 | 4 | 32 |
+| Quarter-final | 8 | 32 |
+| Semi-final | 16 | 32 |
+| Final | 32 | 32 |
+| Top scorer | 10–20 | bonus |
+
+The **doubling progression** keeps each knockout stage capped at roughly the same value while rewarding harder, later predictions in proportion to their difficulty. The mental model: *each correct knockout pick rewards the team for reaching the next round*. An **optional Underdog / risk multiplier** can be enabled per pool so that correctly predicting an upset is worth more than backing a favorite.
+
+Scoring is computed by a deterministic, idempotent batch job (see [Architecture](#%EF%B8%8F-architecture)): it recomputes every score from the source picks and the real results, so a re-run always converges to the same answer.
+
+---
+
+## 🏛️ Architecture
+
+FriendlyBet is deliberately engineered to be **lean, transparent, and privacy-preserving by design**, not by policy. There is no application server: the browser talks to the database directly, security lives in the database, and all heavy lifting happens in scheduled CI jobs.
+
+```
+┌────────────────────────────────────────────────────────────┐
+│  Browser (installable PWA)                                   │
+│  index.html · app.js · styles.css · i18n.js · config.js      │
+│  Service worker (offline shell, network-first code)          │
+│  session: in-memory → sessionStorage → localStorage → cookie │
+│  recovery key ── SHA-256 ─▶ hash (hashed client-side)        │
+└───────┬──────────────────────────────────────────┬──────────┘
+        │ reads live data from the EDGE             │ writes picks over HTTPS
+        ▼                                           ▼  (anon key, RLS-gated)
+┌───────────────────────────┐         ┌────────────────────────────────────┐
+│  Vercel Edge CDN           │         │  Supabase (PostgreSQL + RLS)         │
+│  /public-data/matches.json │◀──────  │  pools · users · picks · matches …   │
+│  /public-data/leaderboard/ │ snapshot│  stores only SHA-256 hashes, no PII  │
+└───────────────────────────┘         └───────┬──────────────────────────────┘
+        ▲ static, cached, infinitely scalable  │ reads/writes (service key)
+        │                                       ▼
+┌───────┴───────────────────────────────────────────────────────────────────┐
+│  GitHub Actions (scheduled, serialized)                                      │
+│  smart-sync (10m): pull match results → write DB → export match snapshot     │
+│  calculate-scores-v2 (30m): recompute every score → export leaderboards      │
+│  export-snapshots: emit immutable JSON to /public-data for the CDN           │
+└──────────────────────────────────────────────────────────────────────────────┘
+```
 
 ### Frontend — blazing-fast Vanilla JavaScript
-- **Zero bloated frameworks.** No React, no Vue, no bundler, no build step — just hand-crafted HTML, CSS, and modern Vanilla JS served as static files.
-- **Loads instantly** and is trivially auditable: open `app.js` and read exactly what runs.
-- **PWA supported** — an offline-first service worker with a versioned cache makes it installable and app-like.
+- **Zero frameworks, zero bundler, no build step.** Just hand-crafted HTML, modern CSS, and Vanilla JS served as static files. It loads instantly and is trivially auditable: open `app.js` and read exactly what runs.
+- **Installable PWA** with an offline-first service worker. Application code uses a **network-first** strategy so a bug-fix deploy reaches users on the next load, while the shell stays cache-first for instant starts.
 
-### Backend / Database — Supabase with strict Row-Level Security
+### Backend / database — Supabase with strict Row-Level Security
 - Data lives in **Supabase (PostgreSQL)**, accessed directly from the client over HTTPS using the public anon key.
-- **Row-Level Security (RLS) is enforced on every table.** Access is gated by database policies, so the client can only ever read and write what it is explicitly permitted to.
-- No bespoke server to compromise — the security model is declared in the database.
+- **Row-Level Security (RLS) is enforced on every table.** Access is gated by database policies, so the client can only ever read and write what it is explicitly permitted to. There is no bespoke server to compromise.
 
-### Authentication — client-side keys, hashed before they ever leave the browser
-- There are **no passwords and no personally identifiable information (PII)**. No email, no phone number, no real name.
-- Account access uses a **16-character recovery key** (formatted `XXXX-XXXX-XXXX-XXXX`) generated **entirely client-side**.
-- That key is hashed with **SHA-256** in the browser (`crypto.subtle.digest('SHA-256', …)`) **before** anything touches the database — only the hash is ever stored or transmitted. The plaintext key never enters our system.
-- Joining a pool uses a short, shareable pool code; your recovery key is your private way back in.
+### Live data — resilient, asynchronous, never on the user's request
+- A scheduled **GitHub Actions** job (`smart-sync`, every 10 minutes) is the *only* thing that calls the external sports-data API. User requests never trigger an outbound API call, which keeps the app fast and immune to third-party rate limits during peak traffic.
+- **Last-good-snapshot guard:** if the upstream feed rate-limits or errors, the pipeline keeps serving the last known-good data instead of blanking it out mid-tournament.
 
-```
-┌─────────────────────────────────────────────┐
-│  Browser (PWA)                                │
-│  index.html · app.js · styles.css · i18n.js   │
-│  Service Worker (offline cache)               │
-│  recovery key ──SHA-256──▶ hash (client-side) │
-└──────────────────┬──────────────────────────┘
-                   │  HTTPS (anon key)
-                   ▼
-┌─────────────────────────────────────────────┐
-│  Supabase (PostgreSQL + Row-Level Security)   │
-│  pools · users · picks · matches · players    │
-│  stores only the SHA-256 hash — no PII        │
-└──────────────────┬──────────────────────────┘
-                   ▲
-                   │  scheduled cron
-┌──────────────────┴──────────────────────────┐
-│  GitHub Actions                               │
-│  match sync · player sync · score calculation │
-└─────────────────────────────────────────────┘
-```
+### Scoring engine — deterministic, isolated, race-free
+- `calculate-scores-v2.js` runs every 30 minutes in CI. It performs a **full, idempotent recompute** from the source picks and real results, so it is deterministic and self-healing (a partial failure is corrected on the next run).
+- Runs are **serialized with a concurrency group** so two score jobs can never race the writer.
+- Because scoring lives in CI and not in a request handler, it is completely isolated from user-facing latency.
 
-### Project structure
+---
 
-| File / Folder | Purpose |
+## 🚀 Performance: surviving kickoff traffic spikes
+
+The hardest moment for any prediction app is a **kickoff or a goal**, when thousands of people open the app at once. FriendlyBet handles this without an expensive backend:
+
+- **The database is never the read path under load.** The match-sync and scoring jobs export immutable JSON snapshots (`/public-data/matches.json`, `/public-data/leaderboard/<poolId>.json`) that are served from **Vercel's edge CDN**. The browser reads those first and only falls back to the database if the CDN is unavailable. A spike of a million refreshes lands on the CDN, not on Postgres.
+- **Bounded writes.** Snapshots are committed only when the data actually changed, so the CDN stays fresh without flooding deploys.
+- **No websockets to exhaust.** We deliberately avoid realtime sockets for the broadcast path: a free-tier concurrent-connection cap is exactly what fails during a viral spike, whereas a cached static file scales effectively without limit. Freshness is traded for resilience on purpose (snapshots refresh on a tight cache window).
+- **Client-side resilience.** Reads are validated and cached briefly in memory, with graceful fallbacks at every layer.
+
+---
+
+## 🔒 Privacy &amp; authentication blueprint
+
+There are **no passwords and no personally identifiable information (PII)** anywhere in FriendlyBet: no email, no phone number, no real name.
+
+- **Client-side hashed recovery codes.** Account access uses a **16-character recovery code** (formatted `XXXX-XXXX-XXXX-XXXX`) generated entirely in the browser. It is hashed with **SHA-256** (`crypto.subtle.digest`) **before** anything touches the database. Only the hash is ever stored or transmitted; the plaintext code never enters the system.
+- **A short pool code** (5 characters) is used to join a pool; your recovery code is your private way back in.
+- **Webview-resilient sessions.** Group-chat links often open inside an in-app browser (WhatsApp / Instagram / Telegram) whose storage is isolated and sometimes wiped. FriendlyBet keeps the session in a layered store — **in-memory → `sessionStorage` → `localStorage` → first-party cookie** — and heals a wiped store at boot, so an in-app reload does not log you out. Leaving a pool clears every layer.
+- **Honest limits.** No client-side storage can cross from an in-app webview into a different system browser (that is a platform boundary, not a bug). For that case the app detects the in-app browser and offers a one-tap **"Open in Chrome"** (Android, via an `intent:` URL) or a Safari instruction (iOS), so the session lives in the persistent main browser. The recovery code remains the universal way back in on any device.
+
+This is privacy enforced by architecture: there is simply no sensitive data to leak.
+
+---
+
+## 🧰 Tech stack
+
+| Layer | Technology |
+|:--|:--|
+| **Frontend** | Static HTML + Vanilla JavaScript + CSS (no frameworks, no bundler, no build) |
+| **Database** | Supabase (PostgreSQL) with Row-Level Security |
+| **Edge / hosting** | Vercel — static hosting, edge CDN, auto-deploy from `main` |
+| **Auth** | Client-generated 16-char recovery codes, SHA-256 hashed (no registration, no PII) |
+| **PWA** | Service worker with a versioned cache; network-first for code |
+| **Live data &amp; scoring** | Node scripts on GitHub Actions (cron-scheduled, serialized) |
+| **i18n** | Custom translation layer (`i18n.js`), Hebrew + English, RTL aware |
+
+---
+
+## 🗂️ Project structure
+
+| File / folder | Purpose |
 |:--|:--|
 | `index.html` | Single-page app — every screen, stacked |
-| `app.js` | All application logic & flow |
+| `app.js` | All application logic and flow |
 | `styles.css` | The complete premium dark + gold theme |
 | `i18n.js` | Hebrew + English translations (RTL aware) |
 | `config.js` | Supabase URL + public anon key + app version |
 | `service-worker.js` | PWA offline cache (versioned) |
-| `scripts/` | Match / player sync + score calculation |
-| `.github/workflows/` | Scheduled GitHub Actions |
-| `migrations/` | SQL schema migrations |
+| `vercel.json` | Clean URLs, rewrites, and edge cache headers for `/public-data` |
+| `scripts/` | Match / player sync, score calculation, CDN snapshot exporter, sitemap |
+| `public-data/` | CDN-served JSON snapshots (matches, per-pool leaderboards) |
+| `.github/workflows/` | Scheduled GitHub Actions (sync, scoring, snapshots) |
+| `migrations/` | Idempotent SQL schema migrations |
+| `guides/` | Bilingual SEO content (World Cup guides, group previews) |
 
 ---
 
-## 🚀 Deployment & Self-Hosting
+## 📦 Self-hosting in about 2 minutes
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FAviatorpo%2Ffriendlybet)
 
-Because FriendlyBet is **pure static files with no build step**, you can clone, inspect, or self-host it in about 30 seconds on Vercel, Netlify, GitHub Pages, or any static host.
-
-> **One thing to know about the Deploy button:** there is no build step, so Vercel environment variables are *not* injected into the static files at runtime. After deploying (or cloning), point the app at **your own** backend by editing the two keys in [`config.js`](./config.js) — that's the only required change. (The repo ships with the public anon key of the official instance; the anon key is safe to expose because Row-Level Security gates the data, but for your own pool you should use your own Supabase project.)
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/Aviatorpo/friendlybet.git
-cd friendlybet
-
-# 2. Run it locally (any static server works — pick one)
-npx serve .
-# or:  python -m http.server 8000
-```
+Because FriendlyBet is **pure static files with no build step**, you can clone, inspect, or self-host it on Vercel, Netlify, GitHub Pages, or any static host.
 
 To point it at **your own** backend:
 
 1. **Create a free Supabase project** at [supabase.com](https://supabase.com).
-2. **Apply the schema** — open the Supabase SQL editor and run the migration files in [`migrations/`](./migrations) in order (they are idempotent and safe to re-run).
-3. **Set your keys** — edit [`config.js`](./config.js) with your Supabase **project URL** and **public anon key** (the anon key is meant to be public; RLS protects the data).
-4. **Deploy** — push to a Vercel/Netlify project (or any static host). On Vercel it auto-deploys from `main`; there is nothing to build.
+2. **Apply the schema** — open the Supabase SQL editor and run the files in [`migrations/`](./migrations) in order (they are idempotent and safe to re-run).
+3. **Set your keys** — edit [`config.js`](./config.js) with your Supabase **project URL** and **public anon key**. The anon key is meant to be public; RLS protects the data.
+4. **Deploy** — push to Vercel/Netlify (or any static host). On Vercel it auto-deploys from `main`; there is nothing to build.
 
-> That is it — no server, no containers, no secrets beyond a public anon key. The official instance lives at [friendlybet.live](https://friendlybet.live) (also reachable at [friendlybet.vercel.app](https://friendlybet.vercel.app)).
+> **About the Deploy button:** there is no build step, so Vercel environment variables are not injected into the static files at runtime. After deploying, set your keys in `config.js` (the one required change). The official instance ships with the public anon key of the live project; for your own pools, use your own Supabase project.
+
+The live data sync and scoring jobs (GitHub Actions) are **optional** for a fork and require their own API keys; a demo fork runs perfectly without them.
 
 ---
 
-## 🌍 Multilingual
+## 💻 Local development
 
-- **Hebrew & English**, switchable on the fly.
-- **Geo-aware** — Israeli visitors are greeted in Hebrew automatically; everyone else gets English.
+```bash
+# Clone
+git clone https://github.com/Aviatorpo/friendlybet.git
+cd friendlybet
+
+# Serve the static files with anything — no build, no install
+npx serve .
+# or:  python -m http.server 8000
+```
+
+Open the printed URL and you are running FriendlyBet locally. Edit `app.js`, `styles.css`, or `i18n.js` and refresh.
+
+**Release checklist (important):** bump the version string in **three** places together so the PWA cache invalidates correctly: `config.js` (`APP_VERSION`), `service-worker.js` (`CACHE_VERSION`), and the `index.html` menu footer.
+
+---
+
+## 🌍 Internationalization
+
+- **Hebrew and English**, switchable on the fly.
+- **Geo-aware** — Israeli visitors are greeted in Hebrew automatically; everyone else gets English. SEO metadata localizes to match.
 - **Full RTL support** for a native Hebrew experience.
+- Add a string to **both** the `he` and `en` blocks in `i18n.js`. Use `data-i18n` for plain text and `data-i18n-html` for strings that contain markup (so links render instead of showing as raw HTML).
 
 ---
 
-## 📜 License
+## 🗺️ Roadmap
+
+- Atomic per-pool scoring via a Postgres transaction/RPC (the current engine is already idempotent and serialized; this would make each pool's update all-or-nothing).
+- Optional multi-provider sports-data adapter with automatic failover.
+- Optional server-backed session (a single serverless function) for true cross-browser login, for users who want it.
+- Continued translation coverage and SEO guide pages.
+
+---
+
+## ❓ FAQ
+
+**Is FriendlyBet really free?**
+Yes. It is a non-commercial, open-source hobby project. No paid tiers, no ads, no money handled in the app.
+
+**Do I need to sign up or give an email?**
+No. You pick a nickname and play. Your only credential is a 16-character recovery code, which is hashed in your browser before it ever reaches the server.
+
+**Is this real-money gambling?**
+No. FriendlyBet does not facilitate real-money betting. Predictions are for fun and bragging rights. Any side bets happen between friends, outside the app.
+
+**How is it different from friendlybet.org?**
+FriendlyBet Live (`friendlybet.live`) is an independent, non-commercial, open-source project and is not affiliated with any other similarly named service.
+
+**What is the World Cup 2026 format?**
+48 teams, 12 groups of 4, with a Round of 32 knockout stage through to the Final. FriendlyBet models this exact format, including the eight best third-placed teams.
+
+**Can I host my own copy?**
+Absolutely — it is MIT-licensed and self-hostable in minutes. See [Self-hosting](#-self-hosting-in-about-2-minutes).
+
+**Does it work on my phone?**
+Yes. It is an installable PWA optimized for mobile, in both Hebrew and English.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome. The codebase is intentionally simple (static files, no build), so the barrier to entry is low.
+
+- Open an issue to discuss a feature or bug.
+- Keep the no-build, framework-free philosophy.
+- Add i18n strings to both `he` and `en`.
+- Remember the three-place version bump when changing cached assets.
+
+---
+
+## 📜 License &amp; disclaimer
 
 Released under the **[MIT License](./LICENSE)** — free to use, modify, and distribute.
 
-FriendlyBet is a non-commercial hobby project. It does not facilitate real-money gambling; predictions are for fun and bragging rights only.
+FriendlyBet is a non-commercial hobby project. It does not facilitate real-money gambling; predictions are for entertainment and bragging rights only.
 
 ---
 
@@ -193,6 +363,8 @@ FriendlyBet is a non-commercial hobby project. It does not facilitate real-money
 
 **FriendlyBet Live** — the free, open-source, privacy-first World Cup 2026 prediction pool.
 
-🇮🇱 Built with ❤️ for the football community.
+Pick the groups. Build your bracket. Climb the leaderboard. Win the bragging rights.
+
+🇮🇱 Built with ❤️ for the football community · [friendlybet.live](https://friendlybet.live)
 
 </div>
