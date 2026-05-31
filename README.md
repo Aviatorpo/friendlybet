@@ -128,6 +128,22 @@ It is purpose-built for **office pools, family brackets, fantasy leagues, and gr
 
 ---
 
+## 📸 Look inside
+
+<div align="center">
+
+| Your pool dashboard | Rank every group |
+|:--:|:--:|
+| <img src="./docs/screenshot-dashboard.png" width="240" alt="FriendlyBet dashboard" /> | <img src="./docs/screenshot-groups.png" width="240" alt="FriendlyBet group stage predictions with team flags" /> |
+| **Build the knockout bracket** | **Pick the advancing third-placed teams** |
+| <img src="./docs/screenshot-bracket.png" width="240" alt="FriendlyBet Round of 32 knockout bracket prediction" /> | <img src="./docs/screenshot-thirdplace.png" width="240" alt="FriendlyBet third-place team selector for the Round of 32" /> |
+
+<sub>Real screens from the live app — premium dark + gold, mobile-first, fully bilingual.</sub>
+
+</div>
+
+---
+
 ## 🎮 How it works
 
 | | Step | What happens |
