@@ -1703,7 +1703,7 @@ const TRANSLATIONS = {
     'sharePool.toDashboard': 'To my dashboard',
     'sharePool.welcomeToast': 'Welcome to {name}!',
     'sharePool.adminCodeAlert': '🔑 Your admin recovery code:\n\n{code}\n\nKeep it safe! Without it you cannot log back in.',
-    'sharePool.shareText': 'You\'ve been invited to the "{poolName}" pool 🏆\n\nLet\'s predict World Cup 2026 together — totally free, just bragging rights on the line.\n\nJoin code: {code}\n👉 {url}\n\n⚽ FriendlyBet — World Cup Predictions with Friends',
+    'sharePool.shareText': 'You\'ve been invited to the "{poolName}" pool 🏆\n\nLet\'s predict World Cup 2026 together.\n\nJoin code: {code}\n👉 {url}\n\n⚽ FriendlyBet — World Cup Predictions with Friends',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'Rules locked',
