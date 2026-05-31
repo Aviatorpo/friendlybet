@@ -6,8 +6,12 @@
  * Rules:
  *  - Always includes the home page "/".
  *  - Includes every guides/**.html EXCEPT files starting with "_" and the template.
+ *  - Includes the explicit ROOT_PAGES allowlist (e.g. privacy.html) so real standalone
+ *    pages are covered while internal mockups (landing-preview/design-gallery/brand-*)
+ *    are never exposed.
  *  - Skips any HTML that contains <meta name="robots" content="noindex">.
- *  - With Vercel cleanUrls, the .html extension is dropped from <loc>.
+ *  - With Vercel cleanUrls, the .html extension is dropped from guide <loc>s; root pages
+ *    use their own canonical URL (privacy.html keeps its .html canonical).
  */
 const fs = require('fs');
 const path = require('path');
@@ -40,7 +44,19 @@ for (const file of walk(GUIDES_DIR)) {
   if (/<meta\s+name=["']robots["']\s+content=["'][^"']*noindex/i.test(html)) continue;
   const loc = toLoc(file);
   const isHub = /\/guides\/?$/.test(loc);
-  urls.push({ loc, changefreq: isHub ? 'daily' : 'monthly', priority: isHub ? '0.8' : '0.7' });
+  urls.push({ loc, changefreq: isHub ? 'daily' : 'monthly', priority: '0.8' });
+}
+
+// Explicit allowlist of standalone root pages to index (keeps internal mockups out).
+const ROOT_PAGES = [
+  { file: 'privacy.html', loc: `${ORIGIN}/privacy.html`, changefreq: 'monthly', priority: '0.8' },
+];
+for (const p of ROOT_PAGES) {
+  const full = path.join(ROOT, p.file);
+  if (!fs.existsSync(full)) continue;
+  const html = fs.readFileSync(full, 'utf8');
+  if (/<meta\s+name=["']robots["']\s+content=["'][^"']*noindex/i.test(html)) continue;
+  urls.push({ loc: p.loc, changefreq: p.changefreq, priority: p.priority });
 }
 
 // De-dupe + stable sort (home first, then alphabetical).
