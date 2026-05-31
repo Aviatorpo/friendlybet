@@ -39,6 +39,7 @@ main{padding:54px 0 80px}
 .doc-eyebrow{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
 h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,6vw,46px);letter-spacing:-.01em;margin:12px 0 6px}
 .updated{color:var(--muted-2);font-size:13.5px;margin-bottom:34px}
+.doc-sub{font-family:var(--display);font-weight:600;font-size:clamp(15px,3.4vw,19px);color:var(--gold-lt);margin:0 0 14px;letter-spacing:-.005em}
 .intro{color:#e9e7df;font-size:17px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:30px}
 h2{font-family:var(--display);font-weight:700;font-size:21px;color:var(--gold-lt);margin:32px 0 10px;letter-spacing:-.01em}
 p{color:var(--muted);font-size:15.5px;margin:0 0 12px}
@@ -115,51 +116,48 @@ footer a{color:var(--muted)}
   <!-- ENGLISH -->
   <div class="block" data-lang="en" dir="ltr">
     <div class="doc-eyebrow">FriendlyBet</div>
-    <h1>Privacy Policy</h1>
-    <div class="updated">Last updated: May 25, 2026</div>
-    <div class="intro">FriendlyBet is a <strong>free</strong> social prediction game for the 2026 World Cup — no real money, no ads, and no tracking. We collect the bare minimum needed to make the game work, and nothing more.</div>
+    <h1>FriendlyBet Privacy Policy &amp; Terms</h1>
+    <div class="doc-sub">Transparent, Open-Source, and 100% Privacy-First.</div>
+    <div class="updated">Last updated: May 31, 2026</div>
+    <div class="intro">FriendlyBet is a <strong>free</strong> social prediction game for the 2026 World Cup — no real money, no ads, and no tracking. We collect the bare minimum needed to make the game work, and nothing more. This page explains exactly what that means, in plain language.</div>
 
-    <h2>What we collect</h2>
+    <h2>1. Non-Commercial &amp; Anti-Gambling Declaration</h2>
+    <p>FriendlyBet (<a href="https://friendlybet.live" target="_blank" rel="noopener">friendlybet.live</a>) is a completely free, open-source (<strong>MIT Licensed</strong>), non-commercial hobby project. It was created solely to power friendly, casual, and office prediction pools among friends and colleagues.</p>
+    <p><strong>FriendlyBet does not process, facilitate, or support any real-money transactions, betting, or gambling of any kind. No monetary value is exchanged on this platform.</strong> There are no in-app purchases, no wagers, no payouts, and no commercial relationship of any sort between FriendlyBet and its players. The only thing on the line is bragging rights.</p>
+
+    <h2>2. Zero Data Collection Policy</h2>
+    <p>FriendlyBet has <strong>no signups, no registration forms, and no third-party trackers</strong>. You play behind a nickname of your choosing, and that is the extent of the personal information involved.</p>
+    <p>We do not collect names, email addresses, phone numbers, or IP addresses. Your prediction group data is entirely public or accessible via a generated group code, with <strong>zero tracking cookies or analytics scripts</strong> attached. The only data stored in your browser (via <code>localStorage</code>) is what is strictly required to keep you logged into your pool: a user ID, the pool ID, your nickname, your recovery code, and your language preference. None of this is advertising or behavioral data.</p>
+
+    <h2>3. Authentication &amp; Security Blueprint</h2>
+    <p>So that search engines, auditors, and players fully understand the architecture, here is how access works under the hood:</p>
+    <p>Authentication and group access are handled using a <strong>client-side generated 16-character unique key</strong>. This plaintext key is hashed using <strong>SHA-256</strong> before interacting securely with our database via <strong>Supabase Row-Level Security (RLS)</strong>. No passwords, personal data, or sensitive user credentials ever enter our database. The recovery code is your only credential, it lives on your device, and the server only ever sees its irreversible hash.</p>
+
+    <h2>4. Open Source Transparency</h2>
+    <p>FriendlyBet is fully audited and transparent. Anyone can inspect, review, or self-host the entire codebase by visiting our official repository at <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">github.com/Aviatorpo/friendlybet</a>.</p>
+    <p>Because the full source is public under the MIT License, every claim on this page can be independently verified — there are no hidden trackers, analytics, or data flows beyond what the code openly shows.</p>
+
+    <h2>Third-party infrastructure</h2>
+    <p>We rely on a small set of infrastructure providers strictly to deliver the app. They may process basic technical request data as part of serving content:</p>
     <ul>
-      <li>A <strong>nickname</strong> you choose (shown on the leaderboard).</li>
-      <li>Your <strong>predictions and picks</strong> (groups, knockout, top scorer) and the scores calculated from them.</li>
-      <li>A <strong>recovery code</strong> — stored <strong>hashed</strong> (SHA-256) so you can get back into your account.</li>
-      <li>The <strong>pool details</strong> you create (pool name, scoring settings).</li>
-    </ul>
-    <p>We do <strong>not</strong> ask for or collect your real name, email, phone number, or any other identifying information — unless you choose to enter it yourself (for example, emailing yourself the recovery code happens from your own device).</p>
-
-    <h2>Browser storage (localStorage)</h2>
-    <p>To remember you between visits, the following are stored only in your browser: a user ID, the pool ID, your nickname, your recovery code, and your language preference. There are no advertising or tracking cookies.</p>
-
-    <h2>How we use the information</h2>
-    <p>Only to run the game: to identify you, calculate scores, and show the leaderboard to friends in your pool. We never sell, rent, or share your information with third parties for advertising.</p>
-
-    <h2>Third-party services</h2>
-    <p>We rely on providers that may receive basic technical data (such as an IP address) as part of delivering the service:</p>
-    <ul>
-      <li><strong>Supabase</strong> — database storage.</li>
-      <li><strong>Vercel</strong> — website hosting.</li>
+      <li><strong>Supabase</strong> — database storage (with Row-Level Security).</li>
+      <li><strong>Vercel</strong> — static website hosting.</li>
       <li><strong>football-data.org</strong> — match results and schedule.</li>
       <li>CDNs for fonts and icons (Google Fonts, jsDelivr).</li>
     </ul>
+    <p>We do not place advertising or behavioral analytics (such as Google Analytics) anywhere on this site.</p>
 
-    <h2>No ads, no tracking</h2>
-    <p>There are no ads, marketing pixels, or behavioral analytics (such as Google Analytics) on this site. The code is fully open source and inspectable on <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a>.</p>
-
-    <h2>Data retention &amp; deletion</h2>
-    <p>Data is kept while a pool is active. Pool admins can remove members, and you can request deletion of your data at any time.</p>
-
-    <h2>Your rights</h2>
-    <p>You may request to view, correct, or delete the information we hold about you. Contact us and we'll take care of it.</p>
+    <h2>Data retention &amp; your rights</h2>
+    <p>Data is kept only while a pool is active. Pool admins can remove members, and you may request to view, correct, or delete the information associated with your nickname at any time. Because we hold no contact details, the simplest path is to reach us via the GitHub repository below.</p>
 
     <h2>Children</h2>
     <p>The service is not intended for children under 13, and we do not knowingly collect information from children.</p>
 
     <h2>Changes to this policy</h2>
-    <p>If we update this policy, we'll update the date at the top. Material changes will be surfaced in the app.</p>
+    <p>If we update this policy, we'll update the date at the top, and material changes will be surfaced in the app.</p>
 
     <h2>Contact</h2>
-    <p>For privacy questions, reach us through the project's <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a> page.</p>
+    <p>For any privacy, security, or compliance questions, reach us through the project's <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a> page.</p>
   </div>
 
 </main>
