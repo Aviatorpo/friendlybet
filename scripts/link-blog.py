@@ -77,8 +77,10 @@ def process(path, lang, is_index=False):
         html = f.read()
     before = html
     html = add_nav(html, lang)
-    html = add_top_cta(html, lang)
-    html = add_bottom_cta(html, lang)
+    # The blog hub (index) keeps a single hand-placed CTA; only articles get top+bottom.
+    if not is_index:
+        html = add_top_cta(html, lang)
+        html = add_bottom_cta(html, lang)
     links = 0
     if is_index:
         # index footer has no Guides link; append Blog + GitHub
