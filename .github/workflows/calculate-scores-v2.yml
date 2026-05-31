@@ -13,6 +13,9 @@ on:
     - cron: '*/30 * * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   calculate:
     runs-on: ubuntu-latest
@@ -30,3 +33,26 @@ jobs:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/calculate-scores-v2.js
+
+      # Pillar 1: refresh CDN snapshots (matches + per-pool leaderboards) after scoring,
+      # so clients read standings from the edge instead of full-table reads of `users`.
+      - name: Export CDN snapshots
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/export-snapshots.js all
+
+      - name: Commit snapshots if changed
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data)" ]; then
+            git add public-data
+            git commit -q -m "data: refresh CDN snapshots (scores)"
+            for a in 1 2 3; do
+              git pull --rebase --autostash && git push && break
+              echo "push retry $a"; sleep 4
+            done
+          else
+            echo "no snapshot change"
+          fi

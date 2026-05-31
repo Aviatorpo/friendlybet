@@ -5,5 +5,14 @@
     { "source": "/blog", "destination": "/guides/" },
     { "source": "/blog/he/:slug", "destination": "/guides/he/:slug" },
     { "source": "/blog/:slug", "destination": "/guides/:slug" }
+  ],
+  "headers": [
+    {
+      "source": "/public-data/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=20, s-maxage=30, stale-while-revalidate=300" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
   ]
 }

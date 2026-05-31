@@ -5,22 +5,48 @@ on:
     - cron: '*/10 * * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   smart-sync:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      
+
       - name: Run smart sync
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
         run: node scripts/smart-sync.js
+
+      # Pillar 1: refresh the CDN match snapshot so clients read it from the edge
+      # instead of hitting Postgres on every 60s poll during live matches.
+      - name: Export match snapshot
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/export-snapshots.js matches
+
+      - name: Commit snapshot if changed
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data)" ]; then
+            git add public-data
+            git commit -q -m "data: refresh match snapshot"
+            for a in 1 2 3; do
+              git pull --rebase --autostash && git push && break
+              echo "push retry $a"; sleep 4
+            done
+          else
+            echo "no snapshot change"
+          fi
