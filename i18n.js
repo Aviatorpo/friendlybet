@@ -2602,6 +2602,20 @@ function applyLanguage() {
     setMeta('meta[name="twitter:title"]', pageTitle);
     setMeta('meta[name="twitter:description"]', desc);
     setMeta('meta[property="og:locale"]', currentLanguage === 'he' ? 'he_IL' : 'en_US');
+    // Swap the share image to the Hebrew card for Israeli visitors (same geo
+    // gating as title/description). English raster card stays the global default.
+    const ogImg = currentLanguage === 'he'
+      ? 'https://friendlybet.live/og-image-he.png'
+      : 'https://friendlybet.live/og-image.png';
+    setMeta('meta[property="og:image"]', ogImg);
+    setMeta('meta[property="og:image:secure_url"]', ogImg);
+    setMeta('meta[property="og:image:alt"]', currentLanguage === 'he'
+      ? 'FriendlyBet — הימור חברים על מונדיאל 2026'
+      : 'FriendlyBet — free World Cup 2026 prediction pool. Soccer ball in a gold ring on dark.');
+    setMeta('meta[name="twitter:image"]', ogImg);
+    setMeta('meta[name="twitter:image:alt"]', currentLanguage === 'he'
+      ? 'FriendlyBet — הימור חברים על מונדיאל 2026'
+      : 'FriendlyBet — free World Cup 2026 prediction pool');
   } catch (e) {}
 
   // Dispatch event for app.js to re-render dynamic content
