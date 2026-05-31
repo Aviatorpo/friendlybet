@@ -6129,33 +6129,36 @@ function closeShareModal() {
   document.getElementById('share-modal').classList.remove('active');
 }
 
-function getInviteUrl() {
+function getInviteUrl(source = 'copy') {
   if (!state.currentPool) return '';
   const baseUrl = window.location.origin;
   const code = state.currentPool.code;
   const poolName = encodeURIComponent(state.currentPool.name);
-  return `${baseUrl}/?join=${code}&pool=${poolName}`;
+  // Keep the existing ?join=&pool= structure (the app reads it on '/') and only
+  // APPEND analytics UTM params so organic WhatsApp/Telegram shares are tracked.
+  const utm = `utm_source=${source}&utm_medium=social&utm_campaign=user_invite`;
+  return `${baseUrl}/?join=${code}&pool=${poolName}&${utm}`;
 }
 
-function getShareMessage() {
+function getShareMessage(source = 'copy') {
   if (!state.currentPool) return '';
   const poolName = state.currentPool.name;
   const code = state.currentPool.code;
-  const url = getInviteUrl();
+  const url = getInviteUrl(source);
 
   return t('sharePool.shareText', { poolName, code, url });
 }
 
 function shareToWhatsApp() {
-  const message = getShareMessage();
+  const message = getShareMessage('whatsapp');
   const encoded = encodeURIComponent(message);
   const url = `https://wa.me/?text=${encoded}`;
   window.open(url, '_blank');
 }
 
 function shareToTelegram() {
-  const inviteUrl = getInviteUrl();
-  const message = getShareMessage();
+  const inviteUrl = getInviteUrl('telegram');
+  const message = getShareMessage('telegram');
   const url = `https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(message)}`;
   window.open(url, '_blank');
 }
@@ -6165,13 +6168,13 @@ function shareNative() {
     copyInviteLink();
     return;
   }
-  
-  const inviteUrl = getInviteUrl();
+
+  const inviteUrl = getInviteUrl('native');
   const poolName = state.currentPool?.name || t('dashboard.fallback.poolName');
 
   navigator.share({
     title: t('shareModal.joinTitle', { name: poolName }),
-    text: getShareMessage(),
+    text: getShareMessage('native'),
     url: inviteUrl
   }).catch(err => {
     if (err.name !== 'AbortError') {
@@ -6181,7 +6184,7 @@ function shareNative() {
 }
 
 async function copyInviteLink() {
-  const url = getInviteUrl();
+  const url = getInviteUrl('copy');
   
   try {
     await navigator.clipboard.writeText(url);
