@@ -1,4 +1,9 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/blog", "destination": "/guides/" },
+    { "source": "/blog/he/:slug", "destination": "/guides/he/:slug" },
+    { "source": "/blog/:slug", "destination": "/guides/:slug" }
+  ]
 }

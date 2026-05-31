@@ -100,3 +100,11 @@ ul.guide-list a { font-weight:700; font-size:17px; }
 
 footer.site { border-top:1px solid rgba(212,168,83,.2); padding:24px 0; color:var(--muted); font-size:14px; }
 footer.site a { color:var(--gold); text-decoration:none; }
+
+/* --- app/blog linking: header nav + full-width block CTA (v2.6.28) --- */
+header.site .wrap { display:flex; align-items:center; justify-content:space-between; gap:10px 16px; flex-wrap:wrap; }
+.site-nav { display:flex; gap:16px; align-items:center; }
+.site-nav a { color:var(--ink); text-decoration:none; font-weight:600; font-size:14.5px; opacity:.92; }
+.site-nav a:hover { color:var(--gold); opacity:1; }
+.cta-block { display:block; text-align:center; margin:22px 0; padding:16px 24px; border-radius:14px; font-size:17px; font-weight:800; text-decoration:none; color:#1a1205; background:linear-gradient(135deg,var(--gold),var(--gold-soft)); box-shadow:0 6px 24px rgba(212,168,83,.18); }
+.cta-block:hover { filter:brightness(1.04); }
