@@ -852,21 +852,44 @@ state.results = {
   lastLoaded: null
 };
 
+// Pillar 1: read the CDN match snapshot (Vercel edge) first so live-match spikes hit the
+// CDN instead of Postgres. Returns a matches array, or null to fall back to Supabase.
+let _matchesSnapCache = { at: 0, data: null };
+async function fetchMatchesFromCDN(maxAgeMs = 25000) {
+  try {
+    if (_matchesSnapCache.data && (Date.now() - _matchesSnapCache.at) < maxAgeMs) return _matchesSnapCache.data;
+    const res = await fetch('/public-data/matches.json', { cache: 'no-store' });
+    if (!res.ok) return null;
+    const j = await res.json();
+    if (!j || !Array.isArray(j.matches) || j.matches.length === 0) return null;
+    const m0 = j.matches[0];
+    if (!m0 || typeof m0.id === 'undefined' || typeof m0.status === 'undefined') return null; // shape sanity
+    _matchesSnapCache = { at: Date.now(), data: j.matches };
+    return j.matches;
+  } catch (_) { return null; }
+}
+
 async function loadResultsData() {
   if (!supabaseClient || !state.currentUser) return;
-  
+
   // Cache for 60 seconds to avoid spam
   if (state.results.lastLoaded && (Date.now() - state.results.lastLoaded) < 60000) {
     return;
   }
-  
+
   try {
-    // Load finished matches
-    const { data: matches } = await supabaseClient
-      .from('matches')
-      .select('*')
-      .eq('status', 'FINISHED');
-    
+    // Load finished matches — prefer the CDN snapshot, filter locally; fall back to the DB.
+    let matches = await fetchMatchesFromCDN();
+    if (matches) {
+      matches = matches.filter(m => m.status === 'FINISHED');
+    } else {
+      const { data } = await supabaseClient
+        .from('matches')
+        .select('*')
+        .eq('status', 'FINISHED');
+      matches = data || [];
+    }
+
     state.results.finishedMatches = matches || [];
     
     // Build per-team match list
@@ -5423,18 +5446,23 @@ async function loadMatches(silent = false) {
   matchesState.loading = true;
 
   try {
-    const { data: matches, error } = await supabaseClient
-      .from('matches')
-      .select('*')
-      .order('match_date', { ascending: true });
+    // Pillar 1: prefer the CDN snapshot (edge) over a live DB read during spikes.
+    let matches = await fetchMatchesFromCDN();
+    if (!matches) {
+      const { data, error } = await supabaseClient
+        .from('matches')
+        .select('*')
+        .order('match_date', { ascending: true });
 
-    if (error) {
-      console.error('Matches load error:', error);
-      if (!silent) showToast(t('matchesEx.loadError'), 'error');
-      return;
+      if (error) {
+        console.error('Matches load error:', error);
+        if (!silent) showToast(t('matchesEx.loadError'), 'error');
+        return;
+      }
+      matches = data || [];
     }
-    
-    matchesState.allMatches = matches || [];
+
+    matchesState.allMatches = matches;
     
     // Find most recent update
     if (matchesState.allMatches.length > 0) {

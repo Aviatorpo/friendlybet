@@ -5,7 +5,7 @@
 // Strategy: Cache-first for assets, Network-first for API
 // ============================================================
 
-const CACHE_VERSION = 'friendlybet-v2.6.33';
+const CACHE_VERSION = 'friendlybet-v2.6.34';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -108,6 +108,12 @@ self.addEventListener('fetch', event => {
 
   // Skip Vercel Analytics — let the browser hit it directly so beacons fire
   if (url.pathname.startsWith('/_vercel/')) {
+    return;
+  }
+
+  // Pillar 1: CDN data snapshots must always come fresh from the network/edge — never let
+  // the SW serve a stale matches/leaderboard JSON from its runtime cache.
+  if (url.pathname.startsWith('/public-data/')) {
     return;
   }
 
