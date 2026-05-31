@@ -242,18 +242,26 @@ function _fbCookieGet(k) {
   } catch (_) { return null; }
 }
 function fbMirrorSession() {
+  // Back the session up to BOTH sessionStorage (survives a reload within the same
+  // window even if the webview wiped localStorage) and a cookie (survives more cases).
   for (const k of _FB_SESSION_KEYS) {
     let v = null; try { v = localStorage.getItem(k); } catch (_) {}
-    if (v != null) _fbCookieSet(k, v);
+    if (v != null) {
+      _fbCookieSet(k, v);
+      try { sessionStorage.setItem(k, v); } catch (_) {}
+    }
   }
 }
 function fbHealSessionFromCookies() {
+  // Restore priority: localStorage (primary) -> sessionStorage (same-window survivor)
+  // -> cookie. Heals a localStorage that the in-app webview wiped mid-session.
   for (const k of _FB_SESSION_KEYS) {
     let v = null; try { v = localStorage.getItem(k); } catch (_) {}
-    if (v == null) {
-      const c = _fbCookieGet(k);
-      if (c != null) { try { localStorage.setItem(k, c); } catch (_) {} }
-    }
+    if (v != null) continue;
+    let backup = null;
+    try { backup = sessionStorage.getItem(k); } catch (_) {}
+    if (backup == null) backup = _fbCookieGet(k);
+    if (backup != null) { try { localStorage.setItem(k, backup); } catch (_) {} }
   }
 }
 
@@ -334,8 +342,9 @@ function loadLocalUser() {
 function clearLocalUser() {
   Object.values(CONFIG.STORAGE_KEYS).forEach(key => {
     localStorage.removeItem(key);
-    // Pillar 3 fix: also clear the cookie mirror, otherwise the boot-time heal would
-    // resurrect a session the user just left (the "you're already a member" bug).
+    // Pillar 3 fix: also clear the sessionStorage + cookie mirrors, otherwise the boot-time
+    // heal would resurrect a session the user just left (the "already a member" bug).
+    try { sessionStorage.removeItem(key); } catch (_) {}
     try { document.cookie = `${key}=; path=/; max-age=0; SameSite=Lax`; } catch (_) {}
   });
 }
