@@ -24,9 +24,19 @@ Create a private pool, share one link, predict the groups and the full knockout 
 
 <br/>
 
-**⭐ Enjoying FriendlyBet? [Star the repo](https://github.com/Aviatorpo/friendlybet) to help other football fans (and developers) find it.**
+**⭐ If you like privacy-first, open-source software, please [star the repo](https://github.com/Aviatorpo/friendlybet) — it genuinely helps other football fans and developers discover it.**
+
+[![GitHub Repo stars](https://img.shields.io/github/stars/Aviatorpo/friendlybet?style=social)](https://github.com/Aviatorpo/friendlybet/stargazers)
 
 ### 👉 [**Play now at friendlybet.live**](https://friendlybet.live) 👈
+
+<br/>
+
+<img src="./docs/screenshot-landing.png" width="270" alt="FriendlyBet landing page — 100% free, no ads, no signup World Cup 2026 prediction pool" />
+&nbsp;&nbsp;&nbsp;
+<img src="./docs/screenshot-invite.png" width="270" alt="FriendlyBet pool invite screen — join a World Cup 2026 bracket prediction pool with one tap" />
+
+<sub>The premium dark + gold PWA, running live. Pick the groups, build the bracket, climb the leaderboard.</sub>
 
 </div>
 
@@ -275,6 +285,23 @@ To point it at **your own** backend:
 
 The live data sync and scoring jobs (GitHub Actions) are **optional** for a fork and require their own API keys; a demo fork runs perfectly without them.
 
+### 🐳 Run with Docker
+
+A static site needs nothing more than a web server, so there is a tiny [`Dockerfile`](./Dockerfile) (nginx) for self-hosters:
+
+```bash
+# set your Supabase URL + anon key in config.js first, then:
+docker build -t friendlybet .
+docker run -p 8080:80 friendlybet
+# open http://localhost:8080
+```
+
+Prefer not to rebuild on config changes? Bind-mount your own config over the image:
+
+```bash
+docker run -p 8080:80 -v "$(pwd)/config.js:/usr/share/nginx/html/config.js:ro" friendlybet
+```
+
 ---
 
 ## 💻 Local development
@@ -346,6 +373,8 @@ Contributions are welcome. The codebase is intentionally simple (static files, n
 - Keep the no-build, framework-free philosophy.
 - Add i18n strings to both `he` and `en`.
 - Remember the three-place version bump when changing cached assets.
+
+And if you do not write code but want to help: **a ⭐ on the repo is the single best way to support an open-source, privacy-first project** and help others find it.
 
 ---
 
