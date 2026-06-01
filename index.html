@@ -580,6 +580,17 @@ function loadTablerFallback() {
           <span data-i18n="common.continue">המשך</span>
         </button>
 
+        <!-- v2.6.50: escape hatch — a returning user who already has an account may
+             have tapped 'join' by mistake. They don't need the pool code; they need
+             their personal recovery code / saved QR. Route them to the login screen. -->
+        <div class="join-existing-hint">
+          <span class="join-existing-q" data-i18n="join.alreadyMemberQ">כבר הצטרפתם בעבר ויש לכם חשבון?</span>
+          <button class="welcome-recovery-link" onclick="showScreen('recovery-login-screen')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><path d="M14 14h.01M20 14h.01M14 20h.01M20 20h.01M17 17h.01"></path></svg>
+            <span data-i18n="welcome.recoveryLogin">התחברו עם QR או קוד שחזור</span>
+          </button>
+        </div>
+
         <!-- Semantic context for crawlers/AI on this high-traffic join destination. Intentionally
              English for all locales, and VISUALLY HIDDEN (sr-only) so it isn't shown as out-of-place
              English on the RTL Hebrew screen — it stays in the DOM for crawlers only. -->
@@ -2779,7 +2790,7 @@ function loadTablerFallback() {
       <span>FriendlyBet</span>
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
-      <span class="menu-version">v2.6.49</span>
+      <span class="menu-version">v2.6.50</span>
     </div>
   </div>
 

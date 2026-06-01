@@ -270,6 +270,20 @@ body {
 .welcome-recovery-link i { font-size: 14px; }
 .welcome-recovery-link svg { width: 15px; height: 15px; flex-shrink: 0; }
 
+/* v2.6.50: 'already have an account?' escape hatch on the join (which pool) screen */
+.join-existing-hint {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+.join-existing-q {
+  display: block;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 10px;
+}
+
 /* v2.5.34: recovery code input - keep all 19 chars (16 + 3 hyphens) on
    one line on every viewport including narrow phones. Specificity
    .form-input.recovery-code-input beats the .form-input-large rule
