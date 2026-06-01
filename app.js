@@ -298,9 +298,15 @@ function _fbOpenInChrome() {
   } catch (_) {}
 }
 function maybeShowOpenInBrowserBanner() {
-  try { if (sessionStorage.getItem('fb_oib_dismissed') === '1') return; } catch (_) {}
-  const android = _fbIsAndroidInApp();
-  const ios = !android && _fbIsIOSInApp();
+  // ?oib=1 forces the banner in ANY browser so it can be previewed/tested (normally it
+  // only appears inside an in-app webview like WhatsApp/Instagram).
+  let forced = false;
+  try { forced = new URLSearchParams(location.search).get('oib') === '1'; } catch (_) {}
+  if (!forced) { try { if (sessionStorage.getItem('fb_oib_dismissed') === '1') return; } catch (_) {} }
+  const ua = navigator.userAgent || '';
+  const isIOSdevice = /(iPhone|iPad|iPod)/.test(ua);
+  const android = forced ? !isIOSdevice : _fbIsAndroidInApp();
+  const ios = forced ? isIOSdevice : (!android && _fbIsIOSInApp());
   if (!android && !ios) return;
   if (document.getElementById('fb-oib-banner')) return;
   const bar = document.createElement('div');
