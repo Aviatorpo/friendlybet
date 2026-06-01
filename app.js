@@ -152,7 +152,7 @@ async function loginViaRecoveryCode(rawInput, opts = {}) {
     const found = await _lookupUserByRecoveryCode(rawInput);
     if (!found || found.error) return false;
     _applyRecoveryLogin(found);
-    if (!opts.silent) showToast(t('recoveryLogin.success', { nickname: found.user.nickname }), 'success');
+    if (!opts.silent) showToast(t('recoveryLogin.success', { nickname: escapeHtml(found.user.nickname) }), 'success');
     await goToDashboard();
     return true;
   } catch (err) { console.error('loginViaRecoveryCode err:', err); return false; }
@@ -173,7 +173,7 @@ async function submitRecoveryLogin() {
       return;
     }
     _applyRecoveryLogin(found);
-    showToast(t('recoveryLogin.success', { nickname: found.user.nickname }), 'success');
+    showToast(t('recoveryLogin.success', { nickname: escapeHtml(found.user.nickname) }), 'success');
     await goToDashboard();
   } catch (err) {
     console.error('submitRecoveryLogin err:', err);
@@ -6292,13 +6292,18 @@ async function initApp() {
     if (loginFromUrl) {
       const ok = await loginViaRecoveryCode(loginFromUrl);
       if (ok) return;
-      // Expired/invalid/typo → recovery screen, prefilled, with a clear notice.
-      showScreen('recovery-login-screen');
-      const input = document.getElementById('recovery-login-input');
-      if (input) input.value = _formatRecoveryCodeForHash(loginFromUrl);
-      const errEl = document.getElementById('recovery-login-error');
-      if (errEl) { errEl.textContent = t('recoveryLogin.linkInvalid'); errEl.style.display = ''; }
-      return;
+      // Failed (expired/typo/garbage). If they already have a local session, do NOT strand
+      // them on a login screen — fall through to the normal route (their dashboard). Only
+      // show the recovery screen when there's no session to fall back to.
+      if (!(localUser && localUser.pool_id)) {
+        showScreen('recovery-login-screen');
+        const input = document.getElementById('recovery-login-input');
+        if (input) input.value = _formatRecoveryCodeForHash(loginFromUrl);
+        const errEl = document.getElementById('recovery-login-error');
+        if (errEl) { errEl.textContent = t('recoveryLogin.linkInvalid'); errEl.style.display = ''; }
+        return;
+      }
+      // else: fall through to the regular localUser routing below.
     }
     if (recoveryFromUrl && !(localUser && localUser.pool_id)) {
       showScreen('recovery-login-screen');
@@ -9548,11 +9553,19 @@ function showRecoveryCode(mode, recoveryCode, poolName) {
   rcState.qrDataUrl = null;
   const qrImg = document.getElementById('rc-qr-img');
   if (qrImg) { qrImg.removeAttribute('src'); }
+  const qrCard = document.getElementById('rc-qr-card');
+  if (qrCard) qrCard.style.display = '';
   _qrDataUrl(_rcLoginUrl(rcState.code)).then((durl) => {
     rcState.qrDataUrl = durl;
     const el = document.getElementById('rc-qr-img');
     if (el) el.src = durl;
-  }).catch((e) => console.warn('login QR render failed:', e));
+  }).catch((e) => {
+    // CDN lib unavailable (offline/blocked) — hide the card so there's no broken image;
+    // the code text + save buttons below still work as the floor.
+    console.warn('login QR render failed:', e);
+    const card = document.getElementById('rc-qr-card');
+    if (card) card.style.display = 'none';
+  });
 
   showScreen('screen-recovery-code');
 }
