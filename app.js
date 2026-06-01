@@ -727,6 +727,15 @@ async function completeRegistration() {
 
     if (error) {
       console.error('User creation error:', error);
+      // If a DB unique (pool_id, nickname) constraint is in place, two people who
+      // tapped the same WhatsApp link and picked the same nickname at the same moment
+      // can race past the app-level check. The loser's INSERT fails with 23505 — send
+      // them back to pick another name instead of a scary generic error.
+      if (error.code === '23505' || /duplicate key|users_pool_nickname_unique/i.test(error.message || '')) {
+        showToast(t('nickname.errorTaken'), 'error');
+        showScreen('choose-nickname-screen');
+        return;
+      }
       showToast(t('errors.creatingUserFail', { msg: error.message }), 'error');
       return;
     }
