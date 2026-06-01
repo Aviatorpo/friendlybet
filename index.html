@@ -2777,7 +2777,7 @@ function loadTablerFallback() {
       <span>FriendlyBet</span>
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
-      <span class="menu-version">v2.6.47</span>
+      <span class="menu-version">v2.6.48</span>
     </div>
   </div>
 
@@ -3196,13 +3196,13 @@ function loadTablerFallback() {
         <img id="rc-qr-img" alt="login QR" />
       </div>
       <div class="rc-code-text" id="rc-code-text">XXXX-XXXX-XXXX-XXXX</div>
-      <div class="rc-cred-hint" data-i18n="recovery.qr.scanHint">סרקו את ה-QR כדי להתחבר מיד, או הקלידו את הקוד ידנית</div>
+      <div class="rc-cred-hint" data-i18n="recovery.qr.scanHint">אם תתנתקו בעתיד — תוכלו לסרוק את ה-QR או להקליד את הקוד כדי לחזור להימור.</div>
     </div>
 
-    <!-- One short, clear instruction line. -->
+    <!-- One short, clear instruction line — emphasises that saving is the key step. -->
     <div class="rc-warning-box rc-warning-compact">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-      <div><strong data-i18n="recovery.warning.title">זה המפתח שלכם.</strong> <span data-i18n="recovery.warning.text">שמרו אותו ואל תשתפו — זו הדרך לחזור לחשבון.</span></div>
+      <div><strong data-i18n="recovery.warning.title">הכי חשוב: שמרו כתמונה</strong> <span data-i18n="recovery.warning.text">זו הדרך היחידה לחזור לחשבון אם תתנתקו. שמרו בפרטיות, אל תשתפו.</span></div>
     </div>
 
     <!-- v2.5.37: only shown when mode === 'joined' (a regular member joining
@@ -3219,7 +3219,7 @@ function loadTablerFallback() {
     <!-- v2.5.10: two-up action row - Screenshot + Email myself only.
          Download Text File option removed at user request. -->
     <div class="rc-actions-primary rc-actions-primary-two">
-      <button class="rc-action-btn" id="rc-btn-screenshot" onclick="rcScreenshot()">
+      <button class="rc-action-btn rc-action-primary" id="rc-btn-screenshot" onclick="rcScreenshot()">
         <svg class="rc-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         <span class="rc-action-label" data-i18n="recovery.button.screenshot">שמור כתמונה</span>
       </button>

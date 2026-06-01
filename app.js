@@ -9884,51 +9884,69 @@ function _ensureHtml2Canvas() {
 // Inline styles only - html2canvas reads computed styles from the live DOM,
 // so a self-contained element with all rules inlined renders predictably.
 function _rcBuildCardElement() {
-  const card = document.createElement('div');
-  card.style.cssText = [
+  // Outer wrapper: a SOLID dark background that fills the entire exported image,
+  // so the rounded card's corners never render as transparent (white) edges.
+  const wrap = document.createElement('div');
+  wrap.style.cssText = [
     'position: fixed',
     'left: -9999px',
     'top: 0',
-    'width: 600px',
-    'padding: 48px 44px',
-    'background: linear-gradient(135deg, #0a0a08 0%, #141310 60%, #243a5a 100%)',
+    'width: 640px',
+    'padding: 30px',
+    'box-sizing: border-box',
+    'background: #07080c'
+  ].join(';');
+
+  const card = document.createElement('div');
+  card.style.cssText = [
+    'width: 100%',
+    'padding: 40px 40px 36px',
+    'background: linear-gradient(135deg, #0f0e0b 0%, #16140f 58%, #1d2b44 100%)',
     'color: #fff',
     'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    'border-radius: 28px',
-    'box-sizing: border-box'
+    'border: 1px solid rgba(217,180,106,0.35)',
+    'border-radius: 24px',
+    'box-sizing: border-box',
+    'text-align: center'
   ].join(';');
+
   const code = rcFormatCode(rcState.code);
   const pool = rcState.poolName || '—';
+  // The QR slot is left empty here — html2canvas renders the white tile but does
+  // NOT rasterise <img> data-URIs or live <canvas> content (both came out blank).
+  // rcScreenshot measures this slot and composites the QR bitmap straight onto the
+  // rendered output canvas afterwards.
   const qr = rcState.qrDataUrl
-    ? `<div style="margin-top: 28px; text-align:center;">
+    ? `<div style="margin: 0 auto;">
          <div style="display:inline-block; background:#fff; padding:14px; border-radius:16px;">
-           <img src="${rcState.qrDataUrl}" alt="login QR" style="width:200px; height:200px; display:block;" />
+           <div id="rc-export-qr" style="width:220px; height:220px; display:block;"></div>
          </div>
-         <div style="margin-top:10px; font-size:12px; color:rgba(255,255,255,0.6);">${t('recovery.qr.scanToLogin')}</div>
+         <div style="margin-top:12px; font-size:13px; color:rgba(255,255,255,0.62);">${t('recovery.qr.scanToLogin')}</div>
        </div>`
     : '';
   card.innerHTML = `
-    <div style="font-size: 30px; font-weight: 800; color: #d9b46a; letter-spacing: 0.5px;">
+    <div style="font-size: 28px; font-weight: 800; color: #d9b46a; letter-spacing: 0.5px; margin-bottom: 26px;">
       ⚽ FriendlyBet
     </div>
     ${qr}
-    <div style="margin-top: 34px; font-size: 12px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 2px;">
+    <div style="margin-top: 30px; font-size: 12px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 2px;">
       ${t('recovery.screenshot.codeLabel')}
     </div>
-    <div style="font-family: 'SFMono-Regular', Consolas, monospace; font-size: 36px; font-weight: 700; letter-spacing: 3px; color: #d9b46a; margin-top: 10px; word-break: break-all;">
+    <div style="font-family: 'SFMono-Regular', Consolas, monospace; font-size: 34px; font-weight: 700; letter-spacing: 3px; color: #d9b46a; margin-top: 10px; word-break: break-all;">
       ${code}
     </div>
-    <div style="margin-top: 28px; font-size: 12px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 2px;">
+    <div style="margin-top: 26px; font-size: 12px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 2px;">
       Pool
     </div>
     <div style="font-size: 22px; font-weight: 600; margin-top: 6px;">
       ${pool}
     </div>
-    <div style="margin-top: 36px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.45);">
+    <div style="margin-top: 30px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: rgba(255,255,255,0.45);">
       ${t('recovery.txt.loginAt')} friendlybet.live
     </div>
   `;
-  return card;
+  wrap.appendChild(card);
+  return wrap;
 }
 
 function _fbScreenshotInstructionsHtml(device) {
@@ -9976,18 +9994,47 @@ async function rcScreenshot() {
     if (!rcState.qrDataUrl) {
       try { rcState.qrDataUrl = await _qrDataUrl(_rcLoginUrl(rcState.code)); } catch (_) {}
     }
+    const SCALE = 2;
     const card = _rcBuildCardElement();
     document.body.appendChild(card);
+    // Measure the QR slot's position within the card (CSS px, relative to the card),
+    // so we can composite the QR bitmap onto the rendered canvas at the exact spot.
+    let qrRect = null;
+    const qrSlot = card.querySelector('#rc-export-qr');
+    if (qrSlot && rcState.qrDataUrl) {
+      const cardRect = card.getBoundingClientRect();
+      const slotRect = qrSlot.getBoundingClientRect();
+      qrRect = { x: slotRect.left - cardRect.left, y: slotRect.top - cardRect.top, w: slotRect.width, h: slotRect.height };
+    }
     let canvas;
     try {
       canvas = await window.html2canvas(card, {
-        backgroundColor: null,
-        scale: 2,
+        backgroundColor: '#07080c',
+        scale: SCALE,
         logging: false,
         useCORS: true
       });
     } finally {
       if (card.parentNode) card.parentNode.removeChild(card);
+    }
+    // Composite the QR straight onto the output canvas (html2canvas renders neither
+    // <img> data-URIs nor live <canvas> reliably, so we paint it ourselves).
+    if (qrRect && rcState.qrDataUrl) {
+      await new Promise((resolve) => {
+        const im = new Image();
+        im.onload = () => {
+          try {
+            const cx = canvas.getContext('2d');
+            cx.setTransform(1, 0, 0, 1, 0, 0); // clear any residual transform html2canvas left
+            cx.imageSmoothingEnabled = false;  // keep QR modules crisp
+            cx.drawImage(im, qrRect.x * SCALE, qrRect.y * SCALE, qrRect.w * SCALE, qrRect.h * SCALE);
+          } catch (_) {}
+          resolve();
+        };
+        im.onerror = resolve;
+        setTimeout(resolve, 1500);
+        im.src = rcState.qrDataUrl;
+      });
     }
 
     await new Promise((resolve) => {

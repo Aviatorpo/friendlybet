@@ -7479,6 +7479,16 @@ body.ltr .bet-cta-arrow {
 }
 .rc-action-icon { font-size: 18px; }
 svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
+/* v2.6.48: the "Save as image" button is the most important step — gold-emphasised. */
+.rc-action-btn.rc-action-primary {
+  background: linear-gradient(135deg, rgba(217,180,106,0.24) 0%, rgba(217,180,106,0.10) 100%);
+  border-color: rgba(217,180,106,0.6);
+  color: #f3dca0;
+}
+.rc-action-btn.rc-action-primary:hover {
+  background: linear-gradient(135deg, rgba(217,180,106,0.32) 0%, rgba(217,180,106,0.16) 100%);
+  border-color: rgba(217,180,106,0.85);
+}
 .rc-action-btn-secondary {
   background: transparent;
   border: 1px dashed rgba(255,255,255,0.18);
