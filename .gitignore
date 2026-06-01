@@ -57,3 +57,4 @@ player-photos-multi-run.log
 
 # stray local promo render (not for the public repo)
 friendlybet_promo.mp4
+.playwright-mcp/

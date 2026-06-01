@@ -604,6 +604,13 @@ function loadTablerFallback() {
         <h2 class="form-title" data-i18n="recoveryLogin.heading">הזן את הקוד</h2>
         <p class="form-subtitle" data-i18n="recoveryLogin.subtitle">הקוד בן 16 תווים שקיבלת בעת ההצטרפות או יצירת ההימור</p>
 
+        <!-- Magical path: pick your saved login-QR image -> auto-login, no typing. -->
+        <button class="btn-primary btn-large" onclick="rcLoginPickQr()" style="margin-bottom:6px;">
+          <i class="ti ti-qrcode"></i>
+          <span data-i18n="recoveryLogin.qrButton">התחבר עם ה-QR שלי</span>
+        </button>
+        <div class="rc-login-or" data-i18n="recoveryLogin.or" style="text-align:center;color:rgba(255,255,255,0.42);font-size:12px;margin:10px 0 12px;">או הזן את הקוד ידנית</div>
+
         <div class="form-group">
           <label class="form-label" data-i18n="recoveryLogin.codeLabel">קוד שחזור</label>
           <input type="text" id="recovery-login-input" class="form-input form-input-large recovery-code-input" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" autocomplete="off" autocapitalize="characters" inputmode="text" oninput="recoveryLoginInputFormat(event)" onpaste="setTimeout(() => recoveryLoginInputFormat({target: this}), 0)" spellcheck="false">
@@ -611,7 +618,7 @@ function loadTablerFallback() {
 
         <div id="recovery-login-error" class="error-message" style="display: none;"></div>
 
-        <button class="btn-primary btn-large" onclick="submitRecoveryLogin()">
+        <button class="btn-secondary btn-large" onclick="submitRecoveryLogin()">
           <i class="ti ti-login"></i>
           <span data-i18n="recoveryLogin.submit">התחבר</span>
         </button>
@@ -2770,7 +2777,7 @@ function loadTablerFallback() {
       <span>FriendlyBet</span>
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
-      <span class="menu-version">v2.6.35</span>
+      <span class="menu-version">v2.6.45</span>
     </div>
   </div>
 
@@ -3183,6 +3190,15 @@ function loadTablerFallback() {
     <div class="rc-divider"></div>
 
     <div class="rc-code-label"><i class="ti ti-key gold"></i> <span data-i18n="recovery.codeLabel">קוד השחזור האישי שלך</span></div>
+
+    <!-- Scannable login QR (hero). Encodes ?login=CODE — scanning it (or picking the saved
+         image on the login screen) logs the user in automatically, from any device. -->
+    <div class="rc-qr-card" id="rc-qr-card" style="display:flex;flex-direction:column;align-items:center;gap:10px;margin:6px 0 14px;">
+      <div style="background:#fff;padding:12px;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,0.35);">
+        <img id="rc-qr-img" alt="login QR" style="width:172px;height:172px;display:block;" />
+      </div>
+      <div class="rc-qr-hint" data-i18n="recovery.qr.scanHint" style="font-size:12.5px;color:rgba(255,255,255,0.6);text-align:center;line-height:1.4;">סרוק כדי להתחבר אוטומטית מכל מכשיר</div>
+    </div>
 
     <div class="rc-code-card" id="rc-code-card">
       <div class="rc-code-text" id="rc-code-text">XXXX-XXXX-XXXX-XXXX</div>

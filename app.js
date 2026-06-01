@@ -110,82 +110,171 @@ function _formatRecoveryCodeForHash(rawInput) {
   return m ? m.join('-') : chars;
 }
 
+// Shared recovery-code lookup (NO UI). Returns {user, pool, hyphenated} on success,
+// or {error:'short'|'server'|'notFound'|'noPool'} on a handled failure. Throws on a
+// real network/db error. Reused by manual login, ?login= auto-login, and QR decode.
+async function _lookupUserByRecoveryCode(rawInput) {
+  const bareChars = String(rawInput || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  if (bareChars.length < 12) return { error: 'short' };
+  if (!supabaseClient) { initSupabase(); return { error: 'server' }; }
+  // Try the canonical hyphenated format first, then bare-chars (stored hashes are
+  // normally of the hyphenated string).
+  const hyphenated = _formatRecoveryCodeForHash(bareChars);
+  for (const candidate of [hyphenated, bareChars]) {
+    const hash = await hashRecoveryCode(candidate);
+    const { data: users, error: userErr } = await supabaseClient
+      .from('users').select('*').eq('recovery_code_hash', hash).limit(1);
+    if (userErr) throw userErr;
+    if (users && users.length > 0) {
+      const user = users[0];
+      const { data: pool, error: poolErr } = await supabaseClient
+        .from('pools').select('*').eq('id', user.pool_id).maybeSingle();
+      if (poolErr) throw poolErr;
+      if (!pool) return { error: 'noPool' };
+      return { user, pool, hyphenated };
+    }
+  }
+  return { error: 'notFound' };
+}
+
+function _applyRecoveryLogin(found) {
+  state.currentUser = found.user;
+  state.currentPool = found.pool;
+  saveLocalUser(found.user);
+  try { localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, found.hyphenated); } catch (_) {}
+  if (typeof fbMirrorSession === 'function') fbMirrorSession();
+}
+
+// Auto-login from a recovery code (QR scan / ?login= / "Recover with QR" picker).
+// Returns true on success. opts.silent suppresses the success toast.
+async function loginViaRecoveryCode(rawInput, opts = {}) {
+  try {
+    const found = await _lookupUserByRecoveryCode(rawInput);
+    if (!found || found.error) return false;
+    _applyRecoveryLogin(found);
+    if (!opts.silent) showToast(t('recoveryLogin.success', { nickname: found.user.nickname }), 'success');
+    await goToDashboard();
+    return true;
+  } catch (err) { console.error('loginViaRecoveryCode err:', err); return false; }
+}
+window.loginViaRecoveryCode = loginViaRecoveryCode;
+
 async function submitRecoveryLogin() {
   const input = document.getElementById('recovery-login-input');
   const errEl = document.getElementById('recovery-login-error');
   if (errEl) errEl.style.display = 'none';
   if (!input) return;
-
-  const bareChars = String(input.value || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-  if (bareChars.length < 12) {
-    if (errEl) {
-      errEl.textContent = t('recoveryLogin.errorShort');
-      errEl.style.display = '';
-    }
-    return;
-  }
-
-  if (!supabaseClient) {
-    initSupabase();
-    if (errEl) {
-      errEl.textContent = t('errors.serverConnecting');
-      errEl.style.display = '';
-    }
-    return;
-  }
-
   try {
-    // Try the canonical hyphenated format first, then bare-chars as a
-    // fallback. Stored hashes are normally of the hyphenated string.
-    const hyphenated = _formatRecoveryCodeForHash(bareChars);
-    const candidates = [hyphenated, bareChars];
-
-    let user = null;
-    for (const candidate of candidates) {
-      const hash = await hashRecoveryCode(candidate);
-      const { data: users, error: userErr } = await supabaseClient
-        .from('users').select('*').eq('recovery_code_hash', hash).limit(1);
-      if (userErr) throw userErr;
-      if (users && users.length > 0) {
-        user = users[0];
-        break;
-      }
-    }
-
-    if (!user) {
-      if (errEl) {
-        errEl.textContent = t('recoveryLogin.errorNotFound');
-        errEl.style.display = '';
-      }
+    const found = await _lookupUserByRecoveryCode(input.value);
+    if (!found || found.error) {
+      const key = { short: 'recoveryLogin.errorShort', server: 'errors.serverConnecting',
+        notFound: 'recoveryLogin.errorNotFound', noPool: 'recoveryLogin.errorNoPool' }[found && found.error] || 'errors.unexpected';
+      if (errEl) { errEl.textContent = t(key); errEl.style.display = ''; }
       return;
     }
-    const { data: pool, error: poolErr } = await supabaseClient
-      .from('pools').select('*').eq('id', user.pool_id).maybeSingle();
-    if (poolErr) throw poolErr;
-    if (!pool) {
-      if (errEl) {
-        errEl.textContent = t('recoveryLogin.errorNoPool');
-        errEl.style.display = '';
-      }
-      return;
-    }
-
-    state.currentUser = user;
-    state.currentPool = pool;
-    saveLocalUser(user);
-    localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, hyphenated);
-
-    showToast(t('recoveryLogin.success', { nickname: user.nickname }), 'success');
+    _applyRecoveryLogin(found);
+    showToast(t('recoveryLogin.success', { nickname: found.user.nickname }), 'success');
     await goToDashboard();
   } catch (err) {
     console.error('submitRecoveryLogin err:', err);
-    if (errEl) {
-      errEl.textContent = t('errors.unexpected');
-      errEl.style.display = '';
-    }
+    if (errEl) { errEl.textContent = t('errors.unexpected'); errEl.style.display = ''; }
   }
 }
 window.submitRecoveryLogin = submitRecoveryLogin;
+
+// ============================================================
+// QR login: the recovery code as a scannable login QR. Scanning the QR (or picking
+// the saved image) lands on ?login=CODE and auto-logs the user in. SECURITY: the QR
+// encodes the full credential — it is treated/labelled as a private key.
+// ============================================================
+function _rcLoginUrl(code) {
+  const bare = String(code || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  return `${location.origin}/?login=${bare}`;
+}
+function _ensureQRCode() {
+  if (window.qrcode) return Promise.resolve();
+  if (window._qrPromise) return window._qrPromise;
+  window._qrPromise = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
+    s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+  return window._qrPromise;
+}
+async function _qrDataUrl(text) {
+  await _ensureQRCode();
+  const qr = window.qrcode(0, 'M');   // type 0 = auto-fit, error-correction M
+  qr.addData(text);
+  qr.make();
+  return qr.createDataURL(6, 12);     // (cellSize, margin) -> image data URL
+}
+function _ensureJsQR() {
+  if (window.jsQR) return Promise.resolve();
+  if (window._jsqrPromise) return window._jsqrPromise;
+  window._jsqrPromise = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';
+    s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+  return window._jsqrPromise;
+}
+// Decode a QR from a picked image File -> the embedded text (or null).
+async function _decodeQrFromFile(file) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+    const W = Math.min(img.naturalWidth || 1000, 1600);
+    const H = Math.round((img.naturalHeight || W) * (W / (img.naturalWidth || W)));
+    const canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, W, H);
+    if (window.BarcodeDetector) {
+      try {
+        const codes = await new window.BarcodeDetector({ formats: ['qr_code'] }).detect(canvas);
+        if (codes && codes.length) return codes[0].rawValue;
+      } catch (_) {}
+    }
+    await _ensureJsQR();
+    const data = ctx.getImageData(0, 0, W, H);
+    const r = window.jsQR(data.data, W, H);
+    return r ? r.data : null;
+  } finally { setTimeout(() => URL.revokeObjectURL(url), 1500); }
+}
+// Pull the recovery code out of a decoded QR value (a ?login=/?recovery= URL or a bare code).
+function _codeFromQrValue(val) {
+  if (!val) return null;
+  const m = String(val).match(/[?&](?:login|recovery)=([A-Za-z0-9\-]+)/i);
+  if (m) return m[1];
+  const bare = String(val).replace(/[^A-Za-z0-9]/g, '');
+  return bare.length >= 12 ? bare : null;
+}
+// "Recover with QR" on the login screen: open the photo picker, decode, log in.
+function rcLoginPickQr() {
+  let inp = document.getElementById('rc-login-qr-file');
+  if (!inp) {
+    inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'image/*'; inp.id = 'rc-login-qr-file'; inp.style.display = 'none';
+    inp.addEventListener('change', async () => {
+      const f = inp.files && inp.files[0]; inp.value = '';
+      const errEl = document.getElementById('recovery-login-error');
+      if (errEl) errEl.style.display = 'none';
+      if (!f) return;
+      try {
+        const code = _codeFromQrValue(await _decodeQrFromFile(f));
+        if (!code) { if (errEl) { errEl.textContent = t('recoveryLogin.qrNotFound'); errEl.style.display = ''; } return; }
+        const ok = await loginViaRecoveryCode(code);
+        if (!ok && errEl) { errEl.textContent = t('recoveryLogin.errorNotFound'); errEl.style.display = ''; }
+      } catch (e) {
+        console.error('rcLoginPickQr err:', e);
+        if (errEl) { errEl.textContent = t('recoveryLogin.qrNotFound'); errEl.style.display = ''; }
+      }
+    });
+    document.body.appendChild(inp);
+  }
+  inp.click();
+}
+window.rcLoginPickQr = rcLoginPickQr;
 
 // v2.5.29: live auto-format the recovery code input as the user types
 // (and on paste) so it always reads XXXX-XXXX-XXXX-XXXX. The underlying
@@ -6152,6 +6241,18 @@ async function initApp() {
   // user only has to confirm. If they're already signed in, this falls
   // through to the regular auto-dashboard route below.
   const recoveryFromUrl = urlParams.get('recovery');
+  // ?login=CODE — the QR auto-login link: log in immediately, no typing.
+  const loginFromUrl = urlParams.get('login');
+
+  // Security: strip the credential params from the visible URL immediately (we've already
+  // captured their values) so the code does not linger in history or get shared.
+  if (loginFromUrl || recoveryFromUrl) {
+    try {
+      const u = new URL(window.location.href);
+      u.searchParams.delete('login'); u.searchParams.delete('recovery');
+      window.history.replaceState({}, '', u.pathname + (u.search || '') + u.hash);
+    } catch (_) {}
+  }
 
   // Check if user is logged in
   const localUser = loadLocalUser();
@@ -6186,6 +6287,19 @@ async function initApp() {
   // bail out to home-screen instead of leaving the splash up forever
   // or showing a blank dashboard with no error indication.
   try {
+    // ?login=CODE (scanned QR) — auto-login immediately. Explicit intent, so it takes
+    // precedence even over an existing session.
+    if (loginFromUrl) {
+      const ok = await loginViaRecoveryCode(loginFromUrl);
+      if (ok) return;
+      // Expired/invalid/typo → recovery screen, prefilled, with a clear notice.
+      showScreen('recovery-login-screen');
+      const input = document.getElementById('recovery-login-input');
+      if (input) input.value = _formatRecoveryCodeForHash(loginFromUrl);
+      const errEl = document.getElementById('recovery-login-error');
+      if (errEl) { errEl.textContent = t('recoveryLogin.linkInvalid'); errEl.style.display = ''; }
+      return;
+    }
     if (recoveryFromUrl && !(localUser && localUser.pool_id)) {
       showScreen('recovery-login-screen');
       const input = document.getElementById('recovery-login-input');
@@ -9429,6 +9543,17 @@ function showRecoveryCode(mode, recoveryCode, poolName) {
   const adminHelpNote = document.getElementById('rc-admin-help-note');
   if (adminHelpNote) adminHelpNote.style.display = (mode === 'joined') ? '' : 'none';
 
+  // Render the scannable login QR (encodes ?login=CODE). Async: fill the on-screen img
+  // and cache the data URL so the downloadable image can embed it too.
+  rcState.qrDataUrl = null;
+  const qrImg = document.getElementById('rc-qr-img');
+  if (qrImg) { qrImg.removeAttribute('src'); }
+  _qrDataUrl(_rcLoginUrl(rcState.code)).then((durl) => {
+    rcState.qrDataUrl = durl;
+    const el = document.getElementById('rc-qr-img');
+    if (el) el.src = durl;
+  }).catch((e) => console.warn('login QR render failed:', e));
+
   showScreen('screen-recovery-code');
 }
 
@@ -9761,10 +9886,19 @@ function _rcBuildCardElement() {
   ].join(';');
   const code = rcFormatCode(rcState.code);
   const pool = rcState.poolName || '—';
+  const qr = rcState.qrDataUrl
+    ? `<div style="margin-top: 28px; text-align:center;">
+         <div style="display:inline-block; background:#fff; padding:14px; border-radius:16px;">
+           <img src="${rcState.qrDataUrl}" alt="login QR" style="width:200px; height:200px; display:block;" />
+         </div>
+         <div style="margin-top:10px; font-size:12px; color:rgba(255,255,255,0.6);">${t('recovery.qr.scanToLogin')}</div>
+       </div>`
+    : '';
   card.innerHTML = `
     <div style="font-size: 30px; font-weight: 800; color: #d9b46a; letter-spacing: 0.5px;">
       ⚽ FriendlyBet
     </div>
+    ${qr}
     <div style="margin-top: 34px; font-size: 12px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 2px;">
       ${t('recovery.screenshot.codeLabel')}
     </div>
@@ -9825,6 +9959,10 @@ async function rcScreenshot() {
   const btn = document.getElementById('rc-btn-screenshot');
   try {
     await _ensureHtml2Canvas();
+    // Make sure the login QR is ready so the saved image includes it.
+    if (!rcState.qrDataUrl) {
+      try { rcState.qrDataUrl = await _qrDataUrl(_rcLoginUrl(rcState.code)); } catch (_) {}
+    }
     const card = _rcBuildCardElement();
     document.body.appendChild(card);
     let canvas;
