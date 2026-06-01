@@ -9495,7 +9495,7 @@ function showRecoveryCode(mode, recoveryCode, poolName) {
   const titleEl = document.getElementById('rc-hero-title');
   const subEl = document.getElementById('rc-hero-subtitle');
   const continueBtn = document.getElementById('rc-continue-btn');
-  const codeCard = document.getElementById('rc-code-card');
+  const codeCard = document.getElementById('rc-cred-card');
 
   if (mode === 'view') {
     titleEl.textContent = t('recovery.viewMode.title');
@@ -9794,8 +9794,8 @@ function rcContinue() {
 function rcCloseModal() {
   const modal = document.getElementById('rc-warning-modal');
   if (modal) modal.style.display = 'none';
-  // Focus the code card so it's visually obvious where to act
-  const card = document.getElementById('rc-code-card');
+  // Focus the credential card so it's visually obvious where to act
+  const card = document.getElementById('rc-cred-card');
   if (card) {
     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
     card.style.animation = 'none';
