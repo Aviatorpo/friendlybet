@@ -97,9 +97,10 @@
 #fb-landing .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;max-width:540px;margin-left:auto;margin-right:auto;opacity:0;animation:lpRise .8s var(--ease) .48s forwards}
 #fb-landing .hero-cta .btn{flex:1 1 200px}
 #fb-landing .recovery{margin:22px 0 0;display:inline-flex;align-items:center;gap:8px;color:var(--muted);font:inherit;
-  font-size:14.5px;font-weight:600;background:none;border:0;cursor:pointer;transition:color .2s;
+  font-size:14px;font-weight:600;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.13);
+  border-radius:999px;padding:9px 18px;cursor:pointer;transition:all .2s;
   opacity:0;animation:lpRise .8s var(--ease) .56s forwards}
-#fb-landing .recovery:hover{color:var(--gold-lt)}
+#fb-landing .recovery:hover{color:var(--gold-lt);border-color:rgba(217,180,106,.5);background:rgba(217,180,106,.08)}
 #fb-landing .trust{margin-top:34px;display:inline-flex;align-items:center;gap:9px;color:var(--muted-2);font-size:13.5px;font-weight:500;
   opacity:0;animation:lpRise .8s var(--ease) .64s forwards}
 #fb-landing .trust a{color:var(--muted);border-bottom:1px solid rgba(255,255,255,.18)}

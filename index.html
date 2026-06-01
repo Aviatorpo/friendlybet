@@ -160,9 +160,9 @@ function loadTablerFallback() {
       </div>
       <div class="hero-cta">
         <button class="btn btn-gold" onclick="fbEnterApp('create')">🏆 פתחו הימור</button>
-        <button class="btn btn-ghost" onclick="fbEnterApp('join')">👥 הצטרפו עם קוד</button>
+        <button class="btn btn-ghost" onclick="fbEnterApp('join')">👥 הצטרפו עם קוד הימור</button>
       </div>
-      <div><button class="recovery" onclick="fbEnterApp('recovery')">🔑 יש לי קוד שחזור</button></div>
+      <div><button class="recovery" onclick="fbEnterApp('recovery')">🔑 התחברו עם QR או קוד שחזור</button></div>
       <div class="trust">🛡️ לא נאסף שום מידע אישי · <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">הקוד פתוח ב-GitHub</a></div>
     </section>
     <section class="section" data-sec="how">
@@ -293,7 +293,7 @@ function loadTablerFallback() {
           <p>מקימים הימור בפחות מדקה ושולחים לחברים קישור אחד. המונדיאל פשוט יותר כיף כשיש על מה להתווכח ועל מה להשוויץ.</p>
           <div class="hero-cta" style="animation:none;opacity:1">
             <button class="btn btn-gold" onclick="fbEnterApp('create')">🏆 פתחו הימור</button>
-            <button class="btn btn-ghost" onclick="fbEnterApp('join')">👥 הצטרפו עם קוד</button>
+            <button class="btn btn-ghost" onclick="fbEnterApp('join')">👥 הצטרפו עם קוד הימור</button>
           </div>
         </div>
       </div>
@@ -345,7 +345,7 @@ function loadTablerFallback() {
         <button class="btn btn-gold" onclick="fbEnterApp('create')">🏆 Create a pool</button>
         <button class="btn btn-ghost" onclick="fbEnterApp('join')">👥 Join with a pool code</button>
       </div>
-      <div><button class="recovery" onclick="fbEnterApp('recovery')">🔑 I have a personal recovery code</button></div>
+      <div><button class="recovery" onclick="fbEnterApp('recovery')">🔑 Log in with your QR or recovery code</button></div>
       <div class="trust">🛡️ No personal data collected · <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">View the source on GitHub</a></div>
     </section>
     <section class="section" data-sec="how">
@@ -541,8 +541,8 @@ function loadTablerFallback() {
       <!-- v2.5.16: tertiary recovery login - low-visual-weight link
            positioned below the two primary CTAs. -->
       <button class="welcome-recovery-link" onclick="showScreen('recovery-login-screen')">
-        <i class="ti ti-key"></i>
-        <span data-i18n="welcome.recoveryLogin">יש לי קוד שחזור</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><path d="M14 14h.01M20 14h.01M14 20h.01M20 20h.01M17 17h.01"></path></svg>
+        <span data-i18n="welcome.recoveryLogin">התחברו עם QR או קוד שחזור</span>
       </button>
 
       <div class="info-banner">
@@ -594,19 +594,21 @@ function loadTablerFallback() {
       <button class="btn-icon" onclick="showScreen('home-screen')">
         <i class="ti ti-arrow-right"></i>
       </button>
-      <span class="topbar-title" data-i18n="recoveryLogin.title">התחבר עם קוד שחזור</span>
+      <span class="topbar-title" data-i18n="recoveryLogin.title">התחברות לחשבון</span>
       <div style="width: 24px;"></div>
     </div>
 
     <div class="container">
       <div class="form-section">
-        <div class="form-icon">🔑</div>
-        <h2 class="form-title" data-i18n="recoveryLogin.heading">הזן את הקוד</h2>
-        <p class="form-subtitle" data-i18n="recoveryLogin.subtitle">הקוד בן 16 תווים שקיבלת בעת ההצטרפות או יצירת ההימור</p>
+        <div class="form-icon rc-login-qr-hero">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><path d="M14 14h.01M20 14h.01M14 20h.01M20 20h.01M17 17h.01"></path></svg>
+        </div>
+        <h2 class="form-title" data-i18n="recoveryLogin.heading">סרקו QR או הזינו קוד</h2>
+        <p class="form-subtitle" data-i18n="recoveryLogin.subtitle">בחרו את תמונת ה-QR ששמרתם — או הקלידו את קוד השחזור בן 16 התווים.</p>
 
         <!-- Magical path: pick your saved login-QR image -> auto-login, no typing. -->
         <button class="btn-primary btn-large" onclick="rcLoginPickQr()" style="margin-bottom:6px;">
-          <i class="ti ti-qrcode"></i>
+          <svg style="width:20px;height:20px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><path d="M14 14h.01M20 14h.01M14 20h.01M20 20h.01M17 17h.01"></path></svg>
           <span data-i18n="recoveryLogin.qrButton">התחבר עם ה-QR שלי</span>
         </button>
         <div class="rc-login-or" data-i18n="recoveryLogin.or" style="text-align:center;color:rgba(255,255,255,0.42);font-size:12px;margin:10px 0 12px;">או הזן את הקוד ידנית</div>
@@ -2777,7 +2779,7 @@ function loadTablerFallback() {
       <span>FriendlyBet</span>
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
-      <span class="menu-version">v2.6.48</span>
+      <span class="menu-version">v2.6.49</span>
     </div>
   </div>
 
