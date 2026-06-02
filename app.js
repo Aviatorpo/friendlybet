@@ -6061,40 +6061,6 @@ function showLanding() {
 }
 window.showLanding = showLanding;
 
-// ============================================================
-// Aggregate social proof ("X+ players · Y+ pools")
-// ------------------------------------------------------------
-// Reads /public-data/stats.json (counts only, written by export-snapshots.js -
-// NO individual user/pool data). Shown on the landing + home screen once the
-// numbers are impressive enough; hidden otherwise so we never show a weak count.
-// ============================================================
-const FB_SOCIALPROOF_MIN = 25; // don't render social proof until at least this many players
-function _fbFmtCount(n) {
-  n = parseInt(n, 10) || 0;
-  if (n >= 1000) return (Math.floor(n / 100) * 100).toLocaleString() + '+';
-  return (Math.floor(n / 10) * 10) + '+';
-}
-function _fbApplySocialProof(stats) {
-  if (!stats) return;
-  const players = parseInt(stats.players, 10) || 0;
-  const pools = parseInt(stats.pools, 10) || 0;
-  const show = players >= FB_SOCIALPROOF_MIN;
-  document.querySelectorAll('.sp-players').forEach(el => { el.textContent = _fbFmtCount(players); });
-  document.querySelectorAll('.sp-pools').forEach(el => { el.textContent = _fbFmtCount(pools); });
-  document.querySelectorAll('[data-fb-socialproof]').forEach(el => {
-    if (show) el.removeAttribute('hidden'); else el.setAttribute('hidden', '');
-  });
-}
-async function _fbLoadSocialProof() {
-  try {
-    const res = await fetch('/public-data/stats.json'); // served from Vercel edge (30s s-maxage)
-    if (!res.ok) return;
-    const data = await res.json();
-    _fbApplySocialProof(data && data.stats);
-  } catch (_) { /* missing/offline -> stays hidden, no-op */ }
-}
-window._fbLoadSocialProof = _fbLoadSocialProof;
-
 function fbEnterApp(target) {
   const wrap = document.getElementById('fb-landing');
   const app = document.getElementById('app');
@@ -6225,7 +6191,6 @@ function _fbGetSignupSource() {
 async function initApp() {
   console.log('FriendlyBet v' + CONFIG.APP_VERSION + ' starting...');
   _fbGetSignupSource();
-  _fbLoadSocialProof(); // fire-and-forget: fills the landing/home social-proof counts
   console.log('Language:', typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'unknown');
 
   // v2.5.52: emergency escape hatch — visiting /?reset=1 wipes all local

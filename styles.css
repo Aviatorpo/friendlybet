@@ -244,30 +244,6 @@ body {
 }
 
 /* v2.5.16: low-visual-weight recovery login link on home screen */
-/* v2.6.52: aggregate social proof ("X+ players · Y+ pools") — aggregate counts only,
-   shown on the landing + home screen once the numbers are impressive (JS gates it). */
-.fb-socialproof {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
-  margin: 14px auto 2px;
-  padding: 7px 16px;
-  background: rgba(217, 180, 106, 0.08);
-  border: 1px solid rgba(217, 180, 106, 0.25);
-  border-radius: 999px;
-  font-size: 13.5px;
-  color: rgba(255, 255, 255, 0.82);
-}
-.fb-socialproof[hidden] { display: none; }
-/* in the bottom CTA card: sit between the paragraph and the buttons */
-.fb-socialproof-final { margin: 6px auto 20px; }
-.fb-socialproof .sp-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: #3ddc97; box-shadow: 0 0 8px rgba(61, 220, 151, 0.7); flex-shrink: 0;
-}
-.fb-socialproof b { color: #f3dca0; font-weight: 700; }
-
 .welcome-recovery-link {
   display: inline-flex;
   align-items: center;
