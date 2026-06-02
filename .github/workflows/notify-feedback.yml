@@ -13,10 +13,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '20'
 
@@ -29,7 +29,7 @@ jobs:
 
       - name: Email the digest to Eyal
         if: steps.collect.outputs.has_new == 'true'
-        uses: dawidd6/action-send-mail@v3
+        uses: dawidd6/action-send-mail@v17
         with:
           server_address: smtp.gmail.com
           server_port: 465
