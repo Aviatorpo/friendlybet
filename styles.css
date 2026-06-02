@@ -8545,3 +8545,15 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
   100% { opacity: 0; transform: scale(0.5) translateY(-22px); }
 }
 .rc-container > * { position: relative; z-index: 1; }
+
+/* Share-bracket button inside the bracket-view modal (v2.6.54) */
+.sp-share-bracket-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; max-width: 360px; margin: 14px auto 4px; padding: 14px 18px;
+  border: 0; border-radius: 14px; cursor: pointer;
+  background: linear-gradient(135deg, #d9b46a, #ecd49a); color: #1a1205;
+  font-family: "Rubik", system-ui, sans-serif; font-weight: 800; font-size: 16px;
+  box-shadow: 0 10px 30px rgba(217,180,106,.22);
+}
+.sp-share-bracket-btn:hover { filter: brightness(1.04); }
+.sp-share-bracket-btn:active { transform: translateY(1px); }

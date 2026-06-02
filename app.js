@@ -6516,6 +6516,120 @@ async function copyInviteLink() {
   }
 }
 
+// ===== Shareable bracket card (Semi-finals -> Final -> Champion) =====
+// Renders a portrait image of the user's knockout climax on a canvas and
+// shares it via the native share sheet (WhatsApp / Telegram / Instagram /
+// Facebook) with a desktop download fallback. A baked-in QR invites scanners
+// to friendlybet.live so the image converts even when a platform strips links.
+let _bracketQrPromise = null;
+function _loadBracketQr() {
+  if (_bracketQrPromise) return _bracketQrPromise;
+  const origin = window.location.origin || 'https://friendlybet.live';
+  const target = origin + '/?utm_source=bracket_qr&utm_medium=social&utm_campaign=prediction_card';
+  const src = 'https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=0&qzone=1&color=0a0a08&bgcolor=ffffff&data=' + encodeURIComponent(target);
+  _bracketQrPromise = new Promise(resolve => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous'; // CORS-safe so the canvas stays untainted (toBlob works)
+    let done = false;
+    const finish = v => { if (!done) { done = true; resolve(v); } };
+    img.onload = () => finish(img);
+    img.onerror = () => finish(null);
+    setTimeout(() => finish(null), 3000);
+    img.src = src;
+  });
+  return _bracketQrPromise;
+}
+
+function _renderBracketCard(cv, qr) {
+  const ctx = cv.getContext('2d');
+  const W = 1080, H = 1350, GOLD = '#d9b46a', GOLD_LT = '#ecd49a', INK = '#f7f6f2', MUTED = '#9a9c93', PAD = 80;
+  const EMOJI = '"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",serif';
+  function rr(x,y,w,h,r){ ctx.beginPath(); if(ctx.roundRect){ctx.roundRect(x,y,w,h,r);} else {ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();} }
+  function label(text,y){ ctx.fillStyle=GOLD; ctx.font='700 26px Rubik,sans-serif'; const ls=4; let tot=0; for(const ch of text) tot+=ctx.measureText(ch).width+ls; let x=W/2-tot/2; ctx.textAlign='left'; ctx.textBaseline='alphabetic'; for(const ch of text){ ctx.fillText(ch,x,y); x+=ctx.measureText(ch).width+ls; } ctx.textAlign='center'; }
+  function chip(cx,y,code,w,h,big){ const x=cx-w/2; rr(x,y,w,h,big?20:16);
+    if(big){ ctx.fillStyle='rgba(217,180,106,0.20)'; ctx.fill(); ctx.lineWidth=3; ctx.strokeStyle=GOLD; ctx.stroke(); }
+    else   { ctx.fillStyle='rgba(255,255,255,0.045)'; ctx.fill(); ctx.lineWidth=2; ctx.strokeStyle='rgba(217,180,106,0.45)'; ctx.stroke(); }
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle=big?GOLD_LT:INK; ctx.font=(big?'800 46px ':'800 40px ')+'Sora,sans-serif'; ctx.fillText(code||'?',cx,y+h*0.40+2);
+    ctx.fillStyle=MUTED; ctx.font='600 19px Heebo,sans-serif'; ctx.fillText(code?getTeamName(code):'', cx, y+h*0.78); }
+  function ln(x1,y1,x2,y2){ ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.strokeStyle='rgba(217,180,106,0.40)'; ctx.lineWidth=2.5; ctx.stroke(); }
+  function connect(a,b,railY,childTopY){ ln(a,railY-44,a,railY); ln(b,railY-44,b,railY); ln(a,railY,b,railY); const mid=(a+b)/2; ln(mid,railY,mid,childTopY); return mid; }
+
+  const bp = spState.bracketPicks || {};
+  const semis = [bp[25], bp[26], bp[27], bp[28]];
+  const finals = [bp[29], bp[30]];
+  const champ = spState.tournamentWinner || bp[31];
+  const pool = (state.currentPool && state.currentPool.name) ? state.currentPool.name : '';
+
+  const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#0d0d0a'); g.addColorStop(1,'#080806'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  let rg=ctx.createRadialGradient(W/2,1000,80,W/2,1000,720); rg.addColorStop(0,'rgba(217,180,106,0.16)'); rg.addColorStop(1,'rgba(217,180,106,0)'); ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
+  ctx.lineWidth=3; ctx.strokeStyle='rgba(217,180,106,0.30)'; rr(20,20,W-40,H-40,28); ctx.stroke();
+
+  // header: the same soccer-ball emoji as the app home page, with a gold glow
+  ctx.textAlign='left'; ctx.textBaseline='middle';
+  ctx.save(); ctx.shadowColor='rgba(217,180,106,0.7)'; ctx.shadowBlur=18; ctx.font='46px '+EMOJI; ctx.fillText('⚽', PAD, 92); ctx.restore();
+  ctx.fillStyle=INK; ctx.font='800 38px Sora,sans-serif'; ctx.fillText('FriendlyBet', PAD+62, 93);
+  if(pool){ ctx.fillStyle=MUTED; ctx.font='600 24px Heebo,sans-serif'; ctx.textAlign='right'; ctx.fillText(pool, W-PAD, 93); }
+
+  ctx.textAlign='center'; ctx.fillStyle=INK; ctx.font='800 56px Sora,sans-serif'; ctx.fillText('My Road to Glory', W/2, 196);
+  ctx.fillStyle=MUTED; ctx.font='600 26px Heebo,sans-serif'; ctx.fillText('World Cup 2026 · my bracket', W/2, 238);
+
+  const semiY=336, semiH=78, semiW=200, c0=187,c1=405,c2=675,c3=893, finalY=540, finalH=82, finalW=210;
+  label('SEMI-FINALS', 306);
+  chip(c0,semiY,semis[0],semiW,semiH); chip(c1,semiY,semis[1],semiW,semiH); chip(c2,semiY,semis[2],semiW,semiH); chip(c3,semiY,semis[3],semiW,semiH);
+  const rail1=semiY+semiH+44; const fL=connect(c0,c1,rail1,finalY); const fR=connect(c2,c3,rail1,finalY);
+  label('FINAL', 510); chip(fL,finalY,finals[0],finalW,finalH,false); chip(fR,finalY,finals[1],finalW,finalH,false);
+  ctx.fillStyle=GOLD; ctx.font='800 30px Rubik,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('vs', W/2, finalY+finalH/2);
+  const rail2=finalY+finalH+44, champTop=792; connect(fL,fR,rail2,champTop);
+
+  label('CHAMPION', champTop-30);
+  const chW=560, chH=232, chX=W/2-chW/2, chY=champTop;
+  let cg=ctx.createRadialGradient(W/2,chY+chH/2,40,W/2,chY+chH/2,360); cg.addColorStop(0,'rgba(217,180,106,0.28)'); cg.addColorStop(1,'rgba(217,180,106,0)'); ctx.fillStyle=cg; ctx.fillRect(chX-80,chY-40,chW+160,chH+80);
+  rr(chX,chY,chW,chH,26); ctx.fillStyle='rgba(217,180,106,0.14)'; ctx.fill(); ctx.lineWidth=3.5; ctx.strokeStyle=GOLD; ctx.stroke();
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='84px '+EMOJI; ctx.fillText('🏆', W/2, chY+70);
+  ctx.fillStyle=GOLD_LT; ctx.font='800 74px Sora,sans-serif'; ctx.fillText(champ?getTeamName(champ):'—', W/2, chY+150);
+  ctx.fillStyle=MUTED; ctx.font='700 28px Rubik,sans-serif'; ctx.fillText('predicted world champion', W/2, chY+198);
+
+  ctx.strokeStyle='rgba(217,180,106,0.25)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(PAD,1112); ctx.lineTo(W-PAD,1112); ctx.stroke();
+  if(qr){
+    const qs=128, p=14, tileX=W-PAD-qs-2*p, tileY=1140;
+    rr(tileX,tileY,qs+2*p,qs+2*p,18); ctx.fillStyle='#f6f4ee'; ctx.fill(); ctx.lineWidth=3; ctx.strokeStyle=GOLD; ctx.stroke();
+    ctx.drawImage(qr,tileX+p,tileY+p,qs,qs);
+    ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+    ctx.fillStyle=GOLD; ctx.font='700 23px Rubik,sans-serif'; ctx.fillText('SCAN TO PLAY · FREE', PAD, 1182);
+    ctx.fillStyle=GOLD_LT; ctx.font='800 44px Sora,sans-serif'; ctx.fillText('friendlybet.live', PAD, 1234);
+    ctx.fillStyle=MUTED; ctx.font='600 22px Heebo,sans-serif'; ctx.fillText('Free · no signup · build your own', PAD, 1272);
+  } else {
+    ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+    ctx.fillStyle=GOLD_LT; ctx.font='800 46px Sora,sans-serif'; ctx.fillText('friendlybet.live', W/2, 1212);
+    ctx.fillStyle=MUTED; ctx.font='600 24px Heebo,sans-serif'; ctx.fillText('Free · No signup · Build your own bracket', W/2, 1254);
+  }
+}
+
+async function shareBracketCard() {
+  const champ = spState && (spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
+  if (!champ) { showToast(t('bracketShare.notReady'), 'info'); return; }
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (_) {}
+  const qr = await _loadBracketQr();
+  const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350;
+  try { _renderBracketCard(cv, qr); } catch (e) { console.error('bracket card render failed', e); showToast(t('bracketShare.notReady'), 'info'); return; }
+  const caption = t('bracketShare.caption');
+  const homeUrl = (window.location.origin || 'https://friendlybet.live') + '/?utm_source=bracket_card&utm_medium=social&utm_campaign=prediction_card';
+  cv.toBlob(async (blob) => {
+    if (!blob) { showToast(t('bracketShare.toastDesktop'), 'info'); return; }
+    const file = new File([blob], 'friendlybet-bracket.png', { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], text: caption, url: homeUrl }); }
+      catch (e) { if (e.name !== 'AbortError') console.error('bracket share failed', e); }
+    } else {
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'friendlybet-bracket.png'; a.click();
+      try { await navigator.clipboard.writeText(caption + ' ' + homeUrl); } catch (_) {}
+      showToast(t('bracketShare.toastDesktop'), 'success');
+    }
+  }, 'image/png');
+}
+window.shareBracketCard = shareBracketCard;
+
 async function copyPoolCodeOnly() {
   const code = state.currentPool?.code;
   if (!code) return;

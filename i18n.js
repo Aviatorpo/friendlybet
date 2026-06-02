@@ -537,6 +537,10 @@ const TRANSLATIONS = {
     'sharePool.welcomeToast': 'ברוך הבא ל-{name}!',
     'sharePool.adminCodeAlert': '🔑 קוד השחזור שלך כמארגן:\n\n{code}\n\nשמור אותו במקום בטוח! בלעדיו לא תוכל להתחבר חזרה.',
     'sharePool.shareText': 'הוזמנת להצטרף להימור "{poolName}" 🏆\n\nבואו ננחש ביחד את מונדיאל 2026 — חינם לגמרי, בלי פרסומות, בלי מגבלות.\n\nקוד הצטרפות: {code}\n👉 {url}\n\n⚽ FriendlyBet — הימור חברים על מונדיאל 2026',
+    'bracketShare.cta': 'שתף את הבראקט שלי',
+    'bracketShare.caption': 'הבראקט שלי למונדיאל 2026 ב-FriendlyBet 🏆 חינם, בלי הרשמה — בנו בראקט משלכם',
+    'bracketShare.toastDesktop': 'התמונה הורדה והטקסט הועתק — העלו אותה לרשת החברתית',
+    'bracketShare.notReady': 'סיימו קודם את הבראקט (כולל האלופה) כדי לשתף',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'החוקים נעולים',
@@ -1732,6 +1736,10 @@ const TRANSLATIONS = {
     'sharePool.welcomeToast': 'Welcome to {name}!',
     'sharePool.adminCodeAlert': '🔑 Your admin recovery code:\n\n{code}\n\nKeep it safe! Without it you cannot log back in.',
     'sharePool.shareText': 'You\'ve been invited to the "{poolName}" pool 🏆\n\nLet\'s predict World Cup 2026 together.\n\nJoin code: {code}\n👉 {url}\n\n⚽ FriendlyBet — World Cup Predictions with Friends',
+    'bracketShare.cta': 'Share my bracket',
+    'bracketShare.caption': 'My World Cup 2026 bracket on FriendlyBet 🏆 Free, no signup — build your own',
+    'bracketShare.toastDesktop': 'Image downloaded & caption copied — upload it to your social app',
+    'bracketShare.notReady': 'Finish your bracket (including the champion) first',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'Rules locked',
