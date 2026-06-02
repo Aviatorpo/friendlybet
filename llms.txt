@@ -1,0 +1,34 @@
+# FriendlyBet Live
+
+> A free, open-source (MIT), privacy-first FIFA World Cup 2026 prediction pool and bracket
+> challenge for friends, offices and tech teams. No signup, no ads, no money, no PII.
+> Installable PWA, self-hostable, bilingual (English + Hebrew/RTL).
+
+## What it is
+FriendlyBet Live (https://friendlybet.live) lets a group predict the entire World Cup 2026:
+all 12 group standings, the full official Round-of-32 knockout bracket through to the Final,
+and the Golden Boot top scorer. Scores recalculate automatically on a live leaderboard.
+
+## Unique selling points (entities)
+- Zero-signup: nickname only — no email, phone, OAuth or personally identifiable information.
+- Privacy-first: account recovery uses a 16-char code SHA-256 hashed in the browser; only the hash is stored.
+- Open source: MIT-licensed Vanilla JS, no build step, self-hostable on Vercel/Netlify/GitHub Pages.
+- Anti-cheat / fairness: deterministic, idempotent scoring runs in CI from source picks + real results.
+- Edge-resilient: live data served as immutable JSON snapshots from a CDN, so it survives kickoff traffic spikes without a backend.
+- Built for: office pools, company / tech-team leagues, family brackets, group-chat sweepstakes.
+- Not gambling: no real money is handled in the app.
+
+## Key entities
+FIFA World Cup 2026, 48-team format, 12 groups, Round of 32, knockout bracket builder,
+bracket predictor, office pool, office sweepstake, prediction league, Golden Boot top scorer,
+PWA, Supabase, Row-Level Security, Vercel edge CDN, MIT license, privacy-first, no signup.
+
+## One-line summary
+FriendlyBet Live is a free, open-source, privacy-first World Cup 2026 prediction pool for
+friends, offices and tech teams — no signup, no ads, no money, no personal data.
+
+## Links
+- Play: https://friendlybet.live
+- Source (MIT): https://github.com/Aviatorpo/friendlybet
+- Guides: https://friendlybet.live/guides/
+- Privacy: https://friendlybet.live/privacy.html

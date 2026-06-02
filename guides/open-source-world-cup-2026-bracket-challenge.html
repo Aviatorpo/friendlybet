@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a1628">
+
+<title>Open-Source World Cup 2026 Bracket Challenge (MIT, Self-Hostable) | FriendlyBet</title>
+<meta name="description" content="FriendlyBet is an open-source (MIT) World Cup 2026 bracket challenge you can read, fork and self-host. Vanilla JS, no build step, Supabase + Vercel. Free, no signup, no ads.">
+<meta name="keywords" content="open source world cup bracket, open source bracket challenge, self-hosted world cup pool, mit licensed prediction pool, vanilla js bracket app, world cup 2026 bracket open source, fork world cup pool">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://friendlybet.live/guides/open-source-world-cup-2026-bracket-challenge">
+<link rel="alternate" hreflang="en" href="https://friendlybet.live/guides/open-source-world-cup-2026-bracket-challenge">
+<link rel="alternate" hreflang="x-default" href="https://friendlybet.live/guides/open-source-world-cup-2026-bracket-challenge">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="FriendlyBet">
+<meta property="og:title" content="The Open-Source World Cup 2026 Bracket Challenge You Can Self-Host">
+<meta property="og:description" content="MIT-licensed, Vanilla JS, no build step. Read the code, fork it, self-host your own World Cup 2026 bracket challenge.">
+<meta property="og:url" content="https://friendlybet.live/guides/open-source-world-cup-2026-bracket-challenge">
+<meta property="og:image" content="https://friendlybet.live/apple-touch-icon.svg">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Open-Source World Cup 2026 Bracket Challenge You Can Self-Host">
+<meta name="twitter:description" content="MIT-licensed, Vanilla JS, no build step. Fork it and self-host.">
+<meta name="twitter:image" content="https://friendlybet.live/apple-touch-icon.svg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The open-source World Cup 2026 bracket challenge you can self-host",
+  "description": "FriendlyBet is an MIT-licensed, framework-free World Cup 2026 bracket challenge that you can read, fork and self-host.",
+  "inLanguage": "en",
+  "datePublished": "2026-06-02",
+  "dateModified": "2026-06-02",
+  "author": { "@type": "Organization", "name": "FriendlyBet" },
+  "publisher": { "@type": "Organization", "name": "FriendlyBet" },
+  "mainEntityOfPage": "https://friendlybet.live/guides/open-source-world-cup-2026-bracket-challenge"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "Is there an open-source World Cup 2026 bracket challenge?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. FriendlyBet Live is an open-source (MIT) World Cup 2026 bracket challenge. The full source is on GitHub: framework-free Vanilla JS with no build step, backed by Supabase and hosted on Vercel." } },
+    { "@type": "Question", "name": "Can I self-host my own World Cup bracket challenge?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. FriendlyBet is pure static files with no build step. Clone the repo, point config.js at your own free Supabase project, and deploy to Vercel, Netlify or GitHub Pages in minutes." } },
+    { "@type": "Question", "name": "What license is FriendlyBet released under?",
+      "acceptedAnswer": { "@type": "Answer", "text": "FriendlyBet is released under the permissive MIT license, so you are free to use, modify, fork and redistribute it." } }
+  ]
+}
+</script>
+
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="/guides/guide.css">
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a class="logo" href="/">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#0c0e13"/><circle cx="24" cy="24" r="16.4" fill="none" stroke="#d9b46a" stroke-width="2"/><circle cx="24" cy="24" r="13.2" fill="#f4f3ee"/><g stroke="#11141b" stroke-width="1.5" stroke-linecap="round" fill="none"><line x1="24" y1="17.8" x2="24" y2="11.4"/><line x1="29.9" y1="22.1" x2="35.6" y2="19.4"/><line x1="18.1" y1="22.1" x2="12.4" y2="19.4"/><line x1="27.6" y1="29.1" x2="31.3" y2="34.8"/><line x1="20.4" y1="29.1" x2="16.7" y2="34.8"/></g><g fill="#11141b"><polygon points="24,17.8 29.9,22.1 27.6,29.1 20.4,29.1 18.1,22.1"/><circle cx="24" cy="11.2" r="2.1"/><circle cx="36" cy="19.6" r="2.1"/><circle cx="12" cy="19.6" r="2.1"/><circle cx="31.5" cy="35.2" r="2.1"/><circle cx="16.5" cy="35.2" r="2.1"/></g></svg>
+      <span>FriendlyBet</span>
+    </a>
+    <nav class="site-nav"><a href="/">Play</a><a href="/guides/">Guides</a><a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="crumbs"><a href="/">Home</a> › <a href="/guides/">Guides</a></nav>
+  <main>
+    <h1>The open-source World Cup 2026 bracket challenge you can self-host</h1>
+    <p class="lead">Most prediction apps are black boxes. FriendlyBet is the opposite: every line that runs in your browser is readable, MIT-licensed, and yours to fork. Here is what that means in practice.</p>
+
+    <a class="cta-block" href="/">Play the bracket challenge free</a>
+
+    <p><strong>FriendlyBet Live is a free, open-source, privacy-first World Cup 2026 prediction pool for friends, offices and tech teams — no signup, no ads, no money, no personal data.</strong> The full source lives on <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a> under the permissive MIT license, so developers can audit exactly what the app does, contribute, or stand up a private copy of their own.</p>
+
+    <h2>Framework-free by design</h2>
+    <p>FriendlyBet is built with hand-written HTML, modern CSS and Vanilla JavaScript. There is no React, no bundler, and no build step. You can open <code>app.js</code> and read precisely what runs — which is both a feature for auditability and the reason the app loads instantly. It ships as an installable PWA with an offline-aware service worker.</p>
+
+    <div class="callout">
+      <b>The stack, in one line:</b> Vanilla JS front end · Supabase (PostgreSQL with Row-Level Security) for data · Vercel edge CDN for hosting and resilient live-data snapshots · GitHub Actions for scheduled, deterministic scoring. No application server to compromise.
+    </div>
+
+    <h2>Self-host it in about two minutes</h2>
+    <p>Because it is pure static files, hosting your own instance is trivial:</p>
+    <ol>
+      <li><strong>Clone</strong> the repository from GitHub.</li>
+      <li><strong>Create a free Supabase project</strong> and run the idempotent SQL migrations in <code>/migrations</code>.</li>
+      <li><strong>Set your keys</strong> in <code>config.js</code> (the Supabase URL and public anon key — the anon key is meant to be public; Row-Level Security protects the data).</li>
+      <li><strong>Deploy</strong> to Vercel, Netlify or GitHub Pages. There is nothing to build.</li>
+    </ol>
+
+    <h2>How the bracket challenge works</h2>
+    <p>You predict all 12 group standings, then build the full official Round-of-32 knockout bracket through to the Final, and call the Golden Boot top scorer. The clever part: your knockout bracket is generated from <em>your own</em> group predictions, so it is a true test of your forecast rather than a copy of the real draw. Scoring uses a doubling progression — later, harder rounds are worth more — and runs as a deterministic, idempotent CI job, so a re-run always converges to the same answer. No cheating, no manual tallying.</p>
+
+    <a class="cta" href="https://github.com/Aviatorpo/friendlybet">Star the repo on GitHub</a>
+
+    <h2>Open-source bracket FAQ</h2>
+    <dl class="faq">
+      <dt>Is there an open-source World Cup 2026 bracket challenge?</dt>
+      <dd>Yes — FriendlyBet Live, MIT-licensed and on GitHub.</dd>
+      <dt>What license is it under?</dt>
+      <dd>The permissive MIT license. Use, modify, fork and redistribute freely.</dd>
+      <dt>Do I need a build toolchain to run it?</dt>
+      <dd>No. It is static HTML/CSS/JS with no build step. Serve the folder and it works.</dd>
+      <dt>Can I point it at my own database?</dt>
+      <dd>Yes. Edit <code>config.js</code> with your own Supabase URL and anon key.</dd>
+    </dl>
+
+    <h2>Related guides</h2>
+    <div class="related">
+      <a href="/guides/world-cup-2026-office-pool-for-companies">Free World Cup office pool for companies</a>
+      <a href="/guides/privacy-first-football-office-pool">A privacy-first football office pool</a>
+      <a href="/guides/how-to-run-a-world-cup-2026-prediction-pool">How to run a World Cup 2026 prediction pool</a>
+    </div>
+
+    <a class="cta-block" href="/">Create a Free World Cup Pool in 30 Seconds</a>
+  </main>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    © FriendlyBet · <a href="/">Play free</a> · <a href="/guides/">Guides</a> · <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</footer>
+</body>
+</html>
