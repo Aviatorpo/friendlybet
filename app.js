@@ -6630,6 +6630,27 @@ async function shareBracketCard() {
 }
 window.shareBracketCard = shareBracketCard;
 
+// Celebration modal shown right after the first complete save: previews the
+// bracket card and offers Share / Done. Routing to the dashboard already
+// happened in spSubmitPredictions, so closing just dismisses the modal.
+async function openBracketShareCelebration() {
+  const modal = document.getElementById('bracket-share-modal');
+  const cv = document.getElementById('bracket-share-card-canvas');
+  if (!modal || !cv) return;
+  const champ = spState && (spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
+  if (!champ) return; // nothing to celebrate yet
+  modal.style.display = 'flex';
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (_) {}
+  const qr = await _loadBracketQr();
+  try { _renderBracketCard(cv, qr); } catch (e) { console.error('celebration render failed', e); }
+}
+function closeBracketShareCelebration() {
+  const modal = document.getElementById('bracket-share-modal');
+  if (modal) modal.style.display = 'none';
+}
+window.openBracketShareCelebration = openBracketShareCelebration;
+window.closeBracketShareCelebration = closeBracketShareCelebration;
+
 async function copyPoolCodeOnly() {
   const code = state.currentPool?.code;
   if (!code) return;
@@ -9305,6 +9326,8 @@ async function spSubmitPredictions() {
   );
   const missingWinner = !spState.tournamentWinner;
   const allComplete = incompleteGroups.length === 0 && !missingWinner;
+  // Show the share-celebration only on the FIRST full completion, not on re-saves.
+  const firstComplete = allComplete && !(state.currentUser && state.currentUser.predictions_submitted_at);
 
   const btn = document.getElementById('sp-submit-btn');
   const originalBtnHtml = btn ? btn.innerHTML : null;
@@ -9333,6 +9356,7 @@ async function spSubmitPredictions() {
     }
 
     goToDashboard();
+    if (firstComplete) openBracketShareCelebration();
   } catch (err) {
     console.error('spSubmitPredictions err:', err);
     showToast(t('errors.unexpected'), 'error');

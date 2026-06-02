@@ -541,6 +541,8 @@ const TRANSLATIONS = {
     'bracketShare.caption': 'הבראקט שלי למונדיאל 2026 ב-FriendlyBet 🏆 חינם, בלי הרשמה — בנו בראקט משלכם',
     'bracketShare.toastDesktop': 'התמונה הורדה והטקסט הועתק — העלו אותה לרשת החברתית',
     'bracketShare.notReady': 'סיימו קודם את הבראקט (כולל האלופה) כדי לשתף',
+    'bracketShare.celebrateTitle': '🏆 הבראקט שלך נשמר!',
+    'bracketShare.done': 'סיום — לדשבורד',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'החוקים נעולים',
@@ -1740,6 +1742,8 @@ const TRANSLATIONS = {
     'bracketShare.caption': 'My World Cup 2026 bracket on FriendlyBet 🏆 Free, no signup — build your own',
     'bracketShare.toastDesktop': 'Image downloaded & caption copied — upload it to your social app',
     'bracketShare.notReady': 'Finish your bracket (including the champion) first',
+    'bracketShare.celebrateTitle': '🏆 Your bracket is saved!',
+    'bracketShare.done': 'Done — back to dashboard',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'Rules locked',
