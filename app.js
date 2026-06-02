@@ -9219,6 +9219,16 @@ async function spRenderSummary() {
     submitBtn.innerHTML = `<i class="ti ti-rocket"></i><span data-i18n="betting.summary.submit">${t('betting.summary.submit')}</span>`;
   }
 
+  // Re-share button: only for users who already submitted a complete bracket
+  // (i.e. returning here via "View your predictions"), never in the first-time
+  // flow where it would compete with the Save CTA.
+  const summaryShareBtn = document.getElementById('sp-summary-share-btn');
+  if (summaryShareBtn) {
+    const submitted = typeof spHasUserSubmitted === 'function' && spHasUserSubmitted();
+    const hasChamp = !!(spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
+    summaryShareBtn.style.display = (submitted && hasChamp) ? 'flex' : 'none';
+  }
+
   // Groups summary
   const groupsEl = document.getElementById('sp-summary-groups');
   groupsEl.innerHTML = WC2026_GROUP_LETTERS.map(letter => {
