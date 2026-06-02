@@ -6561,6 +6561,12 @@ function _bracketCardCodes() {
   const bp = (spState && spState.bracketPicks) || {};
   return [bp[25], bp[26], bp[27], bp[28], bp[29], bp[30], (spState && spState.tournamentWinner) || bp[31]];
 }
+// Wait for fonts + load QR and flags (in parallel). Shared by both card entry points.
+async function _prepareBracketAssets() {
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (_) {}
+  const [qr] = await Promise.all([ _loadBracketQr(), _loadBracketFlags(_bracketCardCodes()) ]);
+  return qr;
+}
 
 function _renderBracketCard(cv, qr) {
   const ctx = cv.getContext('2d');
@@ -6637,8 +6643,7 @@ function _renderBracketCard(cv, qr) {
 async function shareBracketCard() {
   const champ = spState && (spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
   if (!champ) { showToast(t('bracketShare.notReady'), 'info'); return; }
-  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (_) {}
-  const [qr] = await Promise.all([ _loadBracketQr(), _loadBracketFlags(_bracketCardCodes()) ]);
+  const qr = await _prepareBracketAssets();
   const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350;
   try { _renderBracketCard(cv, qr); } catch (e) { console.error('bracket card render failed', e); showToast(t('bracketShare.notReady'), 'info'); return; }
   const caption = t('bracketShare.caption');
@@ -6668,8 +6673,10 @@ async function openBracketShareCelebration() {
   const champ = spState && (spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
   if (!champ) return; // nothing to celebrate yet
   modal.style.display = 'flex';
-  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (_) {}
-  const [qr] = await Promise.all([ _loadBracketQr(), _loadBracketFlags(_bracketCardCodes()) ]);
+  // Instant first paint (names render now; flags + QR fill in once loaded) so the
+  // modal never shows a blank canvas while assets load on a slow connection.
+  try { _renderBracketCard(cv, null); } catch (_) {}
+  const qr = await _prepareBracketAssets();
   try { _renderBracketCard(cv, qr); } catch (e) { console.error('celebration render failed', e); }
 }
 function closeBracketShareCelebration() {
