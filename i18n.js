@@ -428,6 +428,8 @@ const TRANSLATIONS = {
     'country.QAT': 'קטאר',
     'country.SCO': 'סקוטלנד',
     'country.CUR': 'קוראסאו',
+    'country.ECU': 'אקוודור',
+    'country.COL': 'קולומביה',
 
     // === Extended common ===
     'common.tournament': 'טורניר',
@@ -1629,6 +1631,8 @@ const TRANSLATIONS = {
     'country.QAT': 'Qatar',
     'country.SCO': 'Scotland',
     'country.CUR': 'Curaçao',
+    'country.ECU': 'Ecuador',
+    'country.COL': 'Colombia',
 
     // === Extended common ===
     'common.tournament': 'Tournament',

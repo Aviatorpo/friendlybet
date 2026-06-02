@@ -3395,7 +3395,8 @@ const FLAG_ISO = {
   SEN: 'sn', MAR: 'ma', JPN: 'jp', KOR: 'kr', AUS: 'au', CAN: 'ca', UKR: 'ua', TUR: 'tr',
   NOR: 'no', IRN: 'ir', SCO: 'gb-sct', CZE: 'cz', ALG: 'dz', CIV: 'ci', TUN: 'tn', EGY: 'eg',
   CMR: 'cm', GHA: 'gh', PAN: 'pa', JAM: 'jm', PAR: 'py', NZL: 'nz', UZB: 'uz', IRQ: 'iq',
-  SAU: 'sa', JOR: 'jo', RSA: 'za', HAI: 'ht', BIH: 'ba', CPV: 'cv', COD: 'cd', QAT: 'qa', CUR: 'cw'
+  SAU: 'sa', JOR: 'jo', RSA: 'za', HAI: 'ht', BIH: 'ba', CPV: 'cv', COD: 'cd', QAT: 'qa', CUR: 'cw',
+  ECU: 'ec', COL: 'co'
 };
 function getCountryFlag(code) {
   // Use flag IMAGES, not emoji: flag emoji do NOT render on Windows / Chrome desktop
@@ -6951,16 +6952,16 @@ window.addEventListener('load', () => {
 // ---- WC 2026 group definitions (mirrors CLAUDE.md) ----
 const WC2026_GROUPS = {
   A: ['MEX','RSA','KOR','CZE'],
-  B: ['CAN','SUI','QAT','BIH'],
+  B: ['CAN','BIH','QAT','SUI'],
   C: ['BRA','MAR','HAI','SCO'],
   D: ['USA','PAR','AUS','TUR'],
-  E: ['ESP','UKR','IRN','CPV'],
-  F: ['ARG','TUN','IRQ','ALG'],
-  G: ['GER','CUR','BEL','SAU'],
-  H: ['POR','AUT','EGY','SWE'],
-  I: ['FRA','SEN','NOR','NZL'],
-  J: ['NED','CMR','UZB','JOR'],
-  K: ['URU','JPN','JAM','CIV'],
+  E: ['GER','CUR','CIV','ECU'],
+  F: ['NED','JPN','SWE','TUN'],
+  G: ['BEL','EGY','IRN','NZL'],
+  H: ['ESP','CPV','SAU','URU'],
+  I: ['FRA','SEN','IRQ','NOR'],
+  J: ['ARG','ALG','AUT','JOR'],
+  K: ['POR','COD','UZB','COL'],
   L: ['ENG','CRO','GHA','PAN']
 };
 const WC2026_GROUP_LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L'];
@@ -6969,11 +6970,11 @@ const WC2026_GROUP_LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L'];
 // Lower number = better rank. Unknown codes fall back to 999.
 const FIFA_RANKINGS = {
   ARG: 1,  ESP: 2,  FRA: 3,  ENG: 4,  BRA: 5,  POR: 6,  NED: 7,  BEL: 8,
-  CRO: 9,  GER: 12, MAR: 13, URU: 15, USA: 16, MEX: 17, JPN: 18, SUI: 19,
-  SEN: 20, IRN: 21, KOR: 22, AUT: 23, UKR: 24, SWE: 25, AUS: 26, TUR: 27,
+  COL: 13, GER: 12, MAR: 14, URU: 15, USA: 16, MEX: 17, JPN: 18, SUI: 19,
+  SEN: 20, IRN: 21, KOR: 22, AUT: 23, ECU: 24, SWE: 25, AUS: 26, TUR: 27,
   NOR: 28, TUN: 29, EGY: 30, ALG: 31, CAN: 32, CZE: 33, SCO: 34, CIV: 35,
-  CMR: 36, PAR: 37, PAN: 38, IRQ: 40, RSA: 42, UZB: 43, JOR: 44, GHA: 47,
-  JAM: 50, NZL: 55, SAU: 57, BIH: 59, HAI: 60, CPV: 65, QAT: 66, CUR: 85
+  PAR: 37, PAN: 38, IRQ: 40, RSA: 42, UZB: 43, JOR: 44, GHA: 47,
+  NZL: 55, SAU: 57, COD: 58, BIH: 59, HAI: 60, CPV: 65, QAT: 66, CUR: 85
 };
 function fifaRankOf(code) { return FIFA_RANKINGS[code] ?? 999; }
 
