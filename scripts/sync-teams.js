@@ -71,7 +71,7 @@ const TEAM_INFO = {
   'Jamaica': { code: 'JAM', name_he: 'ג\'מייקה', tier: 'underdog', fifa_ranking: 39 },
   'Chile': { code: 'CHI', name_he: 'צ\'ילה', tier: 'underdog', fifa_ranking: 40 },
   'Peru': { code: 'PER', name_he: 'פרו', tier: 'underdog', fifa_ranking: 41 },
-  'Ecuador': { code: 'ECU', name_he: 'אקוודור', tier: 'underdog', fifa_ranking: 42 },
+  'Ecuador': { code: 'ECU', name_he: 'אקוודור', tier: 'contender', fifa_ranking: 24 },
   'Paraguay': { code: 'PAR', name_he: 'פרגוואי', tier: 'underdog', fifa_ranking: 43 },
   'New Zealand': { code: 'NZL', name_he: 'ניו זילנד', tier: 'underdog', fifa_ranking: 44 },
   'Saudi Arabia': { code: 'SAU', name_he: 'ערב הסעודית', tier: 'underdog', fifa_ranking: 45 },
@@ -86,7 +86,7 @@ const TEAM_INFO = {
   'Haiti': { code: 'HAI', name_he: 'האיטי', tier: 'underdog', fifa_ranking: 50 },
   'Bosnia-Herzegovina': { code: 'BIH', name_he: 'בוסניה-הרצגובינה', tier: 'underdog', fifa_ranking: 51 },
   'Cape Verde Islands': { code: 'CPV', name_he: 'כף ורדה', tier: 'underdog', fifa_ranking: 52 },
-  'Congo DR': { code: 'COD', name_he: 'קונגו', tier: 'underdog', fifa_ranking: 53 },
+  'Congo DR': { code: 'COD', name_he: 'קונגו', tier: 'underdog', fifa_ranking: 58 },
   'Ivory Coast': { code: 'CIV', name_he: 'חוף השנהב', tier: 'contender', fifa_ranking: 32 },
   'Qatar': { code: 'QAT', name_he: 'קטאר', tier: 'underdog', fifa_ranking: 54 },
   'Scotland': { code: 'SCO', name_he: 'סקוטלנד', tier: 'contender', fifa_ranking: 33 },
@@ -114,26 +114,26 @@ const MANUAL_GROUPS = {
   'United States': 'D', 'Paraguay': 'D', 'Australia': 'D', 'Turkey': 'D',
   
   // Group E
-  'Spain': 'E', 'Ukraine': 'E', 'Iran': 'E', 'Cape Verde Islands': 'E',
-  
+  'Germany': 'E', 'Curaçao': 'E', 'Ivory Coast': 'E', 'Ecuador': 'E',
+
   // Group F
-  'Argentina': 'F', 'Tunisia': 'F', 'Iraq': 'F', 'Algeria': 'F',
-  
+  'Netherlands': 'F', 'Japan': 'F', 'Sweden': 'F', 'Tunisia': 'F',
+
   // Group G
-  'Germany': 'G', 'Curaçao': 'G', 'Belgium': 'G', 'Saudi Arabia': 'G',
-  
+  'Belgium': 'G', 'Egypt': 'G', 'Iran': 'G', 'New Zealand': 'G',
+
   // Group H
-  'Portugal': 'H', 'Austria': 'H', 'Egypt': 'H', 'Sweden': 'H',
-  
+  'Spain': 'H', 'Cape Verde Islands': 'H', 'Saudi Arabia': 'H', 'Uruguay': 'H',
+
   // Group I
-  'France': 'I', 'Senegal': 'I', 'Norway': 'I', 'New Zealand': 'I',
-  
+  'France': 'I', 'Senegal': 'I', 'Iraq': 'I', 'Norway': 'I',
+
   // Group J
-  'Netherlands': 'J', 'Cameroon': 'J', 'Uzbekistan': 'J', 'Jordan': 'J',
-  
+  'Argentina': 'J', 'Algeria': 'J', 'Austria': 'J', 'Jordan': 'J',
+
   // Group K
-  'Uruguay': 'K', 'Japan': 'K', 'Jamaica': 'K', 'Ivory Coast': 'K',
-  
+  'Portugal': 'K', 'Congo DR': 'K', 'Uzbekistan': 'K', 'Colombia': 'K',
+
   // Group L
   'England': 'L', 'Croatia': 'L', 'Ghana': 'L', 'Panama': 'L',
 };
