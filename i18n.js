@@ -1739,7 +1739,7 @@ const TRANSLATIONS = {
     'createPool.suggestion4': 'Work Friends FC',
     'createPool.suggestion5': 'Friendly World Cup Challenge',
     'createPool.suggestion6': 'Friends With Brackets',
-    'createPool.suggestion7': 'Wannabe',
+    'createPool.suggestion7': 'Wannabe Experts',
     'createPool.suggestion8': 'Mundial 2026',
     'createPool.suggestion9': 'The Underdogs',
     'createPool.suggestion10': 'Geniuses of the 2026 World Cup',
