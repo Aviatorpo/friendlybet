@@ -9226,7 +9226,7 @@ async function spRenderSummary() {
   if (summaryShareBtn) {
     const submitted = typeof spHasUserSubmitted === 'function' && spHasUserSubmitted();
     const hasChamp = !!(spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
-    summaryShareBtn.style.display = (submitted && hasChamp) ? 'flex' : 'none';
+    summaryShareBtn.style.display = (submitted && hasChamp) ? '' : 'none';
   }
 
   // Groups summary
