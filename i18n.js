@@ -431,6 +431,23 @@ const TRANSLATIONS = {
     'country.ECU': 'אקוודור',
     'country.COL': 'קולומביה',
 
+    // === Feedback / Contact us ===
+    'feedback.menuItem': 'שלח משוב',
+    'feedback.title': 'שלח לנו משוב',
+    'feedback.subtitle': 'נשמח לשמוע מה אפשר לשפר.',
+    'feedback.cat.idea': 'רעיון',
+    'feedback.cat.bug': 'באג',
+    'feedback.cat.praise': 'מחמאה',
+    'feedback.cat.other': 'אחר',
+    'feedback.placeholder': 'ספר/י לנו מה על הלב...',
+    'feedback.emailPlaceholder': 'אימייל לחזרה (לא חובה)',
+    'feedback.submit': 'שליחה',
+    'feedback.close': 'סגירה',
+    'feedback.thanksTitle': 'תודה רבה! 🙌',
+    'feedback.thanksText': 'המשוב שלך התקבל ועוזר לנו לשפר.',
+    'feedback.emptyError': 'כתוב/כתבי הודעה לפני השליחה',
+    'feedback.sendError': 'השליחה נכשלה, נסה/י שוב',
+
     // === Extended common ===
     'common.tournament': 'טורניר',
     'common.tournamentName': 'מונדיאל 2026',
@@ -1036,7 +1053,6 @@ const TRANSLATIONS = {
     // v2.5.63: explains that the points are awarded for correctly
     // predicting each POSITION at the end of the group stage, not just
     // for picking advancing teams.
-    'betting.groupPositions.scoringNote': 'נקודה על כל מיקום שניחשת נכון בסיום שלב הבתים, בלי קשר לקבוצות שעלו.',
     'betting.groupStep': 'בית {n} מתוך {total}',
     'betting.position.1': 'מקום ראשון',
     'betting.position.2': 'מקום שני',
@@ -1633,6 +1649,23 @@ const TRANSLATIONS = {
     'country.CUR': 'Curaçao',
     'country.ECU': 'Ecuador',
     'country.COL': 'Colombia',
+
+    // === Feedback / Contact us ===
+    'feedback.menuItem': 'Send feedback',
+    'feedback.title': 'Send us feedback',
+    'feedback.subtitle': "We'd love to hear what we can improve.",
+    'feedback.cat.idea': 'Idea',
+    'feedback.cat.bug': 'Bug',
+    'feedback.cat.praise': 'Praise',
+    'feedback.cat.other': 'Other',
+    'feedback.placeholder': "Tell us what's on your mind...",
+    'feedback.emailPlaceholder': 'Email for a reply (optional)',
+    'feedback.submit': 'Send',
+    'feedback.close': 'Close',
+    'feedback.thanksTitle': 'Thank you! 🙌',
+    'feedback.thanksText': 'Your feedback was received and helps us improve.',
+    'feedback.emptyError': 'Write a message before sending',
+    'feedback.sendError': 'Sending failed, please try again',
 
     // === Extended common ===
     'common.tournament': 'Tournament',
@@ -2239,7 +2272,6 @@ const TRANSLATIONS = {
     // v2.5.63: explains that the points are awarded for correctly
     // predicting each POSITION at the end of the group stage, not just
     // for picking advancing teams.
-    'betting.groupPositions.scoringNote': '1 point for each position you correctly predict at the end of the group stage — regardless of which teams advance.',
     'betting.groupStep': 'Group {n} of {total}',
     'betting.position.1': 'First place',
     'betting.position.2': 'Second place',

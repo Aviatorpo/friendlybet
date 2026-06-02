@@ -2869,6 +2869,16 @@ function loadTablerFallback() {
         </div>
       </div>
       
+      <button class="menu-item" onclick="openFeedbackModal('menu')">
+        <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span data-i18n="feedback.menuItem">שלח משוב</span>
+        <svg class="menu-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
       <button class="menu-item menu-item-danger" onclick="logoutConfirm()">
         <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -2887,7 +2897,8 @@ function loadTablerFallback() {
       <span>FriendlyBet</span>
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
-      <span class="menu-version">v2.6.62</span>
+      <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
+      <span class="menu-version">v2.6.64</span>
     </div>
   </div>
 
@@ -2918,10 +2929,6 @@ function loadTablerFallback() {
   <div class="container">
     <div class="sp-section-instructions">
       <p data-i18n="betting.groupPositions.instructions">הקבוצות מסודרות לפי דירוג FIFA. גרור כדי לשנות את הסדר.</p>
-      <!-- v2.5.63: clarifies that points are awarded per correctly-predicted
-           position regardless of advance. Sits above the pills so the rule
-           is established before the per-position values. -->
-      <p class="sp-scoring-note" data-i18n="betting.groupPositions.scoringNote">נקודה על כל מיקום שניחשת נכון בסיום שלב הבתים, בלי קשר לקבוצות שעלו.</p>
       <!-- v2.4.6: dynamic points-per-position hint, populated by JS from
            state.currentPool.scoring_rules so the user knows what each
            position is worth on THIS pool. -->
@@ -3278,6 +3285,65 @@ function loadTablerFallback() {
 </div>
 
 <!-- v2.4: custom exit-app confirmation modal (gold themed) -->
+<!-- ============================================================ -->
+<!-- Feedback / Contact-us modal                                  -->
+<!-- ============================================================ -->
+<div id="feedback-modal" class="rc-modal" style="display:none;">
+  <div class="rc-modal-overlay" onclick="closeFeedbackModal()"></div>
+  <div class="rc-modal-content fb-feedback-content">
+    <button class="fb-feedback-close" onclick="closeFeedbackModal()" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <div class="fb-feedback-body" id="fb-feedback-body">
+      <div class="rc-modal-title rc-modal-title-center" data-i18n="feedback.title">שלח לנו משוב</div>
+      <div class="rc-modal-text rc-modal-text-center" data-i18n="feedback.subtitle">נשמח לשמוע מה אפשר לשפר.</div>
+
+      <div class="fb-feedback-cats" id="fb-feedback-cats">
+        <button type="button" class="fb-cat-chip selected" data-cat="idea" onclick="selectFeedbackCategory('idea')">
+          <span>💡</span><span data-i18n="feedback.cat.idea">רעיון</span>
+        </button>
+        <button type="button" class="fb-cat-chip" data-cat="bug" onclick="selectFeedbackCategory('bug')">
+          <span>🐛</span><span data-i18n="feedback.cat.bug">באג</span>
+        </button>
+        <button type="button" class="fb-cat-chip" data-cat="praise" onclick="selectFeedbackCategory('praise')">
+          <span>❤️</span><span data-i18n="feedback.cat.praise">מחמאה</span>
+        </button>
+        <button type="button" class="fb-cat-chip" data-cat="other" onclick="selectFeedbackCategory('other')">
+          <span>💬</span><span data-i18n="feedback.cat.other">אחר</span>
+        </button>
+      </div>
+
+      <textarea id="fb-feedback-message" class="fb-feedback-textarea" rows="4"
+        maxlength="4000" data-i18n-placeholder="feedback.placeholder"
+        placeholder="ספר/י לנו מה על הלב..."></textarea>
+
+      <input type="email" id="fb-feedback-email" class="fb-feedback-email"
+        data-i18n-placeholder="feedback.emailPlaceholder"
+        placeholder="אימייל לחזרה (לא חובה)" autocomplete="email" />
+
+      <button class="rc-modal-continue fb-feedback-submit" id="fb-feedback-submit" onclick="submitFeedback()">
+        <span data-i18n="feedback.submit">שליחה</span>
+      </button>
+    </div>
+
+    <div class="fb-feedback-thanks" id="fb-feedback-thanks" style="display:none;">
+      <div class="fb-feedback-thanks-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <div class="rc-modal-title rc-modal-title-center" data-i18n="feedback.thanksTitle">תודה רבה! 🙌</div>
+      <div class="rc-modal-text rc-modal-text-center" data-i18n="feedback.thanksText">המשוב שלך התקבל ועוזר לנו לשפר.</div>
+      <button class="rc-modal-continue fb-feedback-submit" onclick="closeFeedbackModal()">
+        <span data-i18n="feedback.close">סגירה</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <div id="exit-app-modal" class="rc-modal" style="display:none;">
   <div class="rc-modal-overlay" onclick="closeExitAppModal()"></div>
   <div class="rc-modal-content rc-modal-exit">

@@ -10722,7 +10722,8 @@ function _fbHandleBack() {
     'rc-screenshot-modal',
     'exit-app-modal',
     'hypo-bracket-modal',
-    'sp-bracket-view-modal'
+    'sp-bracket-view-modal',
+    'feedback-modal'
   ];
   for (const id of openModals) {
     const el = document.getElementById(id);
@@ -10798,6 +10799,104 @@ function confirmExitApp() {
 window.showExitAppModal = showExitAppModal;
 window.closeExitAppModal = closeExitAppModal;
 window.confirmExitApp = confirmExitApp;
+
+// ============================================================
+// Feedback / Contact-us modal
+// ============================================================
+let _fbFeedbackCat = 'idea';   // default selected category
+let _fbFeedbackSource = '';    // where it was opened from (menu | footer)
+let _fbFeedbackSending = false;
+
+function openFeedbackModal(source) {
+  _fbFeedbackSource = source || '';
+  if (typeof closeMenu === 'function') closeMenu();   // dismiss the side menu if open
+
+  // Reset to a clean form each time
+  _fbFeedbackCat = 'idea';
+  const body = document.getElementById('fb-feedback-body');
+  const thanks = document.getElementById('fb-feedback-thanks');
+  if (body) body.style.display = '';
+  if (thanks) thanks.style.display = 'none';
+  const msg = document.getElementById('fb-feedback-message');
+  const email = document.getElementById('fb-feedback-email');
+  if (msg) msg.value = '';
+  if (email) email.value = '';
+  selectFeedbackCategory('idea');
+
+  const m = document.getElementById('feedback-modal');
+  if (m) m.style.display = 'flex';
+}
+
+function closeFeedbackModal() {
+  const m = document.getElementById('feedback-modal');
+  if (m) m.style.display = 'none';
+}
+
+function selectFeedbackCategory(cat) {
+  _fbFeedbackCat = cat;
+  document.querySelectorAll('#fb-feedback-cats .fb-cat-chip').forEach(chip => {
+    chip.classList.toggle('selected', chip.dataset.cat === cat);
+  });
+}
+
+async function submitFeedback() {
+  if (_fbFeedbackSending) return;
+  const msgEl = document.getElementById('fb-feedback-message');
+  const emailEl = document.getElementById('fb-feedback-email');
+  const message = (msgEl && msgEl.value || '').trim();
+
+  if (!message) {
+    showToast(t('feedback.emptyError'), 'error');
+    if (msgEl) msgEl.focus();
+    return;
+  }
+
+  if (!supabaseClient) { initSupabase(); }
+  if (!supabaseClient) { showToast(t('errors.serverConnecting'), 'error'); return; }
+
+  _fbFeedbackSending = true;
+  const submitBtn = document.getElementById('fb-feedback-submit');
+  if (submitBtn) submitBtn.classList.add('loading');
+
+  const payload = {
+    user_id: (state.currentUser && state.currentUser.id) || null,
+    pool_code: (state.currentPool && state.currentPool.code) || null,
+    category: _fbFeedbackCat || 'other',
+    message: message.slice(0, 4000),
+    reply_email: (emailEl && emailEl.value || '').trim() || null,
+    app_version: (typeof CONFIG !== 'undefined' && CONFIG.APP_VERSION) || null,
+    language: (typeof getCurrentLanguage === 'function') ? getCurrentLanguage() : null,
+    screen: _fbFeedbackSource ? (_fbFeedbackSource + ':' + (state.currentScreen || '')) : (state.currentScreen || null),
+    user_agent: (navigator && navigator.userAgent || '').slice(0, 400)
+  };
+
+  try {
+    const { error } = await supabaseClient.from('feedback').insert(payload);
+    if (error) {
+      console.warn('submitFeedback error:', error);
+      showToast(t('feedback.sendError'), 'error');
+      _fbFeedbackSending = false;
+      if (submitBtn) submitBtn.classList.remove('loading');
+      return;
+    }
+    // Success: flip to the thank-you panel
+    const body = document.getElementById('fb-feedback-body');
+    const thanks = document.getElementById('fb-feedback-thanks');
+    if (body) body.style.display = 'none';
+    if (thanks) thanks.style.display = '';
+  } catch (err) {
+    console.warn('submitFeedback exception:', err);
+    showToast(t('feedback.sendError'), 'error');
+  } finally {
+    _fbFeedbackSending = false;
+    if (submitBtn) submitBtn.classList.remove('loading');
+  }
+}
+
+window.openFeedbackModal = openFeedbackModal;
+window.closeFeedbackModal = closeFeedbackModal;
+window.selectFeedbackCategory = selectFeedbackCategory;
+window.submitFeedback = submitFeedback;
 
 // Wire up the hijack as soon as the DOM is ready
 if (document.readyState === 'loading') {

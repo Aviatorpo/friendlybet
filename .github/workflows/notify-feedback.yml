@@ -1,0 +1,51 @@
+name: Notify New Feedback
+
+on:
+  schedule:
+    # Every 2 hours
+    - cron: '0 */2 * * *'
+
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Collect un-notified feedback
+        id: collect
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/notify-feedback.js fetch
+
+      - name: Email the digest to Eyal
+        if: steps.collect.outputs.has_new == 'true'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_APP_PASSWORD }}
+          subject: "FriendlyBet — ${{ steps.collect.outputs.count }} new feedback message(s)"
+          # Recipient comes from a secret so no address sits in the public repo.
+          # Defaults to the sending account (self-send) when MAIL_TO is unset.
+          to: ${{ secrets.MAIL_TO || secrets.MAIL_USERNAME }}
+          from: FriendlyBet Feedback <${{ secrets.MAIL_USERNAME }}>
+          body: file://feedback-body.txt
+
+      - name: Mark feedback as notified
+        if: steps.collect.outputs.has_new == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/notify-feedback.js mark
