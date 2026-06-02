@@ -40,7 +40,7 @@ const LIMIT = parseInt((args.find(a => a.startsWith('--limit=')) || '').split('=
 
 const WIKI_API = 'https://en.wikipedia.org/w/api.php';
 const THUMB_SIZE = 400;
-const USER_AGENT = 'FriendlyBetPhotoSync/1.0 (https://friendlybet.live; contact: +https://github.com/Aviatorpo/friendlybet)';
+const USER_AGENT = 'FriendlyBetPhotoSync/1.0 (https://friendlybet.live; +https://github.com/Aviatorpo/friendlybet)';
 const REQUEST_DELAY_MS = 200;
 
 const TEAM_FULL_NAME = {

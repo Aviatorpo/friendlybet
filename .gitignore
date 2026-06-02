@@ -64,3 +64,12 @@ _prototypes/
 
 # local-only marketing / SEO playbooks (owner notes, never public)
 _private/
+
+# internal AI/dev context (owner-only, not for the public repo)
+CLAUDE.md
+.claude/
+
+# stray local artifacts (unreferenced, not for the public repo)
+/wizard-step2-scoring.png
+/matches_sql.sql
+/pin/
