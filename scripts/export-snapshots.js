@@ -44,6 +44,18 @@ async function sb(table, query = '') {
   return res.json();
 }
 
+// Exact row count without pulling the rows: PostgREST returns the total in the
+// Content-Range header (e.g. "0-0/1234") when Prefer: count=exact is set.
+async function sbCount(table) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=id&limit=1`, {
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, Prefer: 'count=exact' }
+  });
+  if (!res.ok) throw new Error(`Supabase COUNT ${table} ${res.status}: ${await res.text()}`);
+  const cr = res.headers.get('content-range') || '';
+  const total = parseInt((cr.split('/')[1] || '0'), 10);
+  return Number.isFinite(total) ? total : 0;
+}
+
 function readJson(file) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { return null; }
 }
@@ -102,6 +114,28 @@ async function exportLeaderboards() {
   return changed;
 }
 
+// Aggregate, NON-identifying social-proof counts for the public landing.
+// Only two totals (players, pools) -> never any individual user/pool data.
+async function exportStats() {
+  let players, pools;
+  try {
+    players = await sbCount('users');
+    pools = await sbCount('pools');
+  } catch (e) {
+    console.error('stats fetch failed, keeping last-good snapshot:', e.message);
+    return 0;
+  }
+  // Last-good guard: a transient 0/0 during an API hiccup must not wipe a good number.
+  if (!players && !pools) {
+    console.warn('stats fetch empty, keeping last-good snapshot.');
+    return 0;
+  }
+  const wrote = writeIfChanged(path.join(OUT_DIR, 'stats.json'), 'stats',
+    { updatedAt: new Date().toISOString(), stats: { players, pools } });
+  console.log(`stats.json: ${wrote ? 'updated' : 'unchanged'} (players=${players}, pools=${pools})`);
+  return wrote ? 1 : 0;
+}
+
 // mode: 'matches' | 'leaderboards' | 'all' (default). Lets the 10-min match cron skip the
 // all-users read and the 30-min score cron do both.
 const MODE = (process.argv[2] || 'all').toLowerCase();
@@ -109,5 +143,7 @@ const MODE = (process.argv[2] || 'all').toLowerCase();
   fs.mkdirSync(LB_DIR, { recursive: true });
   const m = MODE === 'leaderboards' ? 0 : await exportMatches();
   const l = MODE === 'matches' ? 0 : await exportLeaderboards();
-  console.log(`snapshot export done (mode=${MODE}). matches changed=${m}, leaderboards changed=${l}.`);
+  // Two cheap count queries; refresh on every mode so the landing stays current.
+  const s = await exportStats();
+  console.log(`snapshot export done (mode=${MODE}). matches changed=${m}, leaderboards changed=${l}, stats changed=${s}.`);
 })().catch((e) => { console.error('export-snapshots fatal:', e); process.exit(1); });
