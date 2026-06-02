@@ -61,3 +61,6 @@ friendlybet_promo.mp4
 
 # local-only prototypes (owner preview, never deployed / never shown to users)
 _prototypes/
+
+# local-only marketing / SEO playbooks (owner notes, never public)
+_private/
