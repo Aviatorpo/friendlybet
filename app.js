@@ -6575,18 +6575,41 @@ function _loadBracketQr() {
   return _bracketQrPromise;
 }
 
+// Flag images for the card (flagcdn, same source as getCountryFlag). CORS-safe
+// so the canvas stays untainted; cached; failures fall back to a name-only chip.
+const _bracketFlagCache = {}; // code -> Image | false
+function _loadBracketFlags(codes) {
+  return Promise.all((codes || []).filter(Boolean).map(code => new Promise(resolve => {
+    if (_bracketFlagCache[code] !== undefined) { resolve(); return; }
+    const iso = (typeof FLAG_ISO !== 'undefined') ? FLAG_ISO[code] : null;
+    if (!iso) { _bracketFlagCache[code] = false; resolve(); return; }
+    const img = new Image(); img.crossOrigin = 'anonymous';
+    let done = false;
+    const finish = v => { if (!done) { done = true; _bracketFlagCache[code] = v; resolve(); } };
+    img.onload = () => finish(img);
+    img.onerror = () => finish(false);
+    setTimeout(() => finish(false), 3000);
+    img.src = 'https://flagcdn.com/w160/' + iso + '.png';
+  })));
+}
+function _bracketCardCodes() {
+  const bp = (spState && spState.bracketPicks) || {};
+  return [bp[25], bp[26], bp[27], bp[28], bp[29], bp[30], (spState && spState.tournamentWinner) || bp[31]];
+}
+
 function _renderBracketCard(cv, qr) {
   const ctx = cv.getContext('2d');
   const W = 1080, H = 1350, GOLD = '#d9b46a', GOLD_LT = '#ecd49a', INK = '#f7f6f2', MUTED = '#9a9c93', PAD = 80;
   const EMOJI = '"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",serif';
   function rr(x,y,w,h,r){ ctx.beginPath(); if(ctx.roundRect){ctx.roundRect(x,y,w,h,r);} else {ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();} }
   function label(text,y){ ctx.fillStyle=GOLD; ctx.font='700 26px Rubik,sans-serif'; const ls=4; let tot=0; for(const ch of text) tot+=ctx.measureText(ch).width+ls; let x=W/2-tot/2; ctx.textAlign='left'; ctx.textBaseline='alphabetic'; for(const ch of text){ ctx.fillText(ch,x,y); x+=ctx.measureText(ch).width+ls; } ctx.textAlign='center'; }
-  function chip(cx,y,code,w,h,big){ const x=cx-w/2; rr(x,y,w,h,big?20:16);
-    if(big){ ctx.fillStyle='rgba(217,180,106,0.20)'; ctx.fill(); ctx.lineWidth=3; ctx.strokeStyle=GOLD; ctx.stroke(); }
-    else   { ctx.fillStyle='rgba(255,255,255,0.045)'; ctx.fill(); ctx.lineWidth=2; ctx.strokeStyle='rgba(217,180,106,0.45)'; ctx.stroke(); }
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillStyle=big?GOLD_LT:INK; ctx.font=(big?'800 46px ':'800 40px ')+'Sora,sans-serif'; ctx.fillText(code||'?',cx,y+h*0.40+2);
-    ctx.fillStyle=MUTED; ctx.font='600 19px Heebo,sans-serif'; ctx.fillText(code?getTeamName(code):'', cx, y+h*0.78); }
+  function fitFont(text,maxW,startPx,weight,family){ let px=startPx; ctx.font=weight+' '+px+'px '+family; while(ctx.measureText(text).width>maxW && px>13){ px--; ctx.font=weight+' '+px+'px '+family; } return px; }
+  function drawFlag(code,cx,topY,fw){ const img=_bracketFlagCache[code]; if(!img||!img.naturalWidth) return 0; const fh=fw*(img.naturalHeight/img.naturalWidth); const fx=cx-fw/2; ctx.save(); rr(fx,topY,fw,fh,6); ctx.clip(); ctx.drawImage(img,fx,topY,fw,fh); ctx.restore(); ctx.lineWidth=1.5; ctx.strokeStyle='rgba(255,255,255,0.28)'; rr(fx,topY,fw,fh,6); ctx.stroke(); return fh; }
+  function chip(cx,y,code,w,h){ const x=cx-w/2; rr(x,y,w,h,16); ctx.fillStyle='rgba(255,255,255,0.045)'; ctx.fill(); ctx.lineWidth=2; ctx.strokeStyle='rgba(217,180,106,0.45)'; ctx.stroke();
+    const fh = code ? drawFlag(code,cx,y+11,58) : 0;
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle=INK;
+    const nm = code ? getTeamName(code) : '—'; fitFont(nm, w-22, 26, '700', 'Sora,sans-serif');
+    ctx.fillText(nm, cx, y + 11 + (fh||34) + (h - (11+(fh||34)))/2 + 2); }
   function ln(x1,y1,x2,y2){ ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.strokeStyle='rgba(217,180,106,0.40)'; ctx.lineWidth=2.5; ctx.stroke(); }
   function connect(a,b,railY,childTopY){ ln(a,railY-44,a,railY); ln(b,railY-44,b,railY); ln(a,railY,b,railY); const mid=(a+b)/2; ln(mid,railY,mid,childTopY); return mid; }
 
@@ -6609,25 +6632,30 @@ function _renderBracketCard(cv, qr) {
   ctx.textAlign='center'; ctx.fillStyle=INK; ctx.font='800 56px Sora,sans-serif'; ctx.fillText('My Road to Glory', W/2, 196);
   ctx.fillStyle=MUTED; ctx.font='600 26px Heebo,sans-serif'; ctx.fillText('World Cup 2026 · my bracket', W/2, 238);
 
-  const semiY=336, semiH=78, semiW=200, c0=187,c1=405,c2=675,c3=893, finalY=540, finalH=82, finalW=210;
-  label('SEMI-FINALS', 306);
+  const semiY=330, semiH=92, semiW=200, c0=187,c1=405,c2=675,c3=893, finalY=556, finalH=96, finalW=210;
+  label('SEMI-FINALS', 302);
   chip(c0,semiY,semis[0],semiW,semiH); chip(c1,semiY,semis[1],semiW,semiH); chip(c2,semiY,semis[2],semiW,semiH); chip(c3,semiY,semis[3],semiW,semiH);
-  const rail1=semiY+semiH+44; const fL=connect(c0,c1,rail1,finalY); const fR=connect(c2,c3,rail1,finalY);
-  label('FINAL', 510); chip(fL,finalY,finals[0],finalW,finalH,false); chip(fR,finalY,finals[1],finalW,finalH,false);
+  const rail1=semiY+semiH+42; const fL=connect(c0,c1,rail1,finalY); const fR=connect(c2,c3,rail1,finalY);
+  label('FINAL', 530); chip(fL,finalY,finals[0],finalW,finalH); chip(fR,finalY,finals[1],finalW,finalH);
   ctx.fillStyle=GOLD; ctx.font='800 30px Rubik,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('vs', W/2, finalY+finalH/2);
-  const rail2=finalY+finalH+44, champTop=792; connect(fL,fR,rail2,champTop);
+  // central drop stops ABOVE the CHAMPIONS label so the line never crosses the text
+  const rail2=finalY+finalH+42, champTop=812; connect(fL,fR,rail2,champTop-62);
 
-  label('CHAMPION', champTop-30);
-  const chW=560, chH=232, chX=W/2-chW/2, chY=champTop;
-  let cg=ctx.createRadialGradient(W/2,chY+chH/2,40,W/2,chY+chH/2,360); cg.addColorStop(0,'rgba(217,180,106,0.28)'); cg.addColorStop(1,'rgba(217,180,106,0)'); ctx.fillStyle=cg; ctx.fillRect(chX-80,chY-40,chW+160,chH+80);
+  label('CHAMPIONS', champTop-30);
+  const chW=600, chH=250, chX=W/2-chW/2, chY=champTop;
+  let cg=ctx.createRadialGradient(W/2,chY+chH/2,40,W/2,chY+chH/2,380); cg.addColorStop(0,'rgba(217,180,106,0.28)'); cg.addColorStop(1,'rgba(217,180,106,0)'); ctx.fillStyle=cg; ctx.fillRect(chX-80,chY-30,chW+160,chH+70);
   rr(chX,chY,chW,chH,26); ctx.fillStyle='rgba(217,180,106,0.14)'; ctx.fill(); ctx.lineWidth=3.5; ctx.strokeStyle=GOLD; ctx.stroke();
-  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='84px '+EMOJI; ctx.fillText('🏆', W/2, chY+70);
-  ctx.fillStyle=GOLD_LT; ctx.font='800 74px Sora,sans-serif'; ctx.fillText(champ?getTeamName(champ):'—', W/2, chY+150);
-  ctx.fillStyle=MUTED; ctx.font='700 28px Rubik,sans-serif'; ctx.fillText('predicted world champion', W/2, chY+198);
+  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='56px '+EMOJI; ctx.fillText('🏆', W/2, chY+50);
+  const cnm = champ ? getTeamName(champ) : '—'; fitFont(cnm, 420, 66, '800', 'Sora,sans-serif'); const cnmW=ctx.measureText(cnm).width;
+  const cimg = champ ? _bracketFlagCache[champ] : null; const cfw=104; const cfh=(cimg&&cimg.naturalWidth)?cfw*(cimg.naturalHeight/cimg.naturalWidth):0;
+  const cgap = cfh?20:0; const ctotal=(cfh?cfw:0)+cgap+cnmW; let csx=W/2-ctotal/2; const crowY=chY+150;
+  if(cfh){ drawFlag(champ, csx+cfw/2, crowY-cfh/2, cfw); csx+=cfw+cgap; }
+  ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillStyle=GOLD_LT; ctx.fillText(cnm, csx, crowY);
+  ctx.textAlign='center'; ctx.fillStyle=MUTED; ctx.font='700 28px Rubik,sans-serif'; ctx.fillText('predicted world champions', W/2, chY+212);
 
-  ctx.strokeStyle='rgba(217,180,106,0.25)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(PAD,1112); ctx.lineTo(W-PAD,1112); ctx.stroke();
+  ctx.strokeStyle='rgba(217,180,106,0.25)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(PAD,1118); ctx.lineTo(W-PAD,1118); ctx.stroke();
   if(qr){
-    const qs=128, p=14, tileX=W-PAD-qs-2*p, tileY=1140;
+    const qs=124, p=14, tileX=W-PAD-qs-2*p, tileY=1146;
     rr(tileX,tileY,qs+2*p,qs+2*p,18); ctx.fillStyle='#f6f4ee'; ctx.fill(); ctx.lineWidth=3; ctx.strokeStyle=GOLD; ctx.stroke();
     ctx.drawImage(qr,tileX+p,tileY+p,qs,qs);
     ctx.textAlign='left'; ctx.textBaseline='alphabetic';
@@ -6645,7 +6673,7 @@ async function shareBracketCard() {
   const champ = spState && (spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
   if (!champ) { showToast(t('bracketShare.notReady'), 'info'); return; }
   try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (_) {}
-  const qr = await _loadBracketQr();
+  const [qr] = await Promise.all([ _loadBracketQr(), _loadBracketFlags(_bracketCardCodes()) ]);
   const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350;
   try { _renderBracketCard(cv, qr); } catch (e) { console.error('bracket card render failed', e); showToast(t('bracketShare.notReady'), 'info'); return; }
   const caption = t('bracketShare.caption');
@@ -6676,7 +6704,7 @@ async function openBracketShareCelebration() {
   if (!champ) return; // nothing to celebrate yet
   modal.style.display = 'flex';
   try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (_) {}
-  const qr = await _loadBracketQr();
+  const [qr] = await Promise.all([ _loadBracketQr(), _loadBracketFlags(_bracketCardCodes()) ]);
   try { _renderBracketCard(cv, qr); } catch (e) { console.error('celebration render failed', e); }
 }
 function closeBracketShareCelebration() {
