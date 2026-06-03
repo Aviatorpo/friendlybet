@@ -1251,6 +1251,12 @@ async function fetchMatchesFromCDN(maxAgeMs = 25000) {
 // (which the live-poller keeps ~60s fresh) so a stale CDN copy can't freeze the
 // score - or show a kicked-off match as "upcoming".
 const _LIVE_MATCH_STATUSES = ['IN_PLAY', 'PAUSED', 'LIVE'];
+// All user columns EXCEPT recovery_code_hash (a credential). Cross-user reads
+// (leaderboard, members list) must use this so a pool member can't dump every
+// other member's auth hash from the network response. NOTE: this is
+// defense-in-depth at the client; the DB still permits reading the hash via a
+// crafted request - see the RLS note flagged to the owner.
+const USER_PUBLIC_COLS = 'id,pool_id,nickname,is_admin,is_approved,is_late_joiner,whatsapp_url,telegram_url,total_score,group_score,knockout_score,top_scorer_score,joined_at,last_active_at,last_score_calc,groups_score,bonus_score,approval_status,approved_at,approved_by,group_points,knockout_points,bonus_points,predictions_locked,predictions_submitted_at,signup_source,signup_referrer,utm_source,utm_medium,utm_campaign,country';
 const _TERMINAL_MATCH_STATUSES = ['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED'];
 const _MAX_MATCH_MS = 3.5 * 60 * 60 * 1000; // longest plausible match incl. ET + pens
 function _snapshotStaleDuringLive(matches, maxAgeMs = 60000) {
@@ -1493,7 +1499,7 @@ async function showMembers() {
   // Load all members
   const { data: members, error } = await supabaseClient
     .from('users')
-    .select('*')
+    .select(USER_PUBLIC_COLS)
     .eq('pool_id', state.currentPool.id)
     .order('joined_at', { ascending: true });
 
@@ -1666,7 +1672,7 @@ async function loadAdminMembers() {
     // Load all users in pool
     const { data: users, error: usersError } = await supabaseClient
       .from('users')
-      .select('*')
+      .select(USER_PUBLIC_COLS)
       .eq('pool_id', state.currentPool.id)
       .order('joined_at', { ascending: true });
     
@@ -2611,13 +2617,17 @@ async function performTopScorerSearch(query) {
   console.log(`🔍 Searching DB for "${query}"`);
   
   try {
-    // Search directly in DB with ILIKE - bypasses all limits
+    // Search directly in DB with ILIKE - bypasses all limits.
+    // Strip PostgREST filter delimiters so a crafted query can't break out of
+    // the ilike value and inject extra .or() conditions (filter injection).
     const lowerQuery = query.toLowerCase();
-    
+    const q = String(query).replace(/[(),\\]/g, '').trim();
+    if (!q) { topScorerState.filteredPlayers = []; renderTopScorerList(); return; }
+
     const { data, error } = await supabaseClient
       .from('players')
       .select('*')
-      .or(`name_en.ilike.%${query}%,name_he.ilike.%${query}%,team_code.ilike.%${query}%`)
+      .or(`name_en.ilike.%${q}%,name_he.ilike.%${q}%,team_code.ilike.%${q}%`)
       .limit(50);
     
     if (error) {
@@ -3607,7 +3617,7 @@ function getCountryFlag(code) {
   if (!iso) return '<span class="flag-img-fallback">⚽</span>';
   return `<img class="flag-img" src="https://flagcdn.com/${iso}.svg" alt="${code}" loading="lazy" ` +
     `style="height:1.05em;width:1.55em;object-fit:cover;border-radius:3px;vertical-align:middle;display:inline-block;box-shadow:0 0 0 1px rgba(0,0,0,0.25)" ` +
-    `onerror="this.replaceWith(document.createTextNode('${code}'))">`;
+    `onerror="this.replaceWith(document.createTextNode(this.alt))">`;
 }
 
 function toggleTeamSelection(teamCode) {
@@ -5579,7 +5589,7 @@ async function showLeaderboard() {
   // Load all users sorted by score
   const { data: users, error } = await supabaseClient
     .from('users')
-    .select('*')
+    .select(USER_PUBLIC_COLS)
     .eq('pool_id', state.currentPool.id)
     .order('total_score', { ascending: false })
     .order('joined_at', { ascending: true });
