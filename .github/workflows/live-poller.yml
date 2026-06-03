@@ -1,0 +1,33 @@
+name: Live Match Poller
+
+# Near-real-time live scores. Runs every 5 min (GitHub's minimum); when a match
+# is live it polls football-data every ~60s for ~4.5 min, writing ONLY to the DB
+# (no snapshot commit -> ZERO Vercel deploys). When nothing is live it exits
+# immediately. The client reads live scores straight from the DB during play.
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+# Don't let two live-poller runs overlap (a slow run + the next cron launch).
+concurrency:
+  group: live-poller
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Poll live matches into the DB
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
+        run: node scripts/live-poller.js

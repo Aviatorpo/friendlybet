@@ -10,6 +10,8 @@ on:
       - 'scripts/smart-sync.js'
       - 'scripts/test-smart-sync.js'
       - 'scripts/test-sync-transform.js'
+      - 'scripts/live-poller.js'
+      - 'scripts/test-live-poller.js'
       - '.github/workflows/test-scoring.yml'
   pull_request:
     paths:
@@ -18,6 +20,8 @@ on:
       - 'scripts/smart-sync.js'
       - 'scripts/test-smart-sync.js'
       - 'scripts/test-sync-transform.js'
+      - 'scripts/live-poller.js'
+      - 'scripts/test-live-poller.js'
   workflow_dispatch:
 
 jobs:
@@ -36,3 +40,5 @@ jobs:
         run: node scripts/test-smart-sync.js
       - name: Run sync transform tests
         run: node scripts/test-sync-transform.js
+      - name: Run live-poller tests
+        run: node scripts/test-live-poller.js

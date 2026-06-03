@@ -1231,7 +1231,7 @@ async function fetchMatchesFromCDN(maxAgeMs = 25000) {
 // cron, Vercel deploy backlog, etc). Bypass it and read live scores straight
 // from Postgres so a stale CDN copy can't freeze live scores on screen.
 const _LIVE_MATCH_STATUSES = ['IN_PLAY', 'PAUSED', 'LIVE'];
-function _snapshotStaleDuringLive(matches, maxAgeMs = 90000) {
+function _snapshotStaleDuringLive(matches, maxAgeMs = 60000) {
   if (!matches || !_matchesSnapCache.updatedAt) return false;
   const anyLive = matches.some(m => _LIVE_MATCH_STATUSES.includes(m.status));
   return anyLive && (Date.now() - _matchesSnapCache.updatedAt) > maxAgeMs;
@@ -5805,13 +5805,14 @@ function _stopMatchesAutoRefresh() {
 
 function _startMatchesAutoRefresh() {
   _stopMatchesAutoRefresh();
-  // 60s: re-fetch from Supabase. The smart-sync GitHub Action writes
-  // every 10 min, so 60s is enough to surface changes promptly without
-  // hammering the DB. Skip the loading spinner on background refreshes.
+  // 30s: re-fetch. The live-poller keeps the DB ~60s fresh during play and the
+  // client reads live from the DB while a match is on (see _snapshotStaleDuringLive),
+  // so a 30s poll surfaces live scores in near-real-time. Skip the spinner on
+  // background refreshes; the visibility/screen guards keep this cheap.
   matchesState.refreshTimer = setInterval(() => {
     if (state.currentScreen !== 'matches-screen' || document.hidden) return;
     loadMatches(true).catch(() => {});
-  }, 60000);
+  }, 30000);
   // 20s: re-render cards locally so the live minute ticks even when no
   // new DB rows have arrived yet.
   matchesState.tickTimer = setInterval(() => {
