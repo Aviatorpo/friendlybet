@@ -1226,15 +1226,25 @@ async function fetchMatchesFromCDN(maxAgeMs = 25000) {
   } catch (_) { return null; }
 }
 
-// Defense-in-depth: if the snapshot shows a live match but the snapshot itself
-// is older than maxAgeMs, the sync->snapshot->CDN pipeline is lagging (delayed
-// cron, Vercel deploy backlog, etc). Bypass it and read live scores straight
-// from Postgres so a stale CDN copy can't freeze live scores on screen.
+// Defense-in-depth: when a match is live (or its kickoff has passed but it isn't
+// finished yet - e.g. right after kickoff, when the snapshot can still say
+// "upcoming") and the snapshot is older than maxAgeMs, the sync->snapshot->CDN
+// pipeline is lagging. Bypass it and read live scores straight from Postgres
+// (which the live-poller keeps ~60s fresh) so a stale CDN copy can't freeze the
+// score - or show a kicked-off match as "upcoming".
 const _LIVE_MATCH_STATUSES = ['IN_PLAY', 'PAUSED', 'LIVE'];
+const _TERMINAL_MATCH_STATUSES = ['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED'];
+const _MAX_MATCH_MS = 3.5 * 60 * 60 * 1000; // longest plausible match incl. ET + pens
 function _snapshotStaleDuringLive(matches, maxAgeMs = 60000) {
   if (!matches || !_matchesSnapCache.updatedAt) return false;
-  const anyLive = matches.some(m => _LIVE_MATCH_STATUSES.includes(m.status));
-  return anyLive && (Date.now() - _matchesSnapCache.updatedAt) > maxAgeMs;
+  const now = Date.now();
+  const liveish = matches.some(m => {
+    if (_LIVE_MATCH_STATUSES.includes(m.status)) return true;
+    // kicked off (within the last ~3.5h) but not finished -> almost certainly live now
+    const ko = Date.parse(m.match_date);
+    return !isNaN(ko) && ko <= now && (now - ko) < _MAX_MATCH_MS && !_TERMINAL_MATCH_STATUSES.includes(m.status);
+  });
+  return liveish && (now - _matchesSnapCache.updatedAt) > maxAgeMs;
 }
 
 async function loadResultsData() {
@@ -5904,7 +5914,7 @@ function renderMatches() {
   // Filter matches
   const filtered = matchesState.allMatches.filter(m => {
     if (matchesState.currentFilter === 'all') return true;
-    if (matchesState.currentFilter === 'live') return m.status === 'LIVE' || m.status === 'IN_PLAY';
+    if (matchesState.currentFilter === 'live') return _LIVE_MATCH_STATUSES.includes(m.status);
     if (matchesState.currentFilter === 'upcoming') return m.status === 'SCHEDULED' || m.status === 'TIMED';
     if (matchesState.currentFilter === 'finished') return m.status === 'FINISHED';
     return true;
@@ -5935,7 +5945,9 @@ function renderMatches() {
 function createMatchCard(match) {
   const card = document.createElement('div');
   
-  const isLive = match.status === 'LIVE' || match.status === 'IN_PLAY';
+  // PAUSED (halftime / breaks) counts as live too - otherwise the score would
+  // vanish and the match would show as "upcoming" for ~15 min every half-time.
+  const isLive = _LIVE_MATCH_STATUSES.includes(match.status);
   const isFinished = match.status === 'FINISHED';
   const isScheduled = !isLive && !isFinished;
   
