@@ -43,7 +43,7 @@ const TEAM_NAME_TO_CODE = {
   'South Africa': 'RSA', 'Algeria': 'ALG', 'Czechia': 'CZE',
   'Haiti': 'HAI', 'Bosnia-Herzegovina': 'BIH', 'Cape Verde Islands': 'CPV',
   'Congo DR': 'COD', 'Ivory Coast': 'CIV', 'Qatar': 'QAT',
-  'Scotland': 'SCO', 'Curaçao': 'CUR',
+  'Scotland': 'SCO', 'Curaçao': 'CUR', 'Ecuador': 'ECU', 'Colombia': 'COL',
 };
 
 function getTeamCode(teamName) {

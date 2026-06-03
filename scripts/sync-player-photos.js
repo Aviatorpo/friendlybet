@@ -54,7 +54,7 @@ const TEAM_FULL_NAME = {
   UZB: 'Uzbekistan', IRQ: 'Iraq', SAU: 'Saudi Arabia', JOR: 'Jordan',
   RSA: 'South Africa', ALG: 'Algeria', CZE: 'Czech Republic', HAI: 'Haiti',
   BIH: 'Bosnia and Herzegovina', CPV: 'Cape Verde', COD: 'DR Congo', CIV: 'Ivory Coast',
-  QAT: 'Qatar', SCO: 'Scotland', CUR: 'Curaçao',
+  QAT: 'Qatar', SCO: 'Scotland', CUR: 'Curaçao', ECU: 'Ecuador', COL: 'Colombia',
 };
 
 async function sleep(ms) {

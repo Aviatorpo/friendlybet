@@ -130,6 +130,8 @@ const TEAM_NAME_TO_CODE = {
   'Qatar': 'QAT',
   'Scotland': 'SCO',
   'Curaçao': 'CUR',
+  'Ecuador': 'ECU',
+  'Colombia': 'COL',
 };
 
 function getTeamCode(teamName) {
