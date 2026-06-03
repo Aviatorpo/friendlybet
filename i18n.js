@@ -107,6 +107,10 @@ const TRANSLATIONS = {
     
     // === Dashboard ===
     'dashboard.greeting': 'היי',
+    'pundit.title': 'הפרשן',
+    'pundit.badge.confirmed': 'מאומת',
+    'pundit.badge.reported': 'מדווח',
+    'pundit.source': 'מקור:',
     'dashboard.your': 'ההימור שלך',
     'dashboard.points': 'נקודות',
     'dashboard.rank': 'מקום',
@@ -1323,6 +1327,10 @@ const TRANSLATIONS = {
     
     // === Dashboard ===
     'dashboard.greeting': 'Hi',
+    'pundit.title': 'The Pundit',
+    'pundit.badge.confirmed': 'Confirmed',
+    'pundit.badge.reported': 'Reported',
+    'pundit.source': 'Source:',
     'dashboard.your': 'Your Pool',
     'dashboard.points': 'Points',
     'dashboard.rank': 'Rank',

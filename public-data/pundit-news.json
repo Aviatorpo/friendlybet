@@ -1,17 +1,5 @@
 {
-  "updatedAt": "2026-06-03T08:00:00.000Z",
-  "_note": "Produced by the news agent (marketing-scout/pundit). Only verified claims (>=2 independent sources, or 1 official). This seed holds one example item for the preview.",
-  "items": [
-    {
-      "id": "neymar-fitness-2026-06-03",
-      "confidence": "reported",
-      "he": "8 ימים לפתיחה וניימאר עדיין לא כשיר לחלוטין. לפי הדיווחים הוא במרוץ נגד הזמן לקראת משחק הפתיחה של ברזיל. ישפיע על הסלסאו?",
-      "en": "8 days to go and Neymar still isn't fully fit. Reports say he's racing the clock for Brazil's opener. Will it dent the Seleção?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/" },
-        { "name": "Globo", "url": "https://ge.globo.com/" }
-      ],
-      "expires_at": "2026-06-11T00:00:00.000Z"
-    }
-  ]
+  "updatedAt": "2026-06-03T00:00:00.000Z",
+  "_note": "Produced by the news agent (marketing-scout/pundit/PUNDIT-AGENT.md). Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official source. Items are dropped past expires_at. Starts empty; the agent fills it.",
+  "items": []
 }

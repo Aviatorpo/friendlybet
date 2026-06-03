@@ -1,0 +1,59 @@
+name: Generate Pundit Feed
+
+# Rebuilds public-data/pundit.json from the committed match snapshot + the
+# verified news file. Pure data, no network, no secrets - safe to run often.
+# Covers both phases: pre-tournament the countdown/fixtures shift daily, during
+# the tournament results/fixtures shift hourly. The script only commits when the
+# feed content actually changes, so most runs are no-ops.
+
+on:
+  schedule:
+    - cron: '7 * * * *'   # hourly, offset from smart-sync (*/10) to avoid contention
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: generate-pundit
+  cancel-in-progress: false
+
+jobs:
+  generate-pundit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      # Guard: if a news file exists, it must pass the verification gate. A bad
+      # file fails the run instead of shipping unverified claims.
+      - name: Validate pundit news (if present)
+        run: |
+          if [ -f public-data/pundit-news.json ]; then
+            node scripts/pundit-news-validate.js
+          else
+            echo "no pundit-news.json yet, skipping validation"
+          fi
+
+      - name: Build pundit feed
+        run: node scripts/generate-pundit.js
+
+      - name: Commit feed if changed
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data/pundit.json)" ]; then
+            git add public-data/pundit.json
+            git commit -q -m "data: refresh pundit feed"
+            for a in 1 2 3; do
+              git pull --rebase --autostash && git push && break
+              echo "push retry $a"; sleep 4
+            done
+          else
+            echo "no pundit change"
+          fi

@@ -33,7 +33,7 @@ const SAFE_USER_COLS = [
   'id', 'pool_id', 'nickname', 'is_admin',
   'total_score', 'group_points', 'knockout_points', 'bonus_points',
   'groups_score', 'knockout_score', 'bonus_score',
-  'predictions_submitted_at', 'created_at', 'last_score_calc'
+  'predictions_submitted_at', 'joined_at', 'last_score_calc'
 ].join(',');
 
 async function sb(table, query = '') {

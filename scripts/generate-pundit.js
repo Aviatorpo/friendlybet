@@ -79,7 +79,7 @@ function build(now) {
   // ---- 1. Countdown (pre-tournament only) -----------------------------------
   const msToKickoff = Date.parse(kickoff) - now.getTime();
   if (msToKickoff > 0) {
-    const days = Math.ceil(msToKickoff / DAY_MS);
+    const days = Math.floor(msToKickoff / DAY_MS);
     const hours = Math.ceil(msToKickoff / (60 * 60 * 1000));
     let he, en;
     if (days > 1) {
@@ -136,7 +136,11 @@ function build(now) {
       he: n.he, en: n.en,
       sources: Array.isArray(n.sources) ? n.sources.filter(s => s && s.url) : [],
       expires_at: n.expires_at || null,
-    }));
+    }))
+    // Defense in depth: never render a news claim that fails the source gate,
+    // even if a malformed pundit-news.json slipped past the validator.
+    // 'reported' => >=2 independent sources, 'confirmed' => >=1 official source.
+    .filter(it => it.sources.length >= (it.confidence === 'confirmed' ? 1 : 2));
 
   // Order: news first (most engaging), then results, fixtures, countdown.
   const priority = { news: 0, result: 1, fixture: 2, stat: 3, countdown: 4 };
