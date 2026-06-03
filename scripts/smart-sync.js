@@ -67,7 +67,14 @@ async function callFootballAPI(endpoint) {
     } finally {
       clearTimeout(timer);
     }
-    if (response && response.ok) return await response.json();
+    if (response && response.ok) {
+      const avail = parseInt(response.headers.get('X-Requests-Available-Minute') || '', 10);
+      if (!isNaN(avail)) {
+        console.log(`📈 football-data: ${avail} req/min remaining`);
+        if (avail <= 2) console.warn('⚠️  football-data rate limit nearly exhausted');
+      }
+      return await response.json();
+    }
 
     const status = response ? response.status : 0;
     const retryable = !!networkErr || status === 429 || status >= 500;

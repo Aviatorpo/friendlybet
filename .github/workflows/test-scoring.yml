@@ -9,6 +9,7 @@ on:
       - 'scripts/test-scoring.js'
       - 'scripts/smart-sync.js'
       - 'scripts/test-smart-sync.js'
+      - 'scripts/test-sync-transform.js'
       - '.github/workflows/test-scoring.yml'
   pull_request:
     paths:
@@ -16,6 +17,7 @@ on:
       - 'scripts/test-scoring.js'
       - 'scripts/smart-sync.js'
       - 'scripts/test-smart-sync.js'
+      - 'scripts/test-sync-transform.js'
   workflow_dispatch:
 
 jobs:
@@ -32,3 +34,5 @@ jobs:
         run: node scripts/test-scoring.js
       - name: Run smart-sync window tests
         run: node scripts/test-smart-sync.js
+      - name: Run sync transform tests
+        run: node scripts/test-sync-transform.js
