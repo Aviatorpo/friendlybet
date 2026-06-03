@@ -1095,6 +1095,23 @@ async function renderPundit() {
       });
     }
   }
+  // "See more" toggle: expand/collapse the clamped text. Wire once.
+  const toggleEl = document.getElementById('pundit-toggle');
+  const textEl = document.getElementById('pundit-text');
+  if (toggleEl && textEl && !toggleEl._punditWired) {
+    toggleEl._punditWired = true;
+    toggleEl.onclick = () => {
+      const expanded = textEl.classList.toggle('expanded');
+      toggleEl.textContent = expanded ? t('pundit.seeLess') : t('pundit.seeMore');
+      // Pause auto-rotation while the user is reading the full text.
+      if (expanded) {
+        if (_punditState.timer) { clearInterval(_punditState.timer); _punditState.timer = null; }
+      } else {
+        _punditRestartTimer();
+      }
+    };
+  }
+
   _punditDraw();
   _punditRestartTimer();
 }
@@ -1106,11 +1123,18 @@ function _punditDraw() {
   const lang = (typeof getCurrentLanguage === 'function') ? getCurrentLanguage() : 'he';
 
   const textEl = document.getElementById('pundit-text');
+  const toggleEl = document.getElementById('pundit-toggle');
   if (textEl) {
     textEl.classList.add('pundit-fade');
     setTimeout(() => {
       textEl.textContent = (lang === 'he' ? it.he : it.en) || it.he || it.en || '';
       textEl.classList.remove('pundit-fade');
+      // Reset to collapsed and decide whether "see more" is needed for this item.
+      textEl.classList.remove('expanded');
+      if (toggleEl) {
+        toggleEl.style.display = (textEl.scrollHeight > textEl.clientHeight + 2) ? '' : 'none';
+        toggleEl.textContent = t('pundit.seeMore');
+      }
     }, 180);
   }
 

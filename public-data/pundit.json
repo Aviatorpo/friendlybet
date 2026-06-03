@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-03T08:26:15.405Z",
-  "count": 6,
+  "updatedAt": "2026-06-03T08:36:36.236Z",
+  "count": 3,
   "items": [
     {
       "id": "neymar-brazil-opener-doubt-2026-06-03",
@@ -67,58 +67,6 @@
         }
       ],
       "expires_at": "2026-06-12T00:00:00Z"
-    },
-    {
-      "id": "yamal-spain-opener-doubt-2026-06-03",
-      "type": "news",
-      "confidence": "reported",
-      "he": "לפי הדיווחים, למין יאמאל יחסר מהמשחק הפותח של ספרד מול קייפ ורד ב-15 ביוני עקב פציעת שריר הירך. המאמן דה לה פואנטה נשאר אופטימי, אבל אלופות אירופה יתחילו ללא כוכב העל שלהן - כמה זה ישפיע?",
-      "en": "Reports say Lamine Yamal is set to miss Spain's opener against Cape Verde on June 15 with a hamstring injury. Coach De La Fuente stays upbeat, but the Euro 2024 holders know their brightest star will not be on the pitch from kick-off. How much will that matter?",
-      "sources": [
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/lamine-yamal-miss-spains-world-150220299.html"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48930567/lamine-yamal-spain-fifa-world-cup-barcelona"
-        },
-        {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/lamine-yamal-injury-update-how-many-world-cup-matches-could-he-miss-spain"
-        }
-      ],
-      "expires_at": "2026-06-15T00:00:00Z"
-    },
-    {
-      "id": "alvarez-romero-argentina-fit-2026-06-03",
-      "type": "news",
-      "confidence": "reported",
-      "he": "לפי הדיווחים, קריסטיאן רומרו וחוליאן אלוורז חזרו לאימונים מלאים עם אלביסלסטה ומוצהרים כשירים. בשורה כפולה לאלופות המגנות על התואר, אבל האם סקאלוני ינצח שוב ב-2026?",
-      "en": "Reports from Argentina's training camp confirm Cristian Romero and Julian Alvarez are both back in full training after their respective injuries and available to Scaloni. A double boost for the defending champions, but can the Albiceleste go back-to-back?",
-      "sources": [
-        {
-          "name": "World Soccer Talk",
-          "url": "https://worldsoccertalk.com/amp/world-cup/good-news-for-argentina-as-julian-alvarez-and-cristian-romero-recover-from-injuries-for-2026-world-cup/"
-        },
-        {
-          "name": "OneFootball",
-          "url": "https://onefootball.com/en/news/cuti-romero-and-julian-alvarez-fit-again-for-world-cup-start-42956644"
-        },
-        {
-          "name": "Mundo Albiceleste",
-          "url": "https://mundoalbiceleste.com/2026/06/02/cristian-romero-and-julian-alvarez-fit-train-with-argentina-national-team/"
-        }
-      ],
-      "expires_at": "2026-06-17T00:00:00Z"
-    },
-    {
-      "id": "countdown-2026-06-03",
-      "type": "countdown",
-      "confidence": "confirmed",
-      "he": "המונדיאל מתחיל בעוד 8 ימים! כל ההימורים עוד פתוחים, מי תהיה ההפתעה של 2026?",
-      "en": "The World Cup kicks off in 8 days! Every prediction is still open. Who'll be the surprise of 2026?",
-      "sources": []
     }
   ]
 }

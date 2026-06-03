@@ -33,7 +33,7 @@ const OUT_FILE = path.join(DATA_DIR, 'pundit.json');
 // First WC2026 match (UTC). Used as the countdown anchor; overridden by the
 // earliest match in the snapshot when available so we never drift from reality.
 const DEFAULT_KICKOFF = '2026-06-11T19:00:00+00:00';
-const MAX_ITEMS = 8;
+const MAX_ITEMS = 3;   // show at most 3 items in the rotation at any time (news prioritized)
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 // Top FIFA-ranked sides -> used only to flag a fixture as a "big match".

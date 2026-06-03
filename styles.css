@@ -7167,6 +7167,8 @@ body:not(.ltr) .home-lang-toggle {
 }
 .pundit-tag.confirmed { background: rgba(52,197,134,0.14); color: #5fd29a; }
 .pundit-tag.reported  { background: rgba(212,168,83,0.16); color: #e6c789; }
+/* Fixed-height text area: always reserves 4 lines so the card never resizes
+   between rotating items. Collapsed = clamped to 4 lines; "see more" expands. */
 .pundit-text {
   position: relative;
   font-size: 14px;
@@ -7174,10 +7176,31 @@ body:not(.ltr) .home-lang-toggle {
   font-weight: 500;
   color: rgba(255,255,255,0.92);
   margin: 0;
-  min-height: 42px;
   transition: opacity 0.35s ease;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+  min-height: calc(1.5em * 4);   /* reserve 4 lines even for short items */
+}
+.pundit-text.expanded {
+  -webkit-line-clamp: unset;
+  overflow: visible;
+  min-height: calc(1.5em * 4);
 }
 .pundit-text.pundit-fade { opacity: 0; }
+.pundit-toggle {
+  margin-top: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #d4a853;
+  font-family: inherit;
+}
+.pundit-toggle:hover { text-decoration: underline; }
 .pundit-sources {
   display: flex;
   flex-wrap: wrap;
