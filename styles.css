@@ -7293,7 +7293,7 @@ body:not(.ltr) .home-lang-toggle {
 #user-dashboard-screen .bet-status-card { padding: 9px 14px; margin-bottom: 5px; }
 #user-dashboard-screen .quick-actions { margin-top: 10px; }
 #user-dashboard-screen .quick-action-btn { padding: 10px; gap: 4px; }
-#user-dashboard-screen .pundit-card { margin: 10px 0 0; }
+#user-dashboard-screen .pundit-card { margin: 15px 0 0; }  /* match the gap above the quick-actions row (flex column: margins add, not collapse) */
 #user-dashboard-screen .pundit-text { font-size: 13.5px; }
 
 /* The betting CTA is the single primary action - make it the hero card. */
