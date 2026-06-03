@@ -1,17 +1,21 @@
-name: Test Scoring Engine
+name: Test Scoring & Sync
 
-# Runs the deterministic end-to-end scoring test (no DB / no secrets) so any
-# change to calculate-scores-v2.js is guarded against scoring regressions.
+# Runs the deterministic tests (no DB / no secrets) so changes to the scoring
+# engine or the live-match sync window are guarded against regressions.
 on:
   push:
     paths:
       - 'scripts/calculate-scores-v2.js'
       - 'scripts/test-scoring.js'
+      - 'scripts/smart-sync.js'
+      - 'scripts/test-smart-sync.js'
       - '.github/workflows/test-scoring.yml'
   pull_request:
     paths:
       - 'scripts/calculate-scores-v2.js'
       - 'scripts/test-scoring.js'
+      - 'scripts/smart-sync.js'
+      - 'scripts/test-smart-sync.js'
   workflow_dispatch:
 
 jobs:
@@ -26,3 +30,5 @@ jobs:
           node-version: '20'
       - name: Run scoring tests
         run: node scripts/test-scoring.js
+      - name: Run smart-sync window tests
+        run: node scripts/test-smart-sync.js

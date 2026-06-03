@@ -16,7 +16,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.s
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 const FOOTBALL_TOKEN = process.env.FOOTBALL_DATA_TOKEN;
 
-if (!SUPABASE_KEY || !FOOTBALL_TOKEN) {
+if ((!SUPABASE_KEY || !FOOTBALL_TOKEN) && require.main === module) {
   console.error('❌ Missing environment variables');
   process.exit(1);
 }
@@ -50,102 +50,94 @@ async function callSupabase(method, table, data = null, query = '') {
   return await response.json();
 }
 
+// Resilient football-data call: 20s timeout per try, retries on network errors,
+// 429 (rate limit) and 5xx with backoff (honoring Retry-After). Fails fast on
+// other 4xx (e.g. 403 bad token) - retrying those is pointless.
 async function callFootballAPI(endpoint) {
   const url = `${FOOTBALL_API_BASE}${endpoint}`;
-  
-  const response = await fetch(url, {
-    headers: {
-      'X-Auth-Token': FOOTBALL_TOKEN
+  const MAX = 4;
+  for (let attempt = 1; ; attempt++) {
+    let response = null, networkErr = null;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 20000);
+    try {
+      response = await fetch(url, { headers: { 'X-Auth-Token': FOOTBALL_TOKEN }, signal: ctrl.signal });
+    } catch (e) {
+      networkErr = e;
+    } finally {
+      clearTimeout(timer);
     }
-  });
-  
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`API request failed: ${response.status} - ${text}`);
+    if (response && response.ok) return await response.json();
+
+    const status = response ? response.status : 0;
+    const retryable = !!networkErr || status === 429 || status >= 500;
+    if (!retryable) {
+      const text = await response.text();
+      throw new Error(`API request failed: ${status} - ${text}`);
+    }
+    if (attempt >= MAX) {
+      throw new Error(`API request failed after ${MAX} attempts: ${networkErr ? networkErr.message : 'HTTP ' + status}`);
+    }
+    const retryAfter = response ? parseInt(response.headers.get('Retry-After') || '', 10) : 0;
+    const waitMs = (retryAfter > 0 ? retryAfter : attempt * 5) * 1000;
+    console.warn(`⚠️  football-data ${networkErr ? networkErr.name : 'HTTP ' + status} - retry ${attempt}/${MAX} in ${waitMs}ms`);
+    await new Promise(r => setTimeout(r, waitMs));
   }
-  
-  return await response.json();
 }
 
 // ===== Smart Decision Logic =====
 
+// Statuses that are final - a match in one of these will never change again,
+// so it never needs another sync.
+const TERMINAL_STATUSES = new Set(['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED']);
+
 async function shouldSync() {
   console.log('🧠 Smart sync: checking if sync is needed...');
-  
+
   const now = new Date();
-  const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000);
-  const fifteenMinutesFromNow = new Date(now.getTime() + 15 * 60 * 1000);
-  const twoHoursFromNow = new Date(now.getTime() + 2 * 60 * 60 * 1000);
-  
-  console.log(`📅 Current time: ${now.toISOString()}`);
-  
-  // Query Supabase for matches in the window
-  const query = `?select=*&match_date=gte.${fifteenMinutesAgo.toISOString()}&match_date=lte.${twoHoursFromNow.toISOString()}`;
-  
+  // A match needs syncing for its WHOLE duration, not just around kickoff.
+  // match_date is the fixed scheduled kickoff, so a live match's match_date sits
+  // in the past. We therefore look back far enough to cover a full match incl.
+  // extra time + penalties + stoppages + delays (~4h), and 15 min into the
+  // future to pre-warm matches about to start. (The previous +/-15min window
+  // only caught the first ~15 min after kickoff, so live scores froze mid-match.)
+  const windowStart = new Date(now.getTime() - 4 * 60 * 60 * 1000);
+  const windowEnd   = new Date(now.getTime() + 15 * 60 * 1000);
+
+  console.log(`📅 Now: ${now.toISOString()} | window ${windowStart.toISOString()} .. ${windowEnd.toISOString()}`);
+
+  const query = `?select=external_id,status,match_date,home_team_code,away_team_code` +
+                `&match_date=gte.${windowStart.toISOString()}&match_date=lte.${windowEnd.toISOString()}`;
+
   try {
     const matches = await callSupabase('GET', 'matches', null, query);
-    
+
     if (!matches || matches.length === 0) {
-      console.log('⏭️  No matches in the next 2 hours - skipping sync');
+      console.log('⏭️  No matches in the live window - skipping sync');
       return false;
     }
-    
-    console.log(`📊 Found ${matches.length} matches in the time window:`);
-    
-    // Categorize matches
-    const liveMatches = [];
-    const startingSoon = [];
-    const startingLater = [];
-    
-    matches.forEach(m => {
-      const matchTime = new Date(m.match_date);
-      const matchTimePlusThreeHours = new Date(matchTime.getTime() + 3 * 60 * 60 * 1000);
-      
-      if (m.status === 'LIVE' || m.status === 'IN_PLAY' || m.status === 'PAUSED') {
-        liveMatches.push(m);
-      } else if (matchTime <= fifteenMinutesFromNow && matchTime >= fifteenMinutesAgo) {
-        // Starting very soon
-        startingSoon.push(m);
-      } else if (matchTime > fifteenMinutesFromNow && matchTimePlusThreeHours > now) {
-        // Will start within window
-        startingLater.push(m);
-      }
+
+    // Anything not yet in a terminal status is worth a sync: it may be about to
+    // start, in play, or just finished but not yet recorded as FINISHED here
+    // (we need one more sync to capture the final score / winner_code).
+    const active = matches.filter(m => !TERMINAL_STATUSES.has(m.status));
+
+    if (active.length === 0) {
+      console.log(`⏭️  ${matches.length} match(es) in window, all finished - skipping sync`);
+      return false;
+    }
+
+    console.log(`🔴 ${active.length} active match(es) in window - SYNC NEEDED`);
+    active.forEach(m => {
+      const mins = Math.round((new Date(m.match_date) - now) / 60000);
+      console.log(`   - ${m.home_team_code} vs ${m.away_team_code} (${m.status}, kickoff ${mins >= 0 ? 'in ' + mins : Math.abs(mins) + ' min ago'})`);
     });
-    
-    if (liveMatches.length > 0) {
-      console.log(`🔴 LIVE matches: ${liveMatches.length} - SYNC NEEDED`);
-      liveMatches.forEach(m => {
-        console.log(`   - ${m.home_team_code} vs ${m.away_team_code} (${m.status})`);
-      });
-      return true;
-    }
-    
-    if (startingSoon.length > 0) {
-      console.log(`⏰ Matches starting within 15 min: ${startingSoon.length} - SYNC NEEDED`);
-      startingSoon.forEach(m => {
-        const minutesUntil = Math.round((new Date(m.match_date) - now) / 60000);
-        console.log(`   - ${m.home_team_code} vs ${m.away_team_code} in ${minutesUntil} min`);
-      });
-      return true;
-    }
-    
-    if (startingLater.length > 0) {
-      console.log(`📅 Matches starting later today: ${startingLater.length}`);
-      const nextMatch = startingLater.sort((a, b) => 
-        new Date(a.match_date) - new Date(b.match_date)
-      )[0];
-      const minutesUntil = Math.round((new Date(nextMatch.match_date) - now) / 60000);
-      console.log(`   Next match: ${nextMatch.home_team_code} vs ${nextMatch.away_team_code} in ${minutesUntil} min`);
-      console.log('⏭️  No immediate action needed - skipping sync');
-      return false;
-    }
-    
-    console.log('⏭️  No relevant matches - skipping sync');
-    return false;
-    
+    return true;
+
   } catch (err) {
     console.error('⚠️  Error checking schedule:', err.message);
-    // On error, sync anyway to be safe
+    // On error, sync anyway to be safe (never miss a live match because the
+    // schedule probe blipped).
     console.log('🔄 Syncing anyway to be safe');
     return true;
   }
@@ -300,9 +292,14 @@ async function main() {
   }
 }
 
-main()
-  .then(() => process.exit(0))
-  .catch(err => {
-    console.error('💥 Unhandled error:', err);
-    process.exit(1);
-  });
+if (require.main === module) {
+  main()
+    .then(() => process.exit(0))
+    .catch(err => {
+      console.error('💥 Unhandled error:', err);
+      process.exit(1);
+    });
+} else {
+  module.exports = { shouldSync, performSync, getTeamCode, resolveWinnerCode, TERMINAL_STATUSES,
+    __setFetch: (fn) => { globalThis.fetch = fn; } };
+}

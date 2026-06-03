@@ -30,22 +30,40 @@ if (!FOOTBALL_TOKEN) {
 
 // ===== Helpers =====
 
+// Resilient football-data call: 20s timeout per try, retries on network errors,
+// 429 (rate limit) and 5xx with backoff (honoring Retry-After). Fails fast on
+// other 4xx (e.g. 403 bad token).
 async function callFootballAPI(endpoint) {
   const url = `${FOOTBALL_API_BASE}${endpoint}`;
   console.log(`📡 Fetching: ${url}`);
-  
-  const response = await fetch(url, {
-    headers: {
-      'X-Auth-Token': FOOTBALL_TOKEN
+  const MAX = 4;
+  for (let attempt = 1; ; attempt++) {
+    let response = null, networkErr = null;
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 20000);
+    try {
+      response = await fetch(url, { headers: { 'X-Auth-Token': FOOTBALL_TOKEN }, signal: ctrl.signal });
+    } catch (e) {
+      networkErr = e;
+    } finally {
+      clearTimeout(timer);
     }
-  });
-  
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`API request failed: ${response.status} - ${text}`);
+    if (response && response.ok) return await response.json();
+
+    const status = response ? response.status : 0;
+    const retryable = !!networkErr || status === 429 || status >= 500;
+    if (!retryable) {
+      const text = await response.text();
+      throw new Error(`API request failed: ${status} - ${text}`);
+    }
+    if (attempt >= MAX) {
+      throw new Error(`API request failed after ${MAX} attempts: ${networkErr ? networkErr.message : 'HTTP ' + status}`);
+    }
+    const retryAfter = response ? parseInt(response.headers.get('Retry-After') || '', 10) : 0;
+    const waitMs = (retryAfter > 0 ? retryAfter : attempt * 5) * 1000;
+    console.warn(`⚠️  football-data ${networkErr ? networkErr.name : 'HTTP ' + status} - retry ${attempt}/${MAX} in ${waitMs}ms`);
+    await new Promise(r => setTimeout(r, waitMs));
   }
-  
-  return await response.json();
 }
 
 async function callSupabase(method, table, data = null, query = '') {
