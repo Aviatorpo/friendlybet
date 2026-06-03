@@ -1,0 +1,28 @@
+name: Test Scoring Engine
+
+# Runs the deterministic end-to-end scoring test (no DB / no secrets) so any
+# change to calculate-scores-v2.js is guarded against scoring regressions.
+on:
+  push:
+    paths:
+      - 'scripts/calculate-scores-v2.js'
+      - 'scripts/test-scoring.js'
+      - '.github/workflows/test-scoring.yml'
+  pull_request:
+    paths:
+      - 'scripts/calculate-scores-v2.js'
+      - 'scripts/test-scoring.js'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run scoring tests
+        run: node scripts/test-scoring.js

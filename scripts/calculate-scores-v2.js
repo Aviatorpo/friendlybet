@@ -11,7 +11,7 @@
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 
-if (!SUPABASE_KEY) {
+if (!SUPABASE_KEY && require.main === module) {
   console.error('Missing SUPABASE_SECRET_KEY');
   process.exit(1);
 }
@@ -479,7 +479,19 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
   }
 }
 
-main().then(() => process.exit(0)).catch(err => {
-  console.error('Fatal:', err);
-  process.exit(1);
-});
+// Run only when executed directly; when required (tests) expose the internals.
+if (require.main === module) {
+  main().then(() => process.exit(0)).catch(err => {
+    console.error('Fatal:', err);
+    process.exit(1);
+  });
+} else {
+  module.exports = {
+    main, scoreSinglePhasePool, scoreTwoPhasePool,
+    computeGroupStandings, groupIsComplete, knockoutWinner,
+    bracketPosRuleKey, stageRuleKey, poolMultResolver,
+    DEFAULT_RULES_SINGLE, DEFAULT_RULES_TWO, DEFAULT_CAT_MULT, FIFA_RANK,
+    // allow tests to inject a fake Supabase transport
+    __setFetch: (fn) => { globalThis.fetch = fn; },
+  };
+}

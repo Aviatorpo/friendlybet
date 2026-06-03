@@ -1,0 +1,220 @@
+// ============================================================
+// End-to-end scoring test for calculate-scores-v2.js
+// ============================================================
+// Runs the REAL scoring functions against a fully simulated tournament
+// (12 scored groups + a complete knockout incl. TWO penalty-decided matches),
+// with picks whose points are hand-computed, and asserts every category.
+// Run: node scripts/test-scoring.js   (no DB / no secrets needed)
+// ============================================================
+
+process.env.SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY || 'test-key';
+const S = require('./calculate-scores-v2.js');
+
+let pass = 0, fail = 0;
+function eq(label, got, want) {
+  const ok = JSON.stringify(got) === JSON.stringify(want);
+  console.log(`${ok ? '✓' : '✗ FAIL'}  ${label}  got=${JSON.stringify(got)}${ok ? '' : ` want=${JSON.stringify(want)}`}`);
+  ok ? pass++ : fail++;
+}
+
+// ---------- 1. PURE-FUNCTION UNIT TESTS ----------
+console.log('\n== unit: bracketPosRuleKey ==');
+eq('pos1->r32',  S.bracketPosRuleKey(1),  'round_of_32');
+eq('pos16->r32', S.bracketPosRuleKey(16), 'round_of_32');
+eq('pos17->r16', S.bracketPosRuleKey(17), 'round_of_16');
+eq('pos24->r16', S.bracketPosRuleKey(24), 'round_of_16');
+eq('pos25->qf',  S.bracketPosRuleKey(25), 'quarter_final');
+eq('pos28->qf',  S.bracketPosRuleKey(28), 'quarter_final');
+eq('pos29->sf',  S.bracketPosRuleKey(29), 'semi_final');
+eq('pos30->sf',  S.bracketPosRuleKey(30), 'semi_final');
+eq('pos31->final', S.bracketPosRuleKey(31), 'final');
+eq('pos0->null',  S.bracketPosRuleKey(0),  null);
+eq('pos32->null', S.bracketPosRuleKey(32), null);
+eq('null->null',  S.bracketPosRuleKey(null), null);
+
+console.log('\n== unit: stageRuleKey ==');
+eq('LAST_32',       S.stageRuleKey('LAST_32'), 'round_of_32');
+eq('ROUND_OF_32',   S.stageRuleKey('ROUND_OF_32'), 'round_of_32');
+eq('LAST_16',       S.stageRuleKey('LAST_16'), 'round_of_16');
+eq('QUARTER_FINALS',S.stageRuleKey('QUARTER_FINALS'), 'quarter_final');
+eq('SEMI_FINALS',   S.stageRuleKey('SEMI_FINALS'), 'semi_final');
+eq('FINAL',         S.stageRuleKey('FINAL'), 'final');
+eq('GROUP_STAGE->null', S.stageRuleKey('GROUP_STAGE'), null);
+
+console.log('\n== unit: knockoutWinner (penalties!) ==');
+eq('normal home win', S.knockoutWinner({home_score:2,away_score:1,home_team_code:'H',away_team_code:'A'}), 'H');
+eq('normal away win', S.knockoutWinner({home_score:0,away_score:3,home_team_code:'H',away_team_code:'A'}), 'A');
+eq('penalty: winner_code used', S.knockoutWinner({home_score:1,away_score:1,winner_code:'A',home_team_code:'H',away_team_code:'A'}), 'A');
+eq('0-0 penalty winner_code', S.knockoutWinner({home_score:0,away_score:0,winner_code:'H',home_team_code:'H',away_team_code:'A'}), 'H');
+eq('tied, no winner_code -> null', S.knockoutWinner({home_score:1,away_score:1,home_team_code:'H',away_team_code:'A'}), null);
+eq('winner_code overrides score', S.knockoutWinner({home_score:2,away_score:1,winner_code:'A',home_team_code:'H',away_team_code:'A'}), 'A');
+
+console.log('\n== unit: computeGroupStandings (tie-break pts>gd>gf>code) ==');
+(() => {
+  // X beats everyone, Y 2nd, Z & W tie on pts but Z has better GD
+  const ms = [
+    {home_team_code:'X',away_team_code:'Y',home_score:1,away_score:0,status:'FINISHED'},
+    {home_team_code:'X',away_team_code:'Z',home_score:1,away_score:0,status:'FINISHED'},
+    {home_team_code:'X',away_team_code:'W',home_score:5,away_score:0,status:'FINISHED'},
+    {home_team_code:'Y',away_team_code:'Z',home_score:1,away_score:0,status:'FINISHED'},
+    {home_team_code:'Y',away_team_code:'W',home_score:1,away_score:0,status:'FINISHED'},
+    {home_team_code:'Z',away_team_code:'W',home_score:1,away_score:0,status:'FINISHED'},
+  ];
+  const order = S.computeGroupStandings(ms, ['X','Y','Z','W']).map(s => s.code);
+  eq('order X>Y>Z>W', order, ['X','Y','Z','W']);
+})();
+(() => {
+  // pts tie A=B=3 each beat the other? make A and B both beat C and D, A-B draw
+  const ms = [
+    {home_team_code:'A',away_team_code:'B',home_score:0,away_score:0,status:'FINISHED'},
+    {home_team_code:'A',away_team_code:'C',home_score:3,away_score:0,status:'FINISHED'},
+    {home_team_code:'A',away_team_code:'D',home_score:1,away_score:0,status:'FINISHED'},
+    {home_team_code:'B',away_team_code:'C',home_score:1,away_score:0,status:'FINISHED'},
+    {home_team_code:'B',away_team_code:'D',home_score:1,away_score:0,status:'FINISHED'},
+    {home_team_code:'C',away_team_code:'D',home_score:0,away_score:0,status:'FINISHED'},
+  ];
+  // A: 7pts(2W1D) gd+4 ; B: 7pts gd+2 ; -> A before B by GD
+  const order = S.computeGroupStandings(ms, ['A','B','C','D']).map(s => s.code);
+  eq('GD tiebreak A>B', order.slice(0,2), ['A','B']);
+})();
+
+console.log('\n== unit: poolMultResolver (precedence / disabled / NaN) ==');
+(() => {
+  const rules = { multipliers: { favorite:1, contender:1.5, underdog:2 }, team_multipliers: { ARG: 3 } };
+  const on  = S.poolMultResolver({ use_multipliers:true }, rules);
+  const off = S.poolMultResolver({ use_multipliers:false }, rules);
+  eq('disabled -> 1', off('ARG', null), 1);
+  eq('persisted snapshot wins', on('ARG', 2.5), 2.5);
+  eq('per-team override', on('ARG', null), 3);
+  eq('category by rank (ARG=favorite=1)', on('FRA', null), 1);          // FRA rank3
+  eq('category underdog (CUR=85)', on('CUR', null), 2);                 // underdog
+  eq('contender (MEX=17)', on('MEX', null), 1.5);
+  eq('unknown code -> underdog default', on('ZZZ', null), 2);
+  eq('NaN persisted ignored -> falls through', on('FRA', 'oops'), 1);
+})();
+
+// ---------- 2. FULL TOURNAMENT INTEGRATION ----------
+// Build 12 groups A..L, teams <L>1..<L>4, better seed always wins 1-0.
+// Final standings per group = [<L>1,<L>2,<L>3,<L>4]; each 3rd has pts3 gd-1 gf1.
+const LETTERS = 'ABCDEFGHIJKL'.split('');
+const groupMatches = [];
+for (const L of LETTERS) {
+  const t = [L+'1', L+'2', L+'3', L+'4'];
+  const pairs = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+  for (const [i,j] of pairs) {
+    groupMatches.push({ stage:'GROUP_STAGE', group_letter:L,
+      home_team_code:t[i], away_team_code:t[j], home_score:1, away_score:0, status:'FINISHED' });
+  }
+}
+// best-8 thirds: all 3rds identical -> alphabetical -> A3..H3 advance, I3..L3 don't.
+
+// Knockout matches (note TWO penalty-decided: a R32 and the FINAL).
+const koMatches = [
+  { stage:'LAST_32', home_team_code:'KO1', away_team_code:'KO2', home_score:2, away_score:1, status:'FINISHED' },          // KO1 wins normally
+  { stage:'LAST_32', home_team_code:'KOP1',away_team_code:'KOP2',home_score:1, away_score:1, winner_code:'KOP2', status:'FINISHED' }, // penalties -> KOP2
+  { stage:'LAST_32', home_team_code:'ARG', away_team_code:'xx1', home_score:1, away_score:0, status:'FINISHED' },          // ARG (favorite) wins
+  { stage:'LAST_32', home_team_code:'MEX', away_team_code:'xx2', home_score:1, away_score:0, status:'FINISHED' },          // MEX (contender) wins
+  { stage:'LAST_16', home_team_code:'KO1', away_team_code:'xx3', home_score:3, away_score:0, status:'FINISHED' },
+  { stage:'QUARTER_FINALS', home_team_code:'KO1', away_team_code:'xx4', home_score:1, away_score:0, status:'FINISHED' },
+  { stage:'SEMI_FINALS', home_team_code:'KO1', away_team_code:'xx5', home_score:2, away_score:0, status:'FINISHED' },
+  { stage:'FINAL', home_team_code:'KO1', away_team_code:'xx6', home_score:0, away_score:0, winner_code:'KO1', status:'FINISHED' }, // FINAL on penalties -> KO1 champion
+];
+const finishedMatches = groupMatches.concat(koMatches);
+
+// Per-user pick fixtures (keyed by user id)
+const gppByUser = {}, kpByUser = {}, tppByUser = {};
+function gpp(uid, L, picks) { // picks = [t1,t2,t3,t4] team for positions 1..4
+  gppByUser[uid] = gppByUser[uid] || [];
+  picks.forEach((code, idx) => { if (code) gppByUser[uid].push({ group_letter:L, position:idx+1, team_code:code }); });
+}
+function bracket(uid, pos, team) { kpByUser[uid] = kpByUser[uid] || []; kpByUser[uid].push({ bracket_position:pos, predicted_winner:team }); }
+function thirds(uid, letters) { tppByUser[uid] = letters.map(L => ({ group_letter:L })); }
+
+// U1 single-phase, multipliers OFF. Full group A + full group I correct.
+gpp('U1','A',['A1','A2','A3','A4']);
+gpp('U1','I',['I1','I2','I3','I4']);
+thirds('U1',['A','I']);                 // A3 in best8 (+1), I3 not (+0)
+bracket('U1',1,'KO1');                  // r32 +2
+bracket('U1',2,'KOP2');                 // r32 via PENALTY +2  (regression guard)
+bracket('U1',17,'KO1');                 // r16 +4
+bracket('U1',25,'KO1');                 // qf  +8
+bracket('U1',29,'KO1');                 // sf  +16
+bracket('U1',31,'KO1');                 // final via PENALTY +32 (regression guard)
+// U1 top scorer correct -> +10
+// expected: group=20, knockout=2+2+4+8+16+32=64, bonus=1(third)+10(ts)=11, total=95
+
+// U2 single-phase, multipliers ON (defaults). Synthetic=underdog x2; ARG fav x1; MEX cont x1.5
+gpp('U2','B',['B1','B2','B3','B4']);    // (4+3+2+1)*2 = 20
+bracket('U2',1,'KO1');                  // 2 * x2 = 4
+bracket('U2',3,'ARG');                  // 2 * x1 = 2
+bracket('U2',5,'MEX');                  // 2 * x1.5 = 3
+// expected: group=20, knockout=4+2+3=9, bonus=0, total=29
+
+// U3 two-phase, multipliers OFF.
+const gp3 = [{ team_code:'A1' }];       // A1 wins 3 group matches -> 3*group_first(1)=3
+const kp3 = [{ predicted_winner:'KO1' }, { predicted_winner:'KOP2' }];
+kpByUser['U3'] = kp3;                    // wire U3's two-phase knockout picks into the mock
+// KO1 wins LAST_32+LAST_16+QF+SF+FINAL = 2+4+8+16+32=62 ; KOP2 penalty r32 = +2 -> 64
+// U3 top scorer correct -> +10
+// expected: group=3, knockout=64, bonus=10, total=77
+
+// U4 single-phase, multipliers ON, ALL teams x1.5 -> rounding (sum-then-round) check.
+gpp('U4','C',[null,'C2',null,'C4']);    // pos2=3*1.5=4.5 ; pos4=1*1.5=1.5 ; sum=6.0 -> round 6 (NOT 7)
+// expected: group=6, knockout=0, bonus=0, total=6
+
+// ---------- mock Supabase transport ----------
+const captured = {};
+const idOf = (url) => { const m = url.match(/(?:user_id|id)=eq\.([^&]+)/); return m ? m[1] : null; };
+const resp = (data) => ({ ok:true, status:200, text: async () => JSON.stringify(data) });
+S.__setFetch(async (url, opts) => {
+  const method = (opts && opts.method) || 'GET';
+  if (method === 'PATCH' && url.includes('/users')) { captured[idOf(url)] = JSON.parse(opts.body); return resp([{}]); }
+  if (method === 'GET'  && url.includes('/matches') && url.includes('GROUP_STAGE')) return resp(groupMatches);
+  if (method === 'GET'  && url.includes('/group_position_picks')) return resp(gppByUser[idOf(url)] || []);
+  if (method === 'GET'  && url.includes('/knockout_picks'))       return resp(kpByUser[idOf(url)] || []);
+  if (method === 'GET'  && url.includes('/sp_third_place_picks')) return resp(tppByUser[idOf(url)] || []);
+  if (method === 'GET'  && url.includes('/group_picks'))          return resp(idOf(url) === 'U3' ? gp3 : []);
+  return resp([]);
+});
+
+(async () => {
+  const rulesSingle = { ...S.DEFAULT_RULES_SINGLE };           // 4/3/2/1, r32..final, third_place_advance=1, top_scorer=10
+  const rulesAllX15 = { ...S.DEFAULT_RULES_SINGLE, multipliers: { favorite:1.5, contender:1.5, underdog:1.5 } };
+  const rulesTwo    = { ...S.DEFAULT_RULES_TWO };              // group_first=1, r32..final, top_scorer=10
+
+  const tsMapSingle = new Map([['U1', { player_id:'TS1' }]]);  // U1 correct top scorer
+  const tsMapTwo    = new Map([['U3', { player_id:'TS1' }]]);  // U3 correct top scorer
+
+  console.log('\n== integration: single-phase, multipliers OFF (U1) ==');
+  await S.scoreSinglePhasePool({ id:'P1', code:'P1', use_multipliers:false }, rulesSingle,
+    [{ id:'U1', nickname:'U1' }], finishedMatches, tsMapSingle, 'TS1');
+  eq('U1 group', captured.U1.group_points, 20);
+  eq('U1 knockout', captured.U1.knockout_points, 64);
+  eq('U1 bonus', captured.U1.bonus_points, 11);
+  eq('U1 total', captured.U1.total_score, 95);
+
+  console.log('\n== integration: single-phase, multipliers ON (U2) ==');
+  await S.scoreSinglePhasePool({ id:'P2', code:'P2', use_multipliers:true }, rulesSingle,
+    [{ id:'U2', nickname:'U2' }], finishedMatches, new Map(), null);
+  eq('U2 group (x2)', captured.U2.group_points, 20);
+  eq('U2 knockout (4+2+3)', captured.U2.knockout_points, 9);
+  eq('U2 bonus', captured.U2.bonus_points, 0);
+  eq('U2 total', captured.U2.total_score, 29);
+
+  console.log('\n== integration: two-phase (U3) ==');
+  await S.scoreTwoPhasePool({ id:'P3', code:'P3', use_multipliers:false }, rulesTwo,
+    [{ id:'U3', nickname:'U3' }], finishedMatches, tsMapTwo, 'TS1');
+  eq('U3 group (3 wins x1)', captured.U3.group_points, 3);
+  eq('U3 knockout (62 + 2 penalty)', captured.U3.knockout_points, 64);
+  eq('U3 bonus (top scorer)', captured.U3.bonus_points, 10);
+  eq('U3 total', captured.U3.total_score, 77);
+
+  console.log('\n== integration: rounding sum-then-round (U4) ==');
+  await S.scoreSinglePhasePool({ id:'P4', code:'P4', use_multipliers:true }, rulesAllX15,
+    [{ id:'U4', nickname:'U4' }], finishedMatches, new Map(), null);
+  eq('U4 group (round(4.5+1.5)=6, not 7)', captured.U4.group_points, 6);
+  eq('U4 total', captured.U4.total_score, 6);
+
+  console.log(`\n==== ${pass} passed, ${fail} failed ====`);
+  process.exit(fail ? 1 : 0);
+})();
