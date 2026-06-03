@@ -1,0 +1,32 @@
+{
+  "updatedAt": "2026-06-03T07:23:45.767Z",
+  "count": 2,
+  "items": [
+    {
+      "id": "neymar-fitness-2026-06-03",
+      "type": "news",
+      "confidence": "reported",
+      "he": "8 ימים לפתיחה וניימאר עדיין לא כשיר לחלוטין. לפי הדיווחים הוא במרוץ נגד הזמן לקראת משחק הפתיחה של ברזיל. ישפיע על הסלסאו?",
+      "en": "8 days to go and Neymar still isn't fully fit. Reports say he's racing the clock for Brazil's opener. Will it dent the Seleção?",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/"
+        },
+        {
+          "name": "Globo",
+          "url": "https://ge.globo.com/"
+        }
+      ],
+      "expires_at": "2026-06-11T00:00:00.000Z"
+    },
+    {
+      "id": "countdown-2026-06-03",
+      "type": "countdown",
+      "confidence": "confirmed",
+      "he": "המונדיאל מתחיל בעוד 9 ימים! כל ההימורים עוד פתוחים, מי תהיה ההפתעה של 2026?",
+      "en": "The World Cup kicks off in 9 days! Every prediction is still open. Who'll be the surprise of 2026?",
+      "sources": []
+    }
+  ]
+}

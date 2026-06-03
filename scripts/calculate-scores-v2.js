@@ -118,6 +118,19 @@ function groupIsComplete(matches) {
   return matches.every(m => m.status === 'FINISHED' || (m.home_score != null && m.away_score != null));
 }
 
+// Knockout winner. Prefer the explicit winner_code (from football-data
+// score.winner) because a penalty shootout / extra-time win leaves
+// home_score == away_score, which the raw score comparison would read as "no
+// winner" and award zero points. Fall back to the score comparison for rows
+// synced before winner_code existed.
+function knockoutWinner(m) {
+  if (m.winner_code) return m.winner_code;
+  if (m.home_score == null || m.away_score == null) return null;
+  if (m.home_score > m.away_score) return m.home_team_code;
+  if (m.away_score > m.home_score) return m.away_team_code;
+  return null; // tied with no winner_code (e.g. penalties not yet captured)
+}
+
 // Map a stage string to a scoring rule key
 function stageRuleKey(stage) {
   switch ((stage || '').toUpperCase()) {
@@ -169,28 +182,36 @@ async function main() {
     if (settings && settings[0] && settings[0].top_scorer) realTopScorer = settings[0].top_scorer;
   } catch (e) { /* ignore */ }
 
-  // 4. Per-pool processing
+  // 4. Per-pool processing. Each pool is isolated in a try/catch so one bad
+  // pool (e.g. a transient fetch error) can't abort scoring for everyone else.
+  let poolFailures = 0;
   for (const pool of pools) {
-    const mode = pool.betting_mode || 'two_phase';
-    const rules = pool.scoring_rules ||
-      (mode === 'single_phase' ? DEFAULT_RULES_SINGLE : DEFAULT_RULES_TWO);
+    try {
+      const mode = pool.betting_mode || 'two_phase';
+      const rules = pool.scoring_rules ||
+        (mode === 'single_phase' ? DEFAULT_RULES_SINGLE : DEFAULT_RULES_TWO);
 
-    console.log(`\nPool ${pool.code} - ${pool.name} (${mode})`);
+      console.log(`\nPool ${pool.code} - ${pool.name} (${mode})`);
 
-    const users = await sb('GET', 'users', { query: `?pool_id=eq.${pool.id}&select=*` });
-    if (!users || !users.length) { console.log('  no users'); continue; }
+      const users = await sb('GET', 'users', { query: `?pool_id=eq.${pool.id}&select=*` });
+      if (!users || !users.length) { console.log('  no users'); continue; }
 
-    // Get all top_scorer_picks for users in this pool
-    const tsPicks = await sb('GET', 'top_scorer_picks',
-      { query: `?pool_id=eq.${pool.id}&select=*` });
-    const tsMap = new Map((tsPicks || []).map(t => [t.user_id, t]));
+      // Get all top_scorer_picks for users in this pool
+      const tsPicks = await sb('GET', 'top_scorer_picks',
+        { query: `?pool_id=eq.${pool.id}&select=*` });
+      const tsMap = new Map((tsPicks || []).map(t => [t.user_id, t]));
 
-    if (mode === 'single_phase') {
-      await scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer);
-    } else {
-      await scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer);
+      if (mode === 'single_phase') {
+        await scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer);
+      } else {
+        await scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer);
+      }
+    } catch (e) {
+      poolFailures++;
+      console.error(`  ✖ pool ${pool.code} failed, skipping:`, e.message);
     }
   }
+  if (poolFailures) console.warn(`\n${poolFailures} pool(s) failed and were skipped.`);
 
   console.log(`\nDone in ${((Date.now() - startedAt) / 1000).toFixed(1)}s`);
 }
@@ -215,7 +236,13 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
   const thirdStats = {}; // letter -> stat object of the 3rd-placed team
   Object.keys(groupCodes).forEach(letter => {
     const teams = [...groupCodes[letter]];
-    if (teams.length !== 4) return;
+    if (teams.length !== 4) {
+      // Loud warning: a group with !=4 teams will NEVER score. This is almost
+      // always a data problem (missing fixtures / unmapped team codes), as
+      // happened when Ecuador/Colombia matches were dropped on sync.
+      console.warn(`  ⚠️ group ${letter} has ${teams.length} teams (expected 4) - SKIPPED, will not score: ${teams.join(',')}`);
+      return;
+    }
     const groupMatches = allGroupMatchesAny.filter(m => (m.group_letter || m.group) === letter);
     if (!groupIsComplete(groupMatches)) return;
     const orderedStats = computeGroupStandings(groupMatches, teams);
@@ -240,9 +267,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
   ['ROUND_OF_32','LAST_32','R32','LAST_16','ROUND_OF_16','R16','QUARTER_FINALS','QF','SEMI_FINALS','SF','FINAL'].forEach(s => { realKnockoutWinners[s] = new Set(); });
   finishedMatches.forEach(m => {
     if (!m.stage || m.stage === 'GROUP_STAGE' || m.stage === 'THIRD_PLACE') return;
-    const winner = m.home_score > m.away_score ? m.home_team_code
-                 : m.away_score > m.home_score ? m.away_team_code
-                 : null;
+    const winner = knockoutWinner(m);
     if (!winner) return;
     if (realKnockoutWinners[m.stage]) realKnockoutWinners[m.stage].add(winner);
   });
@@ -319,7 +344,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
 
     // Top scorer
     const tsp = tsMap.get(user.id);
-    if (tsp && realTopScorer && tsp.player_id === realTopScorer) {
+    if (tsp && realTopScorer && String(tsp.player_id) === String(realTopScorer)) {
       bonusPoints += rules.top_scorer || 0;
     }
 
@@ -400,9 +425,7 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
       { query: `?user_id=eq.${user.id}&select=*` });
     finishedMatches.forEach(m => {
       if (!m.stage || m.stage === 'GROUP_STAGE' || m.stage === 'THIRD_PLACE') return;
-      const winner = m.home_score > m.away_score ? m.home_team_code
-                   : m.away_score > m.home_score ? m.away_team_code
-                   : null;
+      const winner = knockoutWinner(m);
       if (!winner) return;
       const pick = (kp || []).find(p => p.predicted_winner === winner || p.team_code === winner);
       if (!pick) return;
@@ -417,7 +440,7 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
 
     // Top scorer
     const tsp = tsMap.get(user.id);
-    if (tsp && realTopScorer && tsp.player_id === realTopScorer) {
+    if (tsp && realTopScorer && String(tsp.player_id) === String(realTopScorer)) {
       bonusPoints += rules.top_scorer || 0;
     }
 

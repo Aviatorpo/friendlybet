@@ -1445,6 +1445,23 @@ function loadTablerFallback() {
     </div>
 
     <div class="container">
+      <!-- The Pundit - live rotating commentary (v2.6.68).
+           Fed by public-data/pundit.json: zero-hallucination data items
+           (countdown / fixtures / results) merged with verified news items
+           (>=2 independent sources). Hidden until the feed loads. -->
+      <div id="pundit-card" class="pundit-card" style="display:none;">
+        <div class="pundit-head">
+          <span class="pundit-badge-live">
+            <span class="pundit-dot"></span>
+            <span data-i18n="pundit.title">הפרשן</span>
+          </span>
+          <span id="pundit-tag" class="pundit-tag" style="display:none;"></span>
+        </div>
+        <p id="pundit-text" class="pundit-text"></p>
+        <div id="pundit-sources" class="pundit-sources" style="display:none;"></div>
+        <div id="pundit-dots" class="pundit-dots"></div>
+      </div>
+
       <!-- Pre-tournament status (shown until scoring starts) -->
       <div id="dashboard-pre-tournament" class="pre-tournament-card">
         <i class="ti ti-trophy"></i>

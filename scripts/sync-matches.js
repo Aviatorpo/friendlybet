@@ -139,6 +139,27 @@ function getTeamCode(teamName) {
   return TEAM_NAME_TO_CODE[teamName] || null;
 }
 
+// Does the matches table have the winner_code column yet? The migration
+// (2026-06-03-add-match-winner.sql) is applied manually, so probe for it and
+// only write winner_code once it exists - otherwise the upsert would 400.
+async function matchesHasWinnerCol() {
+  try {
+    await callSupabase('GET', 'matches', null, '?select=winner_code&limit=1');
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// Resolve football-data score.winner (accounts for extra time / penalties)
+// to our team code. NULL for draws / not-yet-decided.
+function resolveWinnerCode(m, homeCode, awayCode) {
+  const w = m.score && m.score.winner;
+  if (w === 'HOME_TEAM') return homeCode;
+  if (w === 'AWAY_TEAM') return awayCode;
+  return null;
+}
+
 // ===== Main sync function =====
 
 async function syncMatches() {
@@ -156,13 +177,18 @@ async function syncMatches() {
     }
     
     console.log(`✅ Got ${data.matches.length} matches from API`);
-    
+
+    const hasWinnerCol = await matchesHasWinnerCol();
+    if (!hasWinnerCol) {
+      console.log('ℹ️  matches.winner_code not present yet (run migration 2026-06-03-add-match-winner.sql) - skipping winner capture');
+    }
+
     // Transform matches for our DB
     const transformedMatches = data.matches.map(m => {
       const homeCode = getTeamCode(m.homeTeam?.name);
       const awayCode = getTeamCode(m.awayTeam?.name);
-      
-      return {
+
+      const row = {
         external_id: String(m.id),
         stage: m.stage,
         group_letter: m.group ? m.group.replace('GROUP_', '') : null,
@@ -175,6 +201,8 @@ async function syncMatches() {
         venue: m.venue || null,
         last_updated: new Date().toISOString()
       };
+      if (hasWinnerCol) row.winner_code = resolveWinnerCode(m, homeCode, awayCode);
+      return row;
     });
     
     // Filter out matches where we couldn't map teams (e.g., TBD teams)

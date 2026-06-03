@@ -178,6 +178,25 @@ function getTeamCode(teamName) {
   return TEAM_NAME_TO_CODE[teamName] || null;
 }
 
+// Probe for matches.winner_code (migration applied manually); only write it
+// once it exists, else the upsert would 400.
+async function matchesHasWinnerCol() {
+  try {
+    await callSupabase('GET', 'matches', null, '?select=winner_code&limit=1');
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// Resolve football-data score.winner (accounts for ET / penalties) to our code.
+function resolveWinnerCode(m, homeCode, awayCode) {
+  const w = m.score && m.score.winner;
+  if (w === 'HOME_TEAM') return homeCode;
+  if (w === 'AWAY_TEAM') return awayCode;
+  return null;
+}
+
 // ===== Sync Logic =====
 
 async function performSync() {
@@ -192,11 +211,13 @@ async function performSync() {
   
   console.log(`✅ Got ${data.matches.length} matches from API`);
   
+  const hasWinnerCol = await matchesHasWinnerCol();
+
   const transformedMatches = data.matches.map(m => {
     const homeCode = getTeamCode(m.homeTeam?.name);
     const awayCode = getTeamCode(m.awayTeam?.name);
-    
-    return {
+
+    const row = {
       external_id: String(m.id),
       stage: m.stage,
       group_letter: m.group ? m.group.replace('GROUP_', '') : null,
@@ -209,6 +230,8 @@ async function performSync() {
       venue: m.venue || null,
       last_updated: new Date().toISOString()
     };
+    if (hasWinnerCol) row.winner_code = resolveWinnerCode(m, homeCode, awayCode);
+    return row;
   });
   
   const validMatches = transformedMatches.filter(m => m.home_team_code && m.away_team_code);

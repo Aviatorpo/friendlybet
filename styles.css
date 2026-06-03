@@ -7111,6 +7111,113 @@ body:not(.ltr) .home-lang-toggle {
 }
 .pre-tournament-card.progress-allSet > i { color: #3ddc97; }
 
+/* ===== The Pundit - live rotating dashboard commentary (v2.6.68) ===== */
+.pundit-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(212,168,83,0.10) 0%, rgba(255,255,255,0.03) 60%);
+  border: 0.5px solid rgba(212,168,83,0.22);
+  border-radius: 14px;
+  padding: 14px 14px 12px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.pundit-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 80% at 100% 0%, rgba(212,168,83,0.12), transparent 60%);
+  pointer-events: none;
+}
+.pundit-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 9px;
+  position: relative;
+}
+.pundit-badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #d4a853;
+}
+.pundit-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e0483a;
+  box-shadow: 0 0 0 0 rgba(224,72,58,0.7);
+  animation: punditPulse 1.8s infinite;
+}
+@keyframes punditPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(224,72,58,0.6); }
+  70%  { box-shadow: 0 0 0 6px rgba(224,72,58,0); }
+  100% { box-shadow: 0 0 0 0 rgba(224,72,58,0); }
+}
+.pundit-tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.pundit-tag.confirmed { background: rgba(52,197,134,0.14); color: #5fd29a; }
+.pundit-tag.reported  { background: rgba(212,168,83,0.16); color: #e6c789; }
+.pundit-text {
+  position: relative;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: rgba(255,255,255,0.92);
+  margin: 0;
+  min-height: 42px;
+  transition: opacity 0.35s ease;
+}
+.pundit-text.pundit-fade { opacity: 0; }
+.pundit-sources {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  position: relative;
+}
+.pundit-source-label { font-size: 10px; color: rgba(255,255,255,0.4); }
+.pundit-source {
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  border: 0.5px solid rgba(255,255,255,0.14);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.pundit-source:hover { color: #fff; border-color: rgba(212,168,83,0.4); }
+.pundit-dots {
+  display: flex;
+  gap: 5px;
+  margin-top: 11px;
+  position: relative;
+}
+.pundit-dots span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.pundit-dots span.active {
+  background: #d4a853;
+  width: 16px;
+  border-radius: 3px;
+}
+
 /* Dominant Start CTA card (replaces the small "Start" button) */
 .bet-cta-card {
   display: flex;
