@@ -39,12 +39,13 @@ const PAYLOAD = { matches: [
 ] };
 
 const captured = [];
+const HEADERS = { get: (k) => (k === 'X-Requests-Available-Minute' ? '8' : null) }; // stub like a real Response
 S.__setFetch(async (url, opts) => {
   const method = (opts && opts.method) || 'GET';
-  if (url.includes('api.football-data.org')) return { ok: true, json: async () => PAYLOAD };
-  if (url.includes('/rest/v1/matches') && url.includes('select=winner_code')) return { ok: true, json: async () => [] }; // column exists
-  if (url.includes('/rest/v1/matches') && method === 'POST') { captured.push(...JSON.parse(opts.body)); return { ok: true, json: async () => [] }; }
-  return { ok: true, json: async () => [] };
+  if (url.includes('api.football-data.org')) return { ok: true, headers: HEADERS, json: async () => PAYLOAD };
+  if (url.includes('/rest/v1/matches') && url.includes('select=winner_code')) return { ok: true, headers: HEADERS, json: async () => [] }; // column exists
+  if (url.includes('/rest/v1/matches') && method === 'POST') { captured.push(...JSON.parse(opts.body)); return { ok: true, headers: HEADERS, json: async () => [] }; }
+  return { ok: true, headers: HEADERS, json: async () => [] };
 });
 
 (async () => {
