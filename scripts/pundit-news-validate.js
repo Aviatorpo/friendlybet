@@ -68,6 +68,11 @@ function validate() {
     if (!it.expires_at || isNaN(Date.parse(it.expires_at))) {
       errors.push(`${at}: missing/invalid expires_at (ISO date)`);
     }
+
+    // Optional: team flag. If present it must be a 3-letter WC2026 team code.
+    if (it.team != null && !/^[A-Z]{3}$/.test(String(it.team))) {
+      errors.push(`${at}: team must be a 3-letter team code (e.g. BRA), got "${it.team}"`);
+    }
   });
 
   return errors;

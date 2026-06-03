@@ -134,6 +134,7 @@ function build(now) {
       type: 'news',
       confidence: n.confidence === 'confirmed' ? 'confirmed' : 'reported',
       he: n.he, en: n.en,
+      team: typeof n.team === 'string' ? n.team.toUpperCase() : null,  // single-nation flag, optional
       sources: Array.isArray(n.sources) ? n.sources.filter(s => s && s.url) : [],
       expires_at: n.expires_at || null,
     }))

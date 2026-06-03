@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-03T08:36:36.236Z",
+  "updatedAt": "2026-06-03T09:52:06.001Z",
   "count": 3,
   "items": [
     {
@@ -8,6 +8,7 @@
       "confidence": "confirmed",
       "he": "ניימאר נגד השעון: הכוכב הברזילאי נפצע בשריר השוק הימני ב-17 במאי, וספק אם יספיק לפתיחה מול מרוקו ב-13 ביוני. אנצ'לוטי מאמין שיחלים בזמן, אבל מי ייכנס לנעליו אם לא?",
       "en": "Neymar is in a race against time for Brazil's opener against Morocco on June 13, after a grade-2 right calf strain picked up on May 17. Coach Ancelotti holds out hope he makes the first game, but if the legend misses it, who steps up for the Selecao?",
+      "team": "BRA",
       "sources": [
         {
           "name": "ESPN",
@@ -30,6 +31,7 @@
       "confidence": "confirmed",
       "he": "האזעקה חלפה בצרפת: מאמן דשאמפ אמר 'הוא כאן, הכל בסדר' לאחר שסאליבה הצטרף למחנה האימונים. הדיווחים על 'ספק גדול' הופרכו, אבל האם הבלם יהיה ב-100% לקראת הפתיחה מול סנגל ב-16 ביוני?",
       "en": "Panic over for France: Deschamps said 'He's here, everything is fine' as Saliba joined Les Bleus' World Cup camp, putting to rest earlier reports that the Arsenal defender was very doubtful with a back injury. Will he be at full tilt when France face Senegal on June 16?",
+      "team": "FRA",
       "sources": [
         {
           "name": "Get French Football News",
@@ -52,6 +54,7 @@
       "confidence": "confirmed",
       "he": "קפטן קנדה אלפונסו דייוויס אישר שייחסר מהמשחק הפותח מול בוסניה ב-12 ביוני, ואמר שהמתמטיקה של הפציעה לא עובדת לטובתו. האם קנדה תצליח לפתוח את המונדיאל הביתי שלה בלי הכוכב?",
       "en": "Canada captain Alphonso Davies confirmed he will miss the hosts' opener against Bosnia and Herzegovina on June 12, saying the injury mathematics simply do not work in his favour. Can Canada hold their own in front of a home crowd without their star left back?",
+      "team": "CAN",
       "sources": [
         {
           "name": "ESPN",
