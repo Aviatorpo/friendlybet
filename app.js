@@ -1187,7 +1187,7 @@ state.results = {
 
 // Pillar 1: read the CDN match snapshot (Vercel edge) first so live-match spikes hit the
 // CDN instead of Postgres. Returns a matches array, or null to fall back to Supabase.
-let _matchesSnapCache = { at: 0, data: null };
+let _matchesSnapCache = { at: 0, data: null, updatedAt: 0 };
 async function fetchMatchesFromCDN(maxAgeMs = 25000) {
   try {
     if (_matchesSnapCache.data && (Date.now() - _matchesSnapCache.at) < maxAgeMs) return _matchesSnapCache.data;
@@ -1197,9 +1197,20 @@ async function fetchMatchesFromCDN(maxAgeMs = 25000) {
     if (!j || !Array.isArray(j.matches) || j.matches.length === 0) return null;
     const m0 = j.matches[0];
     if (!m0 || typeof m0.id === 'undefined' || typeof m0.status === 'undefined') return null; // shape sanity
-    _matchesSnapCache = { at: Date.now(), data: j.matches };
+    _matchesSnapCache = { at: Date.now(), data: j.matches, updatedAt: Date.parse(j.updatedAt) || 0 };
     return j.matches;
   } catch (_) { return null; }
+}
+
+// Defense-in-depth: if the snapshot shows a live match but the snapshot itself
+// is older than maxAgeMs, the sync->snapshot->CDN pipeline is lagging (delayed
+// cron, Vercel deploy backlog, etc). Bypass it and read live scores straight
+// from Postgres so a stale CDN copy can't freeze live scores on screen.
+const _LIVE_MATCH_STATUSES = ['IN_PLAY', 'PAUSED', 'LIVE'];
+function _snapshotStaleDuringLive(matches, maxAgeMs = 90000) {
+  if (!matches || !_matchesSnapCache.updatedAt) return false;
+  const anyLive = matches.some(m => _LIVE_MATCH_STATUSES.includes(m.status));
+  return anyLive && (Date.now() - _matchesSnapCache.updatedAt) > maxAgeMs;
 }
 
 async function loadResultsData() {
@@ -5809,6 +5820,12 @@ async function loadMatches(silent = false) {
   try {
     // Pillar 1: prefer the CDN snapshot (edge) over a live DB read during spikes.
     let matches = await fetchMatchesFromCDN();
+    // ...but if the snapshot is lagging while a match is live, read live from DB
+    // so a stale CDN copy can never freeze live scores on screen.
+    if (matches && _snapshotStaleDuringLive(matches)) {
+      console.warn('match snapshot stale during live play - reading live from DB');
+      matches = null;
+    }
     if (!matches) {
       const { data, error } = await supabaseClient
         .from('matches')
