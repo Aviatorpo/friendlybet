@@ -2207,7 +2207,7 @@ const FAVORITE_TEAMS_FOR_RANK = new Set([
 
 const CONTENDER_TEAMS_FOR_RANK = new Set([
   'BEL', 'CRO', 'URU', 'COL', 'MAR', 'SUI', 'USA', 'MEX',
-  'JPN', 'KOR', 'SEN', 'IRN'
+  'JPN', 'KOR', 'SEN', 'IRN', 'ECU'
 ]);
 
 const STRIKER_POSITIONS = new Set([
@@ -3392,9 +3392,9 @@ function createTeamCard(team, isSelected) {
 const FLAG_ISO = {
   ARG: 'ar', FRA: 'fr', BRA: 'br', ENG: 'gb-eng', ESP: 'es', POR: 'pt', NED: 'nl', GER: 'de',
   BEL: 'be', CRO: 'hr', URU: 'uy', USA: 'us', MEX: 'mx', SUI: 'ch', AUT: 'at', SWE: 'se',
-  SEN: 'sn', MAR: 'ma', JPN: 'jp', KOR: 'kr', AUS: 'au', CAN: 'ca', UKR: 'ua', TUR: 'tr',
+  SEN: 'sn', MAR: 'ma', JPN: 'jp', KOR: 'kr', AUS: 'au', CAN: 'ca', TUR: 'tr',
   NOR: 'no', IRN: 'ir', SCO: 'gb-sct', CZE: 'cz', ALG: 'dz', CIV: 'ci', TUN: 'tn', EGY: 'eg',
-  CMR: 'cm', GHA: 'gh', PAN: 'pa', JAM: 'jm', PAR: 'py', NZL: 'nz', UZB: 'uz', IRQ: 'iq',
+  GHA: 'gh', PAN: 'pa', PAR: 'py', NZL: 'nz', UZB: 'uz', IRQ: 'iq',
   SAU: 'sa', JOR: 'jo', RSA: 'za', HAI: 'ht', BIH: 'ba', CPV: 'cv', COD: 'cd', QAT: 'qa', CUR: 'cw',
   ECU: 'ec', COL: 'co'
 };
@@ -6970,7 +6970,7 @@ const WC2026_GROUP_LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L'];
 // Lower number = better rank. Unknown codes fall back to 999.
 const FIFA_RANKINGS = {
   ARG: 1,  ESP: 2,  FRA: 3,  ENG: 4,  BRA: 5,  POR: 6,  NED: 7,  BEL: 8,
-  COL: 13, GER: 12, MAR: 14, URU: 15, USA: 16, MEX: 17, JPN: 18, SUI: 19,
+  CRO: 9,  GER: 12, COL: 13, MAR: 14, URU: 15, USA: 16, MEX: 17, JPN: 18, SUI: 19,
   SEN: 20, IRN: 21, KOR: 22, AUT: 23, ECU: 24, SWE: 25, AUS: 26, TUR: 27,
   NOR: 28, TUN: 29, EGY: 30, ALG: 31, CAN: 32, CZE: 33, SCO: 34, CIV: 35,
   PAR: 37, PAN: 38, IRQ: 40, RSA: 42, UZB: 43, JOR: 44, GHA: 47,

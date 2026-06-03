@@ -38,11 +38,12 @@ const DEFAULT_RULES_TWO = {
 // multiplier_applied snapshot persisted on the pick row → the pool's
 // per-team override → the pool's category multiplier (favorite /
 // contender / underdog, classified by FIFA rank) → global defaults.
+// Keep in sync with FIFA_RANKINGS in app.js (the official Dec-5 2025 draw teams).
 const FIFA_RANK = {
-  ARG:1, ESP:2, FRA:3, ENG:4, BRA:5, POR:6, NED:7, BEL:8, CRO:9, GER:12, MAR:13, URU:15,
-  USA:16, MEX:17, JPN:18, SUI:19, SEN:20, IRN:21, KOR:22, AUT:23, UKR:24, SWE:25, AUS:26,
-  TUR:27, NOR:28, TUN:29, EGY:30, ALG:31, CAN:32, CZE:33, SCO:34, CIV:35, CMR:36, PAR:37,
-  PAN:38, IRQ:40, RSA:42, UZB:43, JOR:44, GHA:47, JAM:50, NZL:55, SAU:57, BIH:59, HAI:60,
+  ARG:1, ESP:2, FRA:3, ENG:4, BRA:5, POR:6, NED:7, BEL:8, CRO:9, GER:12, COL:13, MAR:14, URU:15,
+  USA:16, MEX:17, JPN:18, SUI:19, SEN:20, IRN:21, KOR:22, AUT:23, ECU:24, SWE:25, AUS:26,
+  TUR:27, NOR:28, TUN:29, EGY:30, ALG:31, CAN:32, CZE:33, SCO:34, CIV:35, PAR:37,
+  PAN:38, IRQ:40, RSA:42, UZB:43, JOR:44, GHA:47, NZL:55, SAU:57, COD:58, BIH:59, HAI:60,
   CPV:65, QAT:66, CUR:85
 };
 const DEFAULT_CAT_MULT = { favorite: 1.0, contender: 1.5, underdog: 2.0 };
