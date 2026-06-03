@@ -1551,11 +1551,22 @@ function loadTablerFallback() {
       <!-- Quick actions -->
       <div class="quick-actions">
         <button class="quick-action-btn" onclick="showLeaderboard()">
-          <i class="ti ti-trophy gold"></i>
+          <svg class="quick-action-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+            <path d="M4 22h16"></path>
+            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+          </svg>
           <span data-i18n="dashboard.quickAction.leaderboard">דירוג</span>
         </button>
         <button class="quick-action-btn" onclick="showHelp()">
-          <i class="ti ti-help gold"></i>
+          <svg class="quick-action-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7.5 4.5A9 9 0 0 1 21 12c0 1.2-.24 2.35-.67 3.4l.67 4.6-4.6-.67A9 9 0 1 1 7.5 4.5Z"></path>
+            <path d="M9.2 9.3a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4"></path>
+            <line x1="12" y1="17.5" x2="12.01" y2="17.5"></line>
+          </svg>
           <span data-i18n="dashboard.quickAction.help">עזרה</span>
         </button>
       </div>
@@ -2926,7 +2937,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.6.71</span>
+      <span class="menu-version">v2.6.72</span>
     </div>
   </div>
 

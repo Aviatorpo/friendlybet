@@ -7239,6 +7239,24 @@ body:not(.ltr) .home-lang-toggle {
   border-radius: 3px;
 }
 
+/* Cute gold icons for the quick-action buttons (leaderboard / help) */
+.quick-action-icon { color: #d9b46a; transition: transform 0.2s ease; }
+.quick-action-btn:hover .quick-action-icon,
+.quick-action-btn:active .quick-action-icon { transform: scale(1.12) rotate(-4deg); }
+
+/* ===== Above-the-fold: compact the dashboard so the whole screen, including
+   The Pundit at the bottom, fits in one viewport without scrolling. Scoped to
+   #user-dashboard-screen so no other screen is affected. ===== */
+#user-dashboard-screen .container { padding: 12px 16px 10px; }
+#user-dashboard-screen .pre-tournament-card { margin-bottom: 8px; }
+#user-dashboard-screen .section-title { margin: 10px 0 6px; }
+#user-dashboard-screen .bet-cta-card { padding: 11px 16px; margin-bottom: 7px; border-radius: 14px; }
+#user-dashboard-screen .bet-status-card { padding: 9px 14px; margin-bottom: 5px; }
+#user-dashboard-screen .quick-actions { margin-top: 10px; }
+#user-dashboard-screen .quick-action-btn { padding: 10px; gap: 4px; }
+#user-dashboard-screen .pundit-card { margin: 10px 0 0; }
+#user-dashboard-screen .pundit-text { font-size: 13.5px; }
+
 /* Dominant Start CTA card (replaces the small "Start" button) */
 .bet-cta-card {
   display: flex;
