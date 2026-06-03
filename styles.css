@@ -7118,7 +7118,7 @@ body:not(.ltr) .home-lang-toggle {
   border: 0.5px solid rgba(212,168,83,0.22);
   border-radius: 14px;
   padding: 14px 14px 12px;
-  margin-bottom: 14px;
+  margin: 20px 0 14px;   /* bottom of the dashboard; space it from the actions above */
   overflow: hidden;
 }
 .pundit-card::before {
@@ -7167,8 +7167,8 @@ body:not(.ltr) .home-lang-toggle {
 }
 .pundit-tag.confirmed { background: rgba(52,197,134,0.14); color: #5fd29a; }
 .pundit-tag.reported  { background: rgba(212,168,83,0.16); color: #e6c789; }
-/* Fixed-height text area: always reserves 4 lines so the card never resizes
-   between rotating items. Collapsed = clamped to 4 lines; "see more" expands. */
+/* Fixed-height text area: always reserves 3 lines so the card never resizes
+   between rotating items. Collapsed = clamped to 3 lines; "see more" expands. */
 .pundit-text {
   position: relative;
   font-size: 14px;
@@ -7179,14 +7179,14 @@ body:not(.ltr) .home-lang-toggle {
   transition: opacity 0.35s ease;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 3;
   overflow: hidden;
-  min-height: calc(1.5em * 4);   /* reserve 4 lines even for short items */
+  min-height: calc(1.5em * 3);   /* reserve 3 lines even for short items */
 }
 .pundit-text.expanded {
   -webkit-line-clamp: unset;
   overflow: visible;
-  min-height: calc(1.5em * 4);
+  min-height: calc(1.5em * 3);
 }
 .pundit-text.pundit-fade { opacity: 0; }
 .pundit-toggle {

@@ -1445,33 +1445,6 @@ function loadTablerFallback() {
     </div>
 
     <div class="container">
-      <!-- The Pundit - live rotating commentary (v2.6.68).
-           Fed by public-data/pundit.json: zero-hallucination data items
-           (countdown / fixtures / results) merged with verified news items
-           (>=2 independent sources). Hidden until the feed loads. -->
-      <div id="pundit-card" class="pundit-card" style="display:none;">
-        <div class="pundit-head">
-          <span class="pundit-badge-live">
-            <span class="pundit-mic" aria-hidden="true">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="2" width="6" height="11" rx="3"></rect>
-                <path d="M5 10a7 7 0 0 0 14 0"></path>
-                <line x1="12" y1="17" x2="12" y2="21"></line>
-                <line x1="8" y1="21" x2="16" y2="21"></line>
-              </svg>
-            </span>
-            <span data-i18n="pundit.title">הפרשן</span>
-          </span>
-          <span id="pundit-tag" class="pundit-tag" style="display:none;"></span>
-        </div>
-        <div class="pundit-body">
-          <p id="pundit-text" class="pundit-text"></p>
-          <button type="button" id="pundit-toggle" class="pundit-toggle" style="display:none;" data-i18n="pundit.seeMore">עוד</button>
-        </div>
-        <div id="pundit-sources" class="pundit-sources" style="display:none;"></div>
-        <div id="pundit-dots" class="pundit-dots"></div>
-      </div>
-
       <!-- Pre-tournament status (shown until scoring starts) -->
       <div id="dashboard-pre-tournament" class="pre-tournament-card">
         <i class="ti ti-trophy"></i>
@@ -1585,6 +1558,34 @@ function loadTablerFallback() {
           <i class="ti ti-help gold"></i>
           <span data-i18n="dashboard.quickAction.help">עזרה</span>
         </button>
+      </div>
+
+      <!-- The Pundit - live rotating commentary (v2.6.71).
+           Placed at the BOTTOM, below the betting CTA, so it never sits above
+           the action the user came to do (predict). Fed by public-data/pundit.json:
+           zero-hallucination data items merged with verified news items
+           (>=2 independent sources). Hidden until the feed loads. -->
+      <div id="pundit-card" class="pundit-card" style="display:none;">
+        <div class="pundit-head">
+          <span class="pundit-badge-live">
+            <span class="pundit-mic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="2" width="6" height="11" rx="3"></rect>
+                <path d="M5 10a7 7 0 0 0 14 0"></path>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+              </svg>
+            </span>
+            <span data-i18n="pundit.title">הפרשן</span>
+          </span>
+          <span id="pundit-tag" class="pundit-tag" style="display:none;"></span>
+        </div>
+        <div class="pundit-body">
+          <p id="pundit-text" class="pundit-text"></p>
+          <button type="button" id="pundit-toggle" class="pundit-toggle" style="display:none;" data-i18n="pundit.seeMore">עוד</button>
+        </div>
+        <div id="pundit-sources" class="pundit-sources" style="display:none;"></div>
+        <div id="pundit-dots" class="pundit-dots"></div>
       </div>
     </div>
   </div>
@@ -2925,7 +2926,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.6.70</span>
+      <span class="menu-version">v2.6.71</span>
     </div>
   </div>
 
