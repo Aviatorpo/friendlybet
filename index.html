@@ -1452,7 +1452,14 @@ function loadTablerFallback() {
       <div id="pundit-card" class="pundit-card" style="display:none;">
         <div class="pundit-head">
           <span class="pundit-badge-live">
-            <span class="pundit-dot"></span>
+            <span class="pundit-mic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="2" width="6" height="11" rx="3"></rect>
+                <path d="M5 10a7 7 0 0 0 14 0"></path>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+              </svg>
+            </span>
             <span data-i18n="pundit.title">הפרשן</span>
           </span>
           <span id="pundit-tag" class="pundit-tag" style="display:none;"></span>
@@ -2915,7 +2922,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.6.68</span>
+      <span class="menu-version">v2.6.69</span>
     </div>
   </div>
 
