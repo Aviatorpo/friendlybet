@@ -7281,14 +7281,26 @@ body:not(.ltr) .home-lang-toggle {
    The Pundit at the bottom, fits in one viewport without scrolling. Scoped to
    #user-dashboard-screen so no other screen is affected. ===== */
 #user-dashboard-screen .container { padding: 12px 16px 10px; }
-#user-dashboard-screen .pre-tournament-card { margin-bottom: 8px; }
-#user-dashboard-screen .section-title { margin: 10px 0 6px; }
-#user-dashboard-screen .bet-cta-card { padding: 11px 16px; margin-bottom: 7px; border-radius: 14px; }
+#user-dashboard-screen .section-title { margin: 12px 0 8px; }
 #user-dashboard-screen .bet-status-card { padding: 9px 14px; margin-bottom: 5px; }
 #user-dashboard-screen .quick-actions { margin-top: 10px; }
 #user-dashboard-screen .quick-action-btn { padding: 10px; gap: 4px; }
 #user-dashboard-screen .pundit-card { margin: 10px 0 0; }
 #user-dashboard-screen .pundit-text { font-size: 13.5px; }
+
+/* The betting CTA is the single primary action - make it the hero card. */
+#user-dashboard-screen .bet-cta-card {
+  padding: 22px 18px;
+  margin-bottom: 10px;
+  border-radius: 18px;
+  gap: 16px;
+  border-width: 2px;
+  box-shadow: 0 6px 26px rgba(212,168,83,0.20);
+}
+#user-dashboard-screen .bet-cta-icon-simple { width: 58px; height: 58px; }
+#user-dashboard-screen .bet-cta-title { font-size: 18.5px; }
+#user-dashboard-screen .bet-cta-subtitle { font-size: 13px; }
+#user-dashboard-screen .bet-cta-arrow { font-size: 22px; }
 
 /* Dominant Start CTA card (replaces the small "Start" button) */
 .bet-cta-card {

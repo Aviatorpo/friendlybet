@@ -1009,11 +1009,12 @@ async function goToDashboard() {
   const totalAcrossPool = (allUsers || []).reduce((s, u) => s + (u.total_score || 0), 0);
   const tournamentStarted = totalAcrossPool > 0;
 
-  const preEl = document.getElementById('dashboard-pre-tournament');
+  // v2.6.74: the pre-tournament progress card was removed (it duplicated the
+  // betting CTA). Only the stats card toggles now: shown once the tournament
+  // starts, hidden before then.
   const statsEl = document.getElementById('dashboard-stats');
-  if (preEl && statsEl) {
+  if (statsEl) {
     if (tournamentStarted) {
-      preEl.style.display = 'none';
       statsEl.style.display = '';
       const pointsEl = document.getElementById('user-points');
       if (pointsEl) pointsEl.textContent = state.currentUser.total_score || 0;
@@ -1023,7 +1024,6 @@ async function goToDashboard() {
         if (rankEl) rankEl.textContent = rank;
       }
     } else {
-      preEl.style.display = '';
       statsEl.style.display = 'none';
     }
   }

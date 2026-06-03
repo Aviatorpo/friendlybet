@@ -1445,14 +1445,10 @@ function loadTablerFallback() {
     </div>
 
     <div class="container">
-      <!-- Pre-tournament status (shown until scoring starts) -->
-      <div id="dashboard-pre-tournament" class="pre-tournament-card">
-        <i class="ti ti-trophy"></i>
-        <div class="pre-tournament-text">
-          <div class="pre-tournament-title" data-i18n="dashboard.preTournament.title">המונדיאל עוד לא התחיל</div>
-          <div class="pre-tournament-subtitle" data-i18n="dashboard.preTournament.subtitle">הדירוג יופיע כאן כשהמשחקים יתחילו</div>
-        </div>
-      </div>
+      <!-- v2.6.74: the pre-tournament "progress status" card was removed - it
+           duplicated the big betting CTA below (same start/continue/done state).
+           The CTA is now the single, enlarged primary action. The stats card
+           below still appears once the tournament starts. -->
 
       <!-- User Stats Card (hidden until tournament starts) -->
       <div class="dashboard-stats" id="dashboard-stats" style="display:none;">
@@ -2937,7 +2933,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.6.73</span>
+      <span class="menu-version">v2.6.74</span>
     </div>
   </div>
 
