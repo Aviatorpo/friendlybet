@@ -760,7 +760,7 @@ const TRANSLATIONS = {
     'matchesEx.finished': 'הסתיים',
     // v2.5.37: live minute labels (client-computed from match_date)
     'matchesEx.minute': "דקה {n}'",
-    'matchesEx.halftime': 'מחצית',
+    'matchesEx.halftime': 'הפסקת מחצית',
     'matchesEx.extraTime': "תוספת זמן · דקה {n}'",
     'matchesEx.lastUpdated': 'עודכן: {time}',
     'matchesEx.notSynced': 'עוד לא סונכרן',

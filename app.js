@@ -5952,7 +5952,8 @@ function createMatchCard(match) {
   const isScheduled = !isLive && !isFinished;
   
   card.className = 'match-card';
-  if (isLive) card.classList.add('live');
+  if (match.status === 'PAUSED') card.classList.add('halftime'); // calm break look, not pulsing-live
+  else if (isLive) card.classList.add('live');
   if (isFinished) card.classList.add('finished');
   
   // Get team data
@@ -5970,7 +5971,12 @@ function createMatchCard(match) {
   // match_date so the label ticks every refresh without an API call.
   let statusText;
   let statusClass;
-  if (isLive) {
+  if (match.status === 'PAUSED') {
+    // Half-time (or any break): show the score with an explicit half-time badge,
+    // driven by the real API status - not the elapsed-time guess.
+    statusText = t('matchesEx.halftime');
+    statusClass = 'halftime';
+  } else if (isLive) {
     statusText = _liveMinuteLabel(match) || t('matchesEx.live');
     statusClass = 'live';
   } else if (isFinished) {

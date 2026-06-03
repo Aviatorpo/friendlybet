@@ -3304,6 +3304,25 @@ body.ltr #next-group-btn svg {
   50% { opacity: 0.3; }
 }
 
+/* Half-time: same card treatment as live but calm amber with a STEADY bar
+   (no pulse) - the match is paused, not actively playing. */
+.match-card.halftime {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.02) 100%);
+  border-color: rgba(251, 191, 36, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.match-card.halftime::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  height: 100%;
+  background: #fbbf24;
+}
+
 .match-card.finished {
   background: rgba(74, 222, 128, 0.04);
   border-color: rgba(74, 222, 128, 0.15);
@@ -3352,6 +3371,20 @@ body.ltr #next-group-btn svg {
 
 .match-status-badge.scheduled {
   color: rgba(255, 255, 255, 0.5);
+}
+
+/* Half-time: score stays visible with a calm amber, steady (non-pulsing) dot
+   so it reads as a break rather than active live play. */
+.match-status-badge.halftime {
+  color: #fbbf24;
+}
+
+.match-status-badge.halftime::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: #fbbf24;
+  border-radius: 50%;
 }
 
 .match-teams {
