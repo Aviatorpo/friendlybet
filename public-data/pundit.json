@@ -1,7 +1,117 @@
 {
-  "updatedAt": "2026-06-03T07:40:46.157Z",
-  "count": 1,
+  "updatedAt": "2026-06-03T08:21:41.279Z",
+  "count": 6,
   "items": [
+    {
+      "id": "neymar-brazil-opener-doubt-2026-06-03",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "נייימאר נגד השעון: הכוכב הברזילאי נפצע בשריר השוק הימני ב-17 במאי, וספק אם יספיק לפתיחה מול מרוקו ב-13 ביוני. אנצ'לוטי מאמין שיחלים בזמן, אבל מי ייכנס לנעליו אם לא?",
+      "en": "Neymar is in a race against time for Brazil's opener against Morocco on June 13, after a grade-2 right calf strain picked up on May 17. Coach Ancelotti holds out hope he makes the first game, but if the legend misses it, who steps up for the Selecao?",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48900253/neymar-calf-injury-three-weeks-miss-world-cup-opener"
+        },
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury"
+        },
+        {
+          "name": "Bleacher Report",
+          "url": "https://bleacherreport.com/articles/25432292-neymar-injury-update-provided-brazils-carlo-ancelotti-latest-timeline-ahead-2026-world-cup"
+        }
+      ],
+      "expires_at": "2026-06-13T00:00:00Z"
+    },
+    {
+      "id": "saliba-france-scare-cleared-2026-06-03",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "האזעקה חלפה בצרפת: מאמן דשאמפ אמר 'הוא כאן, הכל בסדר' לאחר שסאליבה הצטרף למחנה האימונים. הדיווחים על 'ספק גדול' הופרכו, אבל האם הבלם יהיה ב-100% לקראת הפתיחה מול סנגל ב-16 ביוני?",
+      "en": "Panic over for France: Deschamps said 'He's here, everything is fine' as Saliba joined Les Bleus' World Cup camp, putting to rest earlier reports that the Arsenal defender was very doubtful with a back injury. Will he be at full tilt when France face Senegal on June 16?",
+      "sources": [
+        {
+          "name": "Get French Football News",
+          "url": "https://www.getfootballnewsfrance.com/2026/hes-here-everything-is-fine-didier-deschamps-on-william-saliba-injury-ahead-of-world-cup/"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/everything-fine-didier-deschamps-william-175000964.html"
+        },
+        {
+          "name": "OneFootball",
+          "url": "https://onefootball.com/en/news/world-cup-2026-dembele-doue-saliba-arrive-as-france-squad-completed-42958834"
+        }
+      ],
+      "expires_at": "2026-06-16T00:00:00Z"
+    },
+    {
+      "id": "davies-canada-misses-opener-2026-06-03",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "קפטן קנדה אלפונסו דייוויס אישר שייחסר מהמשחק הפותח מול בוסניה ב-12 ביוני, ואמר שהמתמטיקה של הפציעה לא עובדת לטובתו. האם קנדה תצליח לפתוח את המונדיאל הביתי שלה בלי הכוכב?",
+      "en": "Canada captain Alphonso Davies confirmed he will miss the hosts' opener against Bosnia and Herzegovina on June 12, saying the injury mathematics simply do not work in his favour. Can Canada hold their own in front of a home crowd without their star left back?",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48944438/alphonso-davies-joins-canada-world-cup-prep-unclear-play"
+        },
+        {
+          "name": "Now Toronto",
+          "url": "https://nowtoronto.com/news/alphonso-davies-confirms-he-will-miss-canadas-world-cup-opener/"
+        },
+        {
+          "name": "SI.com",
+          "url": "https://www.si.com/soccer/canada-2026-world-cup-roster-confirmed-full-list-players"
+        }
+      ],
+      "expires_at": "2026-06-12T00:00:00Z"
+    },
+    {
+      "id": "yamal-spain-opener-doubt-2026-06-03",
+      "type": "news",
+      "confidence": "reported",
+      "he": "לפי הדיווחים, למין יאמאל יחסר מהמשחק הפותח של ספרד מול קייפ ורד ב-15 ביוני עקב פציעת שריר הירך. המאמן דה לה פואנטה נשאר אופטימי, אבל אלופות אירופה יתחילו ללא כוכב העל שלהן - כמה זה ישפיע?",
+      "en": "Reports say Lamine Yamal is set to miss Spain's opener against Cape Verde on June 15 with a hamstring injury. Coach De La Fuente stays upbeat, but the Euro 2024 holders know their brightest star will not be on the pitch from kick-off. How much will that matter?",
+      "sources": [
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/lamine-yamal-miss-spains-world-150220299.html"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48930567/lamine-yamal-spain-fifa-world-cup-barcelona"
+        },
+        {
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com/stories/soccer/lamine-yamal-injury-update-how-many-world-cup-matches-could-he-miss-spain"
+        }
+      ],
+      "expires_at": "2026-06-15T00:00:00Z"
+    },
+    {
+      "id": "alvarez-romero-argentina-fit-2026-06-03",
+      "type": "news",
+      "confidence": "reported",
+      "he": "לפי הדיווחים, קריסטיאן רומרו וחוליאן אלוורז חזרו לאימונים מלאים עם אלביסלסטה ומוצהרים כשירים. בשורה כפולה לאלופות המגנות על התואר, אבל האם סקאלוני ינצח שוב ב-2026?",
+      "en": "Reports from Argentina's training camp confirm Cristian Romero and Julian Alvarez are both back in full training after their respective injuries and available to Scaloni. A double boost for the defending champions, but can the Albiceleste go back-to-back?",
+      "sources": [
+        {
+          "name": "World Soccer Talk",
+          "url": "https://worldsoccertalk.com/amp/world-cup/good-news-for-argentina-as-julian-alvarez-and-cristian-romero-recover-from-injuries-for-2026-world-cup/"
+        },
+        {
+          "name": "OneFootball",
+          "url": "https://onefootball.com/en/news/cuti-romero-and-julian-alvarez-fit-again-for-world-cup-start-42956644"
+        },
+        {
+          "name": "Mundo Albiceleste",
+          "url": "https://mundoalbiceleste.com/2026/06/02/cristian-romero-and-julian-alvarez-fit-train-with-argentina-national-team/"
+        }
+      ],
+      "expires_at": "2026-06-17T00:00:00Z"
+    },
     {
       "id": "countdown-2026-06-03",
       "type": "countdown",
