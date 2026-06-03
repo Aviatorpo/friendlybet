@@ -1308,7 +1308,12 @@ async function loadResultsData() {
     // Build knockout winners map
     state.results.knockoutWinners = {};
     (matches || []).forEach(m => {
-      if (m.stage && m.stage !== 'GROUP_STAGE' && m.home_score !== null && m.away_score !== null) {
+      if (!m.stage || m.stage === 'GROUP_STAGE') return;
+      // Prefer winner_code (accounts for extra time / penalty shootouts, where
+      // home_score == away_score); fall back to the score comparison.
+      if (m.winner_code) {
+        state.results.knockoutWinners[m.id] = m.winner_code;
+      } else if (m.home_score !== null && m.away_score !== null) {
         if (m.home_score > m.away_score) {
           state.results.knockoutWinners[m.id] = m.home_team_code;
         } else if (m.away_score > m.home_score) {
@@ -1577,16 +1582,18 @@ function createMemberCard(member, picksCount, koPicksCount, isV2) {
     statusText = t('membersList.inProgress');
   }
 
-  // Joined date
-  const joinedDate = new Date(member.joined_at);
-  const today = new Date();
-  const daysAgo = Math.floor((today - joinedDate) / (1000 * 60 * 60 * 24));
+  // Joined date (guard null joined_at so it never renders "Invalid Date")
   const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
-  let joinedText;
-  if (daysAgo === 0) joinedText = t('membersList.joinedToday');
-  else if (daysAgo === 1) joinedText = t('membersList.joinedYesterday');
-  else if (daysAgo < 7) joinedText = t('membersList.joinedDaysAgo', { n: daysAgo });
-  else joinedText = t('membersList.joinedOn', { date: joinedDate.toLocaleDateString(lang === 'he' ? 'he-IL' : 'en-US', { day: 'numeric', month: 'short' }) });
+  let joinedText = '';
+  if (member.joined_at) {
+    const joinedDate = new Date(member.joined_at);
+    const today = new Date();
+    const daysAgo = Math.floor((today - joinedDate) / (1000 * 60 * 60 * 24));
+    if (daysAgo === 0) joinedText = t('membersList.joinedToday');
+    else if (daysAgo === 1) joinedText = t('membersList.joinedYesterday');
+    else if (daysAgo < 7) joinedText = t('membersList.joinedDaysAgo', { n: daysAgo });
+    else joinedText = t('membersList.joinedOn', { date: joinedDate.toLocaleDateString(lang === 'he' ? 'he-IL' : 'en-US', { day: 'numeric', month: 'short' }) });
+  }
 
   const safeNickname = member.nickname || t('membersList.fallbackUser');
   const safeInitial = safeNickname.charAt(0).toUpperCase();
@@ -1776,6 +1783,10 @@ function renderAdminMembers() {
       pendingBanner.style.display = 'flex';
       const countEl = document.getElementById('admin-pending-count');
       if (countEl) countEl.textContent = pending;
+      // Keep the banner title in sync (updatePoolLockCard runs before members
+      // load, so it would otherwise show a stale 0).
+      const titleEl = document.getElementById('admin-pending-banner-title');
+      if (titleEl) titleEl.innerHTML = t('adminMembersEx.pendingCount', { n: pending });
     } else {
       pendingBanner.style.display = 'none';
     }
@@ -2040,7 +2051,7 @@ function openAdminActionModal(member) {
   name.textContent = member.nickname || t('membersList.fallbackUser');
 
   const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
-  const joinedDate = new Date(member.joined_at).toLocaleDateString(lang === 'he' ? 'he-IL' : 'en-US');
+  const joinedDate = member.joined_at ? new Date(member.joined_at).toLocaleDateString(lang === 'he' ? 'he-IL' : 'en-US') : '—';
   meta.textContent = t('adminMembersEx.memberJoinedMeta', { date: joinedDate, g: member.groupPicksCount, k: member.knockoutPicksCount });
   
   document.getElementById('admin-action-overlay').classList.add('active');
@@ -4011,7 +4022,10 @@ async function finishGroupBetting() {
   // override → scoring_rules.multipliers[tier] → global default). Falls back
   // to legacy tier-only lookup when the pool has no custom multipliers config.
   let maxPoints = 0;
-  const scoringGroupStage = state.currentPool.scoring_group_stage || 1;
+  // Wizard pools store points in scoring_rules JSONB (group_first); the legacy
+  // scoring_group_stage column only exists on old pools. Prefer the former.
+  const _rules = (state.currentPool && state.currentPool.scoring_rules) || {};
+  const scoringGroupStage = _rules.group_first ?? state.currentPool.scoring_group_stage ?? 1;
   const useMult = state.currentPool.use_multipliers !== false;
 
   bettingState.groupOrder.forEach(letter => {
