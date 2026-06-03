@@ -278,6 +278,10 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     (kp || []).forEach(p => {
       const ruleKey = bracketPosRuleKey(p.bracket_position);
       if (!ruleKey) return;
+      // The picked team is stored in predicted_winner (knockout_picks has no
+      // team_code column); keep team_code as a defensive fallback.
+      const pickTeam = p.predicted_winner || p.team_code;
+      if (!pickTeam) return;
       // Did user's picked team win their actual real-world match at this stage?
       const stageMap = {
         round_of_32:  ['ROUND_OF_32','LAST_32','R32'],
@@ -287,10 +291,10 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
         final:        ['FINAL']
       };
       const stages = stageMap[ruleKey] || [];
-      const won = stages.some(s => realKnockoutWinners[s] && realKnockoutWinners[s].has(p.team_code));
+      const won = stages.some(s => realKnockoutWinners[s] && realKnockoutWinners[s].has(pickTeam));
       if (won) {
         const pts = rules[ruleKey] || 0;
-        knockoutPoints += pts * resolveMult(p.team_code, p.multiplier_applied);
+        knockoutPoints += pts * resolveMult(pickTeam, p.multiplier_applied);
       }
     });
 
