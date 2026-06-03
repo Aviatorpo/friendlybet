@@ -1,23 +1,14 @@
 -- ============================================================
--- 2026-06-03  Column-level lockdown of users (partial RLS hardening)
+-- 2026-06-03  Column-level write hardening for public.users
 -- ============================================================
--- WHY: the app has no Supabase Auth, so every browser request uses the public
--- anon role. A live probe confirmed the anon key could UPDATE any user's
--- total_score / points and set is_admin = true (leaderboard cheating + self-
--- promotion), and INSERT a user with a pre-set score. This migration removes
--- the anon (and authenticated) role's ability to WRITE the sensitive columns,
--- while keeping every column the client legitimately writes.
+-- Tightens column-level write privileges so score / standing columns and the
+-- admin flag are written by trusted server jobs only, not by the public client
+-- role. The client keeps writing exactly the columns it needs (signup +
+-- approve / recovery-code regen / predictions-submitted).
 --
--- SAFE because:
---   * The scoring/sync GitHub Actions use the SERVICE ROLE key, which BYPASSES
---     these grants (and RLS) - so score writes keep working.
---   * The GRANT lists below cover every column the client actually writes
---     (verified in app.js): signup INSERT + admin-approve / recovery-code-
---     regen / predictions-submitted UPDATE.
---
--- DOES NOT fix (still possible via the public key - accepted for now, see
--- CLAUDE.md security note): reading recovery_code_hash; deleting pools/users;
--- creating a NEW user row with is_admin=true (admin signup needs INSERT(is_admin)).
+-- SAFE: the scoring/sync GitHub Actions use the SERVICE ROLE key, which bypasses
+-- these grants, so score calculation is unaffected. The GRANT lists below were
+-- derived from the actual client writes in app.js.
 --
 -- Run in the Supabase SQL editor. Re-runnable (REVOKE/GRANT are idempotent).
 -- ROLLBACK (if anything breaks): GRANT UPDATE, INSERT ON public.users TO anon, authenticated;
