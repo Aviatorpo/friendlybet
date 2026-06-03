@@ -25,6 +25,13 @@ function showScreen(screenId) {
   if (state.currentScreen === 'matches-screen' && screenId !== 'matches-screen') {
     if (typeof _stopMatchesAutoRefresh === 'function') _stopMatchesAutoRefresh();
   }
+  // Stop the pundit rotation when leaving the dashboard so its 9s interval can't
+  // pile up (re-entering the dashboard restarts it). _punditState is defined
+  // later but exists by the time showScreen runs.
+  if (screenId !== 'user-dashboard-screen' && typeof _punditState !== 'undefined' && _punditState.timer) {
+    clearInterval(_punditState.timer);
+    _punditState.timer = null;
+  }
 
   // Hide all screens
   document.querySelectorAll('.screen').forEach(s => {
@@ -55,7 +62,8 @@ function showToast(message, type = 'info') {
                type === 'error' ? 'ti-circle-x' : 
                'ti-info-circle';
   
-  toast.innerHTML = `<i class="ti ${icon}"></i><span>${message}</span>`;
+  toast.innerHTML = `<i class="ti ${icon}"></i><span></span>`;
+  toast.querySelector('span').textContent = message; // textContent: message may carry dynamic data
   container.appendChild(toast);
   
   setTimeout(() => {
@@ -1150,6 +1158,18 @@ function _punditDraw() {
     }
   }
 
+  // Show the team flag when the item is about a single nation (it.team = code).
+  const flagEl = document.getElementById('pundit-flag');
+  if (flagEl) {
+    if (it.team && typeof getCountryFlag === 'function') {
+      flagEl.innerHTML = getCountryFlag(it.team);
+      flagEl.style.display = '';
+    } else {
+      flagEl.innerHTML = '';
+      flagEl.style.display = 'none';
+    }
+  }
+
   const srcEl = document.getElementById('pundit-sources');
   if (srcEl) {
     const sources = Array.isArray(it.sources) ? it.sources.filter(s => s && s.url) : [];
@@ -1161,15 +1181,13 @@ function _punditDraw() {
       label.textContent = t('pundit.source');
       srcEl.appendChild(label);
       sources.forEach(s => {
-        const a = document.createElement('a');
-        a.className = 'pundit-source';
-        a.href = s.url;
-        a.target = '_blank';
-        a.rel = 'noopener';
+        // v2.6.75: sources are non-clickable text chips now (no link).
+        const chip = document.createElement('span');
+        chip.className = 'pundit-source';
         let name = s.name;
         if (!name) { try { name = new URL(s.url).hostname.replace('www.', ''); } catch (_) { name = s.url; } }
-        a.textContent = name;
-        srcEl.appendChild(a);
+        chip.textContent = name;
+        srcEl.appendChild(chip);
       });
     } else {
       srcEl.style.display = 'none';
@@ -5622,7 +5640,7 @@ function createPodiumSpot(rank, user, rankNum) {
   
   div.innerHTML = `
     <div class="${medalClass}">${medal}</div>
-    <div class="podium-name">${user.nickname}</div>
+    <div class="podium-name">${escapeHtml(user.nickname || '?')}</div>
     <div class="podium-points">${user.total_score || 0}</div>
     <div class="podium-points-label">${t('leaderboard.points')}</div>
   `;
@@ -5667,7 +5685,7 @@ function renderFullLeaderboard(users) {
 
     row.innerHTML = `
       <div class="lb-rank">#${rank}</div>
-      <div class="lb-avatar-small">${user.nickname.charAt(0)}</div>
+      <div class="lb-avatar-small">${escapeHtml((user.nickname || '?').charAt(0).toUpperCase())}</div>
       <div class="lb-info">
         <div class="lb-name">
           ${escapeHtml(user.nickname)}
@@ -5914,9 +5932,12 @@ function renderMatches() {
   // Filter matches
   const filtered = matchesState.allMatches.filter(m => {
     if (matchesState.currentFilter === 'all') return true;
-    if (matchesState.currentFilter === 'live') return _LIVE_MATCH_STATUSES.includes(m.status);
-    if (matchesState.currentFilter === 'upcoming') return m.status === 'SCHEDULED' || m.status === 'TIMED';
-    if (matchesState.currentFilter === 'finished') return m.status === 'FINISHED';
+    const isLiveStatus = _LIVE_MATCH_STATUSES.includes(m.status);
+    const isFinishedStatus = m.status === 'FINISHED' || m.status === 'AWARDED';
+    if (matchesState.currentFilter === 'live') return isLiveStatus;
+    if (matchesState.currentFilter === 'finished') return isFinishedStatus;
+    // upcoming = catch-all so POSTPONED/SUSPENDED/CANCELLED/TBD never vanish from every tab
+    if (matchesState.currentFilter === 'upcoming') return !isLiveStatus && !isFinishedStatus;
     return true;
   });
   
@@ -9508,8 +9529,8 @@ async function spRenderSummary() {
     if (ts) {
       tsEl.innerHTML = `<div class="sp-summary-row">
         <span class="sr-flag">${getCountryFlag(ts.team_code)}</span>
-        <span class="sr-value">${ts.player_name}</span>
-        <span class="sr-label">${ts.team_code}</span>
+        <span class="sr-value">${escapeHtml(ts.player_name || '—')}</span>
+        <span class="sr-label">${ts.team_code || ''}</span>
       </div>`;
     } else {
       tsEl.innerHTML = `<div class="sp-summary-row"><span class="sr-label">${t('betting.notPicked')}</span></div>`;
@@ -9704,7 +9725,9 @@ async function showUserHypotheticalBracket(userId, userName) {
       positions[p.group_letter][p.position - 1] = p.team_code;
     });
     const bracket = {};
-    (kp.data || []).forEach(p => { bracket[p.bracket_position] = p.team_code; });
+    // knockout_picks stores the team in predicted_winner (no team_code column);
+    // keep team_code as a defensive fallback for any legacy row.
+    (kp.data || []).forEach(p => { bracket[p.bracket_position] = p.predicted_winner || p.team_code; });
     const winner = twp.data ? twp.data.team_code : null;
     const topScorer = tsp.data ? tsp.data : null;
 
@@ -9803,7 +9826,7 @@ async function showUserHypotheticalBracket(userId, userName) {
         <div class="sp-summary-section-title">${t('betting.summary.topScorer')}</div>
         <div class="sp-summary-row">
           <span class="sr-flag">${getCountryFlag(topScorer.team_code)}</span>
-          <span class="sr-value">${topScorer.player_name}</span>
+          <span class="sr-value">${escapeHtml(topScorer.player_name || '—')}</span>
         </div>
       </div>`;
     }
