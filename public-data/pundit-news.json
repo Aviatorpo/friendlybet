@@ -1,65 +1,66 @@
 {
-  "updatedAt": "2026-06-04T19:20:17.000Z",
+  "updatedAt": "2026-06-04T20:30:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
-      "id": "messi-hamstring-doubt-2026-06-04",
+      "id": "davies-hamstring-doubt-opener-2026-06-04",
       "confidence": "confirmed",
-      "team": "ARG",
-      "en": "Racing the clock in Kansas City - Argentina captain Lionel Messi has been on an individual programme since late May with left hamstring muscle fatigue, while teammates train as a group. Argentina's staff expect him fit for the opener against Algeria on June 16. Will the final chapter of Messi's World Cup story begin on time?",
-      "he": "מרוץ נגד הזמן בקנזס סיטי - קפטן ארגנטינה ליאונל מסי עובד על תכנית אישית מאז סוף מאי עם עייפות שרירים בירך שמאל, בזמן שחבריו מתאמנים כקבוצה. הסגל הרפואי מצפה שיהיה כשיר לפתיחה מול אלג'יריה ב-16 ביוני. האם הפרק האחרון של מסי במונדיאל יתחיל בזמן?",
+      "team": "CAN",
+      "en": "A captain's race against the clock - Alphonso Davies suffered a hamstring injury at Bayern Munich last month and is a genuine doubt for Canada's opener against Bosnia on June 12 in Toronto. He first said the match 'won't be possible', then backtracked with 'anything is possible in life'. Coach Jesse Marsch is cautious but hopeful Davies features later in the group stage. Can Canada cope if their talisman misses the start?",
+      "he": "מרוץ נגד השעון של הקפטן - אלפונסו דיוויס ספג פציעת ירך בבייארן מינכן בחודש שעבר ומוטל בספק לפתיחת קנדה מול בוסניה ב-12 ביוני בטורונטו. בתחילה אמר שהמשחק 'לא יהיה אפשרי', ואז חזר בו עם 'הכל אפשרי בחיים'. מאמן ג'סי מארש זהיר אך מקווה שדיוויס יצטרף בהמשך שלב הבתים. האם קנדה תוכל ללא הקמע שלה בפתיחה?",
       "sources": [
-        { "name": "CBS Sports", "url": "https://www.cbssports.com/soccer/news/lionel-messi-injury-argentina-world-cup-2026-inter-miami/" },
-        { "name": "HITC", "url": "https://www.hitc.com/how-fit-is-lionel-messi-for-the-2026-world-cup-argentinas-latest-update-explained/" },
-        { "name": "Deccan Herald", "url": "https://www.deccanherald.com/sports/football/fifa-world-cup-2026/lionel-messi-injury-update-fitness-not-that-bad-says-argentina-coach-scaloni-newsalert-4017869" }
+        { "name": "CBC Sports", "url": "https://www.cbc.ca/sports/soccer/worldcup/canada-soccer-world-cup-alphonso-davies-training-9.7222106" },
+        { "name": "TSN", "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/canada-captain-davies-trains-individually-as-fifa-world-cup-preparations-continue/" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/alphonso-davies-confirms-hell-miss-210300435.html" }
       ],
-      "expires_at": "2026-06-16T00:00:00Z"
+      "expires_at": "2026-06-12T00:00:00Z"
     },
     {
-      "id": "rodrygo-acl-out-wc2026-2026-06-04",
+      "id": "neymar-calf-miss-opener-2026-06-04",
       "confidence": "confirmed",
       "team": "BRA",
-      "en": "Another blow for Brazil before a ball is kicked - Rodrygo tore his ACL and right meniscus at Real Madrid in March and will not recover in time for the World Cup. With Neymar also managing a calf strain, Carlo Ancelotti must rethink his attacking lineup. Can Brazil's squad depth cover two key forwards missing in Group H?",
-      "he": "מכה נוספת לברזיל לפני שבועטים בכדור - רודריגו קרע את הרצועה הצולבת ואת המניסקוס הימני בריאל מדריד במרץ ולא יתאושש בזמן למונדיאל. עם ניימאר שגם הוא מתמודד עם קרע שרירי בשוק, אנצ'לוטי נאלץ לחשוב מחדש על ההתקפה. האם עומק הסגל הברזילאי יכסה שני שחקני קו-קדמי בקבוצה H?",
+      "en": "Brazil's talisman starts the bench - Neymar suffered a grade-two right calf strain playing for Santos on May 17 and will miss Brazil's opener against Morocco on June 13. Coach Carlo Ancelotti says he has no regrets naming him in the squad and expects him back for game two against Haiti on June 19. Can the Selecao handle Morocco without their most-capped player?",
+      "he": "הקמע של ברזיל פותח מהספסל - ניימאר ספג קרע חלקי בדרגה שנייה בשוק הימני במשחק עם סנטוס ב-17 במאי, ויחמיץ את פתיחת ברזיל מול מרוקו ב-13 ביוני. מאמן קרלו אנצ'לוטי אומר שאין לו חרטות על הכללתו בסגל, ומצפה שישוב למשחק השני מול האיטי ב-19 ביוני. האם הסלסאו תתמודד עם מרוקו בלי שחקן הנבחרת עם הכי הרבה הופעות?",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48607614/world-cup-injuries-ruled-play-hugo-ekitike-rodrygo-lamine-yamal" },
-        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/news/rodrygo-ruled-out-of-2026-world-cup-with-ancelottis-brazil-real-madrid-star-suffers-season-ending-injury/" },
-        { "name": "Goal.com", "url": "https://www.goal.com/en/lists/biggest-stars-miss-2026-world-cup-injury-suspension-selection/bltd6ff2d56ebf99a62" }
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/brazil-neymar-injury" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48900253/neymar-calf-injury-three-weeks-miss-world-cup-opener" }
       ],
-      "expires_at": "2026-06-20T00:00:00Z"
+      "expires_at": "2026-06-13T00:00:00Z"
     },
     {
-      "id": "curacao-smallest-wc-nation-2026-06-04",
+      "id": "advocaat-oldest-wc-coach-2026-06-04",
       "confidence": "confirmed",
       "team": "CUW",
-      "en": "Football's biggest underdog arrives - Curacao, a Caribbean island of just 156,000 people, is the smallest nation by population ever to reach a World Cup, shattering Iceland's record from Russia 2018. Their reward in Group E is a draw that includes Germany. Will the Antillean lions spring any shocks?",
-      "he": "ה-underdog הגדול ביותר של הכדורגל הגיע - קוראסאו, אי קריבי עם 156 אלף תושבים בלבד, היא המדינה הקטנה ביותר מבחינת אוכלוסייה שהגיעה למונדיאל, ושברה את שיא איסלנד מרוסיה 2018. הפרס שלהם בקבוצה E כולל פגישה עם גרמניה. האם האריות מהאנטיל יצליחו להפתיע?",
+      "en": "History before a ball is kicked - Dick Advocaat will become the oldest coach in World Cup history when Curacao face Germany on June 14. At 78, the Dutchman surpasses Otto Rehhagel, who guided Greece at 71 in 2010, by almost seven years. Curaçao reinstated the veteran manager on May 13 after he had resigned. Will his experience be enough against Die Mannschaft?",
+      "he": "היסטוריה עוד לפני שבועטים בכדור - דיק אדוקאט יהפוך למאמן הקשיש ביותר בהיסטוריית גביע העולם כאשר קוראסאו תפגוש את גרמניה ב-14 ביוני. בגיל 78, ההולנדי הוותיק עוקף את אוטו רהאגל, שהוביל את יוון בגיל 71 ב-2010, בכמעט שבע שנים. קוראסאו הכריזה על החזרתו ב-13 במאי לאחר שהתפטר. האם הניסיון הרב יספיק נגד הנבחרת הגרמנית?",
       "sources": [
-        { "name": "CNN", "url": "https://www.cnn.com/2025/11/18/sport/curacao-football-world-cup-intl-hnk" },
-        { "name": "CBC News", "url": "https://www.cbc.ca/news/world/curacao-world-cup-9.6984369" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/articles/soccer/curacao-makes-soccer-history-as-smallest-nation-by-population-to-qualify-for-a-world-cup" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48757275/curacao-reinstate-dick-advocaat-deny-change-due-external-pressure" },
+        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/05/13/curacao-coach-advocaat-world-cup/6b277144-4eb2-11f1-97e7-22c6c29ff0d8_story.html" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "metlife-stadium-wc-final-2026-06-04",
+      "id": "wc2026-rules-throwins-var-corners-2026-06-04",
       "confidence": "confirmed",
-      "en": "The biggest match in football comes to New York - MetLife Stadium in East Rutherford, New Jersey will host the World Cup final on July 19, 2026, with a capacity of 82,500. FIFA confirmed it as the host for the trophy ceremony, and it is staging more matches than any other city in the tournament. Who do you have lifting the trophy there?",
-      "he": "המשחק הגדול ביותר בכדורגל יגיע לניו יורק - אצטדיון MetLife במזרח ראתרפורד, ניו ג'רזי יארח את גמר גביע העולם ב-19 ביולי 2026, עם קיבולת של 82,500 מקומות. פיפ\"א אישרה אותו כמארח טקס ההגשה, והוא מארח יותר משחקים מכל עיר אחרת בטורניר. מי לדעתכם ירים שם את הגביע?",
+      "en": "The rulebook gets its biggest overhaul in years - at this World Cup referees will show a visible five-second countdown for throw-ins and goal kicks, and deliberate time-wasting hands the restart to the opposition. VAR can also correct wrongly-awarded corners for the first time. And covering your mouth during an on-pitch confrontation now earns a red card. Fewer delays, more drama - or more controversy?",
+      "he": "ספר החוקים עובר את הרענון הגדול ביותר שלו בשנים - במונדיאל הזה שופטים יציגו ספירה לאחור גלויה של חמש שניות לזריקות מהצד ולבעיטות שוער, והתמהמהות מכוונת מעבירה את הבעיטה ליריב. גם VAR יוכל לתקן לראשונה קרנות שניתנו שלא כדין. ולכסות את הפה בעת עימות? כרטיס אדום. פחות עיכובים, יותר דרמה - או יותר מחלוקות?",
       "sources": [
-        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/new-york-new-jersey-stadium-host-world-cup-2026-final" },
-        { "name": "FourFourTwo", "url": "https://www.fourfourtwo.com/competition/metlife-stadium-world-cup-2026" }
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/1/which-football-rule-changes-will-be-implemented-during-the-world-cup" },
+        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12098/13549645/world-cup-ifab-confirm-new-var-powers-10-second-substitutions-and-tactical-timeout-ban-in-major-rule-changes" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "fifa-ai-offside-avatars-2026-06-04",
+      "id": "azteca-three-wc-host-opener-2026-06-04",
       "confidence": "confirmed",
-      "en": "FIFA has digitally scanned all 1,248 players at this World Cup to create AI avatars for a new semi-automated offside system. Assistant referees now receive a real-time audio alert when a player is more than 10 cm over the line, far tighter than the previous 50 cm threshold. Fewer endless VAR waits.",
-      "he": "פיפ\"א סרקה דיגיטלית את כל 1,248 השחקנים במונדיאל ויצרה אווטארים של בינה מלאכותית עבור מערכת חוץ-למחצה אוטומטית חדשה. עוזר השופט מקבל התראה קולית בזמן אמת כשהשחקן חורג יותר מ-10 ס\"מ מהקו, הרבה יותר מדויק מהסף הישן של 50 ס\"מ. פחות המתנות האינסופיות ל-VAR.",
+      "en": "Seven days until kick-off at the most storied stage in football - Estadio Azteca in Mexico City hosts the tournament opener between Mexico and South Africa on June 11, and will become the only stadium in history to have hosted three World Cups, after 1970 and 1986. Sitting at 2,240 metres above sea level with June afternoon thunderstorms likely, the thin air alone is an extra player. Who will handle the pressure?",
+      "he": "שבעה ימים לפתיחה על הבמה המיתולוגית ביותר בכדורגל - אצטדיון אזטקה במקסיקו סיטי יארח את משחק הפתיחה בין מקסיקו לדרום אפריקה ב-11 ביוני, ויהפוך לאצטדיון היחיד בהיסטוריה שאירח שלושה מונדיאלים, אחרי 1970 ו-1986. האצטדיון ניצב על גובה 2,240 מטרים מעל פני הים, סופות רעמים בשעות אחה\"צ צפויות ביוני, והאוויר הדליל הוא שחקן נוסף בפני עצמו. מי יתמודד עם הלחץ?",
       "sources": [
-        { "name": "FIFA", "url": "https://inside.fifa.com/news/offside-decisions-referee-body-cams-innovation-world-cup-2026" },
-        { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml" }
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/fifa-world-cup-2026-stadiums-matches-us-canada-mexico" },
+        { "name": "Euronews", "url": "https://www.euronews.com/travel/2026/06/01/heading-to-mexico-city-for-the-world-cup-heres-where-to-go-and-what-to-see" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     }
