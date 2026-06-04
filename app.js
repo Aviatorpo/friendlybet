@@ -6753,12 +6753,28 @@ async function copyInviteLink() {
 // Renders a portrait image of the user's knockout climax on a canvas and
 // shares it via the native share sheet (WhatsApp / Telegram / Instagram /
 // Facebook) with a desktop download fallback. A baked-in QR invites scanners
-// to friendlybet.live so the image converts even when a platform strips links.
+// to the user's personalized share page so the image converts even when a
+// platform strips links.
+
+// Personalized public share URL for the current user's predictions. Friends
+// who open it land on the read-only /share page that renders this exact
+// bracket plus a "build your own" CTA — that's the viral loop. Falls back to
+// the homepage if we somehow lack the ids.
+function _bracketShareUrl(source) {
+  const origin = window.location.origin || 'https://friendlybet.live';
+  const utm = `utm_source=${source}&utm_medium=social&utm_campaign=prediction_card`;
+  const uid = state.currentUser && state.currentUser.id;
+  const pid = state.currentPool && state.currentPool.id;
+  const lang = (typeof currentLanguage !== 'undefined' && currentLanguage) || 'he';
+  return (uid && pid)
+    ? `${origin}/share?u=${uid}&p=${pid}&lang=${lang}&${utm}`
+    : `${origin}/?${utm}`;
+}
+
 let _bracketQrPromise = null;
 function _loadBracketQr() {
   if (_bracketQrPromise) return _bracketQrPromise;
-  const origin = window.location.origin || 'https://friendlybet.live';
-  const target = origin + '/?utm_source=bracket_qr&utm_medium=social&utm_campaign=prediction_card';
+  const target = _bracketShareUrl('bracket_qr');
   const src = 'https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=0&qzone=1&color=0a0a08&bgcolor=ffffff&data=' + encodeURIComponent(target);
   _bracketQrPromise = new Promise(resolve => {
     const img = new Image();
@@ -6880,7 +6896,7 @@ async function shareBracketCard() {
   const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350;
   try { _renderBracketCard(cv, qr); } catch (e) { console.error('bracket card render failed', e); showToast(t('bracketShare.notReady'), 'info'); return; }
   const caption = t('bracketShare.caption');
-  const homeUrl = (window.location.origin || 'https://friendlybet.live') + '/?utm_source=bracket_card&utm_medium=social&utm_campaign=prediction_card';
+  const homeUrl = _bracketShareUrl('bracket_card');
   cv.toBlob(async (blob) => {
     if (!blob) { showToast(t('bracketShare.toastDesktop'), 'info'); return; }
     const file = new File([blob], 'friendlybet-bracket.png', { type: 'image/png' });

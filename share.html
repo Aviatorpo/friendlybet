@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>התחזית שלי למונדיאל 2026 · FriendlyBet</title>
+
+<!-- PROTOTYPE / LOCAL ONLY. Per-user share pages are kept noindex on purpose:
+     they are made to be SHARED (viral), not indexed. Indexing thousands of
+     near-identical pick pages risks a "scaled content" quality hit. Flip to
+     index only if/when these become aggregate, unique-value pages. -->
+<meta name="robots" content="noindex, follow">
+
+<!-- Open Graph / social card. When the link is SHARED via the app's native
+     share sheet, the user's real bracket image is attached directly, so the
+     recipient sees their actual picks. This static brand card is only the
+     fallback for a raw link paste — kept generic (no specific champion) so it
+     is never misleading. A per-user dynamic OG endpoint can replace it later. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FriendlyBet">
+<meta property="og:title" content="התחזית שלי למונדיאל 2026 ⚽ FriendlyBet">
+<meta property="og:description" content="בנה חינם את התחזית שלך למונדיאל 2026, צרף חברים ותראו מי באמת מבין בכדורגל.">
+<meta property="og:image" content="https://friendlybet.live/og-image-he.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --gold:#d9b46a; --gold-dim:#b8985a; --ink:#0b0a08;
+    --card:#15130f; --card2:#1c1913; --line:rgba(217,180,106,.18);
+    --text:#f3efe7; --muted:#a39c8c;
+  }
+  html,body{
+    font-family:'Heebo',-apple-system,sans-serif;
+    background:
+      radial-gradient(820px 560px at 50% -8%, rgba(217,180,106,.13), transparent 62%),
+      radial-gradient(700px 560px at 50% 112%, rgba(217,180,106,.05), transparent 60%),
+      var(--ink);
+    background-attachment:fixed; color:var(--text); min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:640px; margin:0 auto; padding:22px 16px 60px}
+  .brandbar{display:flex; align-items:center; justify-content:center; gap:9px; margin-bottom:22px}
+  .brandbar .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(140deg,var(--gold),#8a6d35);
+    display:grid;place-items:center;font-size:17px;box-shadow:0 4px 16px rgba(217,180,106,.25)}
+  .brandbar b{font-family:'Sora',sans-serif;font-weight:800;letter-spacing:.3px;font-size:17px}
+  .brandbar span{color:var(--muted);font-size:12px;font-weight:500}
+
+  h1.title{font-family:'Sora',sans-serif;font-weight:800;font-size:23px;text-align:center;line-height:1.3}
+  h1.title .who{color:var(--gold)}
+  .subtitle{text-align:center;color:var(--muted);font-size:13px;margin-top:6px;margin-bottom:24px}
+
+  .section-label{display:flex;align-items:center;gap:10px;margin:30px 4px 13px;
+    font-size:12px;font-weight:600;letter-spacing:1.4px;color:var(--gold);text-transform:uppercase}
+  .section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+  html[dir=rtl] .section-label::after{background:linear-gradient(270deg,var(--line),transparent)}
+
+  /* Champion hero */
+  .champ{position:relative;border-radius:20px;padding:26px 22px;text-align:center;overflow:hidden;
+    background:linear-gradient(160deg,#241d10,#15120c);
+    border:1px solid rgba(217,180,106,.45);
+    box-shadow:0 18px 50px rgba(0,0,0,.5), inset 0 1px 0 rgba(217,180,106,.18)}
+  .champ::before{content:'';position:absolute;inset:0;
+    background:radial-gradient(420px 200px at 50% -20%,rgba(217,180,106,.28),transparent 70%);pointer-events:none}
+  .champ .crown{font-size:26px;filter:drop-shadow(0 3px 8px rgba(217,180,106,.5))}
+  .champ .kicker{color:var(--gold);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin:8px 0 14px}
+  .champ .flag-xl{width:118px;height:79px;object-fit:cover;border-radius:11px;margin:0 auto;display:block;
+    box-shadow:0 10px 30px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.4), 0 0 0 4px rgba(217,180,106,.22)}
+  .champ .name{font-family:'Sora',sans-serif;font-weight:800;font-size:29px;margin-top:16px}
+
+  /* The final */
+  /* The Final: two self-contained lanes (one per finalist) flanking a central
+     axis of round labels. Each lane reads top→bottom from semi-final down to
+     the last 32, and every step spells out "beat X" under that finalist's flag,
+     so there is no way to misread it as a match between the two sides. */
+  .roads{display:grid;grid-template-columns:1fr auto 1fr;gap:5px;background:var(--card);
+    border:1px solid var(--line);border-radius:18px;padding:14px 9px}
+  .lane{display:flex;flex-direction:column;border-radius:13px;padding:0 4px 8px}
+  .lane-head{min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:8px;position:relative}
+  .lane-head img,.lane-head .fb-flag-none{width:62px;height:42px;object-fit:cover;border-radius:8px;
+    box-shadow:0 6px 16px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.3)}
+  .lane-head .lh-nm{font-family:'Sora',sans-serif;font-weight:800;font-size:15px;text-align:center}
+  .lane.is-champ .lh-nm{color:var(--gold)}
+  .lane-step{min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    border-top:1px solid rgba(255,255,255,.06)}
+  .lane-step .won{font-size:9px;font-weight:600;letter-spacing:.2px;color:var(--muted)}
+  .lane-step .opp{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;max-width:100%}
+  .lane-step .opp img,.lane-step .opp .fb-flag-none{width:23px;height:16px;border-radius:3px;object-fit:cover;flex:none}
+  .lane-step .opp .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .axis{display:flex;flex-direction:column;align-items:center;position:relative}
+  /* One uniform gold line from the "Final" node at the top all the way down
+     through every round to the last 32 — the whole road to the final. */
+  .axis::before{content:'';position:absolute;left:50%;top:48px;bottom:33px;width:2px;transform:translateX(-50%);
+    background:rgba(217,180,106,.5);z-index:0}
+  .axis-head{min-height:96px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
+  .axis-head .final{font-family:'Sora',sans-serif;font-weight:800;font-size:12px;letter-spacing:.5px;
+    color:var(--gold);text-transform:uppercase;background:var(--card);padding:6px 13px;border-radius:20px;
+    box-shadow:0 0 0 1px rgba(217,180,106,.55)}
+  .axis-step{min-height:50px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;padding:0 2px}
+  .axis-step .rnd{font-size:9px;font-weight:700;letter-spacing:.3px;color:var(--gold);text-transform:uppercase;
+    background:var(--card);padding:4px 7px;border-radius:20px;box-shadow:0 0 0 1px rgba(217,180,106,.3);
+    white-space:nowrap;text-align:center}
+
+  /* Top scorer */
+  .scorer{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);
+    border-radius:16px;padding:16px 18px}
+  .scorer .boot{font-size:26px}
+  .scorer .nm{font-family:'Sora',sans-serif;font-weight:700;font-size:18px}
+  .scorer .tm{color:var(--muted);font-size:12px;margin-top:2px;display:flex;align-items:center;gap:6px}
+  .scorer .tm img,.scorer .tm span.fb-flag-none{width:22px;height:15px;border-radius:3px;object-fit:cover}
+
+  /* Groups */
+  .groups{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:430px){.groups{grid-template-columns:1fr}}
+  .grp{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px}
+  .grp .gh{font-family:'Sora',sans-serif;font-weight:800;color:var(--gold);font-size:13px;margin-bottom:9px}
+  .grp .row{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:13px}
+  .grp .row .pos{color:var(--muted);font-weight:700;min-width:14px;font-size:12px}
+  .grp .row img,.grp .row span.fb-flag-none{width:24px;height:16px;border-radius:3px;object-fit:cover;flex:none}
+  .grp .row.first .nm{font-weight:600}
+  .grp .row .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* CTA */
+  .cta{margin-top:38px;text-align:center;background:linear-gradient(160deg,#211a0f,#14110b);
+    border:1px solid var(--line);border-radius:20px;padding:28px 22px}
+  .cta h2{font-family:'Sora',sans-serif;font-weight:800;font-size:20px;margin-bottom:7px}
+  .cta p{color:var(--muted);font-size:13px;margin-bottom:18px;line-height:1.5}
+  .cta a{display:inline-block;background:linear-gradient(140deg,var(--gold),#a9853c);color:var(--ink);
+    font-weight:800;font-size:15px;text-decoration:none;padding:13px 30px;border-radius:30px;
+    box-shadow:0 10px 28px rgba(217,180,106,.3)}
+  footer{text-align:center;color:var(--muted);font-size:11px;margin-top:26px;opacity:.7}
+  footer a{color:var(--gold);text-decoration:none}
+  .fb-flag-none{display:inline-grid;place-items:center;background:#2a2620;color:var(--muted);font-size:9px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap" id="root"></div>
+
+<script src="/share-assets/share-core.js"></script>
+<script>
+const I18N = {
+  he:{ dir:'rtl', lang:'he', tournament:'מונדיאל 2026',
+    title:'התחזית שלי למונדיאל 2026', sub:'ככה אני רואה את הטורניר. מתמודדים?',
+    champLabel:'האלופה שלי', finalLabel:'הדרך אל הגמר', roadLabel:'הדרך לגמר',
+    scorerLabel:'מלך השערים', groupsLabel:'הבתים', champ:'אלופה', runner:'סגנית', crowned:'אלופה',
+    beat:'ניצחה את', ctaH:'יש לך תחזית טובה יותר?', ctaP:'בנה חינם את התחזית שלך למונדיאל 2026, צרף חברים ותראו מי באמת מבין בכדורגל.',
+    ctaBtn:'בנה את התחזית שלי', made:'נוצר עם', finalWord:'גמר', rounds:{R32:'סבב 32',R16:'שמינית גמר',QF:'רבע גמר',SF:'חצי גמר'} },
+  en:{ dir:'ltr', lang:'en', tournament:'World Cup 2026',
+    title:"World Cup 2026 Predictions", sub:'This is how I see the tournament. Think you can beat it?',
+    champLabel:'My Champion', finalLabel:'Road to the Final', roadLabel:'Road to the Final',
+    scorerLabel:'Top Scorer', groupsLabel:'The Groups', champ:'Champ', runner:'Runner-up', crowned:'Champion',
+    beat:'beat', ctaH:'Got a better call?', ctaP:'Build your own free World Cup 2026 bracket, invite friends, and see who really knows football.',
+    ctaBtn:'Build my predictions', made:'Made with', finalWord:'Final', rounds:{R32:'Round of 32',R16:'Round of 16',QF:'Quarter-final',SF:'Semi-final'} }
+};
+
+function param(k){ return new URLSearchParams(location.search).get(k); }
+
+function render(picks){
+  const S = window.FBShare;
+  const lang = picks.lang || 'he';
+  const L = I18N[lang] || I18N.he;
+  document.documentElement.lang = lang;
+  document.documentElement.dir = L.dir;
+  document.title = `${picks.nickname} · ${L.title} · FriendlyBet`;
+
+  const tn = (c) => S.teamName(c, lang);
+  const fl = (c, st) => S.flagImg(c, { style: st || '' });
+
+  const bracket = S.resolveBracket(picks);
+  const champ = picks.tournamentWinner || (picks.bracketPicks||{})[31];
+  const fin = bracket.final;
+  const finalist = (fin.home === champ) ? fin.away : fin.home;
+  const champRoad = S.teamRoad(picks, champ, bracket);
+  const finRoad = S.teamRoad(picks, finalist, bracket);
+  const hasRoads = !!(champ && finalist);
+  const ts = picks.topScorer;
+
+  // Two self-contained lanes (one per finalist) + a central round axis. Each
+  // lane runs top→bottom from semi-final down to the last 32, and every step
+  // says "<finalist> beat X" so the two paths can't be confused for a match.
+  const ROUND_ORDER = ['SF','QF','R16','R32'];
+  const beatOf = (road, rk) => { const e = road.find(x => x.round === rk); return e ? e.beat : null; };
+  const laneStep = (beat) => `
+    <div class="lane-step">
+      <span class="won">${L.beat}</span>
+      <span class="opp">${beat ? `${fl(beat)}<span class="nm">${tn(beat)}</span>` : '—'}</span>
+    </div>`;
+  const lane = (code, road, isChamp) => `
+    <div class="lane ${isChamp ? 'is-champ' : ''}">
+      <div class="lane-head">
+        ${fl(code)}<span class="lh-nm">${code ? tn(code) : '—'}</span>
+      </div>
+      ${ROUND_ORDER.map(rk => laneStep(beatOf(road, rk))).join('')}
+    </div>`;
+  const axisHtml = `
+    <div class="axis">
+      <div class="axis-head"><span class="final">${L.finalWord}</span></div>
+      ${ROUND_ORDER.map(rk => `<div class="axis-step"><span class="rnd">${L.rounds[rk] || rk}</span></div>`).join('')}
+    </div>`;
+
+  const groupsHtml = S.WC2026_GROUP_LETTERS.map(letter => {
+    const arr = (picks.groupPositions||{})[letter] || [];
+    const rows = [0,1,2,3].map(i => {
+      const c = arr[i];
+      return `<div class="row ${i===0?'first':''}">
+        <span class="pos">${i+1}</span>${c?fl(c):'<span class="fb-flag-none">—</span>'}
+        <span class="nm">${c?tn(c):'—'}</span></div>`;
+    }).join('');
+    return `<div class="grp"><div class="gh">${lang==='he'?'בית':'Group'} ${letter}</div>${rows}</div>`;
+  }).join('');
+
+  document.getElementById('root').innerHTML = `
+    <div class="brandbar">
+      <div class="logo">⚽</div><b>FriendlyBet</b><span>· ${L.tournament}</span>
+    </div>
+    <h1 class="title"><span class="who">${picks.nickname}</span> · ${L.title}</h1>
+    <div class="subtitle">${L.sub}</div>
+
+    <div class="section-label">${L.champLabel}</div>
+    <div class="champ">
+      <div class="crown">🏆</div>
+      <div class="kicker">${L.champLabel}</div>
+      ${fl(champ,'').replace('class="fb-flag"','class="flag-xl"')}
+      <div class="name">${champ?tn(champ):'—'}</div>
+    </div>
+
+    ${hasRoads?`<div class="section-label">${L.finalLabel}</div>
+    <div class="roads">
+      ${lane(champ, champRoad, true)}
+      ${axisHtml}
+      ${lane(finalist, finRoad, false)}
+    </div>`:''}
+
+    ${ts&&ts.player_name?`
+    <div class="section-label">${L.scorerLabel}</div>
+    <div class="scorer">
+      <span class="boot">👟</span>
+      <div><div class="nm">${ts.player_name}</div>
+      <div class="tm">${fl(ts.team_code)} ${tn(ts.team_code)}</div></div>
+    </div>`:''}
+
+    <div class="section-label">${L.groupsLabel}</div>
+    <div class="groups">${groupsHtml}</div>
+
+    <div class="cta">
+      <h2>${L.ctaH}</h2>
+      <p>${L.ctaP}</p>
+      <a href="https://friendlybet.live">${L.ctaBtn}</a>
+    </div>
+    <footer>${L.made} <a href="https://friendlybet.live">friendlybet.live</a> · ⚽ FriendlyBet</footer>
+  `;
+}
+
+// Boot: demo by default; real picks if ?u & ?p given (fetched from Supabase).
+(async function(){
+  const lang = (param('lang')==='en') ? 'en' : 'he';
+  const u = param('u'), p = param('p');
+  if (u && p){
+    try {
+      const picks = await fetchRealPicks(u, p, lang);
+      return render(picks);
+    } catch(e){ console.warn('real fetch failed, demo fallback', e); }
+  }
+  render(window.FBShare.buildDemoPicks(lang));
+})();
+
+// Fetch a real user's single-phase picks from Supabase (RLS allows SELECT).
+async function fetchRealPicks(userId, poolId, lang){
+  const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+  const sb = createClient(
+    'https://kovhuahdoluxyqqwqohw.supabase.co',
+    'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU'
+  );
+  const [usr, gp, kp, tw, ts, tp] = await Promise.all([
+    sb.from('users').select('nickname').eq('id', userId).maybeSingle(),
+    sb.from('group_position_picks').select('group_letter,position,team_code').eq('pool_id',poolId).eq('user_id',userId),
+    sb.from('knockout_picks').select('bracket_position,predicted_winner').eq('pool_id',poolId).eq('user_id',userId).not('bracket_position','is',null),
+    sb.from('tournament_winner_picks').select('team_code').eq('pool_id',poolId).eq('user_id',userId).maybeSingle(),
+    sb.from('top_scorer_picks').select('player_name,team_code').eq('pool_id',poolId).eq('user_id',userId).maybeSingle(),
+    sb.from('sp_third_place_picks').select('group_letter').eq('pool_id',poolId).eq('user_id',userId)
+  ]);
+  const groupPositions = {};
+  (gp.data||[]).forEach(r => {
+    (groupPositions[r.group_letter] = groupPositions[r.group_letter] || [])[r.position-1] = r.team_code;
+  });
+  const bracketPicks = {};
+  (kp.data||[]).forEach(r => { bracketPicks[r.bracket_position] = r.predicted_winner; });
+  return {
+    nickname: (usr.data && usr.data.nickname) || (lang==='he'?'שחקן':'Player'),
+    lang, groupPositions, bracketPicks,
+    thirdPlaceAdvancers: (tp.data||[]).map(r => r.group_letter),
+    tournamentWinner: (tw.data && tw.data.team_code) || bracketPicks[31],
+    topScorer: ts.data || null
+  };
+}
+</script>
+</body>
+</html>
