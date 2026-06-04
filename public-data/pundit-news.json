@@ -1,30 +1,30 @@
 {
-  "updatedAt": "2026-06-04T20:30:00.000Z",
+  "updatedAt": "2026-06-04T21:30:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
-      "id": "davies-hamstring-doubt-opener-2026-06-04",
+      "id": "flores-acl-canada-wc26-2026-05-31",
       "confidence": "confirmed",
       "team": "CAN",
-      "en": "A captain's race against the clock - Alphonso Davies suffered a hamstring injury at Bayern Munich last month and is a genuine doubt for Canada's opener against Bosnia on June 12 in Toronto. He first said the match 'won't be possible', then backtracked with 'anything is possible in life'. Coach Jesse Marsch is cautious but hopeful Davies features later in the group stage. Can Canada cope if their talisman misses the start?",
-      "he": "מרוץ נגד השעון של הקפטן - אלפונסו דיוויס ספג פציעת ירך בבייארן מינכן בחודש שעבר ומוטל בספק לפתיחת קנדה מול בוסניה ב-12 ביוני בטורונטו. בתחילה אמר שהמשחק 'לא יהיה אפשרי', ואז חזר בו עם 'הכל אפשרי בחיים'. מאמן ג'סי מארש זהיר אך מקווה שדיוויס יצטרף בהמשך שלב הבתים. האם קנדה תוכל ללא הקמע שלה בפתיחה?",
+      "en": "Gut punch for Canada. Winger Marcelo Flores, 22, ruptured his ACL in the CONCACAF Champions Cup final on May 31, just one day after earning his World Cup call-up. Flores confirmed it himself on social media: \"my ACL is gone.\" Manager Marsch will name a replacement before Canada opens against Bosnia on June 12. Does Canada still have enough depth to make a run on home soil?",
+      "he": "מכה כואבת לקנדה. כנף מרסלו פלורס בן ה-22 קרע את הרצועה הצולבת בגמר גביע CONCACAF ב-31 במאי, יום אחד בדיוק לאחר שנבחר לנבחרת למונדיאל. פלורס אישר ברשת: \"הרצועה שלי נגמרה\". מאמן מארש יבחר מחליף לפני הפתיחה מול בוסניה ב-12 ביוני. האם לקנדה מספיק עומק כדי לעשות ריצה ארוכה על אדמת הבית?",
       "sources": [
-        { "name": "CBC Sports", "url": "https://www.cbc.ca/sports/soccer/worldcup/canada-soccer-world-cup-alphonso-davies-training-9.7222106" },
-        { "name": "TSN", "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/canada-captain-davies-trains-individually-as-fifa-world-cup-preparations-continue/" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/alphonso-davies-confirms-hell-miss-210300435.html" }
+        { "name": "CBC Sports", "url": "https://www.cbc.ca/sports/soccer/worldcup/canada-world-cup-roster-marcelo-flores-9.7218637" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48931912/canada-flores-says-acl-gone-world-cup-status-doubt" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/canadas-marcelo-flores-ruled-out-world-cup-acl-injury" }
       ],
-      "expires_at": "2026-06-12T00:00:00Z"
+      "expires_at": "2026-06-13T00:00:00Z"
     },
     {
       "id": "neymar-calf-miss-opener-2026-06-04",
       "confidence": "confirmed",
       "team": "BRA",
-      "en": "Brazil's talisman starts the bench - Neymar suffered a grade-two right calf strain playing for Santos on May 17 and will miss Brazil's opener against Morocco on June 13. Coach Carlo Ancelotti says he has no regrets naming him in the squad and expects him back for game two against Haiti on June 19. Can the Selecao handle Morocco without their most-capped player?",
-      "he": "הקמע של ברזיל פותח מהספסל - ניימאר ספג קרע חלקי בדרגה שנייה בשוק הימני במשחק עם סנטוס ב-17 במאי, ויחמיץ את פתיחת ברזיל מול מרוקו ב-13 ביוני. מאמן קרלו אנצ'לוטי אומר שאין לו חרטות על הכללתו בסגל, ומצפה שישוב למשחק השני מול האיטי ב-19 ביוני. האם הסלסאו תתמודד עם מרוקו בלי שחקן הנבחרת עם הכי הרבה הופעות?",
+      "en": "Neymar is going to the World Cup, just not to the opener. Brazil's most-capped player has a grade-2 calf strain and will miss the June 13 clash with Morocco. Coach Ancelotti is calm: \"If he's not fit for the first match, he'll be fit for the second\" - Brazil vs Haiti on June 19. Is the Selecao strong enough to win Group C if Neymar starts from the bench?",
+      "he": "ניימאר נוסע למונדיאל, רק לא לפתיחה. שחקן הנבחרת הברזילאי עם הכי הרבה הופעות סבל מקרע חלקי בשוק (דרגה 2) ויחמיץ את המשחק מול מרוקו ב-13 ביוני. אנצ'לוטי רגוע: \"אם לא יהיה מוכן לראשון, יהיה מוכן לשני\" - ברזיל מול האיטי ב-19 ביוני. האם הסלסאו חזקה מספיק לנצח בבלוק C אם ניימאר פותח מהספסל?",
       "sources": [
-        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/brazil-neymar-injury" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48900253/neymar-calf-injury-three-weeks-miss-world-cup-opener" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/neymar-will-go-to-world-cup-despite-injury-issue-as-carlo-ancelotti-reveals-timeline-on-brazil-forwards-return" },
+        { "name": "Bleacher Report", "url": "https://bleacherreport.com/articles/25432292-neymar-injury-update-provided-brazils-carlo-ancelotti-latest-timeline-ahead-2026-world-cup" }
       ],
       "expires_at": "2026-06-13T00:00:00Z"
     },
@@ -32,8 +32,8 @@
       "id": "advocaat-oldest-wc-coach-2026-06-04",
       "confidence": "confirmed",
       "team": "CUW",
-      "en": "History before a ball is kicked - Dick Advocaat will become the oldest coach in World Cup history when Curacao face Germany on June 14. At 78, the Dutchman surpasses Otto Rehhagel, who guided Greece at 71 in 2010, by almost seven years. Curaçao reinstated the veteran manager on May 13 after he had resigned. Will his experience be enough against Die Mannschaft?",
-      "he": "היסטוריה עוד לפני שבועטים בכדור - דיק אדוקאט יהפוך למאמן הקשיש ביותר בהיסטוריית גביע העולם כאשר קוראסאו תפגוש את גרמניה ב-14 ביוני. בגיל 78, ההולנדי הוותיק עוקף את אוטו רהאגל, שהוביל את יוון בגיל 71 ב-2010, בכמעט שבע שנים. קוראסאו הכריזה על החזרתו ב-13 במאי לאחר שהתפטר. האם הניסיון הרב יספיק נגד הנבחרת הגרמנית?",
+      "en": "History before a ball is kicked. Dick Advocaat will become the oldest coach in World Cup history when Curacao face Germany on June 14. At 78, the Dutchman surpasses Otto Rehhagel, who guided Greece at 71 in 2010, by almost seven years. Curaçao reinstated the veteran manager on May 13 after he had resigned. Will his experience be enough against Die Mannschaft?",
+      "he": "היסטוריה עוד לפני שבועטים בכדור. דיק אדוקאט יהפוך למאמן הקשיש ביותר בהיסטוריית גביע העולם כאשר קוראסאו תפגוש את גרמניה ב-14 ביוני. בגיל 78, ההולנדי הוותיק עוקף את אוטו רהאגל, שהוביל את יוון בגיל 71 ב-2010, בכמעט שבע שנים. קוראסאו הכריזה על החזרתו ב-13 במאי לאחר שהתפטר. האם הניסיון הרב יספיק נגד הנבחרת הגרמנית?",
       "sources": [
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48757275/curacao-reinstate-dick-advocaat-deny-change-due-external-pressure" },
         { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/05/13/curacao-coach-advocaat-world-cup/6b277144-4eb2-11f1-97e7-22c6c29ff0d8_story.html" }
@@ -41,22 +41,22 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "wc2026-rules-throwins-var-corners-2026-06-04",
+      "id": "saot-ai-avatars-wc26-2026-06-03",
       "confidence": "confirmed",
-      "en": "The rulebook gets its biggest overhaul in years - at this World Cup referees will show a visible five-second countdown for throw-ins and goal kicks, and deliberate time-wasting hands the restart to the opposition. VAR can also correct wrongly-awarded corners for the first time. And covering your mouth during an on-pitch confrontation now earns a red card. Fewer delays, more drama - or more controversy?",
-      "he": "ספר החוקים עובר את הרענון הגדול ביותר שלו בשנים - במונדיאל הזה שופטים יציגו ספירה לאחור גלויה של חמש שניות לזריקות מהצד ולבעיטות שוער, והתמהמהות מכוונת מעבירה את הבעיטה ליריב. גם VAR יוכל לתקן לראשונה קרנות שניתנו שלא כדין. ולכסות את הפה בעת עימות? כרטיס אדום. פחות עיכובים, יותר דרמה - או יותר מחלוקות?",
+      "en": "Offside calls just got a major upgrade. For 2026, FIFA revamped its semi-automated offside system to send a real-time audio alert directly to the assistant referee, so the flag goes up immediately without waiting for the VAR room. All 1,248 players in the tournament were digitally scanned to create individual AI avatars that power the clearer replay graphics you will see on screen. Will faster calls mean fewer controversies in your predictions?",
+      "he": "קריאות נבדל קיבלו שדרוג משמעותי. למונדיאל 2026 שדרגה פיפ\"א את מערכת ה-SAOT: התראת קול בזמן אמת נשלחת ישירות לעוזר השופט על נבדל ברור, כך שהדגל עולה מיד ללא המתנה לחדר הווידאו. כל 1,248 השחקנים במונדיאל נסרקו ויצרו עבורם אווטאר בינה מלאכותית אישי לגרפיקת הרפלייז המשופרת שנראה על המסך. האם החלטות מהירות יותר יעשו לכם את התחזיות פחות מורכבות?",
       "sources": [
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/1/which-football-rule-changes-will-be-implemented-during-the-world-cup" },
-        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12098/13549645/world-cup-ifab-confirm-new-var-powers-10-second-substitutions-and-tactical-timeout-ban-in-major-rule-changes" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth" }
+        { "name": "Euronews", "url": "https://www.euronews.com/next/2026/06/01/ai-avatars-and-smart-footballs-inside-fifas-high-tech-2026-world-cup" },
+        { "name": "HITC", "url": "https://www.hitc.com/fifa-unveil-new-var-technology-for-offsides-that-will-be-used-by-assistants-at-world-cup-2026/" },
+        { "name": "Sportingpedia", "url": "https://www.sportingpedia.com/2026/06/03/fifa-rolls-out-cutting-edge-offside-and-ball-tracking-technologies-for-2026-world-cup/" }
       ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "expires_at": "2026-07-20T00:00:00Z"
     },
     {
       "id": "azteca-three-wc-host-opener-2026-06-04",
       "confidence": "confirmed",
-      "en": "Seven days until kick-off at the most storied stage in football - Estadio Azteca in Mexico City hosts the tournament opener between Mexico and South Africa on June 11, and will become the only stadium in history to have hosted three World Cups, after 1970 and 1986. Sitting at 2,240 metres above sea level with June afternoon thunderstorms likely, the thin air alone is an extra player. Who will handle the pressure?",
-      "he": "שבעה ימים לפתיחה על הבמה המיתולוגית ביותר בכדורגל - אצטדיון אזטקה במקסיקו סיטי יארח את משחק הפתיחה בין מקסיקו לדרום אפריקה ב-11 ביוני, ויהפוך לאצטדיון היחיד בהיסטוריה שאירח שלושה מונדיאלים, אחרי 1970 ו-1986. האצטדיון ניצב על גובה 2,240 מטרים מעל פני הים, סופות רעמים בשעות אחה\"צ צפויות ביוני, והאוויר הדליל הוא שחקן נוסף בפני עצמו. מי יתמודד עם הלחץ?",
+      "en": "Seven days until kick-off at the most storied stage in football. Estadio Azteca in Mexico City hosts the tournament opener between Mexico and South Africa on June 11, and will become the only stadium in history to have hosted three World Cup opening matches, after 1970 and 1986. Sitting at 2,240 metres above sea level with June afternoon thunderstorms likely, the thin air alone is an extra player. Who will handle the pressure?",
+      "he": "שבעה ימים לפתיחה על הבמה המיתולוגית ביותר בכדורגל. אצטדיון אזטקה במקסיקו סיטי יארח את משחק הפתיחה בין מקסיקו לדרום אפריקה ב-11 ביוני, ויהפוך לאצטדיון היחיד בהיסטוריה שארח שלושה משחקי פתיחה של מונדיאל, אחרי 1970 ו-1986. האצטדיון ניצב על גובה 2,240 מטרים מעל פני הים, סופות רעמים בשעות אחה\"צ צפויות ביוני, והאוויר הדליל הוא שחקן נוסף בפני עצמו. מי יתמודד עם הלחץ?",
       "sources": [
         { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" },
         { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/fifa-world-cup-2026-stadiums-matches-us-canada-mexico" },
