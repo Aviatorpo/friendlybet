@@ -79,12 +79,9 @@
   .finalbox{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;
     background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 14px}
   .fb-side{display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px 4px;border-radius:13px;position:relative}
-  .fb-side.win{background:linear-gradient(180deg,rgba(217,180,106,.14),rgba(217,180,106,.03));box-shadow:inset 0 0 0 1px rgba(217,180,106,.4)}
   .fb-side img,.fb-side .fb-flag-none{width:74px;height:50px;object-fit:cover;border-radius:9px;box-shadow:0 6px 18px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.35)}
   .fb-side .fb-name{font-weight:700;font-size:16px;font-family:'Sora',sans-serif;text-align:center}
   .fb-side.win .fb-name{color:var(--gold)}
-  .fb-side .fb-tag{position:absolute;top:-11px;font-size:10px;font-weight:800;letter-spacing:.8px;color:var(--ink);
-    background:var(--gold);padding:3px 10px;border-radius:20px;white-space:nowrap}
   .fb-vs{font-family:'Sora',sans-serif;font-weight:800;color:var(--muted);font-size:16px}
 
   /* Road to the Final: two self-contained lanes (one per finalist) flanking a
@@ -109,7 +106,7 @@
   .axis{display:flex;flex-direction:column;align-items:center;position:relative}
   /* One uniform gold line from the "Final" node at the top all the way down
      through every round to the last 32 — the whole road to the final. */
-  .axis::before{content:'';position:absolute;left:50%;top:48px;bottom:33px;width:2px;transform:translateX(-50%);
+  .axis::before{content:'';position:absolute;left:50%;top:121px;bottom:33px;width:2px;transform:translateX(-50%);
     background:rgba(217,180,106,.5);z-index:0}
   .axis-head{min-height:96px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1}
   .axis-head .final{font-family:'Sora',sans-serif;font-weight:800;font-size:12px;letter-spacing:.5px;
@@ -213,14 +210,13 @@ function render(picks){
     </div>`;
   const axisHtml = `
     <div class="axis">
-      <div class="axis-head"><span class="final">${L.finalWord}</span></div>
+      <div class="axis-head"></div>
       ${ROUND_ORDER.map(rk => `<div class="axis-step"><span class="rnd">${L.rounds[rk] || rk}</span></div>`).join('')}
     </div>`;
 
   // The Final matchup (its own box again): both finalists, champion marked.
   const finalSide = (code, isWin) => `
     <div class="fb-side ${isWin ? 'win' : ''}">
-      ${isWin ? `<span class="fb-tag">🏆 ${L.champ}</span>` : ''}
       ${fl(code)}
       <span class="fb-name">${code ? tn(code) : '—'}</span>
     </div>`;
