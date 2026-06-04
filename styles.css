@@ -7200,6 +7200,7 @@ body:not(.ltr) .home-lang-toggle {
 }
 .pundit-tag.confirmed { background: rgba(52,197,134,0.14); color: #5fd29a; }
 .pundit-tag.reported  { background: rgba(212,168,83,0.16); color: #e6c789; }
+.pundit-tag.pool      { background: rgba(124,150,255,0.16); color: #aab8ff; }
 /* Fixed-height text area: always reserves 3 lines so the card never resizes
    between rotating items. Collapsed = clamped to 3 lines; "see more" expands. */
 .pundit-text {

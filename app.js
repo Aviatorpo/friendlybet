@@ -1070,17 +1070,191 @@ async function loadPundit() {
       return _punditState.items;
     }
     const res = await fetch('/public-data/pundit.json', { cache: 'no-store' });
-    if (!res.ok) return [];
-    const j = await res.json();
     const now = Date.now();
-    const items = (j && Array.isArray(j.items) ? j.items : [])
-      .filter(it => it && (it.he || it.en))
-      .filter(it => !it.expires_at || Date.parse(it.expires_at) > now);
+    let globalItems = [];
+    if (res.ok) {
+      const j = await res.json();
+      globalItems = (j && Array.isArray(j.items) ? j.items : [])
+        .filter(it => it && (it.he || it.en))
+        .filter(it => !it.expires_at || Date.parse(it.expires_at) > now);
+    }
+
+    // v2.6.79: merge in pool-specific "pool pulse" commentary computed live on
+    // the client (aggregate facts only, never any pick value). Layout: up to 2
+    // news items lead, then the pool buzz, then the rest - capped so the pool
+    // banter is always visible when present.
+    let poolItems = [];
+    try { poolItems = await buildPoolPundit(); } catch (_) { /* never block the feed */ }
+    const news = globalItems.filter(it => it.type === 'news');
+    const rest = globalItems.filter(it => it.type !== 'news');
+    const items = [...news.slice(0, 2), ...poolItems.slice(0, 2), ...rest].slice(0, 4);
+
+    if (!items.length) return [];
     _punditState.items = items;
     _punditState.loadedAt = now;
     if (_punditState.idx >= items.length) _punditState.idx = 0;
     return items;
   } catch (_) { return []; }
+}
+
+// ---- Pool pulse: client-side, privacy-safe pool commentary -----------------
+// Builds teasing/celebratory items about THIS pool's activity from AGGREGATE
+// facts only: member count, who joined, who submitted (a boolean), and public
+// scores. It NEVER reads any pick value (group_position_picks / knockout_picks
+// / tournament_winner_picks), so a specific prediction can't leak by
+// construction - the "surprises" lines are pure flavor, not derived from picks.
+const _PP_DAY_MS = 24 * 60 * 60 * 1000;
+
+function _ppSeed() {
+  // Rotates template/variant choices once a day: fresh daily, stable per render.
+  return Math.floor(Date.now() / _PP_DAY_MS);
+}
+function _ppPick(arr, seed) {
+  return arr[((seed % arr.length) + arr.length) % arr.length];
+}
+
+async function _loadPoolMembers() {
+  const pool = state.currentPool;
+  if (!pool || !pool.id || typeof supabaseClient === 'undefined' || !supabaseClient) return null;
+  const cache = _punditState.pool;
+  if (cache && cache.poolId === pool.id && (Date.now() - cache.fetchedAt) < 5 * 60 * 1000) {
+    return cache.members;
+  }
+  try {
+    // Aggregate-only columns. No picks are ever selected here.
+    const { data, error } = await supabaseClient
+      .from('users')
+      .select('id,nickname,joined_at,predictions_submitted_at,total_score')
+      .eq('pool_id', pool.id)
+      .range(0, 9999);
+    if (error || !data) return null;
+    _punditState.pool = { poolId: pool.id, members: data, fetchedAt: Date.now() };
+    return data;
+  } catch (_) { return null; }
+}
+
+async function buildPoolPundit() {
+  const pool = state.currentPool, viewer = state.currentUser;
+  if (!pool || !viewer) return [];
+  const members = await _loadPoolMembers();
+  if (!members || !members.length) return [];
+
+  const lang = (typeof getCurrentLanguage === 'function') ? getCurrentLanguage() : 'he';
+  const seed = _ppSeed();
+  const now = Date.now();
+  const total = members.length;
+  const submitted = members.filter(m => m.predictions_submitted_at).length;
+  const pending = total - submitted;
+  const tournamentStarted = members.some(m => (m.total_score || 0) > 0);
+  const me = members.find(m => m.id === viewer.id) || null;
+  const iSubmitted = !!(me && me.predictions_submitted_at);
+  const nameOf = (m) => (m && m.nickname) ? m.nickname : (lang === 'he' ? 'מישהו' : 'someone');
+
+  // Most-recent submitter / joiner OTHER than the viewer, within a fresh window.
+  const recentSubmitter = members
+    .filter(m => m.id !== viewer.id && m.predictions_submitted_at &&
+                 (now - Date.parse(m.predictions_submitted_at)) < _PP_DAY_MS)
+    .sort((a, b) => Date.parse(b.predictions_submitted_at) - Date.parse(a.predictions_submitted_at))[0];
+  const recentJoiner = members
+    .filter(m => m.id !== viewer.id && m.joined_at &&
+                 (now - Date.parse(m.joined_at)) < 2 * _PP_DAY_MS)
+    .sort((a, b) => Date.parse(b.joined_at) - Date.parse(a.joined_at))[0];
+  const leader = tournamentStarted
+    ? members.slice().sort((a, b) => (b.total_score || 0) - (a.total_score || 0))[0]
+    : null;
+
+  const cand = []; // { id, prio, he, en } - lower prio = more important
+  const push = (id, prio, variants) => {
+    const v = _ppPick(variants, seed);
+    cand.push({ id, prio, he: v.he, en: v.en });
+  };
+
+  if (total <= 1) {
+    push('pool-solo', 1, [{
+      he: 'אתה הראשון בהימור! תזמין כמה חברים שיהיה מעניין 😎',
+      en: "You're first in the pool! Invite a few friends to make it interesting 😎",
+    }]);
+  }
+
+  // Personal nudge: others are betting, the viewer isn't (pre-tournament only).
+  if (!tournamentStarted && total > 1 && !iSubmitted && submitted > 0) {
+    push('pool-you-pending', 1, [
+      { he: 'כולם מסביבך כבר מהמרים — וההימור שלך עדיין ריק 😅',
+        en: "Everyone around you is already betting — and your slip is still empty 😅" },
+      { he: `${submitted} חברים כבר נעלו בחירות. אתה עוד לא — הדדליין לא מחכה ⏰`,
+        en: `${submitted} friends already locked in. You haven't — the deadline won't wait ⏰` },
+    ]);
+  }
+
+  if (recentSubmitter) {
+    const n = nameOf(recentSubmitter);
+    push('pool-recent-submit', 2, [
+      { he: `${n} בדיוק נעל את הבחירות — ויש שם כמה הפתעות 👀`,
+        en: `${n} just locked in — and there are some surprises in there 👀` },
+      { he: `${n} סיים להמר! מי יודע אילו הפתעות הכין 🤔`,
+        en: `${n} finished betting! Who knows what surprises they cooked up 🤔` },
+      { he: `${n} כבר נעל בחירות. אתם עדיין מתלבטים? ⏳`,
+        en: `${n} already locked in. Still deciding? ⏳` },
+    ]);
+  }
+
+  if (leader && (leader.total_score || 0) > 0) {
+    const n = nameOf(leader), s = leader.total_score || 0;
+    push('pool-leader', 2, [
+      { he: `${n} מוביל את ההימור עם ${s} נקודות — מישהו יתפוס אותו? 🏃`,
+        en: `${n} leads the pool with ${s} points — can anyone catch them? 🏃` },
+      { he: `${n} בראש הטבלה עם ${s} נקודות. הפער עוד נסגר 😏`,
+        en: `${n} tops the table with ${s} points. That gap can still close 😏` },
+    ]);
+  }
+
+  if (recentJoiner) {
+    const n = nameOf(recentJoiner);
+    push('pool-recent-join', 3, [
+      { he: `${n} הצטרף להימור! התחרות מתחממת 🔥`,
+        en: `${n} joined the pool! The competition is heating up 🔥` },
+      { he: `${n} נכנס למשחק. עוד יריב להביס 😏`,
+        en: `${n} is in the game. One more rival to beat 😏` },
+    ]);
+  }
+
+  if (!tournamentStarted && pending > 0 && submitted > 0) {
+    push('pool-pending', 4, [
+      { he: `עוד ${pending} חברים לא סיימו להמר — אל תפספסו את הדדליין!`,
+        en: `${pending} friends still haven't finished betting — don't miss the deadline!` },
+      { he: `${submitted} סיימו, ${pending} עדיין מתלבטים. מי יהיה האחרון? 🐢`,
+        en: `${submitted} done, ${pending} still deciding. Who'll be last? 🐢` },
+    ]);
+  }
+
+  if (!tournamentStarted && total > 1 && pending === 0) {
+    push('pool-all-done', 4, [{
+      he: 'כולם נעלו בחירות! שיזכה המהמר הטוב ביותר 🏆',
+      en: "Everyone's locked in! May the best predictor win 🏆",
+    }]);
+  }
+
+  if (total >= 3) {
+    push('pool-growth', 5, [
+      { he: `כבר ${total} חברים בהימור! איזה כיף 🎉`,
+        en: `Already ${total} friends in the pool! 🎉` },
+      { he: `${total} מהמרים בהימור, וכל אחד בטוח שהוא יזכה 😄`,
+        en: `${total} predictors in the pool, each sure they'll win 😄` },
+    ]);
+  }
+
+  if (!cand.length) return [];
+  cand.sort((a, b) => a.prio - b.prio);
+
+  // Always keep the most important item; rotate the second slot daily for
+  // variety so the pool buzz doesn't feel static.
+  const out = [cand[0]];
+  const others = cand.slice(1);
+  if (others.length) out.push(others[seed % others.length]);
+
+  return out.map(it => ({
+    id: it.id, type: 'pool', confidence: 'confirmed', he: it.he, en: it.en, sources: [],
+  }));
 }
 
 async function renderPundit() {
@@ -1152,6 +1326,10 @@ function _punditDraw() {
       const conf = it.confidence === 'confirmed';
       tagEl.textContent = conf ? t('pundit.badge.confirmed') : t('pundit.badge.reported');
       tagEl.className = 'pundit-tag ' + (conf ? 'confirmed' : 'reported');
+      tagEl.style.display = '';
+    } else if (it.type === 'pool') {
+      tagEl.textContent = t('pundit.badge.pool');
+      tagEl.className = 'pundit-tag pool';
       tagEl.style.display = '';
     } else {
       tagEl.style.display = 'none';
