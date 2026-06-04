@@ -5173,7 +5173,7 @@ function renderKnockout() {
     listEl.innerHTML = '';
     
     matches.forEach(match => {
-      const card = createMatchCard(match);
+      const card = createKnockoutPickCard(match);
       listEl.appendChild(card);
     });
   }
@@ -5185,10 +5185,13 @@ function renderKnockout() {
   updateKnockoutFinishButton();
 }
 
-function createMatchCard(match) {
+// Renamed from createMatchCard: a SECOND top-level createMatchCard (the live
+// scoreboard card) was defined later in this file and silently shadowed this one,
+// so the two-phase knockout view rendered the wrong card. Distinct name fixes it.
+function createKnockoutPickCard(match) {
   const card = document.createElement('div');
   card.className = 'ko-match-card';
-  
+
   const round = match.round;
   const points = ROUND_INFO[round].points;
   const userPick = knockoutState.picks[match.id];
@@ -5213,14 +5216,18 @@ function createMatchCard(match) {
 
   // Check if real match result is known
   const realResult = userPick ? wasKnockoutPickCorrect(match.id, userPick) : null;
-  const myScore = userPick ? getMyMatchScore(match.id, 'KNOCKOUT') : null;
 
   let resultBadge = '';
   let cardClass = 'ko-match-card';
 
   if (realResult === true) {
     cardClass += ' result-correct';
-    const correctPoints = myScore?.points_earned || 0;
+    // Points earned = the round's points x the pool multiplier for the picked team.
+    // (The per-match user_scores table the old code read is no longer populated by
+    // the v2 engine, so it always showed +0; compute it here instead.)
+    const koMult = (state.currentPool && state.currentPool.use_multipliers !== false && typeof getPoolTeamMultiplier === 'function')
+      ? getPoolTeamMultiplier(state.currentPool, userPick) : 1;
+    const correctPoints = Math.round(points * koMult);
     resultBadge = `
       <div class="ko-result-badge correct">
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">

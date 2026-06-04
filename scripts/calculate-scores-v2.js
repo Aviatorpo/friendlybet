@@ -103,13 +103,48 @@ function computeGroupStandings(matches, groupTeams) {
     else if (m.home_score < m.away_score) { a.wins++; h.losses++; a.points += 3; }
     else { h.draws++; a.draws++; h.points++; a.points++; }
   });
-  // Sort: points desc, GD desc, GF desc
-  return Object.values(stats).sort((x, y) => {
-    if (y.points !== x.points) return y.points - x.points;
-    if (y.gd !== x.gd) return y.gd - x.gd;
-    if (y.gf !== x.gf) return y.gf - x.gf;
-    return x.code.localeCompare(y.code);
-  });
+  // Head-to-head mini-table among a SET of tied teams: points, then GD, then GF
+  // counting ONLY the matches played between those teams. This is the next set of
+  // FIFA 2026 tiebreakers after overall points/GD/GF.
+  const h2h = (codes) => {
+    const set = new Set(codes);
+    const t = {}; codes.forEach(c => (t[c] = { pts: 0, gd: 0, gf: 0 }));
+    matches.forEach(m => {
+      if (m.home_score == null || m.away_score == null) return;
+      if (!set.has(m.home_team_code) || !set.has(m.away_team_code)) return;
+      const h = t[m.home_team_code], a = t[m.away_team_code];
+      h.gf += m.home_score; h.gd += m.home_score - m.away_score;
+      a.gf += m.away_score; a.gd += m.away_score - m.home_score;
+      if (m.home_score > m.away_score) h.pts += 3;
+      else if (m.home_score < m.away_score) a.pts += 3;
+      else { h.pts++; a.pts++; }
+    });
+    return t;
+  };
+
+  // 1) order by overall points -> GD -> GF
+  const ordered = Object.values(stats).sort((x, y) =>
+    (y.points - x.points) || (y.gd - x.gd) || (y.gf - x.gf) || x.code.localeCompare(y.code));
+
+  // 2) re-order each run of teams equal on (points, GD, GF) by head-to-head
+  //    (h2h points -> h2h GD -> h2h GF). Code order is only the LAST resort,
+  //    standing in for fair-play/drawing-of-lots which we have no data for.
+  const sameOverall = (p, q) => p.points === q.points && p.gd === q.gd && p.gf === q.gf;
+  const result = [];
+  for (let i = 0; i < ordered.length;) {
+    let j = i + 1;
+    while (j < ordered.length && sameOverall(ordered[i], ordered[j])) j++;
+    if (j - i === 1) { result.push(ordered[i]); i = j; continue; }
+    const tied = ordered.slice(i, j);
+    const ht = h2h(tied.map(s => s.code));
+    tied.sort((x, y) =>
+      (ht[y.code].pts - ht[x.code].pts) ||
+      (ht[y.code].gd - ht[x.code].gd) ||
+      (ht[y.code].gf - ht[x.code].gf) ||
+      x.code.localeCompare(y.code));
+    result.push(...tied); i = j;
+  }
+  return result;
 }
 
 // Return true if every group match in this group is FINISHED
@@ -398,6 +433,37 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
   }
 }
 
+// Which teams ADVANCED to the knockout: top-2 of each completed group, plus the
+// 8 best third-placed teams once all 12 groups are complete. Used by two-phase
+// group scoring so the awarded points match the "advanced" checkmark in the UI.
+async function computeAdvancedTeams(finishedMatches) {
+  const allGroupMatchesAny = (await sb('GET', 'matches', { query: '?stage=eq.GROUP_STAGE&select=*' })) || [];
+  const groupCodes = {};
+  allGroupMatchesAny.forEach(m => {
+    const letter = m.group_letter || m.group; if (!letter) return;
+    (groupCodes[letter] = groupCodes[letter] || new Set());
+    if (m.home_team_code) groupCodes[letter].add(m.home_team_code);
+    if (m.away_team_code) groupCodes[letter].add(m.away_team_code);
+  });
+  const advanced = new Set();
+  const thirdStats = {};
+  Object.keys(groupCodes).forEach(letter => {
+    const teams = [...groupCodes[letter]];
+    if (teams.length !== 4) return;
+    const groupMatches = allGroupMatchesAny.filter(m => (m.group_letter || m.group) === letter);
+    if (!groupIsComplete(groupMatches)) return;
+    const ordered = computeGroupStandings(groupMatches, teams);
+    advanced.add(ordered[0].code); advanced.add(ordered[1].code); // top 2 advance directly
+    thirdStats[letter] = ordered[2];
+  });
+  if (Object.keys(thirdStats).length === 12) {
+    const thirds = Object.values(thirdStats).slice().sort((x, y) =>
+      (y.points - x.points) || (y.gd - x.gd) || (y.gf - x.gf) || x.code.localeCompare(y.code));
+    thirds.slice(0, 8).forEach(s => advanced.add(s.code)); // 8 best thirds also advance
+  }
+  return advanced;
+}
+
 // ---- TWO PHASE scoring (legacy-style) ----
 // v2.5.35: applies risk multipliers from scoring_rules (per-team override →
 // category by FIFA-rank-derived tier → global default). Persisted
@@ -406,6 +472,11 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
 // values mid-tournament.
 async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer) {
   const resolveMult = poolMultResolver(pool, rules);
+  // Two-phase groups = "pick which teams ADVANCE". Award group_first for each
+  // picked team that actually reached the knockout, so the points match the
+  // "advanced" checkmark the app shows (was: per group-match-won, which a
+  // drawing-but-advancing team would score 0 for).
+  const advanced = await computeAdvancedTeams(finishedMatches);
 
   for (const user of users) {
     let groupPoints = 0;
@@ -415,15 +486,9 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     // Group picks
     const gp = await sb('GET', 'group_picks',
       { query: `?user_id=eq.${user.id}&select=*` });
-    finishedMatches.forEach(m => {
-      if (m.stage !== 'GROUP_STAGE') return;
-      const winner = m.home_score > m.away_score ? m.home_team_code
-                   : m.away_score > m.home_score ? m.away_team_code
-                   : null;
-      if (!winner) return;
-      const pick = (gp || []).find(p => p.team_code === winner);
-      if (!pick) return;
-      const mult = resolveMult(winner, pick.multiplier_applied);
+    (gp || []).forEach(p => {
+      if (!advanced.has(p.team_code)) return;
+      const mult = resolveMult(p.team_code, p.multiplier_applied);
       groupPoints += (rules.group_first || 0) * mult;
     });
 

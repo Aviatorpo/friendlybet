@@ -77,6 +77,21 @@ console.log('\n== unit: computeGroupStandings (tie-break pts>gd>gf>code) ==');
   const order = S.computeGroupStandings(ms, ['A','B','C','D']).map(s => s.code);
   eq('GD tiebreak A>B', order.slice(0,2), ['A','B']);
 })();
+(() => {
+  // HEAD-TO-HEAD: Z and A tie EXACTLY on overall pts(6)/GD(+2)/GF(4); Z beat A 1-0.
+  // FIFA head-to-head must rank Z above A; the old alphabetical rule would wrongly
+  // put A first. Result must be [Z,A,M,N].
+  const ms = [
+    {home_team_code:'Z',away_team_code:'A',home_score:1,away_score:0,status:'FINISHED'}, // Z beats A (h2h)
+    {home_team_code:'Z',away_team_code:'M',home_score:0,away_score:2,status:'FINISHED'},
+    {home_team_code:'Z',away_team_code:'N',home_score:3,away_score:0,status:'FINISHED'},
+    {home_team_code:'A',away_team_code:'M',home_score:2,away_score:0,status:'FINISHED'},
+    {home_team_code:'A',away_team_code:'N',home_score:2,away_score:1,status:'FINISHED'},
+    {home_team_code:'M',away_team_code:'N',home_score:0,away_score:1,status:'FINISHED'},
+  ];
+  const order = S.computeGroupStandings(ms, ['Z','A','M','N']).map(s => s.code);
+  eq('head-to-head Z>A (not alphabetical A>Z)', order, ['Z','A','M','N']);
+})();
 
 console.log('\n== unit: poolMultResolver (precedence / disabled / NaN) ==');
 (() => {
@@ -150,13 +165,14 @@ bracket('U2',3,'ARG');                  // 2 * x1 = 2
 bracket('U2',5,'MEX');                  // 2 * x1.5 = 3
 // expected: group=20, knockout=4+2+3=9, bonus=0, total=29
 
-// U3 two-phase, multipliers OFF.
-const gp3 = [{ team_code:'A1' }];       // A1 wins 3 group matches -> 3*group_first(1)=3
+// U3 two-phase, multipliers OFF. Two-phase groups score ADVANCEMENT now:
+// A1 (1st) + A2 (2nd) advance -> +1 each; A4 (4th) does NOT advance -> +0.
+const gp3 = [{ team_code:'A1' }, { team_code:'A2' }, { team_code:'A4' }];
 const kp3 = [{ predicted_winner:'KO1' }, { predicted_winner:'KOP2' }];
 kpByUser['U3'] = kp3;                    // wire U3's two-phase knockout picks into the mock
 // KO1 wins LAST_32+LAST_16+QF+SF+FINAL = 2+4+8+16+32=62 ; KOP2 penalty r32 = +2 -> 64
 // U3 top scorer correct -> +10
-// expected: group=3, knockout=64, bonus=10, total=77
+// expected: group=2 (A1,A2 advanced; A4 did not), knockout=64, bonus=10, total=76
 
 // U4 single-phase, multipliers ON, ALL teams x1.5 -> rounding (sum-then-round) check.
 gpp('U4','C',[null,'C2',null,'C4']);    // pos2=3*1.5=4.5 ; pos4=1*1.5=1.5 ; sum=6.0 -> round 6 (NOT 7)
@@ -204,10 +220,10 @@ S.__setFetch(async (url, opts) => {
   console.log('\n== integration: two-phase (U3) ==');
   await S.scoreTwoPhasePool({ id:'P3', code:'P3', use_multipliers:false }, rulesTwo,
     [{ id:'U3', nickname:'U3' }], finishedMatches, tsMapTwo, 'TS1');
-  eq('U3 group (3 wins x1)', captured.U3.group_points, 3);
+  eq('U3 group (A1,A2 advanced; A4 not)', captured.U3.group_points, 2);
   eq('U3 knockout (62 + 2 penalty)', captured.U3.knockout_points, 64);
   eq('U3 bonus (top scorer)', captured.U3.bonus_points, 10);
-  eq('U3 total', captured.U3.total_score, 77);
+  eq('U3 total', captured.U3.total_score, 76);
 
   console.log('\n== integration: rounding sum-then-round (U4) ==');
   await S.scoreSinglePhasePool({ id:'P4', code:'P4', use_multipliers:true }, rulesAllX15,
