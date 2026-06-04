@@ -9001,6 +9001,7 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
 .bracket-share-apps-hint .bsah-logo.x  { color: #f4f4f4; }
 .bracket-share-apps-hint .bsah-logo.fb { color: #1877F2; }
 .bracket-share-apps-hint .bsah-logo.tg { color: #2AABEE; }
+.bracket-share-apps-hint .bsah-logo.rd { color: #FF4500; }
 .bracket-share-apps-hint .bsah-more {
   font-size: 17px; font-weight: 700; color: rgba(255, 255, 255, 0.4); line-height: 1;
 }
