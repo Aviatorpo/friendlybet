@@ -1244,19 +1244,34 @@ async function loadPundit() {
     //       by the hour - so the card visibly changes every single hour even
     //       when news AND pool are completely static.
     const PUNDIT_TARGET = 5;
+    const POOL_SLOTS = 2; // the owner's layout: first 2 = this pool, next 3 = news
     const hourSeed = Math.floor(now / (60 * 60 * 1000));
     const rotatedNews = _ppRotateByHour(newsItems, hourSeed);
 
-    // News leads (rotated), then pool buzz, then data/countdown, then any
-    // remaining news. De-dupe by id (a news item could appear twice).
-    let real = [...rotatedNews.slice(0, 2), ...poolItems.slice(0, 2), ...nonNews, ...rotatedNews.slice(2)];
+    // v2.6.97 layout (owner request): the first 2 items are about THIS pool, the
+    // next 3 are fresh general news (players / teams / tournament rules / stadiums
+    // / referees). The news WINDOW rotates by the hour, so with more news than
+    // slots the trailing 3 cycle through everything across the day — the feed
+    // changes hourly without relying on evergreen filler.
+    const poolPart = poolItems.slice(0, POOL_SLOTS);
+    const newsPart = rotatedNews.slice(0, PUNDIT_TARGET - poolPart.length);
+    let real = [...poolPart, ...newsPart];
     const seen = new Set();
     real = real.filter(it => it && it.id && !seen.has(it.id) && (seen.add(it.id), true));
 
-    // Reserve >=1 evergreen slot so something always rotates hour to hour.
-    real = real.slice(0, PUNDIT_TARGET - 1);
-    let combined = real.concat(_evergreenPundit(PUNDIT_TARGET - real.length, hourSeed, real));
-    const items = combined.slice(0, PUNDIT_TARGET);
+    // Backfill a shortfall (small pool / too few news) in priority order:
+    // leftover news, then leftover pool buzz, then computed data (fixtures/
+    // results/countdown), then hourly-rotating evergreen lines as a last resort.
+    if (real.length < PUNDIT_TARGET) {
+      for (const it of [...rotatedNews.slice(PUNDIT_TARGET - poolPart.length), ...poolItems.slice(POOL_SLOTS), ...nonNews]) {
+        if (real.length >= PUNDIT_TARGET) break;
+        if (it && it.id && !seen.has(it.id)) { real.push(it); seen.add(it.id); }
+      }
+    }
+    if (real.length < PUNDIT_TARGET) {
+      real = real.concat(_evergreenPundit(PUNDIT_TARGET - real.length, hourSeed, real));
+    }
+    const items = real.slice(0, PUNDIT_TARGET);
 
     if (!items.length) return [];
     _punditState.items = items;

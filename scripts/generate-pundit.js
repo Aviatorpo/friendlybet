@@ -33,7 +33,7 @@ const OUT_FILE = path.join(DATA_DIR, 'pundit.json');
 // First WC2026 match (UTC). Used as the countdown anchor; overridden by the
 // earliest match in the snapshot when available so we never drift from reality.
 const DEFAULT_KICKOFF = '2026-06-11T19:00:00+00:00';
-const MAX_ITEMS = 6;   // supply up to 6 real items; the client shows 5 (news prioritized) and pads any shortfall with evergreen lines
+const MAX_ITEMS = 10;  // supply up to 10 real items (news prioritized). The client shows 5 (2 pool + 3 news) and rotates the news window by the hour, so a deeper news pool = the trailing 3 lines cycle through more stories across the day. Pads any shortfall with evergreen lines.
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 // Top FIFA-ranked sides -> used only to flag a fixture as a "big match".
