@@ -8965,8 +8965,9 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
 .sp-share-bracket-btn:active { transform: translateY(1px); }
 
 /* Bracket-share celebration modal (v2.6.55) — compacted to fit above the fold
-   in one screen (v2.6.90): smaller preview, 4-col app grid (8 chips -> 2 rows),
-   tighter vertical rhythm. Overrides are scoped so the invite modal is intact. */
+   (v2.6.90), then simplified (v2.6.95) to ONE big share button + a decorative
+   app-logos hint (the share is the native sheet, so it reaches every app —
+   per-app chips can't carry the image). Scoped so the invite modal is intact. */
 .bracket-share-modal-content {
   width: min(94vw, 420px); max-height: 96vh; display: flex; flex-direction: column;
   align-items: center; padding: 14px 16px 12px; overflow-y: auto;
@@ -8974,16 +8975,36 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
 .bracket-share-modal-content .rc-modal-title { margin: 0 0 2px; font-size: 17px; }
 .bracket-share-preview { width: 100%; display: flex; justify-content: center; margin: 6px 0 2px; }
 .bracket-share-preview canvas {
-  width: 196px; max-width: 50vw; height: auto; border-radius: 14px;
+  width: 210px; max-width: 56vw; height: auto; border-radius: 14px;
   box-shadow: 0 14px 40px rgba(0,0,0,.55);
 }
-.bracket-share-modal-content .sp-share-bracket-btn { margin: 10px auto 2px; padding: 12px 16px; font-size: 15px; }
-.bracket-share-modal-content .share-apps-divider { margin: 10px 0 8px; }
-.bracket-share-modal-content .share-apps-grid {
-  grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 6px; width: 100%;
+.bracket-share-modal-content .sp-share-bracket-btn { margin: 14px auto 2px; padding: 13px 18px; font-size: 16px; }
+
+/* Decorative "shareable to all these apps" hint under the big button. The whole
+   strip is a secondary tap target that fires the same native share. */
+.bracket-share-apps-hint {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  margin: 12px auto 2px; padding: 4px; cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
-.bracket-share-modal-content .share-app-chip { padding: 8px 3px; gap: 4px; font-size: 10px; }
-.bracket-share-modal-content .share-app-chip svg { width: 18px; height: 18px; }
+.bracket-share-apps-hint .bsah-label {
+  font-size: 11.5px; font-weight: 600; letter-spacing: .2px;
+  color: rgba(255, 255, 255, 0.5);
+}
+.bracket-share-apps-hint .bsah-logos {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  opacity: .92; transition: opacity .15s, transform .15s;
+}
+.bracket-share-apps-hint:hover .bsah-logos { opacity: 1; transform: translateY(-1px); }
+.bracket-share-apps-hint .bsah-logo { width: 22px; height: 22px; display: block; }
+.bracket-share-apps-hint .bsah-logo.wa { color: #25D366; }
+.bracket-share-apps-hint .bsah-logo.ig { color: #E4405F; }
+.bracket-share-apps-hint .bsah-logo.x  { color: #f4f4f4; }
+.bracket-share-apps-hint .bsah-logo.fb { color: #1877F2; }
+.bracket-share-apps-hint .bsah-logo.tg { color: #2AABEE; }
+.bracket-share-apps-hint .bsah-more {
+  font-size: 17px; font-weight: 700; color: rgba(255, 255, 255, 0.4); line-height: 1;
+}
+
 .bracket-share-done {
   display: block; margin: 8px auto 0; background: none; border: 0;
   color: var(--muted, #9a9c93); font-family: "Rubik", system-ui, sans-serif;
