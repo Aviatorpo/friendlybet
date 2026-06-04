@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-04T05:24:50.238Z",
-  "count": 3,
+  "updatedAt": "2026-06-04T10:36:05.761Z",
+  "count": 6,
   "items": [
     {
       "id": "neymar-brazil-opener-doubt-2026-06-03",
@@ -70,6 +70,56 @@
         }
       ],
       "expires_at": "2026-06-12T00:00:00Z"
+    },
+    {
+      "id": "yamal-spain-fit-for-opener-update-2026-06-04",
+      "type": "news",
+      "confidence": "reported",
+      "he": "לפי הדיווחים, מאמן ספרד דה לה פואנטה בטוח שלמין יאמאל יהיה כשיר לפתיחה מול קייפ ורד ב-15 ביוני, אף שהכוכב בן ה-17 ידלג על הידידות כנגד עיראק היום. המאמן אמר: 'אם הכל ימשיך כמתוכנן, הוא יוכל להיות מוכן ל-15'. יאמאל בריא משנה את המשוואה הספרדית כולה - מה אתם מעריכים לגבי לה ראוחה?",
+      "en": "Reports say Spain coach De la Fuente is confident Lamine Yamal will be fit for the opener against Cape Verde on June 15, even though the 17-year-old skips today's warm-up against Iraq. The coach said: 'If everything continues as planned, he could be ready for the 15th.' A fit Yamal changes Spain's equation entirely - how are you rating La Roja?",
+      "team": "ESP",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente"
+        },
+        {
+          "name": "beIN Sports",
+          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/luis-de-la-fuente-confident-lamine-yamal-can-make-spain-s-world-cup-opener-2026-06-03"
+        }
+      ],
+      "expires_at": "2026-06-15T00:00:00Z"
+    },
+    {
+      "id": "martinez-argentina-finger-fit-2026-06-04",
+      "type": "news",
+      "confidence": "reported",
+      "he": "לפי הדיווחים, שוער ארגנטינה אמיליאנו מרטינס שבר אצבע בגמר ליגת אירופה אך צופה להיות כשיר לפתיחה מול אלג'יריה ב-16 ביוני. מרטינס אמר לאוהדים שיהיה מוכן, וסקאלוני מצהיר שהוא סומך גם על הגיבויים, אבל דיבו מרכזי במערכת הארגנטינאית. האם לאלופות העולם יהיה מס' 1 שלהן מהיום הראשון?",
+      "en": "Reports say Argentina goalkeeper Emiliano Martinez broke a finger in the Europa League final but expects to be fit for the Albiceleste's opener against Algeria on June 16. Martinez told fans he will be ready, and Scaloni says he trusts his backup keepers in the meantime, but Dibu is fundamental to Argentina's system. Will the reigning champions have their No. 1 from day one?",
+      "team": "ARG",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48954908/emiliano-martinez-return-injury-argentina-world-cup-opener"
+        },
+        {
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com/stories/soccer/is-emi-martinez-a-world-cup-doubt-for-argentina-surgery-update-on-broken-finger-as-lionel-messi-and-co-sweat-on-aston-villa-goalkeepers-fitness"
+        },
+        {
+          "name": "World Soccer Talk",
+          "url": "https://worldsoccertalk.com/world-cup/argentina-receive-major-boost-as-emiliano-martinez-set-to-recover-in-time-for-2026-world-cup/"
+        }
+      ],
+      "expires_at": "2026-06-16T00:00:00Z"
+    },
+    {
+      "id": "countdown-2026-06-04",
+      "type": "countdown",
+      "confidence": "confirmed",
+      "he": "המונדיאל מתחיל בעוד 7 ימים! כל ההימורים עוד פתוחים, מי תהיה ההפתעה של 2026?",
+      "en": "The World Cup kicks off in 7 days! Every prediction is still open. Who'll be the surprise of 2026?",
+      "sources": []
     }
   ]
 }

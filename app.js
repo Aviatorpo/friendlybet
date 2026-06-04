@@ -1081,13 +1081,27 @@ async function loadPundit() {
 
     // v2.6.79: merge in pool-specific "pool pulse" commentary computed live on
     // the client (aggregate facts only, never any pick value). Layout: up to 2
-    // news items lead, then the pool buzz, then the rest - capped so the pool
-    // banter is always visible when present.
+    // news items lead, then the pool buzz, then the rest.
     let poolItems = [];
     try { poolItems = await buildPoolPundit(); } catch (_) { /* never block the feed */ }
-    const news = globalItems.filter(it => it.type === 'news');
-    const rest = globalItems.filter(it => it.type !== 'news');
-    const items = [...news.slice(0, 2), ...poolItems.slice(0, 2), ...rest].slice(0, 4);
+    const newsItems = globalItems.filter(it => it.type === 'news');
+    const nonNews = globalItems.filter(it => it.type !== 'news');
+    let combined = [...newsItems.slice(0, 2), ...poolItems.slice(0, 2), ...newsItems.slice(2), ...nonNews];
+    // De-dupe by id (a news item could appear in both slices).
+    const seen = new Set();
+    combined = combined.filter(it => it && it.id && !seen.has(it.id) && (seen.add(it.id), true));
+
+    // v2.6.81: the card always shows exactly PUNDIT_TARGET items. Real content
+    // (news/results/fixtures) refreshes hourly via the generate-pundit workflow;
+    // when there aren't enough real items (typical pre-tournament), pad with
+    // evergreen lines that ROTATE BY THE HOUR, so the feed has fresh content
+    // every hour without committing/redeploying for filler.
+    const PUNDIT_TARGET = 5;
+    if (combined.length < PUNDIT_TARGET) {
+      const hourSeed = Math.floor(now / (60 * 60 * 1000));
+      combined = combined.concat(_evergreenPundit(PUNDIT_TARGET - combined.length, hourSeed, combined));
+    }
+    const items = combined.slice(0, PUNDIT_TARGET);
 
     if (!items.length) return [];
     _punditState.items = items;
@@ -1255,6 +1269,48 @@ async function buildPoolPundit() {
   return out.map(it => ({
     id: it.id, type: 'pool', confidence: 'confirmed', he: it.he, en: it.en, sources: [],
   }));
+}
+
+// ---- Evergreen filler: keeps the card at a constant 5 items ----------------
+// Brand commentary that's true in any phase (no time-sensitive claims, so it
+// can never go stale/wrong). Used only to pad a shortfall after the real
+// news/data/pool items; rotated by the hour so the feed visibly refreshes
+// every hour even before the tournament when little real content exists.
+const _PP_EVERGREEN = [
+  { id: 'ev-3hosts', he: 'מונדיאל 2026 הוא הראשון אי פעם שמתארח ב‑3 מדינות — ארה״ב, קנדה ומקסיקו 🇺🇸🇨🇦🇲🇽',
+    en: 'World Cup 2026 is the first ever hosted across 3 countries — USA, Canada & Mexico 🇺🇸🇨🇦🇲🇽' },
+  { id: 'ev-48teams', he: '48 נבחרות, 104 משחקים, אלוף אחד. מי שלכם? 🏆',
+    en: '48 teams, 104 matches, one champion. Who\'s yours? 🏆' },
+  { id: 'ev-ko-points', he: 'כל ניחוש נכון בשלב הנוקאאוט שווה יותר נקודות — תכוונו רחוק! 🎯',
+    en: 'Every correct knockout pick is worth more points — aim deep! 🎯' },
+  { id: 'ev-topscorer', he: 'מי יהיה מלך השערים של 2026? הבחירה הזו יכולה להכריע את ההימור ⚽',
+    en: 'Who\'ll be the 2026 top scorer? That pick could decide your pool ⚽' },
+  { id: 'ev-darkhorse', he: 'אל תזלזלו באאוטסיידרים — הפתעה בשלב הבתים שווה זהב 👀',
+    en: 'Don\'t sleep on the dark horses — a group-stage surprise is worth gold 👀' },
+  { id: 'ev-share', he: 'כיף יותר כשמתחרים — שתפו את ההימור עם עוד חברים 😎',
+    en: 'It\'s more fun with rivals — share your pool with more friends 😎' },
+  { id: 'ev-biggest', he: 'המונדיאל הגדול בהיסטוריה. אתם מוכנים? 🔥',
+    en: 'The biggest World Cup in history. Are you ready? 🔥' },
+  { id: 'ev-everypick', he: 'כל בחירה נחשבת — בתים, נוקאאוט ומלך שערים. אל תשאירו שדה ריק ✍️',
+    en: 'Every pick counts — groups, knockout and top scorer. Don\'t leave a blank ✍️' },
+  { id: 'ev-favorites', he: 'הפייבוריטיות ברורות, אבל מונדיאל תמיד מפתיע. על מי אתם מהמרים? 🤔',
+    en: 'The favorites are clear, but the World Cup always surprises. Who are you betting on? 🤔' },
+  { id: 'ev-final', he: 'הדרך לגמר ארוכה — כל סיבוב שתנחשו נכון מקרב אתכם לראש הטבלה 🥇',
+    en: 'The road to the final is long — every round you nail climbs you up the table 🥇' },
+];
+
+function _evergreenPundit(count, hourSeed, exclude) {
+  if (count <= 0) return [];
+  const used = new Set((exclude || []).map(it => it && it.id));
+  const pool = _PP_EVERGREEN.filter(it => !used.has(it.id));
+  if (!pool.length) return [];
+  const start = ((hourSeed % pool.length) + pool.length) % pool.length;
+  const out = [];
+  for (let i = 0; i < pool.length && out.length < count; i++) {
+    const it = pool[(start + i) % pool.length];
+    out.push({ id: it.id, type: 'evergreen', confidence: 'confirmed', he: it.he, en: it.en, sources: [] });
+  }
+  return out;
 }
 
 async function renderPundit() {
