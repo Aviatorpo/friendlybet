@@ -125,9 +125,28 @@ async function _lookupUserByRecoveryCode(rawInput) {
   const bareChars = String(rawInput || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
   if (bareChars.length < 12) return { error: 'short' };
   if (!supabaseClient) { initSupabase(); return { error: 'server' }; }
-  // Try the canonical hyphenated format first, then bare-chars (stored hashes are
-  // normally of the hyphenated string).
   const hyphenated = _formatRecoveryCodeForHash(bareChars);
+
+  // Preferred: server-side login RPC. It validates the code in the DB and
+  // returns the user row WITHOUT recovery_code_hash, so the hash never leaves
+  // the server (and the client never needs to read that column). If the RPC
+  // isn't deployed in this environment yet, supabase returns an error and we
+  // fall back to the legacy direct-hash query below.
+  try {
+    const { data: u, error: rpcErr } = await supabaseClient.rpc('login', { p_code: bareChars });
+    if (!rpcErr) {
+      if (!u) return { error: 'notFound' };          // RPC ran, no matching code
+      const { data: pool, error: poolErr } = await supabaseClient
+        .from('pools').select('*').eq('id', u.pool_id).maybeSingle();
+      if (poolErr) throw poolErr;
+      if (!pool) return { error: 'noPool' };
+      return { user: u, pool, hyphenated };
+    }
+    // rpcErr set -> login() not available here -> fall through to legacy.
+  } catch (_) { /* fall through to legacy */ }
+
+  // Legacy fallback: direct hash query (only works where SELECT(recovery_code_hash)
+  // is still granted). Kept so a deploy with the RPC not-yet-present still logs in.
   for (const candidate of [hyphenated, bareChars]) {
     const hash = await hashRecoveryCode(candidate);
     const { data: users, error: userErr } = await supabaseClient
@@ -963,7 +982,7 @@ async function goToDashboard() {
       ({ data: pool } = await supabaseClient
         .from('pools').select('*').eq('id', local.pool_id).maybeSingle());
       ({ data: user } = await supabaseClient
-        .from('users').select('*').eq('id', local.id).maybeSingle());
+        .from('users').select(USER_PUBLIC_COLS).eq('id', local.id).maybeSingle());
     } catch (err) {
       console.error('goToDashboard: failed to hydrate user/pool', err);
       clearLocalUser();
