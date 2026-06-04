@@ -1,6 +1,14 @@
 -- ============================================================
 -- 2026-06-03  Column-level write hardening for public.users
 -- ============================================================
+-- ⚠️ SUPERSEDED by the Phase-2 RPC-gateway lockdown (2026-06-04). Once the big
+--    REVOKE (revoke insert/update/delete on public.users from anon) is applied
+--    and the client is wired to the create_pool/join_pool/approve_member/
+--    regenerate_recovery_code/... RPCs, this file is OBSOLETE. **DO NOT RE-RUN IT
+--    AFTER THE LOCKDOWN** — its GRANTs below re-open anon `is_admin` INSERT and
+--    `recovery_code_hash` UPDATE (account-takeover + admin escalation). Kept only
+--    for historical/rollback reference.
+-- ============================================================
 -- Tightens column-level write privileges so score / standing columns and the
 -- admin flag are written by trusted server jobs only, not by the public client
 -- role. The client keeps writing exactly the columns it needs (signup +
