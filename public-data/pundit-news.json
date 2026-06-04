@@ -1,17 +1,17 @@
 {
-  "updatedAt": "2026-06-03T08:20:46.000Z",
+  "updatedAt": "2026-06-04T05:23:20.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
       "id": "neymar-brazil-opener-doubt-2026-06-03",
       "confidence": "confirmed",
       "team": "BRA",
-      "en": "Neymar is in a race against time for Brazil's opener against Morocco on June 13, after a grade-2 right calf strain picked up on May 17. Coach Ancelotti holds out hope he makes the first game, but if the legend misses it, who steps up for the Selecao?",
-      "he": "ניימאר נגד השעון: הכוכב הברזילאי נפצע בשריר השוק הימני ב-17 במאי, וספק אם יספיק לפתיחה מול מרוקו ב-13 ביוני. אנצ'לוטי מאמין שיחלים בזמן, אבל מי ייכנס לנעליו אם לא?",
+      "en": "Neymar is a near-certain miss for Brazil's opener against Morocco on June 13, carrying a grade-2 right calf strain since May 17. Coach Ancelotti says he has no regrets taking an injured Neymar to the tournament and expects him back for game two - but who steps up for the Selecao if the legend watches from the bench on day one?",
+      "he": "ניימאר כמעט בוודאות ייחסר מהפתיחה מול מרוקו ב-13 ביוני, כשהוא מגיע עם קרע חלקי בשריר השוק הימני מה-17 במאי. אנצ'לוטי אמר שאינו מצטער שלקח אותו פצוע, ומכוון לחזרה במשחק השני - אבל מי יעלה לגדולה עם הסלסאו אם האגדה תצפה מהספסל ביום הראשון?",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48900253/neymar-calf-injury-three-weeks-miss-world-cup-opener" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" },
-        { "name": "Bleacher Report", "url": "https://bleacherreport.com/articles/25432292-neymar-injury-update-provided-brazils-carlo-ancelotti-latest-timeline-ahead-2026-world-cup" }
+        { "name": "FIFA.com", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/brazil-neymar-injury" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" }
       ],
       "expires_at": "2026-06-13T00:00:00Z"
     },
@@ -19,12 +19,12 @@
       "id": "saliba-france-scare-cleared-2026-06-03",
       "confidence": "confirmed",
       "team": "FRA",
-      "en": "Panic over for France: Deschamps said 'He's here, everything is fine' as Saliba joined Les Bleus' World Cup camp, putting to rest earlier reports that the Arsenal defender was very doubtful with a back injury. Will he be at full tilt when France face Senegal on June 16?",
-      "he": "האזעקה חלפה בצרפת: מאמן דשאמפ אמר 'הוא כאן, הכל בסדר' לאחר שסאליבה הצטרף למחנה האימונים. הדיווחים על 'ספק גדול' הופרכו, אבל האם הבלם יהיה ב-100% לקראת הפתיחה מול סנגל ב-16 ביוני?",
+      "en": "All clear for France: Deschamps said on June 3 that Saliba is here and fine and would have played if needed, putting to rest days of back-injury worry after Arsenal's Champions League final. He will be managed carefully ahead of June 16, but can he truly hit full throttle when France face Senegal?",
+      "he": "האורות ירוקים לצרפת: דשאן אמר ב-3 ביוני שסאליבה כאן ובסדר, ושהיה משחק אותו לו היה צריך, ובכך סגר את הדיונים על פציעת הגב שהתעוררה לאחר גמר ליגת האלופות. הוא ינוהל בזהירות לקראת ה-16 ביוני, אבל האם יהיה ב-100% כשצרפת תפגוש את סנגל?",
       "sources": [
-        { "name": "Get French Football News", "url": "https://www.getfootballnewsfrance.com/2026/hes-here-everything-is-fine-didier-deschamps-on-william-saliba-injury-ahead-of-world-cup/" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/everything-fine-didier-deschamps-william-175000964.html" },
-        { "name": "OneFootball", "url": "https://onefootball.com/en/news/world-cup-2026-dembele-doue-saliba-arrive-as-france-squad-completed-42958834" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48957835/france-boss-didier-deschamps-eases-william-saliba-injury-fears-ahead-pre-world-cup-friendlies" },
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/friendlies/articles/saliba-fine-for-world-cup-amid-injury-fears-says-deschamps-2026-06-03" },
+        { "name": "Get French Football News", "url": "https://www.getfootballnewsfrance.com/2026/hes-here-everything-is-fine-didier-deschamps-on-william-saliba-injury-ahead-of-world-cup/" }
       ],
       "expires_at": "2026-06-16T00:00:00Z"
     },
@@ -32,40 +32,39 @@
       "id": "davies-canada-misses-opener-2026-06-03",
       "confidence": "confirmed",
       "team": "CAN",
-      "en": "Canada captain Alphonso Davies confirmed he will miss the hosts' opener against Bosnia and Herzegovina on June 12, saying the injury mathematics simply do not work in his favour. Can Canada hold their own in front of a home crowd without their star left back?",
-      "he": "קפטן קנדה אלפונסו דייוויס אישר שייחסר מהמשחק הפותח מול בוסניה ב-12 ביוני, ואמר שהמתמטיקה של הפציעה לא עובדת לטובתו. האם קנדה תצליח לפתוח את המונדיאל הביתי שלה בלי הכוכב?",
+      "en": "Canada captain Alphonso Davies said the opener against Bosnia and Herzegovina on June 12 is not possible with his hamstring, though he later hinted that anything is possible in life. Most outlets are calling it a confirmed miss, and Canada must hold the fort in front of a home crowd without their star left-back from the first whistle.",
+      "he": "קפטן קנדה אלפונסו דייוויס אמר שהפתיחה מול בוסניה ב-12 ביוני לא אפשרית בשל פציעת שרירו, אם כי לאחר מכן הוסיף שהכל אפשרי בחיים. רוב כלי התקשורת קוראים לזה היעדרות מאושרת, וקנדה תצטרך להחזיק מעמד בקהל הביתי בלי כוכב השמאל שלה מהפלפול הראשון.",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48944438/alphonso-davies-joins-canada-world-cup-prep-unclear-play" },
-        { "name": "Now Toronto", "url": "https://nowtoronto.com/news/alphonso-davies-confirms-he-will-miss-canadas-world-cup-opener/" },
-        { "name": "SI.com", "url": "https://www.si.com/soccer/canada-2026-world-cup-roster-confirmed-full-list-players" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48914937/alphonso-davies-named-canada-world-cup-squad-injury-concerns" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/alphonso-davies-confirms-hell-miss-210300435.html" },
+        { "name": "Now Toronto", "url": "https://nowtoronto.com/news/alphonso-davies-confirms-he-will-miss-canadas-world-cup-opener/" }
       ],
       "expires_at": "2026-06-12T00:00:00Z"
     },
     {
-      "id": "yamal-spain-opener-doubt-2026-06-03",
+      "id": "yamal-spain-fit-for-opener-update-2026-06-04",
       "confidence": "reported",
       "team": "ESP",
-      "en": "Reports say Lamine Yamal is set to miss Spain's opener against Cape Verde on June 15 with a hamstring injury. Coach De La Fuente stays upbeat, but the Euro 2024 holders know their brightest star will not be on the pitch from kick-off. How much will that matter?",
-      "he": "לפי הדיווחים, למין יאמאל יחסר מהמשחק הפותח של ספרד מול קייפ ורד ב-15 ביוני עקב פציעת שריר הירך. המאמן דה לה פואנטה נשאר אופטימי, אבל אלופות אירופה יתחילו ללא כוכב העל שלהן - כמה זה ישפיע?",
+      "en": "Reports say Spain coach De la Fuente is confident Lamine Yamal will be fit for the opener against Cape Verde on June 15, even though the 17-year-old skips today's warm-up against Iraq. The coach said: 'If everything continues as planned, he could be ready for the 15th.' A fit Yamal changes Spain's equation entirely - how are you rating La Roja?",
+      "he": "לפי הדיווחים, מאמן ספרד דה לה פואנטה בטוח שלמין יאמאל יהיה כשיר לפתיחה מול קייפ ורד ב-15 ביוני, אף שהכוכב בן ה-17 ידלג על הידידות כנגד עיראק היום. המאמן אמר: 'אם הכל ימשיך כמתוכנן, הוא יוכל להיות מוכן ל-15'. יאמאל בריא משנה את המשוואה הספרדית כולה - מה אתם מעריכים לגבי לה ראוחה?",
       "sources": [
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/lamine-yamal-miss-spains-world-150220299.html" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48930567/lamine-yamal-spain-fifa-world-cup-barcelona" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/lamine-yamal-injury-update-how-many-world-cup-matches-could-he-miss-spain" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente" },
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/luis-de-la-fuente-confident-lamine-yamal-can-make-spain-s-world-cup-opener-2026-06-03" }
       ],
       "expires_at": "2026-06-15T00:00:00Z"
     },
     {
-      "id": "alvarez-romero-argentina-fit-2026-06-03",
+      "id": "martinez-argentina-finger-fit-2026-06-04",
       "confidence": "reported",
       "team": "ARG",
-      "en": "Reports from Argentina's training camp confirm Cristian Romero and Julian Alvarez are both back in full training after their respective injuries and available to Scaloni. A double boost for the defending champions, but can the Albiceleste go back-to-back?",
-      "he": "לפי הדיווחים, קריסטיאן רומרו וחוליאן אלוורז חזרו לאימונים מלאים עם אלביסלסטה ומוצהרים כשירים. בשורה כפולה לאלופות המגנות על התואר, אבל האם סקאלוני ינצח שוב ב-2026?",
+      "en": "Reports say Argentina goalkeeper Emiliano Martinez broke a finger in the Europa League final but expects to be fit for the Albiceleste's opener against Algeria on June 16. Martinez told fans he will be ready, and Scaloni says he trusts his backup keepers in the meantime, but Dibu is fundamental to Argentina's system. Will the reigning champions have their No. 1 from day one?",
+      "he": "לפי הדיווחים, שוער ארגנטינה אמיליאנו מרטינס שבר אצבע בגמר ליגת אירופה אך צופה להיות כשיר לפתיחה מול אלג'יריה ב-16 ביוני. מרטינס אמר לאוהדים שיהיה מוכן, וסקאלוני מצהיר שהוא סומך גם על הגיבויים, אבל דיבו מרכזי במערכת הארגנטינאית. האם לאלופות העולם יהיה מס' 1 שלהן מהיום הראשון?",
       "sources": [
-        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/amp/world-cup/good-news-for-argentina-as-julian-alvarez-and-cristian-romero-recover-from-injuries-for-2026-world-cup/" },
-        { "name": "OneFootball", "url": "https://onefootball.com/en/news/cuti-romero-and-julian-alvarez-fit-again-for-world-cup-start-42956644" },
-        { "name": "Mundo Albiceleste", "url": "https://mundoalbiceleste.com/2026/06/02/cristian-romero-and-julian-alvarez-fit-train-with-argentina-national-team/" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48954908/emiliano-martinez-return-injury-argentina-world-cup-opener" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/is-emi-martinez-a-world-cup-doubt-for-argentina-surgery-update-on-broken-finger-as-lionel-messi-and-co-sweat-on-aston-villa-goalkeepers-fitness" },
+        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/world-cup/argentina-receive-major-boost-as-emiliano-martinez-set-to-recover-in-time-for-2026-world-cup/" }
       ],
-      "expires_at": "2026-06-17T00:00:00Z"
+      "expires_at": "2026-06-16T00:00:00Z"
     }
   ]
 }

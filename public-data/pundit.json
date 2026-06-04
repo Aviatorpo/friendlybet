@@ -1,26 +1,26 @@
 {
-  "updatedAt": "2026-06-03T09:52:06.001Z",
+  "updatedAt": "2026-06-04T05:24:50.238Z",
   "count": 3,
   "items": [
     {
       "id": "neymar-brazil-opener-doubt-2026-06-03",
       "type": "news",
       "confidence": "confirmed",
-      "he": "ניימאר נגד השעון: הכוכב הברזילאי נפצע בשריר השוק הימני ב-17 במאי, וספק אם יספיק לפתיחה מול מרוקו ב-13 ביוני. אנצ'לוטי מאמין שיחלים בזמן, אבל מי ייכנס לנעליו אם לא?",
-      "en": "Neymar is in a race against time for Brazil's opener against Morocco on June 13, after a grade-2 right calf strain picked up on May 17. Coach Ancelotti holds out hope he makes the first game, but if the legend misses it, who steps up for the Selecao?",
+      "he": "ניימאר כמעט בוודאות ייחסר מהפתיחה מול מרוקו ב-13 ביוני, כשהוא מגיע עם קרע חלקי בשריר השוק הימני מה-17 במאי. אנצ'לוטי אמר שאינו מצטער שלקח אותו פצוע, ומכוון לחזרה במשחק השני - אבל מי יעלה לגדולה עם הסלסאו אם האגדה תצפה מהספסל ביום הראשון?",
+      "en": "Neymar is a near-certain miss for Brazil's opener against Morocco on June 13, carrying a grade-2 right calf strain since May 17. Coach Ancelotti says he has no regrets taking an injured Neymar to the tournament and expects him back for game two - but who steps up for the Selecao if the legend watches from the bench on day one?",
       "team": "BRA",
       "sources": [
         {
+          "name": "FIFA.com",
+          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/brazil-neymar-injury"
+        },
+        {
           "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48900253/neymar-calf-injury-three-weeks-miss-world-cup-opener"
+          "url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup"
         },
         {
           "name": "Al Jazeera",
           "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury"
-        },
-        {
-          "name": "Bleacher Report",
-          "url": "https://bleacherreport.com/articles/25432292-neymar-injury-update-provided-brazils-carlo-ancelotti-latest-timeline-ahead-2026-world-cup"
         }
       ],
       "expires_at": "2026-06-13T00:00:00Z"
@@ -29,21 +29,21 @@
       "id": "saliba-france-scare-cleared-2026-06-03",
       "type": "news",
       "confidence": "confirmed",
-      "he": "האזעקה חלפה בצרפת: מאמן דשאמפ אמר 'הוא כאן, הכל בסדר' לאחר שסאליבה הצטרף למחנה האימונים. הדיווחים על 'ספק גדול' הופרכו, אבל האם הבלם יהיה ב-100% לקראת הפתיחה מול סנגל ב-16 ביוני?",
-      "en": "Panic over for France: Deschamps said 'He's here, everything is fine' as Saliba joined Les Bleus' World Cup camp, putting to rest earlier reports that the Arsenal defender was very doubtful with a back injury. Will he be at full tilt when France face Senegal on June 16?",
+      "he": "האורות ירוקים לצרפת: דשאן אמר ב-3 ביוני שסאליבה כאן ובסדר, ושהיה משחק אותו לו היה צריך, ובכך סגר את הדיונים על פציעת הגב שהתעוררה לאחר גמר ליגת האלופות. הוא ינוהל בזהירות לקראת ה-16 ביוני, אבל האם יהיה ב-100% כשצרפת תפגוש את סנגל?",
+      "en": "All clear for France: Deschamps said on June 3 that Saliba is here and fine and would have played if needed, putting to rest days of back-injury worry after Arsenal's Champions League final. He will be managed carefully ahead of June 16, but can he truly hit full throttle when France face Senegal?",
       "team": "FRA",
       "sources": [
         {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48957835/france-boss-didier-deschamps-eases-william-saliba-injury-fears-ahead-pre-world-cup-friendlies"
+        },
+        {
+          "name": "beIN Sports",
+          "url": "https://www.beinsports.com/en-us/soccer/friendlies/articles/saliba-fine-for-world-cup-amid-injury-fears-says-deschamps-2026-06-03"
+        },
+        {
           "name": "Get French Football News",
           "url": "https://www.getfootballnewsfrance.com/2026/hes-here-everything-is-fine-didier-deschamps-on-william-saliba-injury-ahead-of-world-cup/"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/everything-fine-didier-deschamps-william-175000964.html"
-        },
-        {
-          "name": "OneFootball",
-          "url": "https://onefootball.com/en/news/world-cup-2026-dembele-doue-saliba-arrive-as-france-squad-completed-42958834"
         }
       ],
       "expires_at": "2026-06-16T00:00:00Z"
@@ -52,21 +52,21 @@
       "id": "davies-canada-misses-opener-2026-06-03",
       "type": "news",
       "confidence": "confirmed",
-      "he": "קפטן קנדה אלפונסו דייוויס אישר שייחסר מהמשחק הפותח מול בוסניה ב-12 ביוני, ואמר שהמתמטיקה של הפציעה לא עובדת לטובתו. האם קנדה תצליח לפתוח את המונדיאל הביתי שלה בלי הכוכב?",
-      "en": "Canada captain Alphonso Davies confirmed he will miss the hosts' opener against Bosnia and Herzegovina on June 12, saying the injury mathematics simply do not work in his favour. Can Canada hold their own in front of a home crowd without their star left back?",
+      "he": "קפטן קנדה אלפונסו דייוויס אמר שהפתיחה מול בוסניה ב-12 ביוני לא אפשרית בשל פציעת שרירו, אם כי לאחר מכן הוסיף שהכל אפשרי בחיים. רוב כלי התקשורת קוראים לזה היעדרות מאושרת, וקנדה תצטרך להחזיק מעמד בקהל הביתי בלי כוכב השמאל שלה מהפלפול הראשון.",
+      "en": "Canada captain Alphonso Davies said the opener against Bosnia and Herzegovina on June 12 is not possible with his hamstring, though he later hinted that anything is possible in life. Most outlets are calling it a confirmed miss, and Canada must hold the fort in front of a home crowd without their star left-back from the first whistle.",
       "team": "CAN",
       "sources": [
         {
           "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48944438/alphonso-davies-joins-canada-world-cup-prep-unclear-play"
+          "url": "https://www.espn.com/soccer/story/_/id/48914937/alphonso-davies-named-canada-world-cup-squad-injury-concerns"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/alphonso-davies-confirms-hell-miss-210300435.html"
         },
         {
           "name": "Now Toronto",
           "url": "https://nowtoronto.com/news/alphonso-davies-confirms-he-will-miss-canadas-world-cup-opener/"
-        },
-        {
-          "name": "SI.com",
-          "url": "https://www.si.com/soccer/canada-2026-world-cup-roster-confirmed-full-list-players"
         }
       ],
       "expires_at": "2026-06-12T00:00:00Z"
