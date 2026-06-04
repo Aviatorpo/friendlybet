@@ -138,12 +138,21 @@ async function _lookupUserByRecoveryCode(rawInput) {
       if (!u) return { error: 'notFound' };          // RPC ran, no matching code
       const { data: pool, error: poolErr } = await supabaseClient
         .from('pools').select('*').eq('id', u.pool_id).maybeSingle();
-      if (poolErr) throw poolErr;
+      if (poolErr) return { error: 'server' };
       if (!pool) return { error: 'noPool' };
       return { user: u, pool, hyphenated };
     }
-    // rpcErr set -> login() not available here -> fall through to legacy.
-  } catch (_) { /* fall through to legacy */ }
+    // RPC returned an error. Only fall through to the legacy hash query if the
+    // function genuinely isn't deployed in THIS environment. A real error from a
+    // deployed login() must NOT hit the legacy select('*') on users — that 401s
+    // once SELECT is column-restricted — so surface a retryable error instead of
+    // a misleading "not found".
+    if (!_rpcMissing(rpcErr)) return { error: 'server' };
+  } catch (_) {
+    // A thrown error (network) from a deployed RPC: surface rather than fall to
+    // the legacy path (which would also fail and mislabel the result).
+    return { error: 'server' };
+  }
 
   // Legacy fallback: direct hash query (only works where SELECT(recovery_code_hash)
   // is still granted). Kept so a deploy with the RPC not-yet-present still logs in.
@@ -196,7 +205,7 @@ function _rpcMissing(err) {
   // cache" when an RPC isn't deployed. Keep this NARROW: a broad match (e.g. a
   // generic "does not exist") could misclassify a real business error and wrongly
   // fall back to the legacy direct write.
-  return code === 'PGRST202' || code === '404' ||
+  return code === 'PGRST202' ||
          /Could not find the function|schema cache/i.test(msg);
 }
 
@@ -4491,6 +4500,18 @@ async function savePicksToDb(showFeedback = true) {
   if (bettingState.loading) return;
   bettingState.loading = true;
 
+  // SAFETY GUARD (parity with the single-phase saves): never let a stale EMPTY
+  // in-memory state wipe real DB picks. A debounced auto-save can fire after
+  // navigation / bettingState re-init reset picks to empty; both the RPC and the
+  // legacy path below delete-then-insert, so an empty payload would destroy every
+  // saved group pick. Skip the write entirely when there's nothing to save.
+  const _totalGroupPicks = bettingState.groupOrder.reduce((n, l) => n + ((bettingState.picks[l] || []).length), 0);
+  if (_totalGroupPicks === 0) {
+    console.warn('savePicksToDb: in-memory picks empty - skipping DB write to avoid wiping real picks');
+    bettingState.loading = false;
+    return;
+  }
+
   // Preferred: server-side RPC. It computes multiplier_applied SERVER-SIDE from
   // the caller's own pool rules (closing the multiplier cheat vector), so the
   // client no longer sends a multiplier. Replaces only the caller's group_picks.
@@ -5326,6 +5347,14 @@ function autoSaveKnockoutPicks() {
 
 async function saveKnockoutPicksToDb(showFeedback = true) {
   if (!state.currentUser || !state.currentPool || !supabaseClient) return;
+
+  // SAFETY GUARD (parity with the single-phase saves): an empty in-memory state
+  // would make both the RPC and the legacy path delete-then-insert-nothing and
+  // WIPE every saved knockout pick. Skip when there's nothing to save.
+  if (Object.keys(knockoutState.picks).length === 0) {
+    console.warn('saveKnockoutPicksToDb: in-memory picks empty - skipping DB write to avoid wiping real picks');
+    return;
+  }
 
   // Preferred: server-side RPC (multiplier computed server-side; replaces only the
   // caller's two-phase knockout rows, bracket_position IS NULL). Legacy fallback

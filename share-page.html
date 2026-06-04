@@ -177,7 +177,14 @@ function render(picks){
   const L = I18N[lang] || I18N.he;
   document.documentElement.lang = lang;
   document.documentElement.dir = L.dir;
-  document.title = `${picks.nickname} · ${L.title} · FriendlyBet`;
+  // Escape any user-controlled string before it reaches innerHTML below. nickname
+  // and player_name are attacker-controlled at signup/pick time (the server RPCs
+  // only length-check them), so injecting them raw was a stored-XSS sink on the
+  // friendlybet.live origin. team codes go through tn() (a fixed lookup) and are safe.
+  const esc = (s) => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  document.title = `${esc(picks.nickname)} · ${L.title} · FriendlyBet`;
 
   const tn = (c) => S.teamName(c, lang);
   const fl = (c, st) => S.flagImg(c, { style: st || '' });
@@ -236,7 +243,7 @@ function render(picks){
     <div class="brandbar">
       <div class="logo">⚽</div><b>FriendlyBet</b><span>· ${L.tournament}</span>
     </div>
-    <h1 class="title"><span class="who">${picks.nickname}</span> · ${L.title}</h1>
+    <h1 class="title"><span class="who">${esc(picks.nickname)}</span> · ${L.title}</h1>
     <div class="subtitle">${L.sub}</div>
 
     <div class="section-label">${L.champLabel}</div>
@@ -265,7 +272,7 @@ function render(picks){
     <div class="section-label">${L.scorerLabel}</div>
     <div class="scorer">
       <span class="boot">👟</span>
-      <div><div class="nm">${ts.player_name}</div>
+      <div><div class="nm">${esc(ts.player_name)}</div>
       <div class="tm">${fl(ts.team_code)} ${tn(ts.team_code)}</div></div>
     </div>`:''}
 
@@ -294,7 +301,11 @@ function render(picks){
   render(window.FBShare.buildDemoPicks(lang));
 })();
 
-// Fetch a real user's single-phase picks from Supabase (RLS allows SELECT).
+// Fetch a real user's single-phase picks from Supabase. Group/winner/scorer
+// rows are read directly (anon SELECT allowed); the knockout bracket goes
+// through the get_public_bracket RPC because anon SELECT on knockout_picks is
+// closed by RLS (security hardening) — the SECURITY DEFINER RPC exposes only
+// this user's shareable bracket.
 async function fetchRealPicks(userId, poolId, lang){
   const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
   const sb = createClient(
@@ -304,7 +315,7 @@ async function fetchRealPicks(userId, poolId, lang){
   const [usr, gp, kp, tw, ts, tp] = await Promise.all([
     sb.from('users').select('nickname').eq('id', userId).maybeSingle(),
     sb.from('group_position_picks').select('group_letter,position,team_code').eq('pool_id',poolId).eq('user_id',userId),
-    sb.from('knockout_picks').select('bracket_position,predicted_winner').eq('pool_id',poolId).eq('user_id',userId).not('bracket_position','is',null),
+    sb.rpc('get_public_bracket', { p_user_id: userId, p_pool_id: poolId }),
     sb.from('tournament_winner_picks').select('team_code').eq('pool_id',poolId).eq('user_id',userId).maybeSingle(),
     sb.from('top_scorer_picks').select('player_name,team_code').eq('pool_id',poolId).eq('user_id',userId).maybeSingle(),
     sb.from('sp_third_place_picks').select('group_letter').eq('pool_id',poolId).eq('user_id',userId)
