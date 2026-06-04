@@ -7335,8 +7335,22 @@ function _shareMsg(mode, source) {
   if (mode === 'bracket') return t('bracketShare.caption') + ' ' + _bracketShareUrl(source);
   return getShareMessage(source);
 }
+// A bracket chip shares the personalized /share link, whose OG only renders the
+// card when the bracket is complete AND the ids resolve. Otherwise the share
+// previews the homepage/brand image — "empty of names and flags". So gate every
+// bracket chip on this and nudge the user instead of sharing an empty card.
+function _bracketShareReady() {
+  const champ = spState && (spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
+  const ids = !!(state.currentUser && state.currentUser.id && state.currentPool && state.currentPool.id);
+  return !!champ && ids;
+}
+function _bracketChipBlocked(mode) {
+  if (mode === 'bracket' && !_bracketShareReady()) { showToast(t('bracketShare.notReady'), 'info'); return true; }
+  return false;
+}
 
 function shareToWhatsApp(mode = 'invite') {
+  if (_bracketChipBlocked(mode)) return;
   const message = _shareMsg(mode, 'whatsapp');
   const encoded = encodeURIComponent(message);
   const url = `https://wa.me/?text=${encoded}`;
@@ -7344,6 +7358,7 @@ function shareToWhatsApp(mode = 'invite') {
 }
 
 function shareToTelegram(mode = 'invite') {
+  if (_bracketChipBlocked(mode)) return;
   const inviteUrl = _shareLink(mode, 'telegram');
   const message = mode === 'bracket' ? t('bracketShare.caption') : getShareMessage('telegram');
   const url = `https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(message)}`;
@@ -7354,6 +7369,7 @@ function shareToTelegram(mode = 'invite') {
 // primary path on mobile — these are explicit choices and the main path on
 // desktop, where navigator.share isn't available.
 function shareToX(mode = 'invite') {
+  if (_bracketChipBlocked(mode)) return;
   const text = _shareMsg(mode, 'x');
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
   window.open(url, '_blank', 'noopener');
@@ -9300,17 +9316,16 @@ async function spGroupsSkip() {
   // if they navigate right back. spEnsureGroupPrefilled will re-suggest
   // the FIFA order on next entry — that's by design.
   spState.groupPositions[letter] = [null, null, null, null];
-  // Best-effort DB delete: don't block UX, but make sure any auto-saved
-  // FIFA row from a previous prefill is gone so summary shows "Not picked".
+  // Best-effort persist: route through the wired save (RPC save_group_position_picks
+  // replaces ALL of the caller's group rows with the current in-memory state, so the
+  // just-cleared group's auto-saved FIFA row is dropped). A direct table DELETE here
+  // would 401 after the anon-write revoke — go through spSaveGroupsToDb instead so the
+  // skip is honoured server-side and the summary shows "Not picked".
   if (state.currentPool && state.currentUser && supabaseClient) {
     try {
-      await supabaseClient.from('group_position_picks')
-        .delete()
-        .eq('pool_id', state.currentPool.id)
-        .eq('user_id', state.currentUser.id)
-        .eq('group_letter', letter);
+      await spSaveGroupsToDb(false);
     } catch (e) {
-      console.warn('spGroupsSkip DB delete failed (non-fatal):', e);
+      console.warn('spGroupsSkip DB save failed (non-fatal):', e);
     }
   }
   // Cancel any pending auto-save so it doesn't re-save the FIFA order
