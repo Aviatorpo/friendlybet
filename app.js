@@ -7376,6 +7376,7 @@ function shareToX(mode = 'invite') {
 }
 
 function shareToFacebook(mode = 'invite') {
+  if (_bracketChipBlocked(mode)) return;
   // Facebook's sharer strips any custom text and only takes the URL, so the
   // OG card on the shared link carries the message.
   const link = _shareLink(mode, 'facebook');
@@ -7384,6 +7385,7 @@ function shareToFacebook(mode = 'invite') {
 }
 
 async function shareToInstagram(mode = 'invite') {
+  if (_bracketChipBlocked(mode)) return;
   // Instagram has no web link-share intent. For the bracket it's an image-first
   // app, so download the card PNG and open IG so the user can post it to a story.
   if (mode === 'bracket') {
@@ -7415,6 +7417,7 @@ async function shareToInstagram(mode = 'invite') {
 }
 
 function shareToReddit(mode = 'invite') {
+  if (_bracketChipBlocked(mode)) return;
   // Reddit's submit page takes a URL + title; the OG card on the shared link
   // carries the rest. Opens the post composer pre-filled.
   const link = _shareLink(mode, 'reddit');
@@ -7425,6 +7428,7 @@ function shareToReddit(mode = 'invite') {
 }
 
 function shareByEmail(mode = 'invite') {
+  if (_bracketChipBlocked(mode)) return;
   const poolName = state.currentPool?.name || t('dashboard.fallback.poolName');
   const subject = mode === 'bracket' ? t('bracketShare.emailSubject') : t('shareModal.emailSubject', { poolName });
   const body = _shareMsg(mode, 'email');
@@ -7432,6 +7436,7 @@ function shareByEmail(mode = 'invite') {
 }
 
 function shareBySMS(mode = 'invite') {
+  if (_bracketChipBlocked(mode)) return;
   const body = _shareMsg(mode, 'sms');
   // `sms:?&body=` is the most cross-platform form (works on both iOS and Android).
   window.location.href = `sms:?&body=${encodeURIComponent(body)}`;
