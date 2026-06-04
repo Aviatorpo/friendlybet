@@ -1,0 +1,10 @@
+{
+  "name": "friendlybet",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FriendlyBet - serverless deps for Vercel functions (OG image generation). The site itself is static; scripts/ are plain CommonJS run directly by GitHub Actions.",
+  "dependencies": {
+    "@vercel/og": "^0.6.5",
+    "bidi-js": "^1.0.3"
+  }
+}
