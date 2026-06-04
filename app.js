@@ -6974,6 +6974,23 @@ function shareToFacebook() {
   window.open(url, '_blank', 'noopener');
 }
 
+async function shareToInstagram() {
+  // Instagram has no web link-share intent, so copy the invite link and tell
+  // the user to paste it into a story or DM, then open Instagram (app on
+  // mobile, web otherwise) so they can paste right away.
+  const url = getInviteUrl('instagram');
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch (err) {
+    const tmp = document.createElement('input');
+    tmp.value = url; document.body.appendChild(tmp); tmp.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(tmp);
+  }
+  showToast(t('shareModal.igCopied'), 'success');
+  setTimeout(() => { window.open('https://www.instagram.com/', '_blank', 'noopener'); }, 500);
+}
+
 function shareByEmail() {
   const poolName = state.currentPool?.name || t('dashboard.fallback.poolName');
   const subject = t('shareModal.emailSubject', { poolName });

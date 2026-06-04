@@ -848,13 +848,15 @@ const TRANSLATIONS = {
     'adminModal.removeText': 'פעולה זו תמחק את כל ההימורים שלו',
 
     // === Share modal ===
+    'shareModal.title': 'הזמינו חברים',
     'shareModal.subtitle': 'שלח להם את הקישור והם יצטרפו בלחיצה אחת',
-    'shareModal.oneClick': 'מי שלוחץ על הלינק מצטרף להימור בקליק אחד — בלי הרשמה, בלי להוריד אפליקציה',
+    'shareModal.oneClick': 'מצטרפים בקליק אחד — בלי הרשמה ובלי להוריד אפליקציה',
     'shareModal.shareWithFriends': 'שתפו עם החברים',
     'shareModal.copyForDesktop': 'העתק קישור להזמנה',
     'shareModal.orChoose': 'או בחרו אפליקציה',
     'shareModal.email': 'מייל',
     'shareModal.sms': 'SMS',
+    'shareModal.igCopied': 'הקישור הועתק — הדביקו אותו בסטורי או בהודעה באינסטגרם',
     'shareModal.emailSubject': 'הזמנה להימור "{poolName}" ב-FriendlyBet',
     'shareModal.copyHint': 'לחץ להעתקה',
     'shareModal.copyLink': 'העתק קישור',
@@ -2078,13 +2080,15 @@ const TRANSLATIONS = {
     'adminModal.removeText': 'This will delete all their picks',
 
     // === Share modal ===
+    'shareModal.title': 'Invite friends',
     'shareModal.subtitle': 'Send them the link and they join in one tap',
-    'shareModal.oneClick': 'Anyone who taps the link joins in one click — no signup, no app to download',
+    'shareModal.oneClick': 'Join in one click — no signup, no app to install',
     'shareModal.shareWithFriends': 'Share with friends',
     'shareModal.copyForDesktop': 'Copy invite link',
     'shareModal.orChoose': 'Or pick an app',
     'shareModal.email': 'Email',
     'shareModal.sms': 'SMS',
+    'shareModal.igCopied': 'Link copied — paste it into your Instagram story or DM',
     'shareModal.emailSubject': 'Invitation to the "{poolName}" pool on FriendlyBet',
     'shareModal.copyHint': 'Tap to copy',
     'shareModal.copyLink': 'Copy link',

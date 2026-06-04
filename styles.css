@@ -8310,11 +8310,15 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
 .share-app-chip svg { display: block; }
 .share-app-chip.chip-whatsapp { color: #25D366; }
 .share-app-chip.chip-telegram { color: #2AABEE; }
+.share-app-chip.chip-instagram { color: #E4405F; }
 .share-app-chip.chip-x { color: #fff; }
 .share-app-chip.chip-facebook { color: #1877F2; }
 .share-app-chip.chip-email { color: #e0b15f; }
 .share-app-chip.chip-sms { color: #34C759; }
 .share-app-chip span { color: rgba(255, 255, 255, 0.85); }
+/* A lone trailing chip on its own row (7 chips -> 3+3+1) sits in the middle
+   column so it reads centered instead of stranded at the edge. */
+.share-app-chip:last-child:nth-child(3n + 1) { grid-column: 2; }
 
 .share-url-row {
   display: flex;
