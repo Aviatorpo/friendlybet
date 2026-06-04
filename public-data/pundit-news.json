@@ -1,44 +1,56 @@
 {
-  "updatedAt": "2026-06-04T12:00:00.000Z",
+  "updatedAt": "2026-06-04T19:20:17.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
-      "id": "neymar-brazil-opener-doubt-2026-06-03",
+      "id": "messi-hamstring-doubt-2026-06-04",
+      "confidence": "confirmed",
+      "team": "ARG",
+      "en": "Racing the clock in Kansas City - Argentina captain Lionel Messi has been on an individual programme since late May with left hamstring muscle fatigue, while teammates train as a group. Argentina's staff expect him fit for the opener against Algeria on June 16. Will the final chapter of Messi's World Cup story begin on time?",
+      "he": "מרוץ נגד הזמן בקנזס סיטי - קפטן ארגנטינה ליאונל מסי עובד על תכנית אישית מאז סוף מאי עם עייפות שרירים בירך שמאל, בזמן שחבריו מתאמנים כקבוצה. הסגל הרפואי מצפה שיהיה כשיר לפתיחה מול אלג'יריה ב-16 ביוני. האם הפרק האחרון של מסי במונדיאל יתחיל בזמן?",
+      "sources": [
+        { "name": "CBS Sports", "url": "https://www.cbssports.com/soccer/news/lionel-messi-injury-argentina-world-cup-2026-inter-miami/" },
+        { "name": "HITC", "url": "https://www.hitc.com/how-fit-is-lionel-messi-for-the-2026-world-cup-argentinas-latest-update-explained/" },
+        { "name": "Deccan Herald", "url": "https://www.deccanherald.com/sports/football/fifa-world-cup-2026/lionel-messi-injury-update-fitness-not-that-bad-says-argentina-coach-scaloni-newsalert-4017869" }
+      ],
+      "expires_at": "2026-06-16T00:00:00Z"
+    },
+    {
+      "id": "rodrygo-acl-out-wc2026-2026-06-04",
       "confidence": "confirmed",
       "team": "BRA",
-      "en": "Neymar is a near-certain miss for Brazil's opener against Morocco on June 13, carrying a grade-2 right calf strain. Coach Ancelotti says he has no regrets taking an injured Neymar to the tournament and expects him back for game two - but who steps up for the Selecao if the legend watches from the bench on day one?",
-      "he": "ניימאר כמעט בוודאות ייחסר מהפתיחה מול מרוקו ב-13 ביוני, כשהוא מגיע עם קרע חלקי בשריר השוק הימני. אנצ'לוטי אמר שאינו מצטער שלקח אותו פצוע, ומכוון לחזרה במשחק השני - אבל מי יעלה לגדולה עם הסלסאו אם האגדה תצפה מהספסל ביום הראשון?",
+      "en": "Another blow for Brazil before a ball is kicked - Rodrygo tore his ACL and right meniscus at Real Madrid in March and will not recover in time for the World Cup. With Neymar also managing a calf strain, Carlo Ancelotti must rethink his attacking lineup. Can Brazil's squad depth cover two key forwards missing in Group H?",
+      "he": "מכה נוספת לברזיל לפני שבועטים בכדור - רודריגו קרע את הרצועה הצולבת ואת המניסקוס הימני בריאל מדריד במרץ ולא יתאושש בזמן למונדיאל. עם ניימאר שגם הוא מתמודד עם קרע שרירי בשוק, אנצ'לוטי נאלץ לחשוב מחדש על ההתקפה. האם עומק הסגל הברזילאי יכסה שני שחקני קו-קדמי בקבוצה H?",
       "sources": [
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup" },
-        { "name": "Bleacher Report", "url": "https://bleacherreport.com/articles/25432292-neymar-injury-update-provided-brazils-carlo-ancelotti-latest-timeline-ahead-2026-world-cup" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48607614/world-cup-injuries-ruled-play-hugo-ekitike-rodrygo-lamine-yamal" },
+        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/news/rodrygo-ruled-out-of-2026-world-cup-with-ancelottis-brazil-real-madrid-star-suffers-season-ending-injury/" },
+        { "name": "Goal.com", "url": "https://www.goal.com/en/lists/biggest-stars-miss-2026-world-cup-injury-suspension-selection/bltd6ff2d56ebf99a62" }
       ],
-      "expires_at": "2026-06-13T00:00:00Z"
+      "expires_at": "2026-06-20T00:00:00Z"
     },
     {
-      "id": "davies-canada-misses-opener-2026-06-03",
+      "id": "curacao-smallest-wc-nation-2026-06-04",
       "confidence": "confirmed",
-      "team": "CAN",
-      "en": "Canada captain Alphonso Davies is set to miss the opener against Bosnia and Herzegovina on June 12 with a hamstring injury, training individually as the tournament approaches. Canada must hold the fort in front of a home crowd without their star left-back from the first whistle - can they get a result without him?",
-      "he": "קפטן קנדה אלפונסו דייוויס עומד להיעדר מהפתיחה מול בוסניה-הרצגובינה ב-12 ביוני בשל פציעה בשריר הירך, ומתאמן בנפרד לקראת הטורניר. קנדה תצטרך להחזיק מעמד בקהל הביתי בלי כוכב השמאל שלה מהשריקה הראשונה - האם תצליח להביא תוצאה בלעדיו?",
+      "team": "CUW",
+      "en": "Football's biggest underdog arrives - Curacao, a Caribbean island of just 156,000 people, is the smallest nation by population ever to reach a World Cup, shattering Iceland's record from Russia 2018. Their reward in Group E is a draw that includes Germany. Will the Antillean lions spring any shocks?",
+      "he": "ה-underdog הגדול ביותר של הכדורגל הגיע - קוראסאו, אי קריבי עם 156 אלף תושבים בלבד, היא המדינה הקטנה ביותר מבחינת אוכלוסייה שהגיעה למונדיאל, ושברה את שיא איסלנד מרוסיה 2018. הפרס שלהם בקבוצה E כולל פגישה עם גרמניה. האם האריות מהאנטיל יצליחו להפתיע?",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48914937/alphonso-davies-named-canada-world-cup-squad-injury-concerns" },
-        { "name": "TSN", "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/canada-captain-davies-trains-individually-as-fifa-world-cup-preparations-continue/" },
-        { "name": "Sports Illustrated", "url": "https://www.si.com/soccer/alphonso-davies-injury-progress-potential-return-date-for-canada-star" }
+        { "name": "CNN", "url": "https://www.cnn.com/2025/11/18/sport/curacao-football-world-cup-intl-hnk" },
+        { "name": "CBC News", "url": "https://www.cbc.ca/news/world/curacao-world-cup-9.6984369" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/articles/soccer/curacao-makes-soccer-history-as-smallest-nation-by-population-to-qualify-for-a-world-cup" }
       ],
-      "expires_at": "2026-06-12T00:00:00Z"
+      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "azteca-third-wc-opener-history-2026-06-04",
+      "id": "metlife-stadium-wc-final-2026-06-04",
       "confidence": "confirmed",
-      "team": "MEX",
-      "en": "Estadio Azteca in Mexico City becomes the first stadium in history to host three World Cup opening matches when Mexico face South Africa on June 11. Pele lifted the trophy here in 1970, Maradona in 1986 - who writes the next chapter at 2,240 metres above sea level?",
-      "he": "האצטקה במקסיקו סיטי הופכת לאצטדיון הראשון בהיסטוריה שמארח שלושה קרבות פתיחה של מונדיאל, כשמקסיקו תפגוש את דרום-אפריקה ב-11 ביוני. פלה הרים את הגביע כאן ב-1970, מאראדונה ב-1986 - מי יכתוב את הפרק הבא על גובה 2,240 מטר?",
+      "en": "The biggest match in football comes to New York - MetLife Stadium in East Rutherford, New Jersey will host the World Cup final on July 19, 2026, with a capacity of 82,500. FIFA confirmed it as the host for the trophy ceremony, and it is staging more matches than any other city in the tournament. Who do you have lifting the trophy there?",
+      "he": "המשחק הגדול ביותר בכדורגל יגיע לניו יורק - אצטדיון MetLife במזרח ראתרפורד, ניו ג'רזי יארח את גמר גביע העולם ב-19 ביולי 2026, עם קיבולת של 82,500 מקומות. פיפ\"א אישרה אותו כמארח טקס ההגשה, והוא מארח יותר משחקים מכל עיר אחרת בטורניר. מי לדעתכם ירים שם את הגביע?",
       "sources": [
-        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" },
-        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/estadio-azteca-makes-history-with-three-fifa-world-cup-opening-matches-2026-05-28" }
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/new-york-new-jersey-stadium-host-world-cup-2026-final" },
+        { "name": "FourFourTwo", "url": "https://www.fourfourtwo.com/competition/metlife-stadium-world-cup-2026" }
       ],
-      "expires_at": "2026-06-12T00:00:00Z"
+      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
       "id": "fifa-ai-offside-avatars-2026-06-04",
@@ -50,29 +62,6 @@
         { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "yamal-spain-fit-for-opener-update-2026-06-04",
-      "confidence": "reported",
-      "team": "ESP",
-      "en": "Reports say Spain coach De la Fuente is confident Lamine Yamal will be fit for the opener against Cape Verde on June 15, even though the 17-year-old skips today's warm-up against Iraq. The coach said: 'If everything continues as planned, he could be ready for the 15th.' A fit Yamal changes Spain's equation entirely - how are you rating La Roja?",
-      "he": "לפי הדיווחים, מאמן ספרד דה לה פואנטה בטוח שלמין יאמאל יהיה כשיר לפתיחה מול קייפ ורד ב-15 ביוני, אף שהכוכב בן ה-17 ידלג על הידידות כנגד עיראק היום. המאמן אמר: 'אם הכל ימשיך כמתוכנן, הוא יוכל להיות מוכן ל-15'. יאמאל בריא משנה את המשוואה הספרדית כולה - מה אתם מעריכים לגבי לה ראוחה?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/lamine-yamal-and-nico-williams-set-to-be-fit-for-spains-world-cup-opener" }
-      ],
-      "expires_at": "2026-06-15T00:00:00Z"
-    },
-    {
-      "id": "wc2026-format-third-place-round32-2026-06-04",
-      "confidence": "confirmed",
-      "en": "New rule to know: in 2026 there are 12 groups of four teams each, and the 8 best third-placed finishers join the 24 group qualifiers in a brand-new Round of 32. Finishing third in your group no longer means booking your flight home - but only the best eight get through. Know your tiebreakers.",
-      "he": "כלל חדש שכדאי להכיר: ב-2026 יש 12 בלוסים עם ארבע נבחרות כל אחד, ו-8 הנבחרות הטובות ביותר שסיימו שלישיות מצטרפות ל-24 המתקדמות ב\"סיבוב ה-32\" החדש. מקום שלישי כבר לא אומר לקפל מזוודות, אבל רק שמונה הטובות ביותר עוברות. תכירו את כללי ההפרדה.",
-      "sources": [
-        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/groups-how-teams-qualify-tie-breakers" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48703925/world-cup-group-stage-explained-tiebreakers-third-place-teams" }
-      ],
-      "expires_at": "2026-06-29T00:00:00Z"
     }
   ]
 }
