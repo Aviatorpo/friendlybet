@@ -4,8 +4,13 @@
   "rewrites": [
     { "source": "/blog", "destination": "/guides/" },
     { "source": "/blog/he/:slug", "destination": "/guides/he/:slug" },
-    { "source": "/blog/:slug", "destination": "/guides/:slug" }
+    { "source": "/blog/:slug", "destination": "/guides/:slug" },
+    { "source": "/share", "destination": "/api/share" }
   ],
+  "functions": {
+    "api/og.mjs": { "includeFiles": "lib/fonts/**" },
+    "api/share.mjs": { "includeFiles": "share.html" }
+  },
   "headers": [
     {
       "source": "/public-data/(.*)",
