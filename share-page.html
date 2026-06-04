@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- The page is already dark by design. Declaring the scheme tells aggressive
+     "force dark" modes (e.g. Brave) NOT to auto-invert/lighten our content —
+     without it Brave recolours the flag SVGs (Germany's black stripe turns
+     white -> the flag looks wrong). -->
+<meta name="color-scheme" content="dark">
 <title>התחזית שלי למונדיאל 2026 · FriendlyBet</title>
 
 <!-- PROTOTYPE / LOCAL ONLY. Per-user share pages are kept noindex on purpose:
@@ -32,6 +37,7 @@
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   :root{
+    color-scheme:dark; /* opt out of browser force-dark recolouring (Brave flag bug) */
     --gold:#d9b46a; --gold-dim:#b8985a; --ink:#0b0a08;
     --card:#15130f; --card2:#1c1913; --line:rgba(217,180,106,.18);
     --text:#f3efe7; --muted:#a39c8c;

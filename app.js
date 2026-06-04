@@ -7527,7 +7527,13 @@ function _bracketShareVersion() {
   const parts = [25, 26, 27, 28, 29, 30].map(i => bp[i] || '').join('-') + '-' + champ;
   let h = 0;
   for (let i = 0; i < parts.length; i++) { h = (Math.imul(h, 31) + parts.charCodeAt(i)) | 0; }
-  return (h >>> 0).toString(36);
+  // Content hash + a per-share time stamp. WhatsApp/Facebook cache a link's
+  // preview by URL and never re-scrape the same URL — so if a link was ever
+  // scraped while the OG was empty (e.g. mid-deploy), re-sharing the SAME url
+  // keeps showing that stale empty card forever. The timestamp makes every
+  // share a brand-new URL, forcing a fresh scrape of the (now correct) OG.
+  const stamp = (typeof Date !== 'undefined' && Date.now) ? Date.now().toString(36) : '';
+  return (h >>> 0).toString(36) + (stamp ? 'x' + stamp : '');
 }
 
 // Personalized public share URL for the current user's predictions. Friends
