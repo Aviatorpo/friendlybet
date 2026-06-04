@@ -12,10 +12,12 @@ import { join } from 'path';
 const ORIGIN = 'https://friendlybet.live';
 
 function loadTemplate() {
+  // share-page.html (not share.html) so it has no clean-URL collision with the
+  // /share route — otherwise the static file wins over this function's rewrite.
   const candidates = [
-    join(process.cwd(), 'share.html'),
-    new URL('../share.html', import.meta.url).pathname,
-    join(process.cwd(), '..', 'share.html'),
+    join(process.cwd(), 'share-page.html'),
+    new URL('../share-page.html', import.meta.url).pathname,
+    join(process.cwd(), '..', 'share-page.html'),
   ];
   for (const c of candidates) {
     try { const html = readFileSync(c, 'utf8'); if (html) return html; } catch (_) {}

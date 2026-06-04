@@ -9,7 +9,7 @@
   ],
   "functions": {
     "api/og.mjs": { "includeFiles": "lib/fonts/**" },
-    "api/share.mjs": { "includeFiles": "share.html" }
+    "api/share.mjs": { "includeFiles": "share-page.html" }
   },
   "headers": [
     {
