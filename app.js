@@ -558,7 +558,7 @@ async function checkPoolCode() {
     // Count members
     const { count: memberCount } = await supabaseClient
       .from('users')
-      .select('*', { count: 'exact', head: true })
+      .select('id', { count: 'exact', head: true })
       .eq('pool_id', data.id);
     
     // Save pool to state
@@ -1657,7 +1657,13 @@ const _LIVE_MATCH_STATUSES = ['IN_PLAY', 'PAUSED', 'LIVE'];
 // other member's auth hash from the network response. NOTE: this is
 // defense-in-depth at the client; the DB still permits reading the hash via a
 // crafted request - see the RLS note flagged to the owner.
-const USER_PUBLIC_COLS = 'id,pool_id,nickname,is_admin,is_approved,is_late_joiner,whatsapp_url,telegram_url,total_score,group_score,knockout_score,top_scorer_score,joined_at,last_active_at,last_score_calc,groups_score,bonus_score,approval_status,approved_at,approved_by,group_points,knockout_points,bonus_points,predictions_locked,predictions_submitted_at,signup_source,signup_referrer,utm_source,utm_medium,utm_campaign,country';
+// NOTE: signup_source/signup_referrer/utm_*/country are intentionally EXCLUDED.
+// They are write-only attribution (set at signup, consumed only by backend
+// analytics, never rendered in-app), so the client never needs to read them.
+// Excluding them lets the DB revoke anon SELECT on those columns (F4) without
+// breaking any in-app read - a pool member can't dump every other member's
+// acquisition data from the network response.
+const USER_PUBLIC_COLS = 'id,pool_id,nickname,is_admin,is_approved,is_late_joiner,whatsapp_url,telegram_url,total_score,group_score,knockout_score,top_scorer_score,joined_at,last_active_at,last_score_calc,groups_score,bonus_score,approval_status,approved_at,approved_by,group_points,knockout_points,bonus_points,predictions_locked,predictions_submitted_at';
 const _TERMINAL_MATCH_STATUSES = ['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED'];
 const _MAX_MATCH_MS = 3.5 * 60 * 60 * 1000; // longest plausible match incl. ET + pens
 function _snapshotStaleDuringLive(matches, maxAgeMs = 60000) {
@@ -1842,7 +1848,7 @@ async function updatePendingBadge() {
   try {
     const { count, error } = await supabaseClient
       .from('users')
-      .select('*', { count: 'exact', head: true })
+      .select('id', { count: 'exact', head: true })
       .eq('pool_id', state.currentPool.id)
       .eq('approval_status', 'pending')
       .eq('is_admin', false);
@@ -3497,7 +3503,7 @@ async function showPoolSettings() {
   // Count members
   const { count: memberCount } = await supabaseClient
     .from('users')
-    .select('*', { count: 'exact', head: true })
+    .select('id', { count: 'exact', head: true })
     .eq('pool_id', pool.id);
   
   // Save initial settings for comparison
