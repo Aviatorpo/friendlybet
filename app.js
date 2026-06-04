@@ -7384,16 +7384,34 @@ function _bracketChipBlocked(mode) {
   if (mode === 'bracket' && !_bracketShareReady()) { showToast(t('bracketShare.notReady'), 'info'); return true; }
   return false;
 }
-// NOTE on bracket chips: these do a per-app LINK share (the "direct to app"
-// behavior). WhatsApp/Facebook preview the link via their OG scraper, which is
-// keyed per-URL and won't refresh once cached — so a URL scraped while the OG
-// was empty (e.g. mid-deploy) can stay stale in WhatsApp. A brand-new user/pool
-// (never scraped) previews fine; the per-share `v` timestamp in _bracketShareUrl
-// keeps each share fresh. If a guaranteed image is needed, the big native
-// "Share my bracket" button (shareBracketCard) attaches the real PNG directly.
+// BRACKET SHARE FLOW (decided after testing every app): the bracket is an
+// IMAGE, and the web can only attach a real image to an app through the native
+// share sheet (navigator.share + files) — per-app link intents can't carry an
+// image, so they break inconsistently (X/email send no picture, Reddit crops
+// the OG card, WhatsApp caches a stale link preview, Instagram won't open). So
+// on mobile EVERY bracket chip shares the actual card PNG via the native sheet
+// (the user then taps the app they tapped the icon for). Desktop has no file
+// share, so it falls back to the per-app link intent (OG previews work fine in
+// desktop browsers). Returns true when it handled the share (caller stops).
+async function _bracketChipImageShared(mode) {
+  if (mode !== 'bracket') return false;
+  if (!(navigator.canShare && navigator.share)) return false; // desktop -> link intent
+  let blob;
+  try { blob = await _bracketCardToBlob(); } catch (_) { return false; }
+  if (!blob) return false;
+  const file = new File([blob], 'friendlybet-bracket.png', { type: 'image/png' });
+  if (!navigator.canShare({ files: [file] })) return false;
+  try {
+    await navigator.share({ files: [file], text: t('bracketShare.caption'), url: _bracketShareUrl('bracket_chip') });
+  } catch (e) {
+    if (!(e && e.name === 'AbortError')) console.error('bracket chip image share failed', e);
+  }
+  return true; // handled (shared or user-cancelled) — never fall through to a link on mobile
+}
 
 async function shareToWhatsApp(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (await _bracketChipImageShared(mode)) return;
   const message = _shareMsg(mode, 'whatsapp');
   const encoded = encodeURIComponent(message);
   const url = `https://wa.me/?text=${encoded}`;
@@ -7402,6 +7420,7 @@ async function shareToWhatsApp(mode = 'invite') {
 
 async function shareToTelegram(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (await _bracketChipImageShared(mode)) return;
   const inviteUrl = _shareLink(mode, 'telegram');
   const message = mode === 'bracket' ? t('bracketShare.caption') : getShareMessage('telegram');
   const url = `https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(message)}`;
@@ -7413,6 +7432,7 @@ async function shareToTelegram(mode = 'invite') {
 // desktop, where navigator.share isn't available.
 async function shareToX(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (await _bracketChipImageShared(mode)) return;
   const text = _shareMsg(mode, 'x');
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
   window.open(url, '_blank', 'noopener');
@@ -7420,6 +7440,7 @@ async function shareToX(mode = 'invite') {
 
 async function shareToFacebook(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (await _bracketChipImageShared(mode)) return;
   // Facebook's sharer strips any custom text and only takes the URL, so the
   // OG card on the shared link carries the message.
   const link = _shareLink(mode, 'facebook');
@@ -7429,8 +7450,12 @@ async function shareToFacebook(mode = 'invite') {
 
 async function shareToInstagram(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
-  // Instagram has no web link-share intent. For the bracket it's an image-first
-  // app, so download the card PNG and open IG so the user can post it to a story.
+  // Bracket on mobile: share the real image via the native sheet (Instagram is
+  // one of the targets) — far more reliable than the old download + deep-link
+  // hack, which the OS popup-blocker killed because it ran after an await.
+  if (await _bracketChipImageShared(mode)) return;
+  // Desktop fallback for the bracket: download the PNG and open IG on the web so
+  // the user can upload it manually.
   if (mode === 'bracket') {
     try {
       const blob = await _bracketCardToBlob();
@@ -7440,8 +7465,7 @@ async function shareToInstagram(mode = 'invite') {
       }
     } catch (e) { console.error('bracket IG image failed', e); }
     showToast(t('bracketShare.igHint'), 'info');
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
-    setTimeout(() => { window.open(isMobile ? 'instagram://app' : 'https://www.instagram.com/', '_blank', 'noopener'); }, 500);
+    window.open('https://www.instagram.com/', '_blank', 'noopener');
     return;
   }
   // INVITE: copy the join link and tell the user to paste it into a story or DM,
@@ -7461,6 +7485,7 @@ async function shareToInstagram(mode = 'invite') {
 
 async function shareToReddit(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (await _bracketChipImageShared(mode)) return;
   // Reddit's submit page takes a URL + title; the OG card on the shared link
   // carries the rest. Opens the post composer pre-filled.
   const link = _shareLink(mode, 'reddit');
@@ -7470,16 +7495,18 @@ async function shareToReddit(mode = 'invite') {
   window.open(url, '_blank', 'noopener');
 }
 
-function shareByEmail(mode = 'invite') {
+async function shareByEmail(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (await _bracketChipImageShared(mode)) return;
   const poolName = state.currentPool?.name || t('dashboard.fallback.poolName');
   const subject = mode === 'bracket' ? t('bracketShare.emailSubject') : t('shareModal.emailSubject', { poolName });
   const body = _shareMsg(mode, 'email');
   window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-function shareBySMS(mode = 'invite') {
+async function shareBySMS(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (await _bracketChipImageShared(mode)) return;
   const body = _shareMsg(mode, 'sms');
   // `sms:?&body=` is the most cross-platform form (works on both iOS and Android).
   window.location.href = `sms:?&body=${encodeURIComponent(body)}`;
