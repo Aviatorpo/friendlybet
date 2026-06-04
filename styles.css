@@ -7201,8 +7201,15 @@ body:not(.ltr) .home-lang-toggle {
 .pundit-tag.confirmed { background: rgba(52,197,134,0.14); color: #5fd29a; }
 .pundit-tag.reported  { background: rgba(212,168,83,0.16); color: #e6c789; }
 .pundit-tag.pool      { background: rgba(124,150,255,0.16); color: #aab8ff; }
-/* Fixed-height text area: always reserves 3 lines so the card never resizes
-   between rotating items. Collapsed = clamped to 3 lines; "see more" expands. */
+/* Fixed-size card: the collapsed card is always the SAME height no matter how
+   much text / whether sources are shown - it only grows when "see more" is
+   tapped. We do this by reserving every variable slot: the body reserves 3 text
+   lines + the toggle row, and the sources row reserves one line even when empty.
+   Items that are shorter (pool/data items, no sources) just leave that space
+   blank rather than shrinking the card. */
+.pundit-body {
+  min-height: 86px;   /* 3 text lines (14px x 1.5 x 3 = 63px) + the toggle row */
+}
 .pundit-text {
   position: relative;
   font-size: 14px;
@@ -7237,10 +7244,12 @@ body:not(.ltr) .home-lang-toggle {
 .pundit-toggle:hover { text-decoration: underline; }
 .pundit-sources {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;          /* single row - never grows the card to a 2nd line */
   align-items: center;
   gap: 6px;
   margin-top: 10px;
+  min-height: 20px;           /* reserve the row even for items with no sources */
+  overflow: hidden;
   position: relative;
 }
 .pundit-source-label { font-size: 10px; color: rgba(255,255,255,0.4); }

@@ -1368,7 +1368,9 @@ function _punditDraw() {
         srcEl.appendChild(chip);
       });
     } else {
-      srcEl.style.display = 'none';
+      // Keep the row present (CSS reserves its height) so items without sources
+      // don't shrink the card - the fixed-size card only grows on "see more".
+      srcEl.style.display = '';
       srcEl.innerHTML = '';
     }
   }
