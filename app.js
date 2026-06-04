@@ -1112,27 +1112,36 @@ async function loadPundit() {
     }
 
     // v2.6.79: merge in pool-specific "pool pulse" commentary computed live on
-    // the client (aggregate facts only, never any pick value). Layout: up to 2
-    // news items lead, then the pool buzz, then the rest.
+    // the client (aggregate facts only, never any pick value).
     let poolItems = [];
     try { poolItems = await buildPoolPundit(); } catch (_) { /* never block the feed */ }
     const newsItems = globalItems.filter(it => it.type === 'news');
     const nonNews = globalItems.filter(it => it.type !== 'news');
-    let combined = [...newsItems.slice(0, 2), ...poolItems.slice(0, 2), ...newsItems.slice(2), ...nonNews];
-    // De-dupe by id (a news item could appear in both slices).
-    const seen = new Set();
-    combined = combined.filter(it => it && it.id && !seen.has(it.id) && (seen.add(it.id), true));
 
-    // v2.6.81: the card always shows exactly PUNDIT_TARGET items. Real content
-    // (news/results/fixtures) refreshes hourly via the generate-pundit workflow;
-    // when there aren't enough real items (typical pre-tournament), pad with
-    // evergreen lines that ROTATE BY THE HOUR, so the feed has fresh content
-    // every hour without committing/redeploying for filler.
+    // v2.6.84: GUARANTEED hourly-fresh feed.
+    // Before, all news items led the feed, so when the verified-news file was
+    // stable (the normal case pre-tournament - it only changes when the news
+    // agent runs, often once a day) the card showed the SAME news for hours/days
+    // and the hourly evergreen rotation never kicked in (it only padded a
+    // shortfall, but a full slate of news left no room). Fix, two parts:
+    //   (a) rotate the news WINDOW by the hour so the leading news advances
+    //       every hour (full cycle over all news across the day), and
+    //   (b) ALWAYS reserve at least one slot for an evergreen line that rotates
+    //       by the hour - so the card visibly changes every single hour even
+    //       when news AND pool are completely static.
     const PUNDIT_TARGET = 5;
-    if (combined.length < PUNDIT_TARGET) {
-      const hourSeed = Math.floor(now / (60 * 60 * 1000));
-      combined = combined.concat(_evergreenPundit(PUNDIT_TARGET - combined.length, hourSeed, combined));
-    }
+    const hourSeed = Math.floor(now / (60 * 60 * 1000));
+    const rotatedNews = _ppRotateByHour(newsItems, hourSeed);
+
+    // News leads (rotated), then pool buzz, then data/countdown, then any
+    // remaining news. De-dupe by id (a news item could appear twice).
+    let real = [...rotatedNews.slice(0, 2), ...poolItems.slice(0, 2), ...nonNews, ...rotatedNews.slice(2)];
+    const seen = new Set();
+    real = real.filter(it => it && it.id && !seen.has(it.id) && (seen.add(it.id), true));
+
+    // Reserve >=1 evergreen slot so something always rotates hour to hour.
+    real = real.slice(0, PUNDIT_TARGET - 1);
+    let combined = real.concat(_evergreenPundit(PUNDIT_TARGET - real.length, hourSeed, real));
     const items = combined.slice(0, PUNDIT_TARGET);
 
     if (!items.length) return [];
@@ -1341,6 +1350,14 @@ const _PP_EVERGREEN = [
   { id: 'ev-final', he: 'הדרך לגמר ארוכה — כל סיבוב שתנחשו נכון מקרב אתכם לראש הטבלה 🥇',
     en: 'The road to the final is long — every round you nail climbs you up the table 🥇' },
 ];
+
+// Rotates an array by `hourSeed` so the leading window advances every hour.
+// Returns a fresh array (never mutates the input); identity for <=1 items.
+function _ppRotateByHour(arr, hourSeed) {
+  if (!Array.isArray(arr) || arr.length <= 1) return Array.isArray(arr) ? arr.slice() : [];
+  const off = ((hourSeed % arr.length) + arr.length) % arr.length;
+  return arr.slice(off).concat(arr.slice(0, off));
+}
 
 function _evergreenPundit(count, hourSeed, exclude) {
   if (count <= 0) return [];
