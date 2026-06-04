@@ -1,45 +1,55 @@
 {
-  "updatedAt": "2026-06-04T05:23:20.000Z",
+  "updatedAt": "2026-06-04T12:00:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
       "id": "neymar-brazil-opener-doubt-2026-06-03",
       "confidence": "confirmed",
       "team": "BRA",
-      "en": "Neymar is a near-certain miss for Brazil's opener against Morocco on June 13, carrying a grade-2 right calf strain since May 17. Coach Ancelotti says he has no regrets taking an injured Neymar to the tournament and expects him back for game two - but who steps up for the Selecao if the legend watches from the bench on day one?",
-      "he": "ניימאר כמעט בוודאות ייחסר מהפתיחה מול מרוקו ב-13 ביוני, כשהוא מגיע עם קרע חלקי בשריר השוק הימני מה-17 במאי. אנצ'לוטי אמר שאינו מצטער שלקח אותו פצוע, ומכוון לחזרה במשחק השני - אבל מי יעלה לגדולה עם הסלסאו אם האגדה תצפה מהספסל ביום הראשון?",
+      "en": "Neymar is a near-certain miss for Brazil's opener against Morocco on June 13, carrying a grade-2 right calf strain. Coach Ancelotti says he has no regrets taking an injured Neymar to the tournament and expects him back for game two - but who steps up for the Selecao if the legend watches from the bench on day one?",
+      "he": "ניימאר כמעט בוודאות ייחסר מהפתיחה מול מרוקו ב-13 ביוני, כשהוא מגיע עם קרע חלקי בשריר השוק הימני. אנצ'לוטי אמר שאינו מצטער שלקח אותו פצוע, ומכוון לחזרה במשחק השני - אבל מי יעלה לגדולה עם הסלסאו אם האגדה תצפה מהספסל ביום הראשון?",
       "sources": [
-        { "name": "FIFA.com", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/brazil-neymar-injury" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" },
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" }
+        { "name": "Bleacher Report", "url": "https://bleacherreport.com/articles/25432292-neymar-injury-update-provided-brazils-carlo-ancelotti-latest-timeline-ahead-2026-world-cup" }
       ],
       "expires_at": "2026-06-13T00:00:00Z"
-    },
-    {
-      "id": "saliba-france-scare-cleared-2026-06-03",
-      "confidence": "confirmed",
-      "team": "FRA",
-      "en": "All clear for France: Deschamps said on June 3 that Saliba is here and fine and would have played if needed, putting to rest days of back-injury worry after Arsenal's Champions League final. He will be managed carefully ahead of June 16, but can he truly hit full throttle when France face Senegal?",
-      "he": "האורות ירוקים לצרפת: דשאן אמר ב-3 ביוני שסאליבה כאן ובסדר, ושהיה משחק אותו לו היה צריך, ובכך סגר את הדיונים על פציעת הגב שהתעוררה לאחר גמר ליגת האלופות. הוא ינוהל בזהירות לקראת ה-16 ביוני, אבל האם יהיה ב-100% כשצרפת תפגוש את סנגל?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48957835/france-boss-didier-deschamps-eases-william-saliba-injury-fears-ahead-pre-world-cup-friendlies" },
-        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/friendlies/articles/saliba-fine-for-world-cup-amid-injury-fears-says-deschamps-2026-06-03" },
-        { "name": "Get French Football News", "url": "https://www.getfootballnewsfrance.com/2026/hes-here-everything-is-fine-didier-deschamps-on-william-saliba-injury-ahead-of-world-cup/" }
-      ],
-      "expires_at": "2026-06-16T00:00:00Z"
     },
     {
       "id": "davies-canada-misses-opener-2026-06-03",
       "confidence": "confirmed",
       "team": "CAN",
-      "en": "Canada captain Alphonso Davies said the opener against Bosnia and Herzegovina on June 12 is not possible with his hamstring, though he later hinted that anything is possible in life. Most outlets are calling it a confirmed miss, and Canada must hold the fort in front of a home crowd without their star left-back from the first whistle.",
-      "he": "קפטן קנדה אלפונסו דייוויס אמר שהפתיחה מול בוסניה ב-12 ביוני לא אפשרית בשל פציעת שרירו, אם כי לאחר מכן הוסיף שהכל אפשרי בחיים. רוב כלי התקשורת קוראים לזה היעדרות מאושרת, וקנדה תצטרך להחזיק מעמד בקהל הביתי בלי כוכב השמאל שלה מהפלפול הראשון.",
+      "en": "Canada captain Alphonso Davies is set to miss the opener against Bosnia and Herzegovina on June 12 with a hamstring injury, training individually as the tournament approaches. Canada must hold the fort in front of a home crowd without their star left-back from the first whistle - can they get a result without him?",
+      "he": "קפטן קנדה אלפונסו דייוויס עומד להיעדר מהפתיחה מול בוסניה-הרצגובינה ב-12 ביוני בשל פציעה בשריר הירך, ומתאמן בנפרד לקראת הטורניר. קנדה תצטרך להחזיק מעמד בקהל הביתי בלי כוכב השמאל שלה מהשריקה הראשונה - האם תצליח להביא תוצאה בלעדיו?",
       "sources": [
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48914937/alphonso-davies-named-canada-world-cup-squad-injury-concerns" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/alphonso-davies-confirms-hell-miss-210300435.html" },
-        { "name": "Now Toronto", "url": "https://nowtoronto.com/news/alphonso-davies-confirms-he-will-miss-canadas-world-cup-opener/" }
+        { "name": "TSN", "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/canada-captain-davies-trains-individually-as-fifa-world-cup-preparations-continue/" },
+        { "name": "Sports Illustrated", "url": "https://www.si.com/soccer/alphonso-davies-injury-progress-potential-return-date-for-canada-star" }
       ],
       "expires_at": "2026-06-12T00:00:00Z"
+    },
+    {
+      "id": "azteca-third-wc-opener-history-2026-06-04",
+      "confidence": "confirmed",
+      "team": "MEX",
+      "en": "Estadio Azteca in Mexico City becomes the first stadium in history to host three World Cup opening matches when Mexico face South Africa on June 11. Pele lifted the trophy here in 1970, Maradona in 1986 - who writes the next chapter at 2,240 metres above sea level?",
+      "he": "האצטקה במקסיקו סיטי הופכת לאצטדיון הראשון בהיסטוריה שמארח שלושה קרבות פתיחה של מונדיאל, כשמקסיקו תפגוש את דרום-אפריקה ב-11 ביוני. פלה הרים את הגביע כאן ב-1970, מאראדונה ב-1986 - מי יכתוב את הפרק הבא על גובה 2,240 מטר?",
+      "sources": [
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" },
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/estadio-azteca-makes-history-with-three-fifa-world-cup-opening-matches-2026-05-28" }
+      ],
+      "expires_at": "2026-06-12T00:00:00Z"
+    },
+    {
+      "id": "fifa-ai-offside-avatars-2026-06-04",
+      "confidence": "confirmed",
+      "en": "FIFA has digitally scanned all 1,248 players at this World Cup to create AI avatars for a new semi-automated offside system. Assistant referees now receive a real-time audio alert when a player is more than 10 cm over the line, far tighter than the previous 50 cm threshold. Fewer endless VAR waits.",
+      "he": "פיפ\"א סרקה דיגיטלית את כל 1,248 השחקנים במונדיאל ויצרה אווטארים של בינה מלאכותית עבור מערכת חוץ-למחצה אוטומטית חדשה. עוזר השופט מקבל התראה קולית בזמן אמת כשהשחקן חורג יותר מ-10 ס\"מ מהקו, הרבה יותר מדויק מהסף הישן של 50 ס\"מ. פחות המתנות האינסופיות ל-VAR.",
+      "sources": [
+        { "name": "FIFA", "url": "https://inside.fifa.com/news/offside-decisions-referee-body-cams-innovation-world-cup-2026" },
+        { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
       "id": "yamal-spain-fit-for-opener-update-2026-06-04",
@@ -49,22 +59,20 @@
       "he": "לפי הדיווחים, מאמן ספרד דה לה פואנטה בטוח שלמין יאמאל יהיה כשיר לפתיחה מול קייפ ורד ב-15 ביוני, אף שהכוכב בן ה-17 ידלג על הידידות כנגד עיראק היום. המאמן אמר: 'אם הכל ימשיך כמתוכנן, הוא יוכל להיות מוכן ל-15'. יאמאל בריא משנה את המשוואה הספרדית כולה - מה אתם מעריכים לגבי לה ראוחה?",
       "sources": [
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente" },
-        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/luis-de-la-fuente-confident-lamine-yamal-can-make-spain-s-world-cup-opener-2026-06-03" }
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/lamine-yamal-and-nico-williams-set-to-be-fit-for-spains-world-cup-opener" }
       ],
       "expires_at": "2026-06-15T00:00:00Z"
     },
     {
-      "id": "martinez-argentina-finger-fit-2026-06-04",
-      "confidence": "reported",
-      "team": "ARG",
-      "en": "Reports say Argentina goalkeeper Emiliano Martinez broke a finger in the Europa League final but expects to be fit for the Albiceleste's opener against Algeria on June 16. Martinez told fans he will be ready, and Scaloni says he trusts his backup keepers in the meantime, but Dibu is fundamental to Argentina's system. Will the reigning champions have their No. 1 from day one?",
-      "he": "לפי הדיווחים, שוער ארגנטינה אמיליאנו מרטינס שבר אצבע בגמר ליגת אירופה אך צופה להיות כשיר לפתיחה מול אלג'יריה ב-16 ביוני. מרטינס אמר לאוהדים שיהיה מוכן, וסקאלוני מצהיר שהוא סומך גם על הגיבויים, אבל דיבו מרכזי במערכת הארגנטינאית. האם לאלופות העולם יהיה מס' 1 שלהן מהיום הראשון?",
+      "id": "wc2026-format-third-place-round32-2026-06-04",
+      "confidence": "confirmed",
+      "en": "New rule to know: in 2026 there are 12 groups of four teams each, and the 8 best third-placed finishers join the 24 group qualifiers in a brand-new Round of 32. Finishing third in your group no longer means booking your flight home - but only the best eight get through. Know your tiebreakers.",
+      "he": "כלל חדש שכדאי להכיר: ב-2026 יש 12 בלוסים עם ארבע נבחרות כל אחד, ו-8 הנבחרות הטובות ביותר שסיימו שלישיות מצטרפות ל-24 המתקדמות ב\"סיבוב ה-32\" החדש. מקום שלישי כבר לא אומר לקפל מזוודות, אבל רק שמונה הטובות ביותר עוברות. תכירו את כללי ההפרדה.",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48954908/emiliano-martinez-return-injury-argentina-world-cup-opener" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/is-emi-martinez-a-world-cup-doubt-for-argentina-surgery-update-on-broken-finger-as-lionel-messi-and-co-sweat-on-aston-villa-goalkeepers-fitness" },
-        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/world-cup/argentina-receive-major-boost-as-emiliano-martinez-set-to-recover-in-time-for-2026-world-cup/" }
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/groups-how-teams-qualify-tie-breakers" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48703925/world-cup-group-stage-explained-tiebreakers-third-place-teams" }
       ],
-      "expires_at": "2026-06-16T00:00:00Z"
+      "expires_at": "2026-06-29T00:00:00Z"
     }
   ]
 }
