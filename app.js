@@ -7322,16 +7322,30 @@ function getShareMessage(source = 'copy') {
   return t('sharePool.shareText', { poolName, code, url });
 }
 
-function shareToWhatsApp() {
-  const message = getShareMessage('whatsapp');
+// The per-app share helpers below serve two contexts. `mode='invite'` (default)
+// shares the pool-join link + invite copy — unchanged behavior. `mode='bracket'`
+// shares the user's personalized /share link (whose dynamic OG renders their
+// prediction card) + the bracket caption. Web intents carry only text+URL, so
+// the actual card IMAGE travels only via shareBracketCard()'s native sheet — the
+// chips rely on the per-user OG preview instead.
+function _shareLink(mode, source) {
+  return mode === 'bracket' ? _bracketShareUrl(source) : getInviteUrl(source);
+}
+function _shareMsg(mode, source) {
+  if (mode === 'bracket') return t('bracketShare.caption') + ' ' + _bracketShareUrl(source);
+  return getShareMessage(source);
+}
+
+function shareToWhatsApp(mode = 'invite') {
+  const message = _shareMsg(mode, 'whatsapp');
   const encoded = encodeURIComponent(message);
   const url = `https://wa.me/?text=${encoded}`;
   window.open(url, '_blank');
 }
 
-function shareToTelegram() {
-  const inviteUrl = getInviteUrl('telegram');
-  const message = getShareMessage('telegram');
+function shareToTelegram(mode = 'invite') {
+  const inviteUrl = _shareLink(mode, 'telegram');
+  const message = mode === 'bracket' ? t('bracketShare.caption') : getShareMessage('telegram');
   const url = `https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(message)}`;
   window.open(url, '_blank');
 }
@@ -7339,24 +7353,38 @@ function shareToTelegram() {
 // Direct per-app share shortcuts. The native share sheet (shareNative) is the
 // primary path on mobile — these are explicit choices and the main path on
 // desktop, where navigator.share isn't available.
-function shareToX() {
-  const text = getShareMessage('x');
+function shareToX(mode = 'invite') {
+  const text = _shareMsg(mode, 'x');
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
   window.open(url, '_blank', 'noopener');
 }
 
-function shareToFacebook() {
+function shareToFacebook(mode = 'invite') {
   // Facebook's sharer strips any custom text and only takes the URL, so the
-  // OG card on the invite link carries the message.
-  const inviteUrl = getInviteUrl('facebook');
-  const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(inviteUrl)}`;
+  // OG card on the shared link carries the message.
+  const link = _shareLink(mode, 'facebook');
+  const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`;
   window.open(url, '_blank', 'noopener');
 }
 
-async function shareToInstagram() {
-  // Instagram has no web link-share intent, so copy the invite link and tell
-  // the user to paste it into a story or DM, then open Instagram (app on
-  // mobile, web otherwise) so they can paste right away.
+async function shareToInstagram(mode = 'invite') {
+  // Instagram has no web link-share intent. For the bracket it's an image-first
+  // app, so download the card PNG and open IG so the user can post it to a story.
+  if (mode === 'bracket') {
+    try {
+      const blob = await _bracketCardToBlob();
+      if (blob) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = 'friendlybet-bracket.png'; a.click();
+      }
+    } catch (e) { console.error('bracket IG image failed', e); }
+    showToast(t('bracketShare.igHint'), 'info');
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+    setTimeout(() => { window.open(isMobile ? 'instagram://app' : 'https://www.instagram.com/', '_blank', 'noopener'); }, 500);
+    return;
+  }
+  // INVITE: copy the join link and tell the user to paste it into a story or DM,
+  // then open Instagram (app on mobile, web otherwise) so they can paste right away.
   const url = getInviteUrl('instagram');
   try {
     await navigator.clipboard.writeText(url);
@@ -7370,25 +7398,25 @@ async function shareToInstagram() {
   setTimeout(() => { window.open('https://www.instagram.com/', '_blank', 'noopener'); }, 500);
 }
 
-function shareToReddit() {
-  // Reddit's submit page takes a URL + title; the OG card on the invite link
+function shareToReddit(mode = 'invite') {
+  // Reddit's submit page takes a URL + title; the OG card on the shared link
   // carries the rest. Opens the post composer pre-filled.
-  const inviteUrl = getInviteUrl('reddit');
+  const link = _shareLink(mode, 'reddit');
   const poolName = state.currentPool?.name || t('dashboard.fallback.poolName');
-  const title = t('shareModal.joinTitle', { name: poolName });
-  const url = `https://www.reddit.com/submit?url=${encodeURIComponent(inviteUrl)}&title=${encodeURIComponent(title)}`;
+  const title = mode === 'bracket' ? t('bracketShare.redditTitle') : t('shareModal.joinTitle', { name: poolName });
+  const url = `https://www.reddit.com/submit?url=${encodeURIComponent(link)}&title=${encodeURIComponent(title)}`;
   window.open(url, '_blank', 'noopener');
 }
 
-function shareByEmail() {
+function shareByEmail(mode = 'invite') {
   const poolName = state.currentPool?.name || t('dashboard.fallback.poolName');
-  const subject = t('shareModal.emailSubject', { poolName });
-  const body = getShareMessage('email');
+  const subject = mode === 'bracket' ? t('bracketShare.emailSubject') : t('shareModal.emailSubject', { poolName });
+  const body = _shareMsg(mode, 'email');
   window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
-function shareBySMS() {
-  const body = getShareMessage('sms');
+function shareBySMS(mode = 'invite') {
+  const body = _shareMsg(mode, 'sms');
   // `sms:?&body=` is the most cross-platform form (works on both iOS and Android).
   window.location.href = `sms:?&body=${encodeURIComponent(body)}`;
 }
@@ -7571,15 +7599,23 @@ function _renderBracketCard(cv, qr) {
   }
 }
 
+// Render the prediction card to a PNG blob (assets loaded first). Shared by the
+// native share sheet and the Instagram chip. Returns null if rendering fails.
+async function _bracketCardToBlob() {
+  const qr = await _prepareBracketAssets();
+  const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350;
+  _renderBracketCard(cv, qr);
+  return new Promise((resolve) => cv.toBlob(resolve, 'image/png'));
+}
+
 async function shareBracketCard() {
   const champ = spState && (spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
   if (!champ) { showToast(t('bracketShare.notReady'), 'info'); return; }
-  const qr = await _prepareBracketAssets();
-  const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350;
-  try { _renderBracketCard(cv, qr); } catch (e) { console.error('bracket card render failed', e); showToast(t('bracketShare.notReady'), 'info'); return; }
+  let blob;
+  try { blob = await _bracketCardToBlob(); } catch (e) { console.error('bracket card render failed', e); showToast(t('bracketShare.notReady'), 'info'); return; }
   const caption = t('bracketShare.caption');
   const homeUrl = _bracketShareUrl('bracket_card');
-  cv.toBlob(async (blob) => {
+  (async () => {
     if (!blob) { showToast(t('bracketShare.toastDesktop'), 'info'); return; }
     const file = new File([blob], 'friendlybet-bracket.png', { type: 'image/png' });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -7590,7 +7626,7 @@ async function shareBracketCard() {
       try { await navigator.clipboard.writeText(caption + ' ' + homeUrl); } catch (_) {}
       showToast(t('bracketShare.toastDesktop'), 'success');
     }
-  }, 'image/png');
+  })();
 }
 window.shareBracketCard = shareBracketCard;
 
@@ -10287,7 +10323,10 @@ async function spRenderSummary() {
   if (summaryShareBtn) {
     const submitted = typeof spHasUserSubmitted === 'function' && spHasUserSubmitted();
     const hasChamp = !!(spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
-    summaryShareBtn.style.display = (submitted && hasChamp) ? '' : 'none';
+    const show = (submitted && hasChamp);
+    summaryShareBtn.style.display = show ? '' : 'none';
+    const summaryShareApps = document.getElementById('sp-summary-share-apps');
+    if (summaryShareApps) summaryShareApps.style.display = show ? '' : 'none';
   }
 
   // Groups summary

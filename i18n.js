@@ -566,6 +566,10 @@ const TRANSLATIONS = {
     'bracketShare.notReady': 'סיימו קודם את הבראקט (כולל האלופה) כדי לשתף',
     'bracketShare.celebrateTitle': '🏆 הבראקט שלך נשמר!',
     'bracketShare.done': 'סיום — לדשבורד',
+    'bracketShare.orChoose': 'או שתפו דרך אפליקציה',
+    'bracketShare.redditTitle': 'הבראקט שלי למונדיאל 2026 🏆',
+    'bracketShare.emailSubject': 'הבראקט שלי למונדיאל 2026 ב-FriendlyBet',
+    'bracketShare.igHint': 'התמונה הורדה — פתחו אינסטגרם והעלו אותה לסטורי',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'החוקים נעולים',
@@ -1798,6 +1802,10 @@ const TRANSLATIONS = {
     'bracketShare.notReady': 'Finish your bracket (including the champion) first',
     'bracketShare.celebrateTitle': '🏆 Your bracket is saved!',
     'bracketShare.done': 'Done — back to dashboard',
+    'bracketShare.orChoose': 'Or share via an app',
+    'bracketShare.redditTitle': 'My World Cup 2026 bracket 🏆',
+    'bracketShare.emailSubject': 'My World Cup 2026 bracket on FriendlyBet',
+    'bracketShare.igHint': 'Image downloaded — open Instagram and post it to your story',
 
     // === Pool settings ===
     'poolSettings.lockedTitle': 'Rules locked',
