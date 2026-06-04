@@ -7377,17 +7377,44 @@ function _bracketChipBlocked(mode) {
   if (mode === 'bracket' && !_bracketShareReady()) { showToast(t('bracketShare.notReady'), 'info'); return true; }
   return false;
 }
+// On a device that can share files, the ONLY reliable bracket share is the
+// actual card IMAGE (navigator.share with the PNG). The link-preview path goes
+// through WhatsApp/Facebook's OG scraper, which caches a link's preview per-URL
+// and refuses to refresh it — so a link scraped once (e.g. during a deploy)
+// shows that stale preview forever, even after the URL's `v` changes. Attaching
+// the image sidesteps the scraper entirely: WhatsApp shows the real picture.
+// So in bracket mode, if file-sharing exists, every chip shares the image via
+// the native sheet. Returns true if it handled the share (caller stops).
+// Desktop (no canShare/files) falls through to the per-app link intent.
+async function _bracketChipImageShared(mode) {
+  if (mode !== 'bracket') return false;
+  if (!(navigator.canShare && navigator.share)) return false;
+  let blob;
+  try { blob = await _bracketCardToBlob(); } catch (_) { return false; }
+  if (!blob) return false;
+  const file = new File([blob], 'friendlybet-bracket.png', { type: 'image/png' });
+  if (!navigator.canShare({ files: [file] })) return false;
+  try {
+    await navigator.share({ files: [file], text: t('bracketShare.caption'), url: _bracketShareUrl('bracket_chip') });
+    return true;
+  } catch (e) {
+    if (e && e.name === 'AbortError') return true; // user cancelled — don't then also open a link
+    return false; // genuine failure -> fall back to the link intent below
+  }
+}
 
-function shareToWhatsApp(mode = 'invite') {
+async function shareToWhatsApp(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (await _bracketChipImageShared(mode)) return;
   const message = _shareMsg(mode, 'whatsapp');
   const encoded = encodeURIComponent(message);
   const url = `https://wa.me/?text=${encoded}`;
   window.open(url, '_blank');
 }
 
-function shareToTelegram(mode = 'invite') {
+async function shareToTelegram(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (await _bracketChipImageShared(mode)) return;
   const inviteUrl = _shareLink(mode, 'telegram');
   const message = mode === 'bracket' ? t('bracketShare.caption') : getShareMessage('telegram');
   const url = `https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(message)}`;
@@ -7397,15 +7424,17 @@ function shareToTelegram(mode = 'invite') {
 // Direct per-app share shortcuts. The native share sheet (shareNative) is the
 // primary path on mobile — these are explicit choices and the main path on
 // desktop, where navigator.share isn't available.
-function shareToX(mode = 'invite') {
+async function shareToX(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (await _bracketChipImageShared(mode)) return;
   const text = _shareMsg(mode, 'x');
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
   window.open(url, '_blank', 'noopener');
 }
 
-function shareToFacebook(mode = 'invite') {
+async function shareToFacebook(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (await _bracketChipImageShared(mode)) return;
   // Facebook's sharer strips any custom text and only takes the URL, so the
   // OG card on the shared link carries the message.
   const link = _shareLink(mode, 'facebook');
@@ -7445,8 +7474,9 @@ async function shareToInstagram(mode = 'invite') {
   setTimeout(() => { window.open('https://www.instagram.com/', '_blank', 'noopener'); }, 500);
 }
 
-function shareToReddit(mode = 'invite') {
+async function shareToReddit(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (await _bracketChipImageShared(mode)) return;
   // Reddit's submit page takes a URL + title; the OG card on the shared link
   // carries the rest. Opens the post composer pre-filled.
   const link = _shareLink(mode, 'reddit');
