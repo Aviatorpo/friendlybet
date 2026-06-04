@@ -6903,6 +6903,16 @@ function showShareModal() {
 
   // v2.4.6: QR code section removed from the modal; skip the generator.
 
+  // Primary button = native OS share sheet (user picks any app). On desktop
+  // browsers without navigator.share it falls back to copying, so relabel it
+  // so the button promises what it actually does.
+  const nativeLabel = document.getElementById('share-native-label');
+  if (nativeLabel) {
+    nativeLabel.textContent = navigator.share
+      ? t('shareModal.shareWithFriends')
+      : t('shareModal.copyForDesktop');
+  }
+
   // Show modal
   document.getElementById('share-modal-overlay').classList.add('active');
   document.getElementById('share-modal').classList.add('active');
@@ -6945,6 +6955,36 @@ function shareToTelegram() {
   const message = getShareMessage('telegram');
   const url = `https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(message)}`;
   window.open(url, '_blank');
+}
+
+// Direct per-app share shortcuts. The native share sheet (shareNative) is the
+// primary path on mobile — these are explicit choices and the main path on
+// desktop, where navigator.share isn't available.
+function shareToX() {
+  const text = getShareMessage('x');
+  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank', 'noopener');
+}
+
+function shareToFacebook() {
+  // Facebook's sharer strips any custom text and only takes the URL, so the
+  // OG card on the invite link carries the message.
+  const inviteUrl = getInviteUrl('facebook');
+  const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(inviteUrl)}`;
+  window.open(url, '_blank', 'noopener');
+}
+
+function shareByEmail() {
+  const poolName = state.currentPool?.name || t('dashboard.fallback.poolName');
+  const subject = t('shareModal.emailSubject', { poolName });
+  const body = getShareMessage('email');
+  window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function shareBySMS() {
+  const body = getShareMessage('sms');
+  // `sms:?&body=` is the most cross-platform form (works on both iOS and Android).
+  window.location.href = `sms:?&body=${encodeURIComponent(body)}`;
 }
 
 function shareNative() {

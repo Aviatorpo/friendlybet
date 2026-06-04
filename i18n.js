@@ -136,8 +136,8 @@ const TRANSLATIONS = {
     'dashboard.action.start': 'התחל',
     'dashboard.action.continue': 'המשך',
     'dashboard.action.edit': 'ערוך',
-    'dashboard.invite.title': 'הזמן חברים להימור',
-    'dashboard.invite.subtitle': 'שלח קישור ב-WhatsApp או Telegram',
+    'dashboard.invite.title': 'הזמינו חברים — מצטרפים בקליק אחד',
+    'dashboard.invite.subtitle': 'שתפו לינק בכל אפליקציה',
     'dashboard.quickAction.leaderboard': 'דירוג',
     'dashboard.quickAction.help': 'עזרה',
     
@@ -849,6 +849,13 @@ const TRANSLATIONS = {
 
     // === Share modal ===
     'shareModal.subtitle': 'שלח להם את הקישור והם יצטרפו בלחיצה אחת',
+    'shareModal.oneClick': 'מי שלוחץ על הלינק מצטרף להימור בקליק אחד — בלי הרשמה, בלי להוריד אפליקציה',
+    'shareModal.shareWithFriends': 'שתפו עם החברים',
+    'shareModal.copyForDesktop': 'העתק קישור להזמנה',
+    'shareModal.orChoose': 'או בחרו אפליקציה',
+    'shareModal.email': 'מייל',
+    'shareModal.sms': 'SMS',
+    'shareModal.emailSubject': 'הזמנה להימור "{poolName}" ב-FriendlyBet',
     'shareModal.copyHint': 'לחץ להעתקה',
     'shareModal.copyLink': 'העתק קישור',
     'shareModal.shareMsg': 'שתף עם הודעה',
@@ -1359,8 +1366,8 @@ const TRANSLATIONS = {
     'dashboard.action.start': 'Start',
     'dashboard.action.continue': 'Continue',
     'dashboard.action.edit': 'Edit',
-    'dashboard.invite.title': 'Invite friends to pool',
-    'dashboard.invite.subtitle': 'Send a link via WhatsApp or Telegram',
+    'dashboard.invite.title': 'Invite friends — they join in one click',
+    'dashboard.invite.subtitle': 'Share the link in any app',
     'dashboard.quickAction.leaderboard': 'Leaderboard',
     'dashboard.quickAction.help': 'Help',
     
@@ -2072,6 +2079,13 @@ const TRANSLATIONS = {
 
     // === Share modal ===
     'shareModal.subtitle': 'Send them the link and they join in one tap',
+    'shareModal.oneClick': 'Anyone who taps the link joins in one click — no signup, no app to download',
+    'shareModal.shareWithFriends': 'Share with friends',
+    'shareModal.copyForDesktop': 'Copy invite link',
+    'shareModal.orChoose': 'Or pick an app',
+    'shareModal.email': 'Email',
+    'shareModal.sms': 'SMS',
+    'shareModal.emailSubject': 'Invitation to the "{poolName}" pool on FriendlyBet',
     'shareModal.copyHint': 'Tap to copy',
     'shareModal.copyLink': 'Copy link',
     'shareModal.shareMsg': 'Share with message',
