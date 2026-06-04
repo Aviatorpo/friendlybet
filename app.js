@@ -172,6 +172,34 @@ function _applyRecoveryLogin(found) {
   if (typeof fbMirrorSession === 'function') fbMirrorSession();
 }
 
+// ---- Server-side write gateway (Phase 2 security wiring) -----------------
+// The caller's recovery code is the credential the SECURITY DEFINER RPCs use to
+// resolve identity server-side. It's stored at login/signup; returns null for a
+// legacy session that pre-dates storing it -> callers then fall back to legacy.
+function _currentRecoveryCode() {
+  try {
+    return state.pendingRecoveryCode ||
+           localStorage.getItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE) || null;
+  } catch (_) { return null; }
+}
+
+// True only when an RPC error means the function is NOT deployed in this
+// environment (PostgREST PGRST202 / "not found in schema cache"), so the caller
+// should fall back to the legacy direct write. A genuine business error from a
+// deployed RPC (e.g. 'pool locked', 'invalid pick payload') returns FALSE so the
+// caller surfaces it instead of silently double-writing via the legacy path.
+function _rpcMissing(err) {
+  if (!err) return false;
+  const code = String(err.code || '');
+  const msg = `${err.message || ''} ${err.details || ''} ${err.hint || ''}`;
+  // PostgREST returns PGRST202 "Could not find the function ... in the schema
+  // cache" when an RPC isn't deployed. Keep this NARROW: a broad match (e.g. a
+  // generic "does not exist") could misclassify a real business error and wrongly
+  // fall back to the legacy direct write.
+  return code === 'PGRST202' || code === '404' ||
+         /Could not find the function|schema cache/i.test(msg);
+}
+
 // Auto-login from a recovery code (QR scan / ?login= / "Recover with QR" picker).
 // Returns true on success. opts.silent suppresses the success toast.
 async function loginViaRecoveryCode(rawInput, opts = {}) {
@@ -722,11 +750,53 @@ async function completeRegistration() {
     // v2.5.29: removed "Creating user..." info toast - dashboard
     // transition follows shortly.
 
+    const _src = _fbGetSignupSource();
+    const _country = await _fbEnsureCountry();
+    const _rcode = state.pendingRecoveryCode;
+
+    // Preferred: server-side join_pool RPC. is_admin is forced FALSE in the DB,
+    // the returned user row carries NO recovery_code_hash (so signup keeps working
+    // after SELECT(hash) is revoked), and the pool code + lock are validated.
+    // Falls back to the legacy direct insert only when the RPC isn't deployed.
+    if (_rcode && state.currentPool.code) {
+      const { data: res, error: rpcErr } = await supabaseClient.rpc('join_pool', {
+        p_pool_code: state.currentPool.code,
+        p_nickname: state.pendingNickname,
+        p_recovery_code: _rcode,
+        p_signup_source: _src.source,
+        p_signup_referrer: _src.referrer,
+        p_utm_source: _src.utm_source,
+        p_utm_medium: _src.utm_medium,
+        p_utm_campaign: _src.utm_campaign,
+        p_country: _country
+      });
+      if (!rpcErr && res && res.user) {
+        saveLocalUser(res.user);
+        state.currentUser = res.user;
+        if (res.pool) state.currentPool = res.pool;
+        try { localStorage.setItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE, _rcode); } catch (_) {}
+        state.pendingNickname = null;
+        state.pendingRecoveryCode = null;
+        setTimeout(() => goToDashboard(), 200);
+        return;
+      }
+      if (rpcErr && !_rpcMissing(rpcErr)) {
+        console.error('join_pool RPC error:', rpcErr);
+        if (rpcErr.code === '23505' || /duplicate key|nickname/i.test(rpcErr.message || '')) {
+          showToast(t('nickname.errorTaken'), 'error');
+          showScreen('choose-nickname-screen');
+          return;
+        }
+        showToast(t('errors.creatingUserFail', { msg: rpcErr.message }), 'error');
+        return;
+      }
+      // RPC absent -> fall through to the legacy direct insert below.
+    }
+
     // Hash recovery code
     const recoveryHash = await hashRecoveryCode(state.pendingRecoveryCode);
 
     // Create user - joins immediately, admin can approve/remove later
-    const _src = _fbGetSignupSource();
     const _joinerInsert = {
       pool_id: state.currentPool.id,
       nickname: state.pendingNickname,
@@ -739,7 +809,7 @@ async function completeRegistration() {
       utm_source: _src.utm_source,
       utm_medium: _src.utm_medium,
       utm_campaign: _src.utm_campaign,
-      country: await _fbEnsureCountry()
+      country: _country
     };
     let { data: user, error } = await supabaseClient
       .from('users').insert(_joinerInsert).select().single();
@@ -863,58 +933,74 @@ async function createPool() {
       return;
     }
     
-    // Create the pool
-    const { data: pool, error: poolError } = await supabaseClient
-      .from('pools')
-      .insert({
-        code: poolCode,
-        name: state.pendingPoolName,
-        language: 'he',
-        tournament: 'wc2026',
-        status: 'open'
-      })
-      .select()
-      .single();
-    
-    if (poolError) {
-      console.error('Pool creation error:', poolError);
-      showToast(t('errors.creatingPoolFail', { msg: poolError.message }), 'error');
-      return;
-    }
-    
-    // Generate recovery code for admin
+    // Generate recovery code for admin (needed up-front for the atomic RPC).
     const adminRecoveryCode = generateRecoveryCode();
-    const adminRecoveryHash = await hashRecoveryCode(adminRecoveryCode);
-    
-    // Create admin user - auto-approved
-    const { data: adminUser, error: userError } = await supabaseClient
-      .from('users')
-      .insert({
-        pool_id: pool.id,
-        nickname: adminNickname,
-        recovery_code_hash: adminRecoveryHash,
-        is_admin: true,
-        is_approved: true,
-        approval_status: 'approved',
-        approved_at: new Date().toISOString()
-      })
-      .select()
-      .single();
-    
-    if (userError) {
-      console.error('Admin user creation error:', userError);
-      showToast(t('errors.creatingAdminFail', { msg: userError.message }), 'error');
-      // Rollback pool
-      await supabaseClient.from('pools').delete().eq('id', pool.id);
+    const _src = _fbGetSignupSource();
+    const _country = await _fbEnsureCountry();
+
+    let pool, adminUser;
+
+    // Preferred: atomic server-side create_pool RPC (creates pool + admin in one
+    // transaction, sets is_admin server-side, returns both WITHOUT the hash).
+    // Falls back to the legacy multi-step insert only when the RPC isn't deployed.
+    const _rpcRes = await supabaseClient.rpc('create_pool', {
+      p_code: poolCode,
+      p_name: state.pendingPoolName,
+      p_language: 'he',
+      p_betting_mode: null,
+      p_scoring_rules: null,
+      p_use_multipliers: null,
+      p_admin_nickname: adminNickname,
+      p_recovery_code: adminRecoveryCode,
+      p_signup_source: _src.source,
+      p_signup_referrer: _src.referrer,
+      p_utm_source: _src.utm_source,
+      p_utm_medium: _src.utm_medium,
+      p_utm_campaign: _src.utm_campaign,
+      p_country: _country
+    });
+    if (!_rpcRes.error && _rpcRes.data && _rpcRes.data.pool) {
+      pool = _rpcRes.data.pool;
+      adminUser = _rpcRes.data.user;
+    } else if (_rpcRes.error && !_rpcMissing(_rpcRes.error)) {
+      console.error('create_pool RPC error:', _rpcRes.error);
+      showToast(t('errors.creatingPoolFail', { msg: _rpcRes.error.message }), 'error');
       return;
+    } else {
+      // RPC absent -> legacy multi-step create (pool, admin, link, rollback).
+      const adminRecoveryHash = await hashRecoveryCode(adminRecoveryCode);
+      const { data: lpool, error: poolError } = await supabaseClient
+        .from('pools')
+        .insert({ code: poolCode, name: state.pendingPoolName, language: 'he', tournament: 'wc2026', status: 'open' })
+        .select().single();
+      if (poolError) {
+        console.error('Pool creation error:', poolError);
+        showToast(t('errors.creatingPoolFail', { msg: poolError.message }), 'error');
+        return;
+      }
+      const { data: ladmin, error: userError } = await supabaseClient
+        .from('users')
+        .insert({
+          pool_id: lpool.id,
+          nickname: adminNickname,
+          recovery_code_hash: adminRecoveryHash,
+          is_admin: true,
+          is_approved: true,
+          approval_status: 'approved',
+          approved_at: new Date().toISOString()
+        })
+        .select().single();
+      if (userError) {
+        console.error('Admin user creation error:', userError);
+        showToast(t('errors.creatingAdminFail', { msg: userError.message }), 'error');
+        await supabaseClient.from('pools').delete().eq('id', lpool.id); // Rollback pool
+        return;
+      }
+      await supabaseClient.from('pools').update({ admin_user_id: ladmin.id }).eq('id', lpool.id);
+      pool = lpool;
+      adminUser = ladmin;
     }
-    
-    // Update pool with admin_user_id
-    await supabaseClient
-      .from('pools')
-      .update({ admin_user_id: adminUser.id })
-      .eq('id', pool.id);
-    
+
     // Save locally
     state.currentPool = pool;
     state.currentUser = adminUser;
@@ -2216,17 +2302,32 @@ function renderAdminMembers() {
 // Quick approve - one click
 async function quickApproveMember(member) {
   try {
+    // Preferred: server-side RPC (validates admin-of-pool, logs the audit row
+    // server-side). Falls back to the legacy direct update + client log only
+    // when the RPC isn't deployed.
+    const code = _currentRecoveryCode();
+    if (code) {
+      const { error: rpcErr } = await supabaseClient.rpc('approve_member', { p_code: code, p_member_id: member.id });
+      if (!rpcErr) {
+        showToast(t('adminMembersEx.approvedToast', { name: member.nickname }), 'success');
+        await loadAdminMembers();
+        return;
+      }
+      if (!_rpcMissing(rpcErr)) { console.error('approve_member RPC error:', rpcErr); showToast(t('adminMembersEx.approveError'), 'error'); return; }
+      // RPC absent -> fall through to the legacy direct write below.
+    }
+
     const { error } = await supabaseClient
       .from('users')
-      .update({ 
+      .update({
         approval_status: 'approved',
         approved_at: new Date().toISOString(),
         approved_by: state.currentUser.id
       })
       .eq('id', member.id);
-    
+
     if (error) throw error;
-    
+
     // Log action
     await supabaseClient.from('admin_actions').insert({
       pool_id: state.currentPool.id,
@@ -2235,7 +2336,7 @@ async function quickApproveMember(member) {
       target_user_id: member.id,
       details: { nickname: member.nickname }
     });
-    
+
     showToast(t('adminMembersEx.approvedToast', { name: member.nickname }), 'success');
 
     // Reload
@@ -2251,15 +2352,28 @@ async function quickApproveMember(member) {
 async function quickRejectMember(member) {
   const confirmed = window.confirm(t('adminMembersEx.confirmRemoveAll', { name: member.nickname }));
   if (!confirmed) return;
-  
+
   try {
+    // Preferred: server-side remove_member RPC (purges picks + logs server-side).
+    const code = _currentRecoveryCode();
+    if (code) {
+      const { error: rpcErr } = await supabaseClient.rpc('remove_member', { p_code: code, p_member_id: member.id });
+      if (!rpcErr) {
+        showToast(t('adminMembersEx.removedToast', { name: member.nickname }), 'success');
+        await loadAdminMembers();
+        return;
+      }
+      if (!_rpcMissing(rpcErr)) { console.error('remove_member RPC error:', rpcErr); showToast(t('adminMembersEx.removeError'), 'error'); return; }
+      // RPC absent -> fall through to the legacy direct delete below.
+    }
+
     const { error } = await supabaseClient
       .from('users')
       .delete()
       .eq('id', member.id);
-    
+
     if (error) throw error;
-    
+
     // Log
     await supabaseClient.from('admin_actions').insert({
       pool_id: state.currentPool.id,
@@ -2268,7 +2382,7 @@ async function quickRejectMember(member) {
       target_user_id: member.id,
       details: { nickname: member.nickname }
     });
-    
+
     showToast(t('adminMembersEx.removedToast', { name: member.nickname }), 'success');
 
     await loadAdminMembers();
@@ -2329,27 +2443,48 @@ async function togglePoolLock() {
   btn.textContent = t('common.processing');
   
   try {
-    const { error } = await supabaseClient
-      .from('pools')
-      .update({ 
-        is_locked: newState,
-        locked_at: newState ? new Date().toISOString() : null,
-        locked_by: newState ? state.currentUser.id : null
-      })
-      .eq('id', state.currentPool.id);
-    
-    if (error) throw error;
-    
-    // Log action
-    await supabaseClient.from('admin_actions').insert({
-      pool_id: state.currentPool.id,
-      admin_id: state.currentUser.id,
-      action_type: newState ? 'POOL_LOCKED' : 'POOL_UNLOCKED'
-    });
-    
+    // Preferred: server-side set_pool_lock RPC (validates admin-of-pool, logs
+    // server-side). Falls back to the legacy direct update + client log only when
+    // the RPC isn't deployed.
+    const code = _currentRecoveryCode();
+    let done = false;
+    if (code) {
+      const { error: rpcErr } = await supabaseClient.rpc('set_pool_lock', { p_code: code, p_locked: newState });
+      if (!rpcErr) {
+        done = true;
+      } else if (!_rpcMissing(rpcErr)) {
+        console.error('set_pool_lock RPC error:', rpcErr);
+        showToast(t('adminMembersEx.toggleError'), 'error');
+        btn.disabled = false;
+        updatePoolLockCard();
+        return;
+      }
+      // RPC absent -> fall through to the legacy direct write below.
+    }
+
+    if (!done) {
+      const { error } = await supabaseClient
+        .from('pools')
+        .update({
+          is_locked: newState,
+          locked_at: newState ? new Date().toISOString() : null,
+          locked_by: newState ? state.currentUser.id : null
+        })
+        .eq('id', state.currentPool.id);
+
+      if (error) throw error;
+
+      // Log action
+      await supabaseClient.from('admin_actions').insert({
+        pool_id: state.currentPool.id,
+        admin_id: state.currentUser.id,
+        action_type: newState ? 'POOL_LOCKED' : 'POOL_UNLOCKED'
+      });
+    }
+
     adminState.poolData.is_locked = newState;
     updatePoolLockCard();
-    
+
     showToast(newState ? t('adminMembersEx.poolLocked') : t('adminMembersEx.poolUnlocked'), 'success');
 
   } catch (err) {
@@ -2393,18 +2528,35 @@ async function adminGenerateNewCode() {
   if (!confirm) return;
   
   try {
-    // Generate new recovery code (16 chars)
+    // Generate new recovery code (16 chars). The plaintext is generated + shown
+    // client-side; only the new hash is set in the DB.
     const newCode = generateRecoveryCode();
+
+    // Preferred: server-side admin_reset_member_code RPC (validates admin-of-pool,
+    // hashes server-side, logs the audit row). Falls back to the legacy direct
+    // hash update + client log only when the RPC isn't deployed.
+    const code = _currentRecoveryCode();
+    if (code) {
+      const { error: rpcErr } = await supabaseClient.rpc('admin_reset_member_code', { p_code: code, p_member_id: member.id, p_new_code: newCode });
+      if (!rpcErr) {
+        closeAdminActionModal();
+        showNewRecoveryCode(member.nickname, newCode);
+        return;
+      }
+      if (!_rpcMissing(rpcErr)) { console.error('admin_reset_member_code RPC error:', rpcErr); showToast(t('adminMembersEx.newCodeError'), 'error'); return; }
+      // RPC absent -> fall through to the legacy direct write below.
+    }
+
     const newCodeHash = await hashRecoveryCode(newCode);
-    
+
     // Update user
     const { error } = await supabaseClient
       .from('users')
       .update({ recovery_code_hash: newCodeHash })
       .eq('id', member.id);
-    
+
     if (error) throw error;
-    
+
     // Log action
     await supabaseClient.from('admin_actions').insert({
       pool_id: state.currentPool.id,
@@ -2412,7 +2564,7 @@ async function adminGenerateNewCode() {
       action_type: 'RECOVERY_CODE_RESET',
       target_user_id: member.id
     });
-    
+
     // Show the new code
     closeAdminActionModal();
     showNewRecoveryCode(member.nickname, newCode);
@@ -2514,14 +2666,28 @@ function adminConfirmRemove() {
 
 async function adminPerformRemove(member) {
   try {
+    // Preferred: server-side remove_member RPC (purges picks + logs server-side).
+    const code = _currentRecoveryCode();
+    if (code) {
+      const { error: rpcErr } = await supabaseClient.rpc('remove_member', { p_code: code, p_member_id: member.id });
+      if (!rpcErr) {
+        closeAdminActionModal();
+        showToast(t('adminMembersEx.finalRemovedToast', { name: member.nickname }), 'success');
+        await loadAdminMembers();
+        return;
+      }
+      if (!_rpcMissing(rpcErr)) { console.error('remove_member RPC error:', rpcErr); showToast(t('adminMembersEx.finalRemoveError'), 'error'); return; }
+      // RPC absent -> fall through to the legacy direct delete below.
+    }
+
     // Delete user (cascade should delete picks)
     const { error } = await supabaseClient
       .from('users')
       .delete()
       .eq('id', member.id);
-    
+
     if (error) throw error;
-    
+
     // Log action
     await supabaseClient.from('admin_actions').insert({
       pool_id: state.currentPool.id,
@@ -2530,7 +2696,7 @@ async function adminPerformRemove(member) {
       target_user_id: member.id,
       details: { display_name: member.nickname }
     });
-    
+
     closeAdminActionModal();
     showToast(t('adminMembersEx.finalRemovedToast', { name: member.nickname }), 'success');
 
@@ -3176,6 +3342,29 @@ async function selectTopScorer(player) {
     if (!confirmed) return;
   }
   
+  const playerName = player.name_he || player.name_en || t('tsUnlocked.fallbackPlayer');
+  // Preferred: server-side RPC; legacy direct write only if the RPC is absent.
+  const rcode = _currentRecoveryCode();
+  if (rcode) {
+    const { error: rpcErr } = await supabaseClient.rpc('save_top_scorer', {
+      p_code: rcode, p_player_id: String(player.id), p_player_name: playerName, p_team_code: player.team_code || ''
+    });
+    if (!rpcErr) {
+      topScorerState.currentPick = player;
+      updateCurrentPickDisplay();
+      renderTopScorerList();
+      const si = document.getElementById('ts-search-input');
+      if (si && si.value) { si.value = ''; onTopScorerSearch(''); }
+      return;
+    }
+    if (!_rpcMissing(rpcErr)) {
+      console.error('Save top scorer RPC error:', rpcErr);
+      showToast(t('tsUnlocked.saveError', { msg: rpcErr.message || '' }), 'error');
+      return;
+    }
+    // RPC absent -> fall through to the legacy direct write below.
+  }
+
   try {
     // Strategy: delete existing + insert new (more reliable than upsert)
     await supabaseClient
@@ -3183,7 +3372,7 @@ async function selectTopScorer(player) {
       .delete()
       .eq('user_id', state.currentUser.id)
       .eq('pool_id', state.currentPool.id);
-    
+
     // Insert new pick - include all required fields
     const { error } = await supabaseClient
       .from('top_scorer_picks')
@@ -3191,7 +3380,7 @@ async function selectTopScorer(player) {
         user_id: state.currentUser.id,
         pool_id: state.currentPool.id,
         player_id: player.id,
-        player_name: player.name_he || player.name_en || t('tsUnlocked.fallbackPlayer'),
+        player_name: playerName,
         team_code: player.team_code || ''
       });
 
@@ -3227,6 +3416,23 @@ async function clearTopScorerPick() {
 
   const confirmed = window.confirm(t('tsUnlocked.confirmClear'));
   if (!confirmed) return;
+
+  // Preferred: server-side RPC (empty player_id => deletes the caller's pick).
+  const rcode = _currentRecoveryCode();
+  if (rcode) {
+    const { error: rpcErr } = await supabaseClient.rpc('save_top_scorer', {
+      p_code: rcode, p_player_id: '', p_player_name: '', p_team_code: ''
+    });
+    if (!rpcErr) {
+      topScorerState.currentPick = null;
+      updateCurrentPickDisplay();
+      renderTopScorerList();
+      showToast(t('tsUnlocked.clearedToast'), 'info');
+      return;
+    }
+    if (!_rpcMissing(rpcErr)) { console.error('Clear top scorer RPC error:', rpcErr); showToast(t('tsUnlocked.clearError'), 'error'); return; }
+    // RPC absent -> fall through to the legacy direct delete below.
+  }
 
   try {
     const { error } = await supabaseClient
@@ -3495,15 +3701,34 @@ async function savePoolSettings() {
   try {
     // v2.5.29: dropped "Saving settings..." info toast - the success toast
     // 1-2 seconds later is sufficient feedback.
-    const { error } = await supabaseClient
-      .from('pools')
-      .update(newSettings)
-      .eq('id', state.currentPool.id);
+    // Preferred: server-side update_pool_settings RPC (server-side whitelist;
+    // freezes scoring fields once the pool is locked). Falls back to the legacy
+    // direct update only when the RPC isn't deployed.
+    const code = _currentRecoveryCode();
+    let done = false;
+    if (code) {
+      const { error: rpcErr } = await supabaseClient.rpc('update_pool_settings', { p_code: code, p_settings: newSettings });
+      if (!rpcErr) {
+        done = true;
+      } else if (!_rpcMissing(rpcErr)) {
+        console.error('update_pool_settings RPC error:', rpcErr);
+        showToast(t('poolSettings.saveError', { msg: rpcErr.message }), 'error');
+        return;
+      }
+      // RPC absent -> fall through to the legacy direct write below.
+    }
 
-    if (error) {
-      console.error('Settings save error:', error);
-      showToast(t('poolSettings.saveError', { msg: error.message }), 'error');
-      return;
+    if (!done) {
+      const { error } = await supabaseClient
+        .from('pools')
+        .update(newSettings)
+        .eq('id', state.currentPool.id);
+
+      if (error) {
+        console.error('Settings save error:', error);
+        showToast(t('poolSettings.saveError', { msg: error.message }), 'error');
+        return;
+      }
     }
 
     // Update local state
@@ -3539,15 +3764,34 @@ async function confirmDeletePool() {
   }
 
   try {
-    const { error } = await supabaseClient
-      .from('pools')
-      .delete()
-      .eq('id', state.currentPool.id);
+    // Preferred: server-side delete_pool RPC (validates admin-of-pool, purges all
+    // child rows server-side). Falls back to the legacy direct delete only when
+    // the RPC isn't deployed.
+    const code = _currentRecoveryCode();
+    let done = false;
+    if (code) {
+      const { error: rpcErr } = await supabaseClient.rpc('delete_pool', { p_code: code });
+      if (!rpcErr) {
+        done = true;
+      } else if (!_rpcMissing(rpcErr)) {
+        console.error('delete_pool RPC error:', rpcErr);
+        showToast(t('poolSettings.deleteError', { msg: rpcErr.message }), 'error');
+        return;
+      }
+      // RPC absent -> fall through to the legacy direct delete below.
+    }
 
-    if (error) {
-      console.error('Delete pool error:', error);
-      showToast(t('poolSettings.deleteError', { msg: error.message }), 'error');
-      return;
+    if (!done) {
+      const { error } = await supabaseClient
+        .from('pools')
+        .delete()
+        .eq('id', state.currentPool.id);
+
+      if (error) {
+        console.error('Delete pool error:', error);
+        showToast(t('poolSettings.deleteError', { msg: error.message }), 'error');
+        return;
+      }
     }
 
     clearLocalUser();
@@ -4240,7 +4484,32 @@ async function savePicksToDb(showFeedback = true) {
 
   if (bettingState.loading) return;
   bettingState.loading = true;
-  
+
+  // Preferred: server-side RPC. It computes multiplier_applied SERVER-SIDE from
+  // the caller's own pool rules (closing the multiplier cheat vector), so the
+  // client no longer sends a multiplier. Replaces only the caller's group_picks.
+  // Falls back to the legacy direct write only when the RPC isn't deployed.
+  const code = _currentRecoveryCode();
+  if (code) {
+    const picks = [];
+    bettingState.groupOrder.forEach(letter => {
+      (bettingState.picks[letter] || []).forEach(teamCode => picks.push({ group_letter: letter, team_code: teamCode }));
+    });
+    const { error: rpcErr } = await supabaseClient.rpc('save_group_picks_2p', { p_code: code, p_picks: picks });
+    if (!rpcErr) {
+      if (showFeedback) showToast(t('groups.savedOk'), 'success');
+      bettingState.loading = false;
+      return;
+    }
+    if (!_rpcMissing(rpcErr)) {
+      console.error('Save picks RPC error:', rpcErr);
+      if (showFeedback) showToast(t('groups.saveError'), 'error');
+      bettingState.loading = false;
+      return;
+    }
+    // RPC absent -> fall through to the legacy direct write below.
+  }
+
   try {
     // First, delete all existing picks for this user
     await supabaseClient
@@ -5051,7 +5320,30 @@ function autoSaveKnockoutPicks() {
 
 async function saveKnockoutPicksToDb(showFeedback = true) {
   if (!state.currentUser || !state.currentPool || !supabaseClient) return;
-  
+
+  // Preferred: server-side RPC (multiplier computed server-side; replaces only the
+  // caller's two-phase knockout rows, bracket_position IS NULL). Legacy fallback
+  // only when the RPC isn't deployed.
+  const code = _currentRecoveryCode();
+  if (code) {
+    const picks = Object.keys(knockoutState.picks).map(matchId => ({
+      match_id: matchId,
+      round: matchId.split('_')[0],
+      predicted_winner: knockoutState.picks[matchId]
+    }));
+    const { error: rpcErr } = await supabaseClient.rpc('save_knockout_picks_2p', { p_code: code, p_picks: picks });
+    if (!rpcErr) {
+      if (showFeedback) showToast(t('knockoutEx.savedOk'), 'success');
+      return;
+    }
+    if (!_rpcMissing(rpcErr)) {
+      console.error('Knockout save RPC error:', rpcErr);
+      if (showFeedback) showToast(t('groups.saveError'), 'error');
+      return;
+    }
+    // RPC absent -> fall through to the legacy direct write below.
+  }
+
   try {
     // Delete existing
     await supabaseClient
@@ -8263,82 +8555,109 @@ async function wizardCreatePool() {
       return;
     }
 
-    // Build insert payload. If columns don't exist (migration not yet run),
-    // we'll fall back to the legacy minimal payload.
-    const fullInsert = {
-      code: poolCode,
-      name: state.pendingPoolName,
-      language: currentLanguage || 'he',
-      tournament: 'wc2026',
-      status: 'open',
-      betting_mode: wizardState.mode,
-      scoring_rules: finalRules,
-      // v2.5.47: persist the master multiplier on/off the admin picked
-      use_multipliers: wizardState.useMultipliers !== false
-    };
-
-    let pool, poolError;
-    ({ data: pool, error: poolError } = await supabaseClient
-      .from('pools').insert(fullInsert).select().single());
-
-    if (poolError && _fbIsMissingColumnError(poolError)) {
-      // Migration not applied yet - insert legacy shape
-      console.warn('v2 columns missing on pools - falling back to legacy insert');
-      ({ data: pool, error: poolError } = await supabaseClient
-        .from('pools').insert({
-          code: poolCode,
-          name: state.pendingPoolName,
-          language: currentLanguage || 'he',
-          tournament: 'wc2026',
-          status: 'open'
-        }).select().single());
-    }
-
-    if (poolError) {
-      console.error('Pool creation error:', poolError);
-      showToast(t('errors.creatingPoolFail', { msg: poolError.message }), 'error');
-      return;
-    }
-
-    // Admin user
+    // Generate the admin recovery code up-front (the atomic RPC needs it).
     const adminRecoveryCode = generateRecoveryCode();
-    const adminRecoveryHash = await hashRecoveryCode(adminRecoveryCode);
     const _src = _fbGetSignupSource();
-    const _adminInsert = {
-      pool_id: pool.id,
-      nickname: adminNickname,
-      recovery_code_hash: adminRecoveryHash,
-      is_admin: true,
-      is_approved: true,
-      approval_status: 'approved',
-      approved_at: new Date().toISOString(),
-      signup_source: _src.source,
-      signup_referrer: _src.referrer,
-      utm_source: _src.utm_source,
-      utm_medium: _src.utm_medium,
-      utm_campaign: _src.utm_campaign,
-      country: await _fbEnsureCountry()
-    };
-    let { data: adminUser, error: userError } = await supabaseClient
-      .from('users').insert(_adminInsert).select().single();
-    if (userError && _fbIsMissingColumnError(userError)) {
-      console.warn('signup_source columns missing on users - falling back');
-      delete _adminInsert.signup_source; delete _adminInsert.signup_referrer;
-      delete _adminInsert.utm_source; delete _adminInsert.utm_medium; delete _adminInsert.utm_campaign;
-      delete _adminInsert.country;
+    const _country = await _fbEnsureCountry();
+
+    let pool, adminUser;
+
+    // Preferred: atomic server-side create_pool RPC (pool + admin in one tx,
+    // is_admin set server-side, full scoring config, returns both WITHOUT the
+    // hash). Falls back to the legacy multi-step insert only when the RPC isn't
+    // deployed in this environment.
+    const _rpcRes = await supabaseClient.rpc('create_pool', {
+      p_code: poolCode,
+      p_name: state.pendingPoolName,
+      p_language: currentLanguage || 'he',
+      p_betting_mode: wizardState.mode,
+      p_scoring_rules: finalRules,
+      p_use_multipliers: wizardState.useMultipliers !== false,
+      p_admin_nickname: adminNickname,
+      p_recovery_code: adminRecoveryCode,
+      p_signup_source: _src.source,
+      p_signup_referrer: _src.referrer,
+      p_utm_source: _src.utm_source,
+      p_utm_medium: _src.utm_medium,
+      p_utm_campaign: _src.utm_campaign,
+      p_country: _country
+    });
+    if (!_rpcRes.error && _rpcRes.data && _rpcRes.data.pool) {
+      pool = _rpcRes.data.pool;
+      adminUser = _rpcRes.data.user;
+    } else if (_rpcRes.error && !_rpcMissing(_rpcRes.error)) {
+      console.error('create_pool RPC error:', _rpcRes.error);
+      showToast(t('errors.creatingPoolFail', { msg: _rpcRes.error.message }), 'error');
+      return;
+    } else {
+      // RPC absent -> legacy multi-step create with missing-column fallbacks.
+      const fullInsert = {
+        code: poolCode,
+        name: state.pendingPoolName,
+        language: currentLanguage || 'he',
+        tournament: 'wc2026',
+        status: 'open',
+        betting_mode: wizardState.mode,
+        scoring_rules: finalRules,
+        // v2.5.47: persist the master multiplier on/off the admin picked
+        use_multipliers: wizardState.useMultipliers !== false
+      };
+      let poolError;
+      ({ data: pool, error: poolError } = await supabaseClient
+        .from('pools').insert(fullInsert).select().single());
+      if (poolError && _fbIsMissingColumnError(poolError)) {
+        // Migration not applied yet - insert legacy shape
+        console.warn('v2 columns missing on pools - falling back to legacy insert');
+        ({ data: pool, error: poolError } = await supabaseClient
+          .from('pools').insert({
+            code: poolCode,
+            name: state.pendingPoolName,
+            language: currentLanguage || 'he',
+            tournament: 'wc2026',
+            status: 'open'
+          }).select().single());
+      }
+      if (poolError) {
+        console.error('Pool creation error:', poolError);
+        showToast(t('errors.creatingPoolFail', { msg: poolError.message }), 'error');
+        return;
+      }
+      const adminRecoveryHash = await hashRecoveryCode(adminRecoveryCode);
+      const _adminInsert = {
+        pool_id: pool.id,
+        nickname: adminNickname,
+        recovery_code_hash: adminRecoveryHash,
+        is_admin: true,
+        is_approved: true,
+        approval_status: 'approved',
+        approved_at: new Date().toISOString(),
+        signup_source: _src.source,
+        signup_referrer: _src.referrer,
+        utm_source: _src.utm_source,
+        utm_medium: _src.utm_medium,
+        utm_campaign: _src.utm_campaign,
+        country: _country
+      };
+      let userError;
       ({ data: adminUser, error: userError } = await supabaseClient
         .from('users').insert(_adminInsert).select().single());
+      if (userError && _fbIsMissingColumnError(userError)) {
+        console.warn('signup_source columns missing on users - falling back');
+        delete _adminInsert.signup_source; delete _adminInsert.signup_referrer;
+        delete _adminInsert.utm_source; delete _adminInsert.utm_medium; delete _adminInsert.utm_campaign;
+        delete _adminInsert.country;
+        ({ data: adminUser, error: userError } = await supabaseClient
+          .from('users').insert(_adminInsert).select().single());
+      }
+      if (userError) {
+        console.error('Admin user creation error:', userError);
+        showToast(t('errors.creatingAdminFail', { msg: userError.message }), 'error');
+        await supabaseClient.from('pools').delete().eq('id', pool.id);
+        return;
+      }
+      await supabaseClient.from('pools')
+        .update({ admin_user_id: adminUser.id }).eq('id', pool.id);
     }
-
-    if (userError) {
-      console.error('Admin user creation error:', userError);
-      showToast(t('errors.creatingAdminFail', { msg: userError.message }), 'error');
-      await supabaseClient.from('pools').delete().eq('id', pool.id);
-      return;
-    }
-
-    await supabaseClient.from('pools')
-      .update({ admin_user_id: adminUser.id }).eq('id', pool.id);
 
     state.currentPool = pool;
     state.currentUser = adminUser;
@@ -8804,6 +9123,24 @@ async function _spSaveGroupsToDbInner(showFeedback = true) {
   if (rows.length === 0) {
     console.warn('spSaveGroupsToDb: in-memory state is empty - skipping DB write to avoid wiping real picks');
     return;
+  }
+
+  // Preferred: server-side RPC (validates the code, replaces only the caller's
+  // own rows, blocks when the pool is locked). Falls back to the legacy direct
+  // DELETE+INSERT only when the RPC isn't deployed in this environment.
+  const code = _currentRecoveryCode();
+  if (code) {
+    const { error: rpcErr } = await supabaseClient.rpc('save_group_position_picks', { p_code: code, p_picks: rows });
+    if (!rpcErr) {
+      if (showFeedback) showToast(t('groups.picksSaved'), 'success');
+      return;
+    }
+    if (!_rpcMissing(rpcErr)) {
+      console.error('[spSaveGroupsToDb] RPC error:', rpcErr);
+      showToast('DB error (groups): ' + (rpcErr.message || 'unknown'), 'error');
+      return;
+    }
+    // RPC absent -> fall through to the legacy direct write below.
   }
 
   try {
@@ -9420,8 +9757,21 @@ function spClearDownstream(bracketPos) {
       spState.tournamentWinner = null;
       try {
         if (supabaseClient && state.currentUser) {
-          supabaseClient.from('tournament_winner_picks')
-            .delete().eq('user_id', state.currentUser.id);
+          // Preferred: clear via RPC (empty team => deletes the caller's pick);
+          // legacy direct delete only if the RPC isn't deployed.
+          const rc = _currentRecoveryCode();
+          if (rc) {
+            supabaseClient.rpc('save_tournament_winner', { p_code: rc, p_team_code: '' })
+              .then(({ error }) => {
+                if (error && _rpcMissing(error)) {
+                  supabaseClient.from('tournament_winner_picks')
+                    .delete().eq('user_id', state.currentUser.id).eq('pool_id', state.currentPool.id);
+                }
+              });
+          } else {
+            supabaseClient.from('tournament_winner_picks')
+              .delete().eq('user_id', state.currentUser.id).eq('pool_id', state.currentPool.id);
+          }
         }
       } catch (e) { /* ignore */ }
     }
@@ -9448,6 +9798,14 @@ async function _spSaveThirdPlaceInner() {
   const poolId = state.currentPool.id;
   const letters = (spState.thirdPlaceAdvancers || []).filter(Boolean);
   if (letters.length === 0) return; // never wipe to empty
+  // Preferred: server-side RPC; legacy direct write only if the RPC is absent.
+  const code = _currentRecoveryCode();
+  if (code) {
+    const { error: rpcErr } = await supabaseClient.rpc('save_sp_third_place', { p_code: code, p_letters: letters });
+    if (!rpcErr) return;
+    if (!_rpcMissing(rpcErr)) { console.warn('[spSaveThirdPlace] RPC error:', rpcErr); return; }
+    // RPC absent -> fall through to the legacy direct write below.
+  }
   try {
     await supabaseClient.from('sp_third_place_picks')
       .delete().eq('user_id', userId).eq('pool_id', poolId);
@@ -9507,6 +9865,24 @@ async function _spSaveBracketToDbInner(showFeedback = true) {
   if (rows.length === 0) {
     console.warn('spSaveBracketToDb: in-memory state is empty - skipping DB write to avoid wiping real picks');
     return;
+  }
+
+  // Preferred: server-side RPC. Falls back to the legacy direct write only when
+  // the RPC isn't deployed (PGRST202). The RPC's DELETE is scoped to
+  // bracket_position IS NOT NULL, so it never clobbers two-phase rows.
+  const code = _currentRecoveryCode();
+  if (code) {
+    const { error: rpcErr } = await supabaseClient.rpc('save_knockout_bracket', { p_code: code, p_picks: rows });
+    if (!rpcErr) {
+      if (showFeedback) showToast(t('groups.picksSaved'), 'success');
+      return;
+    }
+    if (!_rpcMissing(rpcErr)) {
+      console.error('[spSaveBracketToDb] RPC error:', rpcErr);
+      showToast('DB error (bracket): ' + (rpcErr.message || 'unknown'), 'error');
+      return;
+    }
+    // RPC absent -> fall through to the legacy direct write below.
   }
 
   try {
@@ -9769,6 +10145,17 @@ async function spSaveWinnerToDb(showFeedback = true) {
   if (!state.currentPool || !state.currentUser || !spState.tournamentWinner) return;
   const userId = state.currentUser.id;
   const poolId = state.currentPool.id;
+  // Preferred: server-side RPC; legacy direct write only if the RPC is absent.
+  const code = _currentRecoveryCode();
+  if (code) {
+    const { error: rpcErr } = await supabaseClient.rpc('save_tournament_winner', { p_code: code, p_team_code: spState.tournamentWinner });
+    if (!rpcErr) {
+      if (showFeedback) showToast(t('groups.picksSaved'), 'success');
+      return;
+    }
+    if (!_rpcMissing(rpcErr)) { console.warn('Save tournament winner RPC error:', rpcErr); return; }
+    // RPC absent -> fall through to the legacy direct write below.
+  }
   try {
     // v2.5.7: scope DELETE to this pool. Without pool_id, picking the
     // winner in pool B would clear pool A's winner pick.
@@ -10017,11 +10404,23 @@ async function spSubmitPredictions() {
   try {
     if (allComplete) {
       const submittedAt = new Date().toISOString();
-      const { error } = await supabaseClient.from('users')
-        .update({ predictions_submitted_at: submittedAt })
-        .eq('id', state.currentUser.id);
-      if (error && !/column .* does not exist/i.test(error.message || '')) {
-        console.warn('predictions_submitted_at update warning:', error);
+      // Preferred: server-side mark_predictions_submitted RPC (self, idempotent).
+      // Falls back to the legacy direct update only when the RPC isn't deployed.
+      const code = _currentRecoveryCode();
+      let done = false;
+      if (code) {
+        const { error: rpcErr } = await supabaseClient.rpc('mark_predictions_submitted', { p_code: code });
+        if (!rpcErr) { done = true; }
+        else if (!_rpcMissing(rpcErr)) { console.warn('mark_predictions_submitted RPC warning:', rpcErr); done = true; }
+        // RPC absent -> fall through to the legacy direct write below.
+      }
+      if (!done) {
+        const { error } = await supabaseClient.from('users')
+          .update({ predictions_submitted_at: submittedAt })
+          .eq('id', state.currentUser.id);
+        if (error && !/column .* does not exist/i.test(error.message || '')) {
+          console.warn('predictions_submitted_at update warning:', error);
+        }
       }
       state.currentUser.predictions_submitted_at = submittedAt;
     } else {
@@ -10111,6 +10510,20 @@ async function spAutoLockPoolIfNeeded() {
   if (!supabaseClient) return;
 
   try {
+    // Preferred: server-side autolock_pool_if_started RPC (it re-verifies a real
+    // match has actually kicked off, so it can't lock arbitrarily). Falls back to
+    // the legacy client-side check + direct update only when the RPC isn't deployed.
+    const code = _currentRecoveryCode();
+    if (code) {
+      const { data: res, error: rpcErr } = await supabaseClient.rpc('autolock_pool_if_started', { p_code: code });
+      if (!rpcErr) {
+        if (res && res.locked) state.currentPool.locked_at = state.currentPool.locked_at || new Date().toISOString();
+        return;
+      }
+      if (!_rpcMissing(rpcErr)) { return; }  // deployed but errored -> don't double-write
+      // RPC absent -> fall through to the legacy direct write below.
+    }
+
     const { data: anyStarted } = await supabaseClient.from('matches')
       .select('id, status')
       .in('status', ['IN_PLAY', 'PAUSED', 'FINISHED', 'LIVE', 'started', 'finished'])
