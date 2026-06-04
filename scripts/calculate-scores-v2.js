@@ -172,14 +172,21 @@ async function main() {
 
   // 2. Load matches (for groups + knockout outcomes)
   const matches = await sb('GET', 'matches', { query: '?select=*' });
-  const finishedMatches = (matches || []).filter(m => m.status === 'FINISHED' || (m.home_score != null && m.away_score != null));
+  // Only TRULY-final matches count. A live (IN_PLAY/PAUSED) match has a current
+  // score, so keying off "has a score" scored matches mid-play and made knockout
+  // points appear/flip as the scoreline changed. Require a terminal status.
+  const TERMINAL = new Set(['FINISHED', 'AWARDED']);
+  const finishedMatches = (matches || []).filter(m => TERMINAL.has(m.status));
   console.log(`${pools.length} pools, ${finishedMatches.length} finished matches`);
 
-  // 3. Top scorer truth (if app_settings stores it) - read from app_settings.top_scorer
+  // 3. Top scorer truth. app_settings is a KEY/VALUE table (columns key,value) -
+  // read the 'top_scorer' row's value (the real top scorer's player_id). Reading
+  // it as a .top_scorer column left realTopScorer null, so the top-scorer bonus
+  // was never awarded.
   let realTopScorer = null;
   try {
-    const settings = await sb('GET', 'app_settings', { query: '?select=*&limit=1' });
-    if (settings && settings[0] && settings[0].top_scorer) realTopScorer = settings[0].top_scorer;
+    const settings = await sb('GET', 'app_settings', { query: '?key=eq.top_scorer&select=value' });
+    if (settings && settings[0] && settings[0].value) realTopScorer = settings[0].value;
   } catch (e) { /* ignore */ }
 
   // 4. Per-pool processing. Each pool is isolated in a try/catch so one bad

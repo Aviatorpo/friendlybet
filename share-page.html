@@ -186,7 +186,10 @@ function render(picks){
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   document.title = `${esc(picks.nickname)} · ${L.title} · FriendlyBet`;
 
-  const tn = (c) => S.teamName(c, lang);
+  // teamName returns the RAW code for an unknown code, and knockout_picks.predicted_winner
+  // has NO teams FK -> a crafted bracket pick can carry HTML. Escape every team-name render
+  // (tn is display-only, always going into innerHTML) so a malicious code can't inject.
+  const tn = (c) => esc(S.teamName(c, lang));
   const fl = (c, st) => S.flagImg(c, { style: st || '' });
 
   const bracket = S.resolveBracket(picks);
