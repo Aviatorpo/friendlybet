@@ -45,10 +45,12 @@ export default function handler(req, res) {
   const u = url.searchParams.get('u');
   const p = url.searchParams.get('p');
   const lang = url.searchParams.get('lang') === 'en' ? 'en' : 'he';
+  const v = url.searchParams.get('v'); // bracket-content token: busts WhatsApp/FB preview cache when picks change
 
   let html = TEMPLATE;
   if (u && p) {
-    const ogImg = `${ORIGIN}/api/og?u=${encodeURIComponent(u)}&p=${encodeURIComponent(p)}&lang=${lang}`;
+    let ogImg = `${ORIGIN}/api/og?u=${encodeURIComponent(u)}&p=${encodeURIComponent(p)}&lang=${lang}`;
+    if (v) ogImg += `&v=${encodeURIComponent(v)}`;
     html = html
       .replace(/(<meta property="og:image" content=")[^"]*(">)/, `$1${ogImg}$2`)
       .replace(/(<meta name="twitter:image" content=")[^"]*(">)/, `$1${ogImg}$2`);

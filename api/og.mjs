@@ -25,6 +25,18 @@ const FONTS = [
   { name: 'HeeboHe', data: F('HeeboHe-800.woff'), weight: 800, style: 'normal' },
 ];
 
+// Fetch a QR PNG and return it as a base64 data URI (or null on any failure).
+async function qrDataUri(target) {
+  try {
+    const api = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=0&qzone=1'
+      + '&color=0a0a08&bgcolor=f6f4ee&data=' + encodeURIComponent(target);
+    const r = await fetch(api);
+    if (!r.ok) return null;
+    const buf = Buffer.from(await r.arrayBuffer());
+    return 'data:image/png;base64,' + buf.toString('base64');
+  } catch (_) { return null; }
+}
+
 export default async function handler(req, res) {
   try {
     const url = new URL(req.url, 'http://localhost');
@@ -37,6 +49,11 @@ export default async function handler(req, res) {
       try { data = await fetchCardData(u, p, lang); } catch (_) { data = null; }
     }
     if (!data) data = { nickname: 'FriendlyBet', pool: '', semis: [], finals: [], champ: null, lang };
+
+    // Pre-fetch the "scan to enter" QR as a base64 data URI so Satori never has
+    // to fetch a remote image at render time (a flaky QR host would otherwise
+    // throw and break the whole card). On any failure we just drop the QR.
+    data.qr = await qrDataUri('https://friendlybet.live/?utm_source=og_qr&utm_medium=share_card');
 
     const image = new ImageResponse(buildCardElement(data), { width: 1200, height: 630, fonts: FONTS });
     const buf = Buffer.from(await image.arrayBuffer());

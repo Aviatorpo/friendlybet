@@ -7487,6 +7487,20 @@ async function copyInviteLink() {
 // to the user's personalized share page so the image converts even when a
 // platform strips links.
 
+// A short, deterministic hash of the current bracket picks. Appended to the
+// share URL as `&v=` so that WHEN THE PICKS CHANGE the shared link is a brand
+// new URL — WhatsApp/Facebook key their link-preview cache by URL, so without
+// this they keep showing a stale (often empty) card forever. Same picks -> same
+// token, so we don't spam the edge cache with infinite distinct OG renders.
+function _bracketShareVersion() {
+  const bp = (spState && spState.bracketPicks) || {};
+  const champ = (spState && spState.tournamentWinner) || bp[31] || '';
+  const parts = [25, 26, 27, 28, 29, 30].map(i => bp[i] || '').join('-') + '-' + champ;
+  let h = 0;
+  for (let i = 0; i < parts.length; i++) { h = (Math.imul(h, 31) + parts.charCodeAt(i)) | 0; }
+  return (h >>> 0).toString(36);
+}
+
 // Personalized public share URL for the current user's predictions. Friends
 // who open it land on the read-only /share page that renders this exact
 // bracket plus a "build your own" CTA — that's the viral loop. Falls back to
@@ -7498,7 +7512,7 @@ function _bracketShareUrl(source) {
   const pid = state.currentPool && state.currentPool.id;
   const lang = (typeof currentLanguage !== 'undefined' && currentLanguage) || 'he';
   return (uid && pid)
-    ? `${origin}/share?u=${uid}&p=${pid}&lang=${lang}&${utm}`
+    ? `${origin}/share?u=${uid}&p=${pid}&lang=${lang}&v=${_bracketShareVersion()}&${utm}`
     : `${origin}/?${utm}`;
 }
 
