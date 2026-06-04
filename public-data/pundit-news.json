@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-04T21:30:00.000Z",
+  "updatedAt": "2026-06-04T22:30:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
@@ -29,38 +29,39 @@
       "expires_at": "2026-06-13T00:00:00Z"
     },
     {
-      "id": "advocaat-oldest-wc-coach-2026-06-04",
+      "id": "yamal-spain-fit-opener-2026-06-04",
       "confidence": "confirmed",
-      "team": "CUW",
-      "en": "History before a ball is kicked. Dick Advocaat will become the oldest coach in World Cup history when Curacao face Germany on June 14. At 78, the Dutchman surpasses Otto Rehhagel, who guided Greece at 71 in 2010, by almost seven years. Curaçao reinstated the veteran manager on May 13 after he had resigned. Will his experience be enough against Die Mannschaft?",
-      "he": "היסטוריה עוד לפני שבועטים בכדור. דיק אדוקאט יהפוך למאמן הקשיש ביותר בהיסטוריית גביע העולם כאשר קוראסאו תפגוש את גרמניה ב-14 ביוני. בגיל 78, ההולנדי הוותיק עוקף את אוטו רהאגל, שהוביל את יוון בגיל 71 ב-2010, בכמעט שבע שנים. קוראסאו הכריזה על החזרתו ב-13 במאי לאחר שהתפטר. האם הניסיון הרב יספיק נגד הנבחרת הגרמנית?",
+      "team": "ESP",
+      "en": "Yamal on track for the opener. Spain coach De La Fuente confirmed on June 3 that Lamine Yamal, 18, is expected to be fit to face Cape Verde in Atlanta on June 15, despite the hamstring scare that kept him out of Spain's warmup against Iraq. \"If nothing changes, he could be ready to play on June 15,\" the coach said. With Nico Williams also set to recover in time, is La Roja at full strength the clear favourite to retain the title?",
+      "he": "יאמאל בדרך חזרה. מאמן ספרד דה לה פואנטה אישר ב-3 ביוני שלמין יאמאל, 18, צפוי להיות מוכן למשחק הפתיחה מול כף ורדה באטלנטה ב-15 ביוני, למרות בעיית שרירי הירך שהוציאה אותו מחימום נגד עיראק. \"אם לא ישתנה כלום, הוא יכול להיות מוכן לשחק ב-15 ביוני\", אמר המאמן. גם ניקו וויליאמס צפוי להתאושש בזמן - האם ספרד עם מלוא כוחותיה היא המועדפת הגדולה לאליפות?",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48757275/curacao-reinstate-dick-advocaat-deny-change-due-external-pressure" },
-        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/05/13/curacao-coach-advocaat-world-cup/6b277144-4eb2-11f1-97e7-22c6c29ff0d8_story.html" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/lamine-yamal-and-nico-williams-set-to-be-fit-for-spains-world-cup-opener" },
+        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/06/03/lamine-yamal-spain-world-cup/cbecee7c-5f5c-11f1-9c46-d6211372eede_story.html" }
       ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "expires_at": "2026-06-15T00:00:00Z"
     },
     {
-      "id": "saot-ai-avatars-wc26-2026-06-03",
+      "id": "usa-senegal-3-2-pulisic-2026-05-31",
       "confidence": "confirmed",
-      "en": "Offside calls just got a major upgrade. For 2026, FIFA revamped its semi-automated offside system to send a real-time audio alert directly to the assistant referee, so the flag goes up immediately without waiting for the VAR room. All 1,248 players in the tournament were digitally scanned to create individual AI avatars that power the clearer replay graphics you will see on screen. Will faster calls mean fewer controversies in your predictions?",
-      "he": "קריאות נבדל קיבלו שדרוג משמעותי. למונדיאל 2026 שדרגה פיפ\"א את מערכת ה-SAOT: התראת קול בזמן אמת נשלחת ישירות לעוזר השופט על נבדל ברור, כך שהדגל עולה מיד ללא המתנה לחדר הווידאו. כל 1,248 השחקנים במונדיאל נסרקו ויצרו עבורם אווטאר בינה מלאכותית אישי לגרפיקת הרפלייז המשופרת שנראה על המסך. האם החלטות מהירות יותר יעשו לכם את התחזיות פחות מורכבות?",
+      "team": "USA",
+      "en": "Pulisic ends the drought. Christian Pulisic broke a five-month international goal silence by scoring in the United States' 3-2 warmup win over Senegal on May 31, first setting up Sergino Dest and then netting one himself. Sadio Mane replied with a brace, taking his international tally to 54 goals, a new Senegal record. With Germany on deck on June 6, is the USMNT building peak form at exactly the right moment?",
+      "he": "פוליסיץ' עוצר את הבצורת. כריסטיאן פוליסיץ' שבר רצף של חמישה חודשים ללא שער בינלאומי כשהוביל את ארה\"ב לניצחון 3-2 על סנגל ב-31 במאי, קודם סיועי סרג'ינו דסט ואז כבש בעצמו. סאדיו מאנה השיב בצמד שערים לסנגל וחצה את רף 54 השערים, שיא לאומי חדש. עם גרמניה בתוכנית ב-6 ביוני, האם הנבחרת האמריקאית מגיעה לשיא בדיוק בזמן הנכון?",
       "sources": [
-        { "name": "Euronews", "url": "https://www.euronews.com/next/2026/06/01/ai-avatars-and-smart-footballs-inside-fifas-high-tech-2026-world-cup" },
-        { "name": "HITC", "url": "https://www.hitc.com/fifa-unveil-new-var-technology-for-offsides-that-will-be-used-by-assistants-at-world-cup-2026/" },
-        { "name": "Sportingpedia", "url": "https://www.sportingpedia.com/2026/06/03/fifa-rolls-out-cutting-edge-offside-and-ball-tracking-technologies-for-2026-world-cup/" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/762592" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/usmnt-vs-senegal-takeaways-from-world-cup-friendly" },
+        { "name": "NBC Philadelphia", "url": "https://www.nbcphiladelphia.com/world-cup/usmnt-beats-senegal-world-cup-warmup-christian-pulisic/4410214/" }
       ],
-      "expires_at": "2026-07-20T00:00:00Z"
+      "expires_at": "2026-06-12T00:00:00Z"
     },
     {
-      "id": "azteca-three-wc-host-opener-2026-06-04",
+      "id": "wc26-round-of-32-eight-thirds-2026-06-04",
       "confidence": "confirmed",
-      "en": "Seven days until kick-off at the most storied stage in football. Estadio Azteca in Mexico City hosts the tournament opener between Mexico and South Africa on June 11, and will become the only stadium in history to have hosted three World Cup opening matches, after 1970 and 1986. Sitting at 2,240 metres above sea level with June afternoon thunderstorms likely, the thin air alone is an extra player. Who will handle the pressure?",
-      "he": "שבעה ימים לפתיחה על הבמה המיתולוגית ביותר בכדורגל. אצטדיון אזטקה במקסיקו סיטי יארח את משחק הפתיחה בין מקסיקו לדרום אפריקה ב-11 ביוני, ויהפוך לאצטדיון היחיד בהיסטוריה שארח שלושה משחקי פתיחה של מונדיאל, אחרי 1970 ו-1986. האצטדיון ניצב על גובה 2,240 מטרים מעל פני הים, סופות רעמים בשעות אחה\"צ צפויות ביוני, והאוויר הדליל הוא שחקן נוסף בפני עצמו. מי יתמודד עם הלחץ?",
+      "en": "Third is the new second. Unlike any previous World Cup, finishing third in a 2026 group is not the end of the road. Of the 12 groups, the eight best third-placed teams advance to the Round of 32, meaning 32 of 48 nations reach the knockout stage. When making your group-stage picks, remember: a third-place finish does not automatically mean elimination - and eight teams will prove that.",
+      "he": "שלישי זה המחבר החדש. בניגוד לכל מונדיאל קודם, לסיים שלישי בקבוצה ב-2026 לא אומר פרידה. מבין 12 קבוצות שלישיות, שמונה הטובות ביותר יתקדמו לסיבוב ה-32, כלומר 32 מתוך 48 נבחרות מגיעות לשלב הנוקאאוט. כשאתם בוחרים תחזיות לשלב הקבוצות, זיכרו: מקום שלישי לא בהכרח אומר יציאה מהתחרות, ושמונה קבוצות יוכיחו זאת.",
       "sources": [
-        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/fifa-world-cup-2026-stadiums-matches-us-canada-mexico" },
-        { "name": "Euronews", "url": "https://www.euronews.com/travel/2026/06/01/heading-to-mexico-city-for-the-world-cup-heres-where-to-go-and-what-to-see" }
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/groups-how-teams-qualify-tie-breakers" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48703925/world-cup-group-stage-explained-tiebreakers-third-place-teams" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     }
