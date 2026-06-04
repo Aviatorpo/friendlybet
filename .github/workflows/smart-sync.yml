@@ -35,6 +35,10 @@ jobs:
 
       # Pillar 1: refresh the CDN match snapshot so clients read it from the edge
       # instead of hitting Postgres on every 60s poll during live matches.
+      # NOTE: export-snapshots FREEZES matches.json while any match is live (the
+      # client reads live scores from the DB during play), so this step is a
+      # no-op mid-match - that's what keeps a busy WC day under Vercel's
+      # 100-deploys/day cap. It commits the final/schedule data once play settles.
       - name: Export match snapshot
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co

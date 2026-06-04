@@ -59,6 +59,11 @@ function writeIfChanged(file, payloadKey, payload) {
   return true;
 }
 
+// Live-match statuses (football-data). While any of these is active the match
+// row churns every poll (clock/score), which would re-commit the snapshot and
+// trigger a Vercel redeploy on every 10-min sync.
+const LIVE_STATUSES = new Set(['IN_PLAY', 'PAUSED', 'LIVE']);
+
 async function exportMatches() {
   let matches;
   try {
@@ -72,7 +77,21 @@ async function exportMatches() {
     console.warn('matches fetch empty, keeping last-good snapshot.');
     return 0;
   }
-  const wrote = writeIfChanged(path.join(OUT_DIR, 'matches.json'), 'matches',
+
+  // Deploy throttle: freeze the CDN snapshot while any match is live. The client
+  // reads live scores straight from the DB during play (see live-poller), so the
+  // snapshot does NOT need mid-match refreshes - freezing it keeps a busy WC day
+  // from blowing through Vercel's 100-deploys/day cap. Final scores + schedule
+  // land on the next run once nothing is live (between matches / overnight).
+  // Override with FORCE_MATCH_SNAPSHOT=1 for a manual full refresh.
+  const matchesFile = path.join(OUT_DIR, 'matches.json');
+  const liveCount = matches.filter(m => LIVE_STATUSES.has(String(m.status || '').toUpperCase())).length;
+  if (liveCount > 0 && fs.existsSync(matchesFile) && process.env.FORCE_MATCH_SNAPSHOT !== '1') {
+    console.log(`matches.json: frozen - ${liveCount} live match(es); live scores come from the DB, snapshot refreshes once play settles.`);
+    return 0;
+  }
+
+  const wrote = writeIfChanged(matchesFile, 'matches',
     { updatedAt: new Date().toISOString(), count: matches.length, matches });
   console.log(`matches.json: ${wrote ? 'updated' : 'unchanged'} (${matches.length} rows)`);
   return wrote ? 1 : 0;
