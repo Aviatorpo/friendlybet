@@ -8313,6 +8313,7 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
 .share-app-chip.chip-instagram { color: #E4405F; }
 .share-app-chip.chip-x { color: #fff; }
 .share-app-chip.chip-facebook { color: #1877F2; }
+.share-app-chip.chip-reddit { color: #FF4500; }
 .share-app-chip.chip-email { color: #e0b15f; }
 .share-app-chip.chip-sms { color: #34C759; }
 .share-app-chip span { color: rgba(255, 255, 255, 0.85); }

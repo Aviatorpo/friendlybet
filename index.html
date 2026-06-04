@@ -2283,6 +2283,12 @@ function loadTablerFallback() {
           </svg>
           <span>Facebook</span>
         </button>
+        <button class="share-app-chip chip-reddit" onclick="shareToReddit()" type="button" aria-label="Reddit">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M24 11.779c0-1.459-1.192-2.645-2.657-2.645-.715 0-1.363.286-1.84.746-1.81-1.191-4.259-1.949-6.971-2.046l1.483-4.669 4.016.941-.006.058c0 1.193.975 2.163 2.174 2.163 1.198 0 2.172-.97 2.172-2.163s-.975-2.164-2.172-2.164c-.92 0-1.704.574-2.021 1.379l-4.329-1.015c-.189-.046-.381.063-.44.249l-1.654 5.207c-2.838.034-5.409.798-7.3 2.025-.474-.438-1.103-.712-1.799-.712-1.465 0-2.656 1.187-2.656 2.646 0 .97.533 1.811 1.317 2.271-.052.282-.086.567-.086.857 0 3.911 4.808 7.093 10.719 7.093s10.72-3.182 10.72-7.093c0-.288-.033-.571-.084-.852.789-.46 1.325-1.301 1.325-2.276zm-17.954 1.835c0-.834.679-1.513 1.513-1.513.834 0 1.513.679 1.513 1.513 0 .834-.679 1.513-1.513 1.513-.834 0-1.513-.679-1.513-1.513zm9.062 4.992c-.815.815-2.387.876-2.846.876-.46 0-2.033-.061-2.847-.875-.119-.119-.119-.312 0-.431.119-.119.312-.119.431 0 .516.516 1.617.7 2.416.7.798 0 1.899-.184 2.416-.7.119-.119.312-.119.431 0 .117.119.117.312-.001.43zm-.211-3.479c-.834 0-1.513-.679-1.513-1.513 0-.834.679-1.513 1.513-1.513.834 0 1.513.679 1.513 1.513 0 .834-.679 1.513-1.513 1.513z"/>
+          </svg>
+          <span>Reddit</span>
+        </button>
         <button class="share-app-chip chip-email" onclick="shareByEmail()" type="button" aria-label="Email">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="2" y="4" width="20" height="16" rx="2"></rect>
@@ -2982,7 +2988,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.6.85</span>
+      <span class="menu-version">v2.6.86</span>
     </div>
   </div>
 

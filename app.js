@@ -7053,6 +7053,16 @@ async function shareToInstagram() {
   setTimeout(() => { window.open('https://www.instagram.com/', '_blank', 'noopener'); }, 500);
 }
 
+function shareToReddit() {
+  // Reddit's submit page takes a URL + title; the OG card on the invite link
+  // carries the rest. Opens the post composer pre-filled.
+  const inviteUrl = getInviteUrl('reddit');
+  const poolName = state.currentPool?.name || t('dashboard.fallback.poolName');
+  const title = t('shareModal.joinTitle', { name: poolName });
+  const url = `https://www.reddit.com/submit?url=${encodeURIComponent(inviteUrl)}&title=${encodeURIComponent(title)}`;
+  window.open(url, '_blank', 'noopener');
+}
+
 function shareByEmail() {
   const poolName = state.currentPool?.name || t('dashboard.fallback.poolName');
   const subject = t('shareModal.emailSubject', { poolName });
