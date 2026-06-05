@@ -1,7 +1,32 @@
 {
-  "updatedAt": "2026-06-05T22:00:00.000Z",
+  "updatedAt": "2026-06-06T00:00:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
+    {
+      "id": "irn-visa-us-irgc-2026-06-05",
+      "confidence": "reported",
+      "team": "IRN",
+      "en": "Reports say Iran's squad flew to their Tijuana base camp on June 6 with US entry visas still unconfirmed. US Secretary of State Marco Rubio warned that delegation members with ties to the Islamic Revolutionary Guard Corps would be barred from the United States. Captain Mehdi Taremi and defender Ehsan Hajsafi are known to have completed mandatory IRGC service, leaving their US travel status uncertain. FIFA relocated Iran's training base from Tucson, Arizona to Tijuana, Mexico at the federation's request. Iran play New Zealand and Belgium in Los Angeles before facing Egypt in Seattle. Could political tensions keep key players out of US stadiums before a single game is played?",
+      "he": "לפי הדיווחים, נבחרת איראן המריאה לבסיס אימוניה בטיחואנה ב-6 ביוני כשאשרות הכניסה לארה\"ב עדיין לא אושרו. מזכיר המדינה מרקו רוביו הזהיר שחברי משלחת בעלי קשרים למשמרות המהפכה האיסלאמית ייחסמו מלהיכנס לארצות הברית. הקפטן מהדי טארמי ואחסן חאג'ספי ידועים כמי שסיימו שירות חובה ב-IRGC, מה שמשאיר את מעמד כניסתם לארה\"ב תחת סיכון. פיפ\"א העבירה את בסיס האימונים האיראני מטוקסון שבאריזונה לטיחואנה שבמקסיקו לפי בקשת ההתאחדות. איראן תשחק מול ניו זילנד ובלגיה בלוס אנג'לס לפני ההתמודדות עם מצרים בסיאטל. האם מתחים פוליטיים יגרמו לכך שכוכבים מרכזיים ייאסרו מהאצטדיונים האמריקאיים עוד לפני שיבועט כדור אחד?",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48949687/iran-expects-us-mexico-visas-arrive-week" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/irans-world-cup-squad-to-depart-for-mexico-on-june-6-despite-us-visa-delay" },
+        { "name": "Euronews", "url": "https://www.euronews.com/2026/05/18/iran-heads-to-world-cup-training-camp-in-turkey-with-no-us-visas-issued" }
+      ],
+      "expires_at": "2026-06-15T23:59:59Z"
+    },
+    {
+      "id": "fifa-waterbottle-ban-reversal-2026-06-05",
+      "confidence": "confirmed",
+      "en": "FIFA reversed its own stadium entry rules and now bans all reusable water bottles from the 16 World Cup venues, despite an earlier version of the code explicitly allowing fans to bring in empty transparent bottles of up to one litre. Research by Queen's University Belfast found 14 of the 16 stadiums could hit heat levels that pose health risks for fans. Baby milk and medical liquids remain exempt with a certificate. Fans watching afternoon kick-offs in Miami, Houston, and Atlanta will have to pay stadium prices for water. Did FIFA seriously misjudge the conditions?",
+      "he": "פיפ\"א הפכה את כללי הכניסה לאצטדיונים ואוסרת כעת על בקבוקי מים ניתנים למילוי ב-16 אצטדיוני גביע העולם, למרות שגרסה קודמת של הקוד אפשרה במפורש לאוהדים להביא בקבוקים שקופים ריקים עד ליטר אחד. מחקר של אוניברסיטת קווינס מבלפסט מצא כי 14 מ-16 האצטדיונים עלולים להגיע לרמות חום המסכנות את בריאות הצופים. חלב תינוקות ונוזלים רפואיים פטורים בהמצאת תעודה. אוהדים שיצפו במשחקי צהריים ואחה\"צ במיאמי, יוסטון ואטלנטה יאלצו לרכוש מים בתוך האצטדיון במחירי ספסל. האם פיפ\"א שגתה בצורה חמורה בהערכת התנאים?",
+      "sources": [
+        { "name": "NBC News", "url": "https://www.nbcnews.com/sports/soccer/fifa-bans-water-bottles-world-cup-stadiums-fans-heat-rcna348419" },
+        { "name": "Fox News", "url": "https://www.foxnews.com/sports/fifa-bans-refillable-water-bottles-world-cup-stadiums-despite-original-rules-stating-otherwise" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/4/world-cup-2026-fifa-bans-fans-reusable-bottles-stadiums-venues-football" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
     {
       "id": "mex-azteca-third-wc-opening-2026-06-05",
       "confidence": "confirmed",
@@ -15,43 +40,6 @@
       "expires_at": "2026-06-11T23:59:59Z"
     },
     {
-      "id": "alg-stun-ned-luca-zidane-2026-06-03",
-      "confidence": "confirmed",
-      "team": "ALG",
-      "en": "Algeria beat the Netherlands 1-0 at De Kuip on June 3, Anis Hadj Moussa curling a superb left-footed shot into the far corner in the 86th minute. The win was built on a commanding performance by goalkeeper Luca Zidane, son of France icon Zinedine, who chose to represent Algeria and made several crucial saves. Algeria open against Argentina on June 17. Can Les Fennecs carry this form into the knockout rounds?",
-      "he": "אלג'יריה ניצחה את הולנד 1:0 בדה קויפ ב-3 ביוני, כשאניס חאג' מוסא כיפף שוט שמאלי מרהיב לפינה ב-86 בדקה. הניצחון נבנה על תצוגה שלטת של שוער לוקה זידאן, בנו של אגדת צרפת זינדין, שבחר לייצג את אלג'יריה ובצע כמה הגנות מכריעות. אלג'יריה פותחת נגד ארגנטינה ב-17 ביוני. האם הפנקים יוכלו לשמור על הכיוון הזה לסיבובי הנוק-אאוט?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/match/_/gameId/401863500/algeria-netherlands" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/algeria-stun-netherlands-friendly-205700659.html" },
-        { "name": "Sky Sports", "url": "https://www.skysports.com/football/netherlands-vs-algeria/554984" }
-      ],
-      "expires_at": "2026-06-17T23:59:59Z"
-    },
-    {
-      "id": "vuvuzela-ban-wc2026-2026-06-05",
-      "confidence": "confirmed",
-      "en": "FIFA's 35-page stadium code of conduct for the 2026 World Cup bans vuvuzelas, air horns, whistles and all other noisemakers from all 16 venues, citing player communication and broadcasting concerns. The plastic horns became the defining sound of the 2010 South Africa tournament at levels around 120 decibels. Musical instruments smaller than 12 centimetres are still permitted. Will the ban make North American crowds feel flat, or sharpen the atmosphere?",
-      "he": "קוד ההתנהגות של פיפ\"א בן 35 העמודים למונדיאל 2026 אוסר על וובוזלות, שופרות אוויר, שריקות וכל מחולל רעש אחר בכל 16 האצטדיונים, בשל חשש לתקשורת השחקנים ולקשיי שידור. החצוצרות מפלסטיק היו הסמל הצלילי של טורניר 2010 בדרום אפריקה ברמות של כ-120 דציבל. כלי נגינה קטנים מ-12 סנטימטר עדיין מותרים. האם האיסור ישטיח את אווירת הקהל בצפון אמריקה, או יחדד אותה?",
-      "sources": [
-        { "name": "HITC", "url": "https://www.hitc.com/iconic-vuvuzelas-banned-from-2026-world-cup-stadiums-under-fifa-code-of-conduct/" },
-        { "name": "Daily Sabah", "url": "https://www.dailysabah.com/sports/football/fifa-bans-vuvuzelas-other-noisemakers-from-world-cup-stadiums" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/iconic-vuvuzelas-banned-2026-world-132932215.html" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "dieperink-var-removed-wc2026-2026-06-05",
-      "confidence": "confirmed",
-      "en": "FIFA removed Dutch VAR official Rob Dieperink from its World Cup officiating panel in May after his arrest in England over alleged misconduct, replacing him with French VAR Willy Delajod. British police later closed the case for lack of evidence, but FIFA kept the removal in place. A late reshuffle in the video review team, with less than a week until the tournament kicks off, raises questions about VAR continuity. Will it matter on the pitch?",
-      "he": "פיפ\"א הסירה את פקיד הוואר ההולנדי רוב דיפרינק מחבר השיפוט של המונדיאל במאי לאחר מעצרו באנגליה בשל חשד להתנהגות לא הולמת, והחליפה אותו בוואר הצרפתי ווילי דלאז'ו. המשטרה הבריטית סגרה מאוחר יותר את התיק בהעדר ראיות, אך פיפ\"א הותירה את ההסרה בעינה. שינוי אחרון בצוות הוואר, פחות משבוע לפני פתיחת הטורניר, מעלה שאלות על עקביות הסקירה הוידאו. האם זה ישנה משהו בשטח?",
-      "sources": [
-        { "name": "Morocco World News", "url": "https://www.moroccoworldnews.com/2026/05/302292/fifa-drops-dutch-referee-rob-dieperink-from-world-cup-list/" },
-        { "name": "NL Times", "url": "https://nltimes.nl/2026/05/15/dutch-referee-arrested-alleged-misconduct-17-year-old-charges-later-dropped" },
-        { "name": "Africa Soccer", "url": "https://africasoccer.com/fifa-removes-dutch-referee-rob-dieperink-from-2026-world-cup-after-investigation/" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
       "id": "sui-embolo-visa-cleared-2026-06-05",
       "confidence": "confirmed",
       "team": "SUI",
@@ -63,6 +51,19 @@
         { "name": "Goal", "url": "https://www.goal.com/en/lists/breel-embolo-switzerland-visa-approved-world-cup/blt2e796f14cc3331ed" }
       ],
       "expires_at": "2026-06-13T23:59:59Z"
+    },
+    {
+      "id": "bra-neymar-calf-out-opener-2026-06-05",
+      "confidence": "confirmed",
+      "team": "BRA",
+      "en": "A grade-2 calf strain rules Neymar out of Brazil's June 13 opener against Morocco in New Jersey, with coach Carlo Ancelotti saying the 34-year-old could return for the second group game against Haiti. With Rodrygo already gone to an ACL rupture, Ancelotti must find attacking spark elsewhere from the start. Does Brazil still look like a genuine title contender to you?",
+      "he": "קרע בדרגה שנייה בשריר השוק מוציא את ניימאר ממשחק הפתיחה של ברזיל מול מרוקו ב-13 ביוני בניו ג'רזי, ומאמן קרלו אנצ'לוטי אומר שהשחקן בן ה-34 יכול לחזור למשחק השני מול האיטי. כשרודריגו כבר נפל קורבן לקרע ברצועה הצולבת, אנצ'לוטי חייב למצוא ניצוץ התקפי אחר בהתחלה. האם ברזיל עדיין נראית לכם כמועמדת אמיתית לאליפות?",
+      "sources": [
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48900253/neymar-calf-injury-three-weeks-miss-world-cup-opener" },
+        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/06/04/neymar-injury-brazil-world-cup/d7164a78-604c-11f1-9c46-d6211372eede_story.html" }
+      ],
+      "expires_at": "2026-06-18T00:00:00Z"
     },
     {
       "id": "fra-ivory-coast-warmup-loss-2026-06-04",
@@ -104,17 +105,17 @@
       "expires_at": "2026-06-16T00:00:00Z"
     },
     {
-      "id": "bra-neymar-calf-out-opener-2026-06-05",
+      "id": "alg-stun-ned-luca-zidane-2026-06-03",
       "confidence": "confirmed",
-      "team": "BRA",
-      "en": "A grade-2 calf strain rules Neymar out of Brazil's June 13 opener against Morocco in New Jersey, with coach Carlo Ancelotti saying the 34-year-old could return for the second group game against Haiti. With Rodrygo already gone to an ACL rupture, Ancelotti must find attacking spark elsewhere from the start. Does Brazil still look like a genuine title contender to you?",
-      "he": "קרע בדרגה שנייה בשריר השוק מוציא את ניימאר ממשחק הפתיחה של ברזיל מול מרוקו ב-13 ביוני בניו ג'רזי, ומאמן קרלו אנצ'לוטי אומר שהשחקן בן ה-34 יכול לחזור למשחק השני מול האיטי. כשרודריגו כבר נפל קורבן לקרע ברצועה הצולבת, אנצ'לוטי חייב למצוא ניצוץ התקפי אחר בהתחלה. האם ברזיל עדיין נראית לכם כמועמדת אמיתית לאליפות?",
+      "team": "ALG",
+      "en": "Algeria beat the Netherlands 1-0 at De Kuip on June 3, Anis Hadj Moussa curling a superb left-footed shot into the far corner in the 86th minute. The win was built on a commanding performance by goalkeeper Luca Zidane, son of France icon Zinedine, who chose to represent Algeria and made several crucial saves. Algeria open against Argentina on June 17. Can Les Fennecs carry this form into the knockout rounds?",
+      "he": "אלג'יריה ניצחה את הולנד 1:0 בדה קויפ ב-3 ביוני, כשאניס חאג' מוסא כיפף שוט שמאלי מרהיב לפינה ב-86 בדקה. הניצחון נבנה על תצוגה שלטת של שוער לוקה זידאן, בנו של אגדת צרפת זינדין, שבחר לייצג את אלג'יריה ובצע כמה הגנות מכריעות. אלג'יריה פותחת נגד ארגנטינה ב-17 ביוני. האם הפנקים יוכלו לשמור על הכיוון הזה לסיבובי הנוק-אאוט?",
       "sources": [
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48900253/neymar-calf-injury-three-weeks-miss-world-cup-opener" },
-        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/06/04/neymar-injury-brazil-world-cup/d7164a78-604c-11f1-9c46-d6211372eede_story.html" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/match/_/gameId/401863500/algeria-netherlands" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/algeria-stun-netherlands-friendly-205700659.html" },
+        { "name": "Sky Sports", "url": "https://www.skysports.com/football/netherlands-vs-algeria/554984" }
       ],
-      "expires_at": "2026-06-18T00:00:00Z"
+      "expires_at": "2026-06-17T23:59:59Z"
     },
     {
       "id": "fra-ekitike-achilles-out-wc-2026-06-05",
@@ -176,6 +177,30 @@
         { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/soccer/article/2026-world-cup-will-introduce-new-fifa-approved-rule-changes-213520541.html" },
         { "name": "Football365", "url": "https://www.football365.com/news/football-law-rule-changes-world-cup-ifab-collina" },
         { "name": "FourFourTwo", "url": "https://www.fourfourtwo.com/competition/every-new-fifa-rule-at-the-2026-world-cup-goalkeeper-timeout-ban-five-second-countdowns-and-var-offsides-whats-changed" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "vuvuzela-ban-wc2026-2026-06-05",
+      "confidence": "confirmed",
+      "en": "FIFA's 35-page stadium code of conduct for the 2026 World Cup bans vuvuzelas, air horns, whistles and all other noisemakers from all 16 venues, citing player communication and broadcasting concerns. The plastic horns became the defining sound of the 2010 South Africa tournament at levels around 120 decibels. Musical instruments smaller than 12 centimetres are still permitted. Will the ban make North American crowds feel flat, or sharpen the atmosphere?",
+      "he": "קוד ההתנהגות של פיפ\"א בן 35 העמודים למונדיאל 2026 אוסר על וובוזלות, שופרות אוויר, שריקות וכל מחולל רעש אחר בכל 16 האצטדיונים, בשל חשש לתקשורת השחקנים ולקשיי שידור. החצוצרות מפלסטיק היו הסמל הצלילי של טורניר 2010 בדרום אפריקה ברמות של כ-120 דציבל. כלי נגינה קטנים מ-12 סנטימטר עדיין מותרים. האם האיסור ישטיח את אווירת הקהל בצפון אמריקה, או יחדד אותה?",
+      "sources": [
+        { "name": "HITC", "url": "https://www.hitc.com/iconic-vuvuzelas-banned-from-2026-world-cup-stadiums-under-fifa-code-of-conduct/" },
+        { "name": "Daily Sabah", "url": "https://www.dailysabah.com/sports/football/fifa-bans-vuvuzelas-other-noisemakers-from-world-cup-stadiums" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/iconic-vuvuzelas-banned-2026-world-132932215.html" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "dieperink-var-removed-wc2026-2026-06-05",
+      "confidence": "confirmed",
+      "en": "FIFA removed Dutch VAR official Rob Dieperink from its World Cup officiating panel in May after his arrest in England over alleged misconduct, replacing him with French VAR Willy Delajod. British police later closed the case for lack of evidence, but FIFA kept the removal in place. A late reshuffle in the video review team, with less than a week until the tournament kicks off, raises questions about VAR continuity. Will it matter on the pitch?",
+      "he": "פיפ\"א הסירה את פקיד הוואר ההולנדי רוב דיפרינק מחבר השיפוט של המונדיאל במאי לאחר מעצרו באנגליה בשל חשד להתנהגות לא הולמת, והחליפה אותו בוואר הצרפתי ווילי דלאז'ו. המשטרה הבריטית סגרה מאוחר יותר את התיק בהעדר ראיות, אך פיפ\"א הותירה את ההסרה בעינה. שינוי אחרון בצוות הוואר, פחות משבוע לפני פתיחת הטורניר, מעלה שאלות על עקביות הסקירה הוידאו. האם זה ישנה משהו בשטח?",
+      "sources": [
+        { "name": "Morocco World News", "url": "https://www.moroccoworldnews.com/2026/05/302292/fifa-drops-dutch-referee-rob-dieperink-from-world-cup-list/" },
+        { "name": "NL Times", "url": "https://nltimes.nl/2026/05/15/dutch-referee-arrested-alleged-misconduct-17-year-old-charges-later-dropped" },
+        { "name": "Africa Soccer", "url": "https://africasoccer.com/fifa-removes-dutch-referee-rob-dieperink-from-2026-world-cup-after-investigation/" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     },
