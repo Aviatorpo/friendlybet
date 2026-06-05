@@ -379,6 +379,15 @@ Absolutely — it is MIT-licensed and self-hostable in minutes. See [Self-hostin
 **Does it work on my phone?**
 Yes. It is an installable PWA optimized for mobile, in both Hebrew and English.
 
+**Is FriendlyBet really ad-free, with no trackers?**
+Yes — it is a 100% ad-free, tracker-free World Cup 2026 prediction pool. There are no banner ads, no analytics pixels, no third-party trackers, and no data brokering. The app never asks for an email or phone number, so there is nothing to monetize.
+
+**Can I use it as a free office pool / bracket template for my company or team?**
+Yes. FriendlyBet works out of the box as a free office pool, company sweepstake, and group-chat bracket challenge — create a private pool, share one link, done. Because it is MIT-licensed and has no build step, it also doubles as an open-source, self-hostable office-pool template you can fork and run on your own Vercel, Netlify, or GitHub Pages account.
+
+**Is there a free, open-source alternative to paid prediction-pool and bracket apps?**
+That is exactly what FriendlyBet is: a free, open-source, privacy-first alternative to paid or ad-supported World Cup 2026 prediction-pool, office-pool, and bracket-challenge apps — no subscription, no in-app money, no account required.
+
 ---
 
 ## 🤝 Contributing

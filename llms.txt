@@ -20,8 +20,10 @@ and the Golden Boot top scorer. Scores recalculate automatically on a live leade
 
 ## Key entities
 FIFA World Cup 2026, 48-team format, 12 groups, Round of 32, knockout bracket builder,
-bracket predictor, office pool, office sweepstake, prediction league, Golden Boot top scorer,
-PWA, Supabase, Row-Level Security, Vercel edge CDN, MIT license, privacy-first, no signup.
+bracket predictor, office pool, office sweepstake, office pool template, prediction league,
+bracket challenge, group-chat sweepstake, Golden Boot top scorer, ad-free, tracker-free,
+free alternative to paid prediction-pool apps, self-hostable, PWA, Supabase, Row-Level Security,
+Vercel edge CDN, MIT license, privacy-first, no signup.
 
 ## One-line summary
 FriendlyBet Live is a free, open-source, privacy-first World Cup 2026 prediction pool for
