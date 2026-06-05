@@ -1,17 +1,16 @@
 {
-  "updatedAt": "2026-06-04T23:30:00.000Z",
+  "updatedAt": "2026-06-05T07:00:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
       "id": "neymar-calf-miss-opener-2026-06-04",
       "confidence": "confirmed",
       "team": "BRA",
-      "en": "Neymar is going to the World Cup, just not to the opener. Brazil's all-time top scorer has a grade-2 calf strain and will miss the June 13 clash with Morocco. Coach Ancelotti is unfazed: \"If he's not fit for the first match, he'll be fit for the second.\" Brazil vs Haiti lands on June 19. Is the Selecao solid enough to take Group C without him in the first game?",
-      "he": "ניימאר נוסע למונדיאל, רק לא לפתיחה. מלך השערים של ברזיל בכל הזמנים סבל מקרע חלקי בשרירי השוק (דרגה 2) ויחמיץ את המשחק מול מרוקו ב-13 ביוני. אנצ'לוטי שלו: \"אם לא יהיה מוכן לראשון, יהיה מוכן לשני\" - ברזיל מול האיטי ב-19 ביוני. האם הסלסאו חזקה מספיק לנצח בבלוק C בלי הכוכב שלה במשחק הראשון?",
+      "en": "Neymar is going to the World Cup, just not to the opener. Brazil's all-time top scorer has a grade-2 calf strain and will miss the June 13 clash with Morocco, with coach Ancelotti saying he has no regrets taking the injured forward and expecting him back for game two against Haiti on June 19. Is the Selecao solid enough to take Group C without him in the opener?",
+      "he": "ניימאר נוסע למונדיאל, רק לא לפתיחה. מלך השערים של ברזיל בכל הזמנים סבל מקרע חלקי בשרירי השוק (דרגה 2) ויחמיץ את המשחק מול מרוקו ב-13 ביוני. אנצ'לוטי הצהיר שאין לו חרטות על הבחירה לקחת אותו ומצפה לחזרתו למשחק השני מול האיטי ב-19 ביוני. האם הסלסאו חזקה מספיק לנצח בבלוק C בלי הכוכב שלה במשחק הפתיחה?",
       "sources": [
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/neymar-will-go-to-world-cup-despite-injury-issue-as-carlo-ancelotti-reveals-timeline-on-brazil-forwards-return" }
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" }
       ],
       "expires_at": "2026-06-13T00:00:00Z"
     },
@@ -19,49 +18,45 @@
       "id": "yamal-spain-fit-opener-2026-06-04",
       "confidence": "confirmed",
       "team": "ESP",
-      "en": "Yamal on track for the opener. Spain coach De La Fuente said on June 3 that Lamine Yamal, 18, is expected to be fit to face Cape Verde in Atlanta on June 15, despite the hamstring scare that kept him out of Spain's warmup against Iraq. \"If nothing changes, he could be ready to play on June 15.\" With Nico Williams also set to recover in time, is defending champion Spain already the favourite to repeat?",
-      "he": "יאמאל בדרך חזרה לפתיחה. מאמן ספרד דה לה פואנטה אמר ב-3 ביוני שלמין יאמאל, בן 18, צפוי להיות מוכן למשחק מול כף ורדה באטלנטה ב-15 ביוני, למרות בעיית שרירי הירך שהוציאה אותו מחימום נגד עיראק. \"אם לא ישתנה כלום, הוא יכול להיות מוכן ב-15 ביוני.\" גם ניקו וויליאמס צפוי לחזור בזמן - האם אלופת העולם הנוכחית היא כבר המועדפת לאליפות?",
+      "en": "Yamal on track for the opener. Spain coach De La Fuente expects Lamine Yamal, 18, to be fit to face Cape Verde in Atlanta on June 15, despite the hamstring scare that kept him out of Spain's warmup against Iraq. \"If nothing changes, he could be ready to play on June 15.\" With their teenage star available, how far can Spain go?",
+      "he": "יאמאל בדרך חזרה לפתיחה. מאמן ספרד דה לה פואנטה מצפה שלמין יאמאל, בן 18, יהיה כשיר למשחק מול כף ורדה באטלנטה ב-15 ביוני, למרות בעיית שרירי הירך שהוציאה אותו מחימום נגד עיראק. \"אם לא ישתנה כלום, הוא יכול להיות מוכן ב-15 ביוני\". עם הכוכב הצעיר שלהם זמין, עד כמה ספרד יכולה להגיע?",
       "sources": [
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente" },
-        { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/lamine-yamal-injury-update-spain-luis-de-la-fuente_sto23305424/story.shtml" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/lamine-yamal-injury-update-how-many-world-cup-matches-could-he-miss-spain" }
+        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/world-cup/lamine-yamal-wont-feature-in-spain-friendlies-and-might-miss-2026-world-cup-opener-as-well/" }
       ],
       "expires_at": "2026-06-15T00:00:00Z"
-    },
-    {
-      "id": "wc26-ref-body-camera-var-2026-06-04",
-      "confidence": "confirmed",
-      "en": "Referees in the spotlight too. For the first time at a World Cup, officials wear body cameras whose footage feeds live into broadcasts and onto stadium screens, a system tested at the 2025 Club World Cup. IFAB also expanded VAR to cover wrongly issued second yellow cards, cases of mistaken identity, and incorrectly awarded corner kicks. Will it sharpen the refereeing, or just add more stoppages to an already packed schedule?",
-      "he": "גם השופטים ייצאו על המסך. לראשונה במונדיאל, שופטים יענדו מצלמות גוף שישדרו חי לשידורי הטלוויזיה ולמסכי האצטדיון, מערכת שנוסתה בגביע העולם למועדונים 2025. IFAB גם הרחיב את ה-VAR לכיסוי כרטיסים צהובים שניים שניתנו בטעות, זיהוי שגוי ועצות פינה שניתנו שלא כדין. האם זה ישפר את השיפוט, או פשוט יוסיף עוד עצירות ללוח זמנים עמוס ממילא?",
-      "sources": [
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/1/which-football-rule-changes-will-be-implemented-during-the-world-cup" },
-        { "name": "The Sports Cast", "url": "https://thesportscast.net/2026/06/02/2026-fifa-world-cup-rule-changes-explained-var-expansion-10-second-substitutions-and-new-time-wasting-penalties/" },
-        { "name": "tech-ish", "url": "https://tech-ish.com/2026/06/03/2026-world-cup-rule-changes-explained/" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
       "id": "azteca-three-cups-altitude-2026-06-04",
       "confidence": "confirmed",
       "team": "MEX",
-      "en": "The altitude factor. Mexico City's Estadio Azteca, hosting five World Cup 2026 matches including the June 11 opener, sits 2,200 metres above sea level, higher than any other venue in the tournament. Having also opened the 1970 and 1986 editions, it becomes the only ground to stage three World Cup opening matches. Visiting squads face a genuine physical test before a ball is kicked. Which opponents will feel the altitude pinch most?",
-      "he": "גורם הגובה. אסטדיו אצטקה במקסיקו סיטי, שיארח חמישה משחקים במונדיאל 2026 כולל הפתיחה ב-11 ביוני, יושב בגובה 2,200 מטר מעל פני הים - הגבוה מבין כל מתחמי האירוח בטורניר. לאחר שכבר פתח את גביע 1970 ו-1986, הוא הופך למגרש היחיד שאירח שלוש פתיחות מונדיאל בהיסטוריה. הנבחרות האורחות יתמודדו עם מבחן פיזי אמיתי עוד לפני שנמסרת הבעיטה הראשונה. מי ירגיש את אפקט הגובה יותר מכולם?",
+      "en": "The altitude factor. Mexico City's Estadio Azteca, hosting five World Cup 2026 matches including the June 11 opener against South Africa, sits 2,200 metres above sea level, higher than any other venue in this tournament. Having also opened the 1970 and 1986 editions, it becomes the only stadium in history to stage three World Cup opening matches. Which opponents will feel the altitude pinch most?",
+      "he": "גורם הגובה. אסטדיו אצטקה במקסיקו סיטי, שיארח חמישה משחקים במונדיאל 2026 כולל הפתיחה ב-11 ביוני נגד דרום אפריקה, יושב בגובה 2,200 מטר מעל פני הים, הגבוה מבין כל מתחמי האירוח בטורניר. לאחר שכבר פתח את גביע 1970 ו-1986, הוא הופך לאצטדיון היחיד בהיסטוריה שאירח שלוש פתיחות מונדיאל. מי ירגיש את אפקט הגובה יותר מכולם?",
       "sources": [
         { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" },
-        { "name": "Euronews", "url": "https://www.euronews.com/travel/2026/06/01/heading-to-mexico-city-for-the-world-cup-heres-where-to-go-and-what-to-see" },
-        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/all-2026-world-cup-stadiums-host-cities-capacity-and-matches-2026-05-13" }
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/estadio-azteca-will-make-history-at-the-2026-world-cup-as-the-first-stadium-to-host-three-fifa-world-cup-opening-matches-2026-06-02" }
       ],
       "expires_at": "2026-07-06T00:00:00Z"
     },
     {
-      "id": "wc26-round-of-32-eight-thirds-2026-06-04",
+      "id": "saot-upgrade-audio-alert-2026-06-05",
       "confidence": "confirmed",
-      "en": "Third is the new second. Unlike any previous World Cup, finishing third in a 2026 group is not the end of the road. Of the 12 groups, the eight best third-placed teams advance to the Round of 32, meaning 32 of 48 nations reach the knockout stage. When making your group-stage picks, remember: a third-place finish does not automatically mean elimination, and eight teams will prove that.",
-      "he": "שלישי זה המחבר החדש. בניגוד לכל מונדיאל קודם, לסיים שלישי בקבוצה ב-2026 לא אומר פרידה. מבין 12 קבוצות שלישיות, שמונה הטובות ביותר יתקדמו לסיבוב ה-32, כלומר 32 מתוך 48 נבחרות מגיעות לשלב הנוקאאוט. כשאתם בוחרים תחזיות לשלב הקבוצות, זיכרו: מקום שלישי לא בהכרח אומר יציאה מהתחרות, ושמונה קבוצות יוכיחו זאת.",
+      "en": "VAR gets its biggest speed upgrade yet. FIFA's improved semi-automated offside system at this World Cup sends an instant audio alert to assistant referees when a player is more than 10 cm offside, targeting decisions in around 25 seconds, down from a 70-second average in current competitions. The cameras track 29 body points per player 50 times every second. Will it finally end the long wait after every disputed flag?",
+      "he": "ה-VAR מקבל את שדרוג המהירות הגדול ביותר שלו. מערכת הזיהוי המשופרת של פיפ\"א במונדיאל הזה שולחת התראה קולית מיידית לעוזר השופט כשהשחקן חורג ב-10 ס\"מ, במטרה לקצר החלטות לכ-25 שניות, לעומת ממוצע של 70 שניות בתחרויות כיום. המצלמות עוקבות אחר 29 נקודות גוף לכל שחקן 50 פעמים בשנייה. האם זה סוף ההמתנה הארוכה אחרי כל דגל שנוי במחלוקת?",
       "sources": [
-        { "name": "FIFA", "url": "https://www.fifa.com/en/articles/article-fifa-world-cup-2026-mexico-canada-usa-new-format-tournament-football-soccer" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48703925/world-cup-group-stage-explained-tiebreakers-third-place-teams" },
-        { "name": "NBC Washington", "url": "https://www.nbcwashington.com/news/sports/soccer/2026-fifa-world-cup-format-explained/4023666/" }
+        { "name": "Inside World Football", "url": "https://www.insideworldfootball.com/2026/06/03/fifa-upgrades-saot-and-ball-tracking-as-2026-match-officials-given-new-suite-of-tech-tools" },
+        { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "messi-ronaldo-sixth-world-cup-2026-06-05",
+      "confidence": "confirmed",
+      "en": "A record for the ages. Lionel Messi, 38, and Cristiano Ronaldo, 41, are set to become the first men in history to play in six FIFA World Cups, an achievement no male player has ever matched. Their rivalry lit up two decades of club football and now reaches its final World Cup chapter in North America. Will either of them lift the trophy one last time?",
+      "he": "שיא לדורות. ליאונל מסי, בן 38, וקריסטיאנו רונאלדו, בן 41, עומדים להפוך לגברים הראשונים בהיסטוריה שישתתפו בשישה מונדיאלים, הישג שאף שחקן גבר לא הגיע אליו. היריבות שלהם האירה שני עשורים של כדורגל מועדונים, וכעת מגיעה לפרק האחרון שלה בצפון אמריקה. האם אחד מהם ירים את הגביע בפעם האחרונה?",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48904313/lionel-messi-argentina-2026-world-cup-squad" },
+        { "name": "CBS Sports", "url": "https://www.cbssports.com/soccer/news/cristiano-ronaldo-40-year-olds-set-to-make-2026-world-cup-the-oldest/" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     }
