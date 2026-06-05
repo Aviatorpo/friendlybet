@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-05T19:30:00.000Z",
+  "updatedAt": "2026-06-05T22:00:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
@@ -39,19 +39,6 @@
         { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/carlo-ancelotti-guarantees-neymar-will-be-part-of-brazil-s-2026-world-cup-squad-2026-05-30" }
       ],
       "expires_at": "2026-06-18T00:00:00Z"
-    },
-    {
-      "id": "usa-pulisic-senegal-win-2026-05-31",
-      "confidence": "confirmed",
-      "team": "USA",
-      "en": "Christian Pulisic ended a five-month international scoring drought as the United States beat Senegal 3-2 on May 31, setting up Sergino Dest's opener before scoring himself off a Ricardo Pepi pass. Folarin Balogun netted a second-half winner after Sadio Mane had twice equalized, taking Mane's Senegal record to 54 international goals. The USMNT face Germany on June 6 in Chicago before hosting Paraguay in their June 12 World Cup opener. Can the co-hosts carry this momentum when the stakes are real?",
-      "he": "כריסטיאן פוליסיץ' שם קץ לבצורת של חמישה חודשים ללא שער בינלאומי כאשר ארצות הברית הביסה את סנגל 3:2 ב-31 במאי, כשסייע לשערו של סרג'ינו דסט ואחר כך כבש בעצמו ממסירת ריקרדו פאפי. ג'ולארין בלוגן כבש את המכריע בחצי השני לאחר שסאדיו מאנה השווה פעמיים, ובכך הגיע ל-54 שערים בינלאומיים לשיא סנגל. המנבחרת האמריקאית תיפגש עם גרמניה ב-6 ביוני לפני פתיחת גביע העולם מול פרגוואי ב-12 ביוני. האם הנבחרת המארחת תוכל לשאת את המומנטום הזה כשהסיכויים יהיו אמיתיים?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/762592" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/soccer/live/usmnt-rides-christian-pulisic-breakout-to-32-win-over-senegal-in-chaotic-friendly-183000706.html" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/usmnt-vs-senegal-takeaways-from-world-cup-friendly" }
-      ],
-      "expires_at": "2026-06-12T23:59:59Z"
     },
     {
       "id": "mex-azteca-third-wc-opening-2026-06-05",
@@ -163,6 +150,43 @@
         { "name": "FIFA", "url": "https://www.fifa.com/en/news/articles/diogo-jota-tribute" },
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/46164741/portugal-want-2026-world-cup-success-diogo-jota-roberto-martinez" },
         { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/portugal-emotional-jota-gesture-world-133000555.html" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "jpn-pitch-monterrey-2026-06-04",
+      "confidence": "confirmed",
+      "team": "JPN",
+      "en": "Japan were forced to change training pitches twice in Monterrey on June 4 after players discovered the Tigres UANL surface was full of holes and hardened patches. One midfielder described the ground as hard with holes, saying the squad had to move because players were afraid to challenge for the ball. Japan switched first to an under-19 facility, then settled at Club de Futbol Monterrey's training ground. The episode went viral on Mexican social media and drew sharp criticism of Tigres. Will an unsettled camp leave any mark on Japan ahead of their June 14 opener against the Netherlands in Dallas?",
+      "he": "נבחרת יפן נאלצה להחליף את מגרש האימונים שלה פעמיים במונטריי ב-4 ביוני, לאחר שהשחקנים גילו שהמשטח של טיגרס UANL מלא חורים ואדמה מתקשה. קשר אחד תיאר את הקרקע כקשה עם חורים, ואמר שהנבחרת נאלצה לעבור כי השחקנים פחדו להיאבק על כל כדור. יפן עברה תחילה למגרש אימוני תת-19, ואחר כך התייצבה במתקן של קלוב דה פוטבול מונטריי. הפרק הפך לוויראלי ברשתות החברתיות במקסיקו ועורר ביקורת חריפה על טיגרס. האם מחנה אימונים מבולגן ישאיר רושם על יפן לפני הפתיחה ב-14 ביוני נגד הולנד בדאלאס?",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48968591/japan-world-cup-training-pitch-monterrey-mexico-tigres" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/pitch-problems-japan-switches-monterrey-training-sites-ahead-of-world-cup" },
+        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/06/04/japan-world-cup-pitch-tigres-uanl/56148d70-6053-11f1-9c46-d6211372eede_story.html" }
+      ],
+      "expires_at": "2026-06-14T23:59:59Z"
+    },
+    {
+      "id": "wc-final-halftime-madonna-shakira-bts-2026-05-14",
+      "confidence": "confirmed",
+      "en": "For the first time in World Cup history, the 2026 final at MetLife Stadium in New Jersey on July 19 will feature a halftime show. FIFA confirmed Madonna, Shakira, and BTS as co-headliners in a May 14 announcement. Shakira will debut 'Dai Dai,' the official World Cup song she recorded for this edition. Proceeds support the FIFA Global Citizen Education Fund. Does a Super Bowl-style interval act belong at football's biggest game, or does the sport not need it?",
+      "he": "לראשונה בהיסטוריית גביע העולם, הגמר ב-19 ביולי באצטדיון מטלייף בניו ג'רזי יכלול מופע הפסקה. פיפ\"א אישרה את מדונה, שקירה ו-BTS כאמנים ראשיים משותפים בהכרזה מ-14 במאי. שקירה תציג לראשונה את 'דאי דאי', שיר גביע העולם הרשמי שהקליטה למהדורה זו. התמורות תומכות בקרן החינוך הגלובלית של פיפ\"א. האם מופע הפסקה בסגנון סופר בול שייך למשחק הגדול ביותר בכדורגל, או שהספורט הזה לא זקוק לו?",
+      "sources": [
+        { "name": "FIFA", "url": "https://inside.fifa.com/media-releases/madonna-shakira-bts-headline-historic-world-cup-2026-final-halftime-show" },
+        { "name": "CNN", "url": "https://www.cnn.com/2026/05/14/sport/world-cup-final-halftime-show-headliners-hnk" },
+        { "name": "NPR", "url": "https://www.npr.org/2026/05/14/nx-s1-5822453/world-cup-halftime-show-shakira-madonna-bts" }
+      ],
+      "expires_at": "2026-07-19T23:59:59Z"
+    },
+    {
+      "id": "fifa-anthem-all-26-center-circle-2026-06-04",
+      "confidence": "confirmed",
+      "en": "FIFA announced on June 4 that all 26 squad members, not just the starting eleven, will stand together around the centre circle during national anthems at every 2026 World Cup match. Previously, substitutes waited near the dugout while only the starting XI lined up on the pitch. FIFA described the change as fan-centric, saying it wants every player to experience the symbolic moment of representing their country on football's greatest stage. Players will face each other rather than the stands. Will the new formation change how supporters feel that opening moment?",
+      "he": "פיפ\"א הכריזה ב-4 ביוני שכל 26 שחקני הסגל, לא רק האחד-עשר הפותחים, יעמדו יחד סביב מעגל המרכז בזמן ההמנונות הלאומיים בכל משחק של מונדיאל 2026. בעבר, מחליפים המתינו ליד הספסל בזמן שרק ה-11 הפותח עמד על המגרש. פיפ\"א תיארה את השינוי כממוקד-אוהד, ואמרה שהיא רוצה שכל שחקן יחווה את הרגע הסמלי של ייצוג מדינתו על הבמה הגדולה ביותר בכדורגל. השחקנים יעמדו מול אחד מהשני ולא מול הקהל. האם הסידור החדש ישנה את האופן שבו האוהדים חשים את הרגע הפותח?",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48972979/fifa-announces-national-anthems-involve-all-26-players-world-cup" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/fifa-announce-fan-centric-change-081952835.html" },
+        { "name": "Daily Hive", "url": "https://dailyhive.com/vancouver/fan-centric-national-anthem-coming-to-fifa-world-cup" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     }
