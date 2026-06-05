@@ -1,24 +1,13 @@
 {
-  "updatedAt": "2026-06-05T09:00:00.000Z",
+  "updatedAt": "2026-06-05T12:00:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
-    {
-      "id": "france-ivory-coast-historic-win-2026-06-05",
-      "confidence": "confirmed",
-      "en": "World Cup wake-up call for France. Ivory Coast came from a goal down to win 2-1 in Nantes on June 4, the first time in history the Elephants have ever beaten Les Bleus. Rayan Cherki put France ahead, but Guela Doue levelled and substitute Amad Diallo won it six minutes from time. Deschamps made sweeping changes at the break, yet the warning is clear. Will France be ready when they face Senegal on June 16?",
-      "he": "כרטיס השכמה לצרפת לקראת המונדיאל. חוף השנהב הגיע מאחורה וניצח 2-1 בנאנט ב-4 ביוני, הפעם הראשונה בהיסטוריה שהפילים הביסו את לה בלה. רייאן שרקי הוביל את צרפת, אך גואלה דואה השווה ואמאד דיאלו כמחליף הכריע שש דקות לפני הסיום. דשאן ביצע חילופים רבים בהפסקה, אבל האזהרה ברורה. האם צרפת תהיה מוכנה כשתעמוד מול סנגל ב-16 ביוני?",
-      "sources": [
-        { "name": "France 24", "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat" },
-        { "name": "101 Great Goals", "url": "https://www.101greatgoals.com/news/france-ivory-coast-report-result-goals/" }
-      ],
-      "expires_at": "2026-06-07T00:00:00Z"
-    },
     {
       "id": "neymar-calf-miss-opener-2026-06-04",
       "confidence": "confirmed",
       "team": "BRA",
       "en": "Neymar is going to the World Cup, just not to the opener. Brazil's all-time top scorer has a grade-2 calf strain and will miss the June 13 clash with Morocco, with coach Ancelotti saying he has no regrets taking the injured forward and expecting him back for game two against Haiti on June 19. Is the Selecao solid enough to take Group C without him in the opener?",
-      "he": "ניימאר נוסע למונדיאל, רק לא לפתיחה. מלך השערים של ברזיל בכל הזמנים סבל מקרע חלקי בשרירי השוק (דרגה 2) ויחמיץ את המשחק מול מרוקו ב-13 ביוני. אנצ'לוטי הצהיר שאין לו חרטות על הבחירה לקחת אותו ומצפה לחזרתו למשחק השני מול האיטי ב-19 ביוני. האם הסלסאו חזקה מספיק לנצח בקבוצה C בלי הכוכב שלה במשחק הפתיחה?",
+      "he": "ניימאר נוסע למונדיאל, רק לא לפתיחה. מלך השערים של ברזיל בכל הזמנים סובל מקרע חלקי בשרירי השוק (דרגה 2) ויחמיץ את המשחק מול מרוקו ב-13 ביוני. אנצ'לוטי הצהיר שאין לו חרטות על הבחירה לקחת אותו ומצפה לחזרתו למשחק השני מול האיטי ב-19 ביוני. האם הסלסאו חזקה מספיק לנצח בקבוצה C בלי הכוכב שלה במשחק הפתיחה?",
       "sources": [
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup" },
         { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" }
@@ -33,9 +22,21 @@
       "he": "מסי מתאמן לבדו כשארגנטינה מקימה מחנה בקנזס סיטי. אלוף העולם הגיע לבסיס הצפון-אמריקאי עם תלונה על שריר הירך השמאלי ועבד בנפרד ב-3 ביוני בעוד חבריו ביצעו אימונים מלאים. ההידוק מתוארך למשחק אינטר מיאמי ב-24 במאי. סגל סקאלוני אומר שתוכנית הדרגתית מכוונת לפתיחה מול אלג'יריה ב-16 ביוני. האם בן ה-38 יוכל להיות חד מספיק בזמן?",
       "sources": [
         { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/messi-trains-alone-as-argentina-hold-first-world-cup-practice-session" },
-        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/amp/world-cup/lionel-messi-headlines-list-of-six-argentina-players-with-physical-issues-ahead-of-2026-world-cup/" }
+        { "name": "CBS Sports", "url": "https://www.cbssports.com/soccer/news/lionel-messi-injury-argentina-world-cup-2026-inter-miami/" }
       ],
       "expires_at": "2026-06-16T00:00:00Z"
+    },
+    {
+      "id": "azteca-triple-world-cup-mex-2026-06-05",
+      "confidence": "confirmed",
+      "team": "MEX",
+      "en": "Six days out and the stage is set in Mexico City. Estadio Azteca hosts Mexico versus South Africa on June 11, making it the only stadium ever to stage three FIFA World Cup opening matches, after 1970 and 1986. Sitting at 2,200 metres above sea level, the thin air is a genuine home-pitch edge for El Tri. Can any visiting side truly prepare for that altitude?",
+      "he": "שישה ימים לפתיחה, והבמה מוכנה במקסיקו סיטי. אסטדיו אצטקה יאחסן את מקסיקו נגד דרום אפריקה ב-11 ביוני, מה שיהפוך אותו לאצטדיון היחיד שאירח שלוש פתיחות גביע עולם בהיסטוריה, לאחר 1970 ו-1986. בגובה 2,200 מטר מעל פני הים, האוויר הדליל נותן לאל-טרי יתרון אמיתי. האם כל קבוצה מבקרת יכולה באמת להתכונן לגובה הזה?",
+      "sources": [
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" },
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/estadio-azteca-makes-history-with-three-fifa-world-cup-opening-matches-2026-05-28" }
+      ],
+      "expires_at": "2026-06-12T00:00:00Z"
     },
     {
       "id": "ifab-mouth-red-card-wc2026-2026-06-05",
@@ -49,13 +50,13 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "saot-upgrade-audio-alert-2026-06-05",
+      "id": "format-best-third-wc2026-2026-06-05",
       "confidence": "confirmed",
-      "en": "VAR gets its biggest speed upgrade yet. FIFA's improved semi-automated offside system at this World Cup sends an instant audio alert to assistant referees when a player is more than 10 cm offside, targeting decisions in around 25 seconds, down from a 70-second average in current competitions. The cameras track 29 body points per player 50 times every second. Will it finally end the long wait after every disputed flag?",
-      "he": "ה-VAR מקבל את שדרוג המהירות הגדול ביותר שלו. מערכת הזיהוי המשופרת של פיפ\"א במונדיאל הזה שולחת התראה קולית מיידית לעוזר השופט כשהשחקן חורג ב-10 ס\"מ, במטרה לקצר החלטות לכ-25 שניות, לעומת ממוצע של 70 שניות בתחרויות כיום. המצלמות עוקבות אחר 29 נקודות גוף לכל שחקן 50 פעמים בשנייה. האם זה סוף ההמתנה הארוכה אחרי כל דגל שנוי במחלוקת?",
+      "en": "A key rule every predictor should know: in the 12-group, 48-team format, not all third-placed teams go home. The eight best of the 12 group thirds advance to the round of 32, ranked first by points, then goal difference, then goals scored. A slow start does not have to mean the end of the road.",
+      "he": "כלל חשוב שכל מי שמתחזה חייב להכיר: בפורמט ה-12 גרופים עם 48 קבוצות, לא כל מי שמסיים שלישי נפרד. שמונה הטובים מבין 12 הצוותים השלישיים מתקדמים לשלב 32, לפי נקודות, הפרש שערים ושערים שנכנסו. התחלה איטית בגרופ לא חייבת להיות סוף הדרך.",
       "sources": [
-        { "name": "Inside World Football", "url": "https://www.insideworldfootball.com/2026/06/03/fifa-upgrades-saot-and-ball-tracking-as-2026-match-officials-given-new-suite-of-tech-tools" },
-        { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml" }
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/groups-how-teams-qualify-tie-breakers" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48703925/world-cup-group-stage-explained-tiebreakers-third-place-teams" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     }
