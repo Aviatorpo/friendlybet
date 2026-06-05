@@ -10459,17 +10459,56 @@ async function spRenderSummary() {
     submitBtn.innerHTML = `<i class="ti ti-rocket"></i><span data-i18n="betting.summary.submit">${t('betting.summary.submit')}</span>`;
   }
 
-  // Re-share button: only for users who already submitted a complete bracket
-  // (i.e. returning here via "View your predictions"), never in the first-time
-  // flow where it would compete with the Save CTA.
+  // Context-aware CTA hierarchy (v2.6.99). Two distinct intents land on this
+  // screen, and the primary CTA must match each:
+  //   • First-time / pre-submit  → "Save my predictions" is the primary CTA
+  //     (the commit that sets predictions_submitted_at). Share is hidden — an
+  //     incomplete bracket would share an empty OG card (see _bracketShareReady).
+  //   • Returning (already submitted a FULL bracket, here via "View your
+  //     predictions") → "Share my bracket" becomes the primary CTA: this is the
+  //     viral moment. Save is DEMOTED to a secondary "Save changes" — picks
+  //     auto-save on every edit (spAutoSaveGroups / autoSaveKnockoutPicks) and
+  //     the submit flag is already set, so Save is reassurance, not the action.
+  //     Back-to-dashboard already lives in the topbar (home icon), so no extra
+  //     button is needed.
   const summaryShareBtn = document.getElementById('sp-summary-share-btn');
-  if (summaryShareBtn) {
+  const summaryShareApps = document.getElementById('sp-summary-share-apps');
+  const summarySaveBtn = document.getElementById('sp-submit-btn');
+  if (summaryShareBtn && summarySaveBtn) {
     const submitted = typeof spHasUserSubmitted === 'function' && spHasUserSubmitted();
     const hasChamp = !!(spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
-    const show = (submitted && hasChamp);
-    summaryShareBtn.style.display = show ? '' : 'none';
-    const summaryShareApps = document.getElementById('sp-summary-share-apps');
-    if (summaryShareApps) summaryShareApps.style.display = show ? '' : 'none';
+    const shareIsPrimary = (submitted && hasChamp);
+
+    summaryShareBtn.style.display = shareIsPrimary ? '' : 'none';
+    if (summaryShareApps) summaryShareApps.style.display = shareIsPrimary ? '' : 'none';
+
+    const saveLabel = summarySaveBtn.querySelector('span');
+    const saveIcon = summarySaveBtn.querySelector('i');
+    if (shareIsPrimary) {
+      // Promote Share, demote Save.
+      summaryShareBtn.className = 'btn-primary btn-large';
+      summarySaveBtn.className = 'btn-secondary';
+      if (saveIcon) saveIcon.className = 'ti ti-device-floppy';
+      if (saveLabel) {
+        saveLabel.setAttribute('data-i18n', 'betting.summary.saveChanges');
+        saveLabel.textContent = t('betting.summary.saveChanges');
+      }
+      // Reorder so the primary (Share) and its app-logos hint render first.
+      const parent = summarySaveBtn.parentNode;
+      if (parent) {
+        parent.insertBefore(summaryShareBtn, summarySaveBtn);
+        if (summaryShareApps) parent.insertBefore(summaryShareApps, summarySaveBtn);
+      }
+    } else {
+      // First-time: Save is the large primary, Share stays hidden.
+      summaryShareBtn.className = 'btn-secondary';
+      summarySaveBtn.className = 'btn-primary btn-large';
+      if (saveIcon) saveIcon.className = 'ti ti-rocket';
+      if (saveLabel) {
+        saveLabel.setAttribute('data-i18n', 'betting.summary.submit');
+        saveLabel.textContent = t('betting.summary.submit');
+      }
+    }
   }
 
   // Groups summary
