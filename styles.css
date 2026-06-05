@@ -9049,7 +9049,12 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
    strip is a secondary tap target that fires the same native share. */
 .bracket-share-apps-hint {
   display: flex; flex-direction: column; align-items: center; gap: 8px;
-  margin: 12px auto 2px; padding: 4px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  /* Full-width hairline divider BELOW the app row (v2.7.9, mobile only — this
+     element is hidden on desktop), with breathing room above the logos and
+     below the line so it reads as a clean section break before the Done/Save. */
+  width: 100%; margin: 14px auto 10px; padding: 4px 4px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.09);
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
 }
 .bracket-share-apps-hint .bsah-label {
   font-size: 11.5px; font-weight: 600; letter-spacing: .2px;
