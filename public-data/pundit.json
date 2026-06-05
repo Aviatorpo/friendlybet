@@ -1,30 +1,7 @@
 {
-  "updatedAt": "2026-06-05T15:25:41.615Z",
+  "updatedAt": "2026-06-05T16:28:08.165Z",
   "count": 12,
   "items": [
-    {
-      "id": "bra-neymar-calf-out-opener-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "קרע בדרגה שנייה בשריר השוק מוציא את ניימאר ממשחק הפתיחה של ברזיל מול מרוקו ב-13 ביוני בניו ג'רזי, ומאמן קרלו אנצ'לוטי אומר שהשחקן בן ה-34 יכול לחזור למשחק השני מול האיטי. כשרודריגו כבר נפל קורבן לקרע ברצועה הצולבת, אנצ'לוטי חייב למצוא ניצוץ התקפי אחר בהתחלה. האם ברזיל עדיין נראית לכם כמועמדת אמיתית לאליפות?",
-      "en": "A grade-2 calf strain rules Neymar out of Brazil's June 13 opener against Morocco in New Jersey, with coach Carlo Ancelotti saying the 34-year-old could return for the second group game against Haiti. With Rodrygo already gone to an ACL rupture, Ancelotti must find attacking spark elsewhere from the start. Does Brazil still look like a genuine title contender to you?",
-      "team": "BRA",
-      "sources": [
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48900253/neymar-calf-injury-three-weeks-miss-world-cup-opener"
-        },
-        {
-          "name": "Bleacher Report",
-          "url": "https://bleacherreport.com/articles/25432292-neymar-injury-update-provided-brazils-carlo-ancelotti-latest-timeline-ahead-2026-world-cup"
-        }
-      ],
-      "expires_at": "2026-06-18T00:00:00Z"
-    },
     {
       "id": "mex-azteca-third-wc-opening-2026-06-05",
       "type": "news",
@@ -45,24 +22,208 @@
       "expires_at": "2026-06-11T23:59:59Z"
     },
     {
-      "id": "ifab-goalkick-5sec-countdown-2026-06-05",
+      "id": "alg-stun-ned-luca-zidane-2026-06-03",
       "type": "news",
       "confidence": "confirmed",
-      "he": "פיפ\"א מביאה כלל חדש נגד בזבוז זמן לגביע העולם 2026: שופטים ירימו יד וייספרו חמש שניות עבור בעיטות שער, בדומה לספירה הקיימת עבור שוערים המחזיקים בכדור. קבוצה שתניח לספירה לפוג תעניק לצד היריב בעיטת פינה. האם הכלל הזה יחסל סופית את טקטיקות ההשהיה שהאטו את משחקי כדורגל שלב הבתים עשרות שנים?",
-      "en": "FIFA is bringing a new anti-time-wasting rule to the 2026 World Cup: referees will raise a hand and count down five seconds for goal-kicks, mirroring the existing countdown for goalkeepers holding the ball. A side that lets the count expire hands the opponent a corner kick. Will this rule finally stamp out the stalling tactics that have slowed group-stage football for decades?",
+      "he": "אלג'יריה ניצחה את הולנד 1:0 בדה קויפ ב-3 ביוני, כשאניס חאג' מוסא כיפף שוט שמאלי מרהיב לפינה ב-86 בדקה. הניצחון נבנה על תצוגה שלטת של שוער לוקה זידאן, בנו של אגדת צרפת זינדין, שבחר לייצג את אלג'יריה ובצע כמה הגנות מכריעות. אלג'יריה פותחת נגד ארגנטינה ב-17 ביוני. האם הפנקים יוכלו לשמור על הכיוון הזה לסיבובי הנוק-אאוט?",
+      "en": "Algeria beat the Netherlands 1-0 at De Kuip on June 3, Anis Hadj Moussa curling a superb left-footed shot into the far corner in the 86th minute. The win was built on a commanding performance by goalkeeper Luca Zidane, son of France icon Zinedine, who chose to represent Algeria and made several crucial saves. Algeria open against Argentina on June 17. Can Les Fennecs carry this form into the knockout rounds?",
+      "team": "ALG",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/match/_/gameId/401863500/algeria-netherlands"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/algeria-stun-netherlands-friendly-205700659.html"
+        },
+        {
+          "name": "Sky Sports",
+          "url": "https://www.skysports.com/football/netherlands-vs-algeria/554984"
+        }
+      ],
+      "expires_at": "2026-06-17T23:59:59Z"
+    },
+    {
+      "id": "vuvuzela-ban-wc2026-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "קוד ההתנהגות של פיפ\"א בן 35 העמודים למונדיאל 2026 אוסר על וובוזלות, שופרות אוויר, שריקות וכל מחולל רעש אחר בכל 16 האצטדיונים, בשל חשש לתקשורת השחקנים ולקשיי שידור. החצוצרות מפלסטיק היו הסמל הצלילי של טורניר 2010 בדרום אפריקה ברמות של כ-120 דציבל. כלי נגינה קטנים מ-12 סנטימטר עדיין מותרים. האם האיסור ישטיח את אווירת הקהל בצפון אמריקה, או יחדד אותה?",
+      "en": "FIFA's 35-page stadium code of conduct for the 2026 World Cup bans vuvuzelas, air horns, whistles and all other noisemakers from all 16 venues, citing player communication and broadcasting concerns. The plastic horns became the defining sound of the 2010 South Africa tournament at levels around 120 decibels. Musical instruments smaller than 12 centimetres are still permitted. Will the ban make North American crowds feel flat, or sharpen the atmosphere?",
       "team": null,
       "sources": [
         {
+          "name": "HITC",
+          "url": "https://www.hitc.com/iconic-vuvuzelas-banned-from-2026-world-cup-stadiums-under-fifa-code-of-conduct/"
+        },
+        {
+          "name": "Daily Sabah",
+          "url": "https://www.dailysabah.com/sports/football/fifa-bans-vuvuzelas-other-noisemakers-from-world-cup-stadiums"
+        },
+        {
           "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/soccer/article/2026-world-cup-will-introduce-new-fifa-approved-rule-changes-213520541.html"
+          "url": "https://sports.yahoo.com/articles/iconic-vuvuzelas-banned-2026-world-132932215.html"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "dieperink-var-removed-wc2026-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "פיפ\"א הסירה את פקיד הוואר ההולנדי רוב דיפרינק מחבר השיפוט של המונדיאל במאי לאחר מעצרו באנגליה בשל חשד להתנהגות לא הולמת, והחליפה אותו בוואר הצרפתי ווילי דלאז'ו. המשטרה הבריטית סגרה מאוחר יותר את התיק בהעדר ראיות, אך פיפ\"א הותירה את ההסרה בעינה. שינוי אחרון בצוות הוואר, פחות משבוע לפני פתיחת הטורניר, מעלה שאלות על עקביות הסקירה הוידאו. האם זה ישנה משהו בשטח?",
+      "en": "FIFA removed Dutch VAR official Rob Dieperink from its World Cup officiating panel in May after his arrest in England over alleged misconduct, replacing him with French VAR Willy Delajod. British police later closed the case for lack of evidence, but FIFA kept the removal in place. A late reshuffle in the video review team, with less than a week until the tournament kicks off, raises questions about VAR continuity. Will it matter on the pitch?",
+      "team": null,
+      "sources": [
+        {
+          "name": "Morocco World News",
+          "url": "https://www.moroccoworldnews.com/2026/05/302292/fifa-drops-dutch-referee-rob-dieperink-from-world-cup-list/"
         },
         {
-          "name": "Football365",
-          "url": "https://www.football365.com/news/football-law-rule-changes-world-cup-ifab-collina"
+          "name": "NL Times",
+          "url": "https://nltimes.nl/2026/05/15/dutch-referee-arrested-alleged-misconduct-17-year-old-charges-later-dropped"
         },
         {
-          "name": "FourFourTwo",
-          "url": "https://www.fourfourtwo.com/competition/every-new-fifa-rule-at-the-2026-world-cup-goalkeeper-timeout-ban-five-second-countdowns-and-var-offsides-whats-changed"
+          "name": "Africa Soccer",
+          "url": "https://africasoccer.com/fifa-removes-dutch-referee-rob-dieperink-from-2026-world-cup-after-investigation/"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "sui-embolo-visa-cleared-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "חלוץ שוויץ ברייל אמבולו קיבל אישור כניסה לארצות הברית ב-5 ביוני לאחר עיכוב של יומיים הקשור לבדיקות רישום פלילי. הוא פיספס את טיסת הנבחרת לסן דייגו, ביקר בשגרירות האמריקאית בברן וקיבל אישור, וההתאחדות השוויצרית מסרה שיגיע בזמן לאימון ב-7 ביוני מול אוסטרליה. שוויץ פותחת את הגביע מול קטאר ב-13 ביוני.",
+      "en": "Switzerland striker Breel Embolo was cleared to travel to the United States on June 5 after a two-day visa delay tied to criminal-record checks. He missed the squad's flight to San Diego but visited the US Embassy in Bern and received approval; the Swiss federation says he will arrive in time for a June 7 warmup against Australia. Switzerland open their World Cup against Qatar on June 13.",
+      "team": "SUI",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48969072/switzerland-striker-embolo-gets-visa-us-world-cup"
+        },
+        {
+          "name": "Washington Post",
+          "url": "https://www.washingtonpost.com/sports/soccer/2026/06/04/world-cup-switzerland-embolo-visa/558e76d2-605c-11f1-9c46-d6211372eede_story.html"
+        },
+        {
+          "name": "Goal",
+          "url": "https://www.goal.com/en/lists/breel-embolo-switzerland-visa-approved-world-cup/blt2e796f14cc3331ed"
+        }
+      ],
+      "expires_at": "2026-06-13T23:59:59Z"
+    },
+    {
+      "id": "fra-ivory-coast-warmup-loss-2026-06-04",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "צרפת הפסידה 2:1 לחוף השנהב בנאנט ב-4 ביוני בסיבוב האחרון לפני המונדיאל בבית, כשגוואלה דואה ואמאד דיאלו כמחליף ביטלו את שערו של ריאן שרקי. היה זה הניצחון ההיסטורי הראשון של הפילים על לה-בלה. צרפת פותחת מול סנגל בניו ג'רזי ב-16 ביוני. עם אקיטיקה פצוע ומטטה בחוד ההתקפה, האם השערים באמת שם עבור דשאן?",
+      "en": "France fell 1-2 to Ivory Coast in Nantes on June 4 in their final home warm-up, with Guela Doue and substitute Amad Diallo cancelling out Rayan Cherki's opener. It was Ivory Coast's first-ever win over les Bleus. France open their World Cup against Senegal in New Jersey on June 16. With Ekitike injured and Mateta leading the line, are the goals really there for Deschamps?",
+      "team": "FRA",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/report/_/gameId/401864934"
+        },
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/4/ivory-coast-beat-france-in-world-cup-warning-to-one-of-the-favourites"
+        },
+        {
+          "name": "France 24",
+          "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat"
+        }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "esp-yamal-fit-opener-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "מאמן ספרד לואיס דה לה פואנטה אישר שלמין יאמאל בדרך לשחק בפתיחת גביע העולם מול קאבו ורדה באטלנטה ב-15 ביוני, אם כי השחקן בן ה-18 ישב על הספסל במשחק האימון מול עיראק ב-4 ביוני תוך סיום ההתאוששות מפציעת שריר ירך שנגרמה ב-22 באפריל. דה לה פואנטה הזהיר שייתכן שיאמאל יקבל בהתחלה רק כמה דקות, וספרד תעריך לקראת המשחק. האם אתם סומכים על אלופות אירופה להצית בגז מלא אם היוצר הראשי שלהן מתחיל לאט?",
+      "en": "Spain coach Luis de la Fuente confirmed Lamine Yamal is on track to play in the World Cup opener against Cape Verde in Atlanta on June 15, though the 18-year-old sat out the June 4 warmup against Iraq while finishing his comeback from a left-hamstring strain sustained on April 22. De la Fuente cautioned Yamal may only get a cameo at first, and Spain will assess closer to the game. Do you trust the European champions to fire on all cylinders if their main creator starts slow?",
+      "team": "ESP",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente"
+        },
+        {
+          "name": "Washington Post",
+          "url": "https://www.washingtonpost.com/sports/soccer/2026/06/03/lamine-yamal-spain-world-cup/cbecee7c-5f5c-11f1-9c46-d6211372eede_story.html"
+        },
+        {
+          "name": "TSN",
+          "url": "https://www.tsn.ca/soccer/article/yamal-less-spain-held-by-iraq-in-world-cup-sendoff-n1-48948825/"
+        }
+      ],
+      "expires_at": "2026-06-15T23:59:59Z"
+    },
+    {
+      "id": "arg-messi-managed-load-opener-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "מסי עובד על תוכנית אישית, בנפרד מקבוצת הנבחרת הארגנטינאית, וזאת לניהול עומס בשריר הירך השמאלית שהופיע ב-24 במאי. המאמן סקלוני אומר שהמטרה היא להיות מוכן לפתיחה מול אלג'יריה ב-16 ביוני, אך הוא ידלג על שני משחקי האימון. האם אלוף העולם יגיע בשיא כוחו?",
+      "en": "Messi is working through an individual programme away from Argentina's main group, managing left-hamstring fatigue first felt on May 24. Coach Scaloni says the plan is to have him ready for the June 16 opener against Algeria, though he will skip both warm-up matches. Will the reigning champion arrive at full strength?",
+      "team": "ARG",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48945340/messi-trains-own-argentina-opening-session-ahead-world-cup"
+        },
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/3/messi-trains-alone-as-argentina-hold-first-world-cup-practice-session"
+        },
+        {
+          "name": "World Soccer Talk",
+          "url": "https://worldsoccertalk.com/amp/world-cup/scaloni-explains-messis-2026-world-cup-workload-management-following-injury-with-inter-miami/"
+        }
+      ],
+      "expires_at": "2026-06-16T00:00:00Z"
+    },
+    {
+      "id": "bra-neymar-calf-out-opener-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "קרע בדרגה שנייה בשריר השוק מוציא את ניימאר ממשחק הפתיחה של ברזיל מול מרוקו ב-13 ביוני בניו ג'רזי, ומאמן קרלו אנצ'לוטי אומר שהשחקן בן ה-34 יכול לחזור למשחק השני מול האיטי. כשרודריגו כבר נפל קורבן לקרע ברצועה הצולבת, אנצ'לוטי חייב למצוא ניצוץ התקפי אחר בהתחלה. האם ברזיל עדיין נראית לכם כמועמדת אמיתית לאליפות?",
+      "en": "A grade-2 calf strain rules Neymar out of Brazil's June 13 opener against Morocco in New Jersey, with coach Carlo Ancelotti saying the 34-year-old could return for the second group game against Haiti. With Rodrygo already gone to an ACL rupture, Ancelotti must find attacking spark elsewhere from the start. Does Brazil still look like a genuine title contender to you?",
+      "team": "BRA",
+      "sources": [
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48900253/neymar-calf-injury-three-weeks-miss-world-cup-opener"
+        },
+        {
+          "name": "Washington Post",
+          "url": "https://www.washingtonpost.com/sports/soccer/2026/06/04/neymar-injury-brazil-world-cup/d7164a78-604c-11f1-9c46-d6211372eede_story.html"
+        }
+      ],
+      "expires_at": "2026-06-18T00:00:00Z"
+    },
+    {
+      "id": "fra-ekitike-achilles-out-wc-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "תוקף ליברפול יוגו אקיטיקה ייעדר ממונדיאל 2026 כולו לאחר ניתוח לתיקון קרע בגיד אכילס שנגרם באנפילד ברבע-גמר ליגת האלופות מול פריז סן-ז'רמן. דשאן, שכבר השמיט את קולו מואני ואת קמאבינגה מהסגל, נסמך כעת על ז'אן-פיליפ מטטה מקריסטל פאלאס כחלוץ ראשי. האם לה-בלה יכולים להגיע עד הסוף ללא מרכז-קדימה קליני מוכח?",
+      "en": "Liverpool striker Hugo Ekitike will miss the entire World Cup after surgery for a ruptured Achilles tendon suffered at Anfield in a Champions League quarter-final against PSG. Deschamps, who had already omitted Kolo Muani and Camavinga from his 26-man list, now relies on Crystal Palace's Jean-Philippe Mateta to lead France's attack. Can les Bleus still go all the way without a proven clinical finisher?",
+      "team": "FRA",
+      "sources": [
+        {
+          "name": "FIFA",
+          "url": "https://www.fifa.com/en/articles/france-hugo-ekitike-injury"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48607614/world-cup-injuries-ruled-play-hugo-ekitike-rodrygo-lamine-yamal"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/soccer/article/frances-hugo-ekitike-suffered-ruptured-achilles-tendon-set-to-miss-world-cup-185338756.html"
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
@@ -91,144 +252,6 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "saot-10cm-threshold-wc2026-2026-06-03",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "פיפ\"א אישרה ב-3 ביוני שמערכת הנבדל החצי-אוטומטית המשודרגת תתריע לעוזר השופט על כל עבירה מעל 10 סנטימטר, ירידה ניכרת מסף ה-50 ס\"מ שהיה בקטאר 2022. כל 1,248 שחקני הסגלים סרוקים בתלת-מימד לטובת אווטרי הבינה המלאכותית. פחות ויכוחים על קריאות גבוליות, או מקור חדש למחלוקות?",
-      "en": "FIFA confirmed on June 3 that its upgraded semi-automated offside system will audio-alert assistant referees for any infringement greater than 10 centimeters, down from the 50-centimeter threshold used at Qatar 2022. All 1,248 squad players have been 3D-scanned to power the AI avatars behind the calls. Fewer marginal calls to argue about, or a fresh source of controversy?",
-      "team": null,
-      "sources": [
-        {
-          "name": "TNT Sports",
-          "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml"
-        },
-        {
-          "name": "Inside World Football",
-          "url": "https://www.insideworldfootball.com/2026/06/03/fifa-upgrades-saot-and-ball-tracking-as-2026-match-officials-given-new-suite-of-tech-tools"
-        },
-        {
-          "name": "HITC",
-          "url": "https://www.hitc.com/fifa-unveil-new-var-technology-for-offsides-that-will-be-used-by-assistants-at-world-cup-2026/"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "arg-messi-managed-load-opener-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "מסי עובד על תוכנית אישית, בנפרד מקבוצת הנבחרת הארגנטינאית, וזאת לניהול עומס בשריר הירך השמאלית שהופיע ב-24 במאי. המאמן סקלוני אומר שהמטרה היא להיות מוכן לפתיחה מול אלג'יריה ב-16 ביוני, אך הוא ידלג על שני משחקי האימון. האם אלוף העולם יגיע בשיא כוחו?",
-      "en": "Messi is working through an individual programme away from Argentina's main group, managing left-hamstring fatigue first felt on May 24. Coach Scaloni says the plan is to have him ready for the June 16 opener against Algeria, though he will skip both warm-up matches. Will the reigning champion arrive at full strength?",
-      "team": "ARG",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48945340/messi-trains-own-argentina-opening-session-ahead-world-cup"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/3/messi-trains-alone-as-argentina-hold-first-world-cup-practice-session"
-        },
-        {
-          "name": "World Soccer Talk",
-          "url": "https://worldsoccertalk.com/amp/world-cup/scaloni-explains-messis-2026-world-cup-workload-management-following-injury-with-inter-miami/"
-        }
-      ],
-      "expires_at": "2026-06-16T00:00:00Z"
-    },
-    {
-      "id": "fra-ekitike-achilles-out-wc-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "תוקף ליברפול יוגו אקיטיקה ייעדר ממונדיאל 2026 כולו לאחר ניתוח לתיקון קרע בגיד אכילס שנגרם באנפילד ברבע-גמר ליגת האלופות מול פריז סן-ז'רמן. דשאן, שכבר השמיט את קולו מואני ואת קמאבינגה מהסגל, נסמך כעת על ז'אן-פיליפ מטטה מקריסטל פאלאס כחלוץ ראשי. האם לה-בלה יכולים להגיע עד הסוף ללא מרכז-קדימה קליני מוכח?",
-      "en": "Liverpool striker Hugo Ekitike will miss the entire World Cup after surgery for a ruptured Achilles tendon suffered at Anfield in a Champions League quarter-final against PSG. Deschamps, who had already omitted Kolo Muani and Camavinga from his 26-man list, now relies on Crystal Palace's Jean-Philippe Mateta to lead France's attack. Can les Bleus still go all the way without a proven clinical finisher?",
-      "team": "FRA",
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/articles/france-hugo-ekitike-injury"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48607614/world-cup-injuries-ruled-play-hugo-ekitike-rodrygo-lamine-yamal"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/soccer/article/frances-hugo-ekitike-suffered-ruptured-achilles-tendon-set-to-miss-world-cup-185338756.html"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "fra-ivory-coast-warmup-loss-2026-06-04",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "צרפת הפסידה 2:1 לחוף השנהב בנאנט ב-4 ביוני בסיבוב האחרון לפני המונדיאל בבית, כשגוואלה דואה ואמאד דיאלו כמחליף ביטלו את שערו של ריאן שרקי. היה זה הניצחון ההיסטורי הראשון של הפילים על לה-בלה. צרפת פותחת מול סנגל בניו ג'רזי ב-16 ביוני. עם אקיטיקה פצוע ומטטה בחוד ההתקפה, האם השערים באמת שם עבור דשאן?",
-      "en": "France fell 1-2 to Ivory Coast in Nantes on June 4 in their final home warm-up, with Guela Doue and substitute Amad Diallo cancelling out Rayan Cherki's opener. It was Ivory Coast's first-ever win over les Bleus. France open their World Cup against Senegal in New Jersey on June 16. With Ekitike injured and Mateta leading the line, are the goals really there for Deschamps?",
-      "team": "FRA",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/report/_/gameId/401864934"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/4/ivory-coast-beat-france-in-world-cup-warning-to-one-of-the-favourites"
-        },
-        {
-          "name": "France 24",
-          "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat"
-        }
-      ],
-      "expires_at": "2026-06-16T23:59:59Z"
-    },
-    {
-      "id": "sui-embolo-visa-cleared-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "חלוץ שוויץ ברייל אמבולו קיבל אישור כניסה לארצות הברית ב-5 ביוני לאחר עיכוב של יומיים הקשור לבדיקות רישום פלילי. הוא פיספס את טיסת הנבחרת לסן דייגו, ביקר בשגרירות האמריקאית בברן וקיבל אישור, וההתאחדות השוויצרית מסרה שיגיע בזמן לאימון ב-7 ביוני מול אוסטרליה. שוויץ פותחת את הגביע מול קטאר ב-13 ביוני.",
-      "en": "Switzerland striker Breel Embolo was cleared to travel to the United States on June 5 after a two-day visa delay tied to criminal-record checks. He missed the squad's flight to San Diego but visited the US Embassy in Bern and received approval; the Swiss federation says he will arrive in time for a June 7 warmup against Australia. Switzerland open their World Cup against Qatar on June 13.",
-      "team": "SUI",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48969072/switzerland-striker-embolo-gets-visa-us-world-cup"
-        },
-        {
-          "name": "Washington Post",
-          "url": "https://www.washingtonpost.com/sports/soccer/2026/06/04/world-cup-switzerland-embolo-visa/558e76d2-605c-11f1-9c46-d6211372eede_story.html"
-        },
-        {
-          "name": "Goal",
-          "url": "https://www.goal.com/en/lists/breel-embolo-switzerland-visa-approved-world-cup/blt2e796f14cc3331ed"
-        }
-      ],
-      "expires_at": "2026-06-13T23:59:59Z"
-    },
-    {
-      "id": "esp-yamal-fit-opener-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "מאמן ספרד לואיס דה לה פואנטה אישר שלמין יאמאל בדרך לשחק בפתיחת גביע העולם מול קאבו ורדה באטלנטה ב-15 ביוני, אם כי השחקן בן ה-18 ישב על הספסל במשחק האימון מול עיראק היום תוך סיום ההתאוששות מפציעת שריר ירך שנגרמה ב-22 באפריל. דה לה פואנטה הזהיר שייתכן שיאמאל יקבל בהתחלה רק כמה דקות, וספרד תעריך לקראת המשחק. האם אתם סומכים על אלופות אירופה להצית בגז מלא אם היוצר הראשי שלהן מתחיל לאט?",
-      "en": "Spain coach Luis de la Fuente confirmed Lamine Yamal is on track to play in the World Cup opener against Cape Verde in Atlanta on June 15, though the 18-year-old sat out today's warmup against Iraq while finishing his comeback from a left-hamstring strain sustained on April 22. De la Fuente cautioned Yamal may only get a cameo at first, and Spain will assess closer to the game. Do you trust the European champions to fire on all cylinders if their main creator starts slow?",
-      "team": "ESP",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente"
-        },
-        {
-          "name": "Washington Post",
-          "url": "https://www.washingtonpost.com/sports/soccer/2026/06/03/lamine-yamal-spain-world-cup/cbecee7c-5f5c-11f1-9c46-d6211372eede_story.html"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/spain-coach-confident-lamine-yamal-145809801.html"
-        }
-      ],
-      "expires_at": "2026-06-15T23:59:59Z"
-    },
-    {
       "id": "aut-baumgartner-out-no-replacement-2026-06-05",
       "type": "news",
       "confidence": "confirmed",
@@ -247,29 +270,6 @@
         {
           "name": "Flashscore",
           "url": "https://www.flashscore.com/news/soccer-world-championship-austria-s-christoph-baumgartner-ruled-out-of-world-cup-due-to-injury/rFdmLOLi/"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "irn-azmoun-excluded-uae-photo-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "איראן אישרה שהתוקף סרדר אזמון נעדר מסגל המונדיאל של 26 שחקנים לאחר שמדיית המדינה האיראנית כינתה בגידה את פרסום שלו באינסטגרם, המציג פגישה עם מוחמד בן ראשד אל-מקתום, שליט דובאי וראש ממשלת האמירויות. השחקן בן ה-31 עיגן את ההתקפה האיראנית לצד מהדי טארמי בקטאר 2022, ומשחק בלהק שבאב אל-אהלי שבאמירויות. האם ההתקפה האיראנית תתפקד בגביע עולם ללא הנבחר הוותיק ביותר שלה?",
-      "en": "Iran confirmed striker Sardar Azmoun is absent from their 26-man World Cup squad after Iranian state media branded his Instagram post, showing a meeting with Mohammed bin Rashid Al Maktoum, the ruler of Dubai and Prime Minister of the UAE, a betrayal. The 31-year-old anchored Iran's frontline alongside Mehdi Taremi at Qatar 2022 and plays club football for Shabab Al-Ahli in the UAE. Can Iran's attack function at a World Cup without their most experienced striker?",
-      "team": "IRN",
-      "sources": [
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/5/17/sardar-azmoun-left-out-as-iran-announce-world-cup-2026-squad"
-        },
-        {
-          "name": "Fox News",
-          "url": "https://www.foxnews.com/sports/sardar-azmoun-known-iranian-messi-left-countrys-world-cup-squad-accused-treason"
-        },
-        {
-          "name": "Seoul Economic Daily",
-          "url": "https://en.sedaily.com/sports/2026/06/02/iran-drops-azmoun-from-world-cup-squad-over-uae-photo"
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
