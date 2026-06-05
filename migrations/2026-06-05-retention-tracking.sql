@@ -31,8 +31,11 @@ alter table public.user_activity_daily enable row level security;
 revoke all on public.user_activity_daily from anon, authenticated;
 
 -- 2) record_activity: resolve caller from recovery code, stamp today ----------
--- Fire-and-forget from the client. Invalid code -> quiet {ok:false}, never raises
--- (it must not surface console errors on a best-effort heartbeat).
+-- Fire-and-forget from the client; never raises (must not surface console errors
+-- on a best-effort heartbeat). ALWAYS returns {ok:true} regardless of whether the
+-- code resolved -- a valid/invalid distinction here would be a recovery-code
+-- validity oracle. (login() is already the stronger oracle and codes are
+-- high-entropy, but this leaks nothing on a wide-open anon endpoint.)
 create or replace function public.record_activity(p_code text)
 returns jsonb
 language plpgsql
@@ -43,14 +46,13 @@ as $$
 declare v_uid uuid;
 begin
   v_uid := public._uid_from_code(p_code);
-  if v_uid is null then
-    return jsonb_build_object('ok', false);
+  if v_uid is not null then
+    insert into public.user_activity_daily(user_id, day)
+      values (v_uid, current_date)
+      on conflict (user_id, day) do nothing;
+    update public.users set last_active_at = now() where id = v_uid;
   end if;
-  insert into public.user_activity_daily(user_id, day)
-    values (v_uid, current_date)
-    on conflict (user_id, day) do nothing;
-  update public.users set last_active_at = now() where id = v_uid;
-  return jsonb_build_object('ok', true);
+  return jsonb_build_object('ok', true);  -- constant response: no validity oracle
 end$$;
 
 revoke all on function public.record_activity(text) from public;

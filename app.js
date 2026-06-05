@@ -1057,17 +1057,25 @@ function copyShareLink() {
 // ============================================================
 
 // v2.7.7: retention heartbeat. Calls record_activity at most once per UTC day
-// per browser (gated by localStorage) so we can compute DAU/WAU/MAU + cohort
-// retention. Best-effort: needs a stored recovery code, swallows all errors.
+// per browser so we can compute DAU/WAU/MAU + cohort retention. Best-effort:
+// needs a stored recovery code, swallows all errors. The "done for today" flag
+// is written ONLY on success, so a transient network failure retries on the next
+// dashboard visit instead of silently dropping the whole day; an in-memory guard
+// prevents duplicate in-flight calls within the same session.
+let _activityInFlight = false;
 function _recordActivityOncePerDay() {
   try {
     const code = localStorage.getItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE);
     if (!code || !supabaseClient) return;
-    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
-    if (localStorage.getItem('fb_activity_day') === today) return;
-    localStorage.setItem('fb_activity_day', today); // set first: avoid duplicate in-flight calls
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD (UTC, matches DB current_date)
+    if (localStorage.getItem('fb_activity_day') === today) return; // already recorded today
+    if (_activityInFlight) return;                                  // a call is already running this session
+    _activityInFlight = true;
     const bare = code.replace(/-/g, '');
-    supabaseClient.rpc('record_activity', { p_code: bare }).catch(() => {});
+    supabaseClient.rpc('record_activity', { p_code: bare })
+      .then(({ error }) => { if (!error) { try { localStorage.setItem('fb_activity_day', today); } catch (_) {} } })
+      .catch(() => {})
+      .finally(() => { _activityInFlight = false; });
   } catch (_) { /* best-effort */ }
 }
 
