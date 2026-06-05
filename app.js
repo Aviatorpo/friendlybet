@@ -7870,7 +7870,10 @@ function _bracketShareVersion() {
   // (_prewarmBracketOg), so the friend's scraper hits a warm ~0.3s render and
   // sees the full card. The token still changes when the PICKS change (the hash
   // covers positions 25-31), so an edited bracket still busts the preview cache.
-  return (h >>> 0).toString(36);
+  // The trailing CARD-LAYOUT version ('c2') changes the URL once whenever the OG
+  // card DESIGN changes, so WhatsApp/Facebook/edge re-scrape the corrected card
+  // instead of serving the previously-cached (overlapping) one. Bump on redesign.
+  return (h >>> 0).toString(36) + 'c2';
 }
 
 // Personalized public share URL for the current user's predictions. Friends
