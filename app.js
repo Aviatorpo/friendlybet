@@ -1323,28 +1323,35 @@ async function loadPundit() {
     //       when news AND pool are completely static.
     const PUNDIT_TARGET = 5;
     const POOL_SLOTS = 2; // the owner's layout: first 2 = this pool, next 3 = news
+    const NEWS_SLOTS = 3;
     const hourSeed = Math.floor(now / (60 * 60 * 1000));
-    const rotatedNews = _ppRotateByHour(newsItems, hourSeed);
 
-    // v2.6.97 layout (owner request): the first 2 items are about THIS pool, the
-    // next 3 are fresh general news (players / teams / tournament rules / stadiums
-    // / referees). The news WINDOW rotates by the hour, so with more news than
-    // slots the trailing 3 cycle through everything across the day — the feed
-    // changes hourly without relying on evergreen filler.
-    const poolPart = poolItems.slice(0, POOL_SLOTS);
-    const newsPart = rotatedNews.slice(0, PUNDIT_TARGET - poolPart.length);
-    let real = [...poolPart, ...newsPart];
+    // v2.7.3 layout (owner request): EXACTLY 2 items about THIS pool + 3 relevant
+    // news, and the 3 news must be DIFFERENT every hour. So instead of rotating
+    // the news window by one item per hour (which left 2 of 3 unchanged), we PAGE
+    // through the news pool in non-overlapping windows of NEWS_SLOTS, advancing a
+    // full page each hour. With the deep ~10-item pool the agent banks, that means
+    // a fresh trio every hour, cycling through the whole pool across the day.
     const seen = new Set();
-    real = real.filter(it => it && it.id && !seen.has(it.id) && (seen.add(it.id), true));
-
-    // Backfill a shortfall (small pool / too few news) in priority order:
-    // leftover news, then leftover pool buzz, then computed data (fixtures/
-    // results/countdown), then hourly-rotating evergreen lines as a last resort.
-    if (real.length < PUNDIT_TARGET) {
-      for (const it of [...rotatedNews.slice(PUNDIT_TARGET - poolPart.length), ...poolItems.slice(POOL_SLOTS), ...nonNews]) {
-        if (real.length >= PUNDIT_TARGET) break;
-        if (it && it.id && !seen.has(it.id)) { real.push(it); seen.add(it.id); }
+    const take = (list, n) => {
+      const out = [];
+      for (const it of (list || [])) {
+        if (out.length >= n) break;
+        if (it && it.id && !seen.has(it.id)) { seen.add(it.id); out.push(it); }
       }
+      return out;
+    };
+
+    const poolPart = take(poolItems, POOL_SLOTS);
+    let newsPart = take(_ppPageByHour(newsItems, hourSeed, NEWS_SLOTS), NEWS_SLOTS);
+
+    let real = [...poolPart, ...newsPart];
+
+    // Graceful fill so the card always holds 5 (never fabricates pool claims):
+    // first more verified news (the rest of the paged pool, then unpaged), then
+    // leftover pool buzz, then computed data, then hourly-rotating evergreen.
+    if (real.length < PUNDIT_TARGET) {
+      real = real.concat(take([...newsItems, ...poolItems.slice(POOL_SLOTS), ...nonNews], PUNDIT_TARGET - real.length));
     }
     if (real.length < PUNDIT_TARGET) {
       real = real.concat(_evergreenPundit(PUNDIT_TARGET - real.length, hourSeed, real));
@@ -1447,6 +1454,13 @@ async function buildPoolPundit() {
       he: 'אתה הראשון בהימור! תזמין כמה חברים שיהיה מעניין 😎',
       en: "You're first in the pool! Invite a few friends to make it interesting 😎",
     }]);
+    // 2nd solo line so the pool section always fills its 2 slots (owner layout).
+    push('pool-solo-ready', 2, [
+      { he: 'בינתיים אתה לבד בהימור — השלם את כל הניחושים ותהיה מוכן לפני כולם 📋',
+        en: "For now you're solo in the pool — complete all your picks and be ready before anyone else 📋" },
+      { he: 'הפול שלך מחכה ליריבים. נעל בחירות עכשיו ושלח לינק לחברים 🔗',
+        en: 'Your pool is waiting for rivals. Lock in your picks now and send friends the link 🔗' },
+    ]);
   }
 
   // Personal nudge: others are betting, the viewer isn't (pre-tournament only).
@@ -1564,6 +1578,20 @@ function _ppRotateByHour(arr, hourSeed) {
   if (!Array.isArray(arr) || arr.length <= 1) return Array.isArray(arr) ? arr.slice() : [];
   const off = ((hourSeed % arr.length) + arr.length) % arr.length;
   return arr.slice(off).concat(arr.slice(0, off));
+}
+
+// Returns a window of `size` items whose start offset advances by a FULL `size`
+// every hour (so consecutive hours show a NON-overlapping set, until the pool is
+// exhausted). This is what makes the 3 news lines genuinely DIFFERENT each hour
+// rather than the same trio reshuffled. With a pool deeper than `size` it cycles
+// through every item across the day. Returns the whole array when it is <= size.
+function _ppPageByHour(arr, hourSeed, size) {
+  const a = Array.isArray(arr) ? arr.slice() : [];
+  if (a.length <= size) return a;
+  const off = (((hourSeed * size) % a.length) + a.length) % a.length;
+  const out = [];
+  for (let i = 0; i < size; i++) out.push(a[(off + i) % a.length]);
+  return out;
 }
 
 function _evergreenPundit(count, hourSeed, exclude) {
