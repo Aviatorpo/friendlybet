@@ -6830,31 +6830,37 @@ function _renderLeaderboardCard(cv, qr, opts) {
   for (const ln of lines) { ctx.fillText(ln, W / 2, hy); hy += headPx + 12; }
   ctx.restore();
 
-  // podium (top 3): order 2nd, 1st, 3rd
+  // podium (top 3): three non-overlapping columns 2nd | 1st | 3rd, centered as a
+  // group. Bottoms share one floor line; the per-place height makes the staircase
+  // (1st tallest, then 2nd, then 3rd LOWER than 2nd). Medal sits near each riser's
+  // top; name/score/label are pinned to a shared baseline so nothing clips out.
   const podium = (opts.podium || []).slice(0, 3);
   const p1 = podium[0], p2 = podium[1], p3 = podium[2];
-  const baseY = Math.max(hy + 70, 560);
-  label((opts.podiumLabel || 'STANDINGS').toUpperCase(), baseY - 40);
+  const colW = 196, gap = 16, GROUP = colW * 3 + gap * 2;
+  const x0 = (W - GROUP) / 2;
+  const baseY = Math.max(hy + 44, 500);
+  const H1 = 300, H2 = 232, H3 = 196;        // riser heights (1st > 2nd > 3rd)
+  const floorY = baseY + 50 + H1;            // common bottom edge
+  label((opts.podiumLabel || 'STANDINGS').toUpperCase(), baseY);
+  const nameY = floorY - 96, scoreY = floorY - 48, ptsY = floorY - 20;
   const cols = [
-    { u: p2, rank: 2, h: 230, x: W / 2 - 300, medal: '🥈' },
-    { u: p1, rank: 1, h: 300, x: W / 2 - 110, medal: '🥇' },
-    { u: p3, rank: 3, h: 190, x: W / 2 + 110, medal: '🥉' },
+    { u: p2, rank: 2, h: H2, x: x0, medal: '🥈' },
+    { u: p1, rank: 1, h: H1, x: x0 + colW + gap, medal: '🥇' },
+    { u: p3, rank: 3, h: H3, x: x0 + 2 * (colW + gap), medal: '🥉' },
   ];
-  const colW = 200, floorY = baseY + 360;
   cols.forEach(c => {
     if (!c.u) return;
-    const x = c.x, top = floorY - c.h;
-    rr(x, top, colW, c.h, 18);
+    const top = floorY - c.h, cx = c.x + colW / 2;
+    rr(c.x, top, colW, c.h, 18);
     ctx.fillStyle = c.rank === 1 ? 'rgba(217,180,106,0.16)' : 'rgba(255,255,255,0.05)';
     ctx.fill(); ctx.lineWidth = c.rank === 1 ? 3 : 2;
     ctx.strokeStyle = c.rank === 1 ? GOLD : 'rgba(217,180,106,0.4)'; ctx.stroke();
-    const cx = x + colW / 2;
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.font = '54px ' + EMOJI; ctx.fillText(c.medal, cx, top + 50);
-    ctx.fillStyle = INK; fitFont(c.u.nickname || '?', colW - 24, 34, '800', 'Heebo,Sora,sans-serif');
-    ctx.fillText(c.u.nickname || '?', cx, top + 116);
-    ctx.fillStyle = GOLD_LT; ctx.font = '800 40px Sora,sans-serif'; ctx.fillText(String(c.u.total_score || 0), cx, top + 168);
-    ctx.fillStyle = MUTED; ctx.font = '600 20px Heebo,sans-serif'; ctx.fillText(opts.pts || 'pts', cx, top + 200);
+    ctx.font = '50px ' + EMOJI; ctx.fillText(c.medal, cx, top + 46);
+    ctx.fillStyle = INK; fitFont(c.u.nickname || '?', colW - 30, 32, '800', 'Heebo,Sora,sans-serif');
+    ctx.fillText(c.u.nickname || '?', cx, nameY);
+    ctx.fillStyle = GOLD_LT; ctx.font = '800 40px Sora,sans-serif'; ctx.fillText(String(c.u.total_score || 0), cx, scoreY);
+    ctx.fillStyle = MUTED; ctx.font = '600 20px Heebo,sans-serif'; ctx.fillText(opts.pts || 'pts', cx, ptsY);
   });
 
   // footer: QR -> featured user's bracket
