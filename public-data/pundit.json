@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-05T12:02:29.184Z",
-  "count": 6,
+  "updatedAt": "2026-06-05T12:11:15.179Z",
+  "count": 11,
   "items": [
     {
       "id": "bra-neymar-calf-out-opener-2026-06-05",
@@ -108,6 +108,113 @@
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "esp-yamal-opener-fitness-2026-06-05",
+      "type": "news",
+      "confidence": "reported",
+      "he": "למינה ימאל ידלג על משחקי ההכנה של ספרד בגלל בעיה בשריר הירך, אך המאמן לואיס דה לה פואנטה מעריך שיהיה זמין לפתיחה מול כף ורדה ב-15 ביוני. כמה רחוק תהמרו שספרד תגיע הפעם?",
+      "en": "Lamine Yamal will sit out Spain's warm-up matches with a hamstring issue, but coach Luis de la Fuente expects him available for the June 15 opener against Cape Verde. How far are you backing Spain to go this time?",
+      "team": "ESP",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente"
+        },
+        {
+          "name": "Sports Illustrated",
+          "url": "https://www.si.com/soccer/why-lamine-yamal-isnt-playing-spain-vs-iraq-6-4-26"
+        }
+      ],
+      "expires_at": "2026-06-15T23:59:59Z"
+    },
+    {
+      "id": "eng-foden-palmer-dropped-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "תומאס טוכל השמיט הן את פיל פודן והן את קול פאלמר מנבחרת אנגליה לגביע העולם, בשל ירידה בכושר בחצי השני של העונה. שני המוכשרים ביותר ביצירה בפרמייר ליג יצפו מהבית. האם לאנגליה יש מספיק ניצוץ קדימה כדי להגיע רחוק בטורניר?",
+      "en": "Thomas Tuchel has left both Phil Foden and Cole Palmer out of England's final 26-man World Cup squad, citing a dip in club form over the second half of the season. Two of the Premier League's most gifted creators will watch from home. Does England have enough spark in the final third to go deep in this tournament?",
+      "team": "ENG",
+      "sources": [
+        {
+          "name": "Sky Sports",
+          "url": "https://www.skysports.com/football/news/12016/13543455/england-world-cup-squad-announcement-ruthless-thomas-tuchel-leaves-big-names-out-of-26-man-squad"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48841808/england-2026-world-cup-squad-foden-palmer-toney-magure-madueke-watkins-kane-stones-alexander-arnold"
+        },
+        {
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com/stories/soccer/england-2026-fifa-world-cup-roster"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "saot-10cm-threshold-wc2026-2026-06-03",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "פיפ\"א אישרה ב-3 ביוני שמערכת הנבדל החצי-אוטומטית המשודרגת תתריע לעוזר השופט על כל עבירה מעל 10 סנטימטר, ירידה ניכרת מסף ה-50 ס\"מ שהיה בקטאר 2022. כל 1,248 שחקני הסגלים סרוקים בתלת-מימד לטובת אווטרי הבינה המלאכותית. פחות ויכוחים על קריאות גבוליות, או מקור חדש למחלוקות?",
+      "en": "FIFA confirmed on June 3 that its upgraded semi-automated offside system will audio-alert assistant referees for any infringement greater than 10 centimeters, down from the 50-centimeter threshold used at Qatar 2022. All 1,248 squad players have been 3D-scanned to power the AI avatars behind the calls. Fewer marginal calls to argue about, or a fresh source of controversy?",
+      "team": null,
+      "sources": [
+        {
+          "name": "TNT Sports",
+          "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml"
+        },
+        {
+          "name": "Inside World Football",
+          "url": "https://www.insideworldfootball.com/2026/06/03/fifa-upgrades-saot-and-ball-tracking-as-2026-match-officials-given-new-suite-of-tech-tools"
+        },
+        {
+          "name": "HITC",
+          "url": "https://www.hitc.com/fifa-unveil-new-var-technology-for-offsides-that-will-be-used-by-assistants-at-world-cup-2026/"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "wc2026-heat-risk-fifpro-afternoon-2026-06-05",
+      "type": "news",
+      "confidence": "reported",
+      "he": "ניתוח של NPR מצא שיותר משליש ממשחקי המונדיאל בסיכון לחום מסוכן, כשמיאמי, דאלאס וקנזס סיטי מסומנות במשחקי צהריים. איגוד השחקנים FIFPRO מצביע על כ-28 מעלות WBGT כרף שבו יש לשקול דחייה, ופיפ\"א הוסיפה הפסקות קירור. האם החום ישפיע על הקבוצות שתהמרו עליהן?",
+      "en": "An NPR analysis finds more than a third of World Cup matches are at risk of dangerous heat, with Miami, Dallas and Kansas City flagged for afternoon kickoffs. Players' union FIFPRO points to around 28C WBGT as the level where postponement should be considered, and FIFA has added extra cooling breaks. Could the heat sway the teams you back?",
+      "team": null,
+      "sources": [
+        {
+          "name": "NPR",
+          "url": "https://www.npr.org/2026/06/04/nx-s1-5742519/world-cup-fifa-hot-weather-risk-climate-miami"
+        },
+        {
+          "name": "Football365",
+          "url": "https://www.football365.com/news/2026-world-cup-climate-heat-polar-opposite"
+        }
+      ],
+      "expires_at": "2026-06-25T23:59:59Z"
+    },
+    {
+      "id": "arg-messi-managed-load-opener-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "מסי עובד על תוכנית אישית, בנפרד מקבוצת הנבחרת הארגנטינאית, וזאת לניהול עומס בשריר הירך השמאלית שהופיע ב-24 במאי. המאמן סקלוני אומר שהמטרה היא להיות מוכן לפתיחה מול אלג'יריה ב-16 ביוני, אך הוא ידלג על שני משחקי האימון. האם אלוף העולם יגיע בשיא כוחו?",
+      "en": "Messi is working through an individual programme away from Argentina's main group, managing left-hamstring fatigue first felt on May 24. Coach Scaloni says the plan is to have him ready for the June 16 opener against Algeria, though he will skip both warm-up matches. Will the reigning champion arrive at full strength?",
+      "team": "ARG",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48945340/messi-trains-own-argentina-opening-session-ahead-world-cup"
+        },
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/3/messi-trains-alone-as-argentina-hold-first-world-cup-practice-session"
+        },
+        {
+          "name": "World Soccer Talk",
+          "url": "https://worldsoccertalk.com/amp/world-cup/scaloni-explains-messis-2026-world-cup-workload-management-following-injury-with-inter-miami/"
+        }
+      ],
+      "expires_at": "2026-06-16T00:00:00Z"
     },
     {
       "id": "countdown-2026-06-05",
