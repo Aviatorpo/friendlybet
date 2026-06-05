@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-05T18:21:01.609Z",
+  "updatedAt": "2026-06-05T18:54:27.800Z",
   "count": 12,
   "items": [
     {
@@ -252,12 +252,27 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "countdown-2026-06-05",
-      "type": "countdown",
+      "id": "por-jota-27plus1-squad-2026-05-19",
+      "type": "news",
       "confidence": "confirmed",
-      "he": "המונדיאל מתחיל בעוד 6 ימים! כל ההימורים עוד פתוחים, מי תהיה ההפתעה של 2026?",
-      "en": "The World Cup kicks off in 6 days! Every prediction is still open. Who'll be the surprise of 2026?",
-      "sources": []
+      "he": "סגל ה-26 של פורטוגל בגביע העולם נושא שם 27 קבוע. המאמן רוברטו מרטינז הקדיש את הטורניר כולו לדיוגו ז'וטה, כנף ליברפול שנהרג בתאונת דרכים בספרד ביולי 2025 בגיל 28, כינה את הבחירה '27 שחקנים ועוד אחד' ואמר שמקומו של ז'וטה בקבוצה לא נעלם אי-פעם. מרטינז הוסיף שהמוטיבציה של הנבחרת כולה היא לנצח בגביע העולם עבורו, ופיפ\"א פרסמה מחווה רשמית. האם האבל הלאומי יהפוך לדלק שיקרב את פורטוגל לזכייה ראשונה?",
+      "en": "Portugal's 26-man World Cup squad carries a permanent 27th name. Coach Roberto Martinez dedicated the tournament to Diogo Jota, the Liverpool winger killed in a car crash in Spain in July 2025 at age 28, naming the selection '27 players plus one' and saying Jota's place in the group never disappeared. Martinez said the squad's entire motivation is to win the World Cup for him, and FIFA issued a formal tribute. Can a nation's grief become the fuel that finally gets Portugal over the finish line?",
+      "team": "POR",
+      "sources": [
+        {
+          "name": "FIFA",
+          "url": "https://www.fifa.com/en/news/articles/diogo-jota-tribute"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/46164741/portugal-want-2026-world-cup-success-diogo-jota-roberto-martinez"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/portugal-emotional-jota-gesture-world-133000555.html"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
     }
   ]
 }
