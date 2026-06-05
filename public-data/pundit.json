@@ -1,7 +1,53 @@
 {
-  "updatedAt": "2026-06-05T02:20:59.646Z",
+  "updatedAt": "2026-06-05T03:19:14.568Z",
   "count": 6,
   "items": [
+    {
+      "id": "france-ci-friendly-loss-2026-06-04",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "לה-בלה נזקקו לזעזוע וחוף השנהב סיפק אחד. צרפת נפלה 1-2 בידידות בנאנט ב-4 ביוני, כשגואלה דואה ועמאד הפכו את התוצאה בחצי השני לאחר שריאן שרקי פתח את התיקו. חוף השנהב נכנסים לפתיחת המונדיאל שלהם ב-15 ביוני מול אקוואדור עם מומנטום גדול. האם דה-שאמפ יוכל לייצב את קבוצתו לפני שצרפת פוגשת את סנגל ב-16 ביוני?",
+      "en": "Les Bleus needed a shakeup and Ivory Coast delivered one. France fell 1-2 in a Nantes friendly on June 4, with Guéla Doué and Amad turning the match around after Rayan Cherki's opener. Ivory Coast head into their June 15 World Cup opener against Ecuador with real momentum. Can Deschamps settle his side before France face Senegal on June 16?",
+      "team": null,
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/match/_/gameId/401864934/ivory-coast-france"
+        },
+        {
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com/soccer/friendlies-men-france-vs-ivory-coast-jun-04-2026-game-boxscore-815187"
+        },
+        {
+          "name": "beIN Sports",
+          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/live-blog-france-vs-ivory-coast-live-score-and-goals-from-mbapp%C3%A9-s-international-friendly-2026-06-04"
+        }
+      ],
+      "expires_at": "2026-06-16T00:00:00Z"
+    },
+    {
+      "id": "spain-iraq-friendly-draw-2026-06-04",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "ספרד ביקשה עידוד ועיראק סירבה לספק אחד. לה-ראחה הוחזקה 1-1 ב-A Coruna ב-4 ביוני, כשמרצ'ס דוסקי השווה לאחר שפרן טורס פתח, תוצאה לטובת קבוצה שמגיעה לאך מונדיאל השני שלה בכל ההיסטוריה. ספרד תפגוש את כף ורדה באטלנטה ב-15 ביוני. עד כמה חדה תהיה קבוצתו של דה-לה פואנטה כשהטורניר האמיתי מתחיל?",
+      "en": "Spain needed a confidence booster and Iraq refused to provide one. La Roja were held 1-1 in A Coruna on June 4 as Merchas Doski leveled Ferran Torres' opener, a result for a side that is at only its second-ever World Cup. Spain face Cape Verde in Atlanta on June 15. How sharp will De la Fuente's side be when the real thing starts?",
+      "team": null,
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/match/_/gameId/401871471/iraq-spain"
+        },
+        {
+          "name": "Bolavip",
+          "url": "https://bolavip.com/en/soccer/spain-vs-iraq-live-international-friendly-before-2026-world-cup"
+        },
+        {
+          "name": "Flashscore",
+          "url": "https://www.flashscore.com/news/spain-iraq-international-friendly-june-4-2026/jJhmvPgR/"
+        }
+      ],
+      "expires_at": "2026-06-15T00:00:00Z"
+    },
     {
       "id": "neymar-calf-miss-opener-2026-06-04",
       "type": "news",
@@ -20,44 +66,6 @@
         }
       ],
       "expires_at": "2026-06-13T00:00:00Z"
-    },
-    {
-      "id": "messi-hamstring-solo-training-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "מסי מתאמן לבדו כשארגנטינה מקימה מחנה בקנזס סיטי. אלוף העולם הגיע לבסיס הצפון-אמריקאי עם תלונה על שריר הירך השמאלי ועבד בנפרד ב-3 ביוני בעוד חבריו ביצעו אימונים מלאים. ההידוק מתוארך למשחק אינטר מיאמי ב-24 במאי. סגל סקאלוני אומר שתוכנית הדרגתית מכוונת לפתיחה מול אלג'יריה ב-16 ביוני. האם בן ה-38 יוכל להיות חד מספיק בזמן?",
-      "en": "Messi training alone as Argentina set up camp in Kansas City. The reigning champion arrived at their North American base with a left hamstring complaint and worked on his own on June 3 while teammates ran full sessions. The tightness dates to a May 24 Inter Miami match. Scaloni's staff say a gradual plan targets the opener against Algeria on June 16. Can the 38-year-old be sharp enough in time?",
-      "team": "ARG",
-      "sources": [
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/3/messi-trains-alone-as-argentina-hold-first-world-cup-practice-session"
-        },
-        {
-          "name": "CBS Sports",
-          "url": "https://www.cbssports.com/soccer/news/lionel-messi-injury-argentina-world-cup-2026-inter-miami/"
-        }
-      ],
-      "expires_at": "2026-06-16T00:00:00Z"
-    },
-    {
-      "id": "azteca-triple-world-cup-mex-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "שישה ימים לפתיחה, והבמה מוכנה במקסיקו סיטי. אסטדיו אצטקה יאחסן את מקסיקו נגד דרום אפריקה ב-11 ביוני, מה שיהפוך אותו לאצטדיון היחיד שאירח שלוש פתיחות גביע עולם בהיסטוריה, לאחר 1970 ו-1986. בגובה 2,200 מטר מעל פני הים, האוויר הדליל נותן לאל-טרי יתרון אמיתי. האם כל קבוצה מבקרת יכולה באמת להתכונן לגובה הזה?",
-      "en": "Six days out and the stage is set in Mexico City. Estadio Azteca hosts Mexico versus South Africa on June 11, making it the only stadium ever to stage three FIFA World Cup opening matches, after 1970 and 1986. Sitting at 2,200 metres above sea level, the thin air is a genuine home-pitch edge for El Tri. Can any visiting side truly prepare for that altitude?",
-      "team": "MEX",
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026"
-        },
-        {
-          "name": "beIN Sports",
-          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/estadio-azteca-makes-history-with-three-fifa-world-cup-opening-matches-2026-05-28"
-        }
-      ],
-      "expires_at": "2026-06-12T00:00:00Z"
     },
     {
       "id": "ifab-mouth-red-card-wc2026-2026-06-05",
@@ -79,23 +87,23 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "format-best-third-wc2026-2026-06-05",
+      "id": "curacao-smallest-nation-wc2026-2026-06-05",
       "type": "news",
       "confidence": "confirmed",
-      "he": "כלל חשוב שכל מי שמתחזה חייב להכיר: בפורמט ה-12 גרופים עם 48 קבוצות, לא כל מי שמסיים שלישי נפרד. שמונה הטובים מבין 12 הצוותים השלישיים מתקדמים לשלב 32, לפי נקודות, הפרש שערים ושערים שנכנסו. התחלה איטית בגרופ לא חייבת להיות סוף הדרך.",
-      "en": "A key rule every predictor should know: in the 12-group, 48-team format, not all third-placed teams go home. The eight best of the 12 group thirds advance to the round of 32, ranked first by points, then goal difference, then goals scored. A slow start does not have to mean the end of the road.",
-      "team": null,
+      "he": "ההיסטוריה נכתבת עוד לפני שכדור אחד ייבעט. קוראסאו, עם אוכלוסיה של 150,000 בלבד, יהפכו לאומה הקטנה ביותר מבחינת אוכלוסיה שהשתתפה אי פעם בגביע העולם של פיפ\"א כשיפגשו את גרמניה בהיוסטון ב-14 ביוני. זאת שבירת השיא שאיסלנד הציבה ב-2018, כשהגיעה עם אוכלוסיה של כ-350,000. האם הקבוצה הקריבית תכתוב אגדה?",
+      "en": "History is made before a single ball is kicked. Curacao, with a population of just 150,000 people, will become the smallest nation by population ever to appear at a FIFA World Cup when they face Germany in Houston on June 14. That beats the record Iceland set in 2018, when they arrived with a population of around 350,000. Can the Caribbean side write a fairy-tale?",
+      "team": "CUW",
       "sources": [
         {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/groups-how-teams-qualify-tie-breakers"
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/5/12/what-to-know-about-curacao-at-the-fifa-world-cup-2026"
         },
         {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48703925/world-cup-group-stage-explained-tiebreakers-third-place-teams"
+          "name": "OneFootball",
+          "url": "https://onefootball.com/en/news/preview-curacao-to-write-history-as-smallest-ever-world-cup-nation-42961405"
         }
       ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "expires_at": "2026-06-20T00:00:00Z"
     },
     {
       "id": "countdown-2026-06-05",
