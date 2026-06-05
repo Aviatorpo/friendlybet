@@ -107,6 +107,12 @@ const TRANSLATIONS = {
     
     // === Dashboard ===
     'dashboard.greeting': 'היי',
+    'dashboard.countdown.title': 'המשחק הראשון מתחיל בעוד',
+    'dashboard.countdown.live': '🔴 הטורניר התחיל!',
+    'dashboard.countdown.days': 'ימים',
+    'dashboard.countdown.hours': 'שעות',
+    'dashboard.countdown.minutes': 'דקות',
+    'dashboard.countdown.seconds': 'שניות',
     'pundit.title': 'הפרשן',
     'pundit.badge.confirmed': 'מאומת',
     'pundit.badge.reported': 'מדווח',
@@ -1348,6 +1354,12 @@ const TRANSLATIONS = {
     
     // === Dashboard ===
     'dashboard.greeting': 'Hi',
+    'dashboard.countdown.title': 'First match kicks off in',
+    'dashboard.countdown.live': '🔴 The tournament has started!',
+    'dashboard.countdown.days': 'days',
+    'dashboard.countdown.hours': 'hrs',
+    'dashboard.countdown.minutes': 'min',
+    'dashboard.countdown.seconds': 'sec',
     'pundit.title': 'The Pundit',
     'pundit.badge.confirmed': 'Confirmed',
     'pundit.badge.reported': 'Reported',

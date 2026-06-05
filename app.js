@@ -1165,7 +1165,84 @@ async function goToDashboard() {
   // The Pundit - live rotating commentary (fire-and-forget, never blocks the dashboard)
   renderPundit();
 
+  // Countdown to the first match (pre-tournament only). Fire-and-forget: it
+  // resolves the real kickoff from matches.json then ticks every second.
+  initDashboardCountdown(tournamentStarted);
+
   showScreen('user-dashboard-screen');
+}
+
+// ============================================================
+// Countdown to first match (v2.7.1)
+// ============================================================
+// A live ticking banner at the top of the dashboard that builds urgency to
+// finish predictions before the pool auto-locks at kickoff. Shown only before
+// the tournament starts; once kickoff passes it flips to a "tournament has
+// started" line and stops. The kickoff datetime is read from the same
+// matches.json snapshot the rest of the app uses (earliest match_date), so it
+// stays accurate to the minute even if FIFA shifts the schedule; falls back to
+// a constant if the snapshot is unavailable.
+const FIRST_MATCH_FALLBACK_ISO = '2026-06-11T16:00:00-06:00'; // opening match, CDMX time
+let _countdownTimer = null;
+let _countdownKickoffMs = null;
+
+async function _resolveFirstKickoffMs() {
+  if (_countdownKickoffMs) return _countdownKickoffMs;
+  let ms = Date.parse(FIRST_MATCH_FALLBACK_ISO);
+  try {
+    const matches = await fetchMatchesFromCDN(5 * 60 * 1000);
+    if (Array.isArray(matches) && matches.length) {
+      const earliest = matches
+        .map(m => Date.parse(m.match_date))
+        .filter(t => !isNaN(t))
+        .sort((a, b) => a - b)[0];
+      if (earliest) ms = earliest;
+    }
+  } catch (_) { /* keep fallback */ }
+  _countdownKickoffMs = ms;
+  return ms;
+}
+
+async function initDashboardCountdown(tournamentStarted) {
+  const banner = document.getElementById('dashboard-countdown');
+  if (!banner) return;
+  if (_countdownTimer) { clearInterval(_countdownTimer); _countdownTimer = null; }
+
+  // Once any score exists in the pool the tournament is clearly underway -
+  // hand the space over to the stats card and don't show the countdown.
+  if (tournamentStarted) { banner.style.display = 'none'; return; }
+
+  const kickoff = await _resolveFirstKickoffMs();
+  const tick = () => {
+    const diff = kickoff - Date.now();
+    if (diff <= 0) {
+      // Kicked off - flip to a live line and stop ticking.
+      banner.classList.add('is-live');
+      const clock = document.getElementById('countdown-clock');
+      const label = document.getElementById('countdown-label');
+      if (clock) clock.style.display = 'none';
+      if (label) label.textContent = t('dashboard.countdown.live');
+      if (_countdownTimer) { clearInterval(_countdownTimer); _countdownTimer = null; }
+      return;
+    }
+    const secs = Math.floor(diff / 1000);
+    const d = Math.floor(secs / 86400);
+    const h = Math.floor((secs % 86400) / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    const s = secs % 60;
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    set('cd-days', d);
+    set('cd-hours', String(h).padStart(2, '0'));
+    set('cd-mins', String(m).padStart(2, '0'));
+    set('cd-secs', String(s).padStart(2, '0'));
+  };
+
+  banner.classList.remove('is-live');
+  const clock = document.getElementById('countdown-clock');
+  if (clock) clock.style.display = '';
+  banner.style.display = '';
+  tick();
+  _countdownTimer = setInterval(tick, 1000);
 }
 
 // ============================================================

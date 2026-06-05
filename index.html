@@ -1450,6 +1450,24 @@ function loadTablerFallback() {
            The CTA is now the single, enlarged primary action. The stats card
            below still appears once the tournament starts. -->
 
+      <!-- Countdown to first match (v2.7.1): live ticking banner that builds
+           urgency to finish predictions before the pool auto-locks at kickoff.
+           Hidden by default; shown by initDashboardCountdown() only pre-
+           tournament. Kickoff time is read from matches.json (earliest
+           match_date), falling back to a constant. -->
+      <div class="dashboard-countdown" id="dashboard-countdown" style="display:none;">
+        <div class="countdown-label" id="countdown-label" data-i18n="dashboard.countdown.title">המשחק הראשון מתחיל בעוד</div>
+        <div class="countdown-clock" id="countdown-clock">
+          <div class="countdown-unit"><span class="countdown-num" id="cd-days">0</span><span class="countdown-cap" data-i18n="dashboard.countdown.days">ימים</span></div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-unit"><span class="countdown-num" id="cd-hours">0</span><span class="countdown-cap" data-i18n="dashboard.countdown.hours">שעות</span></div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-unit"><span class="countdown-num" id="cd-mins">0</span><span class="countdown-cap" data-i18n="dashboard.countdown.minutes">דקות</span></div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-unit"><span class="countdown-num" id="cd-secs">0</span><span class="countdown-cap" data-i18n="dashboard.countdown.seconds">שניות</span></div>
+        </div>
+      </div>
+
       <!-- User Stats Card (hidden until tournament starts) -->
       <div class="dashboard-stats" id="dashboard-stats" style="display:none;">
         <div class="stat-block">
@@ -2988,7 +3006,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.7.0</span>
+      <span class="menu-version">v2.7.1</span>
     </div>
   </div>
 
