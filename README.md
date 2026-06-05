@@ -4,9 +4,9 @@
 
 # FriendlyBet Live ⚽🚀
 
-### The free, open-source, privacy-first way to run a FIFA World Cup 2026 prediction pool with your friends.
+### The free, ad-free, open-source, privacy-first way to run a FIFA World Cup 2026 prediction pool with your friends.
 
-Create a private pool, share one link, predict the groups and the full knockout bracket, and climb a live leaderboard. No signups, no ads, no trackers, no money. Built with pure Vanilla JavaScript and Supabase, shipped as an installable PWA.
+Create a private pool, share one link, predict the groups and the full knockout bracket, and climb a live leaderboard. There is no sign-up wall — no email, no ads, no trackers, no money — just the fastest, most private way to play with friends. Built with pure Vanilla JavaScript and Supabase, shipped as an installable PWA.
 
 <br/>
 
