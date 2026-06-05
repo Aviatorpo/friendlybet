@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-05T17:29:27.609Z",
-  "count": 11,
+  "updatedAt": "2026-06-05T18:21:01.609Z",
+  "count": 12,
   "items": [
     {
       "id": "irn-visa-us-irgc-2026-06-05",
@@ -117,8 +117,8 @@
       "id": "arg-messi-managed-load-opener-2026-06-05",
       "type": "news",
       "confidence": "confirmed",
-      "he": "מסי עובד על תוכנית אישית, בנפרד מקבוצת הנבחרת הארגנטינאית, וזאת לניהול עומס בשריר הירך השמאלית שהופיע ב-24 במאי. המאמן סקלוני אומר שהמטרה היא להיות מוכן לפתיחה מול אלג'יריה ב-16 ביוני, אך הוא ידלג על שני משחקי האימון. האם אלוף העולם יגיע בשיא כוחו?",
-      "en": "Messi is working through an individual programme away from Argentina's main group, managing left-hamstring fatigue first felt on May 24. Coach Scaloni says the plan is to have him ready for the June 16 opener against Algeria, though he will skip both warm-up matches. Will the reigning champion arrive at full strength?",
+      "he": "מסי עובד על תוכנית אישית, בנפרד מקבוצת הנבחרת הארגנטינאית, וזאת לניהול עומס בשריר הירך השמאלית שהופיע ב-24 במאי. המאמן סקלוני אומר שהמטרה היא להיות מוכן לפתיחה מול אלג'יריה ב-16 ביוני, אך הוא ידלג על שני משחקי האימון. סקלוני הודה גם שמסי לא יצטרף למחנה בכשירות מלאה, וציין שהגעה ל-100 אחוז לפני יום הפתיחה לא הייתה ריאלית מלכתחילה. האם אלוף העולם יגיע בשיא כוחו?",
+      "en": "Messi is working through an individual programme away from Argentina's main group, managing left-hamstring fatigue first felt on May 24. Coach Scaloni says the plan is to have him ready for the June 16 opener against Algeria, though he will skip both warm-up matches. Scaloni has also admitted Messi will not join camp fully fit, noting that reaching 100 percent before day one was never realistic. Will the reigning champion arrive at full strength?",
       "team": "ARG",
       "sources": [
         {
@@ -130,8 +130,8 @@
           "url": "https://www.aljazeera.com/sports/2026/6/3/messi-trains-alone-as-argentina-hold-first-world-cup-practice-session"
         },
         {
-          "name": "World Soccer Talk",
-          "url": "https://worldsoccertalk.com/amp/world-cup/scaloni-explains-messis-2026-world-cup-workload-management-following-injury-with-inter-miami/"
+          "name": "Goal.com",
+          "url": "https://www.goal.com/en/lists/lionel-messi-won-t-join-argentina-world-cup-squad-fully-fit-admits-lionel-scaloni/bltdd2d68668cc7337d"
         }
       ],
       "expires_at": "2026-06-16T00:00:00Z"
@@ -178,6 +178,29 @@
         {
           "name": "FourFourTwo",
           "url": "https://www.fourfourtwo.com/competition/every-new-fifa-rule-at-the-2026-world-cup-goalkeeper-timeout-ban-five-second-countdowns-and-var-offsides-whats-changed"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "ifab-var-corners-second-yellow-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "IFAB אישרה שה-VAR בגביע העולם 2026 יקבל שלושה תחומי התערבות חדשים: כרטיסים צהובים שניים שניתנו בשגיאה, מקרי זיהוי שגוי שבהם כורטס שחקן הלא נכון, ובעיטות פינה שניתנו שלא כדין. הבודקים יוכלו גם לבחון אם תוקף חוסם מגן לפני ביצוע בעיטה נייחת. בדיקות הפינה חלות רק על שגיאות בוטות ואסורות לאחר את חידוש המשחק. הסמכות המורחבת משלשת את טווח ה-VAR לעומת טורנירים קודמים - האם היא תבטל את ההחלטות השנויות ביותר במחלוקת, או פשוט תוסיף שכבת ויכוח חדשה?",
+      "en": "IFAB has confirmed that VAR at the 2026 World Cup gains three new areas of intervention: wrongly-awarded second yellow cards, cases of mistaken identity where the wrong player is carded, and incorrectly-awarded corner kicks. Officials can also check if an attacker blocked a defender before a set piece was taken. Corner reviews must correct only obvious errors and cannot delay the restart of play. The expanded brief triples VAR's scope compared to past tournaments - will it cut out the game's most controversial decisions, or just add a new layer of debate?",
+      "team": null,
+      "sources": [
+        {
+          "name": "Sky Sports",
+          "url": "https://www.skysports.com/football/news/12098/13549645/world-cup-ifab-confirm-new-var-powers-10-second-substitutions-and-tactical-timeout-ban-in-major-rule-changes"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth"
+        },
+        {
+          "name": "NBC Sports",
+          "url": "https://www.nbcsports.com/soccer/news/rule-changes-confirmed-for-2026-world-cup-as-ifab-alters-var-cracks-down-on-subs-and-timeouts"
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
