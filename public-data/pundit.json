@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-05T14:24:20.448Z",
+  "updatedAt": "2026-06-05T14:52:37.848Z",
   "count": 12,
   "items": [
     {
@@ -68,25 +68,6 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "wc2026-third-place-8-advance-format-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "בפורמט גביע העולם 2026, שמונה הנבחרות הטובות שסיימו שלישיות בין כל 12 הבלוקים עולות לסיבוב ה-32 יחד עם 24 הזוכות וסגניות הזוכות. פירוש הדבר שמתוך 48 הנבחרות, 32 מתקדמות משלב הבתים, וקבוצה שמפסידה במשחק הפתיחה שלה עדיין לא בחוץ. אל תמחקו אף נבחרת בבריכה שלכם אחרי הפסד אחד בלבד.",
-      "en": "In the 2026 World Cup format, the eight best third-placed teams across all 12 groups advance to the round of 32 alongside the 24 group winners and runners-up. That means 32 of the 48 nations progress from the group stage, and a team that loses its opener is not yet out. Do not write off any side in your pool after just one defeat.",
-      "team": null,
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/groups-how-teams-qualify-tie-breakers"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/5/14/fifa-world-cup-2026-what-to-expect-from-the-48-team-format"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
       "id": "eng-foden-palmer-dropped-2026-06-05",
       "type": "news",
       "confidence": "confirmed",
@@ -137,7 +118,7 @@
       "type": "news",
       "confidence": "reported",
       "he": "ניתוח של NPR מצא שיותר משליש ממשחקי המונדיאל בסיכון לחום מסוכן, כשמיאמי, דאלאס וקנזס סיטי מסומנות במשחקי צהריים. איגוד השחקנים FIFPRO מצביע על כ-28 מעלות WBGT כרף שבו יש לשקול דחייה, ופיפ\"א הוסיפה הפסקות קירור. האם החום ישפיע על הקבוצות שתהמרו עליהן?",
-      "en": "An NPR analysis finds more than a third of World Cup matches are at risk of dangerous heat, with Miami, Dallas and Kansas City flagged for afternoon kickoffs. Players' union FIFPRO points to around 28C WBGT as the level where postponement should be considered, and FIFA has added extra cooling breaks. Could the heat sway the teams you back?",
+      "en": "An NPR analysis finds more than a third of World Cup matches are at risk of dangerous heat, with Miami, Dallas and Kansas City flagged for afternoon kickoffs. Players union FIFPRO points to around 28C WBGT as the level where postponement should be considered, and FIFA has added extra cooling breaks. Could the heat sway the teams you back?",
       "team": null,
       "sources": [
         {
@@ -221,29 +202,6 @@
       "expires_at": "2026-06-12T23:59:59Z"
     },
     {
-      "id": "vuvuzela-ban-wc2026-stadiums-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "קוד ההתנהגות של פיפ\"א לאצטדיונים אוסר על ווּוּזֶלות, מבפרי אוויר, שריקות וכל מכשיר רועש ב-16 אצטדיוני האירוח של גביע העולם 2026. צינורות הפלסטיק האיקוניים הגיעו ל-120 דציבל במונדיאל דרום אפריקה 2010, אך אוהד שייתפס עם אחד מהם ב-2026 יוצא מהמגרש. סוף עידן לאווירת האצטדיון, או קריאת בטיחות הגיונית?",
-      "en": "FIFA's Stadium Code of Conduct bans vuvuzelas, air horns, whistles and all loud noisemakers from every one of the 16 host venues at the 2026 World Cup. The iconic plastic horns produced up to 120 decibels at the 2010 South Africa tournament, but fans caught with one in 2026 face ejection. End of an era for stadium atmosphere, or a sensible safety call?",
-      "team": null,
-      "sources": [
-        {
-          "name": "HITC",
-          "url": "https://www.hitc.com/iconic-vuvuzelas-banned-from-2026-world-cup-stadiums-under-fifa-code-of-conduct/"
-        },
-        {
-          "name": "Daily Sabah",
-          "url": "https://www.dailysabah.com/sports/football/fifa-bans-vuvuzelas-other-noisemakers-from-world-cup-stadiums"
-        },
-        {
-          "name": "RNZ",
-          "url": "https://www.rnz.co.nz/news/sport/597328/fifa-bans-vuvuzelas-from-world-cup-stadiums"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
       "id": "fra-ivory-coast-warmup-loss-2026-06-04",
       "type": "news",
       "confidence": "confirmed",
@@ -265,6 +223,52 @@
         }
       ],
       "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "sui-embolo-visa-cleared-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "חלוץ שוויץ ברייל אמבולו קיבל אישור כניסה לארצות הברית ב-5 ביוני לאחר עיכוב של יומיים הקשור לבדיקות רישום פלילי. הוא פיספס את טיסת הנבחרת לסן דייגו, ביקר בשגרירות האמריקאית בברן וקיבל אישור, וההתאחדות השוויצרית מסרה שיגיע בזמן לאימון ב-7 ביוני מול אוסטרליה. שוויץ פותחת את הגביע מול קטאר ב-13 ביוני.",
+      "en": "Switzerland striker Breel Embolo was cleared to travel to the United States on June 5 after a two-day visa delay tied to criminal-record checks. He missed the squad's flight to San Diego but visited the US Embassy in Bern and received approval; the Swiss federation says he will arrive in time for a June 7 warmup against Australia. Switzerland open their World Cup against Qatar on June 13.",
+      "team": "SUI",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48969072/switzerland-striker-embolo-gets-visa-us-world-cup"
+        },
+        {
+          "name": "Washington Post",
+          "url": "https://www.washingtonpost.com/sports/soccer/2026/06/04/world-cup-switzerland-embolo-visa/558e76d2-605c-11f1-9c46-d6211372eede_story.html"
+        },
+        {
+          "name": "Goal",
+          "url": "https://www.goal.com/en/lists/breel-embolo-switzerland-visa-approved-world-cup/blt2e796f14cc3331ed"
+        }
+      ],
+      "expires_at": "2026-06-13T23:59:59Z"
+    },
+    {
+      "id": "esp-yamal-fit-opener-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "מאמן ספרד לואיס דה לה פואנטה אישר שלמין יאמאל בדרך לשחק בפתיחת גביע העולם מול קאבו ורדה באטלנטה ב-15 ביוני, אם כי השחקן בן ה-18 ישב על הספסל במשחק האימון מול עיראק היום תוך סיום ההתאוששות מפציעת שריר ירך שנגרמה ב-22 באפריל. דה לה פואנטה הזהיר שייתכן שיאמאל יקבל בהתחלה רק כמה דקות, וספרד תעריך לקראת המשחק. האם אתם סומכים על אלופות אירופה להצית בגז מלא אם היוצר הראשי שלהן מתחיל לאט?",
+      "en": "Spain coach Luis de la Fuente confirmed Lamine Yamal is on track to play in the World Cup opener against Cape Verde in Atlanta on June 15, though the 18-year-old sat out today's warmup against Iraq while finishing his comeback from a left-hamstring strain sustained on April 22. De la Fuente cautioned Yamal may only get a cameo at first, and Spain will assess closer to the game. Do you trust the European champions to fire on all cylinders if their main creator starts slow?",
+      "team": "ESP",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente"
+        },
+        {
+          "name": "Washington Post",
+          "url": "https://www.washingtonpost.com/sports/soccer/2026/06/03/lamine-yamal-spain-world-cup/cbecee7c-5f5c-11f1-9c46-d6211372eede_story.html"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/spain-coach-confident-lamine-yamal-145809801.html"
+        }
+      ],
+      "expires_at": "2026-06-15T23:59:59Z"
     }
   ]
 }
