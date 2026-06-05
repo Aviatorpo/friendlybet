@@ -1079,6 +1079,22 @@ function _recordActivityOncePerDay() {
   } catch (_) { /* best-effort */ }
 }
 
+// v2.8.2: best-effort bracket-share tracking (forward-looking, fire-and-forget,
+// never blocks the share). 'click' = the user triggered a bracket share; 'completed'
+// = navigator.share actually resolved (a real share). Only the native share sheet can
+// observe completion — desktop link-intent shares are recorded as 'click' only. No
+// throttle (we want every event); resolves the caller server-side from the recovery
+// code, exactly like record_activity. Aggregated in app-dashboard (share_metrics,
+// excluding country='IL').
+function _recordShare(source, kind) {
+  try {
+    const code = localStorage.getItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE);
+    if (!code || !supabaseClient) return;
+    supabaseClient.rpc('record_share', { p_code: code.replace(/-/g, ''), p_source: source || '', p_kind: kind })
+      .then(() => {}).catch(() => {});
+  } catch (_) { /* best-effort */ }
+}
+
 async function goToDashboard() {
   // v2.5.49: defensive guards. If we hit this without a supabase client
   // (very slow network) or any of the DB reads fail, fall back to the
@@ -7962,6 +7978,10 @@ function _bracketShareReady() {
 }
 function _bracketChipBlocked(mode) {
   if (mode === 'bracket' && !_bracketShareReady()) { showToast(t('bracketShare.notReady'), 'info'); return true; }
+  // Single chokepoint for every bracket chip (mobile native + desktop link intent):
+  // a non-blocked bracket chip tap is a 'click'. Completion is recorded separately in
+  // _bracketChipImageShared (mobile native only — desktop link shares can't be observed).
+  if (mode === 'bracket') _recordShare('bracket_chip', 'click');
   return false;
 }
 // BRACKET SHARE FLOW (decided after testing every app): the bracket is an
@@ -7983,6 +8003,7 @@ async function _bracketChipImageShared(mode) {
   if (!navigator.canShare({ files: [file] })) return false;
   try {
     await navigator.share({ files: [file], text: t('bracketShare.caption'), url: _bracketShareUrl('bracket_chip') });
+    _recordShare('bracket_chip', 'completed'); // resolved == the user actually shared
   } catch (e) {
     if (!(e && e.name === 'AbortError')) console.error('bracket chip image share failed', e);
   }
@@ -8356,9 +8377,11 @@ async function shareBracketCard() {
     if (!blob) { showToast(t('bracketShare.toastDesktop'), 'info'); return; }
     const file = new File([blob], 'friendlybet-bracket.png', { type: 'image/png' });
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try { await navigator.share({ files: [file], text: caption, url: homeUrl }); }
+      _recordShare('bracket_card', 'click');
+      try { await navigator.share({ files: [file], text: caption, url: homeUrl }); _recordShare('bracket_card', 'completed'); }
       catch (e) { if (e.name !== 'AbortError') console.error('bracket share failed', e); }
     } else {
+      _recordShare('bracket_card', 'click'); // desktop: download + copy (completion can't be observed)
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'friendlybet-bracket.png'; a.click();
       try { await navigator.clipboard.writeText(caption + ' ' + homeUrl); } catch (_) {}
       showToast(t('bracketShare.toastDesktop'), 'success');
