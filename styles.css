@@ -2914,23 +2914,30 @@ body.ltr #next-group-btn svg {
   background: linear-gradient(180deg, rgba(212, 168, 83, 0.3) 0%, rgba(212, 168, 83, 0.1) 100%);
   border: 1px solid #d9b46a;
   order: 2;
-  min-height: 168px;
-  padding-top: 20px;
+  min-height: 190px;
+  padding-top: 22px;
 }
 
 .podium-spot.second {
   background: linear-gradient(180deg, rgba(192, 192, 192, 0.15) 0%, rgba(192, 192, 192, 0.05) 100%);
   border: 0.5px solid rgba(192, 192, 192, 0.3);
   order: 1;
-  min-height: 134px;
+  min-height: 152px;
 }
 
+/* 3rd is deliberately the most compact riser so the staircase reads clearly:
+   a smaller medal + tighter gaps keep its content UNDER the min-height, so the
+   box stays visibly lower than 2nd instead of being pushed up by its content. */
 .podium-spot.third {
   background: linear-gradient(180deg, rgba(205, 127, 50, 0.15) 0%, rgba(205, 127, 50, 0.05) 100%);
   border: 0.5px solid rgba(205, 127, 50, 0.3);
   order: 3;
-  min-height: 110px;
+  min-height: 100px;
+  gap: 2px;
+  padding-bottom: 10px;
 }
+.podium-spot.third .podium-medal { font-size: 23px; }
+.podium-spot.third .podium-points { font-size: 17px; }
 
 .podium-medal {
   font-size: 30px;
