@@ -1322,44 +1322,43 @@ async function loadPundit() {
     //       by the hour - so the card visibly changes every single hour even
     //       when news AND pool are completely static.
     const PUNDIT_TARGET = 5;
-    const POOL_SLOTS = 2; // the owner's layout: first 2 = this pool, next 3 = news
-    const NEWS_SLOTS = 3;
-    const hourSeed = Math.floor(now / (60 * 60 * 1000));
+    const POOL_SLOTS = 2; // owner layout: first 2 = this pool, next 3 = news
+    const H = Math.floor(now / (60 * 60 * 1000)); // global clock-hour index
 
-    // v2.7.3 layout (owner request): EXACTLY 2 items about THIS pool + 3 relevant
-    // news, and the 3 news must be DIFFERENT every hour. So instead of rotating
-    // the news window by one item per hour (which left 2 of 3 unchanged), we PAGE
-    // through the news pool in non-overlapping windows of NEWS_SLOTS, advancing a
-    // full page each hour. With the deep ~10-item pool the agent banks, that means
-    // a fresh trio every hour, cycling through the whole pool across the day.
-    const seen = new Set();
-    const take = (list, n) => {
-      const out = [];
-      for (const it of (list || [])) {
-        if (out.length >= n) break;
-        if (it && it.id && !seen.has(it.id)) { seen.add(it.id); out.push(it); }
-      }
-      return out;
-    };
+    // v2.7.6 - NO-REPEAT rotation. Goal: every hour the 5 lines change to content
+    // NOT shown recently, and nothing repeats until everything else has cycled.
+    // Mechanism: a per-browser "seen" memory (id -> last hour shown). Each hour we
+    // pick the LEAST-recently-shown candidates, then record them; the pick is
+    // frozen for the clock hour so the 10-min refetch can't churn it mid-hour and
+    // it advances only on the hour. News candidates = live verified news + live
+    // computed data (results/fixtures/countdown) which lead, then the evergreen
+    // deck; pool candidates = live pool facts + pool evergreens.
+    const newsCands = _ppDedup([...newsItems, ...nonNews, ..._punditDeck()]);
+    const poolCands = _ppDedup(poolItems);
+    const POOL_N = Math.min(POOL_SLOTS, poolCands.length);
+    const NEWS_N = PUNDIT_TARGET - POOL_N; // 3 normally; 4-5 if the user has no pool buzz
 
-    // Page BOTH sections by the hour so all 5 lines turn over every hour: the 2
-    // pool slots advance over the deepened pool-candidate list, the 3 news slots
-    // over the news pool (non-overlapping windows).
-    const poolPart = take(_ppPageByHour(poolItems, hourSeed, POOL_SLOTS), POOL_SLOTS);
-    let newsPart = take(_ppPageByHour(newsItems, hourSeed, NEWS_SLOTS), NEWS_SLOTS);
+    const seenMap = _ppSeenLoad();
+    const frozen = _ppHourLoad();
+    const byId = (cands) => { const m = new Map(); cands.forEach(c => m.set(c.id, c)); return m; };
+    const mapIds = (ids, m) => (ids || []).map(id => m.get(id)).filter(Boolean);
 
-    let real = [...poolPart, ...newsPart];
-
-    // Graceful fill so the card always holds 5 (never fabricates pool claims):
-    // first more verified news (the rest of the paged pool, then unpaged), then
-    // leftover pool buzz, then computed data, then hourly-rotating evergreen.
-    if (real.length < PUNDIT_TARGET) {
-      real = real.concat(take([...newsItems, ...poolItems.slice(POOL_SLOTS), ...nonNews], PUNDIT_TARGET - real.length));
+    let poolPart = [], newsPart = [];
+    if (frozen && frozen.H === H) {
+      poolPart = mapIds(frozen.pool, byId(poolCands));
+      newsPart = mapIds(frozen.news, byId(newsCands));
     }
-    if (real.length < PUNDIT_TARGET) {
-      real = real.concat(_evergreenPundit(PUNDIT_TARGET - real.length, hourSeed, real));
+    // Recompute when the hour rolled over, on first run, or if a frozen id went
+    // stale (e.g. a news item expired) and the set is now short.
+    if (poolPart.length < POOL_N || newsPart.length < NEWS_N) {
+      poolPart = _ppLeastRecent(poolCands, POOL_N, seenMap, H);
+      newsPart = _ppLeastRecent(newsCands, NEWS_N, seenMap, H);
+      [...poolPart, ...newsPart].forEach(it => { if (it && it.id) seenMap[it.id] = H; });
+      _ppSeenSave(seenMap);
+      _ppHourSave({ H, pool: poolPart.map(i => i.id), news: newsPart.map(i => i.id) });
     }
-    const items = real.slice(0, PUNDIT_TARGET);
+
+    const items = [...poolPart, ...newsPart].slice(0, PUNDIT_TARGET);
 
     if (!items.length) return [];
     _punditState.items = items;
@@ -1597,6 +1596,50 @@ const _PP_EVERGREEN = [
     en: 'The favorites are clear, but the World Cup always surprises. Who are you betting on? 🤔' },
   { id: 'ev-final', he: 'הדרך לגמר ארוכה — כל סיבוב שתנחשו נכון מקרב אתכם לראש הטבלה 🥇',
     en: 'The road to the final is long — every round you nail climbs you up the table 🥇' },
+  // --- Deck expansion (v2.7.6): a deeper bank of verified, evergreen WC2026
+  // facts + talking points so the no-repeat rotation has many distinct items to
+  // cycle through before anything shown before comes back. All are well-
+  // established facts (hosts/format/groups) or timeless tips, never stale.
+  { id: 'ev-r32', he: 'לראשונה בהיסטוריה יש שלב נוקאאוט של 32 קבוצות. 32 מתוך 48 עולות משלב הבתים 🗺️',
+    en: 'For the first time ever there is a Round of 32. 32 of the 48 teams advance from the groups 🗺️' },
+  { id: 'ev-third', he: '8 הנבחרות הטובות שמסיימות במקום השלישי גם עולות הלאה. הפסד אחד לא מוציא אתכם 👌',
+    en: 'The 8 best third-placed teams also advance. One defeat does not knock you out 👌' },
+  { id: 'ev-final-venue', he: 'הגמר ייערך ב-19 ביולי 2026 באצטדיון MetLife בניו ג\'רזי 🏟️',
+    en: 'The final is on July 19, 2026 at MetLife Stadium in New Jersey 🏟️' },
+  { id: 'ev-opening', he: 'משחק הפתיחה: 11 ביוני באצטקה במקסיקו סיטי. מי תפתח בניצחון? ⚽',
+    en: 'Opening match: June 11 at the Azteca in Mexico City. Who opens with a win? ⚽' },
+  { id: 'ev-16venues', he: '16 ערים מארחות פרוסות על פני ארה״ב, קנדה ומקסיקו 🌎',
+    en: '16 host cities spread across the USA, Canada and Mexico 🌎' },
+  { id: 'ev-host-auto', he: 'שלוש המארחות, ארה״ב קנדה ומקסיקו, העפילו אוטומטית. על מי מהן אתם מהמרים? 🏠',
+    en: 'The three hosts, USA, Canada and Mexico, qualified automatically. Backing any of them? 🏠' },
+  { id: 'ev-holders', he: 'ארגנטינה מגיעה כאלופת העולם המכהנת. תהמרו שהיא תגן על התואר? 🇦🇷',
+    en: 'Argentina arrive as the reigning world champions. Backing them to defend the crown? 🇦🇷' },
+  { id: 'ev-upsets', he: 'במונדיאל מורחב, הפתעה בשלב הבתים שווה זהב. אל תזלזלו באאוטסיידרים 👀',
+    en: 'In an expanded World Cup a group-stage upset is worth gold. Do not sleep on the outsiders 👀' },
+  { id: 'ev-grpA', he: 'בית A: המארחת מקסיקו מובילה מול דרום אפריקה, קוריאה וצ\'כיה. מי תעלה? 🇲🇽',
+    en: 'Group A: hosts Mexico headline alongside South Africa, Korea and Czechia. Who advances? 🇲🇽' },
+  { id: 'ev-grpB', he: 'בית B: המארחת קנדה עם בוסניה, קטאר ושווייץ. מי שלכם בבית הזה? 🇨🇦',
+    en: 'Group B: hosts Canada with Bosnia, Qatar and Switzerland. Who is your pick here? 🇨🇦' },
+  { id: 'ev-grpC', he: 'בית C: ברזיל מובילה מול מרוקו, האיטי וסקוטלנד. תסחב את הבית? 🇧🇷',
+    en: 'Group C: Brazil lead against Morocco, Haiti and Scotland. Will they take the group? 🇧🇷' },
+  { id: 'ev-grpD', he: 'בית D: המארחת ארה״ב עם פרגוואי, אוסטרליה וטורקיה. מי תעלה? 🇺🇸',
+    en: 'Group D: hosts USA with Paraguay, Australia and Turkey. Who goes through? 🇺🇸' },
+  { id: 'ev-grpE', he: 'בית E: גרמניה מול קוראסאו, חוף השנהב ואקוודור. מי שלכם? 🇩🇪',
+    en: 'Group E: Germany against Curacao, Ivory Coast and Ecuador. Who is your pick? 🇩🇪' },
+  { id: 'ev-grpF', he: 'בית F: הולנד מול יפן, שוודיה ותוניסיה. תסחב את הבית? 🇳🇱',
+    en: 'Group F: Netherlands against Japan, Sweden and Tunisia. Who takes it? 🇳🇱' },
+  { id: 'ev-grpG', he: 'בית G: בלגיה מול מצרים, איראן וניו זילנד. מי תעלה? 🇧🇪',
+    en: 'Group G: Belgium against Egypt, Iran and New Zealand. Who advances? 🇧🇪' },
+  { id: 'ev-grpH', he: 'בית H: ספרד מובילה מול כף ורדה, סעודיה ואורוגוואי. מי שלכם? 🇪🇸',
+    en: 'Group H: Spain lead against Cape Verde, Saudi Arabia and Uruguay. Who is your pick? 🇪🇸' },
+  { id: 'ev-grpI', he: 'בית I: צרפת מול סנגל, עיראק ונורווגיה. תסחב את הבית? 🇫🇷',
+    en: 'Group I: France against Senegal, Iraq and Norway. Will they take the group? 🇫🇷' },
+  { id: 'ev-grpJ', he: 'בית J: אלופת העולם ארגנטינה מול אלג\'יריה, אוסטריה וירדן. מי תעלה? 🇦🇷',
+    en: 'Group J: holders Argentina with Algeria, Austria and Jordan. Who advances? 🇦🇷' },
+  { id: 'ev-grpK', he: 'בית K: פורטוגל מול קונגו, אוזבקיסטן וקולומביה. מי שלכם? 🇵🇹',
+    en: 'Group K: Portugal against DR Congo, Uzbekistan and Colombia. Who is your pick? 🇵🇹' },
+  { id: 'ev-grpL', he: 'בית L: אנגליה מול קרואטיה, גאנה ופנמה. תסחב את הבית? 🏴',
+    en: 'Group L: England against Croatia, Ghana and Panama. Will they take it? 🏴' },
 ];
 
 // Rotates an array by `hourSeed` so the leading window advances every hour.
@@ -1619,6 +1662,74 @@ function _ppPageByHour(arr, hourSeed, size) {
   const out = [];
   for (let i = 0; i < size; i++) out.push(a[(off + i) % a.length]);
   return out;
+}
+
+// ---- No-repeat rotation (v2.7.6) -------------------------------------------
+// A per-browser "seen" memory (localStorage) guarantees the Pundit never re-shows
+// an item until every OTHER available item has been shown first: each hour we pick
+// the items shown LEAST recently, then record them at the current hour index. The
+// choice is frozen per clock hour (see loadPundit) so the 10-min refetch can't
+// churn it mid-hour. Live news/data is preferred over evergreen deck facts among
+// equally-unseen items, so genuinely fresh news still leads the feed.
+const _PP_SEEN_KEY = 'fb_pundit_seen';   // { id: lastHourIndexShown }
+const _PP_HOUR_KEY = 'fb_pundit_hour';   // { H, pool:[ids], news:[ids] }
+const _PP_SEEN_MAX = 600;                // cap stored ids so localStorage stays small
+
+function _ppHash(s) {
+  let h = 0; const str = String(s);
+  for (let i = 0; i < str.length; i++) { h = (h << 5) - h + str.charCodeAt(i); h |= 0; }
+  return h;
+}
+function _ppDedup(list) {
+  const m = new Map();
+  (list || []).forEach(it => { if (it && it.id && !m.has(it.id)) m.set(it.id, it); });
+  return [...m.values()];
+}
+function _ppSeenLoad() {
+  try { return JSON.parse(localStorage.getItem(_PP_SEEN_KEY) || '{}') || {}; } catch (_) { return {}; }
+}
+function _ppSeenSave(map) {
+  try {
+    let m = map || {};
+    const keys = Object.keys(m);
+    if (keys.length > _PP_SEEN_MAX) {
+      // keep only the most-recently-seen ids (highest hour index)
+      const kept = keys.sort((a, b) => m[b] - m[a]).slice(0, _PP_SEEN_MAX);
+      const trimmed = {}; kept.forEach(k => { trimmed[k] = m[k]; }); m = trimmed;
+    }
+    localStorage.setItem(_PP_SEEN_KEY, JSON.stringify(m));
+  } catch (_) { /* storage disabled/full - rotation still works, just less history */ }
+}
+function _ppHourLoad() { try { return JSON.parse(localStorage.getItem(_PP_HOUR_KEY) || 'null'); } catch (_) { return null; } }
+function _ppHourSave(o) { try { localStorage.setItem(_PP_HOUR_KEY, JSON.stringify(o)); } catch (_) { /* ignore */ } }
+
+// Pick `count` LEAST-recently-shown items from `cands`. Never-shown items (no
+// memory entry) sort first; ties break by content rank (live news/data/pool
+// before evergreen filler) then a stable hour-salted hash so it stays varied and
+// deterministic within the hour. Returns the chosen item objects.
+function _ppLeastRecent(cands, count, seen, H) {
+  const rank = (it) => {
+    if (!it) return 1;
+    // Pool evergreen filler ranks below live pool facts (someone joined / the
+    // leader / your-still-pending) so the real buzz leads the pool slots.
+    if (typeof it.id === 'string' && it.id.indexOf('pool-ev-') === 0) return 1;
+    const ty = it.type;
+    if (ty === 'news' || ty === 'result' || ty === 'fixture' || ty === 'stat' || ty === 'pool') return 0;
+    return 1; // countdown + evergreen deck filler
+  };
+  return (cands || [])
+    .filter(it => it && it.id)
+    .map(it => ({ it, last: (seen && it.id in seen) ? seen[it.id] : -1 }))
+    .sort((a, b) => (a.last - b.last) || (rank(a.it) - rank(b.it)) || (_ppHash(a.it.id + '|' + H) - _ppHash(b.it.id + '|' + H)))
+    .slice(0, count)
+    .map(s => s.it);
+}
+
+// The evergreen "deck": a deep bank of verified WC2026 facts/talking points that
+// fills the news slots so the no-repeat rotation has many distinct items to cycle
+// through before anything shown before comes back.
+function _punditDeck() {
+  return _PP_EVERGREEN.map(it => ({ id: it.id, type: 'evergreen', confidence: 'confirmed', he: it.he, en: it.en, sources: [] }));
 }
 
 function _evergreenPundit(count, hourSeed, exclude) {
