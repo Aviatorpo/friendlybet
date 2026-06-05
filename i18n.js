@@ -281,7 +281,17 @@ const TRANSLATIONS = {
     'leaderboard.noPointsYet': 'עדיין בלי נקודות',
     'leaderboard.loadError': 'שגיאה בטעינת הדירוג',
     'leaderboard.shareText': '🏆 לוח הדירוגים של {poolName}!\n\nהצטרף ל-FriendlyBet והתחרה איתנו על מונדיאל 2026:\n{url}',
-    
+
+    // Pool Pundit — live leaderboard banter
+    'leaderboard.banter.title': 'פרשן הפול',
+    'leaderboard.banter.live': 'חי',
+    'leaderboard.banter.share': 'שתף את הרגע',
+    'leaderboard.banter.caption': '🎙️ מה קורה ב{pool}? קבלו את הדרמה החיה מהפול שלנו ב-FriendlyBet:',
+    'leaderboard.banter.cardTitle': 'מה קורה בפול',
+    'leaderboard.banter.cardStandings': 'הצמרת',
+    'leaderboard.banter.cardScan': 'סרקו לבראקט',
+    'leaderboard.banter.cardTagline': 'חינם · בלי הרשמה · הצטרפו לפול',
+
     // === Matches ===
     'matches.title': 'לוח משחקים',
     'matches.filter.all': 'הכל',
@@ -1531,7 +1541,17 @@ const TRANSLATIONS = {
     'leaderboard.noPointsYet': 'No points yet',
     'leaderboard.loadError': 'Failed to load leaderboard',
     'leaderboard.shareText': '🏆 Leaderboard for {poolName}!\n\nJoin FriendlyBet and compete with us on World Cup 2026:\n{url}',
-    
+
+    // Pool Pundit — live leaderboard banter
+    'leaderboard.banter.title': 'Pool Pundit',
+    'leaderboard.banter.live': 'live',
+    'leaderboard.banter.share': 'Share this moment',
+    'leaderboard.banter.caption': '🎙️ What\'s happening in {pool}? Catch the live drama from our FriendlyBet pool:',
+    'leaderboard.banter.cardTitle': 'Pool Buzz',
+    'leaderboard.banter.cardStandings': 'Top of the table',
+    'leaderboard.banter.cardScan': 'Scan for the bracket',
+    'leaderboard.banter.cardTagline': 'Free · no signup · join the pool',
+
     // === Matches ===
     'matches.title': 'Match Schedule',
     'matches.filter.all': 'All',

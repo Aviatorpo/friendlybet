@@ -2955,6 +2955,100 @@ body.ltr #next-group-btn svg {
   margin-top: 2px;
 }
 
+/* Pool Pundit — live banter below the podium */
+.lb-banter {
+  margin: -8px 0 26px;
+  padding: 16px 16px 14px;
+  border-radius: 16px;
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(217, 180, 106, 0.12), rgba(217, 180, 106, 0) 60%),
+    rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(217, 180, 106, 0.32);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.lb-banter-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.lb-banter-mic { font-size: 18px; line-height: 1; }
+
+.lb-banter-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #ecd49a;
+  text-transform: uppercase;
+}
+
+.lb-banter-live {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0d0d0a;
+  background: #e0533b;
+  padding: 2px 7px;
+  border-radius: 999px;
+  position: relative;
+}
+.lb-banter-live::before {
+  content: '';
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #0d0d0a;
+  margin-inline-end: 5px;
+  vertical-align: middle;
+  animation: lbBanterPulse 1.6s ease-in-out infinite;
+}
+@keyframes lbBanterPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+.lb-banter-headline {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #f7f6f2;
+}
+
+.lb-banter-emoji { margin-inline-end: 7px; }
+
+.lb-banter-more {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lb-banter-line {
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.lb-banter-share {
+  margin-top: 14px;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(217, 180, 106, 0.5);
+  background: linear-gradient(180deg, rgba(217, 180, 106, 0.22), rgba(217, 180, 106, 0.08));
+  color: #ecd49a;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.08s ease, background 0.15s ease;
+}
+.lb-banter-share:hover { background: linear-gradient(180deg, rgba(217, 180, 106, 0.32), rgba(217, 180, 106, 0.12)); }
+.lb-banter-share:active { transform: scale(0.98); }
+
 /* Full list */
 .lb-full-list {
   display: flex;

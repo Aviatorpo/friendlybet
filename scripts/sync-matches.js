@@ -176,6 +176,82 @@ async function matchesHasWinnerCol() {
   }
 }
 
+// Probe for the scorers column (migration 2026-06-05-add-match-scorers.sql,
+// applied manually). Until it exists we skip scorer capture so the PATCH can't 400.
+async function matchesHasScorersCol() {
+  try {
+    await callSupabase('GET', 'matches', null, '?select=scorers&limit=1');
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// Map a football-data match-detail's goals[] to our compact scorer shape.
+// Keeps only fields the Pool-Pundit banter needs: minute, injury time, type,
+// our team code, and the player name. Drops goals we can't attribute.
+function extractScorers(detail) {
+  const goals = (detail && Array.isArray(detail.goals)) ? detail.goals : [];
+  return goals.map(g => ({
+    minute: (g.minute != null ? g.minute : null),
+    injury: (g.injuryTime != null ? g.injuryTime : null),
+    type: g.type || 'REGULAR',
+    team: getTeamCode(g.team && g.team.name) || null,
+    player: (g.scorer && g.scorer.name) || null,
+  })).filter(g => g.player && g.minute != null);
+}
+
+// Bounded scorer back-fill. football-data's competition list endpoint has no
+// goal data, so we must hit the per-match detail endpoint (1 request each).
+// To respect the 10 req/min limit we only fetch RECENTLY-finished matches that
+// don't already have scorers, capped at MAX_SCORER_FETCH per run with a 7s gap.
+// A match marked with scorers (even []) is never re-fetched.
+const MAX_SCORER_FETCH = 6;
+const SCORER_WINDOW_MS = 5 * 24 * 60 * 60 * 1000; // last 5 days
+async function syncScorers(apiMatches) {
+  if (!(await matchesHasScorersCol())) {
+    console.log('ℹ️  matches.scorers not present yet (run migration 2026-06-05-add-match-scorers.sql) - skipping scorer capture');
+    return;
+  }
+  // Which finished matches already have scorers recorded (non-null)?
+  let existing = [];
+  try {
+    existing = await callSupabase('GET', 'matches', null,
+      '?select=external_id,scorers&status=eq.FINISHED');
+  } catch (e) {
+    console.warn('⚠️  scorer back-fill: could not read existing scorers, skipping:', e.message);
+    return;
+  }
+  const have = new Set((existing || [])
+    .filter(r => Array.isArray(r.scorers)) // [] counts as "fetched"
+    .map(r => String(r.external_id)));
+
+  const now = Date.now();
+  const targets = (apiMatches || [])
+    .filter(m => m.status === 'FINISHED')
+    .filter(m => m.utcDate && (now - Date.parse(m.utcDate)) < SCORER_WINDOW_MS)
+    .filter(m => getTeamCode(m.homeTeam?.name) && getTeamCode(m.awayTeam?.name))
+    .filter(m => !have.has(String(m.id)))
+    .sort((a, b) => Date.parse(b.utcDate) - Date.parse(a.utcDate)) // newest first
+    .slice(0, MAX_SCORER_FETCH);
+
+  if (!targets.length) { console.log('⚽ scorers: nothing new to fetch'); return; }
+  console.log(`⚽ scorers: fetching goal data for ${targets.length} match(es)...`);
+
+  for (let i = 0; i < targets.length; i++) {
+    const m = targets[i];
+    try {
+      const detail = await callFootballAPI(`/matches/${m.id}`);
+      const scorers = extractScorers(detail);
+      await callSupabase('PATCH', 'matches', { scorers }, `?external_id=eq.${m.id}`);
+      console.log(`   ✓ ${m.homeTeam?.name} vs ${m.awayTeam?.name}: ${scorers.length} goal(s)`);
+    } catch (e) {
+      console.warn(`   ⚠️  scorer fetch failed for match ${m.id}: ${e.message}`);
+    }
+    if (i < targets.length - 1) await new Promise(r => setTimeout(r, 7000)); // 10 req/min ceiling
+  }
+}
+
 // Resolve football-data score.winner (accounts for extra time / penalties)
 // to our team code. NULL for draws / not-yet-decided.
 function resolveWinnerCode(m, homeCode, awayCode) {
@@ -265,7 +341,15 @@ async function syncMatches() {
     Object.keys(statusCounts).forEach(status => {
       console.log(`   ${status}: ${statusCounts[status]}`);
     });
-    
+
+    // Goal-level back-fill for recently-finished matches (bounded, best-effort).
+    // Never fail the whole sync if this stumbles - scores already synced above.
+    try {
+      await syncScorers(data.matches);
+    } catch (e) {
+      console.warn('⚠️  scorer back-fill skipped:', e.message);
+    }
+
   } catch (err) {
     console.error('❌ Sync failed:', err.message);
     process.exit(1);

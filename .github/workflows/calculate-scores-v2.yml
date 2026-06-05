@@ -48,6 +48,16 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/export-snapshots.js all
 
+      # "Pool Pundit" leaderboard banter: diff standings vs the stored snapshot and
+      # turn the moves into witty per-pool commentary (public-data/banter/*.json).
+      # Best-effort: never fail the scoring run if banter generation stumbles.
+      - name: Generate leaderboard banter
+        continue-on-error: true
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/generate-banter.js
+
       - name: Commit snapshots if changed
         run: |
           git config user.name "Aviatorpo"

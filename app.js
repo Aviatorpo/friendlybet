@@ -6566,6 +6566,9 @@ async function showLeaderboard() {
   // Render podium (top 3)
   renderPodium(users);
 
+  // Pool Pundit: live banter about what the latest results did to the board
+  renderLeaderboardBanter(users);
+
   // Render full list
   renderFullLeaderboard(users);
 
@@ -6695,6 +6698,223 @@ function formatScoreDescription(user) {
   if (parts.length === 0) return t('leaderboard.noPointsYet');
   return parts.join(' · ');
 }
+
+// ============================================================
+// Pool Pundit — leaderboard banter (live commentary below the podium)
+// ============================================================
+// Reads the per-pool banter file produced by scripts/generate-banter.js (which
+// diffs the standings after each match and turns the moves into witty, BILINGUAL
+// lines). The client just picks the current language and renders; the share card
+// re-uses the headline + podium + a QR pointing to the FEATURED user's bracket.
+let _lbBanter = null; // last loaded { headline, items, ... } for the share card
+
+function _banterText(item) {
+  if (!item) return '';
+  const lang = (typeof currentLanguage !== 'undefined' && currentLanguage) || 'he';
+  return (lang === 'en' ? item.en : item.he) || item.he || item.en || '';
+}
+
+async function renderLeaderboardBanter(users) {
+  const box = document.getElementById('lb-banter');
+  if (!box) return;
+  _lbBanter = null;
+  box.style.display = 'none';
+  try {
+    if (!state.currentPool || !state.currentPool.id) return;
+    const res = await fetch(`/public-data/banter/${state.currentPool.id}.json`, { cache: 'no-store' });
+    if (!res.ok) return;
+    const data = await res.json();
+    const items = Array.isArray(data.items) ? data.items.filter(it => it && (it.he || it.en)) : [];
+    const headline = data.headline || items[0];
+    if (!headline) return;
+
+    // Resolve the featured user (for the share QR) — must be a real member of THIS pool.
+    const memberIds = new Set((users || []).map(u => u.id));
+    const featId = (headline.featuredUserId && memberIds.has(headline.featuredUserId))
+      ? headline.featuredUserId : ((users && users[0] && users[0].id) || null);
+    // Stash the top-3 (already score-sorted by the query) for the share card.
+    const podium = (users || []).slice(0, 3).map(u => ({
+      nickname: u.nickname || '?', total_score: u.total_score || 0,
+    }));
+    _lbBanter = { headline, items, featuredUserId: featId, podium };
+
+    const headEl = document.getElementById('lb-banter-headline');
+    if (headEl) headEl.innerHTML = `<span class="lb-banter-emoji">${headline.emoji || '🎙️'}</span>${escapeHtml(_banterText(headline))}`;
+
+    // Up to two more lines (skip the headline), as quieter secondary banter.
+    const moreEl = document.getElementById('lb-banter-more');
+    if (moreEl) {
+      const extras = items.filter(it => it.id !== headline.id).slice(0, 2);
+      moreEl.innerHTML = extras.map(it =>
+        `<div class="lb-banter-line"><span class="lb-banter-emoji">${it.emoji || '•'}</span>${escapeHtml(_banterText(it))}</div>`
+      ).join('');
+    }
+    box.style.display = 'block';
+  } catch (_) { /* never block the leaderboard */ }
+}
+
+// Personalized public share URL for ANY pool member's bracket (used by the QR on
+// the pool-moment card, so a scan opens the FEATURED user's predictions).
+function _userShareUrl(userId, source) {
+  const origin = window.location.origin || 'https://friendlybet.live';
+  const pid = state.currentPool && state.currentPool.id;
+  const lang = (typeof currentLanguage !== 'undefined' && currentLanguage) || 'he';
+  const utm = `utm_source=${source}&utm_medium=social&utm_campaign=pool_moment`;
+  return (userId && pid)
+    ? `${origin}/share?u=${userId}&p=${pid}&lang=${lang}&${utm}`
+    : `${origin}/?${utm}`;
+}
+
+// Generic QR loader (CORS-safe canvas image) for an arbitrary target URL.
+function _loadQrImage(target) {
+  const src = 'https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=0&qzone=1&color=0a0a08&bgcolor=ffffff&data=' + encodeURIComponent(target);
+  return new Promise(resolve => {
+    const img = new Image(); img.crossOrigin = 'anonymous';
+    let done = false;
+    const finish = v => { if (!done) { done = true; resolve(v); } };
+    img.onload = () => finish(img);
+    img.onerror = () => finish(null);
+    setTimeout(() => finish(null), 3000);
+    img.src = src;
+  });
+}
+
+// Render the shareable "pool moment" card: pool buzz headline + podium + a QR to
+// the featured user's bracket. 1080x1350 portrait, language-aware (he/en).
+function _renderLeaderboardCard(cv, qr, opts) {
+  const ctx = cv.getContext('2d');
+  const W = 1080, H = 1350, GOLD = '#d9b46a', GOLD_LT = '#ecd49a', INK = '#f7f6f2', MUTED = '#9a9c93', PAD = 80;
+  const EMOJI = '"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",serif';
+  const lang = (typeof currentLanguage !== 'undefined' && currentLanguage) || 'he';
+  const rtl = (lang === 'he');
+  function rr(x, y, w, h, r) { ctx.beginPath(); if (ctx.roundRect) { ctx.roundRect(x, y, w, h, r); } else { ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); } }
+  function label(text, y) { ctx.fillStyle = GOLD; ctx.font = '700 26px Rubik,sans-serif'; const ls = 4; let tot = 0; for (const ch of text) tot += ctx.measureText(ch).width + ls; let x = W / 2 - tot / 2; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; for (const ch of text) { ctx.fillText(ch, x, y); x += ctx.measureText(ch).width + ls; } ctx.textAlign = 'center'; }
+  function fitFont(text, maxW, startPx, weight, family) { let px = startPx; ctx.font = weight + ' ' + px + 'px ' + family; while (ctx.measureText(text).width > maxW && px > 13) { px--; ctx.font = weight + ' ' + px + 'px ' + family; } return px; }
+  // Word-wrap `text` into <=maxLines lines that each fit maxW at the given font.
+  function wrapLines(text, maxW, px, maxLines) {
+    ctx.font = '800 ' + px + 'px Heebo,Sora,sans-serif';
+    const words = String(text).split(/\s+/); const lines = []; let cur = '';
+    for (const w of words) {
+      const tryLine = cur ? cur + ' ' + w : w;
+      if (ctx.measureText(tryLine).width <= maxW || !cur) { cur = tryLine; }
+      else { lines.push(cur); cur = w; }
+      if (lines.length >= maxLines) break;
+    }
+    if (cur && lines.length < maxLines) lines.push(cur);
+    return lines.slice(0, maxLines);
+  }
+
+  // background
+  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0d0d0a'); g.addColorStop(1, '#080806'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  let rg = ctx.createRadialGradient(W / 2, 430, 80, W / 2, 430, 760); rg.addColorStop(0, 'rgba(217,180,106,0.16)'); rg.addColorStop(1, 'rgba(217,180,106,0)'); ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
+  ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(217,180,106,0.30)'; rr(20, 20, W - 40, H - 40, 28); ctx.stroke();
+
+  // header
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.save(); ctx.shadowColor = 'rgba(217,180,106,0.7)'; ctx.shadowBlur = 18; ctx.font = '44px ' + EMOJI; ctx.fillText('🎙️', PAD, 92); ctx.restore();
+  ctx.fillStyle = INK; ctx.font = '800 38px Sora,sans-serif'; ctx.fillText('FriendlyBet', PAD + 64, 93);
+  if (opts.pool) { ctx.fillStyle = MUTED; ctx.font = '600 24px Heebo,sans-serif'; ctx.textAlign = 'right'; ctx.fillText(opts.pool, W - PAD, 93); }
+
+  // title
+  ctx.textAlign = 'center'; ctx.fillStyle = INK; ctx.font = '800 50px Sora,sans-serif';
+  ctx.fillText(opts.cardTitle || 'Pool Buzz', W / 2, 188);
+
+  // headline banter (the witty line) — wrapped, language-aware
+  ctx.save();
+  if (rtl && ctx.direction !== undefined) ctx.direction = 'rtl';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = GOLD_LT;
+  const headPx = 44;
+  const lines = wrapLines(opts.headline || '', W - 2 * PAD, headPx, 4);
+  let hy = 270;
+  ctx.font = '800 ' + headPx + 'px Heebo,Sora,sans-serif';
+  for (const ln of lines) { ctx.fillText(ln, W / 2, hy); hy += headPx + 12; }
+  ctx.restore();
+
+  // podium (top 3): order 2nd, 1st, 3rd
+  const podium = (opts.podium || []).slice(0, 3);
+  const p1 = podium[0], p2 = podium[1], p3 = podium[2];
+  const baseY = Math.max(hy + 70, 560);
+  label((opts.podiumLabel || 'STANDINGS').toUpperCase(), baseY - 40);
+  const cols = [
+    { u: p2, rank: 2, h: 230, x: W / 2 - 300, medal: '🥈' },
+    { u: p1, rank: 1, h: 300, x: W / 2 - 110, medal: '🥇' },
+    { u: p3, rank: 3, h: 190, x: W / 2 + 110, medal: '🥉' },
+  ];
+  const colW = 200, floorY = baseY + 360;
+  cols.forEach(c => {
+    if (!c.u) return;
+    const x = c.x, top = floorY - c.h;
+    rr(x, top, colW, c.h, 18);
+    ctx.fillStyle = c.rank === 1 ? 'rgba(217,180,106,0.16)' : 'rgba(255,255,255,0.05)';
+    ctx.fill(); ctx.lineWidth = c.rank === 1 ? 3 : 2;
+    ctx.strokeStyle = c.rank === 1 ? GOLD : 'rgba(217,180,106,0.4)'; ctx.stroke();
+    const cx = x + colW / 2;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = '54px ' + EMOJI; ctx.fillText(c.medal, cx, top + 50);
+    ctx.fillStyle = INK; fitFont(c.u.nickname || '?', colW - 24, 34, '800', 'Heebo,Sora,sans-serif');
+    ctx.fillText(c.u.nickname || '?', cx, top + 116);
+    ctx.fillStyle = GOLD_LT; ctx.font = '800 40px Sora,sans-serif'; ctx.fillText(String(c.u.total_score || 0), cx, top + 168);
+    ctx.fillStyle = MUTED; ctx.font = '600 20px Heebo,sans-serif'; ctx.fillText(opts.pts || 'pts', cx, top + 200);
+  });
+
+  // footer: QR -> featured user's bracket
+  ctx.strokeStyle = 'rgba(217,180,106,0.25)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(PAD, 1118); ctx.lineTo(W - PAD, 1118); ctx.stroke();
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  if (qr) {
+    const qs = 124, p = 14, tileX = W - PAD - qs - 2 * p, tileY = 1146;
+    rr(tileX, tileY, qs + 2 * p, qs + 2 * p, 18); ctx.fillStyle = '#f6f4ee'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = GOLD; ctx.stroke();
+    ctx.drawImage(qr, tileX + p, tileY + p, qs, qs);
+    ctx.fillStyle = GOLD; ctx.font = '700 22px Rubik,sans-serif'; ctx.fillText((opts.scanLine || 'SCAN FOR THE BRACKET').toUpperCase(), PAD, 1182);
+    ctx.fillStyle = GOLD_LT; ctx.font = '800 44px Sora,sans-serif'; ctx.fillText('friendlybet.live', PAD, 1234);
+    ctx.fillStyle = MUTED; ctx.font = '600 22px Heebo,sans-serif'; ctx.fillText(opts.tagline || 'Free · no signup · join the pool', PAD, 1272);
+  } else {
+    ctx.textAlign = 'center';
+    ctx.fillStyle = GOLD_LT; ctx.font = '800 46px Sora,sans-serif'; ctx.fillText('friendlybet.live', W / 2, 1212);
+    ctx.fillStyle = MUTED; ctx.font = '600 24px Heebo,sans-serif'; ctx.fillText(opts.tagline || 'Free · no signup · join the pool', W / 2, 1254);
+  }
+}
+
+async function _leaderboardCardToBlob() {
+  if (!_lbBanter) return null;
+  // The podium top-3 and featured user were stashed on _lbBanter at render time.
+  const featUrl = _userShareUrl(_lbBanter.featuredUserId, 'pool_moment_qr');
+  let qr = null;
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (_) {}
+  try { qr = await _loadQrImage(featUrl); } catch (_) { qr = null; }
+  const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350;
+  _renderLeaderboardCard(cv, qr, {
+    pool: (state.currentPool && state.currentPool.name) || '',
+    cardTitle: t('leaderboard.banter.cardTitle'),
+    headline: _banterText(_lbBanter.headline),
+    podium: _lbBanter.podium || [],
+    podiumLabel: t('leaderboard.banter.cardStandings'),
+    pts: t('leaderboard.points'),
+    scanLine: t('leaderboard.banter.cardScan'),
+    tagline: t('leaderboard.banter.cardTagline'),
+  });
+  return new Promise(resolve => cv.toBlob(resolve, 'image/png'));
+}
+
+async function shareLeaderboardMoment() {
+  if (!_lbBanter) { showToast(t('bracketShare.notReady'), 'info'); return; }
+  // Capture the current top-3 for the card from the live leaderboard rows.
+  let blob;
+  try { blob = await _leaderboardCardToBlob(); }
+  catch (e) { console.error('pool moment card failed', e); showToast(t('bracketShare.notReady'), 'info'); return; }
+  if (!blob) { showToast(t('bracketShare.notReady'), 'info'); return; }
+  const caption = t('leaderboard.banter.caption', { pool: (state.currentPool && state.currentPool.name) || 'FriendlyBet' });
+  const url = _userShareUrl(_lbBanter.featuredUserId, 'pool_moment');
+  const file = new File([blob], 'friendlybet-pool-moment.png', { type: 'image/png' });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], text: caption, url }); }
+    catch (e) { if (e.name !== 'AbortError') console.error('pool moment share failed', e); }
+  } else {
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'friendlybet-pool-moment.png'; a.click();
+    try { await navigator.clipboard.writeText(caption + ' ' + url); } catch (_) {}
+    showToast(t('bracketShare.toastDesktop'), 'success');
+  }
+}
+window.shareLeaderboardMoment = shareLeaderboardMoment;
 
 function shareLeaderboard() {
   if (!state.currentPool) return;

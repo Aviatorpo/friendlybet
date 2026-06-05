@@ -2551,6 +2551,21 @@ function loadTablerFallback() {
         <!-- Populated by JS -->
       </div>
 
+      <!-- Pool Pundit: live banter about what just happened on the board -->
+      <div id="lb-banter" class="lb-banter" style="display:none;">
+        <div class="lb-banter-head">
+          <span class="lb-banter-mic">🎙️</span>
+          <span class="lb-banter-title" data-i18n="leaderboard.banter.title">פרשן הפול</span>
+          <span class="lb-banter-live" data-i18n="leaderboard.banter.live">חי</span>
+        </div>
+        <div id="lb-banter-headline" class="lb-banter-headline"></div>
+        <div id="lb-banter-more" class="lb-banter-more"></div>
+        <button class="lb-banter-share" onclick="shareLeaderboardMoment()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+          <span data-i18n="leaderboard.banter.share">שתף את הרגע</span>
+        </button>
+      </div>
+
       <!-- Full list -->
       <div class="section-title-small" data-i18n="leaderboard.fullRanking">דירוג מלא</div>
       <div id="lb-full-list" class="lb-full-list">
@@ -3006,7 +3021,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.8.0</span>
+      <span class="menu-version">v2.8.1</span>
     </div>
   </div>
 
