@@ -1,13 +1,13 @@
 {
-  "updatedAt": "2026-06-05T19:00:00.000Z",
+  "updatedAt": "2026-06-05T20:30:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
       "id": "bra-neymar-calf-out-opener-2026-06-05",
       "confidence": "confirmed",
       "team": "BRA",
-      "en": "A grade-2 calf strain rules Neymar out of Brazil's June 13 opener against Morocco in New Jersey, with coach Carlo Ancelotti saying the 34-year-old could return for the second group game. With Rodrygo already gone to an ACL rupture, Ancelotti must find attacking spark elsewhere from the start. Does Brazil still look like a genuine title contender to you?",
-      "he": "קרע בדרגה שנייה בשריר השוק מוציא את ניימאר ממשחק הפתיחה של ברזיל מול מרוקו ב-13 ביוני בניו ג'רזי, ומאמן קרלו אנצ'לוטי אומר שהשחקן בן ה-34 יכול לחזור למשחק השני בבלוק. כשרודריגו כבר נפל קורבן לקרע ברצועה הצולבת, אנצ'לוטי חייב למצוא ניצוץ התקפי אחר בהתחלה. האם ברזיל עדיין נראית לכם כמועמדת אמיתית לאליפות?",
+      "en": "A grade-2 calf strain rules Neymar out of Brazil's June 13 opener against Morocco in New Jersey, with coach Carlo Ancelotti saying the 34-year-old could return for the second group game against Haiti. With Rodrygo already gone to an ACL rupture, Ancelotti must find attacking spark elsewhere from the start. Does Brazil still look like a genuine title contender to you?",
+      "he": "קרע בדרגה שנייה בשריר השוק מוציא את ניימאר ממשחק הפתיחה של ברזיל מול מרוקו ב-13 ביוני בניו ג'רזי, ומאמן קרלו אנצ'לוטי אומר שהשחקן בן ה-34 יכול לחזור למשחק השני מול האיטי. כשרודריגו כבר נפל קורבן לקרע ברצועה הצולבת, אנצ'לוטי חייב למצוא ניצוץ התקפי אחר בהתחלה. האם ברזיל עדיין נראית לכם כמועמדת אמיתית לאליפות?",
       "sources": [
         { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" },
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48900253/neymar-calf-injury-three-weeks-miss-world-cup-opener" },
@@ -65,17 +65,6 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "wc2026-heat-risk-fifpro-afternoon-2026-06-05",
-      "confidence": "reported",
-      "en": "An NPR analysis finds more than a third of World Cup matches are at risk of dangerous heat, with Miami, Dallas and Kansas City flagged for afternoon kickoffs. Players union FIFPRO points to around 28C WBGT as the level where postponement should be considered, and FIFA has added extra cooling breaks. Could the heat sway the teams you back?",
-      "he": "ניתוח של NPR מצא שיותר משליש ממשחקי המונדיאל בסיכון לחום מסוכן, כשמיאמי, דאלאס וקנזס סיטי מסומנות במשחקי צהריים. איגוד השחקנים FIFPRO מצביע על כ-28 מעלות WBGT כרף שבו יש לשקול דחייה, ופיפ\"א הוסיפה הפסקות קירור. האם החום ישפיע על הקבוצות שתהמרו עליהן?",
-      "sources": [
-        { "name": "NPR", "url": "https://www.npr.org/2026/06/04/nx-s1-5742519/world-cup-fifa-hot-weather-risk-climate-miami" },
-        { "name": "Football365", "url": "https://www.football365.com/news/2026-world-cup-climate-heat-polar-opposite" }
-      ],
-      "expires_at": "2026-06-25T23:59:59Z"
-    },
-    {
       "id": "arg-messi-managed-load-opener-2026-06-05",
       "confidence": "confirmed",
       "team": "ARG",
@@ -100,19 +89,6 @@
         { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/soccer/article/frances-hugo-ekitike-suffered-ruptured-achilles-tendon-set-to-miss-world-cup-185338756.html" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "usa-pulisic-senegal-warmup-2026-06-05",
-      "confidence": "confirmed",
-      "team": "USA",
-      "en": "Christian Pulisic broke a five-month international scoring drought in the USA's 3-2 pre-tournament win over Senegal on May 31, netting his 33rd international goal. Sadio Mane scored twice for Senegal but Folarin Balogun's 63rd-minute strike settled it for the hosts. The USA open their World Cup at home against Paraguay on June 12, and the captain looks sharp.",
-      "he": "כריסטיאן פוליסיץ' שבר עצירת שערים של חמישה חודשים לנבחרת בניצחון 3:2 על סנגל ב-31 במאי, ובקע שער ה-33 שלו בבגדי הנבחרת. מאנה הבקיע פעמיים לסנגל, אך שער של פולארין בלוגון בדקה ה-63 הכריע. ארה\"ב פותחת את המונדיאל בבית מול פרגוואי ב-12 ביוני, והקפטן נראה במיטבו.",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/762592" },
-        { "name": "NBC Philadelphia", "url": "https://www.nbcphiladelphia.com/world-cup/usmnt-beats-senegal-world-cup-warmup-christian-pulisic/4410214/" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/usmnt-vs-senegal-takeaways-from-world-cup-friendly" }
-      ],
-      "expires_at": "2026-06-12T23:59:59Z"
     },
     {
       "id": "fra-ivory-coast-warmup-loss-2026-06-04",
@@ -152,6 +128,32 @@
         { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/spain-coach-confident-lamine-yamal-145809801.html" }
       ],
       "expires_at": "2026-06-15T23:59:59Z"
+    },
+    {
+      "id": "aut-baumgartner-out-no-replacement-2026-06-05",
+      "confidence": "confirmed",
+      "team": "AUT",
+      "en": "Austria head coach Ralf Rangnick confirmed he will not call up a replacement after RB Leipzig midfielder Christoph Baumgartner was ruled out of the World Cup with a right thigh tear suffered in the pre-match warm-up on June 2. Baumgartner finished 2025-26 as Leipzig's top scorer with 13 goals and eight Bundesliga assists. Austria face Argentina, Algeria and Jordan in Group J with just 25 fit players. Can Rangnick's plan hold up without his most productive midfielder?",
+      "he": "מאמן אוסטריה ראלף רנגניק אישר שלא יגייס מחליף לאחר שקשר RB לייפציג כריסטוף באומגרטנר נשלל מגביע העולם בשל קרע בשריר הירך הימני שנגרם ב-2 ביוני בחימום לפני הידידות. באומגרטנר סיים את עונת 2025-26 כמלך השערים של לייפציג עם 13 שערים ו-8 בישולים בבונדסליגה. אוסטריה תתמודד מול ארגנטינה, אלג'יריה וירדן בבלוק J עם 25 שחקנים כשירים בלבד. האם תוכניתו של רנגניק תעמוד בלא הקשר המניב ביותר שלו?",
+      "sources": [
+        { "name": "Bundesliga.com", "url": "https://www.bundesliga.com/en/bundesliga/news/rb-leipzig-christoph-baumgartner-ruled-out-of-world-cup-austria-37670" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/thigh-injury-no-world-cup-104121919.html" },
+        { "name": "Flashscore", "url": "https://www.flashscore.com/news/soccer-world-championship-austria-s-christoph-baumgartner-ruled-out-of-world-cup-due-to-injury/rFdmLOLi/" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "irn-azmoun-excluded-uae-photo-2026-06-05",
+      "confidence": "confirmed",
+      "team": "IRN",
+      "en": "Iran confirmed striker Sardar Azmoun is absent from their 26-man World Cup squad after Iranian state media branded his Instagram post, showing a meeting with Mohammed bin Rashid Al Maktoum, the ruler of Dubai and Prime Minister of the UAE, a betrayal. The 31-year-old anchored Iran's frontline alongside Mehdi Taremi at Qatar 2022 and plays club football for Shabab Al-Ahli in the UAE. Can Iran's attack function at a World Cup without their most experienced striker?",
+      "he": "איראן אישרה שהתוקף סרדר אזמון נעדר מסגל המונדיאל של 26 שחקנים לאחר שמדיית המדינה האיראנית כינתה בגידה את פרסום שלו באינסטגרם, המציג פגישה עם מוחמד בן ראשד אל-מקתום, שליט דובאי וראש ממשלת האמירויות. השחקן בן ה-31 עיגן את ההתקפה האיראנית לצד מהדי טארמי בקטאר 2022, ומשחק בלהק שבאב אל-אהלי שבאמירויות. האם ההתקפה האיראנית תתפקד בגביע עולם ללא הנבחר הוותיק ביותר שלה?",
+      "sources": [
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/17/sardar-azmoun-left-out-as-iran-announce-world-cup-2026-squad" },
+        { "name": "Fox News", "url": "https://www.foxnews.com/sports/sardar-azmoun-known-iranian-messi-left-countrys-world-cup-squad-accused-treason" },
+        { "name": "Seoul Economic Daily", "url": "https://en.sedaily.com/sports/2026/06/02/iran-drops-azmoun-from-world-cup-squad-over-uae-photo" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
     }
   ]
 }
