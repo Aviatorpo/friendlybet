@@ -1,12 +1,31 @@
 {
-  "updatedAt": "2026-06-05T00:25:23.397Z",
+  "updatedAt": "2026-06-05T01:20:29.673Z",
   "count": 6,
   "items": [
+    {
+      "id": "france-ivory-coast-historic-win-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "כרטיס השכמה לצרפת לקראת המונדיאל. חוף השנהב הגיע מאחורה וניצח 2-1 בנאנט ב-4 ביוני, הפעם הראשונה בהיסטוריה שהפילים הביסו את לה בלה. רייאן שרקי הוביל את צרפת, אך גואלה דואה השווה ואמאד דיאלו כמחליף הכריע שש דקות לפני הסיום. דשאן ביצע חילופים רבים בהפסקה, אבל האזהרה ברורה. האם צרפת תהיה מוכנה כשתעמוד מול סנגל ב-16 ביוני?",
+      "en": "World Cup wake-up call for France. Ivory Coast came from a goal down to win 2-1 in Nantes on June 4, the first time in history the Elephants have ever beaten Les Bleus. Rayan Cherki put France ahead, but Guela Doue levelled and substitute Amad Diallo won it six minutes from time. Deschamps made sweeping changes at the break, yet the warning is clear. Will France be ready when they face Senegal on June 16?",
+      "team": null,
+      "sources": [
+        {
+          "name": "France 24",
+          "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat"
+        },
+        {
+          "name": "101 Great Goals",
+          "url": "https://www.101greatgoals.com/news/france-ivory-coast-report-result-goals/"
+        }
+      ],
+      "expires_at": "2026-06-07T00:00:00Z"
+    },
     {
       "id": "neymar-calf-miss-opener-2026-06-04",
       "type": "news",
       "confidence": "confirmed",
-      "he": "ניימאר נוסע למונדיאל, רק לא לפתיחה. מלך השערים של ברזיל בכל הזמנים סבל מקרע חלקי בשרירי השוק (דרגה 2) ויחמיץ את המשחק מול מרוקו ב-13 ביוני. אנצ'לוטי הצהיר שאין לו חרטות על הבחירה לקחת אותו ומצפה לחזרתו למשחק השני מול האיטי ב-19 ביוני. האם הסלסאו חזקה מספיק לנצח בבלוק C בלי הכוכב שלה במשחק הפתיחה?",
+      "he": "ניימאר נוסע למונדיאל, רק לא לפתיחה. מלך השערים של ברזיל בכל הזמנים סבל מקרע חלקי בשרירי השוק (דרגה 2) ויחמיץ את המשחק מול מרוקו ב-13 ביוני. אנצ'לוטי הצהיר שאין לו חרטות על הבחירה לקחת אותו ומצפה לחזרתו למשחק השני מול האיטי ב-19 ביוני. האם הסלסאו חזקה מספיק לנצח בקבוצה C בלי הכוכב שלה במשחק הפתיחה?",
       "en": "Neymar is going to the World Cup, just not to the opener. Brazil's all-time top scorer has a grade-2 calf strain and will miss the June 13 clash with Morocco, with coach Ancelotti saying he has no regrets taking the injured forward and expecting him back for game two against Haiti on June 19. Is the Selecao solid enough to take Group C without him in the opener?",
       "team": "BRA",
       "sources": [
@@ -22,42 +41,42 @@
       "expires_at": "2026-06-13T00:00:00Z"
     },
     {
-      "id": "yamal-spain-fit-opener-2026-06-04",
+      "id": "messi-hamstring-solo-training-2026-06-05",
       "type": "news",
       "confidence": "confirmed",
-      "he": "יאמאל בדרך חזרה לפתיחה. מאמן ספרד דה לה פואנטה מצפה שלמין יאמאל, בן 18, יהיה כשיר למשחק מול כף ורדה באטלנטה ב-15 ביוני, למרות בעיית שרירי הירך שהוציאה אותו מחימום נגד עיראק. \"אם לא ישתנה כלום, הוא יכול להיות מוכן ב-15 ביוני\". עם הכוכב הצעיר שלהם זמין, עד כמה ספרד יכולה להגיע?",
-      "en": "Yamal on track for the opener. Spain coach De La Fuente expects Lamine Yamal, 18, to be fit to face Cape Verde in Atlanta on June 15, despite the hamstring scare that kept him out of Spain's warmup against Iraq. \"If nothing changes, he could be ready to play on June 15.\" With their teenage star available, how far can Spain go?",
-      "team": "ESP",
+      "he": "מסי מתאמן לבדו כשארגנטינה מקימה מחנה בקנזס סיטי. אלוף העולם הגיע לבסיס הצפון-אמריקאי עם תלונה על שריר הירך השמאלי ועבד בנפרד ב-3 ביוני בעוד חבריו ביצעו אימונים מלאים. ההידוק מתוארך למשחק אינטר מיאמי ב-24 במאי. סגל סקאלוני אומר שתוכנית הדרגתית מכוונת לפתיחה מול אלג'יריה ב-16 ביוני. האם בן ה-38 יוכל להיות חד מספיק בזמן?",
+      "en": "Messi training alone as Argentina set up camp in Kansas City. The reigning champion arrived at their North American base with a left hamstring complaint and worked on his own on June 3 while teammates ran full sessions. The tightness dates to a May 24 Inter Miami match. Scaloni's staff say a gradual plan targets the opener against Algeria on June 16. Can the 38-year-old be sharp enough in time?",
+      "team": "ARG",
       "sources": [
         {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente"
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/3/messi-trains-alone-as-argentina-hold-first-world-cup-practice-session"
         },
         {
           "name": "World Soccer Talk",
-          "url": "https://worldsoccertalk.com/world-cup/lamine-yamal-wont-feature-in-spain-friendlies-and-might-miss-2026-world-cup-opener-as-well/"
+          "url": "https://worldsoccertalk.com/amp/world-cup/lionel-messi-headlines-list-of-six-argentina-players-with-physical-issues-ahead-of-2026-world-cup/"
         }
       ],
-      "expires_at": "2026-06-15T00:00:00Z"
+      "expires_at": "2026-06-16T00:00:00Z"
     },
     {
-      "id": "azteca-three-cups-altitude-2026-06-04",
+      "id": "ifab-mouth-red-card-wc2026-2026-06-05",
       "type": "news",
       "confidence": "confirmed",
-      "he": "גורם הגובה. אסטדיו אצטקה במקסיקו סיטי, שיארח חמישה משחקים במונדיאל 2026 כולל הפתיחה ב-11 ביוני נגד דרום אפריקה, יושב בגובה 2,200 מטר מעל פני הים, הגבוה מבין כל מתחמי האירוח בטורניר. לאחר שכבר פתח את גביע 1970 ו-1986, הוא הופך לאצטדיון היחיד בהיסטוריה שאירח שלוש פתיחות מונדיאל. מי ירגיש את אפקט הגובה יותר מכולם?",
-      "en": "The altitude factor. Mexico City's Estadio Azteca, hosting five World Cup 2026 matches including the June 11 opener against South Africa, sits 2,200 metres above sea level, higher than any other venue in this tournament. Having also opened the 1970 and 1986 editions, it becomes the only stadium in history to stage three World Cup opening matches. Which opponents will feel the altitude pinch most?",
-      "team": "MEX",
+      "he": "כסה את הפה ותסתכן בקלף אדום. פיפ\"א אימצה את כלל ה-IFAB שהופך לקלף אדום מיידי כשסכן מכסה את פיו במצב עימות עם יריב. הכלל נולד בעקבות אירוע בליגת האלופות שבו שחקן השתמש בחולצתו להסתיר מילים פוגעניות כלפי ויניסיוס ג'וניור. הוא חל במונדיאל 2026 מהמשחק הפותח ב-11 ביוני. האם שחקנים יחשבו פעמיים לפני כל ויכוח במגרש?",
+      "en": "Cover your mouth and risk a red card. FIFA has adopted the IFAB rule making it an instant red card for any player who covers their mouth in a confrontational situation with an opponent. The rule was triggered by a Champions League incident where a player used his shirt to hide abusive words aimed at Vinicius Jr. It applies at WC2026 from the opening match on June 11. Will players think twice before every pitch argument?",
+      "team": null,
       "sources": [
         {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026"
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth"
         },
         {
-          "name": "beIN Sports",
-          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/estadio-azteca-will-make-history-at-the-2026-world-cup-as-the-first-stadium-to-host-three-fifa-world-cup-opening-matches-2026-06-02"
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/4/29/red-card-for-players-covering-their-mouths-in-world-cup-matches"
         }
       ],
-      "expires_at": "2026-07-06T00:00:00Z"
+      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
       "id": "saot-upgrade-audio-alert-2026-06-05",
@@ -74,25 +93,6 @@
         {
           "name": "TNT Sports",
           "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "messi-ronaldo-sixth-world-cup-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "שיא לדורות. ליאונל מסי, בן 38, וקריסטיאנו רונאלדו, בן 41, עומדים להפוך לגברים הראשונים בהיסטוריה שישתתפו בשישה מונדיאלים, הישג שאף שחקן גבר לא הגיע אליו. היריבות שלהם האירה שני עשורים של כדורגל מועדונים, וכעת מגיעה לפרק האחרון שלה בצפון אמריקה. האם אחד מהם ירים את הגביע בפעם האחרונה?",
-      "en": "A record for the ages. Lionel Messi, 38, and Cristiano Ronaldo, 41, are set to become the first men in history to play in six FIFA World Cups, an achievement no male player has ever matched. Their rivalry lit up two decades of club football and now reaches its final World Cup chapter in North America. Will either of them lift the trophy one last time?",
-      "team": null,
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48904313/lionel-messi-argentina-2026-world-cup-squad"
-        },
-        {
-          "name": "CBS Sports",
-          "url": "https://www.cbssports.com/soccer/news/cristiano-ronaldo-40-year-olds-set-to-make-2026-world-cup-the-oldest/"
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
