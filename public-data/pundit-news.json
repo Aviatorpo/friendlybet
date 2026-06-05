@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-05T13:45:00.000Z",
+  "updatedAt": "2026-06-05T17:00:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
@@ -118,12 +118,50 @@
       "team": "USA",
       "en": "Christian Pulisic broke a five-month international scoring drought in the USA's 3-2 pre-tournament win over Senegal on May 31, netting his 33rd international goal. Sadio Mane scored twice for Senegal but Folarin Balogun's 63rd-minute strike settled it for the hosts. The USA open their World Cup at home against Paraguay on June 12, and the captain looks sharp.",
       "he": "כריסטיאן פוליסיץ' שבר עצירת שערים של חמישה חודשים לנבחרת בניצחון 3:2 על סנגל ב-31 במאי, ובקע שער ה-33 שלו בבגדי הנבחרת. מאנה הבקיע פעמיים לסנגל, אך שער של פולארין בלוגון בדקה ה-63 הכריע. ארה\"ב פותחת את המונדיאל בבית מול פרגוואי ב-12 ביוני, והקפטן נראה במיטבו.",
-      "expires_at": "2026-06-12T23:59:59Z",
       "sources": [
         { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/762592" },
         { "name": "NBC Philadelphia", "url": "https://www.nbcphiladelphia.com/world-cup/usmnt-beats-senegal-world-cup-warmup-christian-pulisic/4410214/" },
         { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/usmnt-vs-senegal-takeaways-from-world-cup-friendly" }
-      ]
+      ],
+      "expires_at": "2026-06-12T23:59:59Z"
+    },
+    {
+      "id": "vuvuzela-ban-wc2026-stadiums-2026-06-05",
+      "confidence": "confirmed",
+      "en": "FIFA's Stadium Code of Conduct bans vuvuzelas, air horns, whistles and all loud noisemakers from every one of the 16 host venues at the 2026 World Cup. The iconic plastic horns produced up to 120 decibels at the 2010 South Africa tournament, but fans caught with one in 2026 face ejection. End of an era for stadium atmosphere, or a sensible safety call?",
+      "he": "קוד ההתנהגות של פיפ\"א לאצטדיונים אוסר על ווּוּזֶלות, מבפרי אוויר, שריקות וכל מכשיר רועש ב-16 אצטדיוני האירוח של גביע העולם 2026. צינורות הפלסטיק האיקוניים הגיעו ל-120 דציבל במונדיאל דרום אפריקה 2010, אך אוהד שייתפס עם אחד מהם ב-2026 יוצא מהמגרש. סוף עידן לאווירת האצטדיון, או קריאת בטיחות הגיונית?",
+      "sources": [
+        { "name": "HITC", "url": "https://www.hitc.com/iconic-vuvuzelas-banned-from-2026-world-cup-stadiums-under-fifa-code-of-conduct/" },
+        { "name": "Daily Sabah", "url": "https://www.dailysabah.com/sports/football/fifa-bans-vuvuzelas-other-noisemakers-from-world-cup-stadiums" },
+        { "name": "RNZ", "url": "https://www.rnz.co.nz/news/sport/597328/fifa-bans-vuvuzelas-from-world-cup-stadiums" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "fra-ivory-coast-warmup-loss-2026-06-04",
+      "confidence": "confirmed",
+      "team": "FRA",
+      "en": "France fell 1-2 to Ivory Coast in Nantes on June 4 in their final home warm-up, with Guela Doue and substitute Amad Diallo cancelling out Rayan Cherki's opener. It was Ivory Coast's first-ever win over les Bleus. France open their World Cup against Senegal in New Jersey on June 16. With Ekitike injured and Mateta leading the line, are the goals really there for Deschamps?",
+      "he": "צרפת הפסידה 2:1 לחוף השנהב בנאנט ב-4 ביוני בסיבוב האחרון לפני המונדיאל בבית, כשגוואלה דואה ואמאד דיאלו כמחליף ביטלו את שערו של ריאן שרקי. היה זה הניצחון ההיסטורי הראשון של הפילים על לה-בלה. צרפת פותחת מול סנגל בניו ג'רזי ב-16 ביוני. עם אקיטיקה פצוע ומטטה בחוד ההתקפה, האם השערים באמת שם עבור דשאן?",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/401864934" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/4/ivory-coast-beat-france-in-world-cup-warning-to-one-of-the-favourites" },
+        { "name": "France 24", "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat" }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "sui-embolo-visa-cleared-2026-06-05",
+      "confidence": "confirmed",
+      "team": "SUI",
+      "en": "Switzerland striker Breel Embolo was cleared to travel to the United States on June 5 after a two-day visa delay tied to criminal-record checks. He missed the squad's flight to San Diego but visited the US Embassy in Bern and received approval; the Swiss federation says he will arrive in time for a June 7 warmup against Australia. Switzerland open their World Cup against Qatar on June 13.",
+      "he": "חלוץ שוויץ ברייל אמבולו קיבל אישור כניסה לארצות הברית ב-5 ביוני לאחר עיכוב של יומיים הקשור לבדיקות רישום פלילי. הוא פיספס את טיסת הנבחרת לסן דייגו, ביקר בשגרירות האמריקאית בברן וקיבל אישור, וההתאחדות השוויצרית מסרה שיגיע בזמן לאימון ב-7 ביוני מול אוסטרליה. שוויץ פותחת את הגביע מול קטאר ב-13 ביוני.",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48969072/switzerland-striker-embolo-gets-visa-us-world-cup" },
+        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/06/04/world-cup-switzerland-embolo-visa/558e76d2-605c-11f1-9c46-d6211372eede_story.html" },
+        { "name": "Goal", "url": "https://www.goal.com/en/lists/breel-embolo-switzerland-visa-approved-world-cup/blt2e796f14cc3331ed" }
+      ],
+      "expires_at": "2026-06-13T23:59:59Z"
     }
   ]
 }
