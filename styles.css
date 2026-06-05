@@ -9006,6 +9006,15 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
   font-size: 17px; font-weight: 700; color: rgba(255, 255, 255, 0.4); line-height: 1;
 }
 
+/* Desktop bracket-share controls (v2.7.0): real per-app link chips + Copy link
+   + Download image, shown only where there's no native file share. Mobile keeps
+   the native-sheet button + decorative hint above; these are mutually exclusive
+   via [data-share-native] / [data-share-desktop]. */
+.bracket-share-desktop { width: 100%; margin-top: 8px; }
+.bracket-share-desktop .share-apps-grid { margin-bottom: 10px; }
+.bracket-share-desktop-actions { display: flex; gap: 8px; justify-content: center; }
+.bracket-share-desktop-actions .btn-secondary { flex: 1; margin: 0; }
+
 .bracket-share-done {
   display: block; margin: 8px auto 0; background: none; border: 0;
   color: var(--muted, #9a9c93); font-family: "Rubik", system-ui, sans-serif;

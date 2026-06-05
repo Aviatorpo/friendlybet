@@ -2988,7 +2988,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.6.99</span>
+      <span class="menu-version">v2.7.0</span>
     </div>
   </div>
 
@@ -3222,14 +3222,15 @@ function loadTablerFallback() {
       <span data-i18n="betting.summary.submit">שמור את הניחושים שלי</span>
     </button>
 
-    <button class="btn-secondary" type="button" id="sp-summary-share-btn" onclick="shareBracketCard()" style="margin-top:10px;display:none;">
+    <button class="btn-secondary" type="button" id="sp-summary-share-btn" onclick="shareBracketCard()" data-share-native style="margin-top:10px;display:none;">
       <i class="ti ti-share"></i>
       <span data-i18n="bracketShare.cta">שתף את הבראקט שלי</span>
     </button>
 
     <!-- App-logos hint (toggled with the button above). Decorative cue that the
-         share button reaches all these apps; tapping it fires the same share. -->
-    <div id="sp-summary-share-apps" style="display:none;">
+         share button reaches all these apps; tapping it fires the same share.
+         MOBILE only — desktop uses #sp-summary-share-desktop (real link chips). -->
+    <div id="sp-summary-share-apps" data-share-native style="display:none;">
       <div class="bracket-share-apps-hint" onclick="shareBracketCard()" role="button" tabindex="0" aria-label="WhatsApp, Instagram, X, Facebook, Telegram">
         <span class="bsah-label" data-i18n="bracketShare.shareToApps">משתפים לכל אפליקציה</span>
         <div class="bsah-logos" aria-hidden="true">
@@ -3243,6 +3244,10 @@ function loadTablerFallback() {
         </div>
       </div>
     </div>
+
+    <!-- DESKTOP share flow (no native file share): real per-app link chips +
+         Copy link + Download image. Populated by _bracketShareControlsHtml(). -->
+    <div id="sp-summary-share-desktop" class="bracket-share-desktop" data-share-desktop style="display:none;"></div>
 
     <!-- v2.4.6: explicit "Edit groups / bracket" link so a user landing on
          summary with missing data has a clear path back into the flow. -->
@@ -3383,7 +3388,9 @@ function loadTablerFallback() {
     </button>
     <div class="rc-modal-title rc-modal-title-center"><span data-i18n="bracketShare.celebrateTitle">🏆 הבראקט שלך נשמר!</span></div>
     <div class="bracket-share-preview"><canvas id="bracket-share-card-canvas" width="1080" height="1350"></canvas></div>
-    <button class="sp-share-bracket-btn" type="button" onclick="shareBracketCard()">
+    <!-- MOBILE share flow (native sheet carries the real PNG to any app). Hidden
+         on desktop, which has no file share — see #bracket-share-desktop below. -->
+    <button class="sp-share-bracket-btn" type="button" onclick="shareBracketCard()" data-share-native>
       <span aria-hidden="true">📲</span>
       <span data-i18n="bracketShare.cta">שתף את הבראקט שלי</span>
     </button>
@@ -3392,7 +3399,7 @@ function loadTablerFallback() {
          card image goes to ANY installed app). This strip is a decorative hint
          that signals "shareable to all these apps"; tapping it just fires the
          same share. -->
-    <div class="bracket-share-apps-hint" onclick="shareBracketCard()" role="button" tabindex="0" aria-label="WhatsApp, Instagram, X, Facebook, Telegram">
+    <div class="bracket-share-apps-hint" onclick="shareBracketCard()" role="button" tabindex="0" data-share-native aria-label="WhatsApp, Instagram, X, Facebook, Telegram">
       <span class="bsah-label" data-i18n="bracketShare.shareToApps">משתפים לכל אפליקציה</span>
       <div class="bsah-logos" aria-hidden="true">
         <svg class="bsah-logo wa" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -3404,6 +3411,10 @@ function loadTablerFallback() {
         <span class="bsah-more">+</span>
       </div>
     </div>
+
+    <!-- DESKTOP share flow (no native file share): real per-app link chips +
+         Copy link + Download image. Populated by _bracketShareControlsHtml(). -->
+    <div id="bracket-share-desktop" class="bracket-share-desktop" data-share-desktop style="display:none;"></div>
 
     <button class="bracket-share-done" type="button" onclick="closeBracketShareCelebration()" data-i18n="bracketShare.done">סיום — לדשבורד</button>
   </div>

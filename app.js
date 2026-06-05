@@ -7774,6 +7774,100 @@ async function shareBracketCard() {
 }
 window.shareBracketCard = shareBracketCard;
 
+// ---- Desktop bracket-share experience (v2.7.0) ----------------------------
+// On desktop there is no native FILE share, so the old single button could only
+// DOWNLOAD the image — a dead-end that offloaded the upload to the user, and the
+// app logos were merely decorative (they downloaded too). Desktop doesn't have
+// the mobile file-attach constraint, and our personalized /share link already
+// renders THIS bracket as an OG card. So on desktop we swap the experience for:
+// real per-app link buttons (one click → WhatsApp Web / X / FB with the card),
+// a one-click Copy link, and an explicit Download image (for IG/stories, which
+// still need the file). Mobile keeps its exact native-sheet flow, untouched.
+function _canNativeFileShare() {
+  try {
+    if (!(navigator.canShare && navigator.share)) return false;
+    const f = new File([new Blob([''], { type: 'image/png' })], 'p.png', { type: 'image/png' });
+    return !!navigator.canShare({ files: [f] });
+  } catch (_) { return false; }
+}
+
+// Copy the personalized bracket /share link to the clipboard (desktop quick win).
+async function copyBracketLink() {
+  if (!_bracketShareReady()) { showToast(t('bracketShare.notReady'), 'info'); return; }
+  const url = _bracketShareUrl('bracket_copy');
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch (_) {
+    const tmp = document.createElement('input');
+    tmp.value = url; document.body.appendChild(tmp); tmp.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(tmp);
+  }
+  showToast(t('bracketShare.linkCopied'), 'success');
+}
+window.copyBracketLink = copyBracketLink;
+
+// Download the bracket PNG (desktop, or anyone who wants the file for IG/stories).
+async function downloadBracketImage() {
+  if (!_bracketShareReady()) { showToast(t('bracketShare.notReady'), 'info'); return; }
+  let blob;
+  try { blob = await _bracketCardToBlob(); }
+  catch (e) { console.error('bracket card render failed', e); showToast(t('bracketShare.notReady'), 'info'); return; }
+  if (!blob) { showToast(t('bracketShare.notReady'), 'info'); return; }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'friendlybet-bracket.png'; a.click();
+  try { await navigator.clipboard.writeText(t('bracketShare.caption') + ' ' + _bracketShareUrl('bracket_download')); } catch (_) {}
+  showToast(t('bracketShare.toastDesktop'), 'success');
+}
+window.downloadBracketImage = downloadBracketImage;
+
+// Desktop-only controls markup: functional per-app link chips (reusing the
+// invite modal's .share-apps-grid styling) + Copy link + Download image. Each
+// chip fires its per-app helper in 'bracket' mode, which on desktop opens that
+// app's web intent with the personalized /share link.
+function _bracketShareControlsHtml() {
+  const chip = (cls, fn, label, svg) =>
+    `<button class="share-app-chip ${cls}" type="button" onclick="${fn}('bracket')" aria-label="${label}">${svg}<span>${label}</span></button>`;
+  const WA = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+  const TG = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>';
+  const X  = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
+  const FB = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>';
+  const RD = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 11.779c0-1.459-1.192-2.645-2.657-2.645-.715 0-1.363.286-1.84.746-1.81-1.191-4.259-1.949-6.971-2.046l1.483-4.669 4.016.941-.006.058c0 1.193.975 2.163 2.174 2.163 1.198 0 2.172-.97 2.172-2.163s-.975-2.164-2.172-2.164c-.92 0-1.704.574-2.021 1.379l-4.329-1.015c-.189-.046-.381.063-.44.249l-1.654 5.207c-2.838.034-5.409.798-7.3 2.025-.474-.438-1.103-.712-1.799-.712-1.465 0-2.656 1.187-2.656 2.646 0 .97.533 1.811 1.317 2.271-.052.282-.086.567-.086.857 0 3.911 4.808 7.093 10.719 7.093s10.72-3.182 10.72-7.093c0-.288-.033-.571-.084-.852.789-.46 1.325-1.301 1.325-2.276zm-17.954 1.835c0-.834.679-1.513 1.513-1.513.834 0 1.513.679 1.513 1.513 0 .834-.679 1.513-1.513 1.513-.834 0-1.513-.679-1.513-1.513zm9.062 4.992c-.815.815-2.387.876-2.846.876-.46 0-2.033-.061-2.847-.875-.119-.119-.119-.312 0-.431.119-.119.312-.119.431 0 .516.516 1.617.7 2.416.7.798 0 1.899-.184 2.416-.7.119-.119.312-.119.431 0 .117.119.117.312-.001.43zm-.211-3.479c-.834 0-1.513-.679-1.513-1.513 0-.834.679-1.513 1.513-1.513.834 0 1.513.679 1.513 1.513 0 .834-.679 1.513-1.513 1.513z"/></svg>';
+  const EM = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><polyline points="22,6 12,13 2,6"></polyline></svg>';
+  const grid =
+    '<div class="share-apps-grid">' +
+    chip('chip-whatsapp', 'shareToWhatsApp', 'WhatsApp', WA) +
+    chip('chip-telegram', 'shareToTelegram', 'Telegram', TG) +
+    chip('chip-x', 'shareToX', 'X', X) +
+    chip('chip-facebook', 'shareToFacebook', 'Facebook', FB) +
+    chip('chip-reddit', 'shareToReddit', 'Reddit', RD) +
+    chip('chip-email', 'shareByEmail', t('shareModal.email'), EM) +
+    '</div>';
+  const actions =
+    '<div class="bracket-share-desktop-actions">' +
+    `<button class="btn-secondary btn-small" type="button" onclick="copyBracketLink()"><i class="ti ti-link"></i><span data-i18n="bracketShare.copyLink">${t('bracketShare.copyLink')}</span></button>` +
+    `<button class="btn-secondary btn-small" type="button" onclick="downloadBracketImage()"><i class="ti ti-download"></i><span data-i18n="bracketShare.downloadImage">${t('bracketShare.downloadImage')}</span></button>` +
+    '</div>';
+  return grid + actions;
+}
+
+// Toggle native (mobile) vs desktop share affordances within a container.
+// Elements tagged [data-share-native] are the mobile native-sheet flow; those
+// tagged [data-share-desktop] are the link-chips/copy/download flow.
+function _ensureBracketDesktopControls(el) {
+  if (el && !el.dataset.bscFilled) {
+    el.innerHTML = _bracketShareControlsHtml();
+    el.dataset.bscFilled = '1';
+  }
+}
+function _applyBracketShareMode(root) {
+  if (!root) return;
+  const desktop = !_canNativeFileShare();
+  root.querySelectorAll('[data-share-native]').forEach(elm => { elm.style.display = desktop ? 'none' : ''; });
+  root.querySelectorAll('[data-share-desktop]').forEach(elm => { elm.style.display = desktop ? '' : 'none'; });
+}
+window._applyBracketShareMode = _applyBracketShareMode;
+
 // Celebration modal shown right after the first complete save: previews the
 // bracket card and offers Share / Done. Routing to the dashboard already
 // happened in spSubmitPredictions, so closing just dismisses the modal.
@@ -7784,6 +7878,10 @@ async function openBracketShareCelebration() {
   const champ = spState && (spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
   if (!champ) return; // nothing to celebrate yet
   modal.style.display = 'flex';
+  // Desktop gets functional link chips + copy + download instead of the
+  // download-only dead-end; mobile keeps its native-sheet button. (v2.7.0)
+  _ensureBracketDesktopControls(document.getElementById('bracket-share-desktop'));
+  _applyBracketShareMode(modal);
   // Instant first paint (names render now; flags + QR fill in once loaded) so the
   // modal never shows a blank canvas while assets load on a slow connection.
   try { _renderBracketCard(cv, null); } catch (_) {}
@@ -10473,14 +10571,12 @@ async function spRenderSummary() {
   //     button is needed.
   const summaryShareBtn = document.getElementById('sp-summary-share-btn');
   const summaryShareApps = document.getElementById('sp-summary-share-apps');
+  const summaryShareDesktop = document.getElementById('sp-summary-share-desktop');
   const summarySaveBtn = document.getElementById('sp-submit-btn');
   if (summaryShareBtn && summarySaveBtn) {
     const submitted = typeof spHasUserSubmitted === 'function' && spHasUserSubmitted();
     const hasChamp = !!(spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
     const shareIsPrimary = (submitted && hasChamp);
-
-    summaryShareBtn.style.display = shareIsPrimary ? '' : 'none';
-    if (summaryShareApps) summaryShareApps.style.display = shareIsPrimary ? '' : 'none';
 
     const saveLabel = summarySaveBtn.querySelector('span');
     const saveIcon = summarySaveBtn.querySelector('i');
@@ -10493,14 +10589,26 @@ async function spRenderSummary() {
         saveLabel.setAttribute('data-i18n', 'betting.summary.saveChanges');
         saveLabel.textContent = t('betting.summary.saveChanges');
       }
-      // Reorder so the primary (Share) and its app-logos hint render first.
+      // Reorder so the share controls render above Save.
       const parent = summarySaveBtn.parentNode;
       if (parent) {
         parent.insertBefore(summaryShareBtn, summarySaveBtn);
         if (summaryShareApps) parent.insertBefore(summaryShareApps, summarySaveBtn);
+        if (summaryShareDesktop) parent.insertBefore(summaryShareDesktop, summarySaveBtn);
       }
+      // Populate desktop link chips, then let _applyBracketShareMode pick the
+      // right affordance: mobile keeps the native-sheet button + logo hint;
+      // desktop swaps in real per-app link chips + copy + download (v2.7.0).
+      if (typeof _ensureBracketDesktopControls === 'function') _ensureBracketDesktopControls(summaryShareDesktop);
+      summaryShareBtn.style.display = '';
+      if (summaryShareApps) summaryShareApps.style.display = '';
+      if (summaryShareDesktop) summaryShareDesktop.style.display = '';
+      if (parent && typeof _applyBracketShareMode === 'function') _applyBracketShareMode(parent);
     } else {
-      // First-time: Save is the large primary, Share stays hidden.
+      // First-time: Save is the large primary, all share controls hidden.
+      summaryShareBtn.style.display = 'none';
+      if (summaryShareApps) summaryShareApps.style.display = 'none';
+      if (summaryShareDesktop) summaryShareDesktop.style.display = 'none';
       summaryShareBtn.className = 'btn-secondary';
       summarySaveBtn.className = 'btn-primary btn-large';
       if (saveIcon) saveIcon.className = 'ti ti-rocket';
