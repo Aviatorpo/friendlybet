@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-05T22:00:00.000Z",
+  "updatedAt": "2026-06-06T00:00:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
@@ -187,6 +187,18 @@
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48972979/fifa-announces-national-anthems-involve-all-26-players-world-cup" },
         { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/fifa-announce-fan-centric-change-081952835.html" },
         { "name": "Daily Hive", "url": "https://dailyhive.com/vancouver/fan-centric-national-anthem-coming-to-fifa-world-cup" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "fifa-ticket-zero-dollar-error-2026-06-05",
+      "confidence": "confirmed",
+      "en": "A checkout fault on FIFA's official ticket site on May 21 let roughly 60 fans secure World Cup seats for zero dollars, bypassing the final payment step. FIFA confirmed the error on June 5, cancelled the $0 bookings, and emailed buyers giving them seven days to pay the full face value or lose their seats. The affected games are group-stage matches in Toronto. The episode adds yet another chapter to the ticketing scandal already under investigation by the attorneys general of New York and New Jersey. Will FIFA's ticketing platform hold up once real crowds descend on the host cities?",
+      "he": "תקלה בשלב התשלום באתר הכרטיסים הרשמי של פיפ\"א ב-21 במאי איפשרה לכ-60 אוהדים לאבטח כרטיסי מונדיאל ללא עלות, תוך עקיפת שלב החיוב הסופי. פיפ\"א אישרה את השגיאה ב-5 ביוני, ביטלה את ההזמנות ב-0 דולר ושלחה לרוכשים הודעת דוא\"ל המעניקה להם שבעה ימים לשלם את המחיר המלא, אחרת יאבדו את כרטיסיהם. המשחקים המושפעים הם משחקי שלב הבתים בטורונטו. הפרשה מוסיפה פרק נוסף לשערורייה שכבר נחקרת על ידי תובעי ניו יורק וניו ג'רזי. האם פלטפורמת הכרטיסים של פיפ\"א תחזיק מעמד ברגע שהמונים יגיעו לערי האירוח?",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48974024/fifa-cancels-world-cup-tickets-60-fans-got-free-error" },
+        { "name": "UPI", "url": "https://www.upi.com/Sports_News/Soccer/2026/06/05/FIFA-cancels-free-World-Cup-tickets-error/7921780666873/" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/fifa-cancels-free-world-cup-160718562.html" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     }
