@@ -1,69 +1,67 @@
 {
-  "updatedAt": "2026-06-05T17:00:00.000Z",
+  "updatedAt": "2026-06-05T19:00:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
-      "id": "arg-messi-hamstring-training-apart-2026-06-05",
+      "id": "bra-neymar-calf-out-opener-2026-06-05",
       "confidence": "confirmed",
-      "team": "ARG",
-      "en": "Messi is working through an individual programme away from Argentina's main group, managing left-hamstring fatigue first felt on May 24. Coach Scaloni says the plan is to have him ready for the June 16 opener against Algeria, but he will skip both warm-up matches. Will the reigning champion arrive in Kansas City at full strength?",
-      "he": "מסי עובד על תוכנית אישית, בנפרד מקבוצת הנבחרת הארגנטינאית, לאחר עומס בשריר הירך שמאלית שהופיע ב-24 במאי. המאמן סקלוני אומר שהמטרה היא להיות מוכן לפתיחה מול אלג'יריה ב-16 ביוני, אך הוא ידלג על שני משחקי האימון. האם אלוף העולם יגיע לקנזס סיטי בשיא כוחו?",
+      "team": "BRA",
+      "en": "A grade-2 calf strain rules Neymar out of Brazil's June 13 opener against Morocco in New Jersey, with coach Carlo Ancelotti saying the 34-year-old could return for the second group game. With Rodrygo already gone to an ACL rupture, Ancelotti must find attacking spark elsewhere from the start. Does Brazil still look like a genuine title contender to you?",
+      "he": "קרע בדרגה שנייה בשריר השוק מוציא את ניימאר ממשחק הפתיחה של ברזיל מול מרוקו ב-13 ביוני בניו ג'רזי, ומאמן קרלו אנצ'לוטי אומר שהשחקן בן ה-34 יכול לחזור למשחק השני בבלוק. כשרודריגו כבר נפל קורבן לקרע ברצועה הצולבת, אנצ'לוטי חייב למצוא ניצוץ התקפי אחר בהתחלה. האם ברזיל עדיין נראית לכם כמועמדת אמיתית לאליפות?",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48945340/messi-trains-own-argentina-opening-session-ahead-world-cup" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/messi-trains-alone-as-argentina-hold-first-world-cup-practice-session" },
-        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/amp/world-cup/scaloni-explains-messis-2026-world-cup-workload-management-following-injury-with-inter-miami/" }
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48900253/neymar-calf-injury-three-weeks-miss-world-cup-opener" },
+        { "name": "Bleacher Report", "url": "https://bleacherreport.com/articles/25432292-neymar-injury-update-provided-brazils-carlo-ancelotti-latest-timeline-ahead-2026-world-cup" }
       ],
-      "expires_at": "2026-06-16T00:00:00Z"
+      "expires_at": "2026-06-18T00:00:00Z"
     },
     {
-      "id": "can-davies-squad-doubt-opener-2026-06-05",
+      "id": "can-davies-miss-opener-confirmed-2026-06-05",
       "confidence": "confirmed",
       "team": "CAN",
-      "en": "Canada captain Alphonso Davies made Jesse Marsch's final 26-man roster despite carrying a hamstring injury from the Champions League semi-finals, but he is a doubt for the hosts' June 12 opener. Marsch may have to open without his best player on home soil. Does that change your read on Canada's group?",
-      "he": "קפטן קנדה אלפונסו דייוויס נכלל ברשימה הסופית של מארש למרות פציעת שריר הירך מחצי גמר ליגת האלופות, אך הוא ספק לפתיחת הטורניר של המארחים ב-12 ביוני. מארש עלול לפתוח בלי הכוכב שלו על אדמת הבית. האם זה משנה את הציפיות שלך מקנדה?",
+      "en": "Canada captain Alphonso Davies has confirmed he will miss the hosts' June 12 opener against Bosnia and Herzegovina, still working back from a hamstring tear suffered in the Champions League semi-finals. The hope is a return for the second group game against Qatar on June 18. How much does his absence shift your view on Canada in Group B?",
+      "he": "קפטן קנדה אלפונסו דייוויס אישר שיפספס את משחק הפתיחה של המארחים מול בוסניה-הרצגובינה ב-12 ביוני, עדיין בתהליך החלמה מקרע בשריר הירך שנגרם בחצי-גמר ליגת האלופות. התקווה היא לחזרה למשחק השני מול קטאר ב-18 ביוני. עד כמה היעדרותו משנה את ציפיותיכם מקנדה בבלוק B?",
       "sources": [
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/alphonso-davies-named-to-canadas-world-cup-squad-despite-hamstring-injury" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48914937/alphonso-davies-named-canada-world-cup-squad-injury-concerns" },
-        { "name": "Sports Illustrated", "url": "https://www.si.com/soccer/alphonso-davies-injury-progress-potential-return-date-for-canada-star" }
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/alphonso-davies-confirms-hell-miss-210300435.html" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48944438/alphonso-davies-joins-canada-world-cup-prep-unclear-play" },
+        { "name": "TSN", "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/canada-captain-davies-trains-individually-as-fifa-world-cup-preparations-continue/" }
       ],
       "expires_at": "2026-06-12T00:00:00Z"
-    },
-    {
-      "id": "eng-foden-palmer-dropped-2026-06-05",
-      "confidence": "confirmed",
-      "team": "ENG",
-      "en": "Thomas Tuchel has left both Phil Foden and Cole Palmer out of England's final 26-man World Cup squad, citing a dip in club form over the second half of the season. Two of the Premier League's most gifted creators will watch from home. Does England have enough spark in the final third to go deep in this tournament?",
-      "he": "תומאס טוכל השמיט הן את פיל פודן והן את קול פאלמר מנבחרת אנגליה לגביע העולם, בשל ירידה בכושר בחצי השני של העונה. שני המוכשרים ביותר ביצירה בפרמייר ליג יצפו מהבית. האם לאנגליה יש מספיק ניצוץ קדימה כדי להגיע רחוק בטורניר?",
-      "sources": [
-        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12016/13543455/england-world-cup-squad-announcement-ruthless-thomas-tuchel-leaves-big-names-out-of-26-man-squad" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48841808/england-2026-world-cup-squad-foden-palmer-toney-magure-madueke-watkins-kane-stones-alexander-arnold" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/england-2026-fifa-world-cup-roster" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "saot-10cm-threshold-wc2026-2026-06-03",
-      "confidence": "confirmed",
-      "en": "FIFA confirmed on June 3 that its upgraded semi-automated offside system will audio-alert assistant referees for any infringement greater than 10 centimeters, down from the 50-centimeter threshold used at Qatar 2022. All 1,248 squad players have been 3D-scanned to power the AI avatars behind the calls. Fewer marginal calls to argue about, or a fresh source of controversy?",
-      "he": "פיפ\"א אישרה ב-3 ביוני שמערכת הנבדל החצי-אוטומטית המשודרגת תתריע לעוזר השופט על כל עבירה מעל 10 סנטימטר, ירידה ניכרת מסף ה-50 ס\"מ שהיה בקטאר 2022. כל 1,248 שחקני הסגלים סרוקים בתלת-מימד לטובת אווטרי הבינה המלאכותית. פחות ויכוחים על קריאות גבוליות, או מקור חדש למחלוקות?",
-      "sources": [
-        { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml" },
-        { "name": "Inside World Football", "url": "https://www.insideworldfootball.com/2026/06/03/fifa-upgrades-saot-and-ball-tracking-as-2026-match-officials-given-new-suite-of-tech-tools" },
-        { "name": "HITC", "url": "https://www.hitc.com/fifa-unveil-new-var-technology-for-offsides-that-will-be-used-by-assistants-at-world-cup-2026/" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
       "id": "mex-azteca-third-wc-opening-2026-06-05",
       "confidence": "confirmed",
       "team": "MEX",
-      "en": "Estadio Azteca sits at 2,200 meters above sea level in Mexico City and will host the June 11 World Cup opener between Mexico and South Africa, making it the only stadium in history to host a World Cup opening match three times. Visiting teams arriving without altitude preparation often struggle in the first half. Could that edge prove decisive for El Tri?",
-      "he": "האצטקה בגובה 2,200 מטרים מעל פני הים במקסיקו סיטי יארח את משחק הפתיחה של המונדיאל בין מקסיקו לדרום אפריקה ב-11 ביוני, ויהפוך לאיצטדיון היחיד בהיסטוריה שאירח משחק פתיחה שלישי של גביע העולם. קבוצות אורחות שמגיעות ללא הכנה לגובה לרוב מתקשות בחצי הראשון. האם יתרון הגובה יהיה מכריע עבור אל-טרי?",
+      "en": "Estadio Azteca will stage the June 11 World Cup opener between Mexico and South Africa, becoming the only stadium in history to host three FIFA World Cup opening matches. The ground sits at 2,200 metres above sea level in Mexico City, an altitude advantage that has long unsettled visiting sides. Does height give El Tri a real edge in the opening fixture?",
+      "he": "האצטקה יארח את משחק הפתיחה של גביע העולם בין מקסיקו לדרום אפריקה ב-11 ביוני, ויהפוך לאיצטדיון היחיד בהיסטוריה שאירח שלושה משחקי פתיחה של מונדיאל. האצטדיון שוכן בגובה 2,200 מטרים מעל פני הים במקסיקו סיטי, יתרון גובה שמטריד קבוצות מבקרות מזה שנים. האם הגובה מעניק לאל-טרי יתרון אמיתי במשחק הפתיחה?",
       "sources": [
         { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" },
         { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/fifa-world-cup-2026-stadiums-matches-us-canada-mexico" }
       ],
       "expires_at": "2026-06-11T23:59:59Z"
+    },
+    {
+      "id": "ifab-goalkick-5sec-countdown-2026-06-05",
+      "confidence": "confirmed",
+      "en": "FIFA is bringing a new anti-time-wasting rule to the 2026 World Cup: referees will raise a hand and count down five seconds for goal-kicks, mirroring the existing countdown for goalkeepers holding the ball. A side that lets the count expire hands the opponent a corner kick. Will this rule finally stamp out the stalling tactics that have slowed group-stage football for decades?",
+      "he": "פיפ\"א מביאה כלל חדש נגד בזבוז זמן לגביע העולם 2026: שופטים ירימו יד וייספרו חמש שניות עבור בעיטות שער, בדומה לספירה הקיימת עבור שוערים המחזיקים בכדור. קבוצה שתניח לספירה לפוג תעניק לצד היריב בעיטת פינה. האם הכלל הזה יחסל סופית את טקטיקות ההשהיה שהאטו את משחקי כדורגל שלב הבתים עשרות שנים?",
+      "sources": [
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/soccer/article/2026-world-cup-will-introduce-new-fifa-approved-rule-changes-213520541.html" },
+        { "name": "Football365", "url": "https://www.football365.com/news/football-law-rule-changes-world-cup-ifab-collina" },
+        { "name": "FourFourTwo", "url": "https://www.fourfourtwo.com/competition/every-new-fifa-rule-at-the-2026-world-cup-goalkeeper-timeout-ban-five-second-countdowns-and-var-offsides-whats-changed" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "wc2026-third-place-8-advance-format-2026-06-05",
+      "confidence": "confirmed",
+      "en": "In the 2026 World Cup format, the eight best third-placed teams across all 12 groups advance to the round of 32 alongside the 24 group winners and runners-up. That means 32 of the 48 nations progress from the group stage, and a team that loses its opener is not yet out. Do not write off any side in your pool after just one defeat.",
+      "he": "בפורמט גביע העולם 2026, שמונה הנבחרות הטובות שסיימו שלישיות בין כל 12 הבלוקים עולות לסיבוב ה-32 יחד עם 24 הזוכות וסגניות הזוכות. פירוש הדבר שמתוך 48 הנבחרות, 32 מתקדמות משלב הבתים, וקבוצה שמפסידה במשחק הפתיחה שלה עדיין לא בחוץ. אל תמחקו אף נבחרת בבריכה שלכם אחרי הפסד אחד בלבד.",
+      "sources": [
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/groups-how-teams-qualify-tie-breakers" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/14/fifa-world-cup-2026-what-to-expect-from-the-48-team-format" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
     }
   ]
 }
