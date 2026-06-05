@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-05T12:12:00.000Z",
+  "updatedAt": "2026-06-05T13:45:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
@@ -14,19 +14,6 @@
         { "name": "Bleacher Report", "url": "https://bleacherreport.com/articles/25432292-neymar-injury-update-provided-brazils-carlo-ancelotti-latest-timeline-ahead-2026-world-cup" }
       ],
       "expires_at": "2026-06-18T00:00:00Z"
-    },
-    {
-      "id": "can-davies-miss-opener-confirmed-2026-06-05",
-      "confidence": "confirmed",
-      "team": "CAN",
-      "en": "Canada captain Alphonso Davies has confirmed he will miss the hosts' June 12 opener against Bosnia and Herzegovina, still working back from a hamstring tear suffered in the Champions League semi-finals. The hope is a return for the second group game against Qatar on June 18. How much does his absence shift your view on Canada in Group B?",
-      "he": "קפטן קנדה אלפונסו דייוויס אישר שיפספס את משחק הפתיחה של המארחים מול בוסניה-הרצגובינה ב-12 ביוני, עדיין בתהליך החלמה מקרע בשריר הירך שנגרם בחצי-גמר ליגת האלופות. התקווה היא לחזרה למשחק השני מול קטאר ב-18 ביוני. עד כמה היעדרותו משנה את ציפיותיכם מקנדה בבלוק B?",
-      "sources": [
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/alphonso-davies-confirms-hell-miss-210300435.html" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48944438/alphonso-davies-joins-canada-world-cup-prep-unclear-play" },
-        { "name": "TSN", "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/canada-captain-davies-trains-individually-as-fifa-world-cup-preparations-continue/" }
-      ],
-      "expires_at": "2026-06-12T00:00:00Z"
     },
     {
       "id": "mex-azteca-third-wc-opening-2026-06-05",
@@ -62,18 +49,6 @@
         { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/14/fifa-world-cup-2026-what-to-expect-from-the-48-team-format" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "esp-yamal-opener-fitness-2026-06-05",
-      "confidence": "reported",
-      "team": "ESP",
-      "en": "Lamine Yamal will sit out Spain's warm-up matches with a hamstring issue, but coach Luis de la Fuente expects him available for the June 15 opener against Cape Verde. How far are you backing Spain to go this time?",
-      "he": "למינה ימאל ידלג על משחקי ההכנה של ספרד בגלל בעיה בשריר הירך, אך המאמן לואיס דה לה פואנטה מעריך שיהיה זמין לפתיחה מול כף ורדה ב-15 ביוני. כמה רחוק תהמרו שספרד תגיע הפעם?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente" },
-        { "name": "Sports Illustrated", "url": "https://www.si.com/soccer/why-lamine-yamal-isnt-playing-spain-vs-iraq-6-4-26" }
-      ],
-      "expires_at": "2026-06-15T23:59:59Z"
     },
     {
       "id": "eng-foden-palmer-dropped-2026-06-05",
@@ -123,6 +98,32 @@
         { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/amp/world-cup/scaloni-explains-messis-2026-world-cup-workload-management-following-injury-with-inter-miami/" }
       ],
       "expires_at": "2026-06-16T00:00:00Z"
+    },
+    {
+      "id": "fra-ekitike-achilles-out-wc-2026-06-05",
+      "confidence": "confirmed",
+      "team": "FRA",
+      "en": "Liverpool striker Hugo Ekitike will miss the entire World Cup after surgery for a ruptured Achilles tendon suffered at Anfield in a Champions League quarter-final against PSG. Deschamps, who had already omitted Kolo Muani and Camavinga from his 26-man list, now relies on Crystal Palace's Jean-Philippe Mateta to lead France's attack. Can les Bleus still go all the way without a proven clinical finisher?",
+      "he": "תוקף ליברפול יוגו אקיטיקה ייעדר ממונדיאל 2026 כולו לאחר ניתוח לתיקון קרע בגיד אכילס שנגרם באנפילד ברבע-גמר ליגת האלופות מול פריז סן-ז'רמן. דשאן, שכבר השמיט את קולו מואני ואת קמאבינגה מהסגל, נסמך כעת על ז'אן-פיליפ מטטה מקריסטל פאלאס כחלוץ ראשי. האם לה-בלה יכולים להגיע עד הסוף ללא מרכז-קדימה קליני מוכח?",
+      "sources": [
+        { "name": "FIFA", "url": "https://www.fifa.com/en/articles/france-hugo-ekitike-injury" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48607614/world-cup-injuries-ruled-play-hugo-ekitike-rodrygo-lamine-yamal" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/soccer/article/frances-hugo-ekitike-suffered-ruptured-achilles-tendon-set-to-miss-world-cup-185338756.html" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "usa-pulisic-senegal-warmup-2026-06-05",
+      "confidence": "confirmed",
+      "team": "USA",
+      "en": "Christian Pulisic broke a five-month international scoring drought in the USA's 3-2 pre-tournament win over Senegal on May 31, netting his 33rd international goal. Sadio Mane scored twice for Senegal but Folarin Balogun's 63rd-minute strike settled it for the hosts. The USA open their World Cup at home against Paraguay on June 12, and the captain looks sharp.",
+      "he": "כריסטיאן פוליסיץ' שבר עצירת שערים של חמישה חודשים לנבחרת בניצחון 3:2 על סנגל ב-31 במאי, ובקע שער ה-33 שלו בבגדי הנבחרת. מאנה הבקיע פעמיים לסנגל, אך שער של פולארין בלוגון בדקה ה-63 הכריע. ארה\"ב פותחת את המונדיאל בבית מול פרגוואי ב-12 ביוני, והקפטן נראה במיטבו.",
+      "expires_at": "2026-06-12T23:59:59Z",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/762592" },
+        { "name": "NBC Philadelphia", "url": "https://www.nbcphiladelphia.com/world-cup/usmnt-beats-senegal-world-cup-warmup-christian-pulisic/4410214/" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/usmnt-vs-senegal-takeaways-from-world-cup-friendly" }
+      ]
     }
   ]
 }
