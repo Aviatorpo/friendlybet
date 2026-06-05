@@ -1056,6 +1056,21 @@ function copyShareLink() {
 // DASHBOARD
 // ============================================================
 
+// v2.7.7: retention heartbeat. Calls record_activity at most once per UTC day
+// per browser (gated by localStorage) so we can compute DAU/WAU/MAU + cohort
+// retention. Best-effort: needs a stored recovery code, swallows all errors.
+function _recordActivityOncePerDay() {
+  try {
+    const code = localStorage.getItem(CONFIG.STORAGE_KEYS.RECOVERY_CODE);
+    if (!code || !supabaseClient) return;
+    const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
+    if (localStorage.getItem('fb_activity_day') === today) return;
+    localStorage.setItem('fb_activity_day', today); // set first: avoid duplicate in-flight calls
+    const bare = code.replace(/-/g, '');
+    supabaseClient.rpc('record_activity', { p_code: bare }).catch(() => {});
+  } catch (_) { /* best-effort */ }
+}
+
 async function goToDashboard() {
   // v2.5.49: defensive guards. If we hit this without a supabase client
   // (very slow network) or any of the DB reads fail, fall back to the
@@ -1096,7 +1111,11 @@ async function goToDashboard() {
     state.currentPool = pool;
     state.currentUser = user;
   }
-  
+
+  // v2.7.7: retention heartbeat - record that this user was active today
+  // (throttled to once/day per browser; fire-and-forget, never blocks render).
+  _recordActivityOncePerDay();
+
   // Load real-world results data
   await loadResultsData();
 
