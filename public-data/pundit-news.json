@@ -1,31 +1,45 @@
 {
-  "updatedAt": "2026-06-06T00:00:00.000Z",
+  "updatedAt": "2026-06-05T12:00:00.000Z",
   "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
   "items": [
     {
       "id": "irn-visa-us-irgc-2026-06-05",
       "confidence": "reported",
       "team": "IRN",
-      "en": "Reports say Iran's squad flew to their Tijuana base camp on June 6 with US entry visas still unconfirmed. US Secretary of State Marco Rubio warned that delegation members with ties to the Islamic Revolutionary Guard Corps would be barred from the United States. Captain Mehdi Taremi and defender Ehsan Hajsafi are known to have completed mandatory IRGC service, leaving their US travel status uncertain. FIFA relocated Iran's training base from Tucson, Arizona to Tijuana, Mexico at the federation's request. Iran play New Zealand and Belgium in Los Angeles before facing Egypt in Seattle. Could political tensions keep key players out of US stadiums before a single game is played?",
-      "he": "לפי הדיווחים, נבחרת איראן המריאה לבסיס אימוניה בטיחואנה ב-6 ביוני כשאשרות הכניסה לארה\"ב עדיין לא אושרו. מזכיר המדינה מרקו רוביו הזהיר שחברי משלחת בעלי קשרים למשמרות המהפכה האיסלאמית ייחסמו מלהיכנס לארצות הברית. הקפטן מהדי טארמי ואחסן חאג'ספי ידועים כמי שסיימו שירות חובה ב-IRGC, מה שמשאיר את מעמד כניסתם לארה\"ב תחת סיכון. פיפ\"א העבירה את בסיס האימונים האיראני מטוקסון שבאריזונה לטיחואנה שבמקסיקו לפי בקשת ההתאחדות. איראן תשחק מול ניו זילנד ובלגיה בלוס אנג'לס לפני ההתמודדות עם מצרים בסיאטל. האם מתחים פוליטיים יגרמו לכך שכוכבים מרכזיים ייאסרו מהאצטדיונים האמריקאיים עוד לפני שיבועט כדור אחד?",
+      "en": "Reports say Iran's players submitted their passports to the US Embassy in Ankara on June 5, with federation head Mehdi Taj confirming the squad still plans to travel to their Tijuana base on June 6. US Secretary of State Marco Rubio has warned that any delegation members with ties to the IRGC will be barred from entering the United States. Captain Mehdi Taremi and defender Ehsan Hajsafi, both known to have completed mandatory IRGC service, face an uncertain travel status. Iran's three group games, against New Zealand, Belgium, and Egypt, are all on US soil. Could political tensions keep key players out of American stadiums?",
+      "he": "לפי הדיווחים, שחקני איראן מסרו את דרכוניהם לשגרירות האמריקאית באנקרה ב-5 ביוני, וראש ההתאחדות מהדי תאג' אישר שהנבחרת עדיין מתכוונת לנסוע לבסיס האימונים בטיחואנה ב-6 ביוני. מזכיר המדינה מרקו רוביו הזהיר שכל חבר משלחת בעל קשרים ל-IRGC ייחסם מלהיכנס לארצות הברית. הקפטן מהדי טארמי ואחסן חאג'ספי, שניהם ידועים כמי שסיימו שירות חובה ב-IRGC, מתמודדים עם מעמד נסיעה לא ודאי. שלושת משחקי הבלוק של איראן, מול ניו זילנד, בלגיה ומצרים, כולם על אדמת ארה\"ב. האם מתחים פוליטיים יגרמו לכך שכוכבים מרכזיים ייאסרו מהאצטדיונים האמריקאיים?",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48949687/iran-expects-us-mexico-visas-arrive-week" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/irans-world-cup-squad-to-depart-for-mexico-on-june-6-despite-us-visa-delay" },
-        { "name": "Euronews", "url": "https://www.euronews.com/2026/05/18/iran-heads-to-world-cup-training-camp-in-turkey-with-no-us-visas-issued" }
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/5/iran-footballers-hand-passports-to-us-embassy-for-world-cup-visa-approval" },
+        { "name": "WION News", "url": "https://www.wionews.com/sports/iran-fifa-world-cup-squad-submits-passports-to-us-embassy-in-turkey-amid-visa-uncertainty-1780667401729" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/iran-footballers-hand-passports-us-132746380.html" }
       ],
       "expires_at": "2026-06-15T23:59:59Z"
     },
     {
-      "id": "fifa-waterbottle-ban-reversal-2026-06-05",
+      "id": "bra-neymar-calf-doubt-2026-06-05",
       "confidence": "confirmed",
-      "en": "FIFA reversed its own stadium entry rules and now bans all reusable water bottles from the 16 World Cup venues, despite an earlier version of the code explicitly allowing fans to bring in empty transparent bottles of up to one litre. Research by Queen's University Belfast found 14 of the 16 stadiums could hit heat levels that pose health risks for fans. Baby milk and medical liquids remain exempt with a certificate. Fans watching afternoon kick-offs in Miami, Houston, and Atlanta will have to pay stadium prices for water. Did FIFA seriously misjudge the conditions?",
-      "he": "פיפ\"א הפכה את כללי הכניסה לאצטדיונים ואוסרת כעת על בקבוקי מים ניתנים למילוי ב-16 אצטדיוני גביע העולם, למרות שגרסה קודמת של הקוד אפשרה במפורש לאוהדים להביא בקבוקים שקופים ריקים עד ליטר אחד. מחקר של אוניברסיטת קווינס מבלפסט מצא כי 14 מ-16 האצטדיונים עלולים להגיע לרמות חום המסכנות את בריאות הצופים. חלב תינוקות ונוזלים רפואיים פטורים בהמצאת תעודה. אוהדים שיצפו במשחקי צהריים ואחה\"צ במיאמי, יוסטון ואטלנטה יאלצו לרכוש מים בתוך האצטדיון במחירי ספסל. האם פיפ\"א שגתה בצורה חמורה בהערכת התנאים?",
+      "team": "BRA",
+      "en": "Brazil coach Carlo Ancelotti offered cautious optimism on June 5, saying Neymar will have an MRI on June 6 to determine whether he can rejoin the main squad next week. The 34-year-old has been sidelined since mid-May with a grade-2 calf strain, but Ancelotti said he believes Neymar could be fit for Brazil's June 13 opener against Morocco in New Jersey, or at worst the second group game against Haiti. With Rodrygo already out for the tournament with an ACL rupture, Brazil's attacking depth is being tested before a ball is kicked. Will the Selecao's star arrive in time?",
+      "he": "מאמן ברזיל קרלו אנצ'לוטי הציע אופטימיות זהירה ב-5 ביוני, ואמר שניימאר יעבור MRI ב-6 ביוני כדי לקבוע אם יוכל לחזור לקבוצה הראשית בשבוע הבא. השחקן בן ה-34 מנוע מלשחק מאמצע מאי בשל קרע בדרגה שנייה בשריר השוק, אך אנצ'לוטי ציין שהוא מאמין שניימאר יכול להיות כשיר לפתיחת ברזיל מול מרוקו ב-13 ביוני בניו ג'רזי, או לכל היותר למשחק השני מול האיטי. כשרודריגו כבר חסר לאורך כל הטורניר בשל קרע ברצועה הצולבת, עומק ההתקפה של ברזיל נבחן עוד לפני שיבועט כדור. האם כוכב הסלסאו יגיע בזמן?",
       "sources": [
-        { "name": "NBC News", "url": "https://www.nbcnews.com/sports/soccer/fifa-bans-water-bottles-world-cup-stadiums-fans-heat-rcna348419" },
-        { "name": "Fox News", "url": "https://www.foxnews.com/sports/fifa-bans-refillable-water-bottles-world-cup-stadiums-despite-original-rules-stating-otherwise" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/4/world-cup-2026-fifa-bans-fans-reusable-bottles-stadiums-venues-football" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup" },
+        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/amp/world-cup/carlo-ancelotti-provides-positive-injury-update-on-neymar-ahead-of-brazils-2026-world-cup-opener/" },
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/carlo-ancelotti-guarantees-neymar-will-be-part-of-brazil-s-2026-world-cup-squad-2026-05-30" }
       ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "expires_at": "2026-06-18T00:00:00Z"
+    },
+    {
+      "id": "usa-pulisic-senegal-win-2026-05-31",
+      "confidence": "confirmed",
+      "team": "USA",
+      "en": "Christian Pulisic ended a five-month international scoring drought as the United States beat Senegal 3-2 on May 31, setting up Sergiño Dest's opener before scoring himself off a Ricardo Pepi pass. Folarin Balogun netted a second-half winner after Sadio Mane had twice equalized, taking Mane's Senegal record to 54 international goals. The USMNT face Germany on June 6 in Chicago before hosting Paraguay in their June 12 World Cup opener. Can the co-hosts carry this momentum when the stakes are real?",
+      "he": "כריסטיאן פוליסיץ' שם קץ לבצורת של חמישה חודשים ללא שער בינלאומי כאשר ארצות הברית הביסה את סנגל 3:2 ב-31 במאי, כשסייע לשערו של סרג'ינו דסט ואחר כך כבש בעצמו ממסירת ריקרדו פאפי. ג'ולארין בלוגן כבש את המכריע בחצי השני לאחר שסאדיו מאנה השווה פעמיים, ובכך הגיע ל-54 שערים בינלאומיים לשיא סנגל. המנבחרת האמריקאית תיפגש עם גרמניה ב-6 ביוני לפני פתיחת גביע העולם מול פרגוואי ב-12 ביוני. האם הנבחרת המארחת תוכל לשאת את המומנטום הזה כשהסיכויים יהיו אמיתיים?",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/762592" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/soccer/live/usmnt-rides-christian-pulisic-breakout-to-32-win-over-senegal-in-chaotic-friendly-183000706.html" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/usmnt-vs-senegal-takeaways-from-world-cup-friendly" }
+      ],
+      "expires_at": "2026-06-12T23:59:59Z"
     },
     {
       "id": "mex-azteca-third-wc-opening-2026-06-05",
@@ -40,32 +54,6 @@
       "expires_at": "2026-06-11T23:59:59Z"
     },
     {
-      "id": "sui-embolo-visa-cleared-2026-06-05",
-      "confidence": "confirmed",
-      "team": "SUI",
-      "en": "Switzerland striker Breel Embolo was cleared to travel to the United States on June 5 after a two-day visa delay tied to criminal-record checks. He missed the squad's flight to San Diego but visited the US Embassy in Bern and received approval; the Swiss federation says he will arrive in time for a June 7 warmup against Australia. Switzerland open their World Cup against Qatar on June 13.",
-      "he": "חלוץ שוויץ ברייל אמבולו קיבל אישור כניסה לארצות הברית ב-5 ביוני לאחר עיכוב של יומיים הקשור לבדיקות רישום פלילי. הוא פיספס את טיסת הנבחרת לסן דייגו, ביקר בשגרירות האמריקאית בברן וקיבל אישור, וההתאחדות השוויצרית מסרה שיגיע בזמן לאימון ב-7 ביוני מול אוסטרליה. שוויץ פותחת את הגביע מול קטאר ב-13 ביוני.",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48969072/switzerland-striker-embolo-gets-visa-us-world-cup" },
-        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/06/04/world-cup-switzerland-embolo-visa/558e76d2-605c-11f1-9c46-d6211372eede_story.html" },
-        { "name": "Goal", "url": "https://www.goal.com/en/lists/breel-embolo-switzerland-visa-approved-world-cup/blt2e796f14cc3331ed" }
-      ],
-      "expires_at": "2026-06-13T23:59:59Z"
-    },
-    {
-      "id": "bra-neymar-calf-out-opener-2026-06-05",
-      "confidence": "confirmed",
-      "team": "BRA",
-      "en": "A grade-2 calf strain rules Neymar out of Brazil's June 13 opener against Morocco in New Jersey, with coach Carlo Ancelotti saying the 34-year-old could return for the second group game against Haiti. With Rodrygo already gone to an ACL rupture, Ancelotti must find attacking spark elsewhere from the start. Does Brazil still look like a genuine title contender to you?",
-      "he": "קרע בדרגה שנייה בשריר השוק מוציא את ניימאר ממשחק הפתיחה של ברזיל מול מרוקו ב-13 ביוני בניו ג'רזי, ומאמן קרלו אנצ'לוטי אומר שהשחקן בן ה-34 יכול לחזור למשחק השני מול האיטי. כשרודריגו כבר נפל קורבן לקרע ברצועה הצולבת, אנצ'לוטי חייב למצוא ניצוץ התקפי אחר בהתחלה. האם ברזיל עדיין נראית לכם כמועמדת אמיתית לאליפות?",
-      "sources": [
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48900253/neymar-calf-injury-three-weeks-miss-world-cup-opener" },
-        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/06/04/neymar-injury-brazil-world-cup/d7164a78-604c-11f1-9c46-d6211372eede_story.html" }
-      ],
-      "expires_at": "2026-06-18T00:00:00Z"
-    },
-    {
       "id": "fra-ivory-coast-warmup-loss-2026-06-04",
       "confidence": "confirmed",
       "team": "FRA",
@@ -77,19 +65,6 @@
         { "name": "France 24", "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat" }
       ],
       "expires_at": "2026-06-16T23:59:59Z"
-    },
-    {
-      "id": "esp-yamal-fit-opener-2026-06-05",
-      "confidence": "confirmed",
-      "team": "ESP",
-      "en": "Spain coach Luis de la Fuente confirmed Lamine Yamal is on track to play in the World Cup opener against Cape Verde in Atlanta on June 15, though the 18-year-old sat out the June 4 warmup against Iraq while finishing his comeback from a left-hamstring strain sustained on April 22. De la Fuente cautioned Yamal may only get a cameo at first, and Spain will assess closer to the game. Do you trust the European champions to fire on all cylinders if their main creator starts slow?",
-      "he": "מאמן ספרד לואיס דה לה פואנטה אישר שלמין יאמאל בדרך לשחק בפתיחת גביע העולם מול קאבו ורדה באטלנטה ב-15 ביוני, אם כי השחקן בן ה-18 ישב על הספסל במשחק האימון מול עיראק ב-4 ביוני תוך סיום ההתאוששות מפציעת שריר ירך שנגרמה ב-22 באפריל. דה לה פואנטה הזהיר שייתכן שיאמאל יקבל בהתחלה רק כמה דקות, וספרד תעריך לקראת המשחק. האם אתם סומכים על אלופות אירופה להצית בגז מלא אם היוצר הראשי שלהן מתחיל לאט?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente" },
-        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/06/03/lamine-yamal-spain-world-cup/cbecee7c-5f5c-11f1-9c46-d6211372eede_story.html" },
-        { "name": "TSN", "url": "https://www.tsn.ca/soccer/article/yamal-less-spain-held-by-iraq-in-world-cup-sendoff-n1-48948825/" }
-      ],
-      "expires_at": "2026-06-15T23:59:59Z"
     },
     {
       "id": "arg-messi-managed-load-opener-2026-06-05",
@@ -118,57 +93,6 @@
       "expires_at": "2026-06-17T23:59:59Z"
     },
     {
-      "id": "fra-ekitike-achilles-out-wc-2026-06-05",
-      "confidence": "confirmed",
-      "team": "FRA",
-      "en": "Liverpool striker Hugo Ekitike will miss the entire World Cup after surgery for a ruptured Achilles tendon suffered at Anfield in a Champions League quarter-final against PSG. Deschamps, who had already omitted Kolo Muani and Camavinga from his 26-man list, now relies on Crystal Palace's Jean-Philippe Mateta to lead France's attack. Can les Bleus still go all the way without a proven clinical finisher?",
-      "he": "תוקף ליברפול יוגו אקיטיקה ייעדר ממונדיאל 2026 כולו לאחר ניתוח לתיקון קרע בגיד אכילס שנגרם באנפילד ברבע-גמר ליגת האלופות מול פריז סן-ז'רמן. דשאן, שכבר השמיט את קולו מואני ואת קמאבינגה מהסגל, נסמך כעת על ז'אן-פיליפ מטטה מקריסטל פאלאס כחלוץ ראשי. האם לה-בלה יכולים להגיע עד הסוף ללא מרכז-קדימה קליני מוכח?",
-      "sources": [
-        { "name": "FIFA", "url": "https://www.fifa.com/en/articles/france-hugo-ekitike-injury" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48607614/world-cup-injuries-ruled-play-hugo-ekitike-rodrygo-lamine-yamal" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/soccer/article/frances-hugo-ekitike-suffered-ruptured-achilles-tendon-set-to-miss-world-cup-185338756.html" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "eng-foden-palmer-dropped-2026-06-05",
-      "confidence": "confirmed",
-      "team": "ENG",
-      "en": "Thomas Tuchel has left both Phil Foden and Cole Palmer out of England's final 26-man World Cup squad, citing a dip in club form over the second half of the season. Two of the Premier League's most gifted creators will watch from home. Does England have enough spark in the final third to go deep in this tournament?",
-      "he": "תומאס טוכל השמיט הן את פיל פודן והן את קול פאלמר מנבחרת אנגליה לגביע העולם, בשל ירידה בכושר בחצי השני של העונה. שני המוכשרים ביותר ביצירה בפרמייר ליג יצפו מהבית. האם לאנגליה יש מספיק ניצוץ קדימה כדי להגיע רחוק בטורניר?",
-      "sources": [
-        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12016/13543455/england-world-cup-squad-announcement-ruthless-thomas-tuchel-leaves-big-names-out-of-26-man-squad" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48841808/england-2026-world-cup-squad-foden-palmer-toney-magure-madueke-watkins-kane-stones-alexander-arnold" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/england-2026-fifa-world-cup-roster" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "aut-baumgartner-out-no-replacement-2026-06-05",
-      "confidence": "confirmed",
-      "team": "AUT",
-      "en": "Austria head coach Ralf Rangnick confirmed he will not call up a replacement after RB Leipzig midfielder Christoph Baumgartner was ruled out of the World Cup with a right thigh tear suffered in the pre-match warm-up on June 2. Baumgartner finished 2025-26 as Leipzig's top scorer with 13 goals and eight Bundesliga assists. Austria face Argentina, Algeria and Jordan in Group J with just 25 fit players. Can Rangnick's plan hold up without his most productive midfielder?",
-      "he": "מאמן אוסטריה ראלף רנגניק אישר שלא יגייס מחליף לאחר שקשר RB לייפציג כריסטוף באומגרטנר נשלל מגביע העולם בשל קרע בשריר הירך הימני שנגרם ב-2 ביוני בחימום לפני הידידות. באומגרטנר סיים את עונת 2025-26 כמלך השערים של לייפציג עם 13 שערים ו-8 בישולים בבונדסליגה. אוסטריה תתמודד מול ארגנטינה, אלג'יריה וירדן בבלוק J עם 25 שחקנים כשירים בלבד. האם תוכניתו של רנגניק תעמוד בלא הקשר המניב ביותר שלו?",
-      "sources": [
-        { "name": "Bundesliga.com", "url": "https://www.bundesliga.com/en/bundesliga/news/rb-leipzig-christoph-baumgartner-ruled-out-of-world-cup-austria-37670" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/thigh-injury-no-world-cup-104121919.html" },
-        { "name": "Flashscore", "url": "https://www.flashscore.com/news/soccer-world-championship-austria-s-christoph-baumgartner-ruled-out-of-world-cup-due-to-injury/rFdmLOLi/" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "saot-10cm-threshold-wc2026-2026-06-03",
-      "confidence": "confirmed",
-      "en": "FIFA confirmed on June 3 that its upgraded semi-automated offside system will audio-alert assistant referees for any infringement greater than 10 centimeters, down from the 50-centimeter threshold used at Qatar 2022. All 1,248 squad players have been 3D-scanned to power the AI avatars behind the calls. Fewer marginal calls to argue about, or a fresh source of controversy?",
-      "he": "פיפ\"א אישרה ב-3 ביוני שמערכת הנבדל החצי-אוטומטית המשודרגת תתריע לעוזר השופט על כל עבירה מעל 10 סנטימטר, ירידה ניכרת מסף ה-50 ס\"מ שהיה בקטאר 2022. כל 1,248 שחקני הסגלים סרוקים בתלת-מימד לטובת אווטרי הבינה המלאכותית. פחות ויכוחים על קריאות גבוליות, או מקור חדש למחלוקות?",
-      "sources": [
-        { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml" },
-        { "name": "Inside World Football", "url": "https://www.insideworldfootball.com/2026/06/03/fifa-upgrades-saot-and-ball-tracking-as-2026-match-officials-given-new-suite-of-tech-tools" },
-        { "name": "HITC", "url": "https://www.hitc.com/fifa-unveil-new-var-technology-for-offsides-that-will-be-used-by-assistants-at-world-cup-2026/" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
       "id": "ifab-goalkick-5sec-countdown-2026-06-05",
       "confidence": "confirmed",
       "en": "FIFA is bringing a new anti-time-wasting rule to the 2026 World Cup: referees will raise a hand and count down five seconds for goal-kicks, mirroring the existing countdown for goalkeepers holding the ball. A side that lets the count expire hands the opponent a corner kick. Will this rule finally stamp out the stalling tactics that have slowed group-stage football for decades?",
@@ -177,30 +101,6 @@
         { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/soccer/article/2026-world-cup-will-introduce-new-fifa-approved-rule-changes-213520541.html" },
         { "name": "Football365", "url": "https://www.football365.com/news/football-law-rule-changes-world-cup-ifab-collina" },
         { "name": "FourFourTwo", "url": "https://www.fourfourtwo.com/competition/every-new-fifa-rule-at-the-2026-world-cup-goalkeeper-timeout-ban-five-second-countdowns-and-var-offsides-whats-changed" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "vuvuzela-ban-wc2026-2026-06-05",
-      "confidence": "confirmed",
-      "en": "FIFA's 35-page stadium code of conduct for the 2026 World Cup bans vuvuzelas, air horns, whistles and all other noisemakers from all 16 venues, citing player communication and broadcasting concerns. The plastic horns became the defining sound of the 2010 South Africa tournament at levels around 120 decibels. Musical instruments smaller than 12 centimetres are still permitted. Will the ban make North American crowds feel flat, or sharpen the atmosphere?",
-      "he": "קוד ההתנהגות של פיפ\"א בן 35 העמודים למונדיאל 2026 אוסר על וובוזלות, שופרות אוויר, שריקות וכל מחולל רעש אחר בכל 16 האצטדיונים, בשל חשש לתקשורת השחקנים ולקשיי שידור. החצוצרות מפלסטיק היו הסמל הצלילי של טורניר 2010 בדרום אפריקה ברמות של כ-120 דציבל. כלי נגינה קטנים מ-12 סנטימטר עדיין מותרים. האם האיסור ישטיח את אווירת הקהל בצפון אמריקה, או יחדד אותה?",
-      "sources": [
-        { "name": "HITC", "url": "https://www.hitc.com/iconic-vuvuzelas-banned-from-2026-world-cup-stadiums-under-fifa-code-of-conduct/" },
-        { "name": "Daily Sabah", "url": "https://www.dailysabah.com/sports/football/fifa-bans-vuvuzelas-other-noisemakers-from-world-cup-stadiums" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/iconic-vuvuzelas-banned-2026-world-132932215.html" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "dieperink-var-removed-wc2026-2026-06-05",
-      "confidence": "confirmed",
-      "en": "FIFA removed Dutch VAR official Rob Dieperink from its World Cup officiating panel in May after his arrest in England over alleged misconduct, replacing him with French VAR Willy Delajod. British police later closed the case for lack of evidence, but FIFA kept the removal in place. A late reshuffle in the video review team, with less than a week until the tournament kicks off, raises questions about VAR continuity. Will it matter on the pitch?",
-      "he": "פיפ\"א הסירה את פקיד הוואר ההולנדי רוב דיפרינק מחבר השיפוט של המונדיאל במאי לאחר מעצרו באנגליה בשל חשד להתנהגות לא הולמת, והחליפה אותו בוואר הצרפתי ווילי דלאז'ו. המשטרה הבריטית סגרה מאוחר יותר את התיק בהעדר ראיות, אך פיפ\"א הותירה את ההסרה בעינה. שינוי אחרון בצוות הוואר, פחות משבוע לפני פתיחת הטורניר, מעלה שאלות על עקביות הסקירה הוידאו. האם זה ישנה משהו בשטח?",
-      "sources": [
-        { "name": "Morocco World News", "url": "https://www.moroccoworldnews.com/2026/05/302292/fifa-drops-dutch-referee-rob-dieperink-from-world-cup-list/" },
-        { "name": "NL Times", "url": "https://nltimes.nl/2026/05/15/dutch-referee-arrested-alleged-misconduct-17-year-old-charges-later-dropped" },
-        { "name": "Africa Soccer", "url": "https://africasoccer.com/fifa-removes-dutch-referee-rob-dieperink-from-2026-world-cup-after-investigation/" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     },
@@ -214,6 +114,18 @@
         { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/17/sardar-azmoun-left-out-as-iran-announce-world-cup-2026-squad" },
         { "name": "Fox News", "url": "https://www.foxnews.com/sports/sardar-azmoun-known-iranian-messi-left-countrys-world-cup-squad-accused-treason" },
         { "name": "Seoul Economic Daily", "url": "https://en.sedaily.com/sports/2026/06/02/iran-drops-azmoun-from-world-cup-squad-over-uae-photo" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "fifa-ticket-prices-ag-probe-2026-06-05",
+      "confidence": "confirmed",
+      "en": "The attorneys general of New York and New Jersey subpoenaed FIFA on May 27, launching a joint investigation into alleged deceptive ticket practices at MetLife Stadium. Officials say FIFA sold Category 1 seats in specific zones, then after purchases were completed, created more expensive 'Front Category' zones covering the same areas. FIFA also raised prices for more than 90 of the 104 World Cup matches between October 2025 and April 2026, with main ticket categories rising on average by 34 percent. Is FIFA's first North American World Cup also its most controversially priced?",
+      "he": "תובעות המדינה של ניו יורק וניו ג'רזי הוציאו זימון לפיפ\"א ב-27 במאי, ופתחו בחקירה משותפת על נוהלי מכירת כרטיסים מטעים לכאורה באצטדיון מטלייף. לטענת הרשויות, פיפ\"א מכרה כרטיסי קטגוריה 1 באזורים מסוימים, ולאחר השלמת הרכישות יצרה אזורי 'קטגוריה קדמית' יקרים יותר באותם אזורים. פיפ\"א גם העלתה מחירים ליותר מ-90 מתוך 104 משחקי גביע העולם בין אוקטובר 2025 לאפריל 2026, כשהקטגוריות הראשיות עלו בממוצע ב-34 אחוז. האם גביע העולם הראשון בצפון אמריקה הוא גם הכרטיסייה היקרה ביותר אי פעם?",
+      "sources": [
+        { "name": "NY Attorney General", "url": "https://ag.ny.gov/press-release/2026/attorney-general-james-and-attorney-general-davenport-subpoena-fifa-over-world" },
+        { "name": "CNN", "url": "https://www.cnn.com/2026/05/27/business/world-cup-tickets-new-york-new-jersey-subpoena" },
+        { "name": "NBC News", "url": "https://www.nbcnews.com/sports/soccer/new-york-new-jersey-launch-probe-fifa-world-cup-ticket-practices-rcna347162" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     }
