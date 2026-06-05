@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-05T21:24:00.161Z",
+  "updatedAt": "2026-06-05T22:22:02.597Z",
   "count": 11,
   "items": [
     {
@@ -24,29 +24,6 @@
         }
       ],
       "expires_at": "2026-06-14T23:59:59Z"
-    },
-    {
-      "id": "wc-opening-ceremony-shakira-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "פיפ\"א אישרה ב-4 ביוני ששקירה וכוכב הניגרי בורנה בוי יעמדו בראש טקס הפתיחה של מונדיאל 2026 באסטדיו אצטקה במקסיקו סיטי ב-11 ביוני, עם הבכורה העולמית של 'דאי דאי', שיר הטורניר הרשמי, 90 דקות לפני שמקסיקו המארחת תיפגש עם דרום אפריקה. התכניה כוללת גם את אלחנדרו פרננדז, מאנה, ג'יי בלבין, בלינדה וטיילה. שקירה תנחה גם את מופע ההפסקה של הגמר ב-19 ביולי לצד מדונה ו-BTS. האם מונדיאל שנפתח בגדול כזה מציב ציפיות בלתי אפשריות ממה שיבוא על המגרש?",
-      "en": "FIFA confirmed on June 4 that Shakira and Nigerian star Burna Boy will headline the 2026 World Cup opening ceremony at Estadio Azteca in Mexico City on June 11, with the world premiere of 'Dai Dai', the tournament's official song, beginning 90 minutes before hosts Mexico face South Africa. The lineup also includes Alejandro Fernandez, Mana, J Balvin, Belinda, and Tyla. Shakira will also co-headline the final halftime show on July 19 alongside Madonna and BTS. Does a World Cup that opens this big raise expectations impossibly high for what follows on the pitch?",
-      "team": null,
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://inside.fifa.com/media-releases/shakira-burna-dai-dai-world-cup-opening-ceremony-mexico-city"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48972437/shakira-burna-boy-perform-2026-world-cup-opening-ceremony-mexico"
-        },
-        {
-          "name": "Billboard",
-          "url": "https://www.billboard.com/music/latin/shakira-burna-boy-dai-dai-2026-world-cup-opening-ceremony-1236265169/"
-        }
-      ],
-      "expires_at": "2026-06-11T23:59:59Z"
     },
     {
       "id": "bra-neymar-calf-doubt-2026-06-05",
@@ -93,25 +70,6 @@
         }
       ],
       "expires_at": "2026-06-16T23:59:59Z"
-    },
-    {
-      "id": "mex-azteca-third-wc-opening-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "האצטקה יארח את משחק הפתיחה של גביע העולם בין מקסיקו לדרום אפריקה ב-11 ביוני, ויהפוך לאיצטדיון היחיד בהיסטוריה שאירח שלושה משחקי פתיחה של מונדיאל. האצטדיון שוכן בגובה 2,200 מטרים מעל פני הים במקסיקו סיטי, יתרון גובה שמטריד קבוצות מבקרות מזה שנים. האם הגובה מעניק לאל-טרי יתרון אמיתי במשחק הפתיחה?",
-      "en": "Estadio Azteca will stage the June 11 World Cup opener between Mexico and South Africa, becoming the only stadium in history to host three FIFA World Cup opening matches. The ground sits at 2,200 metres above sea level in Mexico City, an altitude advantage that has long unsettled visiting sides. Does height give El Tri a real edge in the opening fixture?",
-      "team": "MEX",
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/3/fifa-world-cup-2026-stadiums-matches-us-canada-mexico"
-        }
-      ],
-      "expires_at": "2026-06-11T23:59:59Z"
     },
     {
       "id": "alg-stun-ned-luca-zidane-2026-06-03",
@@ -224,6 +182,52 @@
         {
           "name": "Seoul Economic Daily",
           "url": "https://en.sedaily.com/sports/2026/06/02/iran-drops-azmoun-from-world-cup-squad-over-uae-photo"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "cuw-advocaat-oldest-wc-coach-2026-05-13",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "דיק אדוקאט, בן 78, עומד להפוך למאמן הזקן ביותר בהיסטוריית גביע העולם. קוראסאו החזירה אותו לתפקיד ב-13 במאי לאחר שפרד רוטן התפטר, וכשהאיים ייפגשו עם גרמניה בהיוסטון ב-14 ביוני, אדוקאט ישבור את הרשומה של אוטו רהגל (יוון, 2010, גיל 71) בשבע שנים שלמות. זהו מונדיאל שלישי עם שלוש נבחרות שונות: הולנד 1994, דרום קוריאה 2006 וקוראסאו 2026. האם ניסיון של חיים שלמים על הקו יגשר על הפער מול אלופות גרמניה?",
+      "en": "Dick Advocaat, 78, is set to become the oldest coach in World Cup history. Curacao reinstated him on May 13 after Fred Rutten resigned, and when the island side face Germany in Houston on June 14, Advocaat will surpass Otto Rehhagel's record of 71 (Greece, 2010) by seven full years. It is his third World Cup with three different nations, the Netherlands in 1994, South Korea in 2006, and Curacao in 2026. Can a lifetime on the touchline bridge the gap to four-time champions Germany?",
+      "team": "CUW",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48757275/curacao-reinstate-dick-advocaat-deny-change-due-external-pressure"
+        },
+        {
+          "name": "Washington Post",
+          "url": "https://www.washingtonpost.com/sports/soccer/2026/05/13/curacao-coach-advocaat-world-cup/6b277144-4eb2-11f1-97e7-22c6c29ff0d8_story.html"
+        },
+        {
+          "name": "Colombia One",
+          "url": "https://colombiaone.com/2026/05/13/advocaat-older-coach-fifa-world-cup-2026/"
+        }
+      ],
+      "expires_at": "2026-06-18T23:59:59Z"
+    },
+    {
+      "id": "fifa-anthem-all-26-center-circle-2026-06-04",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "פיפ\"א הכריזה על טקס חדש לפני כל משחק במונדיאל 2026: כל 26 שחקני הסגל, לא רק ה-11 המתחילים, יעמדו על המגרש בזמן נגינת ההמנונות הלאומיים ויתמקמו מסביב לעיגול המרכזי בפורמט 360 מעלות, מול היריבים ושופטי המשחק. נשיא פיפ\"א ג'אני אינפנטינו אמר שהמטרה היא ליצור 'רגע של אחדות, גאווה ורגש' השייך לנבחרת כולה. האם שחקני החלופה סוף סוף יחושו מרכזיים לאירוע כמו ה-11 המתחילים?",
+      "en": "FIFA has announced a new ceremony for every match at the 2026 World Cup: all 26 squad members, not just the starting 11, will stand on the pitch during national anthems, arranged around the centre circle in a 360-degree format facing the opposing team and the match officials. FIFA president Gianni Infantino said the aim is to create a moment of unity, pride and emotion that belongs to the whole squad. Will the players on the bench finally feel as central to the occasion as the starting 11?",
+      "team": null,
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48972979/fifa-announces-national-anthems-involve-all-26-players-world-cup"
+        },
+        {
+          "name": "World Soccer Talk",
+          "url": "https://worldsoccertalk.com/world-cup/fifa-president-gianni-infantino-announces-new-national-anthem-protocol-for-2026-world-cup/"
+        },
+        {
+          "name": "The Mirror",
+          "url": "https://www.themirror.com/sport/soccer/fifa-announces-change-every-world-1871191"
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
