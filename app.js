@@ -1342,7 +1342,10 @@ async function loadPundit() {
       return out;
     };
 
-    const poolPart = take(poolItems, POOL_SLOTS);
+    // Page BOTH sections by the hour so all 5 lines turn over every hour: the 2
+    // pool slots advance over the deepened pool-candidate list, the 3 news slots
+    // over the news pool (non-overlapping windows).
+    const poolPart = take(_ppPageByHour(poolItems, hourSeed, POOL_SLOTS), POOL_SLOTS);
     let newsPart = take(_ppPageByHour(newsItems, hourSeed, NEWS_SLOTS), NEWS_SLOTS);
 
     let real = [...poolPart, ...newsPart];
@@ -1420,8 +1423,8 @@ async function buildPoolPundit() {
   if (!members.some(m => m.id === viewer.id)) return [];
 
   const lang = (typeof getCurrentLanguage === 'function') ? getCurrentLanguage() : 'he';
-  const seed = _ppSeed();
   const now = Date.now();
+  const seed = Math.floor(now / (60 * 60 * 1000)); // hourly: pool wording + slot selection refresh each hour
   const total = members.length;
   const submitted = members.filter(m => m.predictions_submitted_at).length;
   const pending = total - submitted;
@@ -1530,18 +1533,42 @@ async function buildPoolPundit() {
     ]);
   }
 
+  // Pool-flavored evergreen lines (always available, lower priority than the
+  // live aggregate facts above). They DEEPEN the pool-candidate list so the 2
+  // pool slots can PAGE to different lines every hour (v2.7.4) instead of being
+  // stuck on the same 1-2 facts. Still about THIS pool / the viewer's own
+  // predictions, never a fabricated member fact.
+  push('pool-ev-lock', 7, [{
+    he: 'הבחירות שלך בפול ננעלות עם שריקת הפתיחה. עבור עליהן שוב לפני שיהיה מאוחר ⏰',
+    en: 'Your pool picks lock at kickoff. Give them one more look before it is too late ⏰' }]);
+  push('pool-ev-ko', 8, [{
+    he: 'בפול שלך כל ניחוש נכון בשלב הנוקאאוט שווה יותר נקודות. תכוון רחוק 🚀',
+    en: 'In your pool every correct knockout pick is worth more points. Aim deep 🚀' }]);
+  push('pool-ev-champion', 9, [{
+    he: 'מי האלוף שבחרת? בפול שלך כל אחד בטוח שהוא צדק 🏆',
+    en: 'Who is your champion pick? In your pool everyone is sure they are right 🏆' }]);
+  push('pool-ev-topscorer', 10, [{
+    he: 'מלך השערים שתבחר יכול להכריע את הפול שלך ⚽',
+    en: 'The top scorer you pick could decide your pool ⚽' }]);
+  push('pool-ev-share', 11, [{
+    he: 'שתף את הלינק של הפול. ככל שיותר חברים מצטרפים, כיף יותר להוביל 🔗',
+    en: 'Share your pool link. The more friends join, the more fun it is to lead 🔗' }]);
+  push('pool-ev-compare', 12, [{
+    he: 'אחרי שלב הבתים, השווה את הבחירות שלך מול שאר הפול 📊',
+    en: 'After the group stage, compare your picks against the rest of your pool 📊' }]);
+
   if (!cand.length) return [];
   cand.sort((a, b) => a.prio - b.prio);
 
-  // Always keep the most important item; rotate the second slot daily for
-  // variety so the pool buzz doesn't feel static.
-  const out = [cand[0]];
-  const others = cand.slice(1);
-  if (others.length) out.push(others[seed % others.length]);
-
-  return out.map(it => ({
-    id: it.id, type: 'pool', confidence: 'confirmed', he: it.he, en: it.en, sources: [],
-  }));
+  // Return the FULL ordered, de-duplicated candidate list. loadPundit pages the
+  // 2 pool slots by the hour over this list, so the pool items turn over every
+  // hour too (live facts lead; the evergreen lines fill out the rotation).
+  const seenPool = new Set();
+  return cand
+    .filter(it => it && it.id && !seenPool.has(it.id) && (seenPool.add(it.id), true))
+    .map(it => ({
+      id: it.id, type: 'pool', confidence: 'confirmed', he: it.he, en: it.en, sources: [],
+    }));
 }
 
 // ---- Evergreen filler: keeps the card at a constant 5 items ----------------
