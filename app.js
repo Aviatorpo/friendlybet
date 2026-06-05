@@ -7519,6 +7519,30 @@ async function _bracketChipImageShared(mode) {
   return true; // handled (shared or user-cancelled) — never fall through to a link on mobile
 }
 
+// Desktop image-first share (v2.7.2). For platforms whose LINK previews mishandle
+// our card — Facebook CROPS the og:image, Reddit frequently DROPS it, Instagram
+// has no link post at all — a link share looks broken. So instead we download the
+// pixel-perfect portrait card (never cropped), copy the caption+link to the
+// clipboard, and open the app's composer so the user attaches the real image.
+// Mobile never reaches here (the native sheet already handled it upstream).
+async function _bracketImageFirst(app) {
+  try {
+    const blob = await _bracketCardToBlob();
+    if (blob) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = 'friendlybet-bracket.png'; a.click();
+    }
+  } catch (e) { console.error('bracket image-first download failed', e); }
+  try { await navigator.clipboard.writeText(t('bracketShare.caption') + ' ' + _bracketShareUrl('bracket_' + app)); } catch (_) {}
+  const composer = {
+    facebook: 'https://www.facebook.com/',
+    reddit: 'https://www.reddit.com/submit?type=IMAGE',
+    instagram: 'https://www.instagram.com/',
+  }[app] || 'https://friendlybet.live';
+  showToast(t('bracketShare.imageFirstHint'), 'info');
+  window.open(composer, '_blank', 'noopener');
+}
+
 async function shareToWhatsApp(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
   if (await _bracketChipImageShared(mode)) return;
@@ -7551,7 +7575,10 @@ async function shareToX(mode = 'invite') {
 async function shareToFacebook(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
   if (await _bracketChipImageShared(mode)) return;
-  // Facebook's sharer strips any custom text and only takes the URL, so the
+  // Desktop bracket: Facebook crops link-preview images, so attach the real card
+  // instead (download + open FB) — the full, uncropped bracket every time.
+  if (mode === 'bracket') { await _bracketImageFirst('facebook'); return; }
+  // Invite: Facebook's sharer strips custom text and only takes the URL, so the
   // OG card on the shared link carries the message.
   const link = _shareLink(mode, 'facebook');
   const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`;
@@ -7564,20 +7591,8 @@ async function shareToInstagram(mode = 'invite') {
   // one of the targets) — far more reliable than the old download + deep-link
   // hack, which the OS popup-blocker killed because it ran after an await.
   if (await _bracketChipImageShared(mode)) return;
-  // Desktop fallback for the bracket: download the PNG and open IG on the web so
-  // the user can upload it manually.
-  if (mode === 'bracket') {
-    try {
-      const blob = await _bracketCardToBlob();
-      if (blob) {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob); a.download = 'friendlybet-bracket.png'; a.click();
-      }
-    } catch (e) { console.error('bracket IG image failed', e); }
-    showToast(t('bracketShare.igHint'), 'info');
-    window.open('https://www.instagram.com/', '_blank', 'noopener');
-    return;
-  }
+  // Desktop bracket: image-first (download the card + open IG to attach it).
+  if (mode === 'bracket') { await _bracketImageFirst('instagram'); return; }
   // INVITE: copy the join link and tell the user to paste it into a story or DM,
   // then open Instagram (app on mobile, web otherwise) so they can paste right away.
   const url = getInviteUrl('instagram');
@@ -7596,11 +7611,13 @@ async function shareToInstagram(mode = 'invite') {
 async function shareToReddit(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
   if (await _bracketChipImageShared(mode)) return;
-  // Reddit's submit page takes a URL + title; the OG card on the shared link
-  // carries the rest. Opens the post composer pre-filled.
+  // Desktop bracket: Reddit frequently drops the link-preview image, so post the
+  // real card as an image submission (download + open the image composer).
+  if (mode === 'bracket') { await _bracketImageFirst('reddit'); return; }
+  // Invite: Reddit's submit page takes a URL + title; the OG card carries the rest.
   const link = _shareLink(mode, 'reddit');
   const poolName = state.currentPool?.name || t('dashboard.fallback.poolName');
-  const title = mode === 'bracket' ? t('bracketShare.redditTitle') : t('shareModal.joinTitle', { name: poolName });
+  const title = t('shareModal.joinTitle', { name: poolName });
   const url = `https://www.reddit.com/submit?url=${encodeURIComponent(link)}&title=${encodeURIComponent(title)}`;
   window.open(url, '_blank', 'noopener');
 }
@@ -7898,10 +7915,11 @@ async function downloadBracketImage() {
 }
 window.downloadBracketImage = downloadBracketImage;
 
-// Desktop-only controls markup: functional per-app link chips (reusing the
-// invite modal's .share-apps-grid styling) + Copy link + Download image. Each
-// chip fires its per-app helper in 'bracket' mode, which on desktop opens that
-// app's web intent with the personalized /share link.
+// Desktop-only controls markup. A clear heading (this shares YOUR bracket), then
+// the per-app chips, then Copy link + Download image utilities. Chat/microblog
+// apps (WhatsApp/Telegram/X/Email) share the link (their OG previews render the
+// card); feed apps that crop or drop link images (Facebook/Reddit/Instagram) go
+// image-first via _bracketImageFirst (download the full card + open the app).
 function _bracketShareControlsHtml() {
   const chip = (cls, fn, label, svg) =>
     `<button class="share-app-chip ${cls}" type="button" onclick="${fn}('bracket')" aria-label="${label}">${svg}<span>${label}</span></button>`;
@@ -7910,14 +7928,21 @@ function _bracketShareControlsHtml() {
   const X  = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
   const FB = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>';
   const RD = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 11.779c0-1.459-1.192-2.645-2.657-2.645-.715 0-1.363.286-1.84.746-1.81-1.191-4.259-1.949-6.971-2.046l1.483-4.669 4.016.941-.006.058c0 1.193.975 2.163 2.174 2.163 1.198 0 2.172-.97 2.172-2.163s-.975-2.164-2.172-2.164c-.92 0-1.704.574-2.021 1.379l-4.329-1.015c-.189-.046-.381.063-.44.249l-1.654 5.207c-2.838.034-5.409.798-7.3 2.025-.474-.438-1.103-.712-1.799-.712-1.465 0-2.656 1.187-2.656 2.646 0 .97.533 1.811 1.317 2.271-.052.282-.086.567-.086.857 0 3.911 4.808 7.093 10.719 7.093s10.72-3.182 10.72-7.093c0-.288-.033-.571-.084-.852.789-.46 1.325-1.301 1.325-2.276zm-17.954 1.835c0-.834.679-1.513 1.513-1.513.834 0 1.513.679 1.513 1.513 0 .834-.679 1.513-1.513 1.513-.834 0-1.513-.679-1.513-1.513zm9.062 4.992c-.815.815-2.387.876-2.846.876-.46 0-2.033-.061-2.847-.875-.119-.119-.119-.312 0-.431.119-.119.312-.119.431 0 .516.516 1.617.7 2.416.7.798 0 1.899-.184 2.416-.7.119-.119.312-.119.431 0 .117.119.117.312-.001.43zm-.211-3.479c-.834 0-1.513-.679-1.513-1.513 0-.834.679-1.513 1.513-1.513.834 0 1.513.679 1.513 1.513 0 .834-.679 1.513-1.513 1.513z"/></svg>';
+  const IG = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>';
   const EM = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><polyline points="22,6 12,13 2,6"></polyline></svg>';
+  const head =
+    '<div class="bsd-head">' +
+    `<div class="bsd-head-title">${t('bracketShare.desktopTitle')}</div>` +
+    `<div class="bsd-head-sub">${t('bracketShare.desktopSub')}</div>` +
+    '</div>';
   const grid =
-    '<div class="share-apps-grid">' +
+    '<div class="share-apps-grid bracket-share-grid">' +
     chip('chip-whatsapp', 'shareToWhatsApp', 'WhatsApp', WA) +
     chip('chip-telegram', 'shareToTelegram', 'Telegram', TG) +
     chip('chip-x', 'shareToX', 'X', X) +
     chip('chip-facebook', 'shareToFacebook', 'Facebook', FB) +
     chip('chip-reddit', 'shareToReddit', 'Reddit', RD) +
+    chip('chip-instagram', 'shareToInstagram', 'Instagram', IG) +
     chip('chip-email', 'shareByEmail', t('shareModal.email'), EM) +
     '</div>';
   const actions =
@@ -7925,7 +7950,7 @@ function _bracketShareControlsHtml() {
     `<button class="btn-secondary btn-small" type="button" onclick="copyBracketLink()"><i class="ti ti-link"></i><span data-i18n="bracketShare.copyLink">${t('bracketShare.copyLink')}</span></button>` +
     `<button class="btn-secondary btn-small" type="button" onclick="downloadBracketImage()"><i class="ti ti-download"></i><span data-i18n="bracketShare.downloadImage">${t('bracketShare.downloadImage')}</span></button>` +
     '</div>';
-  return grid + actions;
+  return head + grid + actions;
 }
 
 // Toggle native (mobile) vs desktop share affordances within a container.
