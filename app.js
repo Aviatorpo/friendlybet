@@ -6714,6 +6714,12 @@ function _banterText(item) {
   return (lang === 'en' ? item.en : item.he) || item.he || item.en || '';
 }
 
+// Strip a trailing emoji a witty line may already carry, so when we prepend the
+// event's category emoji as a bullet the icon isn't doubled (card + in-app).
+function _stripTrailingEmoji(s) {
+  return String(s || '').replace(/[\s\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{2190}-\u{21FF}️‍]+$/u, '');
+}
+
 async function renderLeaderboardBanter(users) {
   const box = document.getElementById('lb-banter');
   if (!box) return;
@@ -6739,14 +6745,14 @@ async function renderLeaderboardBanter(users) {
     _lbBanter = { headline, items, featuredUserId: featId, podium };
 
     const headEl = document.getElementById('lb-banter-headline');
-    if (headEl) headEl.innerHTML = `<span class="lb-banter-emoji">${headline.emoji || '🎙️'}</span>${escapeHtml(_banterText(headline))}`;
+    if (headEl) headEl.innerHTML = `<span class="lb-banter-emoji">${headline.emoji || '🎙️'}</span>${escapeHtml(_stripTrailingEmoji(_banterText(headline)))}`;
 
     // Up to two more lines (skip the headline), as quieter secondary banter.
     const moreEl = document.getElementById('lb-banter-more');
     if (moreEl) {
       const extras = items.filter(it => it.id !== headline.id).slice(0, 2);
       moreEl.innerHTML = extras.map(it =>
-        `<div class="lb-banter-line"><span class="lb-banter-emoji">${it.emoji || '•'}</span>${escapeHtml(_banterText(it))}</div>`
+        `<div class="lb-banter-line"><span class="lb-banter-emoji">${it.emoji || '•'}</span>${escapeHtml(_stripTrailingEmoji(_banterText(it)))}</div>`
       ).join('');
     }
     box.style.display = 'block';
@@ -6791,8 +6797,8 @@ function _renderLeaderboardCard(cv, qr, opts) {
   function label(text, y) { ctx.fillStyle = GOLD; ctx.font = '700 26px Rubik,sans-serif'; const ls = 4; let tot = 0; for (const ch of text) tot += ctx.measureText(ch).width + ls; let x = W / 2 - tot / 2; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic'; for (const ch of text) { ctx.fillText(ch, x, y); x += ctx.measureText(ch).width + ls; } ctx.textAlign = 'center'; }
   function fitFont(text, maxW, startPx, weight, family) { let px = startPx; ctx.font = weight + ' ' + px + 'px ' + family; while (ctx.measureText(text).width > maxW && px > 13) { px--; ctx.font = weight + ' ' + px + 'px ' + family; } return px; }
   // Word-wrap `text` into <=maxLines lines that each fit maxW at the given font.
-  function wrapLines(text, maxW, px, maxLines) {
-    ctx.font = '800 ' + px + 'px Heebo,Sora,sans-serif';
+  function wrapLines(text, maxW, px, maxLines, weight) {
+    ctx.font = (weight || '800') + ' ' + px + 'px Heebo,Sora,sans-serif';
     const words = String(text).split(/\s+/); const lines = []; let cur = '';
     for (const w of words) {
       const tryLine = cur ? cur + ' ' + w : w;
@@ -6811,23 +6817,62 @@ function _renderLeaderboardCard(cv, qr, opts) {
 
   // header
   ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-  ctx.save(); ctx.shadowColor = 'rgba(217,180,106,0.7)'; ctx.shadowBlur = 18; ctx.font = '44px ' + EMOJI; ctx.fillText('🎙️', PAD, 92); ctx.restore();
-  ctx.fillStyle = INK; ctx.font = '800 38px Sora,sans-serif'; ctx.fillText('FriendlyBet', PAD + 64, 93);
+  ctx.save(); ctx.shadowColor = 'rgba(217,180,106,0.7)'; ctx.shadowBlur = 18; ctx.font = '44px ' + EMOJI; ctx.fillText('⚽', PAD, 92); ctx.restore();
+  ctx.fillStyle = INK; ctx.font = '800 38px Sora,sans-serif'; ctx.fillText('FriendlyBet', PAD + 62, 93);
   if (opts.pool) { ctx.fillStyle = MUTED; ctx.font = '600 24px Heebo,sans-serif'; ctx.textAlign = 'right'; ctx.fillText(opts.pool, W - PAD, 93); }
 
-  // title
-  ctx.textAlign = 'center'; ctx.fillStyle = INK; ctx.font = '800 50px Sora,sans-serif';
-  ctx.fillText(opts.cardTitle || 'Pool Buzz', W / 2, 188);
+  // ---- "Pool Pundit" broadcast panel: a chyron-style card holding the FULL
+  // commentary (headline + secondary lines), language-aware. ----
+  const items = (opts.items && opts.items.length)
+    ? opts.items
+    : (opts.headline ? [{ emoji: '', text: opts.headline }] : []);
 
-  // headline banter (the witty line) — wrapped, language-aware
+  const panelX = PAD, panelW = W - 2 * PAD, innerPad = 34;
+  const textMaxW = panelW - innerPad * 2;
+  const headPx = 40, headLh = 50, secPx = 26, secLh = 35, eyebrowBlock = 54;
+
+  // One clean category icon per line: prepend the event emoji and strip any
+  // trailing emoji the witty line already carries (so it isn't doubled).
+  const stripEmoji = s => String(s).replace(/[\s\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{2190}-\u{21FF}️‍]+$/u, '');
+  const withIcon = it => (it.emoji ? it.emoji + '  ' : '') + stripEmoji(it.text);
+  const headLines = items[0] ? wrapLines(withIcon(items[0]), textMaxW, headPx, 3, '800') : [];
+  const secBlocks = items.slice(1, 3).map(it => wrapLines(withIcon(it), textMaxW, secPx, 2, '600'));
+
+  let contentH = eyebrowBlock + headLines.length * headLh;
+  secBlocks.forEach(b => { contentH += 14 + b.length * secLh; });
+  const panelY = 156, panelH = innerPad + contentH + innerPad - 8;
+
+  // panel background + gold hairline
+  const pgr = ctx.createLinearGradient(panelX, panelY, panelX, panelY + panelH);
+  pgr.addColorStop(0, 'rgba(217,180,106,0.11)'); pgr.addColorStop(1, 'rgba(255,255,255,0.028)');
+  rr(panelX, panelY, panelW, panelH, 26); ctx.fillStyle = pgr; ctx.fill();
+  ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(217,180,106,0.42)'; ctx.stroke();
+
+  // eyebrow: 🎙️ POOL PUNDIT (start) .......... [LIVE] pill (end)
+  const eyeY = panelY + innerPad + 16;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.font = '30px ' + EMOJI; ctx.fillText('🎙️', panelX + innerPad, eyeY);
+  ctx.fillStyle = GOLD; ctx.font = '800 25px Sora,sans-serif';
+  { let x = panelX + innerPad + 46; const ls = 2; for (const ch of (opts.punditLabel || 'POOL PUNDIT').toUpperCase()) { ctx.fillText(ch, x, eyeY); x += ctx.measureText(ch).width + ls; } }
+  const pill = (opts.live || 'LIVE').toUpperCase();
+  ctx.font = '800 19px Sora,sans-serif'; const pw = ctx.measureText(pill).width + 32, ph = 32;
+  const pxp = panelX + panelW - innerPad - pw, pyp = eyeY - ph / 2;
+  rr(pxp, pyp, pw, ph, 16); ctx.fillStyle = '#e0533b'; ctx.fill();
+  ctx.beginPath(); ctx.arc(pxp + 16, eyeY, 4.5, 0, 7); ctx.fillStyle = '#0d0d0a'; ctx.fill();
+  ctx.fillStyle = '#0d0d0a'; ctx.textAlign = 'left'; ctx.fillText(pill, pxp + 28, eyeY + 1);
+
+  // banter text (centered, language-aware) inside the panel
   ctx.save();
   if (rtl && ctx.direction !== undefined) ctx.direction = 'rtl';
-  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic'; ctx.fillStyle = GOLD_LT;
-  const headPx = 44;
-  const lines = wrapLines(opts.headline || '', W - 2 * PAD, headPx, 4);
-  let hy = 270;
-  ctx.font = '800 ' + headPx + 'px Heebo,Sora,sans-serif';
-  for (const ln of lines) { ctx.fillText(ln, W / 2, hy); hy += headPx + 12; }
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  let ty = panelY + innerPad + eyebrowBlock + 28;
+  ctx.fillStyle = GOLD_LT; ctx.font = '800 ' + headPx + 'px Heebo,Sora,sans-serif';
+  for (const ln of headLines) { ctx.fillText(ln, W / 2, ty); ty += headLh; }
+  ctx.font = '600 ' + secPx + 'px Heebo,Sora,sans-serif';
+  for (const b of secBlocks) {
+    ty += 14; ctx.fillStyle = 'rgba(247,246,242,0.82)';
+    for (const ln of b) { ctx.fillText(ln, W / 2, ty); ty += secLh; }
+  }
   ctx.restore();
 
   // podium (top 3): three non-overlapping columns 2nd | 1st | 3rd, centered as a
@@ -6838,7 +6883,8 @@ function _renderLeaderboardCard(cv, qr, opts) {
   const p1 = podium[0], p2 = podium[1], p3 = podium[2];
   const colW = 196, gap = 16, GROUP = colW * 3 + gap * 2;
   const x0 = (W - GROUP) / 2;
-  const baseY = Math.max(hy + 44, 500);
+  // Podium sits below the panel, bounded so it never overlaps it nor the footer.
+  const baseY = Math.min(Math.max(panelY + panelH + 56, 556), 652);
   const H1 = 300, H2 = 232, H3 = 196;        // riser heights (1st > 2nd > 3rd)
   const floorY = baseY + 50 + H1;            // common bottom edge
   label((opts.podiumLabel || 'STANDINGS').toUpperCase(), baseY);
@@ -6887,11 +6933,16 @@ async function _leaderboardCardToBlob() {
   let qr = null;
   try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (_) {}
   try { qr = await _loadQrImage(featUrl); } catch (_) { qr = null; }
+  // Full commentary: headline + the same secondary lines shown in-app.
+  const head = _lbBanter.headline;
+  const extras = (_lbBanter.items || []).filter(i => i.id !== head.id).slice(0, 2);
+  const cardItems = [head, ...extras].map(b => ({ emoji: b.emoji || '', text: _banterText(b) }));
   const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350;
   _renderLeaderboardCard(cv, qr, {
     pool: (state.currentPool && state.currentPool.name) || '',
-    cardTitle: t('leaderboard.banter.cardTitle'),
-    headline: _banterText(_lbBanter.headline),
+    punditLabel: t('leaderboard.banter.title'),
+    live: t('leaderboard.banter.live'),
+    items: cardItems,
     podium: _lbBanter.podium || [],
     podiumLabel: t('leaderboard.banter.cardStandings'),
     pts: t('leaderboard.points'),
