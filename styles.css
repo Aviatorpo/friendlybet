@@ -9083,6 +9083,22 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
 .bsd-head { text-align: center; margin: 2px 0 12px; }
 .bsd-head-title { font-family: "Sora", system-ui, sans-serif; font-weight: 800; font-size: 17px; color: var(--gold, #d9b46a); letter-spacing: .2px; }
 .bsd-head-sub { margin-top: 3px; font-size: 12.5px; color: rgba(255,255,255,0.55); }
+/* Copy-link HERO row (v2.7.5) — the reliable, universal share action. */
+.bsd-linkrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%;
+  margin: 0 0 12px; padding: 8px 8px 8px 14px; border: 1px solid rgba(217,180,106,0.4);
+  border-radius: 12px; background: rgba(217,180,106,0.08); cursor: pointer; transition: background .15s; }
+.bsd-linkrow:hover { background: rgba(217,180,106,0.15); }
+.bsd-linkurl { font-size: 13.5px; font-weight: 600; color: #ecd49a; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; direction: ltr; }
+.bsd-copybtn { display: inline-flex; align-items: center; gap: 5px; flex: none; font-size: 13px;
+  font-weight: 800; color: #0b0a08; background: linear-gradient(140deg, #d9b46a, #c79f55);
+  padding: 8px 13px; border-radius: 9px; white-space: nowrap; }
+.bsd-copybtn svg { display: block; }
+/* Quiet secondary: download the PNG (for IG/stories/manual posting). */
+.bsd-download { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 12px auto 0;
+  background: none; border: 0; color: var(--muted, #9a9c93); font-family: inherit; font-weight: 600;
+  font-size: 13.5px; cursor: pointer; padding: 4px; }
+.bsd-download:hover { color: #ecd49a; }
 
 .bracket-share-done {
   display: block; margin: 8px auto 0; background: none; border: 0;

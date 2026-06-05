@@ -7601,6 +7601,7 @@ async function _bracketImageFirst(app) {
 async function shareToWhatsApp(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
   if (await _bracketChipImageShared(mode)) return;
+  if (mode === 'bracket') _prewarmBracketOg();
   const message = _shareMsg(mode, 'whatsapp');
   const encoded = encodeURIComponent(message);
   const url = `https://wa.me/?text=${encoded}`;
@@ -7610,6 +7611,7 @@ async function shareToWhatsApp(mode = 'invite') {
 async function shareToTelegram(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
   if (await _bracketChipImageShared(mode)) return;
+  if (mode === 'bracket') _prewarmBracketOg();
   const inviteUrl = _shareLink(mode, 'telegram');
   const message = mode === 'bracket' ? t('bracketShare.caption') : getShareMessage('telegram');
   const url = `https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(message)}`;
@@ -7622,6 +7624,7 @@ async function shareToTelegram(mode = 'invite') {
 async function shareToX(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
   if (await _bracketChipImageShared(mode)) return;
+  if (mode === 'bracket') _prewarmBracketOg();
   const text = _shareMsg(mode, 'x');
   const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
   window.open(url, '_blank', 'noopener');
@@ -7630,11 +7633,11 @@ async function shareToX(mode = 'invite') {
 async function shareToFacebook(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
   if (await _bracketChipImageShared(mode)) return;
-  // Desktop bracket: Facebook crops link-preview images, so attach the real card
-  // instead (download + open FB) — the full, uncropped bracket every time.
-  if (mode === 'bracket') { await _bracketImageFirst('facebook'); return; }
-  // Invite: Facebook's sharer strips custom text and only takes the URL, so the
-  // OG card on the shared link carries the message.
+  // Desktop: open the FB sharer with the personalized /share link. The OG card
+  // (pre-warmed on share so it's never an empty cold render) is the 1200x630
+  // landscape image FB shows uncropped. Facebook strips custom text; the OG card
+  // carries the message.
+  if (mode === 'bracket') _prewarmBracketOg();
   const link = _shareLink(mode, 'facebook');
   const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`;
   window.open(url, '_blank', 'noopener');
@@ -7666,13 +7669,12 @@ async function shareToInstagram(mode = 'invite') {
 async function shareToReddit(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
   if (await _bracketChipImageShared(mode)) return;
-  // Desktop bracket: Reddit frequently drops the link-preview image, so post the
-  // real card as an image submission (download + open the image composer).
-  if (mode === 'bracket') { await _bracketImageFirst('reddit'); return; }
-  // Invite: Reddit's submit page takes a URL + title; the OG card carries the rest.
+  // Desktop: Reddit's submit page takes a URL + title and shows the OG card as
+  // the post thumbnail (pre-warmed so it isn't an empty cold render).
+  if (mode === 'bracket') _prewarmBracketOg();
   const link = _shareLink(mode, 'reddit');
   const poolName = state.currentPool?.name || t('dashboard.fallback.poolName');
-  const title = t('shareModal.joinTitle', { name: poolName });
+  const title = mode === 'bracket' ? t('bracketShare.redditTitle') : t('shareModal.joinTitle', { name: poolName });
   const url = `https://www.reddit.com/submit?url=${encodeURIComponent(link)}&title=${encodeURIComponent(title)}`;
   window.open(url, '_blank', 'noopener');
 }
@@ -7750,13 +7752,14 @@ function _bracketShareVersion() {
   const parts = [25, 26, 27, 28, 29, 30].map(i => bp[i] || '').join('-') + '-' + champ;
   let h = 0;
   for (let i = 0; i < parts.length; i++) { h = (Math.imul(h, 31) + parts.charCodeAt(i)) | 0; }
-  // Content hash + a per-share time stamp. WhatsApp/Facebook cache a link's
-  // preview by URL and never re-scrape the same URL — so if a link was ever
-  // scraped while the OG was empty (e.g. mid-deploy), re-sharing the SAME url
-  // keeps showing that stale empty card forever. The timestamp makes every
-  // share a brand-new URL, forcing a fresh scrape of the (now correct) OG.
-  const stamp = (typeof Date !== 'undefined' && Date.now) ? Date.now().toString(36) : '';
-  return (h >>> 0).toString(36) + (stamp ? 'x' + stamp : '');
+  // STABLE per-bracket-content token — NO timestamp (v2.7.5). The old timestamp
+  // made every share a unique URL, which forced WhatsApp/Facebook to scrape the
+  // OG image COLD every single time (~2.3s render) — their scrapers time out and
+  // show an EMPTY card. A stable URL is edge-cacheable: we pre-warm it on share
+  // (_prewarmBracketOg), so the friend's scraper hits a warm ~0.3s render and
+  // sees the full card. The token still changes when the PICKS change (the hash
+  // covers positions 25-31), so an edited bracket still busts the preview cache.
+  return (h >>> 0).toString(36);
 }
 
 // Personalized public share URL for the current user's predictions. Friends
@@ -7773,6 +7776,29 @@ function _bracketShareUrl(source) {
     ? `${origin}/share?u=${uid}&p=${pid}&lang=${lang}&v=${_bracketShareVersion()}&${utm}`
     : `${origin}/?${utm}`;
 }
+
+// Pre-warm the edge cache for THIS bracket's OG image (v2.7.5). A friend's app
+// (WhatsApp/Facebook/Telegram) scrapes the /share link's og:image on first paste;
+// a cold render is ~2.3s and those scrapers time out → empty card. Firing this
+// fetch the moment the user opens the share UI renders + edge-caches the image,
+// so by the time they actually share, the scraper hits a warm ~0.3s response.
+// Fire-and-forget, deduped per card URL, never blocks the UI.
+let _ogPrewarmed = '';
+function _prewarmBracketOg() {
+  try {
+    if (typeof _bracketShareReady === 'function' && !_bracketShareReady()) return;
+    const uid = state.currentUser && state.currentUser.id;
+    const pid = state.currentPool && state.currentPool.id;
+    if (!uid || !pid) return;
+    const lang = (typeof currentLanguage !== 'undefined' && currentLanguage) || 'he';
+    const origin = window.location.origin || 'https://friendlybet.live';
+    const ogUrl = `${origin}/api/og?u=${uid}&p=${pid}&lang=${lang}&v=${_bracketShareVersion()}`;
+    if (_ogPrewarmed === ogUrl) return; // already warmed this exact card
+    _ogPrewarmed = ogUrl;
+    fetch(ogUrl, { mode: 'no-cors', cache: 'no-store' }).catch(() => {});
+  } catch (_) { /* best-effort */ }
+}
+window._prewarmBracketOg = _prewarmBracketOg;
 
 let _bracketQrPromise = null;
 function _loadBracketQr() {
@@ -7943,6 +7969,7 @@ function _canNativeFileShare() {
 // Copy the personalized bracket /share link to the clipboard (desktop quick win).
 async function copyBracketLink() {
   if (!_bracketShareReady()) { showToast(t('bracketShare.notReady'), 'info'); return; }
+  _prewarmBracketOg();
   const url = _bracketShareUrl('bracket_copy');
   try {
     await navigator.clipboard.writeText(url);
@@ -7970,11 +7997,11 @@ async function downloadBracketImage() {
 }
 window.downloadBracketImage = downloadBracketImage;
 
-// Desktop-only controls markup. A clear heading (this shares YOUR bracket), then
-// the per-app chips, then Copy link + Download image utilities. Chat/microblog
-// apps (WhatsApp/Telegram/X/Email) share the link (their OG previews render the
-// card); feed apps that crop or drop link images (Facebook/Reddit/Instagram) go
-// image-first via _bracketImageFirst (download the full card + open the app).
+// Desktop-only controls markup (v2.7.5). Copy-link is the HERO — the reliable,
+// universal, conversion-friendly action (a friend who opens it lands on the full
+// /share page regardless of any platform's link-preview quirks). Below it, the
+// per-app chips open that app with the same personalized link (its pre-warmed OG
+// card renders the bracket). Download image is a quiet secondary for IG/stories.
 function _bracketShareControlsHtml() {
   const chip = (cls, fn, label, svg) =>
     `<button class="share-app-chip ${cls}" type="button" onclick="${fn}('bracket')" aria-label="${label}">${svg}<span>${label}</span></button>`;
@@ -7983,13 +8010,20 @@ function _bracketShareControlsHtml() {
   const X  = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>';
   const FB = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>';
   const RD = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 11.779c0-1.459-1.192-2.645-2.657-2.645-.715 0-1.363.286-1.84.746-1.81-1.191-4.259-1.949-6.971-2.046l1.483-4.669 4.016.941-.006.058c0 1.193.975 2.163 2.174 2.163 1.198 0 2.172-.97 2.172-2.163s-.975-2.164-2.172-2.164c-.92 0-1.704.574-2.021 1.379l-4.329-1.015c-.189-.046-.381.063-.44.249l-1.654 5.207c-2.838.034-5.409.798-7.3 2.025-.474-.438-1.103-.712-1.799-.712-1.465 0-2.656 1.187-2.656 2.646 0 .97.533 1.811 1.317 2.271-.052.282-.086.567-.086.857 0 3.911 4.808 7.093 10.719 7.093s10.72-3.182 10.72-7.093c0-.288-.033-.571-.084-.852.789-.46 1.325-1.301 1.325-2.276zm-17.954 1.835c0-.834.679-1.513 1.513-1.513.834 0 1.513.679 1.513 1.513 0 .834-.679 1.513-1.513 1.513-.834 0-1.513-.679-1.513-1.513zm9.062 4.992c-.815.815-2.387.876-2.846.876-.46 0-2.033-.061-2.847-.875-.119-.119-.119-.312 0-.431.119-.119.312-.119.431 0 .516.516 1.617.7 2.416.7.798 0 1.899-.184 2.416-.7.119-.119.312-.119.431 0 .117.119.117.312-.001.43zm-.211-3.479c-.834 0-1.513-.679-1.513-1.513 0-.834.679-1.513 1.513-1.513.834 0 1.513.679 1.513 1.513 0 .834-.679 1.513-1.513 1.513z"/></svg>';
-  const IG = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>';
   const EM = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"></rect><polyline points="22,6 12,13 2,6"></polyline></svg>';
+  const CP = '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
   const head =
     '<div class="bsd-head">' +
     `<div class="bsd-head-title">${t('bracketShare.desktopTitle')}</div>` +
     `<div class="bsd-head-sub">${t('bracketShare.desktopSub')}</div>` +
     '</div>';
+  // HERO: a copy-link row. Clicking anywhere copies the personalized /share link.
+  const linkrow =
+    '<div class="bsd-linkrow" onclick="copyBracketLink()" role="button" tabindex="0" aria-label="' + t('bracketShare.copyLink') + '">' +
+    '<span class="bsd-linkurl">friendlybet.live/share</span>' +
+    `<span class="bsd-copybtn">${CP}<span>${t('bracketShare.copyLink')}</span></span>` +
+    '</div>';
+  // Per-app chips — all link-based; each opens that app with the same /share link.
   const grid =
     '<div class="share-apps-grid bracket-share-grid">' +
     chip('chip-whatsapp', 'shareToWhatsApp', 'WhatsApp', WA) +
@@ -7997,15 +8031,11 @@ function _bracketShareControlsHtml() {
     chip('chip-x', 'shareToX', 'X', X) +
     chip('chip-facebook', 'shareToFacebook', 'Facebook', FB) +
     chip('chip-reddit', 'shareToReddit', 'Reddit', RD) +
-    chip('chip-instagram', 'shareToInstagram', 'Instagram', IG) +
     chip('chip-email', 'shareByEmail', t('shareModal.email'), EM) +
     '</div>';
-  const actions =
-    '<div class="bracket-share-desktop-actions">' +
-    `<button class="btn-secondary btn-small" type="button" onclick="copyBracketLink()"><i class="ti ti-link"></i><span data-i18n="bracketShare.copyLink">${t('bracketShare.copyLink')}</span></button>` +
-    `<button class="btn-secondary btn-small" type="button" onclick="downloadBracketImage()"><i class="ti ti-download"></i><span data-i18n="bracketShare.downloadImage">${t('bracketShare.downloadImage')}</span></button>` +
-    '</div>';
-  return head + grid + actions;
+  const download =
+    `<button class="bsd-download" type="button" onclick="downloadBracketImage()"><i class="ti ti-download"></i><span data-i18n="bracketShare.downloadImage">${t('bracketShare.downloadImage')}</span></button>`;
+  return head + linkrow + grid + download;
 }
 
 // Toggle native (mobile) vs desktop share affordances within a container.
@@ -8039,6 +8069,7 @@ async function openBracketShareCelebration() {
   // download-only dead-end; mobile keeps its native-sheet button. (v2.7.0)
   _ensureBracketDesktopControls(document.getElementById('bracket-share-desktop'));
   _applyBracketShareMode(modal);
+  _prewarmBracketOg(); // warm the OG edge cache early so link previews aren't empty
   // Instant first paint (names render now; flags + QR fill in once loaded) so the
   // modal never shows a blank canvas while assets load on a slow connection.
   try { _renderBracketCard(cv, null); } catch (_) {}
@@ -10761,6 +10792,7 @@ async function spRenderSummary() {
       if (summaryShareApps) summaryShareApps.style.display = '';
       if (summaryShareDesktop) summaryShareDesktop.style.display = '';
       if (parent && typeof _applyBracketShareMode === 'function') _applyBracketShareMode(parent);
+      if (typeof _prewarmBracketOg === 'function') _prewarmBracketOg(); // warm OG before any share click
     } else {
       // First-time: Save is the large primary, all share controls hidden.
       summaryShareBtn.style.display = 'none';
