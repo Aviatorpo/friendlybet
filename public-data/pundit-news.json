@@ -1,31 +1,30 @@
 {
-  "updatedAt": "2026-06-06T00:00:00.000Z",
-  "_note": "Produced by the news agent. Only verified claims: a 'reported' item needs >=2 independent sources, a 'confirmed' item needs >=1 official/authoritative source. Items are dropped past expires_at.",
+  "updatedAt": "2026-06-05T10:00:00.000Z",
   "items": [
     {
-      "id": "irn-visa-us-granted-2026-06-05",
-      "confidence": "reported",
-      "team": "IRN",
-      "en": "Reports say Iran's World Cup squad received US visa clearance on June 5, with a White House official confirming approval to Reuters less than ten days before their first match. Secretary of State Marco Rubio had warned that anyone with IRGC ties would be barred, casting doubt over captain Mehdi Taremi and defender Ehsan Hajsafi. Iran departs Antalya on June 6 for their Tijuana base and will cross into the US for group games against New Zealand, Belgium, and Egypt. Did every player board that flight?",
-      "he": "לפי הדיווחים, שחקני סגל המונדיאל האיראני קיבלו אישור ויזה אמריקאי ב-5 ביוני, כשבכיר בית הלבן אישר את הנושא לרויטרס פחות מעשרה ימים לפני המשחק הראשון. מזכיר המדינה מרקו רוביו הזהיר שמי שיש לו קשרים ל-IRGC ייחסם, ועמד בספק מעמד הנסיעה של הקפטן מהדי טארמי ואחסן חאג'ספי. הנבחרת יוצאת מאנטליה ב-6 ביוני לבסיסה בטיחואנה ותיכנס לארה\"ב לשלושת משחקי הבלוק. האם כל שחקן עלה על אותה טיסה?",
+      "id": "ger-lennart-karl-injury-2026-06-05",
+      "confidence": "confirmed",
+      "team": "GER",
+      "en": "Germany woke up to an injury scare on June 5 after 18-year-old Bayern Munich midfielder Lennart Karl was sent to hospital for scans following a training accident. Coach Julian Nagelsmann told reporters it 'didn't look particularly good' and confirmed the squad have until 24 hours before their June 14 opener against Curacao to call up a replacement under World Cup rules. Karl had been one of the most anticipated debutants in the squad after a breakout season at the Allianz Arena. Will Germany's brightest new talent recover in time?",
+      "he": "גרמניה הקיצה ב-5 ביוני לבהלת פציעה: חצי השדה בן ה-18 לנארט קארל מבאיירן מינכן נשלח לבית חולים לסריקות לאחר תאונה באימון. המאמן יוליאן נגלסמן הודיע לכתבים שהמצב 'לא נראה טוב במיוחד' ואישר שלנבחרת יש עד 24 שעות לפני הפתיחה מול קוראסאו ב-14 ביוני להזמין חלופה בהתאם לתקנות גביע העולם. קארל היה אחד הדביוטנטים המצופים ביותר בסגל לאחר עונה פורצת דרך בעלי האנץ. האם כישרון גרמניה הצעיר יבריא בזמן?",
       "sources": [
-        { "name": "The New Arab", "url": "https://www.newarab.com/news/under-week-go-iran-world-cup-squad-finally-gets-us-visas" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/irans-world-cup-squad-to-depart-for-mexico-on-june-6-despite-us-visa-delay" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48949687/iran-expects-us-mexico-visas-arrive-week" }
+        { "name": "France 24", "url": "https://www.france24.com/en/live-news/20260605-injured-germany-starlet-karl-may-miss-world-cup-says-nagelsmann" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/germanys-young-star-lennart-karl-may-miss-world-cup-after-injury-training" },
+        { "name": "Bundesliga.com", "url": "https://www.bundesliga.com/en/bundesliga/news/lennart-karl-world-cup-injury-bayern-munich-germany-37718" }
       ],
-      "expires_at": "2026-06-15T23:59:59Z"
+      "expires_at": "2026-06-14T23:59:59Z"
     },
     {
-      "id": "ref-dieperink-dropped-wc-2026-06-05",
+      "id": "wc-opening-ceremony-shakira-2026-06-05",
       "confidence": "confirmed",
-      "en": "FIFA removed Dutch VAR official Rob Dieperink from its 2026 World Cup list after he was arrested in a London hotel on April 9 on suspicion of sexual assault against a teenager. Dieperink was serving as a VAR for a UEFA Conference League fixture when Metropolitan Police took him into custody after the match. British police later dropped the case, saying the evidential threshold had not been met, but FIFA pressed ahead with the exclusion. French official Willy Delajod was confirmed as his replacement. Does zero tolerance in football officiating apply regardless of a court outcome?",
-      "he": "פיפ\"א הסירה את בוחן הוידאו ההולנדי רוב דיפרינק מרשימת שופטי גביע העולם 2026, לאחר שנעצר במלון בלונדון ב-9 באפריל בחשד לתקיפה מינית נגד קטין. דיפרינק שימש כ-VAR במשחק ליגת הקונפרנס של UEFA כשמשטרת המטרופוליטן עצרה אותו לאחר המשחק. המשטרה הבריטית סגרה את התיק מאוחר יותר וציינה שהראיות לא עמדו בסף הנדרש, אך פיפ\"א המשיכה עם ההדחה. השופט הצרפתי ווילי דלאז'ו אושר כממלא מקומו. האם סבילות אפס בשיפוט הכדורגל פירושה הדחה ללא קשר לתוצאה המשפטית?",
+      "en": "FIFA confirmed on June 4 that Shakira and Nigerian star Burna Boy will headline the 2026 World Cup opening ceremony at Estadio Azteca in Mexico City on June 11, with the world premiere of 'Dai Dai', the tournament's official song, beginning 90 minutes before hosts Mexico face South Africa. The lineup also includes Alejandro Fernandez, Mana, J Balvin, Belinda, and Tyla. Shakira will also co-headline the final halftime show on July 19 alongside Madonna and BTS. Does a World Cup that opens this big raise expectations impossibly high for what follows on the pitch?",
+      "he": "פיפ\"א אישרה ב-4 ביוני ששקירה וכוכב הניגרי בורנה בוי יעמדו בראש טקס הפתיחה של מונדיאל 2026 באסטדיו אצטקה במקסיקו סיטי ב-11 ביוני, עם הבכורה העולמית של 'דאי דאי', שיר הטורניר הרשמי, 90 דקות לפני שמקסיקו המארחת תיפגש עם דרום אפריקה. התכניה כוללת גם את אלחנדרו פרננדז, מאנה, ג'יי בלבין, בלינדה וטיילה. שקירה תנחה גם את מופע ההפסקה של הגמר ב-19 ביולי לצד מדונה ו-BTS. האם מונדיאל שנפתח בגדול כזה מציב ציפיות בלתי אפשריות ממה שיבוא על המגרש?",
       "sources": [
-        { "name": "NL Times", "url": "https://nltimes.nl/2026/05/15/dutch-referee-arrested-alleged-misconduct-17-year-old-charges-later-dropped" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/fifa-drop-dutch-referee-world-120933794.html" },
-        { "name": "Morocco World News", "url": "https://www.moroccoworldnews.com/2026/05/302292/fifa-drops-dutch-referee-rob-dieperink-from-world-cup-list/" }
+        { "name": "FIFA", "url": "https://inside.fifa.com/media-releases/shakira-burna-dai-dai-world-cup-opening-ceremony-mexico-city" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48972437/shakira-burna-boy-perform-2026-world-cup-opening-ceremony-mexico" },
+        { "name": "Billboard", "url": "https://www.billboard.com/music/latin/shakira-burna-boy-dai-dai-2026-world-cup-opening-ceremony-1236265169/" }
       ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "expires_at": "2026-06-11T23:59:59Z"
     },
     {
       "id": "bra-neymar-calf-doubt-2026-06-05",
@@ -41,18 +40,6 @@
       "expires_at": "2026-06-18T00:00:00Z"
     },
     {
-      "id": "mex-azteca-third-wc-opening-2026-06-05",
-      "confidence": "confirmed",
-      "team": "MEX",
-      "en": "Estadio Azteca will stage the June 11 World Cup opener between Mexico and South Africa, becoming the only stadium in history to host three FIFA World Cup opening matches. The ground sits at 2,200 metres above sea level in Mexico City, an altitude advantage that has long unsettled visiting sides. Does height give El Tri a real edge in the opening fixture?",
-      "he": "האצטקה יארח את משחק הפתיחה של גביע העולם בין מקסיקו לדרום אפריקה ב-11 ביוני, ויהפוך לאיצטדיון היחיד בהיסטוריה שאירח שלושה משחקי פתיחה של מונדיאל. האצטדיון שוכן בגובה 2,200 מטרים מעל פני הים במקסיקו סיטי, יתרון גובה שמטריד קבוצות מבקרות מזה שנים. האם הגובה מעניק לאל-טרי יתרון אמיתי במשחק הפתיחה?",
-      "sources": [
-        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/fifa-world-cup-2026-stadiums-matches-us-canada-mexico" }
-      ],
-      "expires_at": "2026-06-11T23:59:59Z"
-    },
-    {
       "id": "fra-ivory-coast-warmup-loss-2026-06-04",
       "confidence": "confirmed",
       "team": "FRA",
@@ -66,17 +53,16 @@
       "expires_at": "2026-06-16T23:59:59Z"
     },
     {
-      "id": "arg-messi-managed-load-opener-2026-06-05",
+      "id": "mex-azteca-third-wc-opening-2026-06-05",
       "confidence": "confirmed",
-      "team": "ARG",
-      "en": "Messi is working through an individual programme away from Argentina's main group, managing left-hamstring fatigue first felt on May 24. Coach Scaloni says the plan is to have him ready for the June 16 opener against Algeria, though he will skip both warm-up matches. Scaloni has also admitted Messi will not join camp fully fit, noting that reaching 100 percent before day one was never realistic. Will the reigning champion arrive at full strength?",
-      "he": "מסי עובד על תוכנית אישית, בנפרד מקבוצת הנבחרת הארגנטינאית, וזאת לניהול עומס בשריר הירך השמאלית שהופיע ב-24 במאי. המאמן סקלוני אומר שהמטרה היא להיות מוכן לפתיחה מול אלג'יריה ב-16 ביוני, אך הוא ידלג על שני משחקי האימון. סקלוני הודה גם שמסי לא יצטרף למחנה בכשירות מלאה, וציין שהגעה ל-100 אחוז לפני יום הפתיחה לא הייתה ריאלית מלכתחילה. האם אלוף העולם יגיע בשיא כוחו?",
+      "team": "MEX",
+      "en": "Estadio Azteca will stage the June 11 World Cup opener between Mexico and South Africa, becoming the only stadium in history to host three FIFA World Cup opening matches. The ground sits at 2,200 metres above sea level in Mexico City, an altitude advantage that has long unsettled visiting sides. Does height give El Tri a real edge in the opening fixture?",
+      "he": "האצטקה יארח את משחק הפתיחה של גביע העולם בין מקסיקו לדרום אפריקה ב-11 ביוני, ויהפוך לאיצטדיון היחיד בהיסטוריה שאירח שלושה משחקי פתיחה של מונדיאל. האצטדיון שוכן בגובה 2,200 מטרים מעל פני הים במקסיקו סיטי, יתרון גובה שמטריד קבוצות מבקרות מזה שנים. האם הגובה מעניק לאל-טרי יתרון אמיתי במשחק הפתיחה?",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48945340/messi-trains-own-argentina-opening-session-ahead-world-cup" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/messi-trains-alone-as-argentina-hold-first-world-cup-practice-session" },
-        { "name": "Goal.com", "url": "https://www.goal.com/en/lists/lionel-messi-won-t-join-argentina-world-cup-squad-fully-fit-admits-lionel-scaloni/bltdd2d68668cc7337d" }
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/fifa-world-cup-2026-stadiums-matches-us-canada-mexico" }
       ],
-      "expires_at": "2026-06-16T00:00:00Z"
+      "expires_at": "2026-06-11T23:59:59Z"
     },
     {
       "id": "alg-stun-ned-luca-zidane-2026-06-03",
@@ -92,16 +78,17 @@
       "expires_at": "2026-06-17T23:59:59Z"
     },
     {
-      "id": "ifab-goalkick-5sec-countdown-2026-06-05",
+      "id": "irq-first-wc-since-1986-2026-06-05",
       "confidence": "confirmed",
-      "en": "FIFA is bringing a new anti-time-wasting rule to the 2026 World Cup: referees will raise a hand and count down five seconds for goal-kicks, mirroring the existing countdown for goalkeepers holding the ball. A side that lets the count expire hands the opponent a corner kick. Will this rule finally stamp out the stalling tactics that have slowed group-stage football for decades?",
-      "he": "פיפ\"א מביאה כלל חדש נגד בזבוז זמן לגביע העולם 2026: שופטים ירימו יד וייספרו חמש שניות עבור בעיטות שער, בדומה לספירה הקיימת עבור שוערים המחזיקים בכדור. קבוצה שתניח לספירה לפוג תעניק לצד היריב בעיטת פינה. האם הכלל הזה יחסל סופית את טקטיקות ההשהיה שהאטו את משחקי כדורגל שלב הבתים עשרות שנים?",
+      "team": "IRQ",
+      "en": "Iraq are back at a World Cup for the first time since Mexico 1986, a 40-year wait finally over after coach Graham Arnold, who steered Australia to the round of 16 at Qatar 2022, took over in May 2025 and guided the Lions of Mesopotamia through a gruelling 21-match qualification campaign spanning more than two years. Their intercontinental playoff journey included a chaotic travel ordeal across the Middle East, caused by regional conflict, that forced a three-day recovery break before the decisive game in Mexico. Iraq open against Norway in Boston on June 16, then face France and Senegal. Can 40 years of patience translate into a World Cup shock?",
+      "he": "עיראק חוזרת למונדיאל לראשונה מאז מקסיקו 1986: 40 שנות המתנה הסתיימו לאחר שהמאמן גראהם ארנולד, שהוביל את אוסטרליה לשמינייה גמר בקטאר 2022, קיבל את הניהול במאי 2025 והוביל את אריות מסופוטמיה דרך מסע כישור מפרך של 21 משחקים על פני יותר משנתיים. מסע הפלייאוף הבינאוגדתי כלל הרפתקת נסיעות כאוטית במזרח התיכון, שנגרמה מסכסוך אזורי, שאילצה הפסקה של שלושה ימים לפני המשחק המכריע במקסיקו. עיראק פותחת נגד נורבגיה בבוסטון ב-16 ביוני ואחר כך תיפגש עם צרפת וסנגל. האם 40 שנות סבלנות יתורגמו להפתעת מונדיאל?",
       "sources": [
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/soccer/article/2026-world-cup-will-introduce-new-fifa-approved-rule-changes-213520541.html" },
-        { "name": "Football365", "url": "https://www.football365.com/news/football-law-rule-changes-world-cup-ifab-collina" },
-        { "name": "FourFourTwo", "url": "https://www.fourfourtwo.com/competition/every-new-fifa-rule-at-the-2026-world-cup-goalkeeper-timeout-ban-five-second-countdowns-and-var-offsides-whats-changed" }
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/graham-arnold-iraq-interview" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/5/we-are-fighters-iraq-aim-to-shock-rivals-at-2026-world-cup" },
+        { "name": "The National", "url": "https://www.thenationalnews.com/sport/football/2026/06/04/iraq-world-cup-talking-points-ali-al-hamadi-and-aymen-hussein-reignite-hopes-after-arduous-qualification/" }
       ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "expires_at": "2026-06-16T23:59:59Z"
     },
     {
       "id": "ifab-var-corners-second-yellow-2026-06-05",
@@ -112,31 +99,6 @@
         { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12098/13549645/world-cup-ifab-confirm-new-var-powers-10-second-substitutions-and-tactical-timeout-ban-in-major-rule-changes" },
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth" },
         { "name": "NBC Sports", "url": "https://www.nbcsports.com/soccer/news/rule-changes-confirmed-for-2026-world-cup-as-ifab-alters-var-cracks-down-on-subs-and-timeouts" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "irn-azmoun-excluded-uae-photo-2026-06-05",
-      "confidence": "confirmed",
-      "team": "IRN",
-      "en": "Iran confirmed striker Sardar Azmoun is absent from their 26-man World Cup squad after Iranian state media branded his Instagram post, showing a meeting with Mohammed bin Rashid Al Maktoum, the ruler of Dubai and Prime Minister of the UAE, a betrayal. The 31-year-old anchored Iran's frontline alongside Mehdi Taremi at Qatar 2022 and plays club football for Shabab Al-Ahli in the UAE. Can Iran's attack function at a World Cup without their most experienced striker?",
-      "he": "איראן אישרה שהתוקף סרדר אזמון נעדר מסגל המונדיאל של 26 שחקנים לאחר שמדיית המדינה האיראנית כינתה בגידה את פרסום שלו באינסטגרם, המציג פגישה עם מוחמד בן ראשד אל-מקתום, שליט דובאי וראש ממשלת האמירויות. השחקן בן ה-31 עיגן את ההתקפה האיראנית לצד מהדי טארמי בקטאר 2022, ומשחק בלהק שבאב אל-אהלי שבאמירויות. האם ההתקפה האיראנית תתפקד בגביע עולם ללא הנבחר הוותיק ביותר שלה?",
-      "sources": [
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/17/sardar-azmoun-left-out-as-iran-announce-world-cup-2026-squad" },
-        { "name": "Fox News", "url": "https://www.foxnews.com/sports/sardar-azmoun-known-iranian-messi-left-countrys-world-cup-squad-accused-treason" },
-        { "name": "Seoul Economic Daily", "url": "https://en.sedaily.com/sports/2026/06/02/iran-drops-azmoun-from-world-cup-squad-over-uae-photo" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "fifa-ticket-prices-ag-probe-2026-06-05",
-      "confidence": "confirmed",
-      "en": "The attorneys general of New York and New Jersey subpoenaed FIFA on May 27, launching a joint investigation into alleged deceptive ticket practices at MetLife Stadium. Officials say FIFA sold Category 1 seats in specific zones, then after purchases were completed, created more expensive Front Category zones covering the same areas. FIFA also raised prices for more than 90 of the 104 World Cup matches between October 2025 and April 2026, with main ticket categories rising on average by 34 percent. Is FIFA's first North American World Cup also its most controversially priced?",
-      "he": "תובעות המדינה של ניו יורק וניו ג'רזי הוציאו זימון לפיפ\"א ב-27 במאי, ופתחו בחקירה משותפת על נוהלי מכירת כרטיסים מטעים לכאורה באצטדיון מטלייף. לטענת הרשויות, פיפ\"א מכרה כרטיסי קטגוריה 1 באזורים מסוימים, ולאחר השלמת הרכישות יצרה אזורי קטגוריה קדמית יקרים יותר באותם אזורים. פיפ\"א גם העלתה מחירים ליותר מ-90 מתוך 104 משחקי גביע העולם בין אוקטובר 2025 לאפריל 2026, כשהקטגוריות הראשיות עלו בממוצע ב-34 אחוז. האם גביע העולם הראשון בצפון אמריקה הוא גם הכרטיסייה היקרה ביותר אי פעם?",
-      "sources": [
-        { "name": "NY Attorney General", "url": "https://ag.ny.gov/press-release/2026/attorney-general-james-and-attorney-general-davenport-subpoena-fifa-over-world" },
-        { "name": "CNN", "url": "https://www.cnn.com/2026/05/27/business/world-cup-tickets-new-york-new-jersey-subpoena" },
-        { "name": "NBC News", "url": "https://www.nbcnews.com/sports/soccer/new-york-new-jersey-launch-probe-fifa-world-cup-ticket-practices-rcna347162" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     },
@@ -154,51 +116,15 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "jpn-pitch-monterrey-2026-06-04",
+      "id": "irn-azmoun-excluded-uae-photo-2026-06-05",
       "confidence": "confirmed",
-      "team": "JPN",
-      "en": "Japan were forced to change training pitches twice in Monterrey on June 4 after players discovered the Tigres UANL surface was full of holes and hardened patches. One midfielder described the ground as hard with holes, saying the squad had to move because players were afraid to challenge for the ball. Japan switched first to an under-19 facility, then settled at Club de Futbol Monterrey's training ground. The episode went viral on Mexican social media and drew sharp criticism of Tigres. Will an unsettled camp leave any mark on Japan ahead of their June 14 opener against the Netherlands in Dallas?",
-      "he": "נבחרת יפן נאלצה להחליף את מגרש האימונים שלה פעמיים במונטריי ב-4 ביוני, לאחר שהשחקנים גילו שהמשטח של טיגרס UANL מלא חורים ואדמה מתקשה. קשר אחד תיאר את הקרקע כקשה עם חורים, ואמר שהנבחרת נאלצה לעבור כי השחקנים פחדו להיאבק על כל כדור. יפן עברה תחילה למגרש אימוני תת-19, ואחר כך התייצבה במתקן של קלוב דה פוטבול מונטריי. הפרק הפך לוויראלי ברשתות החברתיות במקסיקו ועורר ביקורת חריפה על טיגרס. האם מחנה אימונים מבולגן ישאיר רושם על יפן לפני הפתיחה ב-14 ביוני נגד הולנד בדאלאס?",
+      "team": "IRN",
+      "en": "Iran confirmed striker Sardar Azmoun is absent from their 26-man World Cup squad after Iranian state media branded his Instagram post, showing a meeting with Mohammed bin Rashid Al Maktoum, the ruler of Dubai and Prime Minister of the UAE, a betrayal. The 31-year-old anchored Iran's frontline alongside Mehdi Taremi at Qatar 2022 and plays club football for Shabab Al-Ahli in the UAE. Can Iran's attack function at a World Cup without their most experienced striker?",
+      "he": "איראן אישרה שהתוקף סרדר אזמון נעדר מסגל המונדיאל של 26 שחקנים לאחר שמדיית המדינה האיראנית כינתה בגידה את פרסום שלו באינסטגרם, המציג פגישה עם מוחמד בן ראשד אל-מקתום, שליט דובאי וראש ממשלת האמירויות. השחקן בן ה-31 עיגן את ההתקפה האיראנית לצד מהדי טארמי בקטאר 2022, ומשחק בלהק שבאב אל-אהלי שבאמירויות. האם ההתקפה האיראנית תתפקד בגביע עולם ללא הנבחר הוותיק ביותר שלה?",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48968591/japan-world-cup-training-pitch-monterrey-mexico-tigres" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/pitch-problems-japan-switches-monterrey-training-sites-ahead-of-world-cup" },
-        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/06/04/japan-world-cup-pitch-tigres-uanl/56148d70-6053-11f1-9c46-d6211372eede_story.html" }
-      ],
-      "expires_at": "2026-06-14T23:59:59Z"
-    },
-    {
-      "id": "wc-final-halftime-madonna-shakira-bts-2026-05-14",
-      "confidence": "confirmed",
-      "en": "For the first time in World Cup history, the 2026 final at MetLife Stadium in New Jersey on July 19 will feature a halftime show. FIFA confirmed Madonna, Shakira, and BTS as co-headliners in a May 14 announcement. Shakira will debut 'Dai Dai,' the official World Cup song she recorded for this edition. Proceeds support the FIFA Global Citizen Education Fund. Does a Super Bowl-style interval act belong at football's biggest game, or does the sport not need it?",
-      "he": "לראשונה בהיסטוריית גביע העולם, הגמר ב-19 ביולי באצטדיון מטלייף בניו ג'רזי יכלול מופע הפסקה. פיפ\"א אישרה את מדונה, שקירה ו-BTS כאמנים ראשיים משותפים בהכרזה מ-14 במאי. שקירה תציג לראשונה את 'דאי דאי', שיר גביע העולם הרשמי שהקליטה למהדורה זו. התמורות תומכות בקרן החינוך הגלובלית של פיפ\"א. האם מופע הפסקה בסגנון סופר בול שייך למשחק הגדול ביותר בכדורגל, או שהספורט הזה לא זקוק לו?",
-      "sources": [
-        { "name": "FIFA", "url": "https://inside.fifa.com/media-releases/madonna-shakira-bts-headline-historic-world-cup-2026-final-halftime-show" },
-        { "name": "CNN", "url": "https://www.cnn.com/2026/05/14/sport/world-cup-final-halftime-show-headliners-hnk" },
-        { "name": "NPR", "url": "https://www.npr.org/2026/05/14/nx-s1-5822453/world-cup-halftime-show-shakira-madonna-bts" }
-      ],
-      "expires_at": "2026-07-19T23:59:59Z"
-    },
-    {
-      "id": "fifa-anthem-all-26-center-circle-2026-06-04",
-      "confidence": "confirmed",
-      "en": "FIFA announced on June 4 that all 26 squad members, not just the starting eleven, will stand together around the centre circle during national anthems at every 2026 World Cup match. Previously, substitutes waited near the dugout while only the starting XI lined up on the pitch. FIFA described the change as fan-centric, saying it wants every player to experience the symbolic moment of representing their country on football's greatest stage. Players will face each other rather than the stands. Will the new formation change how supporters feel that opening moment?",
-      "he": "פיפ\"א הכריזה ב-4 ביוני שכל 26 שחקני הסגל, לא רק האחד-עשר הפותחים, יעמדו יחד סביב מעגל המרכז בזמן ההמנונות הלאומיים בכל משחק של מונדיאל 2026. בעבר, מחליפים המתינו ליד הספסל בזמן שרק ה-11 הפותח עמד על המגרש. פיפ\"א תיארה את השינוי כממוקד-אוהד, ואמרה שהיא רוצה שכל שחקן יחווה את הרגע הסמלי של ייצוג מדינתו על הבמה הגדולה ביותר בכדורגל. השחקנים יעמדו מול אחד מהשני ולא מול הקהל. האם הסידור החדש ישנה את האופן שבו האוהדים חשים את הרגע הפותח?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48972979/fifa-announces-national-anthems-involve-all-26-players-world-cup" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/fifa-announce-fan-centric-change-081952835.html" },
-        { "name": "Daily Hive", "url": "https://dailyhive.com/vancouver/fan-centric-national-anthem-coming-to-fifa-world-cup" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "fifa-ticket-zero-dollar-error-2026-06-05",
-      "confidence": "confirmed",
-      "en": "A checkout fault on FIFA's official ticket site on May 21 let roughly 60 fans secure World Cup seats for zero dollars, bypassing the final payment step. FIFA confirmed the error on June 5, cancelled the $0 bookings, and emailed buyers giving them seven days to pay the full face value or lose their seats. The affected games are group-stage matches in Toronto. The episode adds yet another chapter to the ticketing scandal already under investigation by the attorneys general of New York and New Jersey. Will FIFA's ticketing platform hold up once real crowds descend on the host cities?",
-      "he": "תקלה בשלב התשלום באתר הכרטיסים הרשמי של פיפ\"א ב-21 במאי איפשרה לכ-60 אוהדים לאבטח כרטיסי מונדיאל ללא עלות, תוך עקיפת שלב החיוב הסופי. פיפ\"א אישרה את השגיאה ב-5 ביוני, ביטלה את ההזמנות ב-0 דולר ושלחה לרוכשים הודעת דוא\"ל המעניקה להם שבעה ימים לשלם את המחיר המלא, אחרת יאבדו את כרטיסיהם. המשחקים המושפעים הם משחקי שלב הבתים בטורונטו. הפרשה מוסיפה פרק נוסף לשערורייה שכבר נחקרת על ידי תובעי ניו יורק וניו ג'רזי. האם פלטפורמת הכרטיסים של פיפ\"א תחזיק מעמד ברגע שהמונים יגיעו לערי האירוח?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48974024/fifa-cancels-world-cup-tickets-60-fans-got-free-error" },
-        { "name": "UPI", "url": "https://www.upi.com/Sports_News/Soccer/2026/06/05/FIFA-cancels-free-World-Cup-tickets-error/7921780666873/" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/fifa-cancels-free-world-cup-160718562.html" }
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/17/sardar-azmoun-left-out-as-iran-announce-world-cup-2026-squad" },
+        { "name": "Fox News", "url": "https://www.foxnews.com/sports/sardar-azmoun-known-iranian-messi-left-countrys-world-cup-squad-accused-treason" },
+        { "name": "Seoul Economic Daily", "url": "https://en.sedaily.com/sports/2026/06/02/iran-drops-azmoun-from-world-cup-squad-over-uae-photo" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     }

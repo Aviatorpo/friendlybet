@@ -1,52 +1,52 @@
 {
-  "updatedAt": "2026-06-05T20:27:37.399Z",
-  "count": 12,
+  "updatedAt": "2026-06-05T21:24:00.161Z",
+  "count": 11,
   "items": [
     {
-      "id": "irn-visa-us-granted-2026-06-05",
-      "type": "news",
-      "confidence": "reported",
-      "he": "לפי הדיווחים, שחקני סגל המונדיאל האיראני קיבלו אישור ויזה אמריקאי ב-5 ביוני, כשבכיר בית הלבן אישר את הנושא לרויטרס פחות מעשרה ימים לפני המשחק הראשון. מזכיר המדינה מרקו רוביו הזהיר שמי שיש לו קשרים ל-IRGC ייחסם, ועמד בספק מעמד הנסיעה של הקפטן מהדי טארמי ואחסן חאג'ספי. הנבחרת יוצאת מאנטליה ב-6 ביוני לבסיסה בטיחואנה ותיכנס לארה\"ב לשלושת משחקי הבלוק. האם כל שחקן עלה על אותה טיסה?",
-      "en": "Reports say Iran's World Cup squad received US visa clearance on June 5, with a White House official confirming approval to Reuters less than ten days before their first match. Secretary of State Marco Rubio had warned that anyone with IRGC ties would be barred, casting doubt over captain Mehdi Taremi and defender Ehsan Hajsafi. Iran departs Antalya on June 6 for their Tijuana base and will cross into the US for group games against New Zealand, Belgium, and Egypt. Did every player board that flight?",
-      "team": "IRN",
-      "sources": [
-        {
-          "name": "The New Arab",
-          "url": "https://www.newarab.com/news/under-week-go-iran-world-cup-squad-finally-gets-us-visas"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/3/irans-world-cup-squad-to-depart-for-mexico-on-june-6-despite-us-visa-delay"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48949687/iran-expects-us-mexico-visas-arrive-week"
-        }
-      ],
-      "expires_at": "2026-06-15T23:59:59Z"
-    },
-    {
-      "id": "ref-dieperink-dropped-wc-2026-06-05",
+      "id": "ger-lennart-karl-injury-2026-06-05",
       "type": "news",
       "confidence": "confirmed",
-      "he": "פיפ\"א הסירה את בוחן הוידאו ההולנדי רוב דיפרינק מרשימת שופטי גביע העולם 2026, לאחר שנעצר במלון בלונדון ב-9 באפריל בחשד לתקיפה מינית נגד קטין. דיפרינק שימש כ-VAR במשחק ליגת הקונפרנס של UEFA כשמשטרת המטרופוליטן עצרה אותו לאחר המשחק. המשטרה הבריטית סגרה את התיק מאוחר יותר וציינה שהראיות לא עמדו בסף הנדרש, אך פיפ\"א המשיכה עם ההדחה. השופט הצרפתי ווילי דלאז'ו אושר כממלא מקומו. האם סבילות אפס בשיפוט הכדורגל פירושה הדחה ללא קשר לתוצאה המשפטית?",
-      "en": "FIFA removed Dutch VAR official Rob Dieperink from its 2026 World Cup list after he was arrested in a London hotel on April 9 on suspicion of sexual assault against a teenager. Dieperink was serving as a VAR for a UEFA Conference League fixture when Metropolitan Police took him into custody after the match. British police later dropped the case, saying the evidential threshold had not been met, but FIFA pressed ahead with the exclusion. French official Willy Delajod was confirmed as his replacement. Does zero tolerance in football officiating apply regardless of a court outcome?",
+      "he": "גרמניה הקיצה ב-5 ביוני לבהלת פציעה: חצי השדה בן ה-18 לנארט קארל מבאיירן מינכן נשלח לבית חולים לסריקות לאחר תאונה באימון. המאמן יוליאן נגלסמן הודיע לכתבים שהמצב 'לא נראה טוב במיוחד' ואישר שלנבחרת יש עד 24 שעות לפני הפתיחה מול קוראסאו ב-14 ביוני להזמין חלופה בהתאם לתקנות גביע העולם. קארל היה אחד הדביוטנטים המצופים ביותר בסגל לאחר עונה פורצת דרך בעלי האנץ. האם כישרון גרמניה הצעיר יבריא בזמן?",
+      "en": "Germany woke up to an injury scare on June 5 after 18-year-old Bayern Munich midfielder Lennart Karl was sent to hospital for scans following a training accident. Coach Julian Nagelsmann told reporters it 'didn't look particularly good' and confirmed the squad have until 24 hours before their June 14 opener against Curacao to call up a replacement under World Cup rules. Karl had been one of the most anticipated debutants in the squad after a breakout season at the Allianz Arena. Will Germany's brightest new talent recover in time?",
+      "team": "GER",
+      "sources": [
+        {
+          "name": "France 24",
+          "url": "https://www.france24.com/en/live-news/20260605-injured-germany-starlet-karl-may-miss-world-cup-says-nagelsmann"
+        },
+        {
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com/stories/soccer/germanys-young-star-lennart-karl-may-miss-world-cup-after-injury-training"
+        },
+        {
+          "name": "Bundesliga.com",
+          "url": "https://www.bundesliga.com/en/bundesliga/news/lennart-karl-world-cup-injury-bayern-munich-germany-37718"
+        }
+      ],
+      "expires_at": "2026-06-14T23:59:59Z"
+    },
+    {
+      "id": "wc-opening-ceremony-shakira-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "פיפ\"א אישרה ב-4 ביוני ששקירה וכוכב הניגרי בורנה בוי יעמדו בראש טקס הפתיחה של מונדיאל 2026 באסטדיו אצטקה במקסיקו סיטי ב-11 ביוני, עם הבכורה העולמית של 'דאי דאי', שיר הטורניר הרשמי, 90 דקות לפני שמקסיקו המארחת תיפגש עם דרום אפריקה. התכניה כוללת גם את אלחנדרו פרננדז, מאנה, ג'יי בלבין, בלינדה וטיילה. שקירה תנחה גם את מופע ההפסקה של הגמר ב-19 ביולי לצד מדונה ו-BTS. האם מונדיאל שנפתח בגדול כזה מציב ציפיות בלתי אפשריות ממה שיבוא על המגרש?",
+      "en": "FIFA confirmed on June 4 that Shakira and Nigerian star Burna Boy will headline the 2026 World Cup opening ceremony at Estadio Azteca in Mexico City on June 11, with the world premiere of 'Dai Dai', the tournament's official song, beginning 90 minutes before hosts Mexico face South Africa. The lineup also includes Alejandro Fernandez, Mana, J Balvin, Belinda, and Tyla. Shakira will also co-headline the final halftime show on July 19 alongside Madonna and BTS. Does a World Cup that opens this big raise expectations impossibly high for what follows on the pitch?",
       "team": null,
       "sources": [
         {
-          "name": "NL Times",
-          "url": "https://nltimes.nl/2026/05/15/dutch-referee-arrested-alleged-misconduct-17-year-old-charges-later-dropped"
+          "name": "FIFA",
+          "url": "https://inside.fifa.com/media-releases/shakira-burna-dai-dai-world-cup-opening-ceremony-mexico-city"
         },
         {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/fifa-drop-dutch-referee-world-120933794.html"
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48972437/shakira-burna-boy-perform-2026-world-cup-opening-ceremony-mexico"
         },
         {
-          "name": "Morocco World News",
-          "url": "https://www.moroccoworldnews.com/2026/05/302292/fifa-drops-dutch-referee-rob-dieperink-from-world-cup-list/"
+          "name": "Billboard",
+          "url": "https://www.billboard.com/music/latin/shakira-burna-boy-dai-dai-2026-world-cup-opening-ceremony-1236265169/"
         }
       ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "expires_at": "2026-06-11T23:59:59Z"
     },
     {
       "id": "bra-neymar-calf-doubt-2026-06-05",
@@ -72,25 +72,6 @@
       "expires_at": "2026-06-18T00:00:00Z"
     },
     {
-      "id": "mex-azteca-third-wc-opening-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "האצטקה יארח את משחק הפתיחה של גביע העולם בין מקסיקו לדרום אפריקה ב-11 ביוני, ויהפוך לאיצטדיון היחיד בהיסטוריה שאירח שלושה משחקי פתיחה של מונדיאל. האצטדיון שוכן בגובה 2,200 מטרים מעל פני הים במקסיקו סיטי, יתרון גובה שמטריד קבוצות מבקרות מזה שנים. האם הגובה מעניק לאל-טרי יתרון אמיתי במשחק הפתיחה?",
-      "en": "Estadio Azteca will stage the June 11 World Cup opener between Mexico and South Africa, becoming the only stadium in history to host three FIFA World Cup opening matches. The ground sits at 2,200 metres above sea level in Mexico City, an altitude advantage that has long unsettled visiting sides. Does height give El Tri a real edge in the opening fixture?",
-      "team": "MEX",
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/3/fifa-world-cup-2026-stadiums-matches-us-canada-mexico"
-        }
-      ],
-      "expires_at": "2026-06-11T23:59:59Z"
-    },
-    {
       "id": "fra-ivory-coast-warmup-loss-2026-06-04",
       "type": "news",
       "confidence": "confirmed",
@@ -114,27 +95,23 @@
       "expires_at": "2026-06-16T23:59:59Z"
     },
     {
-      "id": "arg-messi-managed-load-opener-2026-06-05",
+      "id": "mex-azteca-third-wc-opening-2026-06-05",
       "type": "news",
       "confidence": "confirmed",
-      "he": "מסי עובד על תוכנית אישית, בנפרד מקבוצת הנבחרת הארגנטינאית, וזאת לניהול עומס בשריר הירך השמאלית שהופיע ב-24 במאי. המאמן סקלוני אומר שהמטרה היא להיות מוכן לפתיחה מול אלג'יריה ב-16 ביוני, אך הוא ידלג על שני משחקי האימון. סקלוני הודה גם שמסי לא יצטרף למחנה בכשירות מלאה, וציין שהגעה ל-100 אחוז לפני יום הפתיחה לא הייתה ריאלית מלכתחילה. האם אלוף העולם יגיע בשיא כוחו?",
-      "en": "Messi is working through an individual programme away from Argentina's main group, managing left-hamstring fatigue first felt on May 24. Coach Scaloni says the plan is to have him ready for the June 16 opener against Algeria, though he will skip both warm-up matches. Scaloni has also admitted Messi will not join camp fully fit, noting that reaching 100 percent before day one was never realistic. Will the reigning champion arrive at full strength?",
-      "team": "ARG",
+      "he": "האצטקה יארח את משחק הפתיחה של גביע העולם בין מקסיקו לדרום אפריקה ב-11 ביוני, ויהפוך לאיצטדיון היחיד בהיסטוריה שאירח שלושה משחקי פתיחה של מונדיאל. האצטדיון שוכן בגובה 2,200 מטרים מעל פני הים במקסיקו סיטי, יתרון גובה שמטריד קבוצות מבקרות מזה שנים. האם הגובה מעניק לאל-טרי יתרון אמיתי במשחק הפתיחה?",
+      "en": "Estadio Azteca will stage the June 11 World Cup opener between Mexico and South Africa, becoming the only stadium in history to host three FIFA World Cup opening matches. The ground sits at 2,200 metres above sea level in Mexico City, an altitude advantage that has long unsettled visiting sides. Does height give El Tri a real edge in the opening fixture?",
+      "team": "MEX",
       "sources": [
         {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48945340/messi-trains-own-argentina-opening-session-ahead-world-cup"
+          "name": "FIFA",
+          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026"
         },
         {
           "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/3/messi-trains-alone-as-argentina-hold-first-world-cup-practice-session"
-        },
-        {
-          "name": "Goal.com",
-          "url": "https://www.goal.com/en/lists/lionel-messi-won-t-join-argentina-world-cup-squad-fully-fit-admits-lionel-scaloni/bltdd2d68668cc7337d"
+          "url": "https://www.aljazeera.com/sports/2026/6/3/fifa-world-cup-2026-stadiums-matches-us-canada-mexico"
         }
       ],
-      "expires_at": "2026-06-16T00:00:00Z"
+      "expires_at": "2026-06-11T23:59:59Z"
     },
     {
       "id": "alg-stun-ned-luca-zidane-2026-06-03",
@@ -160,27 +137,27 @@
       "expires_at": "2026-06-17T23:59:59Z"
     },
     {
-      "id": "ifab-goalkick-5sec-countdown-2026-06-05",
+      "id": "irq-first-wc-since-1986-2026-06-05",
       "type": "news",
       "confidence": "confirmed",
-      "he": "פיפ\"א מביאה כלל חדש נגד בזבוז זמן לגביע העולם 2026: שופטים ירימו יד וייספרו חמש שניות עבור בעיטות שער, בדומה לספירה הקיימת עבור שוערים המחזיקים בכדור. קבוצה שתניח לספירה לפוג תעניק לצד היריב בעיטת פינה. האם הכלל הזה יחסל סופית את טקטיקות ההשהיה שהאטו את משחקי כדורגל שלב הבתים עשרות שנים?",
-      "en": "FIFA is bringing a new anti-time-wasting rule to the 2026 World Cup: referees will raise a hand and count down five seconds for goal-kicks, mirroring the existing countdown for goalkeepers holding the ball. A side that lets the count expire hands the opponent a corner kick. Will this rule finally stamp out the stalling tactics that have slowed group-stage football for decades?",
-      "team": null,
+      "he": "עיראק חוזרת למונדיאל לראשונה מאז מקסיקו 1986: 40 שנות המתנה הסתיימו לאחר שהמאמן גראהם ארנולד, שהוביל את אוסטרליה לשמינייה גמר בקטאר 2022, קיבל את הניהול במאי 2025 והוביל את אריות מסופוטמיה דרך מסע כישור מפרך של 21 משחקים על פני יותר משנתיים. מסע הפלייאוף הבינאוגדתי כלל הרפתקת נסיעות כאוטית במזרח התיכון, שנגרמה מסכסוך אזורי, שאילצה הפסקה של שלושה ימים לפני המשחק המכריע במקסיקו. עיראק פותחת נגד נורבגיה בבוסטון ב-16 ביוני ואחר כך תיפגש עם צרפת וסנגל. האם 40 שנות סבלנות יתורגמו להפתעת מונדיאל?",
+      "en": "Iraq are back at a World Cup for the first time since Mexico 1986, a 40-year wait finally over after coach Graham Arnold, who steered Australia to the round of 16 at Qatar 2022, took over in May 2025 and guided the Lions of Mesopotamia through a gruelling 21-match qualification campaign spanning more than two years. Their intercontinental playoff journey included a chaotic travel ordeal across the Middle East, caused by regional conflict, that forced a three-day recovery break before the decisive game in Mexico. Iraq open against Norway in Boston on June 16, then face France and Senegal. Can 40 years of patience translate into a World Cup shock?",
+      "team": "IRQ",
       "sources": [
         {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/soccer/article/2026-world-cup-will-introduce-new-fifa-approved-rule-changes-213520541.html"
+          "name": "FIFA",
+          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/graham-arnold-iraq-interview"
         },
         {
-          "name": "Football365",
-          "url": "https://www.football365.com/news/football-law-rule-changes-world-cup-ifab-collina"
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/5/we-are-fighters-iraq-aim-to-shock-rivals-at-2026-world-cup"
         },
         {
-          "name": "FourFourTwo",
-          "url": "https://www.fourfourtwo.com/competition/every-new-fifa-rule-at-the-2026-world-cup-goalkeeper-timeout-ban-five-second-countdowns-and-var-offsides-whats-changed"
+          "name": "The National",
+          "url": "https://www.thenationalnews.com/sport/football/2026/06/04/iraq-world-cup-talking-points-ali-al-hamadi-and-aymen-hussein-reignite-hopes-after-arduous-qualification/"
         }
       ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "expires_at": "2026-06-16T23:59:59Z"
     },
     {
       "id": "ifab-var-corners-second-yellow-2026-06-05",
@@ -201,6 +178,29 @@
         {
           "name": "NBC Sports",
           "url": "https://www.nbcsports.com/soccer/news/rule-changes-confirmed-for-2026-world-cup-as-ifab-alters-var-cracks-down-on-subs-and-timeouts"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "por-jota-27plus1-squad-2026-05-19",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "סגל ה-26 של פורטוגל בגביע העולם נושא שם 27 קבוע. המאמן רוברטו מרטינז הקדיש את הטורניר כולו לדיוגו ז'וטה, כנף ליברפול שנהרג בתאונת דרכים בספרד ביולי 2025 בגיל 28, כינה את הבחירה '27 שחקנים ועוד אחד' ואמר שמקומו של ז'וטה בקבוצה לא נעלם אי-פעם. מרטינז הוסיף שהמוטיבציה של הנבחרת כולה היא לנצח בגביע העולם עבורו, ופיפ\"א פרסמה מחווה רשמית. האם האבל הלאומי יהפוך לדלק שיקרב את פורטוגל לזכייה ראשונה?",
+      "en": "Portugal's 26-man World Cup squad carries a permanent 27th name. Coach Roberto Martinez dedicated the tournament to Diogo Jota, the Liverpool winger killed in a car crash in Spain in July 2025 at age 28, naming the selection '27 players plus one' and saying Jota's place in the group never disappeared. Martinez said the squad's entire motivation is to win the World Cup for him, and FIFA issued a formal tribute. Can a nation's grief become the fuel that finally gets Portugal over the finish line?",
+      "team": "POR",
+      "sources": [
+        {
+          "name": "FIFA",
+          "url": "https://www.fifa.com/en/news/articles/diogo-jota-tribute"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/46164741/portugal-want-2026-world-cup-success-diogo-jota-roberto-martinez"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/portugal-emotional-jota-gesture-world-133000555.html"
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
@@ -229,50 +229,12 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "fifa-ticket-prices-ag-probe-2026-06-05",
-      "type": "news",
+      "id": "countdown-2026-06-06",
+      "type": "countdown",
       "confidence": "confirmed",
-      "he": "תובעות המדינה של ניו יורק וניו ג'רזי הוציאו זימון לפיפ\"א ב-27 במאי, ופתחו בחקירה משותפת על נוהלי מכירת כרטיסים מטעים לכאורה באצטדיון מטלייף. לטענת הרשויות, פיפ\"א מכרה כרטיסי קטגוריה 1 באזורים מסוימים, ולאחר השלמת הרכישות יצרה אזורי קטגוריה קדמית יקרים יותר באותם אזורים. פיפ\"א גם העלתה מחירים ליותר מ-90 מתוך 104 משחקי גביע העולם בין אוקטובר 2025 לאפריל 2026, כשהקטגוריות הראשיות עלו בממוצע ב-34 אחוז. האם גביע העולם הראשון בצפון אמריקה הוא גם הכרטיסייה היקרה ביותר אי פעם?",
-      "en": "The attorneys general of New York and New Jersey subpoenaed FIFA on May 27, launching a joint investigation into alleged deceptive ticket practices at MetLife Stadium. Officials say FIFA sold Category 1 seats in specific zones, then after purchases were completed, created more expensive Front Category zones covering the same areas. FIFA also raised prices for more than 90 of the 104 World Cup matches between October 2025 and April 2026, with main ticket categories rising on average by 34 percent. Is FIFA's first North American World Cup also its most controversially priced?",
-      "team": null,
-      "sources": [
-        {
-          "name": "NY Attorney General",
-          "url": "https://ag.ny.gov/press-release/2026/attorney-general-james-and-attorney-general-davenport-subpoena-fifa-over-world"
-        },
-        {
-          "name": "CNN",
-          "url": "https://www.cnn.com/2026/05/27/business/world-cup-tickets-new-york-new-jersey-subpoena"
-        },
-        {
-          "name": "NBC News",
-          "url": "https://www.nbcnews.com/sports/soccer/new-york-new-jersey-launch-probe-fifa-world-cup-ticket-practices-rcna347162"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "por-jota-27plus1-squad-2026-05-19",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "סגל ה-26 של פורטוגל בגביע העולם נושא שם 27 קבוע. המאמן רוברטו מרטינז הקדיש את הטורניר כולו לדיוגו ז'וטה, כנף ליברפול שנהרג בתאונת דרכים בספרד ביולי 2025 בגיל 28, כינה את הבחירה '27 שחקנים ועוד אחד' ואמר שמקומו של ז'וטה בקבוצה לא נעלם אי-פעם. מרטינז הוסיף שהמוטיבציה של הנבחרת כולה היא לנצח בגביע העולם עבורו, ופיפ\"א פרסמה מחווה רשמית. האם האבל הלאומי יהפוך לדלק שיקרב את פורטוגל לזכייה ראשונה?",
-      "en": "Portugal's 26-man World Cup squad carries a permanent 27th name. Coach Roberto Martinez dedicated the tournament to Diogo Jota, the Liverpool winger killed in a car crash in Spain in July 2025 at age 28, naming the selection '27 players plus one' and saying Jota's place in the group never disappeared. Martinez said the squad's entire motivation is to win the World Cup for him, and FIFA issued a formal tribute. Can a nation's grief become the fuel that finally gets Portugal over the finish line?",
-      "team": "POR",
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/news/articles/diogo-jota-tribute"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/46164741/portugal-want-2026-world-cup-success-diogo-jota-roberto-martinez"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/portugal-emotional-jota-gesture-world-133000555.html"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "he": "המונדיאל מתחיל בעוד 5 ימים! כל ההימורים עוד פתוחים, מי תהיה ההפתעה של 2026?",
+      "en": "The World Cup kicks off in 5 days! Every prediction is still open. Who'll be the surprise of 2026?",
+      "sources": []
     }
   ]
 }
