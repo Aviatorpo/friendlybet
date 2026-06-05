@@ -1,29 +1,52 @@
 {
-  "updatedAt": "2026-06-05T18:54:27.800Z",
+  "updatedAt": "2026-06-05T19:32:22.386Z",
   "count": 12,
   "items": [
     {
-      "id": "irn-visa-us-irgc-2026-06-05",
+      "id": "irn-visa-us-granted-2026-06-05",
       "type": "news",
       "confidence": "reported",
-      "he": "לפי הדיווחים, שחקני איראן מסרו את דרכוניהם לשגרירות האמריקאית באנקרה ב-5 ביוני, וראש ההתאחדות מהדי תאג' אישר שהנבחרת עדיין מתכוונת לנסוע לבסיס האימונים בטיחואנה ב-6 ביוני. מזכיר המדינה מרקו רוביו הזהיר שכל חבר משלחת בעל קשרים ל-IRGC ייחסם מלהיכנס לארצות הברית. הקפטן מהדי טארמי ואחסן חאג'ספי, שניהם ידועים כמי שסיימו שירות חובה ב-IRGC, מתמודדים עם מעמד נסיעה לא ודאי. שלושת משחקי הבלוק של איראן, מול ניו זילנד, בלגיה ומצרים, כולם על אדמת ארה\"ב. האם מתחים פוליטיים יגרמו לכך שכוכבים מרכזיים ייאסרו מהאצטדיונים האמריקאיים?",
-      "en": "Reports say Iran's players submitted their passports to the US Embassy in Ankara on June 5, with federation head Mehdi Taj confirming the squad still plans to travel to their Tijuana base on June 6. US Secretary of State Marco Rubio has warned that any delegation members with ties to the IRGC will be barred from entering the United States. Captain Mehdi Taremi and defender Ehsan Hajsafi, both known to have completed mandatory IRGC service, face an uncertain travel status. Iran's three group games, against New Zealand, Belgium, and Egypt, are all on US soil. Could political tensions keep key players out of American stadiums?",
+      "he": "לפי הדיווחים, שחקני סגל המונדיאל האיראני קיבלו אישור ויזה אמריקאי ב-5 ביוני, כשבכיר בית הלבן אישר את הנושא לרויטרס פחות מעשרה ימים לפני המשחק הראשון. מזכיר המדינה מרקו רוביו הזהיר שמי שיש לו קשרים ל-IRGC ייחסם, ועמד בספק מעמד הנסיעה של הקפטן מהדי טארמי ואחסן חאג'ספי. הנבחרת יוצאת מאנטליה ב-6 ביוני לבסיסה בטיחואנה ותיכנס לארה\"ב לשלושת משחקי הבלוק. האם כל שחקן עלה על אותה טיסה?",
+      "en": "Reports say Iran's World Cup squad received US visa clearance on June 5, with a White House official confirming approval to Reuters less than ten days before their first match. Secretary of State Marco Rubio had warned that anyone with IRGC ties would be barred, casting doubt over captain Mehdi Taremi and defender Ehsan Hajsafi. Iran departs Antalya on June 6 for their Tijuana base and will cross into the US for group games against New Zealand, Belgium, and Egypt. Did every player board that flight?",
       "team": "IRN",
       "sources": [
         {
+          "name": "The New Arab",
+          "url": "https://www.newarab.com/news/under-week-go-iran-world-cup-squad-finally-gets-us-visas"
+        },
+        {
           "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/5/iran-footballers-hand-passports-to-us-embassy-for-world-cup-visa-approval"
+          "url": "https://www.aljazeera.com/sports/2026/6/3/irans-world-cup-squad-to-depart-for-mexico-on-june-6-despite-us-visa-delay"
         },
         {
-          "name": "WION News",
-          "url": "https://www.wionews.com/sports/iran-fifa-world-cup-squad-submits-passports-to-us-embassy-in-turkey-amid-visa-uncertainty-1780667401729"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/iran-footballers-hand-passports-us-132746380.html"
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48949687/iran-expects-us-mexico-visas-arrive-week"
         }
       ],
       "expires_at": "2026-06-15T23:59:59Z"
+    },
+    {
+      "id": "ref-dieperink-dropped-wc-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "פיפ\"א הסירה את בוחן הוידאו ההולנדי רוב דיפרינק מרשימת שופטי גביע העולם 2026, לאחר שנעצר במלון בלונדון ב-9 באפריל בחשד לתקיפה מינית נגד קטין. דיפרינק שימש כ-VAR במשחק ליגת הקונפרנס של UEFA כשמשטרת המטרופוליטן עצרה אותו לאחר המשחק. המשטרה הבריטית סגרה את התיק מאוחר יותר וציינה שהראיות לא עמדו בסף הנדרש, אך פיפ\"א המשיכה עם ההדחה. השופט הצרפתי ווילי דלאז'ו אושר כממלא מקומו. האם סבילות אפס בשיפוט הכדורגל פירושה הדחה ללא קשר לתוצאה המשפטית?",
+      "en": "FIFA removed Dutch VAR official Rob Dieperink from its 2026 World Cup list after he was arrested in a London hotel on April 9 on suspicion of sexual assault against a teenager. Dieperink was serving as a VAR for a UEFA Conference League fixture when Metropolitan Police took him into custody after the match. British police later dropped the case, saying the evidential threshold had not been met, but FIFA pressed ahead with the exclusion. French official Willy Delajod was confirmed as his replacement. Does zero tolerance in football officiating apply regardless of a court outcome?",
+      "team": null,
+      "sources": [
+        {
+          "name": "NL Times",
+          "url": "https://nltimes.nl/2026/05/15/dutch-referee-arrested-alleged-misconduct-17-year-old-charges-later-dropped"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/fifa-drop-dutch-referee-world-120933794.html"
+        },
+        {
+          "name": "Morocco World News",
+          "url": "https://www.moroccoworldnews.com/2026/05/302292/fifa-drops-dutch-referee-rob-dieperink-from-world-cup-list/"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
       "id": "bra-neymar-calf-doubt-2026-06-05",
@@ -53,7 +76,7 @@
       "type": "news",
       "confidence": "confirmed",
       "he": "כריסטיאן פוליסיץ' שם קץ לבצורת של חמישה חודשים ללא שער בינלאומי כאשר ארצות הברית הביסה את סנגל 3:2 ב-31 במאי, כשסייע לשערו של סרג'ינו דסט ואחר כך כבש בעצמו ממסירת ריקרדו פאפי. ג'ולארין בלוגן כבש את המכריע בחצי השני לאחר שסאדיו מאנה השווה פעמיים, ובכך הגיע ל-54 שערים בינלאומיים לשיא סנגל. המנבחרת האמריקאית תיפגש עם גרמניה ב-6 ביוני לפני פתיחת גביע העולם מול פרגוואי ב-12 ביוני. האם הנבחרת המארחת תוכל לשאת את המומנטום הזה כשהסיכויים יהיו אמיתיים?",
-      "en": "Christian Pulisic ended a five-month international scoring drought as the United States beat Senegal 3-2 on May 31, setting up Sergiño Dest's opener before scoring himself off a Ricardo Pepi pass. Folarin Balogun netted a second-half winner after Sadio Mane had twice equalized, taking Mane's Senegal record to 54 international goals. The USMNT face Germany on June 6 in Chicago before hosting Paraguay in their June 12 World Cup opener. Can the co-hosts carry this momentum when the stakes are real?",
+      "en": "Christian Pulisic ended a five-month international scoring drought as the United States beat Senegal 3-2 on May 31, setting up Sergino Dest's opener before scoring himself off a Ricardo Pepi pass. Folarin Balogun netted a second-half winner after Sadio Mane had twice equalized, taking Mane's Senegal record to 54 international goals. The USMNT face Germany on June 6 in Chicago before hosting Paraguay in their June 12 World Cup opener. Can the co-hosts carry this momentum when the stakes are real?",
       "team": "USA",
       "sources": [
         {
@@ -232,8 +255,8 @@
       "id": "fifa-ticket-prices-ag-probe-2026-06-05",
       "type": "news",
       "confidence": "confirmed",
-      "he": "תובעות המדינה של ניו יורק וניו ג'רזי הוציאו זימון לפיפ\"א ב-27 במאי, ופתחו בחקירה משותפת על נוהלי מכירת כרטיסים מטעים לכאורה באצטדיון מטלייף. לטענת הרשויות, פיפ\"א מכרה כרטיסי קטגוריה 1 באזורים מסוימים, ולאחר השלמת הרכישות יצרה אזורי 'קטגוריה קדמית' יקרים יותר באותם אזורים. פיפ\"א גם העלתה מחירים ליותר מ-90 מתוך 104 משחקי גביע העולם בין אוקטובר 2025 לאפריל 2026, כשהקטגוריות הראשיות עלו בממוצע ב-34 אחוז. האם גביע העולם הראשון בצפון אמריקה הוא גם הכרטיסייה היקרה ביותר אי פעם?",
-      "en": "The attorneys general of New York and New Jersey subpoenaed FIFA on May 27, launching a joint investigation into alleged deceptive ticket practices at MetLife Stadium. Officials say FIFA sold Category 1 seats in specific zones, then after purchases were completed, created more expensive 'Front Category' zones covering the same areas. FIFA also raised prices for more than 90 of the 104 World Cup matches between October 2025 and April 2026, with main ticket categories rising on average by 34 percent. Is FIFA's first North American World Cup also its most controversially priced?",
+      "he": "תובעות המדינה של ניו יורק וניו ג'רזי הוציאו זימון לפיפ\"א ב-27 במאי, ופתחו בחקירה משותפת על נוהלי מכירת כרטיסים מטעים לכאורה באצטדיון מטלייף. לטענת הרשויות, פיפ\"א מכרה כרטיסי קטגוריה 1 באזורים מסוימים, ולאחר השלמת הרכישות יצרה אזורי קטגוריה קדמית יקרים יותר באותם אזורים. פיפ\"א גם העלתה מחירים ליותר מ-90 מתוך 104 משחקי גביע העולם בין אוקטובר 2025 לאפריל 2026, כשהקטגוריות הראשיות עלו בממוצע ב-34 אחוז. האם גביע העולם הראשון בצפון אמריקה הוא גם הכרטיסייה היקרה ביותר אי פעם?",
+      "en": "The attorneys general of New York and New Jersey subpoenaed FIFA on May 27, launching a joint investigation into alleged deceptive ticket practices at MetLife Stadium. Officials say FIFA sold Category 1 seats in specific zones, then after purchases were completed, created more expensive Front Category zones covering the same areas. FIFA also raised prices for more than 90 of the 104 World Cup matches between October 2025 and April 2026, with main ticket categories rising on average by 34 percent. Is FIFA's first North American World Cup also its most controversially priced?",
       "team": null,
       "sources": [
         {
@@ -247,29 +270,6 @@
         {
           "name": "NBC News",
           "url": "https://www.nbcnews.com/sports/soccer/new-york-new-jersey-launch-probe-fifa-world-cup-ticket-practices-rcna347162"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "por-jota-27plus1-squad-2026-05-19",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "סגל ה-26 של פורטוגל בגביע העולם נושא שם 27 קבוע. המאמן רוברטו מרטינז הקדיש את הטורניר כולו לדיוגו ז'וטה, כנף ליברפול שנהרג בתאונת דרכים בספרד ביולי 2025 בגיל 28, כינה את הבחירה '27 שחקנים ועוד אחד' ואמר שמקומו של ז'וטה בקבוצה לא נעלם אי-פעם. מרטינז הוסיף שהמוטיבציה של הנבחרת כולה היא לנצח בגביע העולם עבורו, ופיפ\"א פרסמה מחווה רשמית. האם האבל הלאומי יהפוך לדלק שיקרב את פורטוגל לזכייה ראשונה?",
-      "en": "Portugal's 26-man World Cup squad carries a permanent 27th name. Coach Roberto Martinez dedicated the tournament to Diogo Jota, the Liverpool winger killed in a car crash in Spain in July 2025 at age 28, naming the selection '27 players plus one' and saying Jota's place in the group never disappeared. Martinez said the squad's entire motivation is to win the World Cup for him, and FIFA issued a formal tribute. Can a nation's grief become the fuel that finally gets Portugal over the finish line?",
-      "team": "POR",
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/news/articles/diogo-jota-tribute"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/46164741/portugal-want-2026-world-cup-success-diogo-jota-roberto-martinez"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/portugal-emotional-jota-gesture-world-133000555.html"
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
