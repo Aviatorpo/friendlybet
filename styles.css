@@ -9094,12 +9094,12 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
   font-weight: 800; color: #0b0a08; background: linear-gradient(140deg, #d9b46a, #c79f55);
   padding: 8px 13px; border-radius: 9px; white-space: nowrap; }
 .bsd-copybtn svg { display: block; }
-/* Quiet secondary: download the PNG (for IG/stories/manual posting). A hairline
-   divider + generous spacing (v2.7.7) sets it apart from the chips above AND the
-   primary buttons (Done / Save) that follow the desktop block. */
+/* Quiet secondary: download the PNG (for IG/stories/manual posting). The hairline
+   divider sits BELOW it (v2.7.8) so it's set apart from the primary buttons
+   (Done / Save) that follow the desktop block, not from the chips above. */
 .bsd-download { display: flex; align-items: center; justify-content: center; gap: 6px;
-  width: 100%; margin: 4px 0 0; padding: 13px 4px 4px; border-top: 1px solid rgba(255,255,255,0.09);
-  background: none; border-left: 0; border-right: 0; border-bottom: 0; color: var(--muted, #9a9c93);
+  width: 100%; margin: 12px 0 0; padding: 4px 4px 14px; border-bottom: 1px solid rgba(255,255,255,0.09);
+  background: none; border-top: 0; border-left: 0; border-right: 0; color: var(--muted, #9a9c93);
   font-family: inherit; font-weight: 600; font-size: 13.5px; cursor: pointer; }
 .bsd-download:hover { color: #ecd49a; }
 /* Push the whole desktop block off the buttons (Done/Save) rendered beneath it. */
