@@ -10134,6 +10134,7 @@ function spRemoveFromSlot(_idx) { /* deprecated in v2.2 */
 
 let _spSaveTimer = null;
 function spAutoSaveGroups() {
+  _spCacheSave(); // v2.9.7: back up every group change too (localStorage + durable server backup)
   if (_spSaveTimer) clearTimeout(_spSaveTimer);
   _spSaveTimer = setTimeout(() => { spSaveGroupsToDb(false); }, 600);
 }
@@ -10641,6 +10642,7 @@ function spToggleThirdPlace(letter) {
   // per-team-advanced, so changing the set is safe — no need to wipe picks.)
   if (state.currentScreen === 'sp-third-place-screen') spRenderThirdPlaceStep();
   else spRenderBracket();
+  _spCacheSave(); // v2.9.7: back up every third-place change too
   spSaveThirdPlaceToDb();
 }
 window.spToggleThirdPlace = spToggleThirdPlace;
