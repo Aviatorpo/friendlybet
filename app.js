@@ -2556,13 +2556,25 @@ function renderAdminMembers() {
   // Render list
   list.innerHTML = '';
 
-  // v2.9.8: aggregate nudge — how many members still need their knockout bracket.
+  // v2.9.8/v2.9.9: aggregate nudge — how many members still need their knockout
+  // bracket. Explains the technical glitch + offers a ready-to-send message the
+  // admin can paste into the group chat to ask those members to re-fill it.
   const needsKoCount = adminState.members.filter(m => _adminMemberProgress(m).needsKnockout).length;
   if (needsKoCount > 0) {
     const nudge = document.createElement('div');
     nudge.className = 'admin-ko-nudge-banner';
-    nudge.innerHTML = '⚠️ ' + t('adminMembersEx.needsKnockoutCount', { n: needsKoCount });
+    nudge.innerHTML =
+      '<div class="akn-text">⚠️ ' + t('adminMembersEx.needsKnockoutGlitch', { n: needsKoCount }) + '</div>' +
+      '<button type="button" class="akn-copy" id="admin-ko-copy-btn">' +
+      '<i class="ti ti-copy"></i><span>' + t('adminMembersEx.copyNudge') + '</span></button>';
     list.appendChild(nudge);
+    const copyBtn = nudge.querySelector('#admin-ko-copy-btn');
+    if (copyBtn) copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(t('adminMembersEx.nudgeMessage'));
+        showToast(t('adminMembersEx.nudgeCopied'), 'success');
+      } catch (_) { showToast(t('adminMembersEx.nudgeMessage'), 'info'); }
+    });
   }
 
   sorted.forEach(member => {

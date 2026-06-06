@@ -3919,17 +3919,34 @@ body.ltr #next-group-btn svg {
 }
 .admin-ko-nudge-banner {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 10px;
   background: rgba(232, 168, 90, 0.1);
   border: 1px solid rgba(232, 168, 90, 0.45);
   border-radius: 12px;
-  padding: 12px 14px;
+  padding: 14px;
   margin-bottom: 12px;
+}
+.admin-ko-nudge-banner .akn-text {
   color: #f3c987;
   font-size: 13px;
   font-weight: 600;
-  line-height: 1.4;
+  line-height: 1.5;
+}
+.admin-ko-nudge-banner .akn-copy {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: linear-gradient(140deg, #ecd49a, #d9b46a);
+  color: #1a1408;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .admin-member-arrow {
