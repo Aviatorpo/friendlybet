@@ -9905,26 +9905,40 @@ async function spLoadExistingPicks() {
       spState.tournamentWinner = newWinner;
       spState.thirdPlaceAdvancers = newThirdPlace || [];
 
-      // v2.9.2 AUTO-HEAL: if the server bracket is missing/incomplete but this
-      // browser holds a more-complete local backup for THIS exact user+pool,
-      // restore it and re-save to the DB. Recovers the silent-save-failure class
-      // (interrupted debounce / momentarily-cold RPC) with no user action.
-      try {
-        const cached = _spCacheLoad();
+      // AUTO-HEAL: if the live bracket is missing/incomplete, restore from the
+      // most-complete backup we can find — first this browser's localStorage
+      // (v2.9.2), then the durable server-side backup (v2.9.5, covers a new
+      // device or a server-side wipe) — then re-save to the live tables. No user
+      // action; recovers the silent-save-failure class and accidental deletions.
+      const _applyHeal = (snap, src) => {
         const dbCount = Object.keys(spState.bracketPicks || {}).length;
-        const cachedCount = cached && cached.bracketPicks ? Object.keys(cached.bracketPicks).length : 0;
-        if (cached && cachedCount > dbCount) {
-          if (Object.keys(cached.groupPositions || {}).length) spState.groupPositions = cached.groupPositions;
-          if ((cached.thirdPlaceAdvancers || []).length) spState.thirdPlaceAdvancers = cached.thirdPlaceAdvancers;
-          spState.bracketPicks = cached.bracketPicks;
-          spState.tournamentWinner = cached.tournamentWinner || spState.tournamentWinner;
-          console.warn('[spLoadExistingPicks] AUTO-HEAL: server bracket=' + dbCount + ' < local backup=' + cachedCount + ' — restoring + re-saving');
-          setTimeout(() => {
+        const snapCount = snap && snap.bracketPicks ? Object.keys(snap.bracketPicks).length : 0;
+        if (!snap || snapCount <= dbCount) return false;
+        if (Object.keys(snap.groupPositions || {}).length) spState.groupPositions = snap.groupPositions;
+        if ((snap.thirdPlaceAdvancers || []).length) spState.thirdPlaceAdvancers = snap.thirdPlaceAdvancers;
+        spState.bracketPicks = snap.bracketPicks;
+        spState.tournamentWinner = snap.tournamentWinner || spState.tournamentWinner;
+        console.warn('[spLoadExistingPicks] AUTO-HEAL from ' + src + ': live=' + dbCount + ' < backup=' + snapCount + ' — restoring + re-saving');
+        setTimeout(() => {
+          try {
+            if ((spState.thirdPlaceAdvancers || []).length === 8) spSaveThirdPlaceToDb();
+            spSaveBracketToDb(false);
+          } catch (_) {}
+        }, 900);
+        return true;
+      };
+      try {
+        let healed = _applyHeal(_spCacheLoad(), 'localStorage');
+        // If localStorage didn't help (e.g. a different device) and the live
+        // bracket is still incomplete, fall back to the durable server backup.
+        if (!healed && Object.keys(spState.bracketPicks || {}).length < 31) {
+          const code = _currentRecoveryCode();
+          if (code && supabaseClient) {
             try {
-              if ((spState.thirdPlaceAdvancers || []).length === 8) spSaveThirdPlaceToDb();
-              spSaveBracketToDb(false);
+              const { data: snap } = await supabaseClient.rpc('get_pick_backup', { p_code: code });
+              if (snap) _applyHeal(typeof snap === 'string' ? JSON.parse(snap) : snap, 'server-backup');
             } catch (_) {}
-          }, 900);
+          }
         }
       } catch (_) {}
     } else {
@@ -10841,16 +10855,31 @@ function _spCacheKey() {
   const p = state.currentPool && state.currentPool.id;
   return (u && p) ? ('fb_sp_picks_' + u + '_' + p) : null;
 }
+let _spServerBackupTimer = null;
 function _spCacheSave() {
   const k = _spCacheKey(); if (!k) return;
+  const snapshot = {
+    groupPositions: spState.groupPositions || {},
+    thirdPlaceAdvancers: spState.thirdPlaceAdvancers || [],
+    bracketPicks: spState.bracketPicks || {},
+    tournamentWinner: spState.tournamentWinner || null,
+    topScorer: spState.topScorer || null,
+    ts: Date.now()
+  };
+  try { localStorage.setItem(k, JSON.stringify(snapshot)); } catch (_) {}
+  // v2.9.5: DURABLE server-side append-only backup (fire-and-forget, debounced).
+  // Independent of the live pick tables, so a future bug/migration that wipes
+  // them is always recoverable. No UX impact: never awaited, errors swallowed,
+  // no-op until the migration adds the RPC.
+  if (_spServerBackupTimer) clearTimeout(_spServerBackupTimer);
+  _spServerBackupTimer = setTimeout(() => _spBackupToServer(snapshot), 1500);
+}
+function _spBackupToServer(snapshot) {
   try {
-    localStorage.setItem(k, JSON.stringify({
-      groupPositions: spState.groupPositions || {},
-      thirdPlaceAdvancers: spState.thirdPlaceAdvancers || [],
-      bracketPicks: spState.bracketPicks || {},
-      tournamentWinner: spState.tournamentWinner || null,
-      ts: Date.now()
-    }));
+    const code = _currentRecoveryCode();
+    if (!code || !supabaseClient) return;
+    supabaseClient.rpc('backup_picks', { p_code: code, p_payload: snapshot })
+      .then(() => {}, () => {}); // fire-and-forget; RPC may not be deployed yet
   } catch (_) {}
 }
 function _spCacheLoad() {
