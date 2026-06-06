@@ -2306,10 +2306,13 @@ function createMemberCard(member, picksCount, koPicksCount, isV2) {
   //  - noBets: hasn't picked anything (0 group + 0 knockout)
   //  - inProgress: has some picks but not all
   //  - allDone: every required pick is in
+  // v2.9.8: "done" now REQUIRES a full bracket for single-phase (31 positions) —
+  // we no longer trust predictions_submitted_at alone, because the silent
+  // bracket-save bug let users submit with groups+champion but no bracket. Those
+  // members must show as needing their knockout, so the admin can nudge them.
   const groupComplete = isV2 ? (picksCount >= 48) : (picksCount >= 24);
-  const koComplete = isV2 ? (koPicksCount >= 15) : (koPicksCount >= 16);
-  const submitted = !!member.predictions_submitted_at;
-  const allDone = isV2 ? (submitted || (groupComplete && koComplete)) : (groupComplete && koComplete);
+  const koComplete = isV2 ? (koPicksCount >= 31) : (koPicksCount >= 16);
+  const allDone = groupComplete && koComplete;
 
   let statusClass, statusText;
   if (picksCount === 0 && koPicksCount === 0) {
@@ -2318,6 +2321,10 @@ function createMemberCard(member, picksCount, koPicksCount, isV2) {
   } else if (allDone) {
     statusClass = 'completed';
     statusText = t('membersList.allDone');
+  } else if (isV2 && groupComplete && !koComplete) {
+    // groups in, knockout bracket missing/incomplete — the nudge state
+    statusClass = 'partial';
+    statusText = t('membersList.needsKnockout');
   } else {
     statusClass = 'partial';
     statusText = t('membersList.inProgress');
@@ -2499,7 +2506,11 @@ function _adminMemberProgress(member) {
     ? (groupsFull && bracketFull && member.hasWinner && (member.hasTopScorer || !squadsReleased))
     : (groupsFull && bracketFull);
 
-  return { started, finished };
+  // v2.9.8: groups in but the knockout bracket isn't full → the member needs to
+  // (re-)fill the knockout. Surfaced so the admin can see exactly who to nudge.
+  const needsKnockout = isV2 && groupsFull && !bracketFull;
+
+  return { started, finished, needsKnockout };
 }
 
 function renderAdminMembers() {
@@ -2544,7 +2555,16 @@ function renderAdminMembers() {
   
   // Render list
   list.innerHTML = '';
-  
+
+  // v2.9.8: aggregate nudge — how many members still need their knockout bracket.
+  const needsKoCount = adminState.members.filter(m => _adminMemberProgress(m).needsKnockout).length;
+  if (needsKoCount > 0) {
+    const nudge = document.createElement('div');
+    nudge.className = 'admin-ko-nudge-banner';
+    nudge.innerHTML = '⚠️ ' + t('adminMembersEx.needsKnockoutCount', { n: needsKoCount });
+    list.appendChild(nudge);
+  }
+
   sorted.forEach(member => {
     const card = document.createElement('div');
     card.className = 'admin-member-card';
@@ -2561,7 +2581,9 @@ function renderAdminMembers() {
       : '';
 
     // Two distinct statuses: Started (>=1 group) and Finished (everything incl. champion + top scorer)
-    const { started, finished } = _adminMemberProgress(member);
+    const { started, finished, needsKnockout } = _adminMemberProgress(member);
+    // v2.9.8: amber flag so the admin instantly spots who must (re-)fill the knockout.
+    const koFlag = needsKnockout ? `<span class="admin-member-ko-flag">${t('adminMembersEx.needsKnockout')}</span>` : '';
 
     // Quick action buttons for pending users
     let quickActions = '';
@@ -2598,6 +2620,7 @@ function renderAdminMembers() {
           <span class="admin-member-progress-dot ${finished ? 'done' : ''}">
             ${finished ? t('adminMembersEx.finishedYes') : t('adminMembersEx.finishedNo')}
           </span>
+          ${koFlag}
         </div>
       </div>
       ${quickActions}

@@ -841,6 +841,8 @@ const TRANSLATIONS = {
     'adminMembersEx.startedNo': '○ טרם התחיל',
     'adminMembersEx.finishedYes': '✓ סיים הכל',
     'adminMembersEx.finishedNo': '○ טרם סיים',
+    'adminMembersEx.needsKnockout': '⚠️ חסר נוקאאוט',
+    'adminMembersEx.needsKnockoutCount': '{n} חברים עדיין לא מילאו את שלב הנוקאאוט — שווה לנדנד להם להשלים לפני תחילת המונדיאל',
     'adminMembersEx.startedCount': 'התחילו',
     'adminMembersEx.finishedCount': 'סיימו',
     'adminMembersEx.approvedToast': '✓ {name} אושר',
@@ -942,6 +944,7 @@ const TRANSLATIONS = {
     // v2.5.37: precise status per the new "groups + knockout" check
     'membersList.allDone': '✓ סיים את כל ההימור',
     'membersList.inProgress': 'התחיל לבחור, עוד לא סיים',
+    'membersList.needsKnockout': '⚠️ חסר שלב נוקאאוט',
     'membersList.noBets': 'עוד לא הימר',
     'membersList.fallbackUser': 'משתמש',
     'membersList.joinedToday': 'הצטרף היום',
@@ -2104,6 +2107,8 @@ const TRANSLATIONS = {
     'adminMembersEx.startedNo': '○ Not started',
     'adminMembersEx.finishedYes': '✓ Finished all',
     'adminMembersEx.finishedNo': '○ Not finished',
+    'adminMembersEx.needsKnockout': '⚠️ Missing knockout',
+    'adminMembersEx.needsKnockoutCount': '{n} member(s) haven\'t filled the knockout stage — worth nudging them to finish before the World Cup starts',
     'adminMembersEx.startedCount': 'Started',
     'adminMembersEx.finishedCount': 'Finished',
     'adminMembersEx.approvedToast': '✓ {name} approved',
@@ -2205,6 +2210,7 @@ const TRANSLATIONS = {
     // v2.5.37: precise status per the new "groups + knockout" check
     'membersList.allDone': '✓ Locked in — all picks made',
     'membersList.inProgress': 'Started picking, not done yet',
+    'membersList.needsKnockout': '⚠️ Missing knockout stage',
     'membersList.noBets': 'Hasn\'t bet yet',
     'membersList.fallbackUser': 'User',
     'membersList.joinedToday': 'Joined today',

@@ -3908,6 +3908,30 @@ body.ltr #next-group-btn svg {
   color: #3ddc97;
 }
 
+/* v2.9.8: amber "needs knockout" flag + aggregate nudge banner for admins */
+.admin-member-ko-flag {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: rgba(232, 168, 90, 0.18);
+  color: #f3c987;
+  font-weight: 700;
+}
+.admin-ko-nudge-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(232, 168, 90, 0.1);
+  border: 1px solid rgba(232, 168, 90, 0.45);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  color: #f3c987;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
 .admin-member-arrow {
   color: rgba(255, 255, 255, 0.3);
   font-size: 20px;
