@@ -10819,9 +10819,26 @@ function spRenderBracketMatch(m) {
   `;
 }
 
+// v2.9.10: count downstream picks (later rounds) that currently depend on this
+// position — used to WARN before a change cascades them away, so a returning
+// user editing an early pick never loses later-round picks without consenting.
+function _spCountDownstream(bracketPos) {
+  let p = SP_BRACKET_PARENTS[parseInt(bracketPos, 10)];
+  let n = 0;
+  while (p) { if (spState.bracketPicks[p]) n++; p = SP_BRACKET_PARENTS[p]; }
+  return n;
+}
+
 function spPickBracket(bracketPos, teamCode) {
   if (spIsLocked()) return;
   const prev = spState.bracketPicks[bracketPos];
+
+  // v2.9.10: warn before a change clears later-round picks that depend on it.
+  if (prev && prev !== teamCode) {
+    const n = _spCountDownstream(bracketPos);
+    if (n > 0 && !confirm(t('betting.cascadeWarn', { n }))) { spRenderBracket(); return; }
+  }
+
   spState.bracketPicks[bracketPos] = teamCode;
 
   // If the user changes a pick, clear downstream picks that depended on it
@@ -12646,6 +12663,11 @@ function _koSingleSetPick(teamCode) {
     autoSaveKnockoutPicks();
   } else {
     const prev = spState.bracketPicks[step.pos];
+    // v2.9.10: warn before a change cascades away later-round picks.
+    if (prev && prev !== teamCode) {
+      const n = _spCountDownstream(step.pos);
+      if (n > 0 && !confirm(t('betting.cascadeWarn', { n }))) { koSingleRender(); return; }
+    }
     spState.bracketPicks[step.pos] = teamCode;
     if (prev && prev !== teamCode) spClearDownstream(step.pos);
     spAutoSaveBracket();
