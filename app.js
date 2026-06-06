@@ -5128,7 +5128,18 @@ async function updateBettingStatusOnDashboard() {
     let tsRequired = false;
     try { tsRequired = localStorage.getItem('fb_squads_released') === 'true'; } catch (e) {}
 
-    const allComplete = groupsDone && championDone && (!tsRequired || tsChosen);
+    // v2.9.2: a full bracket is now REQUIRED for "all set" — previously groups +
+    // champion alone counted as complete, which hid the silent bracket-save loss
+    // (users saw "ALL SET" while having 0 knockout picks → 0 knockout points).
+    const allComplete = groupsDone && bracketDone && championDone && (!tsRequired || tsChosen);
+
+    // v2.9.2: apology + recover banner — show when the user has engaged (champion
+    // or groups) but their knockout bracket didn't fully save. Tapping it reopens
+    // the flow to re-enter the knockout stage.
+    try {
+      const brb = document.getElementById('bracket-recover-banner');
+      if (brb) brb.style.display = ((winnerChosen || groupsDone) && !bracketDone) ? 'flex' : 'none';
+    } catch (_) {}
 
     // Overall progress (drives the bar): groups + bracket (+ top scorer if open).
     const total  = 48 + 31 + (tsRequired ? 1 : 0);
@@ -9761,6 +9772,33 @@ async function startSinglePhaseBetting() {
   spRenderSummary();
   showScreen('sp-summary-screen');
 }
+
+// v2.9.2: dedicated entry for the "recover bracket" banner. Affected users HAVE
+// a champion (tournamentWinner set) but no knockout bracket, so the normal entry
+// (which treats a set champion as "knockout done") would skip the bracket. This
+// routes straight into the knockout walkthrough, built from their already-saved
+// group positions + 8 third-place advancers, landing on the first empty match.
+async function spReenterKnockout() {
+  if (!state.currentPool || !state.currentUser) { showToast(t('errors.reconnect'), 'error'); return; }
+  if (spIsLocked()) { await spShowLockedView(); return; }
+  await spLoadExistingPicks();
+  // Groups must be complete to build the R32 matchups; if not, finish groups first.
+  const groupsComplete = WC2026_GROUP_LETTERS.every(l => {
+    const arr = spState.groupPositions[l];
+    return arr && arr.length >= 4 && arr.slice(0, 4).every(x => x);
+  });
+  if (!groupsComplete) { spState.currentGroupIdx = 0; spRenderGroups(); showScreen('sp-groups-screen'); return; }
+  // Need the 8 third-place advancers to seed the bracket; otherwise pick them first.
+  if ((spState.thirdPlaceAdvancers || []).length !== 8) { spStartThirdPlaceStep(); return; }
+  koSingle.mode = 'single-phase';
+  koSingle.sequence = _koSinglePhaseSequence();
+  const firstIncomplete = koSingle.sequence.findIndex(s => !(spState.bracketPicks && spState.bracketPicks[s.pos]));
+  koSingle.idx = firstIncomplete >= 0 ? firstIncomplete : 0;
+  state.spInFlow = true;
+  koSingleRender();
+  showScreen('ko-single-screen');
+}
+window.spReenterKnockout = spReenterKnockout;
 
 async function spLoadExistingPicks() {
   // v2.2.1 fix: load into TEMPS first; only overwrite spState if we

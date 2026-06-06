@@ -107,6 +107,9 @@ const TRANSLATIONS = {
     
     // === Dashboard ===
     'dashboard.greeting': 'היי',
+    'recoverBracket.title': 'שלב הנוקאאוט שלך לא נשמר',
+    'recoverBracket.sub': 'בחירות הבתים שלך נשמרו בהצלחה ✓ אך עקב תקלה טכנית, שלב הנוקאאוט (הבראקט) לא נשמר. אנא מלא אותו מחדש לפני תחילת המונדיאל — מצטערים על אי הנוחות!',
+    'recoverBracket.cta': 'מלא את הנוקאאוט',
     'dashboard.countdown.title': 'המשחק הראשון מתחיל בעוד',
     'dashboard.countdown.live': '🔴 הטורניר התחיל!',
     'dashboard.countdown.days': 'ימים',
@@ -1367,6 +1370,9 @@ const TRANSLATIONS = {
     
     // === Dashboard ===
     'dashboard.greeting': 'Hi',
+    'recoverBracket.title': 'Your knockout bracket wasn’t saved',
+    'recoverBracket.sub': 'Your group-stage picks were saved successfully ✓ but due to a technical glitch your knockout (bracket) picks weren’t saved. Please re-enter them before the World Cup starts — sorry for the inconvenience!',
+    'recoverBracket.cta': 'Fill the knockout',
     'dashboard.countdown.title': 'First match kicks off in',
     'dashboard.countdown.live': '🔴 The tournament has started!',
     'dashboard.countdown.days': 'days',

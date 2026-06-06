@@ -1456,6 +1456,18 @@ function loadTablerFallback() {
            Hidden by default; shown by initDashboardCountdown() only pre-
            tournament. Kickoff time is read from matches.json (earliest
            match_date), falling back to a constant. -->
+      <!-- v2.9.2: apology + recover banner. Shown only to users whose knockout
+           bracket failed to save (champion exists but bracket < 31). Tapping it
+           reopens the prediction flow so they can re-enter the knockout stage. -->
+      <div class="bracket-recover-banner" id="bracket-recover-banner" style="display:none;" onclick="spReenterKnockout()" role="button" tabindex="0">
+        <div class="brb-icon">⚠️</div>
+        <div class="brb-text">
+          <div class="brb-title" id="brb-title" data-i18n="recoverBracket.title">שלב הנוקאאוט שלך לא נשמר</div>
+          <div class="brb-sub" id="brb-sub" data-i18n="recoverBracket.sub">בחירות הבתים שלך נשמרו בהצלחה ✓ אך עקב תקלה טכנית, שלב הנוקאאוט (הבראקט) לא נשמר. אנא מלא אותו מחדש לפני תחילת המונדיאל — מצטערים על אי הנוחות!</div>
+        </div>
+        <div class="brb-cta" id="brb-cta" data-i18n="recoverBracket.cta">מלא את הנוקאאוט</div>
+      </div>
+
       <div class="dashboard-countdown" id="dashboard-countdown" style="display:none;">
         <div class="countdown-label" id="countdown-label" data-i18n="dashboard.countdown.title">המשחק הראשון מתחיל בעוד</div>
         <div class="countdown-clock" id="countdown-clock">
@@ -3022,7 +3034,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.9.2</span>
+      <span class="menu-version">v2.9.3</span>
     </div>
   </div>
 
