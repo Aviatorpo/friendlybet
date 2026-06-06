@@ -76,3 +76,11 @@ CLAUDE.md
 
 # scratch OG render checks
 _og_*.png
+
+# scratch / preview artifacts (champion card work)
+_live_test/
+/card-*.png
+/card-b64*.txt
+/champ-card*.png
+/canvas-render*.png
+/esp-*.png

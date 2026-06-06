@@ -8274,87 +8274,154 @@ function _loadBracketFlags(codes) {
     img.src = 'https://flagcdn.com/w160/' + iso + '.png';
   })));
 }
+// Champion hero illustration, served same-origin from /heroes/hero-<CODE>.webp
+// so the canvas stays untainted on export. Cached; missing image falls back to
+// a plain dark hero (the card still renders).
+const _bracketHeroCache = {}; // code -> Image | false
+function _loadBracketHero(code) {
+  return new Promise(resolve => {
+    if (!code) { resolve(null); return; }
+    if (_bracketHeroCache[code] !== undefined) { resolve(_bracketHeroCache[code]); return; }
+    const img = new Image();
+    let done = false;
+    const fin = v => { if (!done) { done = true; _bracketHeroCache[code] = v; resolve(v); } };
+    img.onload = () => fin(img);
+    img.onerror = () => fin(false);
+    setTimeout(() => fin(false), 4000);
+    img.src = '/heroes/hero-' + code + '.webp';
+  });
+}
+
+// The champion's road to the title: the team it beat in each round R32..SF plus
+// its final opponent. Returns [{stage, beat}] (beat may be null if incomplete).
+function spChampionRoad() {
+  const bp = (spState && spState.bracketPicks) || {};
+  const champ = (spState && spState.tournamentWinner) || bp[31];
+  if (!champ) return [];
+  let st; try { st = spGetBracketStructure(); } catch (_) { return []; }
+  const beatIn = matches => {
+    const m = (matches || []).find(x => bp[x.pos] === champ && (x.home === champ || x.away === champ));
+    return m ? (m.home === champ ? m.away : m.home) : null;
+  };
+  const road = [
+    { stage: 'R32', beat: beatIn(st.r32) },
+    { stage: 'R16', beat: beatIn(st.r16) },
+    { stage: 'QF',  beat: beatIn(st.qf) },
+    { stage: 'SF',  beat: beatIn(st.sf) },
+  ];
+  const f = st.final || {};
+  road.push({ stage: 'FINAL', beat: f.home === champ ? f.away : (f.away === champ ? f.home : null) });
+  return road;
+}
+
 function _bracketCardCodes() {
   const bp = (spState && spState.bracketPicks) || {};
-  return [bp[25], bp[26], bp[27], bp[28], bp[29], bp[30], (spState && spState.tournamentWinner) || bp[31]];
+  const champ = (spState && spState.tournamentWinner) || bp[31];
+  return [champ].concat(spChampionRoad().map(r => r.beat));
 }
-// Wait for fonts + load QR and flags (in parallel). Shared by both card entry points.
+// Wait for fonts + load QR, flags and the champion hero (in parallel).
 async function _prepareBracketAssets() {
   try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (_) {}
-  const [qr] = await Promise.all([ _loadBracketQr(), _loadBracketFlags(_bracketCardCodes()) ]);
+  const bp = (spState && spState.bracketPicks) || {};
+  const champ = (spState && spState.tournamentWinner) || bp[31];
+  const [qr] = await Promise.all([ _loadBracketQr(), _loadBracketFlags(_bracketCardCodes()), _loadBracketHero(champ) ]);
   return qr;
 }
 
+// Champion share card (v2.9): a semi-realistic hero illustration of the user's
+// predicted champion lifting the trophy, "MY PREDICTION · <team>", the road to
+// the title (team beaten each round R32->FINAL), and a scan-to-play QR. The hero
+// is loaded by _prepareBracketAssets from /heroes/hero-<CODE>.webp.
 function _renderBracketCard(cv, qr) {
   const ctx = cv.getContext('2d');
-  const W = 1080, H = 1350, GOLD = '#d9b46a', GOLD_LT = '#ecd49a', INK = '#f7f6f2', MUTED = '#9a9c93', PAD = 80;
+  ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+  const W = 1080, H = 1350, GOLD = '#d9b46a', GOLD_LT = '#ecd49a', INK = '#f7f6f2', MUTED = '#9a9c93', PAD = 70;
   const EMOJI = '"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",serif';
   function rr(x,y,w,h,r){ ctx.beginPath(); if(ctx.roundRect){ctx.roundRect(x,y,w,h,r);} else {ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();} }
-  function label(text,y){ ctx.fillStyle=GOLD; ctx.font='700 26px Rubik,sans-serif'; const ls=4; let tot=0; for(const ch of text) tot+=ctx.measureText(ch).width+ls; let x=W/2-tot/2; ctx.textAlign='left'; ctx.textBaseline='alphabetic'; for(const ch of text){ ctx.fillText(ch,x,y); x+=ctx.measureText(ch).width+ls; } ctx.textAlign='center'; }
-  function fitFont(text,maxW,startPx,weight,family){ let px=startPx; ctx.font=weight+' '+px+'px '+family; while(ctx.measureText(text).width>maxW && px>13){ px--; ctx.font=weight+' '+px+'px '+family; } return px; }
-  function drawFlag(code,cx,topY,fw){ const img=_bracketFlagCache[code]; if(!img||!img.naturalWidth) return 0; const fh=fw*(img.naturalHeight/img.naturalWidth); const fx=cx-fw/2; ctx.save(); rr(fx,topY,fw,fh,6); ctx.clip(); ctx.drawImage(img,fx,topY,fw,fh); ctx.restore(); ctx.lineWidth=1.5; ctx.strokeStyle='rgba(255,255,255,0.28)'; rr(fx,topY,fw,fh,6); ctx.stroke(); return fh; }
-  function chip(cx,y,code,w,h){ const x=cx-w/2; rr(x,y,w,h,16); ctx.fillStyle='rgba(255,255,255,0.045)'; ctx.fill(); ctx.lineWidth=2; ctx.strokeStyle='rgba(217,180,106,0.45)'; ctx.stroke();
-    const fh = code ? drawFlag(code,cx,y+11,58) : 0;
-    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle=INK;
-    const nm = code ? getTeamName(code) : '—'; fitFont(nm, w-22, 26, '700', 'Sora,sans-serif');
-    ctx.fillText(nm, cx, y + 11 + (fh||34) + (h - (11+(fh||34)))/2 + 2); }
-  function ln(x1,y1,x2,y2){ ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.strokeStyle='rgba(217,180,106,0.40)'; ctx.lineWidth=2.5; ctx.stroke(); }
-  function connect(a,b,railY,childTopY){ ln(a,railY-44,a,railY); ln(b,railY-44,b,railY); ln(a,railY,b,railY); const mid=(a+b)/2; ln(mid,railY,mid,childTopY); return mid; }
+  function fitFont(text,maxW,startPx,weight,family){ let px=startPx; ctx.font=weight+' '+px+'px '+family; while(ctx.measureText(text).width>maxW && px>12){ px--; ctx.font=weight+' '+px+'px '+family; } return px; }
+  function letter(text,cx,y,px,weight,family,color,ls){ ctx.font=weight+' '+px+'px '+family; ctx.fillStyle=color; let tot=0; for(const ch of text) tot+=ctx.measureText(ch).width+ls; let x=cx-tot/2; ctx.textAlign='left'; ctx.textBaseline='alphabetic'; for(const ch of text){ ctx.fillText(ch,x,y); x+=ctx.measureText(ch).width+ls; } ctx.textAlign='center'; }
 
   const bp = spState.bracketPicks || {};
-  const semis = [bp[25], bp[26], bp[27], bp[28]];
-  const finals = [bp[29], bp[30]];
   const champ = spState.tournamentWinner || bp[31];
+  const hero = champ ? _bracketHeroCache[champ] : null;
   const pool = (state.currentPool && state.currentPool.name) ? state.currentPool.name : '';
+  const road = spChampionRoad();
 
-  const g=ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,'#0d0d0a'); g.addColorStop(1,'#080806'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-  let rg=ctx.createRadialGradient(W/2,1000,80,W/2,1000,720); rg.addColorStop(0,'rgba(217,180,106,0.16)'); rg.addColorStop(1,'rgba(217,180,106,0)'); ctx.fillStyle=rg; ctx.fillRect(0,0,W,H);
-  ctx.lineWidth=3; ctx.strokeStyle='rgba(217,180,106,0.30)'; rr(20,20,W-40,H-40,28); ctx.stroke();
+  ctx.fillStyle = '#0b0b08'; ctx.fillRect(0, 0, W, H);
 
-  // header: the same soccer-ball emoji as the app home page, with a gold glow
-  ctx.textAlign='left'; ctx.textBaseline='middle';
-  ctx.save(); ctx.shadowColor='rgba(217,180,106,0.7)'; ctx.shadowBlur=18; ctx.font='46px '+EMOJI; ctx.fillText('⚽', PAD, 92); ctx.restore();
-  ctx.fillStyle=INK; ctx.font='800 38px Sora,sans-serif'; ctx.fillText('FriendlyBet', PAD+62, 93);
-  if(pool){ ctx.fillStyle=MUTED; ctx.font='600 24px Heebo,sans-serif'; ctx.textAlign='right'; ctx.fillText(pool, W-PAD, 93); }
-
-  ctx.textAlign='center'; ctx.fillStyle=INK; ctx.font='800 56px Sora,sans-serif'; ctx.fillText('My Road to Glory', W/2, 196);
-  ctx.fillStyle=MUTED; ctx.font='600 26px Heebo,sans-serif'; ctx.fillText('World Cup 2026 · my bracket', W/2, 238);
-
-  const semiY=330, semiH=92, semiW=200, c0=187,c1=405,c2=675,c3=893, finalY=556, finalH=96, finalW=210;
-  label('SEMI-FINALS', 302);
-  chip(c0,semiY,semis[0],semiW,semiH); chip(c1,semiY,semis[1],semiW,semiH); chip(c2,semiY,semis[2],semiW,semiH); chip(c3,semiY,semis[3],semiW,semiH);
-  const rail1=semiY+semiH+42; const fL=connect(c0,c1,rail1,finalY); const fR=connect(c2,c3,rail1,finalY);
-  label('FINAL', 530); chip(fL,finalY,finals[0],finalW,finalH); chip(fR,finalY,finals[1],finalW,finalH);
-  ctx.fillStyle=GOLD; ctx.font='800 30px Rubik,sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('vs', W/2, finalY+finalH/2);
-  // central drop stops ABOVE the CHAMPIONS label so the line never crosses the text
-  const rail2=finalY+finalH+42, champTop=812; connect(fL,fR,rail2,champTop-62);
-
-  label('CHAMPIONS', champTop-30);
-  const chW=600, chH=250, chX=W/2-chW/2, chY=champTop;
-  let cg=ctx.createRadialGradient(W/2,chY+chH/2,40,W/2,chY+chH/2,380); cg.addColorStop(0,'rgba(217,180,106,0.28)'); cg.addColorStop(1,'rgba(217,180,106,0)'); ctx.fillStyle=cg; ctx.fillRect(chX-80,chY-30,chW+160,chH+70);
-  rr(chX,chY,chW,chH,26); ctx.fillStyle='rgba(217,180,106,0.14)'; ctx.fill(); ctx.lineWidth=3.5; ctx.strokeStyle=GOLD; ctx.stroke();
-  ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.font='56px '+EMOJI; ctx.fillText('🏆', W/2, chY+50);
-  const cnm = champ ? getTeamName(champ) : '—'; fitFont(cnm, 420, 66, '800', 'Sora,sans-serif'); const cnmW=ctx.measureText(cnm).width;
-  const cimg = champ ? _bracketFlagCache[champ] : null; const cfw=104; const cfh=(cimg&&cimg.naturalWidth)?cfw*(cimg.naturalHeight/cimg.naturalWidth):0;
-  const cgap = cfh?20:0; const ctotal=(cfh?cfw:0)+cgap+cnmW; let csx=W/2-ctotal/2; const crowY=chY+150;
-  if(cfh){ drawFlag(champ, csx+cfw/2, crowY-cfh/2, cfw); csx+=cfw+cgap; }
-  ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillStyle=GOLD_LT; ctx.fillText(cnm, csx, crowY);
-  ctx.textAlign='center'; ctx.fillStyle=MUTED; ctx.font='700 28px Rubik,sans-serif'; ctx.fillText('predicted world champions', W/2, chY+212);
-
-  ctx.strokeStyle='rgba(217,180,106,0.25)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(PAD,1118); ctx.lineTo(W-PAD,1118); ctx.stroke();
-  if(qr){
-    const qs=124, p=14, tileX=W-PAD-qs-2*p, tileY=1146;
-    rr(tileX,tileY,qs+2*p,qs+2*p,18); ctx.fillStyle='#f6f4ee'; ctx.fill(); ctx.lineWidth=3; ctx.strokeStyle=GOLD; ctx.stroke();
-    ctx.drawImage(qr,tileX+p,tileY+p,qs,qs);
-    ctx.textAlign='left'; ctx.textBaseline='alphabetic';
-    ctx.fillStyle=GOLD; ctx.font='700 23px Rubik,sans-serif'; ctx.fillText('SCAN TO PLAY · FREE', PAD, 1182);
-    ctx.fillStyle=GOLD_LT; ctx.font='800 44px Sora,sans-serif'; ctx.fillText('friendlybet.live', PAD, 1234);
-    ctx.fillStyle=MUTED; ctx.font='600 22px Heebo,sans-serif'; ctx.fillText('Free · no signup · build your own', PAD, 1272);
-  } else {
-    ctx.textAlign='center'; ctx.textBaseline='alphabetic';
-    ctx.fillStyle=GOLD_LT; ctx.font='800 46px Sora,sans-serif'; ctx.fillText('friendlybet.live', W/2, 1212);
-    ctx.fillStyle=MUTED; ctx.font='600 24px Heebo,sans-serif'; ctx.fillText('Free · No signup · Build your own bracket', W/2, 1254);
+  // ----- HERO: trophy-to-waist crop of the champion illustration; blurred copy
+  // fills the side gaps; a soft bottom fade blends into the dark text zone. -----
+  const HZ = 860, CROP = 0.86;
+  ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, HZ); ctx.clip();
+  if (hero && hero.naturalWidth) {
+    const cH = hero.naturalHeight * CROP;
+    const bs = Math.max(W / hero.naturalWidth, HZ / cH);
+    ctx.filter = 'blur(30px) brightness(0.5) saturate(1.1)';
+    ctx.drawImage(hero, 0, 0, hero.naturalWidth, cH, (W - hero.naturalWidth * bs) / 2, (HZ - cH * bs) / 2, hero.naturalWidth * bs, cH * bs);
+    ctx.filter = 'none';
+    const s = Math.min(W / hero.naturalWidth, HZ / cH);
+    const dw = hero.naturalWidth * s, dh = cH * s;
+    ctx.drawImage(hero, 0, 0, hero.naturalWidth, cH, (W - dw) / 2, 0, dw, dh);
   }
+  ctx.restore();
+  const g = ctx.createLinearGradient(0, 0, 0, HZ);
+  g.addColorStop(0, 'rgba(8,8,6,0.45)'); g.addColorStop(0.10, 'rgba(8,8,6,0)');
+  g.addColorStop(0.80, 'rgba(8,8,6,0)'); g.addColorStop(0.93, 'rgba(8,8,6,0.55)');
+  g.addColorStop(1, 'rgba(8,8,6,0.92)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, HZ);
+
+  // gold frame
+  ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(217,180,106,0.45)'; rr(18, 18, W - 36, H - 36, 26); ctx.stroke();
+
+  // header (brand + pool), shadowed for legibility over the photo
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.85)'; ctx.shadowBlur = 10;
+  ctx.font = '44px ' + EMOJI; ctx.fillText('⚽', PAD, 92);
+  ctx.fillStyle = INK; ctx.font = '800 38px Sora,sans-serif'; ctx.fillText('FriendlyBet', PAD + 58, 94);
+  ctx.restore();
+  if (pool) { ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 10; ctx.fillStyle = GOLD_LT; ctx.font = '700 26px Heebo,sans-serif'; ctx.textAlign = 'right'; ctx.fillText(pool, W - PAD, 94); ctx.restore(); }
+
+  // ----- champion identity -----
+  ctx.textAlign = 'center';
+  letter('MY PREDICTION', W / 2, 928, 26, '800', 'Sora,sans-serif', GOLD, 8);
+  const cnm = champ ? getTeamName(champ) : '—';
+  ctx.textBaseline = 'middle';
+  const nmPx = fitFont(cnm, 600, 74, '800', 'Sora,sans-serif'); const nmW = ctx.measureText(cnm).width;
+  const cimg = champ ? _bracketFlagCache[champ] : null; const cfw = 84, cfh = 56, gap = 18;
+  const hasFlag = cimg && cimg.naturalWidth;
+  const total = nmW + (hasFlag ? gap + cfw : 0); let csx = W / 2 - total / 2; const rowY = 988;
+  ctx.save(); ctx.shadowColor = 'rgba(217,180,106,0.4)'; ctx.shadowBlur = 28;
+  ctx.fillStyle = GOLD_LT; ctx.textAlign = 'left'; ctx.font = '800 ' + nmPx + 'px Sora,sans-serif'; ctx.fillText(cnm, csx, rowY); ctx.restore();
+  csx += nmW + gap;
+  if (hasFlag) { ctx.save(); rr(csx, rowY - cfh / 2, cfw, cfh, 8); ctx.clip(); ctx.drawImage(cimg, csx, rowY - cfh / 2, cfw, cfh); ctx.restore(); ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,0.35)'; rr(csx, rowY - cfh / 2, cfw, cfh, 8); ctx.stroke(); }
+
+  // ----- road to the title -----
+  letter('ROAD TO THE TITLE', W / 2, 1078, 21, '700', 'Rubik,sans-serif', MUTED, 5);
+  const cellW = 150, arrowW = 30, n = road.length || 5;
+  const stripW = n * cellW + (n - 1) * arrowW; let rx = W / 2 - stripW / 2; const cellTop = 1104;
+  road.forEach((step, i) => {
+    const cx = rx + cellW / 2, fin = i === road.length - 1;
+    ctx.fillStyle = fin ? GOLD_LT : GOLD; ctx.font = '800 18px Rubik,sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+    ctx.fillText(step.stage, cx, cellTop);
+    const fw = fin ? 76 : 68, fh = fin ? 50 : 44, fy = cellTop + 12;
+    const fimg = step.beat ? _bracketFlagCache[step.beat] : null;
+    if (fimg && fimg.naturalWidth) { ctx.save(); rr(cx - fw / 2, fy, fw, fh, 6); ctx.clip(); ctx.drawImage(fimg, cx - fw / 2, fy, fw, fh); ctx.restore(); ctx.lineWidth = fin ? 2.5 : 1.5; ctx.strokeStyle = fin ? GOLD : 'rgba(255,255,255,0.3)'; rr(cx - fw / 2, fy, fw, fh, 6); ctx.stroke(); }
+    ctx.fillStyle = INK; ctx.textBaseline = 'middle'; fitFont(step.beat ? getTeamName(step.beat) : '—', cellW - 6, 20, '700', 'Heebo,sans-serif');
+    ctx.fillText(step.beat ? getTeamName(step.beat) : '—', cx, fy + fh + 13);
+    if (i < road.length - 1) { ctx.fillStyle = GOLD; ctx.font = '26px Rubik,sans-serif'; ctx.textBaseline = 'middle'; ctx.fillText('›', rx + cellW + arrowW / 2, fy + fh / 2); }
+    rx += cellW + arrowW;
+  });
+
+  // ----- footer: brand + QR -----
+  const divY = 1208;
+  ctx.strokeStyle = 'rgba(217,180,106,0.3)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(PAD, divY); ctx.lineTo(W - PAD, divY); ctx.stroke();
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = GOLD_LT; ctx.font = '800 40px Sora,sans-serif'; ctx.fillText('FriendlyBet.Live', PAD, divY + 48);
+  ctx.fillStyle = MUTED; ctx.font = '600 21px Heebo,sans-serif'; ctx.fillText('build your own bracket — free, no signup', PAD, divY + 72);
+  if (qr) { const qs = 58, p = 11, tile = qs + 2 * p, tx = W - PAD - tile, ty = divY + 16;
+    rr(tx, ty, tile, tile, 12); ctx.fillStyle = '#f6f4ee'; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = GOLD; rr(tx, ty, tile, tile, 12); ctx.stroke();
+    ctx.drawImage(qr, tx + p, ty + p, qs, qs); }
 }
 
 // Render the prediction card to a PNG blob (assets loaded first). Shared by the
