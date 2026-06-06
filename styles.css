@@ -841,28 +841,28 @@ body.ltr .btn-secondary .ti-arrow-left {
    failed to save). Amber/warning accent, distinct from the gold countdown. */
 .bracket-recover-banner {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 10px;
   background:
-    radial-gradient(420px 120px at 50% -20%, rgba(232, 168, 90, .16), transparent 70%),
+    radial-gradient(520px 140px at 50% -20%, rgba(232, 168, 90, .16), transparent 70%),
     rgba(232, 168, 90, 0.08);
   border: 1px solid rgba(232, 168, 90, 0.5);
   border-radius: 14px;
-  padding: 14px;
+  padding: 16px;
   margin-bottom: 16px;
   cursor: pointer;
   transition: background .15s ease, border-color .15s ease;
 }
 .bracket-recover-banner:hover { background: rgba(232, 168, 90, 0.14); border-color: rgba(232, 168, 90, 0.7); }
-.bracket-recover-banner .brb-icon { font-size: 26px; flex: none; line-height: 1; }
-.bracket-recover-banner .brb-text { flex: 1; min-width: 0; text-align: start; }
-.bracket-recover-banner .brb-title { font-size: 14px; font-weight: 800; color: #f3c987; margin-bottom: 3px; }
-.bracket-recover-banner .brb-sub { font-size: 12px; line-height: 1.45; color: #c9bfae; }
+.bracket-recover-banner .brb-head { display: flex; align-items: center; gap: 9px; }
+.bracket-recover-banner .brb-icon { font-size: 22px; flex: none; line-height: 1; }
+.bracket-recover-banner .brb-title { font-size: 15px; font-weight: 800; color: #f3c987; }
+.bracket-recover-banner .brb-sub { font-size: 13px; line-height: 1.5; color: #c9bfae; text-align: start; }
 .bracket-recover-banner .brb-cta {
-  flex: none; align-self: center;
+  align-self: stretch; text-align: center;
   background: linear-gradient(140deg, #ecd49a, #d9b46a);
-  color: #1a1408; font-weight: 800; font-size: 13px;
-  padding: 9px 16px; border-radius: 10px; white-space: nowrap;
+  color: #1a1408; font-weight: 800; font-size: 14px;
+  padding: 12px 16px; border-radius: 11px; margin-top: 2px;
 }
 
 .dashboard-countdown {
