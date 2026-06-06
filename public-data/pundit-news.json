@@ -1,19 +1,6 @@
 {
-  "updatedAt": "2026-06-06T10:00:00.000Z",
+  "updatedAt": "2026-06-06T13:00:00.000Z",
   "items": [
-    {
-      "id": "ger-lennart-karl-ruled-out-2026-06-06",
-      "confidence": "confirmed",
-      "team": "GER",
-      "en": "Germany's most-anticipated debutant is out before a ball is kicked. The DFB confirmed on June 6 that 18-year-old Bayern Munich midfielder Lennart Karl suffered a muscle bundle tear in his left thigh during training in Chicago and will miss the 2026 World Cup entirely. RB Leipzig's 20-year-old Assan Ouedraogo, who narrowly missed the original squad selection, has been called up as his replacement. Karl became Bayern's youngest-ever Champions League scorer this season and had been expected to feature in Germany's opener against Curacao on June 14. Can Nagelsmann's deep squad absorb the blow?",
-      "he": "כוכב הבכורה הגרמני אינו יוצא לדרך. ה-DFB אישר ב-6 ביוני שחצי השדה בן ה-18 לנארט קארל מבאיירן מינכן סבל מקרע בצרור שרירים בירך שמאל בזמן אימון בשיקגו ויפספד את מונדיאל 2026 לחלוטין. אסאן אואדראוגו בן ה-20 מ-RB לייפציג, שהחמיץ בקושי את הסגל המקורי, הוזמן כחלופה. קארל נהיה לשחקן הצעיר ביותר שהבקיע בליגת האלופות עבור באיירן העונה, וצפו שייכנס להרכב הגרמני מול קוראסאו ב-14 ביוני. האם הסגל העמוק של נגלסמן יספוג את המכה?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48977173/lennart-karl-injured-germany-training-miss-world-cup" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/confirmed-assan-ou-draogo-replaces-220200348.html" },
-        { "name": "Bavarian Football Works", "url": "https://www.bavarianfootballworks.com/fifa-world-cup/212194/rb-leipzigs-assan-ouedraogo-to-take-lennart-karls-world-cup-spot-with-germany" }
-      ],
-      "expires_at": "2026-06-26T23:59:59Z"
-    },
     {
       "id": "wc26-opening-ceremony-shakira-2026-06-06",
       "confidence": "confirmed",
@@ -27,55 +14,17 @@
       "expires_at": "2026-06-12T23:59:59Z"
     },
     {
-      "id": "wc26-azteca-altitude-2026-06-06",
-      "confidence": "confirmed",
-      "team": "MEX",
-      "en": "Mexico's biggest home advantage at the 2026 World Cup has nothing to do with tactics. Estadio Azteca sits at 2,240 metres above sea level, over 7,300 feet, making it the highest-altitude venue across all three host nations. Teams travelling from sea-level countries will feel the thin air within minutes on the pitch. Mexican football commissioner Mikel Arriola called it \"a massive advantage\" alongside the home crowd. The Azteca also makes history as the first stadium to host World Cup matches across three separate tournaments, having staged finals in both 1970 and 1986. Will the altitude factor shape the early group-stage results?",
-      "he": "היתרון הביתי הגדול של מקסיקו במונדיאל 2026 אינו קשור לטקטיקה. אסטדיו אצטקה שוכן ב-2,240 מטרים מעל פני הים, למעלה מ-7,300 רגל, מה שהופך אותו לאתר הגבוה ביותר בין שלוש מדינות המארחות. נבחרות ממדינות השוכנות בגובה פני הים ירגישו את האוויר הדליל תוך דקות על המגרש. מנהל הכדורגל המקסיקני מיקל אריולה כינה את הגובה \"יתרון עצום\" לצד קהל הבית. האצטקה גם עושה היסטוריה כאצטדיון הראשון שמארח משחקי מונדיאל בשלושה טורנירים נפרדים, לאחר שאירח גמרים ב-1970 וב-1986. האם גורם הגובה יעצב את תוצאות שלב הבתים?",
-      "sources": [
-        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/06/06/world-cup-mexico-altitude-mexico-city-guadalajara/c88cc5ae-61a0-11f1-9c46-d6211372eede_story.html" },
-        { "name": "TSN", "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/mexico-citys-altitude-poses-a-key-challenge-for-teams-at-the-2026-world-cup/" },
-        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" }
-      ],
-      "expires_at": "2026-07-06T00:00:00Z"
-    },
-    {
-      "id": "wc26-saot-ai-offside-2026-06-06",
-      "confidence": "confirmed",
-      "en": "The 2026 World Cup will deploy the most precise offside technology in football history. FIFA confirmed that its upgraded semi-automated offside system now sends a real-time audio alert to the assistant referee whenever a player is more than 10 centimetres offside, cutting the detection threshold fivefold from the 50-centimetre limit used at the 2023 Club World Cup. The alert arrives before a passage of play fully develops, so officials can flag immediately rather than waiting for a VAR check. All 16 host venues are equipped with 16 tracking cameras each and a chip inside the match ball. Longer offside delays should be a thing of the past at this tournament.",
-      "he": "מונדיאל 2026 יפרוס את טכנולוגיית העצירה המדויקת ביותר בהיסטוריית הכדורגל. פיפ\"א אישרה שהמערכת המשודרגת לגילוי עצירה חצי-אוטומטית שולחת כעת התרעה קולית בזמן אמת לעוזר השופט בכל פעם שנבדל שחקן ביותר מ-10 סנטימטרים, מה שמחמיש את סף הגילוי לעומת גבול ה-50 סנטימטרים שהיה בגביע העולם לאלופות 2023. ההתרעה מגיעה לפני שיצירת עלייה מתפתחת במלואה, כך שהשופטים יכולים לנופף מיד במקום להמתין לבדיקת VAR. כל 16 אתרי המארח מצוידים ב-16 מצלמות מעקב כל אחד ושבב בתוך כדור המשחק. עיכובים ארוכים לבדיקות עצירה אמורים להיות שייכים לעבר בטורניר הזה.",
-      "sources": [
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/6/fifa-world-cup-2026-what-is-new-sensor-match-ball-ai-player-avatar" },
-        { "name": "Inside World Football", "url": "https://www.insideworldfootball.com/2026/06/03/fifa-upgrades-saot-and-ball-tracking-as-2026-match-officials-given-new-suite-of-tech-tools" },
-        { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "por-ronaldo-age-milestone-2026-06-06",
-      "confidence": "confirmed",
-      "team": "POR",
-      "en": "Cristiano Ronaldo will be 41 years and four months old when Portugal play their first 2026 World Cup match, placing him among the oldest outfield players ever to compete in the tournament. CBS Sports confirmed that the 2026 field will feature at least eight players aged 40 or over, a record for any World Cup. Ronaldo leads Portugal in what is widely expected to be his final tournament, chasing the one major trophy that has always escaped him. If Portugal reach the final on July 19, he would be 41 years and 164 days old, breaking the record for the oldest player ever to appear in a World Cup final. One last chance at the title he never won.",
-      "he": "קריסטיאנו רונאלדו יהיה בן 41 שנים וארבעה חודשים כשפורטוגל ישחקו את משחקם הראשון במונדיאל 2026, מה שמציב אותו בין השחקנים המגרשיים הוותיקים ביותר שאי פעם התחרו בטורניר. CBS ספורט אישרה שמגרש 2026 יכלול לפחות שמונה שחקנים בני 40 ומעלה, שיא לכל מונדיאל. רונאלדו מוביל את פורטוגל במה שנחשב לטורניר האחרון שלו, ורודף אחרי הגביע הגדול היחיד שמעולם לא השיג. אם פורטוגל תגיע לגמר ב-19 ביולי, הוא יהיה בן 41 שנים ו-164 ימים, שובר את הרשומה לשחקן הוותיק ביותר שאי פעם הופיע בגמר מונדיאל. הזדמנות אחרונה אחת על הכותרת שמעולם לא זכה בה.",
-      "sources": [
-        { "name": "CBS Sports", "url": "https://www.cbssports.com/soccer/news/cristiano-ronaldo-40-year-olds-set-to-make-2026-world-cup-the-oldest/" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/records-cristiano-ronaldo-break-world-190000060.html" },
-        { "name": "LBC", "url": "https://www.lbc.co.uk/article/world-cup-players-over-40-oldest-5Hjdb7r_2/" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "bra-neymar-calf-doubt-2026-06-05",
+      "id": "bra-neymar-not-traveling-cleveland-2026-06-06",
       "confidence": "confirmed",
       "team": "BRA",
-      "en": "Brazil coach Carlo Ancelotti offered cautious optimism on June 5, saying Neymar will have an MRI on June 6 to determine whether he can rejoin the main squad next week. The 34-year-old has been sidelined since mid-May with a grade-2 calf strain, but Ancelotti said he believes Neymar could be fit for Brazil's June 13 opener against Morocco in New Jersey, or at worst the second group game against Haiti. With Rodrygo already out for the tournament with an ACL rupture, Brazil's attacking depth is being tested before a ball is kicked. Will the Selecao's star arrive in time?",
-      "he": "מאמן ברזיל קרלו אנצ'לוטי הציע אופטימיות זהירה ב-5 ביוני, ואמר שניימאר יעבור MRI ב-6 ביוני כדי לקבוע אם יוכל לחזור לקבוצה הראשית בשבוע הבא. השחקן בן ה-34 מנוע מלשחק מאמצע מאי בשל קרע בדרגה שנייה בשריר השוק, אך אנצ'לוטי ציין שהוא מאמין שניימאר יכול להיות כשיר לפתיחת ברזיל מול מרוקו ב-13 ביוני בניו ג'רזי, או לכל היותר למשחק השני מול האיטי. כשרודריגו כבר חסר לאורך כל הטורניר בשל קרע ברצועה הצולבת, עומק ההתקפה של ברזיל נבחן עוד לפני שיבועט כדור. האם כוכב הסלסאו יגיע בזמן?",
+      "en": "Brazil's Neymar will not travel to Cleveland with the squad for the final World Cup warmup against Egypt on June 7, a clear sign that his grade-2 right calf injury remains a serious concern days before the tournament. His fitness for Brazil's June 13 opener against Morocco in New Jersey is uncertain, with no official return date set. The worry deepens because Rodrygo is already ruled out for the whole tournament with an ACL rupture, leaving Carlo Ancelotti's attack thinner than expected before a ball is kicked. Will the Selecao's biggest name make it in time to matter?",
+      "he": "ניימאר לא יצטרף לנבחרת ברזיל לקליבלנד למשחק ההכנה האחרון מול מצרים ב-7 ביוני, סימן ברור שפציעת שריר השוק הימני שלו בדרגה שנייה נותרת דאגה רצינית ימים לפני הטורניר. כשירותו לפתיחה מול מרוקו ב-13 ביוני בניו ג'רזי אינה ברורה, ואין תאריך חזרה רשמי. הדאגה מעמיקה כיוון שרודריגו כבר מחוץ לכל הטורניר בשל קרע ברצועה הצולבת, מה שמשאיר את מתקפת אנצ'לוטי דקה מהצפוי לפני שנבעט כדור. האם הכוכב הגדול של הסלסאו יגיע בזמן שיחשוב?",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup" },
-        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/amp/world-cup/carlo-ancelotti-provides-positive-injury-update-on-neymar-ahead-of-brazils-2026-world-cup-opener/" },
-        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/carlo-ancelotti-guarantees-neymar-will-be-part-of-brazil-s-2026-world-cup-squad-2026-05-30" }
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48572979/2026-fifa-world-cup-injuries-tracker-which-stars-miss-latest-info" },
+        { "name": "Athlon Sports", "url": "https://athlonsports.com/soccer/neymar-injury-brazil-jersey-number-decision-world-cup-2026" }
       ],
-      "expires_at": "2026-06-18T00:00:00Z"
+      "expires_at": "2026-06-13T23:59:59Z"
     },
     {
       "id": "fra-ivory-coast-warmup-loss-2026-06-04",
@@ -87,6 +36,19 @@
         { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/401864934" },
         { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/4/ivory-coast-beat-france-in-world-cup-warning-to-one-of-the-favourites" },
         { "name": "France 24", "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat" }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "irq-first-wc-since-1986-2026-06-05",
+      "confidence": "confirmed",
+      "team": "IRQ",
+      "en": "Iraq are back at a World Cup for the first time since Mexico 1986, a 40-year wait finally over after coach Graham Arnold, who steered Australia to the round of 16 at Qatar 2022, took over in May 2025 and guided the Lions of Mesopotamia through a gruelling 21-match qualification campaign spanning more than two years. Their intercontinental playoff journey included a chaotic travel ordeal across the Middle East, caused by regional conflict, that forced a three-day recovery break before the decisive game in Mexico. Iraq open against Norway in Boston on June 16, then face France and Senegal. Can 40 years of patience translate into a World Cup shock?",
+      "he": "עיראק חוזרת למונדיאל לראשונה מאז מקסיקו 1986: 40 שנות המתנה הסתיימו לאחר שהמאמן גראהם ארנולד, שהוביל את אוסטרליה לשמינייה גמר בקטאר 2022, קיבל את הניהול במאי 2025 והוביל את אריות מסופוטמיה דרך מסע כישור מפרך של 21 משחקים על פני יותר משנתיים. מסע הפלייאוף הבינאוגדתי כלל הרפתקת נסיעות כאוטית במזרח התיכון, שנגרמה מסכסוך אזורי, שאילצה הפסקה של שלושה ימים לפני המשחק המכריע במקסיקו. עיראק פותחת נגד נורבגיה בבוסטון ב-16 ביוני ואחר כך תיפגש עם צרפת וסנגל. האם 40 שנות סבלנות יתורגמו להפתעת מונדיאל?",
+      "sources": [
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/graham-arnold-iraq-interview" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/5/we-are-fighters-iraq-aim-to-shock-rivals-at-2026-world-cup" },
+        { "name": "The National", "url": "https://www.thenationalnews.com/sport/football/2026/06/04/iraq-world-cup-talking-points-ali-al-hamadi-and-aymen-hussein-reignite-hopes-after-arduous-qualification/" }
       ],
       "expires_at": "2026-06-16T23:59:59Z"
     },
@@ -104,27 +66,65 @@
       "expires_at": "2026-06-17T23:59:59Z"
     },
     {
-      "id": "irq-first-wc-since-1986-2026-06-05",
+      "id": "cuw-advocaat-oldest-wc-coach-2026-05-13",
       "confidence": "confirmed",
-      "team": "IRQ",
-      "en": "Iraq are back at a World Cup for the first time since Mexico 1986, a 40-year wait finally over after coach Graham Arnold, who steered Australia to the round of 16 at Qatar 2022, took over in May 2025 and guided the Lions of Mesopotamia through a gruelling 21-match qualification campaign spanning more than two years. Their intercontinental playoff journey included a chaotic travel ordeal across the Middle East, caused by regional conflict, that forced a three-day recovery break before the decisive game in Mexico. Iraq open against Norway in Boston on June 16, then face France and Senegal. Can 40 years of patience translate into a World Cup shock?",
-      "he": "עיראק חוזרת למונדיאל לראשונה מאז מקסיקו 1986: 40 שנות המתנה הסתיימו לאחר שהמאמן גראהם ארנולד, שהוביל את אוסטרליה לשמינייה גמר בקטאר 2022, קיבל את הניהול במאי 2025 והוביל את אריות מסופוטמיה דרך מסע כישור מפרך של 21 משחקים על פני יותר משנתיים. מסע הפלייאוף הבינאוגדתי כלל הרפתקת נסיעות כאוטית במזרח התיכון, שנגרמה מסכסוך אזורי, שאילצה הפסקה של שלושה ימים לפני המשחק המכריע במקסיקו. עיראק פותחת נגד נורבגיה בבוסטון ב-16 ביוני ואחר כך תיפגש עם צרפת וסנגל. האם 40 שנות סבלנות יתורגמו להפתעת מונדיאל?",
+      "team": "CUW",
+      "en": "Dick Advocaat, 78, is set to become the oldest coach in World Cup history. Curacao reinstated him on May 13 after Fred Rutten resigned, and when the island side face Germany in Houston on June 14, Advocaat will surpass Otto Rehhagel's record of 71 (Greece, 2010) by seven full years. It is his third World Cup with three different nations, the Netherlands in 1994, South Korea in 2006, and Curacao in 2026. Can a lifetime on the touchline bridge the gap to four-time champions Germany?",
+      "he": "דיק אדוקאט, בן 78, עומד להפוך למאמן הזקן ביותר בהיסטוריית גביע העולם. קוראסאו החזירה אותו לתפקיד ב-13 במאי לאחר שפרד רוטן התפטר, וכשהאיים ייפגשו עם גרמניה בהיוסטון ב-14 ביוני, אדוקאט ישבור את הרשומה של אוטו רהגל (יוון, 2010, גיל 71) בשבע שנים שלמות. זהו מונדיאל שלישי עם שלוש נבחרות שונות: הולנד 1994, דרום קוריאה 2006 וקוראסאו 2026. האם ניסיון של חיים שלמים על הקו יגשר על הפער מול אלופות גרמניה?",
       "sources": [
-        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/graham-arnold-iraq-interview" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/5/we-are-fighters-iraq-aim-to-shock-rivals-at-2026-world-cup" },
-        { "name": "The National", "url": "https://www.thenationalnews.com/sport/football/2026/06/04/iraq-world-cup-talking-points-ali-al-hamadi-and-aymen-hussein-reignite-hopes-after-arduous-qualification/" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48757275/curacao-reinstate-dick-advocaat-deny-change-due-external-pressure" },
+        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/05/13/curacao-coach-advocaat-world-cup/6b277144-4eb2-11f1-97e7-22c6c29ff0d8_story.html" },
+        { "name": "Colombia One", "url": "https://colombiaone.com/2026/05/13/advocaat-older-coach-fifa-world-cup-2026/" }
       ],
-      "expires_at": "2026-06-16T23:59:59Z"
+      "expires_at": "2026-06-18T23:59:59Z"
     },
     {
-      "id": "ifab-var-corners-second-yellow-2026-06-05",
+      "id": "ger-lennart-karl-ruled-out-2026-06-06",
       "confidence": "confirmed",
-      "en": "IFAB has confirmed that VAR at the 2026 World Cup gains three new areas of intervention: wrongly-awarded second yellow cards, cases of mistaken identity where the wrong player is carded, and incorrectly-awarded corner kicks. Officials can also check if an attacker blocked a defender before a set piece was taken. Corner reviews must correct only obvious errors and cannot delay the restart of play. The expanded brief triples VAR's scope compared to past tournaments - will it cut out the game's most controversial decisions, or just add a new layer of debate?",
-      "he": "IFAB אישרה שה-VAR בגביע העולם 2026 יקבל שלושה תחומי התערבות חדשים: כרטיסים צהובים שניים שניתנו בשגיאה, מקרי זיהוי שגוי שבהם כורטס שחקן הלא נכון, ובעיטות פינה שניתנו שלא כדין. הבודקים יוכלו גם לבחון אם תוקף חוסם מגן לפני ביצוע בעיטה נייחת. בדיקות הפינה חלות רק על שגיאות בוטות ואסורות לאחר את חידוש המשחק. הסמכות המורחבת משלשת את טווח ה-VAR לעומת טורנירים קודמים - האם היא תבטל את ההחלטות השנויות ביותר במחלוקת, או פשוט תוסיף שכבת ויכוח חדשה?",
+      "team": "GER",
+      "en": "Germany's most-anticipated debutant is out before a ball is kicked. The DFB confirmed on June 6 that 18-year-old Bayern Munich midfielder Lennart Karl suffered a muscle bundle tear in his left thigh during training in Chicago and will miss the 2026 World Cup entirely. RB Leipzig's 20-year-old Assan Ouedraogo, who narrowly missed the original squad selection, has been called up as his replacement. Karl became Bayern's youngest-ever Champions League scorer this season and had been expected to feature in Germany's opener against Curacao on June 14. Can Nagelsmann's deep squad absorb the blow?",
+      "he": "כוכב הבכורה הגרמני אינו יוצא לדרך. ה-DFB אישר ב-6 ביוני שחצי השדה בן ה-18 לנארט קארל מבאיירן מינכן סבל מקרע בצרור שרירים בירך שמאל בזמן אימון בשיקגו ויפספד את מונדיאל 2026 לחלוטין. אסאן אואדראוגו בן ה-20 מ-RB לייפציג, שהחמיץ בקושי את הסגל המקורי, הוזמן כחלופה. קארל נהיה לשחקן הצעיר ביותר שהבקיע בליגת האלופות עבור באיירן העונה, וצפו שייכנס להרכב הגרמני מול קוראסאו ב-14 ביוני. האם הסגל העמוק של נגלסמן יספוג את המכה?",
       "sources": [
-        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12098/13549645/world-cup-ifab-confirm-new-var-powers-10-second-substitutions-and-tactical-timeout-ban-in-major-rule-changes" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth" },
-        { "name": "NBC Sports", "url": "https://www.nbcsports.com/soccer/news/rule-changes-confirmed-for-2026-world-cup-as-ifab-alters-var-cracks-down-on-subs-and-timeouts" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48977173/lennart-karl-injured-germany-training-miss-world-cup" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/confirmed-assan-ou-draogo-replaces-220200348.html" },
+        { "name": "Bavarian Football Works", "url": "https://www.bavarianfootballworks.com/fifa-world-cup/212194/rb-leipzigs-assan-ouedraogo-to-take-lennart-karls-world-cup-spot-with-germany" }
+      ],
+      "expires_at": "2026-06-26T23:59:59Z"
+    },
+    {
+      "id": "fifa-vuvuzela-ban-2026-06-03",
+      "confidence": "confirmed",
+      "en": "The sound that defined South Africa 2010 is banned in 2026. FIFA's Stadium Code of Conduct, effective June 2, prohibits vuvuzelas, air horns, whistles and all other loud noisemaking devices from all 16 World Cup venues in Canada, Mexico and the USA. FIFA's reasoning is safety: vuvuzelas can reach 120 decibels, comparable to a chainsaw and close to the threshold of physical pain, and they disrupt communication between players and officials. Fans caught with one face ejection. Sixteen years after the plastic horn became one of football's most divisive symbols, will the stadium atmospheres feel noticeably quieter?",
+      "he": "הצליל שהגדיר את דרום אפריקה 2010 אסור ב-2026. קוד ההתנהלות לאצטדיונים של פיפ\"א, שנכנס לתוקף ב-2 ביוני, אוסר על ווּבּוּזלות, צופרי אוויר, שריקות וכל מכשירי הרעש הקוליים האחרים ב-16 האצטדיונים של המונדיאל בקנדה, במקסיקו ובארה\"ב. הסבר פיפ\"א - בטיחות: וובוזלות יכולות להגיע ל-120 דציבל, כמו מסור חשמלי וקרוב לסף הכאב הגופני, ומפריעות לתקשורת בין שחקנים ושופטים. אוהד שייתפס עמה עלול להיות מגורש. שש עשרה שנים אחרי שהצופר הפלסטי הפך לאחד הסמלים השנויים ביותר במחלוקת בכדורגל, האם האווירה באצטדיונים תהיה שקטה ניכר?",
+      "sources": [
+        { "name": "The Star South Africa", "url": "https://thestar.co.za/sport/soccer/bafana/2026-06-03-world-cup-2026-fifa-bans-vuvuzelas-from-all-16-tournament-venues/" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/iconic-vuvuzelas-banned-2026-world-132932215.html" },
+        { "name": "Daily Sabah", "url": "https://www.dailysabah.com/sports/football/fifa-bans-vuvuzelas-other-noisemakers-from-world-cup-stadiums" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "fifa-water-bottle-uturn-2026-06-05",
+      "confidence": "confirmed",
+      "en": "FIFA banned reusable water bottles from all World Cup stadiums, faced immediate outrage, and reversed course within days. The governing body updated its Stadium Code of Conduct on June 2 to remove a clause allowing empty reusable bottles, prompting protests from fans, supporter groups and politicians who cited intense summer heat at the North American venues. By June 5, FIFA announced a partial reversal: fans at matches in the USA and Canada may now bring one sealed, factory-fresh, soft 20oz (590ml) disposable plastic bottle per person. Hard-sided refillable bottles remain banned. Notably, the only drinks sold inside the venues are supplied by FIFA tournament sponsor Coca-Cola.",
+      "he": "פיפ\"א אסרה בקבוקי מים ניתנים למילוי חוזר מכל אצטדיוני המונדיאל, ספגה זעם מיידי ונסוגה תוך ימים. ב-2 ביוני עדכנה הרשות את קוד ההתנהלות והסירה סעיף שאפשר בקבוקים ריקים לשימוש חוזר, מה שהוביל למחאה מצד אוהדים, ארגוני אוהדים ופוליטיקאים שציינו את חום הקיץ הכבד באתרים הצפון-אמריקאים. עד ה-5 ביוני הכריזה פיפ\"א על היפוך חלקי: אוהדים במשחקים בארה\"ב ובקנדה רשאים כעת להביא בקבוק פלסטיק חד-פעמי, רך וסגור מהמפעל, בנפח 590 מ\"ל לאדם. בקבוקים קשיחים ניתנים למילוי חוזר נותרים אסורים. ולתשומת הלב: המשקאות היחידים הנמכרים בתוך האצטדיונים מסופקים על ידי נותן חסות פיפ\"א, קוקה-קולה.",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48978502/fifa-reverses-world-cup-water-bottle-ban-backlash" },
+        { "name": "Goal.com", "url": "https://www.goal.com/en-us/lists/fifa-world-cup-water-bottle-ban-u-turn-backlash/blte79dcb83bd29f191" },
+        { "name": "Yahoo Sports UK", "url": "https://uk.sports.yahoo.com/news/fifa-u-turn-world-cup-101416536.html" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "por-ronaldo-age-milestone-2026-06-06",
+      "confidence": "confirmed",
+      "team": "POR",
+      "en": "Cristiano Ronaldo will be 41 years and four months old when Portugal play their first 2026 World Cup match, placing him among the oldest outfield players ever to compete in the tournament. CBS Sports confirmed that the 2026 field will feature at least eight players aged 40 or over, a record for any World Cup. Ronaldo leads Portugal in what is widely expected to be his final tournament, chasing the one major trophy that has always escaped him. If Portugal reach the final on July 19, he would be 41 years and 164 days old, breaking the record for the oldest player ever to appear in a World Cup final. One last chance at the title he never won.",
+      "he": "קריסטיאנו רונאלדו יהיה בן 41 שנים וארבעה חודשים כשפורטוגל ישחקו את משחקם הראשון במונדיאל 2026, מה שמציב אותו בין השחקנים המגרשיים הוותיקים ביותר שאי פעם התחרו בטורניר. CBS ספורט אישרה שמגרש 2026 יכלול לפחות שמונה שחקנים בני 40 ומעלה, שיא לכל מונדיאל. רונאלדו מוביל את פורטוגל במה שנחשב לטורניר האחרון שלו, ורודף אחרי הגביע הגדול היחיד שמעולם לא השיג. אם פורטוגל תגיע לגמר ב-19 ביולי, הוא יהיה בן 41 שנים ו-164 ימים, שובר את הרשומה לשחקן הוותיק ביותר שאי פעם הופיע בגמר מונדיאל. הזדמנות אחרונה אחת על הכותרת שמעולם לא זכה בה.",
+      "sources": [
+        { "name": "CBS Sports", "url": "https://www.cbssports.com/soccer/news/cristiano-ronaldo-40-year-olds-set-to-make-2026-world-cup-the-oldest/" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/records-cristiano-ronaldo-break-world-190000060.html" },
+        { "name": "LBC", "url": "https://www.lbc.co.uk/article/world-cup-players-over-40-oldest-5Hjdb7r_2/" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     },
@@ -155,17 +155,41 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "cuw-advocaat-oldest-wc-coach-2026-05-13",
+      "id": "ifab-var-corners-second-yellow-2026-06-05",
       "confidence": "confirmed",
-      "team": "CUW",
-      "en": "Dick Advocaat, 78, is set to become the oldest coach in World Cup history. Curacao reinstated him on May 13 after Fred Rutten resigned, and when the island side face Germany in Houston on June 14, Advocaat will surpass Otto Rehhagel's record of 71 (Greece, 2010) by seven full years. It is his third World Cup with three different nations, the Netherlands in 1994, South Korea in 2006, and Curacao in 2026. Can a lifetime on the touchline bridge the gap to four-time champions Germany?",
-      "he": "דיק אדוקאט, בן 78, עומד להפוך למאמן הזקן ביותר בהיסטוריית גביע העולם. קוראסאו החזירה אותו לתפקיד ב-13 במאי לאחר שפרד רוטן התפטר, וכשהאיים ייפגשו עם גרמניה בהיוסטון ב-14 ביוני, אדוקאט ישבור את הרשומה של אוטו רהגל (יוון, 2010, גיל 71) בשבע שנים שלמות. זהו מונדיאל שלישי עם שלוש נבחרות שונות: הולנד 1994, דרום קוריאה 2006 וקוראסאו 2026. האם ניסיון של חיים שלמים על הקו יגשר על הפער מול אלופות גרמניה?",
+      "en": "IFAB has confirmed that VAR at the 2026 World Cup gains three new areas of intervention: wrongly-awarded second yellow cards, cases of mistaken identity where the wrong player is carded, and incorrectly-awarded corner kicks. Officials can also check if an attacker blocked a defender before a set piece was taken. Corner reviews must correct only obvious errors and cannot delay the restart of play. The expanded brief triples VAR's scope compared to past tournaments - will it cut out the game's most controversial decisions, or just add a new layer of debate?",
+      "he": "IFAB אישרה שה-VAR בגביע העולם 2026 יקבל שלושה תחומי התערבות חדשים: כרטיסים צהובים שניים שניתנו בשגיאה, מקרי זיהוי שגוי שבהם כורטס שחקן הלא נכון, ובעיטות פינה שניתנו שלא כדין. הבודקים יוכלו גם לבחון אם תוקף חוסם מגן לפני ביצוע בעיטה נייחת. בדיקות הפינה חלות רק על שגיאות בוטות ואסורות לאחר את חידוש המשחק. הסמכות המורחבת משלשת את טווח ה-VAR לעומת טורנירים קודמים - האם היא תבטל את ההחלטות השנויות ביותר במחלוקת, או פשוט תוסיף שכבת ויכוח חדשה?",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48757275/curacao-reinstate-dick-advocaat-deny-change-due-external-pressure" },
-        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/05/13/curacao-coach-advocaat-world-cup/6b277144-4eb2-11f1-97e7-22c6c29ff0d8_story.html" },
-        { "name": "Colombia One", "url": "https://colombiaone.com/2026/05/13/advocaat-older-coach-fifa-world-cup-2026/" }
+        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12098/13549645/world-cup-ifab-confirm-new-var-powers-10-second-substitutions-and-tactical-timeout-ban-in-major-rule-changes" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth" },
+        { "name": "NBC Sports", "url": "https://www.nbcsports.com/soccer/news/rule-changes-confirmed-for-2026-world-cup-as-ifab-alters-var-cracks-down-on-subs-and-timeouts" }
       ],
-      "expires_at": "2026-06-18T23:59:59Z"
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "wc26-saot-ai-offside-2026-06-06",
+      "confidence": "confirmed",
+      "en": "The 2026 World Cup will deploy the most precise offside technology in football history. FIFA confirmed that its upgraded semi-automated offside system now sends a real-time audio alert to the assistant referee whenever a player is more than 10 centimetres offside, cutting the detection threshold fivefold from the 50-centimetre limit used at the 2023 Club World Cup. The alert arrives before a passage of play fully develops, so officials can flag immediately rather than waiting for a VAR check. All 16 host venues are equipped with 16 tracking cameras each and a chip inside the match ball. Longer offside delays should be a thing of the past at this tournament.",
+      "he": "מונדיאל 2026 יפרוס את טכנולוגיית העצירה המדויקת ביותר בהיסטוריית הכדורגל. פיפ\"א אישרה שהמערכת המשודרגת לגילוי עצירה חצי-אוטומטית שולחת כעת התרעה קולית בזמן אמת לעוזר השופט בכל פעם שנבדל שחקן ביותר מ-10 סנטימטרים, מה שמחמיש את סף הגילוי לעומת גבול ה-50 סנטימטרים שהיה בגביע העולם לאלופות 2023. ההתרעה מגיעה לפני שיצירת עלייה מתפתחת במלואה, כך שהשופטים יכולים לנופף מיד במקום להמתין לבדיקת VAR. כל 16 אתרי המארח מצוידים ב-16 מצלמות מעקב כל אחד ושבב בתוך כדור המשחק. עיכובים ארוכים לבדיקות עצירה אמורים להיות שייכים לעבר בטורניר הזה.",
+      "sources": [
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/6/fifa-world-cup-2026-what-is-new-sensor-match-ball-ai-player-avatar" },
+        { "name": "Inside World Football", "url": "https://www.insideworldfootball.com/2026/06/03/fifa-upgrades-saot-and-ball-tracking-as-2026-match-officials-given-new-suite-of-tech-tools" },
+        { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "wc26-azteca-altitude-2026-06-06",
+      "confidence": "confirmed",
+      "team": "MEX",
+      "en": "Mexico's biggest home advantage at the 2026 World Cup has nothing to do with tactics. Estadio Azteca sits at 2,240 metres above sea level, over 7,300 feet, making it the highest-altitude venue across all three host nations. Teams travelling from sea-level countries will feel the thin air within minutes on the pitch. Mexican football commissioner Mikel Arriola called it \"a massive advantage\" alongside the home crowd. The Azteca also makes history as the first stadium to host World Cup matches across three separate tournaments, having staged finals in both 1970 and 1986. Will the altitude factor shape the early group-stage results?",
+      "he": "היתרון הביתי הגדול של מקסיקו במונדיאל 2026 אינו קשור לטקטיקה. אסטדיו אצטקה שוכן ב-2,240 מטרים מעל פני הים, למעלה מ-7,300 רגל, מה שהופך אותו לאתר הגבוה ביותר בין שלוש מדינות המארחות. נבחרות ממדינות השוכנות בגובה פני הים ירגישו את האוויר הדליל תוך דקות על המגרש. מנהל הכדורגל המקסיקני מיקל אריולה כינה את הגובה \"יתרון עצום\" לצד קהל הבית. האצטקה גם עושה היסטוריה כאצטדיון הראשון שמארח משחקי מונדיאל בשלושה טורנירים נפרדים, לאחר שאירח גמרים ב-1970 וב-1986. האם גורם הגובה יעצב את תוצאות שלב הבתים?",
+      "sources": [
+        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/06/06/world-cup-mexico-altitude-mexico-city-guadalajara/c88cc5ae-61a0-11f1-9c46-d6211372eede_story.html" },
+        { "name": "TSN", "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/mexico-citys-altitude-poses-a-key-challenge-for-teams-at-the-2026-world-cup/" },
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" }
+      ],
+      "expires_at": "2026-07-06T00:00:00Z"
     },
     {
       "id": "fifa-anthem-all-26-center-circle-2026-06-04",
