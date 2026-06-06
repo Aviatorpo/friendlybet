@@ -5168,13 +5168,14 @@ async function updateBettingStatusOnDashboard() {
       titleEl.textContent = t('dashboard.continueCta.title');
       subtitleEl.textContent = t('dashboard.continueCta.partialGroups', { n: groupsFilled, total: 12 });
       _fbSetDashboardProgressCard('partial');
-    } else if (!championDone) {
-      // Groups done; knockout bracket / champion still open
+    } else if (!bracketDone) {
+      // v2.9.3: groups done but the knockout bracket is incomplete — point the
+      // user at the bracket (not the top scorer), even if a champion is set.
       titleEl.textContent = t('dashboard.continueCta.title');
       subtitleEl.textContent = t('dashboard.continueCta.bracket');
       _fbSetDashboardProgressCard('partial');
     } else {
-      // Bracket + champion done; only the (now-unlocked) top scorer is left
+      // Bracket done; only the (now-unlocked) top scorer is left
       titleEl.textContent = t('dashboard.continueCta.title');
       subtitleEl.textContent = t('dashboard.continueCta.topScorer');
       _fbSetDashboardProgressCard('partial');
@@ -9723,8 +9724,16 @@ async function startSinglePhaseBetting() {
     const arr = spState.groupPositions[l];
     return arr && arr.length >= 4 && arr.slice(0, 4).every(x => x);
   });
-  const championDone = !!spState.tournamentWinner ||
-                       !!(spState.bracketPicks && spState.bracketPicks[31]);
+  // v2.9.3: route on BRACKET completeness, not just "has a champion". Affected
+  // users have a saved champion but an empty bracket; treating champion as
+  // "knockout done" used to skip the bracket entirely. A full bracket = all 31
+  // positions picked (1-16 R32, 17-24 R16, 25-28 QF, 29-30 SF, 31 Final).
+  const bracketComplete = (() => {
+    const bp = spState.bracketPicks || {};
+    for (let p = 1; p <= 31; p++) if (!bp[p]) return false;
+    return true;
+  })();
+  const championDone = bracketComplete;
 
   // v2.6.10: top-scorer completion (gated on squad release, like the dashboard CTA).
   let tsRequired = false;
