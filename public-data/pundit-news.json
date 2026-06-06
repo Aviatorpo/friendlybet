@@ -1,6 +1,56 @@
 {
-  "updatedAt": "2026-06-06T13:00:00.000Z",
+  "updatedAt": "2026-06-06T16:30:00.000Z",
   "items": [
+    {
+      "id": "arg-messi-hamstring-doubt-2026-06-06",
+      "confidence": "confirmed",
+      "team": "ARG",
+      "en": "Lionel Messi, 38, strained his left hamstring during his final Inter Miami match on May 25 and has been training separately from the Argentina squad since they arrived at their World Cup camp in Kansas City. Coach Lionel Scaloni says the eight-time Ballon d'Or winner is doing well and may get a few minutes in the Honduras and Iceland warmups, but his availability to start the June 16 opener against Algeria in Kansas City is not guaranteed. Argentina are the defending champions. If Messi cannot start on June 16, they will defend the title without their talisman from the first whistle. Will the greatest player of his generation arrive fit enough to leave his mark on what is widely expected to be his final World Cup?",
+      "he": "ליונל מסי, בן 38, ספג מתח שרירי בשריר השוק השמאלי במשחקו האחרון עם אינטר מיאמי ב-25 במאי, ומאז מתאמן בנפרד מחברי הנבחרת הארגנטינאית מאז הגעת הסגל למחנה האימונים בקנזס סיטי. המאמן ליונל סקלוני אמר שמנצח גביע הבלון דאור שמונה פעמים הולך בכיוון הנכון ועשוי לקבל דקות מסוימות בידידותיות מול הונדורס ואיסלנד, אך זמינותו לפתיחה מול אלג'יריה ב-16 ביוני בקנזס סיטי אינה מובטחת. ארגנטינה היא האלופה המגינה. אם מסי לא יוכל להתחיל ב-16 ביוני, היא תגן על הכתר ללא כוכבה מהשריקה הראשונה. האם הכדורגלן הגדול ביותר בדורו יגיע בכושר כדי להשאיר חותם במה שצפוי להיות מונדיאלו האחרון?",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48945340/messi-trains-own-argentina-opening-session-ahead-world-cup" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/messi-trains-alone-as-argentina-hold-first-world-cup-practice-session" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/argentina-coach-shares-lionel-messi-130000668.html" }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "ger-usa-friendly-2-1-2026-06-06",
+      "confidence": "confirmed",
+      "en": "Germany beat the United States 2-1 at Soldier Field in Chicago on June 6 in their final World Cup warm-up. Kai Havertz headed home a Joshua Kimmich free-kick in the 2nd minute, Antonee Robinson equalized with a fierce first-time volley in the 37th, and Leroy Sane restored Germany's lead with a clinical low finish in the 56th. Despite the USA outshooting Germany 16 to 12, the Germans showed the cutting edge in front of goal that makes them a genuine title contender. Germany open against Curacao in Houston on June 14. Can Nagelsmann's side carry that ruthlessness into the tournament itself?",
+      "he": "גרמניה ניצחה את ארצות הברית 2:1 ב-Soldier Field בשיקגו ב-6 ביוני בסיבוב ההכנה האחרון לפני המונדיאל. קאי האברץ נגח לרשת מבעיטה חופשית של יושואה קימיך בדקה השנייה, אנטואן רובינסון השווה עם בעיטה ראשונית עזה בדקה ה-37, ולרוי זאנה החזיר את יתרון גרמניה עם סיום נמוך מדויק בדקה ה-56. למרות שארה\"ב יצרה יותר בעיטות, 16 לעומת 12, גרמניה הפגינה את החדות מול השער שהופכת אותה למועמדת אמיתית לתואר. גרמניה פותחת מול קוראסאו בהיוסטון ב-14 ביוני. האם הצוות של נגלסמן יוכל לשמור על האכזריות הזאת גם בתוך הטורניר?",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/match/_/gameId/762260/germany-united-states" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/soccer/live/usmnt-vs-germany-live-updates-lineups-how-to-watch-score-latest-news-from-pre-world-cup-friendly-173000166.html" },
+        { "name": "Bolavip", "url": "https://bolavip.com/en/soccer/usa-vs-germany-live-international-friendly-ahead-of-2026-world-cup" }
+      ],
+      "expires_at": "2026-06-14T23:59:59Z"
+    },
+    {
+      "id": "por-leao-red-card-chile-warmup-2026-06-06",
+      "confidence": "confirmed",
+      "team": "POR",
+      "en": "Portugal forward Rafael Leao was sent off for punching Chile defender Ivan Roman just before halftime during Portugal's 2-0 warmup win on June 6. Leao felt he had been unfairly challenged by a different opponent, reacted by throwing a punch at Roman, and both players received straight red cards. The good news for Portugal is that suspensions earned in exhibition matches do not carry over to official World Cup fixtures, so Leao is fully eligible for Portugal's Group K opener against DR Congo in Houston on June 17. The incident nonetheless raises questions about the Milan star's temperament as Portugal chase the trophy they have never won, with Cristiano Ronaldo leading what is widely expected to be his final tournament. Will Leao channel that fire into goals instead?",
+      "he": "תוקף פורטוגל ראפאל לאאו גורש לאחר שניפץ אגרוף לעבר מגן צ'ילה איוון רומן זמן קצר לפני ההפסקה, בניצחון ידידותי של פורטוגל 2:0 ב-6 ביוני. לאאו חש שנפגע שלא כדין על ידי יריב אחר, הגיב בניפוץ אגרוף לעבר רומן, ושני השחקנים קיבלו כרטיסים אדומים ישירים. הבשורה הטובה לפורטוגל: השעיות ממשחקי תערוכה אינן עוברות למשחקי גביע העולם הרשמיים, ולכן לאאו זכאי לפתיחה בבית ה-K מול ד.ר. קונגו בהיוסטון ב-17 ביוני. האירוע מעלה בכל זאת שאלות על מזגו של כוכב מילאן, בזמן שפורטוגל רודפת אחרי הגביע שלא זכתה בו מעולם עם קריסטיאנו רונאלדו מוביל במה שצפוי להיות הטורניר האחרון שלו. האם לאאו יסנן את האש לשערים?",
+      "sources": [
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/portugals-leao-sent-off-for-punching-in-world-cup-warmup-win-over-chile" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/milan-star-rafael-leao-sent-191000927.html" },
+        { "name": "Athlon Sports", "url": "https://athlonsports.com/soccer/will-rafael-leao-miss-portugal-world-cup-opening-game-red-card" }
+      ],
+      "expires_at": "2026-06-17T23:59:59Z"
+    },
+    {
+      "id": "wc26-hydration-breaks-all-matches-2026-06-05",
+      "confidence": "confirmed",
+      "en": "All 64 matches at the 2026 World Cup will include a mandatory three-minute hydration break in each half, with the referee stopping play at the 22-minute mark regardless of weather or temperature. Previous tournaments applied cooling breaks only when heat thresholds were exceeded. FIFA introduced the blanket rule to protect players from the intense summer conditions at venues in Dallas, Houston, Miami, Atlanta and Monterrey, where temperatures routinely exceed 35 degrees Celsius in June and July. Teams cannot use the break for tactical substitutions. A small rule change with potentially large effects on late-game momentum and fatigue management across all 64 games.",
+      "he": "כל 64 המשחקים במונדיאל 2026 יכללו הפסקת שתייה חובה של שלוש דקות בכל מחצית, כשהשופט יעצור את המשחק בדקה ה-22 ללא קשר למזג האוויר או לטמפרטורה. בטורנירים קודמים, הפסקות קירור הופעלו רק כשסף חום מסוים נחצה. פיפ\"א הציגה את הכלל הגורף כדי להגן על שחקנים מפני חום הקיץ העז באתרים כמו דאלאס, יוסטון, מיאמי, אטלנטה ומונטריי, שבהן הטמפרטורות עוברות לעתים קרובות 35 מעלות ביוני וביולי. קבוצות לא יוכלו להשתמש בהפסקה לצורך ביצוע החלפות טקטיות. שינוי כלל קטן עם השפעות פוטנציאליות גדולות על התנופה בסוף המשחק וניהול העייפות ב-64 המשחקים.",
+      "sources": [
+        { "name": "FIFA", "url": "https://inside.fifa.com/news/hydration-breaks-world-cup-2026-player-welfare" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/47245760/2026-world-cup-feature-hydration-break-every-half" },
+        { "name": "Sports Illustrated", "url": "https://www.si.com/soccer/fifa-rules-on-usmnt-water-break-strategy-for-2026-world-cup" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
     {
       "id": "wc26-opening-ceremony-shakira-2026-06-06",
       "confidence": "confirmed",
@@ -79,19 +129,6 @@
       "expires_at": "2026-06-18T23:59:59Z"
     },
     {
-      "id": "ger-lennart-karl-ruled-out-2026-06-06",
-      "confidence": "confirmed",
-      "team": "GER",
-      "en": "Germany's most-anticipated debutant is out before a ball is kicked. The DFB confirmed on June 6 that 18-year-old Bayern Munich midfielder Lennart Karl suffered a muscle bundle tear in his left thigh during training in Chicago and will miss the 2026 World Cup entirely. RB Leipzig's 20-year-old Assan Ouedraogo, who narrowly missed the original squad selection, has been called up as his replacement. Karl became Bayern's youngest-ever Champions League scorer this season and had been expected to feature in Germany's opener against Curacao on June 14. Can Nagelsmann's deep squad absorb the blow?",
-      "he": "כוכב הבכורה הגרמני אינו יוצא לדרך. ה-DFB אישר ב-6 ביוני שחצי השדה בן ה-18 לנארט קארל מבאיירן מינכן סבל מקרע בצרור שרירים בירך שמאל בזמן אימון בשיקגו ויפספד את מונדיאל 2026 לחלוטין. אסאן אואדראוגו בן ה-20 מ-RB לייפציג, שהחמיץ בקושי את הסגל המקורי, הוזמן כחלופה. קארל נהיה לשחקן הצעיר ביותר שהבקיע בליגת האלופות עבור באיירן העונה, וצפו שייכנס להרכב הגרמני מול קוראסאו ב-14 ביוני. האם הסגל העמוק של נגלסמן יספוג את המכה?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48977173/lennart-karl-injured-germany-training-miss-world-cup" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/confirmed-assan-ou-draogo-replaces-220200348.html" },
-        { "name": "Bavarian Football Works", "url": "https://www.bavarianfootballworks.com/fifa-world-cup/212194/rb-leipzigs-assan-ouedraogo-to-take-lennart-karls-world-cup-spot-with-germany" }
-      ],
-      "expires_at": "2026-06-26T23:59:59Z"
-    },
-    {
       "id": "fifa-vuvuzela-ban-2026-06-03",
       "confidence": "confirmed",
       "en": "The sound that defined South Africa 2010 is banned in 2026. FIFA's Stadium Code of Conduct, effective June 2, prohibits vuvuzelas, air horns, whistles and all other loud noisemaking devices from all 16 World Cup venues in Canada, Mexico and the USA. FIFA's reasoning is safety: vuvuzelas can reach 120 decibels, comparable to a chainsaw and close to the threshold of physical pain, and they disrupt communication between players and officials. Fans caught with one face ejection. Sixteen years after the plastic horn became one of football's most divisive symbols, will the stadium atmospheres feel noticeably quieter?",
@@ -100,18 +137,6 @@
         { "name": "The Star South Africa", "url": "https://thestar.co.za/sport/soccer/bafana/2026-06-03-world-cup-2026-fifa-bans-vuvuzelas-from-all-16-tournament-venues/" },
         { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/iconic-vuvuzelas-banned-2026-world-132932215.html" },
         { "name": "Daily Sabah", "url": "https://www.dailysabah.com/sports/football/fifa-bans-vuvuzelas-other-noisemakers-from-world-cup-stadiums" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "fifa-water-bottle-uturn-2026-06-05",
-      "confidence": "confirmed",
-      "en": "FIFA banned reusable water bottles from all World Cup stadiums, faced immediate outrage, and reversed course within days. The governing body updated its Stadium Code of Conduct on June 2 to remove a clause allowing empty reusable bottles, prompting protests from fans, supporter groups and politicians who cited intense summer heat at the North American venues. By June 5, FIFA announced a partial reversal: fans at matches in the USA and Canada may now bring one sealed, factory-fresh, soft 20oz (590ml) disposable plastic bottle per person. Hard-sided refillable bottles remain banned. Notably, the only drinks sold inside the venues are supplied by FIFA tournament sponsor Coca-Cola.",
-      "he": "פיפ\"א אסרה בקבוקי מים ניתנים למילוי חוזר מכל אצטדיוני המונדיאל, ספגה זעם מיידי ונסוגה תוך ימים. ב-2 ביוני עדכנה הרשות את קוד ההתנהלות והסירה סעיף שאפשר בקבוקים ריקים לשימוש חוזר, מה שהוביל למחאה מצד אוהדים, ארגוני אוהדים ופוליטיקאים שציינו את חום הקיץ הכבד באתרים הצפון-אמריקאים. עד ה-5 ביוני הכריזה פיפ\"א על היפוך חלקי: אוהדים במשחקים בארה\"ב ובקנדה רשאים כעת להביא בקבוק פלסטיק חד-פעמי, רך וסגור מהמפעל, בנפח 590 מ\"ל לאדם. בקבוקים קשיחים ניתנים למילוי חוזר נותרים אסורים. ולתשומת הלב: המשקאות היחידים הנמכרים בתוך האצטדיונים מסופקים על ידי נותן חסות פיפ\"א, קוקה-קולה.",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48978502/fifa-reverses-world-cup-water-bottle-ban-backlash" },
-        { "name": "Goal.com", "url": "https://www.goal.com/en-us/lists/fifa-world-cup-water-bottle-ban-u-turn-backlash/blte79dcb83bd29f191" },
-        { "name": "Yahoo Sports UK", "url": "https://uk.sports.yahoo.com/news/fifa-u-turn-world-cup-101416536.html" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     },
@@ -167,18 +192,6 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "wc26-saot-ai-offside-2026-06-06",
-      "confidence": "confirmed",
-      "en": "The 2026 World Cup will deploy the most precise offside technology in football history. FIFA confirmed that its upgraded semi-automated offside system now sends a real-time audio alert to the assistant referee whenever a player is more than 10 centimetres offside, cutting the detection threshold fivefold from the 50-centimetre limit used at the 2023 Club World Cup. The alert arrives before a passage of play fully develops, so officials can flag immediately rather than waiting for a VAR check. All 16 host venues are equipped with 16 tracking cameras each and a chip inside the match ball. Longer offside delays should be a thing of the past at this tournament.",
-      "he": "מונדיאל 2026 יפרוס את טכנולוגיית העצירה המדויקת ביותר בהיסטוריית הכדורגל. פיפ\"א אישרה שהמערכת המשודרגת לגילוי עצירה חצי-אוטומטית שולחת כעת התרעה קולית בזמן אמת לעוזר השופט בכל פעם שנבדל שחקן ביותר מ-10 סנטימטרים, מה שמחמיש את סף הגילוי לעומת גבול ה-50 סנטימטרים שהיה בגביע העולם לאלופות 2023. ההתרעה מגיעה לפני שיצירת עלייה מתפתחת במלואה, כך שהשופטים יכולים לנופף מיד במקום להמתין לבדיקת VAR. כל 16 אתרי המארח מצוידים ב-16 מצלמות מעקב כל אחד ושבב בתוך כדור המשחק. עיכובים ארוכים לבדיקות עצירה אמורים להיות שייכים לעבר בטורניר הזה.",
-      "sources": [
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/6/fifa-world-cup-2026-what-is-new-sensor-match-ball-ai-player-avatar" },
-        { "name": "Inside World Football", "url": "https://www.insideworldfootball.com/2026/06/03/fifa-upgrades-saot-and-ball-tracking-as-2026-match-officials-given-new-suite-of-tech-tools" },
-        { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
       "id": "wc26-azteca-altitude-2026-06-06",
       "confidence": "confirmed",
       "team": "MEX",
@@ -190,18 +203,6 @@
         { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" }
       ],
       "expires_at": "2026-07-06T00:00:00Z"
-    },
-    {
-      "id": "fifa-anthem-all-26-center-circle-2026-06-04",
-      "confidence": "confirmed",
-      "en": "FIFA has announced a new ceremony for every match at the 2026 World Cup: all 26 squad members, not just the starting 11, will stand on the pitch during national anthems, arranged around the centre circle in a 360-degree format facing the opposing team and the match officials. FIFA president Gianni Infantino said the aim is to create a moment of unity, pride and emotion that belongs to the whole squad. Will the players on the bench finally feel as central to the occasion as the starting 11?",
-      "he": "פיפ\"א הכריזה על טקס חדש לפני כל משחק במונדיאל 2026: כל 26 שחקני הסגל, לא רק ה-11 המתחילים, יעמדו על המגרש בזמן נגינת ההמנונות הלאומיים ויתמקמו מסביב לעיגול המרכזי בפורמט 360 מעלות, מול היריבים ושופטי המשחק. נשיא פיפ\"א ג'אני אינפנטינו אמר שהמטרה היא ליצור 'רגע של אחדות, גאווה ורגש' השייך לנבחרת כולה. האם שחקני החלופה סוף סוף יחושו מרכזיים לאירוע כמו ה-11 המתחילים?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48972979/fifa-announces-national-anthems-involve-all-26-players-world-cup" },
-        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/world-cup/fifa-president-gianni-infantino-announces-new-national-anthem-protocol-for-2026-world-cup/" },
-        { "name": "The Mirror", "url": "https://www.themirror.com/sport/soccer/fifa-announces-change-every-world-1871191" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
     }
   ]
 }

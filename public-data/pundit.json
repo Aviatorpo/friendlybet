@@ -1,7 +1,99 @@
 {
-  "updatedAt": "2026-06-06T18:33:05.431Z",
+  "updatedAt": "2026-06-06T21:31:53.922Z",
   "count": 12,
   "items": [
+    {
+      "id": "arg-messi-hamstring-doubt-2026-06-06",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "ליונל מסי, בן 38, ספג מתח שרירי בשריר השוק השמאלי במשחקו האחרון עם אינטר מיאמי ב-25 במאי, ומאז מתאמן בנפרד מחברי הנבחרת הארגנטינאית מאז הגעת הסגל למחנה האימונים בקנזס סיטי. המאמן ליונל סקלוני אמר שמנצח גביע הבלון דאור שמונה פעמים הולך בכיוון הנכון ועשוי לקבל דקות מסוימות בידידותיות מול הונדורס ואיסלנד, אך זמינותו לפתיחה מול אלג'יריה ב-16 ביוני בקנזס סיטי אינה מובטחת. ארגנטינה היא האלופה המגינה. אם מסי לא יוכל להתחיל ב-16 ביוני, היא תגן על הכתר ללא כוכבה מהשריקה הראשונה. האם הכדורגלן הגדול ביותר בדורו יגיע בכושר כדי להשאיר חותם במה שצפוי להיות מונדיאלו האחרון?",
+      "en": "Lionel Messi, 38, strained his left hamstring during his final Inter Miami match on May 25 and has been training separately from the Argentina squad since they arrived at their World Cup camp in Kansas City. Coach Lionel Scaloni says the eight-time Ballon d'Or winner is doing well and may get a few minutes in the Honduras and Iceland warmups, but his availability to start the June 16 opener against Algeria in Kansas City is not guaranteed. Argentina are the defending champions. If Messi cannot start on June 16, they will defend the title without their talisman from the first whistle. Will the greatest player of his generation arrive fit enough to leave his mark on what is widely expected to be his final World Cup?",
+      "team": "ARG",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48945340/messi-trains-own-argentina-opening-session-ahead-world-cup"
+        },
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/3/messi-trains-alone-as-argentina-hold-first-world-cup-practice-session"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/argentina-coach-shares-lionel-messi-130000668.html"
+        }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "ger-usa-friendly-2-1-2026-06-06",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "גרמניה ניצחה את ארצות הברית 2:1 ב-Soldier Field בשיקגו ב-6 ביוני בסיבוב ההכנה האחרון לפני המונדיאל. קאי האברץ נגח לרשת מבעיטה חופשית של יושואה קימיך בדקה השנייה, אנטואן רובינסון השווה עם בעיטה ראשונית עזה בדקה ה-37, ולרוי זאנה החזיר את יתרון גרמניה עם סיום נמוך מדויק בדקה ה-56. למרות שארה\"ב יצרה יותר בעיטות, 16 לעומת 12, גרמניה הפגינה את החדות מול השער שהופכת אותה למועמדת אמיתית לתואר. גרמניה פותחת מול קוראסאו בהיוסטון ב-14 ביוני. האם הצוות של נגלסמן יוכל לשמור על האכזריות הזאת גם בתוך הטורניר?",
+      "en": "Germany beat the United States 2-1 at Soldier Field in Chicago on June 6 in their final World Cup warm-up. Kai Havertz headed home a Joshua Kimmich free-kick in the 2nd minute, Antonee Robinson equalized with a fierce first-time volley in the 37th, and Leroy Sane restored Germany's lead with a clinical low finish in the 56th. Despite the USA outshooting Germany 16 to 12, the Germans showed the cutting edge in front of goal that makes them a genuine title contender. Germany open against Curacao in Houston on June 14. Can Nagelsmann's side carry that ruthlessness into the tournament itself?",
+      "team": null,
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/match/_/gameId/762260/germany-united-states"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/soccer/live/usmnt-vs-germany-live-updates-lineups-how-to-watch-score-latest-news-from-pre-world-cup-friendly-173000166.html"
+        },
+        {
+          "name": "Bolavip",
+          "url": "https://bolavip.com/en/soccer/usa-vs-germany-live-international-friendly-ahead-of-2026-world-cup"
+        }
+      ],
+      "expires_at": "2026-06-14T23:59:59Z"
+    },
+    {
+      "id": "por-leao-red-card-chile-warmup-2026-06-06",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "תוקף פורטוגל ראפאל לאאו גורש לאחר שניפץ אגרוף לעבר מגן צ'ילה איוון רומן זמן קצר לפני ההפסקה, בניצחון ידידותי של פורטוגל 2:0 ב-6 ביוני. לאאו חש שנפגע שלא כדין על ידי יריב אחר, הגיב בניפוץ אגרוף לעבר רומן, ושני השחקנים קיבלו כרטיסים אדומים ישירים. הבשורה הטובה לפורטוגל: השעיות ממשחקי תערוכה אינן עוברות למשחקי גביע העולם הרשמיים, ולכן לאאו זכאי לפתיחה בבית ה-K מול ד.ר. קונגו בהיוסטון ב-17 ביוני. האירוע מעלה בכל זאת שאלות על מזגו של כוכב מילאן, בזמן שפורטוגל רודפת אחרי הגביע שלא זכתה בו מעולם עם קריסטיאנו רונאלדו מוביל במה שצפוי להיות הטורניר האחרון שלו. האם לאאו יסנן את האש לשערים?",
+      "en": "Portugal forward Rafael Leao was sent off for punching Chile defender Ivan Roman just before halftime during Portugal's 2-0 warmup win on June 6. Leao felt he had been unfairly challenged by a different opponent, reacted by throwing a punch at Roman, and both players received straight red cards. The good news for Portugal is that suspensions earned in exhibition matches do not carry over to official World Cup fixtures, so Leao is fully eligible for Portugal's Group K opener against DR Congo in Houston on June 17. The incident nonetheless raises questions about the Milan star's temperament as Portugal chase the trophy they have never won, with Cristiano Ronaldo leading what is widely expected to be his final tournament. Will Leao channel that fire into goals instead?",
+      "team": "POR",
+      "sources": [
+        {
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com/stories/soccer/portugals-leao-sent-off-for-punching-in-world-cup-warmup-win-over-chile"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/milan-star-rafael-leao-sent-191000927.html"
+        },
+        {
+          "name": "Athlon Sports",
+          "url": "https://athlonsports.com/soccer/will-rafael-leao-miss-portugal-world-cup-opening-game-red-card"
+        }
+      ],
+      "expires_at": "2026-06-17T23:59:59Z"
+    },
+    {
+      "id": "wc26-hydration-breaks-all-matches-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "כל 64 המשחקים במונדיאל 2026 יכללו הפסקת שתייה חובה של שלוש דקות בכל מחצית, כשהשופט יעצור את המשחק בדקה ה-22 ללא קשר למזג האוויר או לטמפרטורה. בטורנירים קודמים, הפסקות קירור הופעלו רק כשסף חום מסוים נחצה. פיפ\"א הציגה את הכלל הגורף כדי להגן על שחקנים מפני חום הקיץ העז באתרים כמו דאלאס, יוסטון, מיאמי, אטלנטה ומונטריי, שבהן הטמפרטורות עוברות לעתים קרובות 35 מעלות ביוני וביולי. קבוצות לא יוכלו להשתמש בהפסקה לצורך ביצוע החלפות טקטיות. שינוי כלל קטן עם השפעות פוטנציאליות גדולות על התנופה בסוף המשחק וניהול העייפות ב-64 המשחקים.",
+      "en": "All 64 matches at the 2026 World Cup will include a mandatory three-minute hydration break in each half, with the referee stopping play at the 22-minute mark regardless of weather or temperature. Previous tournaments applied cooling breaks only when heat thresholds were exceeded. FIFA introduced the blanket rule to protect players from the intense summer conditions at venues in Dallas, Houston, Miami, Atlanta and Monterrey, where temperatures routinely exceed 35 degrees Celsius in June and July. Teams cannot use the break for tactical substitutions. A small rule change with potentially large effects on late-game momentum and fatigue management across all 64 games.",
+      "team": null,
+      "sources": [
+        {
+          "name": "FIFA",
+          "url": "https://inside.fifa.com/news/hydration-breaks-world-cup-2026-player-welfare"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/47245760/2026-world-cup-feature-hydration-break-every-half"
+        },
+        {
+          "name": "Sports Illustrated",
+          "url": "https://www.si.com/soccer/fifa-rules-on-usmnt-water-break-strategy-for-2026-world-cup"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
     {
       "id": "wc26-opening-ceremony-shakira-2026-06-06",
       "type": "news",
@@ -141,29 +233,6 @@
       "expires_at": "2026-06-18T23:59:59Z"
     },
     {
-      "id": "ger-lennart-karl-ruled-out-2026-06-06",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "כוכב הבכורה הגרמני אינו יוצא לדרך. ה-DFB אישר ב-6 ביוני שחצי השדה בן ה-18 לנארט קארל מבאיירן מינכן סבל מקרע בצרור שרירים בירך שמאל בזמן אימון בשיקגו ויפספד את מונדיאל 2026 לחלוטין. אסאן אואדראוגו בן ה-20 מ-RB לייפציג, שהחמיץ בקושי את הסגל המקורי, הוזמן כחלופה. קארל נהיה לשחקן הצעיר ביותר שהבקיע בליגת האלופות עבור באיירן העונה, וצפו שייכנס להרכב הגרמני מול קוראסאו ב-14 ביוני. האם הסגל העמוק של נגלסמן יספוג את המכה?",
-      "en": "Germany's most-anticipated debutant is out before a ball is kicked. The DFB confirmed on June 6 that 18-year-old Bayern Munich midfielder Lennart Karl suffered a muscle bundle tear in his left thigh during training in Chicago and will miss the 2026 World Cup entirely. RB Leipzig's 20-year-old Assan Ouedraogo, who narrowly missed the original squad selection, has been called up as his replacement. Karl became Bayern's youngest-ever Champions League scorer this season and had been expected to feature in Germany's opener against Curacao on June 14. Can Nagelsmann's deep squad absorb the blow?",
-      "team": "GER",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48977173/lennart-karl-injured-germany-training-miss-world-cup"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/confirmed-assan-ou-draogo-replaces-220200348.html"
-        },
-        {
-          "name": "Bavarian Football Works",
-          "url": "https://www.bavarianfootballworks.com/fifa-world-cup/212194/rb-leipzigs-assan-ouedraogo-to-take-lennart-karls-world-cup-spot-with-germany"
-        }
-      ],
-      "expires_at": "2026-06-26T23:59:59Z"
-    },
-    {
       "id": "fifa-vuvuzela-ban-2026-06-03",
       "type": "news",
       "confidence": "confirmed",
@@ -187,29 +256,6 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "fifa-water-bottle-uturn-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "פיפ\"א אסרה בקבוקי מים ניתנים למילוי חוזר מכל אצטדיוני המונדיאל, ספגה זעם מיידי ונסוגה תוך ימים. ב-2 ביוני עדכנה הרשות את קוד ההתנהלות והסירה סעיף שאפשר בקבוקים ריקים לשימוש חוזר, מה שהוביל למחאה מצד אוהדים, ארגוני אוהדים ופוליטיקאים שציינו את חום הקיץ הכבד באתרים הצפון-אמריקאים. עד ה-5 ביוני הכריזה פיפ\"א על היפוך חלקי: אוהדים במשחקים בארה\"ב ובקנדה רשאים כעת להביא בקבוק פלסטיק חד-פעמי, רך וסגור מהמפעל, בנפח 590 מ\"ל לאדם. בקבוקים קשיחים ניתנים למילוי חוזר נותרים אסורים. ולתשומת הלב: המשקאות היחידים הנמכרים בתוך האצטדיונים מסופקים על ידי נותן חסות פיפ\"א, קוקה-קולה.",
-      "en": "FIFA banned reusable water bottles from all World Cup stadiums, faced immediate outrage, and reversed course within days. The governing body updated its Stadium Code of Conduct on June 2 to remove a clause allowing empty reusable bottles, prompting protests from fans, supporter groups and politicians who cited intense summer heat at the North American venues. By June 5, FIFA announced a partial reversal: fans at matches in the USA and Canada may now bring one sealed, factory-fresh, soft 20oz (590ml) disposable plastic bottle per person. Hard-sided refillable bottles remain banned. Notably, the only drinks sold inside the venues are supplied by FIFA tournament sponsor Coca-Cola.",
-      "team": null,
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48978502/fifa-reverses-world-cup-water-bottle-ban-backlash"
-        },
-        {
-          "name": "Goal.com",
-          "url": "https://www.goal.com/en-us/lists/fifa-world-cup-water-bottle-ban-u-turn-backlash/blte79dcb83bd29f191"
-        },
-        {
-          "name": "Yahoo Sports UK",
-          "url": "https://uk.sports.yahoo.com/news/fifa-u-turn-world-cup-101416536.html"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
       "id": "por-ronaldo-age-milestone-2026-06-06",
       "type": "news",
       "confidence": "confirmed",
@@ -228,52 +274,6 @@
         {
           "name": "LBC",
           "url": "https://www.lbc.co.uk/article/world-cup-players-over-40-oldest-5Hjdb7r_2/"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "por-jota-27plus1-squad-2026-05-19",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "סגל ה-26 של פורטוגל בגביע העולם נושא שם 27 קבוע. המאמן רוברטו מרטינז הקדיש את הטורניר כולו לדיוגו ז'וטה, כנף ליברפול שנהרג בתאונת דרכים בספרד ביולי 2025 בגיל 28, כינה את הבחירה '27 שחקנים ועוד אחד' ואמר שמקומו של ז'וטה בקבוצה לא נעלם אי-פעם. מרטינז הוסיף שהמוטיבציה של הנבחרת כולה היא לנצח בגביע העולם עבורו, ופיפ\"א פרסמה מחווה רשמית. האם האבל הלאומי יהפוך לדלק שיקרב את פורטוגל לזכייה ראשונה?",
-      "en": "Portugal's 26-man World Cup squad carries a permanent 27th name. Coach Roberto Martinez dedicated the tournament to Diogo Jota, the Liverpool winger killed in a car crash in Spain in July 2025 at age 28, naming the selection '27 players plus one' and saying Jota's place in the group never disappeared. Martinez said the squad's entire motivation is to win the World Cup for him, and FIFA issued a formal tribute. Can a nation's grief become the fuel that finally gets Portugal over the finish line?",
-      "team": "POR",
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/news/articles/diogo-jota-tribute"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/46164741/portugal-want-2026-world-cup-success-diogo-jota-roberto-martinez"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/portugal-emotional-jota-gesture-world-133000555.html"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "irn-azmoun-excluded-uae-photo-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "איראן אישרה שהתוקף סרדר אזמון נעדר מסגל המונדיאל של 26 שחקנים לאחר שמדיית המדינה האיראנית כינתה בגידה את פרסום שלו באינסטגרם, המציג פגישה עם מוחמד בן ראשד אל-מקתום, שליט דובאי וראש ממשלת האמירויות. השחקן בן ה-31 עיגן את ההתקפה האיראנית לצד מהדי טארמי בקטאר 2022, ומשחק בלהק שבאב אל-אהלי שבאמירויות. האם ההתקפה האיראנית תתפקד בגביע עולם ללא הנבחר הוותיק ביותר שלה?",
-      "en": "Iran confirmed striker Sardar Azmoun is absent from their 26-man World Cup squad after Iranian state media branded his Instagram post, showing a meeting with Mohammed bin Rashid Al Maktoum, the ruler of Dubai and Prime Minister of the UAE, a betrayal. The 31-year-old anchored Iran's frontline alongside Mehdi Taremi at Qatar 2022 and plays club football for Shabab Al-Ahli in the UAE. Can Iran's attack function at a World Cup without their most experienced striker?",
-      "team": "IRN",
-      "sources": [
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/5/17/sardar-azmoun-left-out-as-iran-announce-world-cup-2026-squad"
-        },
-        {
-          "name": "Fox News",
-          "url": "https://www.foxnews.com/sports/sardar-azmoun-known-iranian-messi-left-countrys-world-cup-squad-accused-treason"
-        },
-        {
-          "name": "Seoul Economic Daily",
-          "url": "https://en.sedaily.com/sports/2026/06/02/iran-drops-azmoun-from-world-cup-squad-over-uae-photo"
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
