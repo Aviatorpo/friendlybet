@@ -1,29 +1,121 @@
 {
-  "updatedAt": "2026-06-05T22:22:02.597Z",
-  "count": 11,
+  "updatedAt": "2026-06-06T15:29:44.094Z",
+  "count": 12,
   "items": [
     {
-      "id": "ger-lennart-karl-injury-2026-06-05",
+      "id": "ger-lennart-karl-ruled-out-2026-06-06",
       "type": "news",
       "confidence": "confirmed",
-      "he": "גרמניה הקיצה ב-5 ביוני לבהלת פציעה: חצי השדה בן ה-18 לנארט קארל מבאיירן מינכן נשלח לבית חולים לסריקות לאחר תאונה באימון. המאמן יוליאן נגלסמן הודיע לכתבים שהמצב 'לא נראה טוב במיוחד' ואישר שלנבחרת יש עד 24 שעות לפני הפתיחה מול קוראסאו ב-14 ביוני להזמין חלופה בהתאם לתקנות גביע העולם. קארל היה אחד הדביוטנטים המצופים ביותר בסגל לאחר עונה פורצת דרך בעלי האנץ. האם כישרון גרמניה הצעיר יבריא בזמן?",
-      "en": "Germany woke up to an injury scare on June 5 after 18-year-old Bayern Munich midfielder Lennart Karl was sent to hospital for scans following a training accident. Coach Julian Nagelsmann told reporters it 'didn't look particularly good' and confirmed the squad have until 24 hours before their June 14 opener against Curacao to call up a replacement under World Cup rules. Karl had been one of the most anticipated debutants in the squad after a breakout season at the Allianz Arena. Will Germany's brightest new talent recover in time?",
+      "he": "כוכב הבכורה הגרמני אינו יוצא לדרך. ה-DFB אישר ב-6 ביוני שחצי השדה בן ה-18 לנארט קארל מבאיירן מינכן סבל מקרע בצרור שרירים בירך שמאל בזמן אימון בשיקגו ויפספד את מונדיאל 2026 לחלוטין. אסאן אואדראוגו בן ה-20 מ-RB לייפציג, שהחמיץ בקושי את הסגל המקורי, הוזמן כחלופה. קארל נהיה לשחקן הצעיר ביותר שהבקיע בליגת האלופות עבור באיירן העונה, וצפו שייכנס להרכב הגרמני מול קוראסאו ב-14 ביוני. האם הסגל העמוק של נגלסמן יספוג את המכה?",
+      "en": "Germany's most-anticipated debutant is out before a ball is kicked. The DFB confirmed on June 6 that 18-year-old Bayern Munich midfielder Lennart Karl suffered a muscle bundle tear in his left thigh during training in Chicago and will miss the 2026 World Cup entirely. RB Leipzig's 20-year-old Assan Ouedraogo, who narrowly missed the original squad selection, has been called up as his replacement. Karl became Bayern's youngest-ever Champions League scorer this season and had been expected to feature in Germany's opener against Curacao on June 14. Can Nagelsmann's deep squad absorb the blow?",
       "team": "GER",
       "sources": [
         {
-          "name": "France 24",
-          "url": "https://www.france24.com/en/live-news/20260605-injured-germany-starlet-karl-may-miss-world-cup-says-nagelsmann"
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48977173/lennart-karl-injured-germany-training-miss-world-cup"
         },
         {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/germanys-young-star-lennart-karl-may-miss-world-cup-after-injury-training"
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/confirmed-assan-ou-draogo-replaces-220200348.html"
         },
         {
-          "name": "Bundesliga.com",
-          "url": "https://www.bundesliga.com/en/bundesliga/news/lennart-karl-world-cup-injury-bayern-munich-germany-37718"
+          "name": "Bavarian Football Works",
+          "url": "https://www.bavarianfootballworks.com/fifa-world-cup/212194/rb-leipzigs-assan-ouedraogo-to-take-lennart-karls-world-cup-spot-with-germany"
         }
       ],
-      "expires_at": "2026-06-14T23:59:59Z"
+      "expires_at": "2026-06-26T23:59:59Z"
+    },
+    {
+      "id": "wc26-opening-ceremony-shakira-2026-06-06",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "חמישה ימים לפני השריקה הפותחת, פיפ\"א אישרה רשמית ששקירה ובורנה בוי יעמדו בראש טקס הפתיחה של מונדיאל 2026 באסטדיו אצטקה במקסיקו סיטי ב-11 ביוני, ויבצעו את הלהיט הרשמי \"דאי דאי\" בהופעה חיה. הטקס, שמתחיל ב-11:30 שעון מקומי לפני המשחק בין מקסיקו לדרום אפריקה ב-13:00, יכלול גם את מאנה, אלחנדרו פרנדס, J בלבין, בלינדה וטיילה. שקירה חוזרת לבמת המונדיאל 16 שנים אחרי ש-Waving Flag הפכה למוזיקת הרקע של דרום אפריקה 2010, וגם נקבעה כמבצעת משותפת בטקס ההפסקה של הגמר ב-19 ביולי. האם היא כתבה שוב לחן שיגדיר טורניר?",
+      "en": "Five days before the opening whistle, FIFA officially confirmed that Shakira and Burna Boy will headline the World Cup 2026 opening ceremony at Estadio Azteca in Mexico City on June 11, performing the official tournament anthem \"Dai Dai\" live. The ceremony, starting at 11:30 local time before Mexico face South Africa at 13:00, also features Mana, Alejandro Fernandez, J Balvin, Belinda and Tyla. Shakira returns to the World Cup stage 16 years after Waving Flag soundtracked South Africa 2010, and is also booked to co-headline the final halftime show on July 19. Has she written another tournament-defining anthem?",
+      "team": null,
+      "sources": [
+        {
+          "name": "FIFA (official)",
+          "url": "https://inside.fifa.com/organisation/media-releases/shakira-burna-dai-dai-world-cup-opening-ceremony-mexico-city"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48972437/shakira-burna-boy-perform-2026-world-cup-opening-ceremony-mexico"
+        },
+        {
+          "name": "Billboard",
+          "url": "https://www.billboard.com/music/latin/shakira-burna-boy-dai-dai-2026-world-cup-opening-ceremony-1236265169/"
+        }
+      ],
+      "expires_at": "2026-06-12T23:59:59Z"
+    },
+    {
+      "id": "wc26-azteca-altitude-2026-06-06",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "היתרון הביתי הגדול של מקסיקו במונדיאל 2026 אינו קשור לטקטיקה. אסטדיו אצטקה שוכן ב-2,240 מטרים מעל פני הים, למעלה מ-7,300 רגל, מה שהופך אותו לאתר הגבוה ביותר בין שלוש מדינות המארחות. נבחרות ממדינות השוכנות בגובה פני הים ירגישו את האוויר הדליל תוך דקות על המגרש. מנהל הכדורגל המקסיקני מיקל אריולה כינה את הגובה \"יתרון עצום\" לצד קהל הבית. האצטקה גם עושה היסטוריה כאצטדיון הראשון שמארח משחקי מונדיאל בשלושה טורנירים נפרדים, לאחר שאירח גמרים ב-1970 וב-1986. האם גורם הגובה יעצב את תוצאות שלב הבתים?",
+      "en": "Mexico's biggest home advantage at the 2026 World Cup has nothing to do with tactics. Estadio Azteca sits at 2,240 metres above sea level, over 7,300 feet, making it the highest-altitude venue across all three host nations. Teams travelling from sea-level countries will feel the thin air within minutes on the pitch. Mexican football commissioner Mikel Arriola called it \"a massive advantage\" alongside the home crowd. The Azteca also makes history as the first stadium to host World Cup matches across three separate tournaments, having staged finals in both 1970 and 1986. Will the altitude factor shape the early group-stage results?",
+      "team": "MEX",
+      "sources": [
+        {
+          "name": "Washington Post",
+          "url": "https://www.washingtonpost.com/sports/soccer/2026/06/06/world-cup-mexico-altitude-mexico-city-guadalajara/c88cc5ae-61a0-11f1-9c46-d6211372eede_story.html"
+        },
+        {
+          "name": "TSN",
+          "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/mexico-citys-altitude-poses-a-key-challenge-for-teams-at-the-2026-world-cup/"
+        },
+        {
+          "name": "FIFA",
+          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026"
+        }
+      ],
+      "expires_at": "2026-07-06T00:00:00Z"
+    },
+    {
+      "id": "wc26-saot-ai-offside-2026-06-06",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "מונדיאל 2026 יפרוס את טכנולוגיית העצירה המדויקת ביותר בהיסטוריית הכדורגל. פיפ\"א אישרה שהמערכת המשודרגת לגילוי עצירה חצי-אוטומטית שולחת כעת התרעה קולית בזמן אמת לעוזר השופט בכל פעם שנבדל שחקן ביותר מ-10 סנטימטרים, מה שמחמיש את סף הגילוי לעומת גבול ה-50 סנטימטרים שהיה בגביע העולם לאלופות 2023. ההתרעה מגיעה לפני שיצירת עלייה מתפתחת במלואה, כך שהשופטים יכולים לנופף מיד במקום להמתין לבדיקת VAR. כל 16 אתרי המארח מצוידים ב-16 מצלמות מעקב כל אחד ושבב בתוך כדור המשחק. עיכובים ארוכים לבדיקות עצירה אמורים להיות שייכים לעבר בטורניר הזה.",
+      "en": "The 2026 World Cup will deploy the most precise offside technology in football history. FIFA confirmed that its upgraded semi-automated offside system now sends a real-time audio alert to the assistant referee whenever a player is more than 10 centimetres offside, cutting the detection threshold fivefold from the 50-centimetre limit used at the 2023 Club World Cup. The alert arrives before a passage of play fully develops, so officials can flag immediately rather than waiting for a VAR check. All 16 host venues are equipped with 16 tracking cameras each and a chip inside the match ball. Longer offside delays should be a thing of the past at this tournament.",
+      "team": null,
+      "sources": [
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/6/fifa-world-cup-2026-what-is-new-sensor-match-ball-ai-player-avatar"
+        },
+        {
+          "name": "Inside World Football",
+          "url": "https://www.insideworldfootball.com/2026/06/03/fifa-upgrades-saot-and-ball-tracking-as-2026-match-officials-given-new-suite-of-tech-tools"
+        },
+        {
+          "name": "TNT Sports",
+          "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "por-ronaldo-age-milestone-2026-06-06",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "קריסטיאנו רונאלדו יהיה בן 41 שנים וארבעה חודשים כשפורטוגל ישחקו את משחקם הראשון במונדיאל 2026, מה שמציב אותו בין השחקנים המגרשיים הוותיקים ביותר שאי פעם התחרו בטורניר. CBS ספורט אישרה שמגרש 2026 יכלול לפחות שמונה שחקנים בני 40 ומעלה, שיא לכל מונדיאל. רונאלדו מוביל את פורטוגל במה שנחשב לטורניר האחרון שלו, ורודף אחרי הגביע הגדול היחיד שמעולם לא השיג. אם פורטוגל תגיע לגמר ב-19 ביולי, הוא יהיה בן 41 שנים ו-164 ימים, שובר את הרשומה לשחקן הוותיק ביותר שאי פעם הופיע בגמר מונדיאל. הזדמנות אחרונה אחת על הכותרת שמעולם לא זכה בה.",
+      "en": "Cristiano Ronaldo will be 41 years and four months old when Portugal play their first 2026 World Cup match, placing him among the oldest outfield players ever to compete in the tournament. CBS Sports confirmed that the 2026 field will feature at least eight players aged 40 or over, a record for any World Cup. Ronaldo leads Portugal in what is widely expected to be his final tournament, chasing the one major trophy that has always escaped him. If Portugal reach the final on July 19, he would be 41 years and 164 days old, breaking the record for the oldest player ever to appear in a World Cup final. One last chance at the title he never won.",
+      "team": "POR",
+      "sources": [
+        {
+          "name": "CBS Sports",
+          "url": "https://www.cbssports.com/soccer/news/cristiano-ronaldo-40-year-olds-set-to-make-2026-world-cup-the-oldest/"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/records-cristiano-ronaldo-break-world-190000060.html"
+        },
+        {
+          "name": "LBC",
+          "url": "https://www.lbc.co.uk/article/world-cup-players-over-40-oldest-5Hjdb7r_2/"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
       "id": "bra-neymar-calf-doubt-2026-06-05",
@@ -185,60 +277,6 @@
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "cuw-advocaat-oldest-wc-coach-2026-05-13",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "דיק אדוקאט, בן 78, עומד להפוך למאמן הזקן ביותר בהיסטוריית גביע העולם. קוראסאו החזירה אותו לתפקיד ב-13 במאי לאחר שפרד רוטן התפטר, וכשהאיים ייפגשו עם גרמניה בהיוסטון ב-14 ביוני, אדוקאט ישבור את הרשומה של אוטו רהגל (יוון, 2010, גיל 71) בשבע שנים שלמות. זהו מונדיאל שלישי עם שלוש נבחרות שונות: הולנד 1994, דרום קוריאה 2006 וקוראסאו 2026. האם ניסיון של חיים שלמים על הקו יגשר על הפער מול אלופות גרמניה?",
-      "en": "Dick Advocaat, 78, is set to become the oldest coach in World Cup history. Curacao reinstated him on May 13 after Fred Rutten resigned, and when the island side face Germany in Houston on June 14, Advocaat will surpass Otto Rehhagel's record of 71 (Greece, 2010) by seven full years. It is his third World Cup with three different nations, the Netherlands in 1994, South Korea in 2006, and Curacao in 2026. Can a lifetime on the touchline bridge the gap to four-time champions Germany?",
-      "team": "CUW",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48757275/curacao-reinstate-dick-advocaat-deny-change-due-external-pressure"
-        },
-        {
-          "name": "Washington Post",
-          "url": "https://www.washingtonpost.com/sports/soccer/2026/05/13/curacao-coach-advocaat-world-cup/6b277144-4eb2-11f1-97e7-22c6c29ff0d8_story.html"
-        },
-        {
-          "name": "Colombia One",
-          "url": "https://colombiaone.com/2026/05/13/advocaat-older-coach-fifa-world-cup-2026/"
-        }
-      ],
-      "expires_at": "2026-06-18T23:59:59Z"
-    },
-    {
-      "id": "fifa-anthem-all-26-center-circle-2026-06-04",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "פיפ\"א הכריזה על טקס חדש לפני כל משחק במונדיאל 2026: כל 26 שחקני הסגל, לא רק ה-11 המתחילים, יעמדו על המגרש בזמן נגינת ההמנונות הלאומיים ויתמקמו מסביב לעיגול המרכזי בפורמט 360 מעלות, מול היריבים ושופטי המשחק. נשיא פיפ\"א ג'אני אינפנטינו אמר שהמטרה היא ליצור 'רגע של אחדות, גאווה ורגש' השייך לנבחרת כולה. האם שחקני החלופה סוף סוף יחושו מרכזיים לאירוע כמו ה-11 המתחילים?",
-      "en": "FIFA has announced a new ceremony for every match at the 2026 World Cup: all 26 squad members, not just the starting 11, will stand on the pitch during national anthems, arranged around the centre circle in a 360-degree format facing the opposing team and the match officials. FIFA president Gianni Infantino said the aim is to create a moment of unity, pride and emotion that belongs to the whole squad. Will the players on the bench finally feel as central to the occasion as the starting 11?",
-      "team": null,
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48972979/fifa-announces-national-anthems-involve-all-26-players-world-cup"
-        },
-        {
-          "name": "World Soccer Talk",
-          "url": "https://worldsoccertalk.com/world-cup/fifa-president-gianni-infantino-announces-new-national-anthem-protocol-for-2026-world-cup/"
-        },
-        {
-          "name": "The Mirror",
-          "url": "https://www.themirror.com/sport/soccer/fifa-announces-change-every-world-1871191"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "countdown-2026-06-06",
-      "type": "countdown",
-      "confidence": "confirmed",
-      "he": "המונדיאל מתחיל בעוד 5 ימים! כל ההימורים עוד פתוחים, מי תהיה ההפתעה של 2026?",
-      "en": "The World Cup kicks off in 5 days! Every prediction is still open. Who'll be the surprise of 2026?",
-      "sources": []
     }
   ]
 }
