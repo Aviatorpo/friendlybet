@@ -9857,6 +9857,29 @@ async function spLoadExistingPicks() {
       spState.bracketPicks = newBracket;
       spState.tournamentWinner = newWinner;
       spState.thirdPlaceAdvancers = newThirdPlace || [];
+
+      // v2.9.2 AUTO-HEAL: if the server bracket is missing/incomplete but this
+      // browser holds a more-complete local backup for THIS exact user+pool,
+      // restore it and re-save to the DB. Recovers the silent-save-failure class
+      // (interrupted debounce / momentarily-cold RPC) with no user action.
+      try {
+        const cached = _spCacheLoad();
+        const dbCount = Object.keys(spState.bracketPicks || {}).length;
+        const cachedCount = cached && cached.bracketPicks ? Object.keys(cached.bracketPicks).length : 0;
+        if (cached && cachedCount > dbCount) {
+          if (Object.keys(cached.groupPositions || {}).length) spState.groupPositions = cached.groupPositions;
+          if ((cached.thirdPlaceAdvancers || []).length) spState.thirdPlaceAdvancers = cached.thirdPlaceAdvancers;
+          spState.bracketPicks = cached.bracketPicks;
+          spState.tournamentWinner = cached.tournamentWinner || spState.tournamentWinner;
+          console.warn('[spLoadExistingPicks] AUTO-HEAL: server bracket=' + dbCount + ' < local backup=' + cachedCount + ' — restoring + re-saving');
+          setTimeout(() => {
+            try {
+              if ((spState.thirdPlaceAdvancers || []).length === 8) spSaveThirdPlaceToDb();
+              spSaveBracketToDb(false);
+            } catch (_) {}
+          }, 900);
+        }
+      } catch (_) {}
     } else {
       console.warn('spLoadExistingPicks: DB errors and no data — keeping in-memory state');
     }
@@ -10758,8 +10781,39 @@ function spClearDownstream(bracketPos) {
   }
 }
 
+// v2.9.2: LOCAL SAFETY-NET CACHE of the single-phase picks.
+// The bracket save goes through an RPC that needs a recovery code; if the
+// debounced save was interrupted (fast navigation / app backgrounded on mobile)
+// or the RPC was momentarily unavailable, the bracket could fail to persist
+// SILENTLY while the champion (saved immediately, with an allowed fallback
+// table) survived — the exact "only champion/top-scorer saved" report. We now
+// mirror every pick to localStorage and, on the next load, re-save to the DB if
+// the server copy is missing/incomplete. This makes pick loss self-healing.
+function _spCacheKey() {
+  const u = state.currentUser && state.currentUser.id;
+  const p = state.currentPool && state.currentPool.id;
+  return (u && p) ? ('fb_sp_picks_' + u + '_' + p) : null;
+}
+function _spCacheSave() {
+  const k = _spCacheKey(); if (!k) return;
+  try {
+    localStorage.setItem(k, JSON.stringify({
+      groupPositions: spState.groupPositions || {},
+      thirdPlaceAdvancers: spState.thirdPlaceAdvancers || [],
+      bracketPicks: spState.bracketPicks || {},
+      tournamentWinner: spState.tournamentWinner || null,
+      ts: Date.now()
+    }));
+  } catch (_) {}
+}
+function _spCacheLoad() {
+  const k = _spCacheKey(); if (!k) return null;
+  try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (_) { return null; }
+}
+
 let _spBracketSaveTimer = null;
 function spAutoSaveBracket() {
+  _spCacheSave(); // mirror locally FIRST so a missed/failed DB save never loses work
   if (_spBracketSaveTimer) clearTimeout(_spBracketSaveTimer);
   _spBracketSaveTimer = setTimeout(() => spSaveBracketToDb(false), 600);
 }
@@ -11116,6 +11170,7 @@ function spRenderWinnerScreen() {
 function spPickWinner(code) {
   if (spIsLocked()) return;
   spState.tournamentWinner = code;
+  _spCacheSave();
   spRenderWinnerScreen();
   spSaveWinnerToDb(false);
 }
@@ -11434,6 +11489,17 @@ async function spSubmitPredictions() {
   }
 
   try {
+    // v2.9.2: GUARANTEED save on submit. Don't rely solely on the debounced
+    // auto-save (a 600ms timer that can be interrupted by fast navigation or the
+    // app being backgrounded on mobile) — explicitly persist the third-place
+    // advancers + the full bracket here so picks can never be lost just because
+    // the timer didn't fire. _spCacheSave keeps a local backup for auto-heal.
+    _spCacheSave();
+    try {
+      if ((spState.thirdPlaceAdvancers || []).length === 8) await _spSaveThirdPlaceInner();
+      if (Object.keys(spState.bracketPicks || {}).length) await spSaveBracketToDb(false);
+    } catch (e) { console.warn('[spSubmitPredictions] explicit save warning:', e); }
+
     if (allComplete) {
       const submittedAt = new Date().toISOString();
       // Preferred: server-side mark_predictions_submitted RPC (self, idempotent).
