@@ -1,7 +1,76 @@
 {
-  "updatedAt": "2026-06-07T09:29:03.898Z",
+  "updatedAt": "2026-06-07T12:28:48.815Z",
   "count": 12,
   "items": [
+    {
+      "id": "ger-karl-out-ouedraogo-2026-06-06",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "גרמניה ספגה מכה כואבת ביום האחרון ב-6 ביוני כשהמצע הבן 18 של ביירן מינכן, לנארט קארל, נשלל מהמונדיאל עם קרע בסיבי השריר בירך השמאל שנגרם בהכנה בשיקגו ב-5 ביוני. המאמן יוליאן נגלסמן אמר שהוא מצטער מאוד בשביל הצעיר וקרא לאסאן אואדראוגו, בן 20 ממנסי לייפציג, כמחליפו. קארל הבקיע תשעה שערים לביירן בעונה שעברה ונחשב לאחד הכישרונות הצעירים המרגשים ביותר בטורניר כולו. גרמניה פותחת את מסעה מול קוראסאו בהיוסטון ב-14 ביוני. האם נגלסמן יוכל למלא את החלל היצירתי לפני שהפעולה האמיתית מתחילה?",
+      "en": "Germany suffered a painful last-minute blow on June 6 when 18-year-old Bayern Munich midfielder Lennart Karl was ruled out of the World Cup with torn muscle fibres in his left thigh, suffered during training in Chicago on June 5. Coach Julian Nagelsmann said he felt incredibly sorry for the teenager and called up RB Leipzig's 20-year-old Assan Ouedraogo as his replacement. Karl had scored nine goals for Bayern last season and was widely regarded as one of the most exciting young talents in the entire tournament. Germany open their campaign against Curacao in Houston on June 14. Can Nagelsmann fill the creative void before the real thing begins?",
+      "team": "GER",
+      "sources": [
+        {
+          "name": "FIFA",
+          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/lennart-karl-germany-injury-withdrawal"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48977173/lennart-karl-injured-germany-training-miss-world-cup"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/confirmed-assan-ou-draogo-replaces-220200348.html"
+        }
+      ],
+      "expires_at": "2026-06-14T23:59:59Z"
+    },
+    {
+      "id": "par-enciso-doubt-opener-2026-06-06",
+      "type": "news",
+      "confidence": "reported",
+      "he": "לפי הדיווחים, תוקף פרגוואי חוליו אנסיסו, בן 22, יצא על אלונקה בדמעות בדקה ה-25 של חימום ב-5 ביוני מול ניקרגואה, לאחר שסבל ממה שהמאמן גוסטבו אלפארו תיאר כפגיעה בו-זמנית בשרירי הירך ופציעה בגב התחתון שמשפיעה על שרירי הרביע. לפי הדיווחים, אנסיסו ספק ישחק בפתיחת פרגוואי ב-12 ביוני מול ארה\"ב ב-SoFi Stadium, כשמשחק ב-25 ביוני מול אוסטרליה נראה כיעד חזרה ריאליסטי יותר. קדמן סטרסבורג הבקיע 12 שערים בליגה 1 העונה והיה המתקיף המסוכן ביותר של פרגוואי. האם ארה\"ב תנצל את מזלה כשהטורניר יפתח?",
+      "en": "Reports say Paraguay forward Julio Enciso, 22, was stretchered off in tears during the 25th minute of a June 5 warmup against Nicaragua, suffering what manager Gustavo Alfaro described as a simultaneous hamstring impact and lower-back injury affecting the quadriceps. A reporter covering the team said Enciso is unlikely to be fit for Paraguay's June 12 opener against the USA at SoFi Stadium, with the June 25 group match against Australia seen as a more realistic return target. The Strasbourg forward had scored 12 goals in Ligue 1 this season and was Paraguay's most dangerous attacker. Will the USA benefit from their opponents' misfortune when the tournament kicks off?",
+      "team": "PAR",
+      "sources": [
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/usmnt-opening-world-cup-opponent-011216947.html"
+        },
+        {
+          "name": "beIN Sports",
+          "url": "https://www.beinsports.com/en-au/football/fifa-world-cup-2026/articles/paraguay-s-julio-enciso-injured-ahead-of-world-cup-2026-06-06"
+        },
+        {
+          "name": "The Mirror US",
+          "url": "https://www.themirror.com/sport/soccer/enciso-injury-world-cup-usmnt-1873343"
+        }
+      ],
+      "expires_at": "2026-06-12T23:59:59Z"
+    },
+    {
+      "id": "mex-quinto-partido-curse-2026-06-07",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "מקסיקו לא עברה מעולם את שלב שישה עשר הנבחרות בשבע הופעות רצופות בגביע העולם בין 1994 ל-2018, ריצה כל-כך כואבת שלמשחק שלא הצליחו לנצח ניתן שם עצמאי בכדורגל המקסיקני: אל קינטו פרטידו, המשחק החמישי. בקטאר 2022 הקללה עמקה כשאל טרי נפלה בשלב הבתים לראשונה מאז 1978. כעת, על אדמת הבית עם קהל האצטקה מאחוריהם, נבחרת אגירה פותחת את מסעה מול דרום אפריקה ב-11 ביוני. הגעות מקסיקו לשמינייה גמר התרחשו רק כשאירחו ב-1970 וב-1986. עם פורמט 48 הנבחרות המורחב שמוסיף סיבוב של 32, El Tri חייבת כעת לנצח בשני משחקי נוק-אאוט רק להגיע לשלב שבו קדמותיהן נפלו שוב ושוב. האם הטורניר הביתי יהיה סוף-סוף זה שישבור את הקללה?",
+      "en": "Mexico have never advanced beyond the round of 16 in seven consecutive World Cup appearances from 1994 to 2018, a run so painful that the match they could never win was given its own name in Mexican football: el quinto partido, the fifth match. At Qatar 2022 the curse deepened when El Tri were eliminated in the group stage for the first time since 1978. Now, on home soil with the Azteca crowd behind them, coach Javier Aguirre's side open their campaign against South Africa on June 11. Mexico's only quarterfinal appearances came when they hosted in 1970 and 1986. With the expanded 48-team format adding a new round of 32, El Tri must now win two knockout games just to reach the stage where their predecessors kept falling. Can the home tournament finally be the one that breaks the curse for good?",
+      "team": "MEX",
+      "sources": [
+        {
+          "name": "beIN Sports",
+          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles-video/mexico-s-fifth-match-curse-has-a-tougher-new-version-in-the-2026-world-cup-2026-06-05"
+        },
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/5/mexico-world-cup-2026-preview-players-to-watch-group-matches-and-squad"
+        },
+        {
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com/stories/soccer/mexico-world-cup-2026-javier-chicharito-hernandez-usmnt-canada"
+        }
+      ],
+      "expires_at": "2026-07-06T00:00:00Z"
+    },
     {
       "id": "can-bombito-miss-wc-2026-06-07",
       "type": "news",
@@ -208,75 +277,6 @@
         }
       ],
       "expires_at": "2026-06-16T23:59:59Z"
-    },
-    {
-      "id": "fra-dembele-ballon-dor-2025",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "אוסמן דמבלה מגיע לגביע העולם הראשון שלו כמחזיק הבלון דאור, לאחר שזכה בפרס 2025 בפריז ב-22 בספטמבר אחרי שהוביל את פ.ס.ג לרביעייה היסטורית עם 33 שערים ו-15 בישולים ב-49 הופעות. כעת עם חולצת מספר 7 האגדית של צרפת, השחקן בן ה-28 נכנס לטורניר 2026 בכושר הטוב ביותר בקריירה שלו לצד קפטן מבאפה. מסירת חולצה מספר 7 לדמבלה על ידי דשאמפס היא הצהרה ברורה לגבי מי שמעצב את ההתקפה הצרפתית. האם שני הקדמים של צרפת יהיו השותפות המסוכנת ביותר במונדיאל הזה?",
-      "en": "Ousmane Dembele arrives at his first World Cup as the reigning Ballon d'Or winner, claiming the 2025 award in Paris on September 22 after leading PSG to a historic quadruple with 33 goals and 15 assists in 49 appearances. Now wearing France's iconic number 7, the 28-year-old enters the 2026 tournament in the best form of his career alongside captain Mbappe. Deschamps handing Dembele the number 7 shirt is a clear statement about who shapes the French attack. Could France's front two be the most dangerous partnership at this World Cup?",
-      "team": "FRA",
-      "sources": [
-        {
-          "name": "Wikipedia (2025 Ballon d'Or)",
-          "url": "https://en.wikipedia.org/wiki/2025_Ballon_d%27Or"
-        },
-        {
-          "name": "Sports Illustrated",
-          "url": "https://www.si.com/soccer/ballon-dor-2025-winners-full-list"
-        },
-        {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/can-ousmane-dembele-do-it-again-psg-star-wants-many-more-ballons-dor-as-he-targets-champions-league-and-world-cup-success"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "por-leao-red-card-chile-warmup-2026-06-06",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "תוקף פורטוגל ראפאל לאאו גורש לאחר שניפץ אגרוף לעבר מגן צ'ילה איוון רומן זמן קצר לפני ההפסקה, בניצחון ידידותי של פורטוגל 2:1 ב-6 ביוני. לאאו חש שנפגע שלא כדין על ידי יריב אחר, הגיב בניפוץ אגרוף לעבר רומן, ושני השחקנים קיבלו כרטיסים אדומים ישירים. הבשורה הטובה לפורטוגל: השעיות ממשחקי תערוכה אינן עוברות למשחקי גביע העולם הרשמיים, ולכן לאאו זכאי לפתיחה בקבוצה K מול ד.ר. קונגו בהיוסטון ב-17 ביוני. האירוע מעלה בכל זאת שאלות על מזגו של כוכב מילאן, בזמן שפורטוגל רודפת אחרי הגביע שלא זכתה בו מעולם עם קריסטיאנו רונאלדו מוביל במה שצפוי להיות הטורניר האחרון שלו. האם לאאו יסנן את האש לשערים?",
-      "en": "Portugal forward Rafael Leao was sent off for punching Chile defender Ivan Roman just before halftime during Portugal's 2-1 warmup win on June 6. Leao felt he had been unfairly challenged by a different opponent, reacted by throwing a punch at Roman, and both players received straight red cards. The good news for Portugal is that suspensions earned in exhibition matches do not carry over to official World Cup fixtures, so Leao is fully eligible for Portugal's Group K opener against DR Congo in Houston on June 17. The incident nonetheless raises questions about the Milan star's temperament as Portugal chase the trophy they have never won, with Cristiano Ronaldo leading what is widely expected to be his final tournament. Will Leao channel that fire into goals instead?",
-      "team": "POR",
-      "sources": [
-        {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/portugals-leao-sent-off-for-punching-in-world-cup-warmup-win-over-chile"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/report/_/gameId/401862883"
-        },
-        {
-          "name": "Athlon Sports",
-          "url": "https://athlonsports.com/soccer/will-rafael-leao-miss-portugal-world-cup-opening-game-red-card"
-        }
-      ],
-      "expires_at": "2026-06-17T23:59:59Z"
-    },
-    {
-      "id": "wc26-opening-ceremony-shakira-2026-06-06",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "חמישה ימים לפני השריקה הפותחת, פיפ\"א אישרה רשמית ששקירה ובורנה בוי יעמדו בראש טקס הפתיחה של מונדיאל 2026 באסטדיו אצטקה במקסיקו סיטי ב-11 ביוני, ויבצעו את הלהיט הרשמי 'דאי דאי' בהופעה חיה. הטקס, שמתחיל ב-11:30 שעון מקומי לפני המשחק בין מקסיקו לדרום אפריקה ב-13:00, יכלול גם את מאנה, אלחנדרו פרנדס, J בלבין, בלינדה וטיילה. שקירה חוזרת לבמת המונדיאל 16 שנים אחרי ש-Waving Flag הפכה למוזיקת הרקע של דרום אפריקה 2010, וגם נקבעה כמבצעת משותפת בטקס ההפסקה של הגמר ב-19 ביולי. האם היא כתבה שוב לחן שיגדיר טורניר?",
-      "en": "Five days before the opening whistle, FIFA officially confirmed that Shakira and Burna Boy will headline the World Cup 2026 opening ceremony at Estadio Azteca in Mexico City on June 11, performing the official tournament anthem 'Dai Dai' live. The ceremony, starting at 11:30 local time before Mexico face South Africa at 13:00, also features Mana, Alejandro Fernandez, J Balvin, Belinda and Tyla. Shakira returns to the World Cup stage 16 years after Waving Flag soundtracked South Africa 2010, and is also booked to co-headline the final halftime show on July 19. Has she written another tournament-defining anthem?",
-      "team": null,
-      "sources": [
-        {
-          "name": "FIFA (official)",
-          "url": "https://inside.fifa.com/organisation/media-releases/shakira-burna-dai-dai-world-cup-opening-ceremony-mexico-city"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48972437/shakira-burna-boy-perform-2026-world-cup-opening-ceremony-mexico"
-        },
-        {
-          "name": "Billboard",
-          "url": "https://www.billboard.com/music/latin/shakira-burna-boy-dai-dai-2026-world-cup-opening-ceremony-1236265169/"
-        }
-      ],
-      "expires_at": "2026-06-12T23:59:59Z"
     }
   ]
 }
