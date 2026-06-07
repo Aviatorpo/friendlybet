@@ -1,7 +1,30 @@
 {
-  "updatedAt": "2026-06-07T00:27:48.889Z",
+  "updatedAt": "2026-06-07T03:25:07.105Z",
   "count": 12,
   "items": [
+    {
+      "id": "arg-messi-bench-honduras-2026-06-07",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "ליונל מסי ישב כמחליף שלא השתמשו בו בעת שארגנטינה מחצה את הונדורס 2:0 בחימום ההכנה האחרון שלה לטורניר בקייל פילד בקולג' סטיישן, טקסס, ב-7 ביוני, כשלאוטרו מרטינז המיר פנדל וג'וליאנו סימאונה הכפיל. המאמן סקלוני אמר שההחלטה להשאיר את מסי בחוץ היתה אך ורק מניעתית בזמן שמנצח גביע הבלון דאור שמונה פעמים ממשיך להחלים ממתח בשוק השמאל, וכי זמינותו לפתיחה מול אלג'יריה ב-16 ביוני בקנזס סיטי תיבחן יום אחרי יום. האלופות המגנות הראו שהן יכולות לנצח בלעדי הקמע שלהן, אבל העולם רוצה לראות אותו על אותו מגרש משריקה ראשונה. האם הוא יהיה כשיר להתחיל כשהטורניר האמיתי יפתח?",
+      "en": "Lionel Messi sat as an unused substitute as Argentina crushed Honduras 2-0 in their final pre-tournament warm-up at Kyle Field in College Station, Texas on June 7, with Lautaro Martinez converting a penalty and Giuliano Simeone doubling the lead. Coach Scaloni said the decision was purely precautionary as the eight-time Ballon d'Or winner continues his recovery from a left hamstring strain, and that his status for the June 16 opener against Algeria in Kansas City will be assessed day by day. Defending champions Argentina showed they can win without their talisman, but the world wants to see him on that pitch from the first whistle. Will he be fit to start when the real tournament begins?",
+      "team": "ARG",
+      "sources": [
+        {
+          "name": "Outlook India",
+          "url": "https://www.outlookindia.com/sports/football/argentina-vs-honduras-live-score-international-friendly-2026-updates-highlights-texas"
+        },
+        {
+          "name": "Heavy.com",
+          "url": "https://heavy.com/sports/soccer/world-cup/argentina-honduras-results-score-updates-stats/"
+        },
+        {
+          "name": "Sports Illustrated",
+          "url": "https://www.si.com/soccer/why-lionel-messi-isnt-starting-for-argentina-vs-honduras-international-friendly"
+        }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
     {
       "id": "bra-neymar-mri-monday-2026-06-07",
       "type": "news",
@@ -26,56 +49,56 @@
       "expires_at": "2026-06-13T23:59:59Z"
     },
     {
-      "id": "arg-messi-hamstring-doubt-2026-06-06",
+      "id": "fra-ivory-coast-upset-2026-06-04",
       "type": "news",
       "confidence": "confirmed",
-      "he": "ליונל מסי, בן 38, ספג מתח שרירי בשריר השוק השמאלי במשחקו האחרון עם אינטר מיאמי ב-25 במאי, ומאז מתאמן בנפרד מחברי הנבחרת הארגנטינאית מאז הגעת הסגל למחנה האימונים בקנזס סיטי. המאמן ליונל סקלוני אמר שמנצח גביע הבלון דאור שמונה פעמים הולך בכיוון הנכון ועשוי לקבל דקות מסוימות בידידותיות מול הונדורס ואיסלנד, אך זמינותו לפתיחה מול אלג'יריה ב-16 ביוני בקנזס סיטי אינה מובטחת. ארגנטינה היא האלופה המגינה. אם מסי לא יוכל להתחיל ב-16 ביוני, היא תגן על הכתר ללא כוכבה מהשריקה הראשונה. האם הכדורגלן הגדול ביותר בדורו יגיע בכושר כדי להשאיר חותם במה שצפוי להיות מונדיאלו האחרון?",
-      "en": "Lionel Messi, 38, strained his left hamstring during his final Inter Miami match on May 25 and has been training separately from the Argentina squad since they arrived at their World Cup camp in Kansas City. Coach Lionel Scaloni says the eight-time Ballon d'Or winner is doing well and may get a few minutes in the Honduras and Iceland warmups, but his availability to start the June 16 opener against Algeria in Kansas City is not guaranteed. Argentina are the defending champions. If Messi cannot start on June 16, they will defend the title without their talisman from the first whistle. Will the greatest player of his generation arrive fit enough to leave his mark on what is widely expected to be his final World Cup?",
-      "team": "ARG",
+      "he": "צרפת נפלה 2:1 מול חוף השנהב בחימום ההכנה שלה למונדיאל 2026 ב-4 ביוני באצטדיון דה לה בוז'ואר בנאנט, תוצאת הפתעה עבור סגל שבראשו מחזיק הבלון דאור אוסמן דמבלה וקפטן קיליאן מבאפה. ראיאן שרקי הביא את צרפת לפני ההפסקה, אך גואלה דואה השווה שמונה דקות אחרי ההפסקה, ולאחר מכן סיפק לאמאד דיאלו להשלים את הניצחון שש דקות לפני הסיום. צרפת פותחת את קבוצה I מול סנגל ב-16 ביוני בניו ג'רזי. האם דשאמפס יצליח לאטום את ההגנה לפני ערב הפתיחה, או שזו אזהרה מאחת הנבחרות המועדפות בטורניר?",
+      "en": "France were beaten 2-1 by Ivory Coast in their World Cup 2026 warm-up on June 4 at Stade de la Beaujoire in Nantes, a shock result for a squad led by Ballon d'Or holder Ousmane Dembele and captain Kylian Mbappe. Rayan Cherki gave France the lead just before halftime, but Guéla Doué equalised eight minutes after the break, then delivered the cross that Amad Diallo converted six minutes from time. France open Group I against Senegal on June 16 in New Jersey. Can Deschamps tighten the defence before opening night, or is this a warning sign from one of the tournament favourites?",
+      "team": null,
       "sources": [
         {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48945340/messi-trains-own-argentina-opening-session-ahead-world-cup"
+          "name": "France24",
+          "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat"
         },
         {
           "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/3/messi-trains-alone-as-argentina-hold-first-world-cup-practice-session"
+          "url": "https://www.aljazeera.com/sports/2026/6/4/ivory-coast-beat-france-in-world-cup-warning-to-one-of-the-favourites"
         },
         {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/argentina-coach-shares-lionel-messi-130000668.html"
+          "name": "ABC News",
+          "url": "https://abcnews.com/Sports/wireStory/france-stunned-ivory-coast-world-cup-warmup-spain-133602036"
         }
       ],
       "expires_at": "2026-06-16T23:59:59Z"
     },
     {
-      "id": "eng-tuchel-drops-palmer-foden-trent-2026-05-22",
+      "id": "fra-dembele-ballon-dor-2025",
       "type": "news",
       "confidence": "confirmed",
-      "he": "תומאס טוכל הפתיע את עולם הכדורגל בהשמטות הגדולות ביותר של חלון ההכנות, כשהשמיט את קול פלמר, פיל פודן, טרנט אלכסנדר-ארנולד והארי מגווייר מסגל 26 שחקני אנגליה למונדיאל. פודן ופלמר שילמו מחיר על עונת מועדונים חסרת ברק, ואילו טוכל אמר שאחדות קבוצתית חשובה לו יותר מבריקות אישיות ורצה לשחזר את הרוח ממחנות הכשורים הקודמים. מגווייר תיאר את עצמו כ'המום ושבור'. אנגליה רודפת אחרי תואר גברים ראשון ב-60 שנה כשתפתח את קבוצת L במונדיאל 2026. האם סגל הבנוי על רוח קולקטיבית יצליח במקום שקבוצות אנגלית מנוכרות לא הצליחו שוב ושוב?",
-      "en": "Thomas Tuchel delivered the biggest squad shock of the pre-tournament window, leaving Cole Palmer, Phil Foden, Trent Alexander-Arnold and Harry Maguire all out of England's 26-man World Cup squad. Foden and Palmer paid the price for below-par club seasons, while Tuchel said team unity mattered more than individual brilliance and that he wanted to recreate the spirit of earlier qualifying camps. Maguire described himself as shocked and gutted. England hunt a first major men's title in 60 years when they open Group L at the 2026 World Cup. Can a squad built on collective spirit succeed where star-studded England teams have so often fallen short?",
-      "team": "ENG",
+      "he": "אוסמן דמבלה מגיע לגביע העולם הראשון שלו כמחזיק הבלון דאור, לאחר שזכה בפרס 2025 בפריז ב-22 בספטמבר אחרי שהוביל את פ.ס.ג לרביעייה היסטורית עם 33 שערים ו-15 בישולים ב-49 הופעות. כעת עם חולצת מספר 7 האגדית של צרפת, השחקן בן ה-28 נכנס לטורניר 2026 בכושר הטוב ביותר בקריירה שלו לצד קפטן מבאפה. מסירת חולצה מספר 7 לדמבלה על ידי דשאמפס היא הצהרה ברורה לגבי מי שמעצב את ההתקפה הצרפתית. האם שני הקדמים של צרפת יהיו השותפות המסוכנת ביותר במונדיאל הזה?",
+      "en": "Ousmane Dembele arrives at his first World Cup as the reigning Ballon d'Or winner, claiming the 2025 award in Paris on September 22 after leading PSG to a historic quadruple with 33 goals and 15 assists in 49 appearances. Now wearing France's iconic number 7, the 28-year-old enters the 2026 tournament in the best form of his career alongside captain Mbappe. Deschamps handing Dembele the number 7 shirt is a clear statement about who shapes the French attack. Could France's front two be the most dangerous partnership at this World Cup?",
+      "team": "FRA",
       "sources": [
         {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/5/22/tuchel-leaves-palmer-and-foden-out-of-englands-2026-world-cup-squad"
+          "name": "Wikipedia (2025 Ballon d'Or)",
+          "url": "https://en.wikipedia.org/wiki/2025_Ballon_d%27Or"
         },
         {
-          "name": "Sky Sports",
-          "url": "https://www.skysports.com/football/news/12016/13543455/england-world-cup-squad-announcement-ruthless-thomas-tuchel-leaves-big-names-out-of-26-man-squad"
+          "name": "Sports Illustrated",
+          "url": "https://www.si.com/soccer/ballon-dor-2025-winners-full-list"
         },
         {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48836123/harry-maguire-shocked-gutted-miss-england-world-cup-squad"
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com/stories/soccer/can-ousmane-dembele-do-it-again-psg-star-wants-many-more-ballons-dor-as-he-targets-champions-league-and-world-cup-success"
         }
       ],
-      "expires_at": "2026-06-21T23:59:59Z"
+      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
       "id": "por-leao-red-card-chile-warmup-2026-06-06",
       "type": "news",
       "confidence": "confirmed",
-      "he": "תוקף פורטוגל ראפאל לאאו גורש לאחר שניפץ אגרוף לעבר מגן צ'ילה איוון רומן זמן קצר לפני ההפסקה, בניצחון ידידותי של פורטוגל 2:0 ב-6 ביוני. לאאו חש שנפגע שלא כדין על ידי יריב אחר, הגיב בניפוץ אגרוף לעבר רומן, ושני השחקנים קיבלו כרטיסים אדומים ישירים. הבשורה הטובה לפורטוגל: השעיות ממשחקי תערוכה אינן עוברות למשחקי גביע העולם הרשמיים, ולכן לאאו זכאי לפתיחה בבית ה-K מול ד.ר. קונגו בהיוסטון ב-17 ביוני. האירוע מעלה בכל זאת שאלות על מזגו של כוכב מילאן, בזמן שפורטוגל רודפת אחרי הגביע שלא זכתה בו מעולם עם קריסטיאנו רונאלדו מוביל במה שצפוי להיות הטורניר האחרון שלו. האם לאאו יסנן את האש לשערים?",
+      "he": "תוקף פורטוגל ראפאל לאאו גורש לאחר שניפץ אגרוף לעבר מגן צ'ילה איוון רומן זמן קצר לפני ההפסקה, בניצחון ידידותי של פורטוגל 2:0 ב-6 ביוני. לאאו חש שנפגע שלא כדין על ידי יריב אחר, הגיב בניפוץ אגרוף לעבר רומן, ושני השחקנים קיבלו כרטיסים אדומים ישירים. הבשורה הטובה לפורטוגל: השעיות ממשחקי תערוכה אינן עוברות למשחקי גביע העולם הרשמיים, ולכן לאאו זכאי לפתיחה בקבוצה K מול ד.ר. קונגו בהיוסטון ב-17 ביוני. האירוע מעלה בכל זאת שאלות על מזגו של כוכב מילאן, בזמן שפורטוגל רודפת אחרי הגביע שלא זכתה בו מעולם עם קריסטיאנו רונאלדו מוביל במה שצפוי להיות הטורניר האחרון שלו. האם לאאו יסנן את האש לשערים?",
       "en": "Portugal forward Rafael Leao was sent off for punching Chile defender Ivan Roman just before halftime during Portugal's 2-0 warmup win on June 6. Leao felt he had been unfairly challenged by a different opponent, reacted by throwing a punch at Roman, and both players received straight red cards. The good news for Portugal is that suspensions earned in exhibition matches do not carry over to official World Cup fixtures, so Leao is fully eligible for Portugal's Group K opener against DR Congo in Houston on June 17. The incident nonetheless raises questions about the Milan star's temperament as Portugal chase the trophy they have never won, with Cristiano Ronaldo leading what is widely expected to be his final tournament. Will Leao channel that fire into goals instead?",
       "team": "POR",
       "sources": [
@@ -95,142 +118,50 @@
       "expires_at": "2026-06-17T23:59:59Z"
     },
     {
-      "id": "irq-first-wc-since-1986-2026-06-05",
+      "id": "wc26-opening-ceremony-shakira-2026-06-06",
       "type": "news",
       "confidence": "confirmed",
-      "he": "עיראק חוזרת למונדיאל לראשונה מאז מקסיקו 1986: 40 שנות המתנה הסתיימו לאחר שהמאמן גראהם ארנולד, שהוביל את אוסטרליה לשמינייה גמר בקטאר 2022, קיבל את הניהול במאי 2025 והוביל את אריות מסופוטמיה דרך מסע כישור מפרך של 21 משחקים על פני יותר משנתיים. מסע הפלייאוף הבינאוגדתי כלל הרפתקת נסיעות כאוטית במזרח התיכון, שנגרמה מסכסוך אזורי, שאילצה הפסקה של שלושה ימים לפני המשחק המכריע במקסיקו. עיראק פותחת נגד נורבגיה בבוסטון ב-16 ביוני ואחר כך תיפגש עם צרפת וסנגל. האם 40 שנות סבלנות יתורגמו להפתעת מונדיאל?",
-      "en": "Iraq are back at a World Cup for the first time since Mexico 1986, a 40-year wait finally over after coach Graham Arnold, who steered Australia to the round of 16 at Qatar 2022, took over in May 2025 and guided the Lions of Mesopotamia through a gruelling 21-match qualification campaign spanning more than two years. Their intercontinental playoff journey included a chaotic travel ordeal across the Middle East, caused by regional conflict, that forced a three-day recovery break before the decisive game in Mexico. Iraq open against Norway in Boston on June 16, then face France and Senegal. Can 40 years of patience translate into a World Cup shock?",
-      "team": "IRQ",
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/graham-arnold-iraq-interview"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/5/we-are-fighters-iraq-aim-to-shock-rivals-at-2026-world-cup"
-        },
-        {
-          "name": "The National",
-          "url": "https://www.thenationalnews.com/sport/football/2026/06/04/iraq-world-cup-talking-points-ali-al-hamadi-and-aymen-hussein-reignite-hopes-after-arduous-qualification/"
-        }
-      ],
-      "expires_at": "2026-06-16T23:59:59Z"
-    },
-    {
-      "id": "wc26-var-dieperink-dropped-2026-05-15",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "פיפ\"א הסירה את שופט ה-VAR ההולנדי רוב דיפרינק מרשימת מונדיאל 2026 לאחר שנעצר בלונדון ב-9 באפריל בחשד למעשים מיניים. המשטרה הבריטית סגרה לאחר מכן את התיק, בציינה שסף הראיות לא נחצה ולא יינקטו פעולות נוספות. פיפ\"א בחרה בכל זאת להדירו, וממנה השופט הצרפתי ווילי דלאז'וד כמחליפו לצד השופט ההולנדי דני מאקקלי. גם אויפ\"א הסירה את דיפרינק ממשחקי המועדונים הקרובים שלו. הפרשה מעלה שאלות על הליך ראוי בממשל שיפוט הכדורגל, בדיוק בנקודה שבה ה-VAR מקבל סמכויות מורחבות ב-64 המשחקים של הטורניר.",
-      "en": "FIFA removed Dutch video assistant referee Rob Dieperink from the 2026 World Cup list after he was arrested in London on April 9 on suspicion of sexual offences. British police subsequently dropped the case, stating the evidential threshold had not been met and no further action would be taken. FIFA decided to exclude him regardless, with French official Willy Delajod named as his replacement alongside Dutch referee Danny Makkelie. UEFA also removed Dieperink from upcoming club fixtures. The episode raises fresh questions about due process in football's officiating governance, at precisely the moment VAR is being given expanded powers across all 64 matches of this tournament.",
+      "he": "חמישה ימים לפני השריקה הפותחת, פיפ\"א אישרה רשמית ששקירה ובורנה בוי יעמדו בראש טקס הפתיחה של מונדיאל 2026 באסטדיו אצטקה במקסיקו סיטי ב-11 ביוני, ויבצעו את הלהיט הרשמי 'דאי דאי' בהופעה חיה. הטקס, שמתחיל ב-11:30 שעון מקומי לפני המשחק בין מקסיקו לדרום אפריקה ב-13:00, יכלול גם את מאנה, אלחנדרו פרנדס, J בלבין, בלינדה וטיילה. שקירה חוזרת לבמת המונדיאל 16 שנים אחרי ש-Waving Flag הפכה למוזיקת הרקע של דרום אפריקה 2010, וגם נקבעה כמבצעת משותפת בטקס ההפסקה של הגמר ב-19 ביולי. האם היא כתבה שוב לחן שיגדיר טורניר?",
+      "en": "Five days before the opening whistle, FIFA officially confirmed that Shakira and Burna Boy will headline the World Cup 2026 opening ceremony at Estadio Azteca in Mexico City on June 11, performing the official tournament anthem 'Dai Dai' live. The ceremony, starting at 11:30 local time before Mexico face South Africa at 13:00, also features Mana, Alejandro Fernandez, J Balvin, Belinda and Tyla. Shakira returns to the World Cup stage 16 years after Waving Flag soundtracked South Africa 2010, and is also booked to co-headline the final halftime show on July 19. Has she written another tournament-defining anthem?",
       "team": null,
       "sources": [
         {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/fifa-drop-dutch-referee-world-120933794.html"
-        },
-        {
-          "name": "NL Times",
-          "url": "https://nltimes.nl/2026/05/15/dutch-referee-arrested-alleged-misconduct-17-year-old-charges-later-dropped"
-        },
-        {
-          "name": "Morocco World News",
-          "url": "https://www.moroccoworldnews.com/2026/05/302292/fifa-drops-dutch-referee-rob-dieperink-from-world-cup-list/"
-        }
-      ],
-      "expires_at": "2026-07-05T00:00:00Z"
-    },
-    {
-      "id": "ifab-var-corners-second-yellow-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "IFAB אישרה שה-VAR בגביע העולם 2026 יקבל שלושה תחומי התערבות חדשים: כרטיסים צהובים שניים שניתנו בשגיאה, מקרי זיהוי שגוי שבהם כורטס שחקן הלא נכון, ובעיטות פינה שניתנו שלא כדין. הבודקים יוכלו גם לבחון אם תוקף חוסם מגן לפני ביצוע בעיטה נייחת. בדיקות הפינה חלות רק על שגיאות בוטות ואסורות לאחר את חידוש המשחק. הסמכות המורחבת משלשת את טווח ה-VAR לעומת טורנירים קודמים - האם היא תבטל את ההחלטות השנויות ביותר במחלוקת, או פשוט תוסיף שכבת ויכוח חדשה?",
-      "en": "IFAB has confirmed that VAR at the 2026 World Cup gains three new areas of intervention: wrongly-awarded second yellow cards, cases of mistaken identity where the wrong player is carded, and incorrectly-awarded corner kicks. Officials can also check if an attacker blocked a defender before a set piece was taken. Corner reviews must correct only obvious errors and cannot delay the restart of play. The expanded brief triples VAR's scope compared to past tournaments - will it cut out the game's most controversial decisions, or just add a new layer of debate?",
-      "team": null,
-      "sources": [
-        {
-          "name": "Sky Sports",
-          "url": "https://www.skysports.com/football/news/12098/13549645/world-cup-ifab-confirm-new-var-powers-10-second-substitutions-and-tactical-timeout-ban-in-major-rule-changes"
+          "name": "FIFA (official)",
+          "url": "https://inside.fifa.com/organisation/media-releases/shakira-burna-dai-dai-world-cup-opening-ceremony-mexico-city"
         },
         {
           "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth"
+          "url": "https://www.espn.com/soccer/story/_/id/48972437/shakira-burna-boy-perform-2026-world-cup-opening-ceremony-mexico"
         },
         {
-          "name": "NBC Sports",
-          "url": "https://www.nbcsports.com/soccer/news/rule-changes-confirmed-for-2026-world-cup-as-ifab-alters-var-cracks-down-on-subs-and-timeouts"
+          "name": "Billboard",
+          "url": "https://www.billboard.com/music/latin/shakira-burna-boy-dai-dai-2026-world-cup-opening-ceremony-1236265169/"
         }
       ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "expires_at": "2026-06-12T23:59:59Z"
     },
     {
-      "id": "alg-stun-ned-luca-zidane-2026-06-03",
+      "id": "wc26-azteca-altitude-2026-06-06",
       "type": "news",
       "confidence": "confirmed",
-      "he": "אלג'יריה ניצחה את הולנד 1:0 בדה קויפ ב-3 ביוני, כשאניס חאג' מוסא כיפף שוט שמאלי מרהיב לפינה ב-86 בדקה. הניצחון נבנה על תצוגה שלטת של שוער לוקה זידאן, בנו של אגדת צרפת זינדין, שבחר לייצג את אלג'יריה ובצע כמה הגנות מכריעות. אלג'יריה פותחת נגד ארגנטינה ב-17 ביוני. האם הפנקים יוכלו לשמור על הכיוון הזה לסיבובי הנוק-אאוט?",
-      "en": "Algeria beat the Netherlands 1-0 at De Kuip on June 3, Anis Hadj Moussa curling a superb left-footed shot into the far corner in the 86th minute. The win was built on a commanding performance by goalkeeper Luca Zidane, son of France icon Zinedine, who chose to represent Algeria and made several crucial saves. Algeria open against Argentina on June 17. Can Les Fennecs carry this form into the knockout rounds?",
-      "team": "ALG",
+      "he": "היתרון הביתי הגדול של מקסיקו במונדיאל 2026 אינו קשור לטקטיקה. אסטדיו אצטקה שוכן ב-2,240 מטרים מעל פני הים, למעלה מ-7,300 רגל, מה שהופך אותו לאתר הגבוה ביותר בין שלוש מדינות המארחות. נבחרות ממדינות השוכנות בגובה פני הים ירגישו את האוויר הדליל תוך דקות על המגרש. מנהל הכדורגל המקסיקני מיקל אריולה כינה את הגובה 'יתרון עצום' לצד קהל הבית. האצטקה גם עושה היסטוריה כאצטדיון הראשון שמארח משחקי מונדיאל בשלושה טורנירים נפרדים, לאחר שאירח גמרים ב-1970 וב-1986. האם גורם הגובה יעצב את תוצאות שלב הבתים?",
+      "en": "Mexico's biggest home advantage at the 2026 World Cup has nothing to do with tactics. Estadio Azteca sits at 2,240 metres above sea level, over 7,300 feet, making it the highest-altitude venue across all three host nations. Teams travelling from sea-level countries will feel the thin air within minutes on the pitch. Mexican football commissioner Mikel Arriola called it 'a massive advantage' alongside the home crowd. The Azteca also makes history as the first stadium to host World Cup matches across three separate tournaments, having staged finals in both 1970 and 1986. Will the altitude factor shape the early group-stage results?",
+      "team": "MEX",
       "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/match/_/gameId/401863500/algeria-netherlands"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/algeria-stun-netherlands-friendly-205700659.html"
-        },
-        {
-          "name": "Sky Sports",
-          "url": "https://www.skysports.com/football/netherlands-vs-algeria/554984"
-        }
-      ],
-      "expires_at": "2026-06-17T23:59:59Z"
-    },
-    {
-      "id": "cuw-advocaat-oldest-wc-coach-2026-05-13",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "דיק אדוקאט, בן 78, עומד להפוך למאמן הזקן ביותר בהיסטוריית גביע העולם. קוראסאו החזירה אותו לתפקיד ב-13 במאי לאחר שפרד רוטן התפטר, וכשהאיים ייפגשו עם גרמניה בהיוסטון ב-14 ביוני, אדוקאט ישבור את הרשומה של אוטו רהגל (יוון, 2010, גיל 71) בשבע שנים שלמות. זהו מונדיאל שלישי עם שלוש נבחרות שונות: הולנד 1994, דרום קוריאה 2006 וקוראסאו 2026. האם ניסיון של חיים שלמים על הקו יגשר על הפער מול אלופות גרמניה?",
-      "en": "Dick Advocaat, 78, is set to become the oldest coach in World Cup history. Curacao reinstated him on May 13 after Fred Rutten resigned, and when the island side face Germany in Houston on June 14, Advocaat will surpass Otto Rehhagel's record of 71 (Greece, 2010) by seven full years. It is his third World Cup with three different nations, the Netherlands in 1994, South Korea in 2006, and Curacao in 2026. Can a lifetime on the touchline bridge the gap to four-time champions Germany?",
-      "team": "CUW",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48757275/curacao-reinstate-dick-advocaat-deny-change-due-external-pressure"
-        },
         {
           "name": "Washington Post",
-          "url": "https://www.washingtonpost.com/sports/soccer/2026/05/13/curacao-coach-advocaat-world-cup/6b277144-4eb2-11f1-97e7-22c6c29ff0d8_story.html"
+          "url": "https://www.washingtonpost.com/sports/soccer/2026/06/06/world-cup-mexico-altitude-mexico-city-guadalajara/c88cc5ae-61a0-11f1-9c46-d6211372eede_story.html"
         },
         {
-          "name": "Colombia One",
-          "url": "https://colombiaone.com/2026/05/13/advocaat-older-coach-fifa-world-cup-2026/"
+          "name": "TSN",
+          "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/mexico-citys-altitude-poses-a-key-challenge-for-teams-at-the-2026-world-cup/"
+        },
+        {
+          "name": "FIFA",
+          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026"
         }
       ],
-      "expires_at": "2026-06-18T23:59:59Z"
-    },
-    {
-      "id": "irn-azmoun-excluded-uae-photo-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "איראן אישרה שהתוקף סרדר אזמון נעדר מסגל המונדיאל של 26 שחקנים לאחר שמדיית המדינה האיראנית כינתה בגידה את פרסום שלו באינסטגרם, המציג פגישה עם מוחמד בן ראשד אל-מקתום, שליט דובאי וראש ממשלת האמירויות. השחקן בן ה-31 עיגן את ההתקפה האיראנית לצד מהדי טארמי בקטאר 2022, ומשחק בלהק שבאב אל-אהלי שבאמירויות. האם ההתקפה האיראנית תתפקד בגביע עולם ללא הנבחר הוותיק ביותר שלה?",
-      "en": "Iran confirmed striker Sardar Azmoun is absent from their 26-man World Cup squad after Iranian state media branded his Instagram post, showing a meeting with Mohammed bin Rashid Al Maktoum, the ruler of Dubai and Prime Minister of the UAE, a betrayal. The 31-year-old anchored Iran's frontline alongside Mehdi Taremi at Qatar 2022 and plays club football for Shabab Al-Ahli in the UAE. Can Iran's attack function at a World Cup without their most experienced striker?",
-      "team": "IRN",
-      "sources": [
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/5/17/sardar-azmoun-left-out-as-iran-announce-world-cup-2026-squad"
-        },
-        {
-          "name": "Fox News",
-          "url": "https://www.foxnews.com/sports/sardar-azmoun-known-iranian-messi-left-countrys-world-cup-squad-accused-treason"
-        },
-        {
-          "name": "Seoul Economic Daily",
-          "url": "https://en.sedaily.com/sports/2026/06/02/iran-drops-azmoun-from-world-cup-squad-over-uae-photo"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "expires_at": "2026-07-06T00:00:00Z"
     },
     {
       "id": "por-ronaldo-age-milestone-2026-06-06",
@@ -256,24 +187,93 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "por-jota-27plus1-squad-2026-05-19",
+      "id": "irq-first-wc-since-1986-2026-06-05",
       "type": "news",
       "confidence": "confirmed",
-      "he": "סגל ה-26 של פורטוגל בגביע העולם נושא שם 27 קבוע. המאמן רוברטו מרטינז הקדיש את הטורניר כולו לדיוגו ז'וטה, כנף ליברפול שנהרג בתאונת דרכים בספרד ביולי 2025 בגיל 28, כינה את הבחירה '27 שחקנים ועוד אחד' ואמר שמקומו של ז'וטה בקבוצה לא נעלם אי-פעם. מרטינז הוסיף שהמוטיבציה של הנבחרת כולה היא לנצח בגביע העולם עבורו, ופיפ\"א פרסמה מחווה רשמית. האם האבל הלאומי יהפוך לדלק שיקרב את פורטוגל לזכייה ראשונה?",
-      "en": "Portugal's 26-man World Cup squad carries a permanent 27th name. Coach Roberto Martinez dedicated the tournament to Diogo Jota, the Liverpool winger killed in a car crash in Spain in July 2025 at age 28, naming the selection '27 players plus one' and saying Jota's place in the group never disappeared. Martinez said the squad's entire motivation is to win the World Cup for him, and FIFA issued a formal tribute. Can a nation's grief become the fuel that finally gets Portugal over the finish line?",
-      "team": "POR",
+      "he": "עיראק חוזרת למונדיאל לראשונה מאז מקסיקו 1986: 40 שנות המתנה הסתיימו לאחר שהמאמן גראהם ארנולד, שהוביל את אוסטרליה לשמינייה גמר בקטאר 2022, קיבל את הניהול במאי 2025 והוביל את אריות מסופוטמיה דרך מסע כישור מפרך של 21 משחקים על פני יותר משנתיים. מסע הפלייאוף הבינאוגדתי כלל הרפתקת נסיעות כאוטית במזרח התיכון, שנגרמה מסכסוך אזורי, שאילצה הפסקה של שלושה ימים לפני המשחק המכריע במקסיקו. עיראק פותחת נגד נורבגיה בבוסטון ב-16 ביוני ואחר כך תיפגש עם צרפת וסנגל. האם 40 שנות סבלנות יתורגמו להפתעת מונדיאל?",
+      "en": "Iraq are back at a World Cup for the first time since Mexico 1986, a 40-year wait finally over after coach Graham Arnold, who steered Australia to the round of 16 at Qatar 2022, took over in May 2025 and guided the Lions of Mesopotamia through a gruelling 21-match qualification campaign spanning more than two years. Their intercontinental playoff journey included a chaotic travel ordeal across the Middle East, caused by regional conflict, that forced a three-day recovery break before the decisive game in Mexico. Iraq open against Norway in Boston on June 16, then face France and Senegal. Can 40 years of patience translate into a World Cup shock?",
+      "team": "IRQ",
       "sources": [
         {
           "name": "FIFA",
-          "url": "https://www.fifa.com/en/news/articles/diogo-jota-tribute"
+          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/graham-arnold-iraq-interview"
+        },
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/5/we-are-fighters-iraq-aim-to-shock-rivals-at-2026-world-cup"
+        },
+        {
+          "name": "The National",
+          "url": "https://www.thenationalnews.com/sport/football/2026/06/04/iraq-world-cup-talking-points-ali-al-hamadi-and-aymen-hussein-reignite-hopes-after-arduous-qualification/"
+        }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "ifab-var-corners-second-yellow-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "IFAB אישרה שה-VAR בגביע העולם 2026 יקבל שלושה תחומי התערבות חדשים: כרטיסים צהובים שניים שניתנו בשגיאה, מקרי זיהוי שגוי שבהם כורטס שחקן הלא נכון, ובעיטות פינה שניתנו שלא כדין. הבודקים יוכלו גם לבחון אם תוקף חוסם מגן לפני ביצוע בעיטה נייחת. בדיקות הפינה חלות רק על שגיאות בוטות ואסורות לאחר את חידוש המשחק. הסמכות המורחבת משלשת את טווח ה-VAR לעומת טורנירים קודמים - האם היא תבטל את ההחלטות השנויות ביותר במחלוקת, או פשוט תוסיף שכבת ויכוח חדשה?",
+      "en": "IFAB has confirmed that VAR at the 2026 World Cup gains three new areas of intervention: wrongly-awarded second yellow cards, cases of mistaken identity where the wrong player is carded, and incorrectly-awarded corner kicks. Officials can also check if an attacker blocked a defender before a set piece was taken. Corner reviews must correct only obvious errors and cannot delay the restart of play. The expanded brief triples VAR's scope compared to past tournaments - will it cut out the game's most controversial decisions, or just add a new layer of debate?",
+      "team": null,
+      "sources": [
+        {
+          "name": "Sky Sports",
+          "url": "https://www.skysports.com/football/news/12098/13549645/world-cup-ifab-confirm-new-var-powers-10-second-substitutions-and-tactical-timeout-ban-in-major-rule-changes"
         },
         {
           "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/46164741/portugal-want-2026-world-cup-success-diogo-jota-roberto-martinez"
+          "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth"
         },
         {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/portugal-emotional-jota-gesture-world-133000555.html"
+          "name": "NBC Sports",
+          "url": "https://www.nbcsports.com/soccer/news/rule-changes-confirmed-for-2026-world-cup-as-ifab-alters-var-cracks-down-on-subs-and-timeouts"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "wc26-hydration-breaks-all-matches-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "כל 64 המשחקים במונדיאל 2026 יכללו הפסקת שתייה חובה של שלוש דקות בכל מחצית, כשהשופט יעצור את המשחק בדקה ה-22 ללא קשר למזג האוויר או לטמפרטורה. בטורנירים קודמים, הפסקות קירור הופעלו רק כשסף חום מסוים נחצה. פיפ\"א הציגה את הכלל הגורף כדי להגן על שחקנים מפני חום הקיץ העז באתרים כמו דאלאס, יוסטון, מיאמי, אטלנטה ומונטריי, שבהן הטמפרטורות עוברות לעתים קרובות 35 מעלות ביוני וביולי. קבוצות לא יוכלו להשתמש בהפסקה לצורך ביצוע החלפות טקטיות. שינוי כלל קטן עם השפעות פוטנציאליות גדולות על התנופה בסוף המשחק וניהול העייפות ב-64 המשחקים.",
+      "en": "All 64 matches at the 2026 World Cup will include a mandatory three-minute hydration break in each half, with the referee stopping play at the 22-minute mark regardless of weather or temperature. Previous tournaments applied cooling breaks only when heat thresholds were exceeded. FIFA introduced the blanket rule to protect players from the intense summer conditions at venues in Dallas, Houston, Miami, Atlanta and Monterrey, where temperatures routinely exceed 35 degrees Celsius in June and July. Teams cannot use the break for tactical substitutions. A small rule change with potentially large effects on late-game momentum and fatigue management across all 64 games.",
+      "team": null,
+      "sources": [
+        {
+          "name": "FIFA",
+          "url": "https://inside.fifa.com/news/hydration-breaks-world-cup-2026-player-welfare"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/47245760/2026-world-cup-feature-hydration-break-every-half"
+        },
+        {
+          "name": "Sports Illustrated",
+          "url": "https://www.si.com/soccer/fifa-rules-on-usmnt-water-break-strategy-for-2026-world-cup"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "irn-azmoun-excluded-uae-photo-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "איראן אישרה שהתוקף סרדר אזמון נעדר מסגל המונדיאל של 26 שחקנים לאחר שמדיית המדינה האיראנית כינתה בגידה את פרסום שלו באינסטגרם, המציג פגישה עם מוחמד בן ראשד אל-מקתום, שליט דובאי וראש ממשלת האמירויות. השחקן בן ה-31 עיגן את ההתקפה האיראנית לצד מהדי טארמי בקטאר 2022, ומשחק בלהק שבאב אל-אהלי שבאמירויות. האם ההתקפה האיראנית תתפקד בגביע עולם ללא הנבחר הוותיק ביותר שלה?",
+      "en": "Iran confirmed striker Sardar Azmoun is absent from their 26-man World Cup squad after Iranian state media branded his Instagram post, showing a meeting with Mohammed bin Rashid Al Maktoum, the ruler of Dubai and Prime Minister of the UAE, a betrayal. The 31-year-old anchored Iran's frontline alongside Mehdi Taremi at Qatar 2022 and plays club football for Shabab Al-Ahli in the UAE. Can Iran's attack function at a World Cup without their most experienced striker?",
+      "team": "IRN",
+      "sources": [
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/5/17/sardar-azmoun-left-out-as-iran-announce-world-cup-2026-squad"
+        },
+        {
+          "name": "Fox News",
+          "url": "https://www.foxnews.com/sports/sardar-azmoun-known-iranian-messi-left-countrys-world-cup-squad-accused-treason"
+        },
+        {
+          "name": "Seoul Economic Daily",
+          "url": "https://en.sedaily.com/sports/2026/06/02/iran-drops-azmoun-from-world-cup-squad-over-uae-photo"
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
