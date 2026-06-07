@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-07T12:28:48.815Z",
+  "updatedAt": "2026-06-07T15:29:25.266Z",
   "count": 12,
   "items": [
     {
@@ -233,6 +233,29 @@
       "expires_at": "2026-06-16T23:59:59Z"
     },
     {
+      "id": "arg-balerdi-out-wc-2026-06-06",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "האלופות המגנות ארגנטינה ספגו מכה נוספת לפני הטורניר ב-6 ביוני כשהמגן המרכזי לאונרדו בלרדי נשלל מהמונדיאל עם פגיעה שרירית בסולאוס הימני שנגרמה באימון במחנה קנזס סיטי. המאמן סקלוני אישר את הבשורה לאחר ניצחון 2:0 על הונדורס בחימום, ואמר שקיווה שהפגיעה אינה חמורה אך שהבדיקות אישרו את הגרוע ביותר ובלרדי נאלץ לעזוב. המגן ממרסיי היה מגן ראשון צפוי לאחר עונה חזקה בליגה 1. מרקוס סנסי מבורנמות' הוא המועמד הראשי לשמש כמחליפו. ארגנטינה יוצאת לפתיחה מול אלג'יריה ב-16 ביוני ללא מגן מרכזי מתחיל אחד, בזמן שגם מסי עצמו נותר בצל של ספק כושר. האם סקלוני יוכל לטלא את קו ההגנה בזמן?",
+      "en": "Defending champions Argentina suffered another pre-tournament blow on June 6 when centre-back Leonardo Balerdi was ruled out of the World Cup with a muscle injury in his right soleus, picked up in training at the Kansas City camp. Coach Scaloni confirmed the news after the 2-0 warm-up win over Honduras, saying he had hoped the injury was not serious but that tests confirmed the worst and Balerdi had to be released. The Marseille centre-back was a projected first-choice stopper coming off a strong Ligue 1 season. Marcos Senesi of Bournemouth is the leading candidate to step in as his replacement. Argentina now head into their June 16 opener against Algeria without a starting centre-back, while Messi himself remains under a fitness cloud. Can Scaloni patch the backline in time?",
+      "team": "ARG",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48985334/argentina-defender-leonardo-balerdi-suffers-calf-injury-world-cup"
+        },
+        {
+          "name": "beIN Sports",
+          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/balerdi-to-miss-argentinas-world-cup-title-defence-with-calf-injury-2026-06-06"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/leonardo-balerdi-withdraws-argentina-squad-165500351.html"
+        }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
       "id": "bra-neymar-mri-monday-2026-06-07",
       "type": "news",
       "confidence": "confirmed",
@@ -254,29 +277,6 @@
         }
       ],
       "expires_at": "2026-06-13T23:59:59Z"
-    },
-    {
-      "id": "fra-ivory-coast-upset-2026-06-04",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "צרפת נפלה 2:1 מול חוף השנהב בחימום ההכנה שלה למונדיאל 2026 ב-4 ביוני באצטדיון דה לה בוז'ואר בנאנט, תוצאת הפתעה עבור סגל שבראשו מחזיק הבלון דאור אוסמן דמבלה וקפטן קיליאן מבאפה. ראיאן שרקי הביא את צרפת לפני ההפסקה, אך גואלה דואה השווה שמונה דקות אחרי ההפסקה, ולאחר מכן סיפק לאמאד דיאלו להשלים את הניצחון שש דקות לפני הסיום. צרפת פותחת את קבוצה I מול סנגל ב-16 ביוני בניו ג'רזי. האם דשאמפס יצליח לאטום את ההגנה לפני ערב הפתיחה, או שזו אזהרה מאחת הנבחרות המועדפות בטורניר?",
-      "en": "France were beaten 2-1 by Ivory Coast in their World Cup 2026 warm-up on June 4 at Stade de la Beaujoire in Nantes, a shock result for a squad led by Ballon d'Or holder Ousmane Dembele and captain Kylian Mbappe. Rayan Cherki gave France the lead just before halftime, but Guéla Doué equalised eight minutes after the break, then delivered the cross that Amad Diallo converted six minutes from time. France open Group I against Senegal on June 16 in New Jersey. Can Deschamps tighten the defence before opening night, or is this a warning sign from one of the tournament favourites?",
-      "team": null,
-      "sources": [
-        {
-          "name": "France24",
-          "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/4/ivory-coast-beat-france-in-world-cup-warning-to-one-of-the-favourites"
-        },
-        {
-          "name": "ABC News",
-          "url": "https://abcnews.com/Sports/wireStory/france-stunned-ivory-coast-world-cup-warmup-spain-133602036"
-        }
-      ],
-      "expires_at": "2026-06-16T23:59:59Z"
     }
   ]
 }

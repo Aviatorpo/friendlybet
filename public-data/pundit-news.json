@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-08T00:30:00.000Z",
+  "updatedAt": "2026-06-07T10:00:00.000Z",
   "items": [
     {
       "id": "ger-karl-out-ouedraogo-2026-06-06",
@@ -126,6 +126,19 @@
         { "name": "Outlook India", "url": "https://www.outlookindia.com/sports/football/argentina-vs-honduras-live-score-international-friendly-2026-updates-highlights-texas" },
         { "name": "Heavy.com", "url": "https://heavy.com/sports/soccer/world-cup/argentina-honduras-results-score-updates-stats/" },
         { "name": "Sports Illustrated", "url": "https://www.si.com/soccer/why-lionel-messi-isnt-starting-for-argentina-vs-honduras-international-friendly" }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "arg-balerdi-out-wc-2026-06-06",
+      "confidence": "confirmed",
+      "team": "ARG",
+      "en": "Defending champions Argentina suffered another pre-tournament blow on June 6 when centre-back Leonardo Balerdi was ruled out of the World Cup with a muscle injury in his right soleus, picked up in training at the Kansas City camp. Coach Scaloni confirmed the news after the 2-0 warm-up win over Honduras, saying he had hoped the injury was not serious but that tests confirmed the worst and Balerdi had to be released. The Marseille centre-back was a projected first-choice stopper coming off a strong Ligue 1 season. Marcos Senesi of Bournemouth is the leading candidate to step in as his replacement. Argentina now head into their June 16 opener against Algeria without a starting centre-back, while Messi himself remains under a fitness cloud. Can Scaloni patch the backline in time?",
+      "he": "האלופות המגנות ארגנטינה ספגו מכה נוספת לפני הטורניר ב-6 ביוני כשהמגן המרכזי לאונרדו בלרדי נשלל מהמונדיאל עם פגיעה שרירית בסולאוס הימני שנגרמה באימון במחנה קנזס סיטי. המאמן סקלוני אישר את הבשורה לאחר ניצחון 2:0 על הונדורס בחימום, ואמר שקיווה שהפגיעה אינה חמורה אך שהבדיקות אישרו את הגרוע ביותר ובלרדי נאלץ לעזוב. המגן ממרסיי היה מגן ראשון צפוי לאחר עונה חזקה בליגה 1. מרקוס סנסי מבורנמות' הוא המועמד הראשי לשמש כמחליפו. ארגנטינה יוצאת לפתיחה מול אלג'יריה ב-16 ביוני ללא מגן מרכזי מתחיל אחד, בזמן שגם מסי עצמו נותר בצל של ספק כושר. האם סקלוני יוכל לטלא את קו ההגנה בזמן?",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48985334/argentina-defender-leonardo-balerdi-suffers-calf-injury-world-cup" },
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/balerdi-to-miss-argentinas-world-cup-title-defence-with-calf-injury-2026-06-06" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/leonardo-balerdi-withdraws-argentina-squad-165500351.html" }
       ],
       "expires_at": "2026-06-16T23:59:59Z"
     },
@@ -318,6 +331,32 @@
         { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/portugal-emotional-jota-gesture-world-133000555.html" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "bel-5-0-tunisia-warmup-2026-06-06",
+      "confidence": "confirmed",
+      "team": "BEL",
+      "en": "Belgium swept into the World Cup with a 5-0 demolition of Tunisia in Brussels on June 6, goals from Trossard (28), De Ketelaere (53), De Bruyne (65), Lukebakio (85) and Raskin (87) completing a commanding final warm-up. Tunisia were reduced to 10 men after a 62nd-minute red card. Kevin De Bruyne, entering what is widely expected to be his last World Cup, scored from distance to make it three and orchestrated the second half. The result extended Belgium's unbeaten run to 13 matches heading into Group G against Egypt, Iran and New Zealand. The golden generation that finished third at Russia 2018 is older now, but Belgium arrived at this tournament in the best form of any top-five contender. Can De Bruyne finally win the major trophy his talent deserves?",
+      "he": "בלגיה הגיעה למונדיאל עם מחיקה 5:0 של תוניסיה בבריסל ב-6 ביוני, שערים מטרוסאר (28), דה קטלארה (53), דה ברויינה (65), לוקבקיו (85) ורסקין (87) השלימו חימום אחרון שלט לחלוטין. תוניסיה הוצאה עם 10 שחקנים אחרי כרטיס אדום בדקה ה-62. קווין דה ברויינה, שנכנס למה שנחשב למונדיאל האחרון שלו, הבקיע מרחוק לשלישי ותיזמר את המחצית השנייה. התוצאה האריכה את הרצף הבלתי-מנוצח של בלגיה ל-13 משחקים בכניסה לקבוצה G מול מצרים, איראן וניו זילנד. דור הזהב שסיים שלישי ברוסיה 2018 מבוגר יותר עכשיו, אך בלגיה הגיעה לטורניר הזה בכושר הטוב ביותר מבין כל חמש המועמדות הגדולות. האם דה ברויינה יזכה סוף-סוף בגביע שהכישרון שלו ראוי לו?",
+      "sources": [
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/belgium-5-0-tunisia-doku-stars-in-pre-world-cup-thrashing-2026-06-06" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/match/_/gameId/401856622" },
+        { "name": "101 Great Goals", "url": "https://www.101greatgoals.com/football/internationals/belgium-5-0-tunisia-report-goals-stats/" }
+      ],
+      "expires_at": "2026-07-06T00:00:00Z"
+    },
+    {
+      "id": "eng-kane-79-goals-warmup-2026-06-06",
+      "confidence": "confirmed",
+      "team": "ENG",
+      "en": "England edged New Zealand 1-0 at Raymond James Stadium in Florida on June 6, captain Harry Kane heading in from a Djed Spence cross just before halftime to score his 79th international goal. England dominated with 1.49 expected goals against New Zealand's 0.12. Thomas Tuchel changed the entire starting eleven at halftime to rotate his squad, with Arsenal stars Saka, Rice, Madueke and Eze held back for Wednesday's second warm-up against Costa Rica. Kane told ITV he is in the best physical and mental shape of his career. England open their Group F campaign against Croatia on June 17. With 79 goals for his country and a captain who says he has never felt better, can England end 60 years of hurt and lift the World Cup for the first time since 1966?",
+      "he": "אנגליה ניצחה את ניו זילנד 1:0 באצטדיון Raymond James בפלורידה ב-6 ביוני, כשקפטן הארי קיין הבקיע את שערו הבינלאומי ה-79 בנגיחה ממסירת דג'ד ספנס זמן קצר לפני ההפסקה. אנגליה שלטה עם 1.49 שערים צפויים לעומת 0.12 של ניו זילנד. תומס טוכל החליף את כל הסגל המקורי בהפסקה לצורך רוטציה, כשכוכבי ארסנל סאקה, רייס, מדואקה ואזה נשמרו לחימום השני מול קוסטה ריקה ביום רביעי. קיין אמר לרשת ITV שהוא בכושר הגופני והמנטלי הטוב ביותר בקריירה שלו. אנגליה פותחת את מסע קבוצה F מול קרואטיה ב-17 ביוני. עם 79 שערים לנבחרת וקפטן שאומר שמעולם לא הרגיש טוב יותר, האם אנגליה תשים קץ ל-60 שנות כאב ותזכה במונדיאל לראשונה מאז 1966?",
+      "sources": [
+        { "name": "England FA", "url": "https://www.englandfootball.com/england/mens-senior-team/fixtures-results/2025-26/Internationals/england-v-new-zealand-international-match-saturday-6-june-2026-match-centre" },
+        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/11095/13551205/england-1-0-new-zealand-harry-kanes-header-clinches-win-in-first-world-cup-warm-up-game-for-three-lions" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/match/_/gameId/401860828/new-zealand-england" }
+      ],
+      "expires_at": "2026-06-17T23:59:59Z"
     }
   ]
 }
