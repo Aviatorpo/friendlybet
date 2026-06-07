@@ -1,6 +1,45 @@
 {
-  "updatedAt": "2026-06-07T15:30:00.000Z",
+  "updatedAt": "2026-06-07T18:45:00.000Z",
   "items": [
+    {
+      "id": "fifa-water-bottle-reversal-2026-06-06",
+      "confidence": "confirmed",
+      "en": "FIFA quietly updated its Stadium Code of Conduct to ban fans from bringing any water bottles into World Cup venues, then reversed course on June 6 after fierce backlash from supporters, politicians and health experts who pointed to dangerous summer heat at stadiums in Houston, Dallas, Miami and Atlanta. The new policy allows each fan one sealed, soft-plastic, factory-sealed disposable bottle of up to 20oz (590ml) at matches in the USA and Canada. Hard-sided reusable bottles remain banned on safety grounds. Getting the water-bottle policy wrong four days before the biggest football tournament on the planet is not a great advertisement for FIFA's pre-tournament planning.",
+      "he": "פיפ\"א עדכנה בשקט את קוד ההתנהלות שלה לאצטדיונים ואסרה על אוהדים להכניס בקבוקי מים לאתרי המונדיאל, ולאחר מכן הפכה את ההחלטה ב-6 ביוני אחרי גל זעם מאוהדים, פוליטיקאים ומומחי בריאות שהצביעו על חום הקיץ המסוכן באצטדיוני היוסטון, דאלאס, מיאמי ואטלנטה. המדיניות החדשה מאפשרת לכל אוהד להכניס בקבוק פלסטיק רך חתום ממפעל אחד, עד 590 מ\"ל, למשחקים בארה\"ב ובקנדה. בקבוקים קשיחים עדיין אסורים מטעמי בטיחות. לטעות במדיניות בקבוקי המים ארבעה ימים לפני הטורניר הגדול ביותר בכדורגל אינו פרסומת מצוינת לתכנון פיפ\"א.",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48978502/fifa-reverses-world-cup-water-bottle-ban-backlash" },
+        { "name": "Sports Illustrated", "url": "https://www.si.com/soccer/fifa-reverses-decision-allows-fans-bring-water-bottles-after-mass-backlash" },
+        { "name": "Goal.com", "url": "https://www.goal.com/en-us/lists/fifa-world-cup-water-bottle-ban-u-turn-backlash/blte79dcb83bd29f191" },
+        { "name": "NBC News", "url": "https://www.nbcnews.com/sports/soccer/fifa-bans-water-bottles-world-cup-stadiums-fans-heat-rcna348419" }
+      ],
+      "expires_at": "2026-07-04T00:00:00Z"
+    },
+    {
+      "id": "sofi-strike-threat-usa-june-2026",
+      "confidence": "confirmed",
+      "team": "USA",
+      "en": "Food-service workers at SoFi Stadium in Los Angeles voted 96 percent to authorize a strike on June 6, just days before the USA face Paraguay there on June 12 in the American national team's first match of their home World Cup. Workers represented by Unite Here Local 11 are demanding higher pay, job security and a guarantee that Immigration and Customs Enforcement agents are barred from the venue. Negotiations with stadium operator Legends Global and FIFA resumed Monday. If no deal is reached, the USA's home opener could kick off without a single concession stand open.",
+      "he": "עובדי שירותי המזון באצטדיון סופי בלוס אנג'לס הצביעו ב-96% לאישור שביתה ב-6 ביוני, ימים ספורים לפני שארה\"ב מארחת את פרגוואי שם ב-12 ביוני במשחק הראשון של הנבחרת האמריקנית בטורניר הביתי שלה. העובדים, המיוצגים על ידי Unite Here Local 11, דורשים שכר גבוה יותר, ביטחון תעסוקתי וערבות שסוכני שירות ההגירה (ICE) לא יורשו להיכנס לאצטדיון. המשא ומתן עם מפעיל האצטדיון Legends Global ופיפ\"א חודש ביום שני. אם לא יגיעו להסכם, פתיחת ביתה של ארה\"ב עלולה להתקיים ללא דוכן מזון אחד פתוח.",
+      "sources": [
+        { "name": "NPR", "url": "https://www.npr.org/2026/06/06/nx-s1-5848682/sofi-stadium-strike-world-cup" },
+        { "name": "ESPN", "url": "https://www.espn.com/espn/story/_/id/48980083/sofi-stadium-workers-authorize-strike-ahead-usa-world-cup-opener" },
+        { "name": "ABC7 Los Angeles", "url": "https://abc7.com/post/world-cup-2026-sofi-stadium-workers-inglewood-vote-authorize-strike-days-before-soccer-tournament-begins/19244116/" }
+      ],
+      "expires_at": "2026-06-20T00:00:00Z"
+    },
+    {
+      "id": "esp-yamal-fit-for-opener-2026-06-07",
+      "confidence": "confirmed",
+      "team": "ESP",
+      "en": "Spain coach Luis de la Fuente said on June 6 that Lamine Yamal is expected to be fit to face Cape Verde in Spain's World Cup opener in Atlanta on June 15, over six weeks after the 18-year-old tore his left hamstring during a Barcelona match on April 22. Yamal was left out of Spain's warmup against Iraq as a precaution. De la Fuente said his recovery is going very well but that a final decision on his playing time will depend on a closer assessment nearer to the game. If the reigning European champions field their full attack from the first whistle, Group C's other three teams need to brace themselves.",
+      "he": "המאמן לואיס דה לה פואנטה אמר ב-6 ביוני שלמין יאמאל צפוי להיות כשיר לפגישה עם כף ורדה בפתיחה של ספרד ב-15 ביוני באטלנטה, יותר משישה שבועות אחרי שבן ה-18 קרע את שריר הירך השמאלי במשחק ברצלונה ב-22 באפריל. יאמאל הושאר בחוץ בחימום ספרד מול עיראק כאמצעי מניעתי. דה לה פואנטה אמר שההחלמה מתקדמת מצוין, אך שההחלטה הסופית על זמן המשחק שלו תלויה בהערכה קרובה יותר לתאריך. אם אלוף אירופה המגן ייצא לשדה עם ההתקפה המלאה שלו מהשריקה הראשונה, שלוש הנבחרות האחרות בקבוצה C צריכות להתכונן היטב.",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48957472/spain-lamine-yamal-injury-2026-world-cup-cape-verde-de-la-fuente" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/3/lamine-yamal-and-nico-williams-set-to-be-fit-for-spains-world-cup-opener" },
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/spain-s-world-cup-concerns-is-la-roja-too-dependent-on-lamine-yamal-2026-06-04" }
+      ],
+      "expires_at": "2026-06-15T23:59:59Z"
+    },
     {
       "id": "arg-messi-bench-honduras-2026-06-07",
       "confidence": "confirmed",
@@ -177,18 +216,6 @@
         { "name": "Daily Sabah", "url": "https://www.dailysabah.com/sports/football/fifa-bans-vuvuzelas-other-noisemakers-from-world-cup-stadiums" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "wc26-var-dieperink-dropped-2026-05-15",
-      "confidence": "confirmed",
-      "en": "FIFA removed Dutch video assistant referee Rob Dieperink from the 2026 World Cup list after he was arrested in London on April 9 on suspicion of sexual offences. British police subsequently dropped the case, stating the evidential threshold had not been met and no further action would be taken. FIFA decided to exclude him regardless, with French official Willy Delajod named as his replacement alongside Dutch referee Danny Makkelie. UEFA also removed Dieperink from upcoming club fixtures. The episode raises fresh questions about due process in football's officiating governance, at precisely the moment VAR is being given expanded powers across all 64 matches of this tournament.",
-      "he": "פיפ\"א הסירה את שופט ה-VAR ההולנדי רוב דיפרינק מרשימת מונדיאל 2026 לאחר שנעצר בלונדון ב-9 באפריל בחשד למעשים מיניים. המשטרה הבריטית סגרה לאחר מכן את התיק, בציינה שסף הראיות לא נחצה ולא יינקטו פעולות נוספות. פיפ\"א בחרה בכל זאת להדירו, וממנה השופט הצרפתי ווילי דלאז'וד כמחליפו לצד השופט ההולנדי דני מאקקלי. גם אויפ\"א הסירה את דיפרינק ממשחקי המועדונים הקרובים שלו. הפרשה מעלה שאלות על הליך ראוי בממשל שיפוט הכדורגל, בדיוק בנקודה שבה ה-VAR מקבל סמכויות מורחבות ב-64 המשחקים של הטורניר.",
-      "sources": [
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/fifa-drop-dutch-referee-world-120933794.html" },
-        { "name": "NL Times", "url": "https://nltimes.nl/2026/05/15/dutch-referee-arrested-alleged-misconduct-17-year-old-charges-later-dropped" },
-        { "name": "Morocco World News", "url": "https://www.moroccoworldnews.com/2026/05/302292/fifa-drops-dutch-referee-rob-dieperink-from-world-cup-list/" }
-      ],
-      "expires_at": "2026-07-05T00:00:00Z"
     },
     {
       "id": "cuw-advocaat-oldest-wc-coach-2026-05-13",
