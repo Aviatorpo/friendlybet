@@ -9834,8 +9834,30 @@ async function spReenterKnockout() {
   if (!groupsComplete) { spState.currentGroupIdx = 0; spRenderGroups(); showScreen('sp-groups-screen'); return; }
   // Need the 8 third-place advancers to seed the bracket; otherwise pick them first.
   if ((spState.thirdPlaceAdvancers || []).length !== 8) { spStartThirdPlaceStep(); return; }
-  koSingle.mode = 'single-phase';
   koSingle.sequence = _koSinglePhaseSequence();
+
+  // v2.9.11: if spLoadExistingPicks' auto-heal already RESTORED a complete bracket
+  // from a local/server backup, do NOT push the user through the re-entry
+  // walkthrough — every match would show its pick pre-selected (green), which is
+  // baffling right after the dashboard told them their bracket "wasn't saved".
+  // Persist the recovered bracket to the DB now (the heal's re-save is async/
+  // best-effort and the DB read behind the banner was stale) and send them to the
+  // summary to review their recovered picks instead.
+  const bracketComplete = koSingle.sequence.every(s => spState.bracketPicks && spState.bracketPicks[s.pos]);
+  if (bracketComplete) {
+    if (!spState.tournamentWinner && spState.bracketPicks[31]) {
+      spState.tournamentWinner = spState.bracketPicks[31];
+      spSaveWinnerToDb(false);
+    }
+    try { await spSaveBracketToDb(false); } catch (_) {}
+    state.spInFlow = false;
+    showToast(t('recoverBracket.recovered'), 'success');
+    spRenderSummary();
+    showScreen('sp-summary-screen');
+    return;
+  }
+
+  koSingle.mode = 'single-phase';
   const firstIncomplete = koSingle.sequence.findIndex(s => !(spState.bracketPicks && spState.bracketPicks[s.pos]));
   koSingle.idx = firstIncomplete >= 0 ? firstIncomplete : 0;
   state.spInFlow = true;
