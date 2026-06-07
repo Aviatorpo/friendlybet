@@ -9937,6 +9937,16 @@ async function spLoadExistingPicks() {
     if (poolId) q = q.eq('pool_id', poolId);
     if (baseFilter) q = baseFilter(q);
     let { data, error } = await q;
+    // v2.9.12: retry a transient read error once — a single flaky read of
+    // knockout_picks must not be allowed to blank a saved bracket on screen.
+    if (error) {
+      await new Promise(r => setTimeout(r, 500));
+      let qr = supabaseClient.from(table).select('*').eq('user_id', userId);
+      if (poolId) qr = qr.eq('pool_id', poolId);
+      if (baseFilter) qr = baseFilter(qr);
+      const retry = await qr;
+      data = retry.data; error = retry.error;
+    }
     if (error) return { data: null, error };
     if (poolId && data && data.length === 0) {
       // Fallback: same query without pool_id, in case the rows pre-date pool_id
@@ -9990,10 +10000,17 @@ async function spLoadExistingPicks() {
     //   - if no data + no errors, also trust DB (user has no picks yet)
     //   - if errors + no data, keep current in-memory state (don't wipe)
     if (anyDataLoaded || !anyError) {
-      spState.groupPositions = newGroups;
-      spState.bracketPicks = newBracket;
-      spState.tournamentWinner = newWinner;
-      spState.thirdPlaceAdvancers = newThirdPlace || [];
+      // v2.9.12: PER-TABLE commit guard. Only overwrite a slice of spState when
+      // THAT table's read actually succeeded. Previously a single transient
+      // knockout_picks read error (with groups loading fine) committed an EMPTY
+      // bracket over a saved one — the bracket would render as "Not picked" even
+      // though 31 rows exist in the DB. Now a flaky read keeps the last-known
+      // picks on screen instead of blanking them; auto-heal still fills a
+      // genuinely-incomplete bracket from backup below.
+      if (!gppErr) spState.groupPositions = newGroups;
+      if (!kpErr)  spState.bracketPicks = newBracket;
+      if (!twpErr) spState.tournamentWinner = newWinner;
+      if (!tpErr)  spState.thirdPlaceAdvancers = newThirdPlace || [];
 
       // AUTO-HEAL: if the live bracket is missing/incomplete, restore from the
       // most-complete backup we can find — first this browser's localStorage
