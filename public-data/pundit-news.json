@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-07T12:00:00.000Z",
+  "updatedAt": "2026-06-07T18:15:00.000Z",
   "items": [
     {
       "id": "can-bombito-miss-wc-2026-06-07",
@@ -44,7 +44,7 @@
       "confidence": "confirmed",
       "team": "SCO",
       "en": "Scotland are back at the World Cup for the first time since France 1998, 28 years in the making, and announced their return with authority. A 4-0 demolition of Bolivia in New Jersey on June 6, Che Adams scoring twice and Lawrence Shankland and Scott McTominay also on target, sent Steve Clarke's side into the tournament full of confidence. The mood was dampened earlier by the confirmed absence of Napoli midfielder Billy Gilmour, ruled out after damaging his knee against Curacao on May 30. Scotland open against Haiti in Foxborough on June 13, with Morocco and Brazil to follow. Can the Tartan Army finally reach a World Cup round of 16 for the very first time in their history?",
-      "he": "סקוטלנד חוזרת למונדיאל לראשונה מאז צרפת 1998, אחרי 28 שנות המתנה, ובישרה את שובה עם סמכות. ניצחון 4:0 על בוליביה בניו ג'רזי ב-6 ביוני, כששה אדמס הבקיע פעמיים ולורנס שנקלנד וסקוט מקטומינאי גם הם רשמו שמות, שלח את נבחרתו של סטיב קלארק לטורניר מלאת ביטחון. האווירה נפגמה מוקדם יותר עם אישור היעדרות מצע נאפולי בילי גילמור, שנפל לאחר שפגע בברכו מול קוראסאו ב-30 במאי. סקוטלנד פותחת מול האיטי בפוקסבורו ב-13 ביוני, ואחר כך מרוקו וברזיל. האם ה-Tartan Army תצליח סוף-סוף להגיע לשישה עשר הנבחרות הטובות ביותר בהיסטוריה שלה?",
+      "he": "סקוטלנד חוזרת למונדיאל לראשונה מאז צרפת 1998, אחרי 28 שנות המתנה, ובישרה את שובה עם סמכות. ניצחון 4:0 על בוליביה בניו ג'רזי ב-6 ביוני, כששה אדמס הבקיע פעמיים ולורנס שנקלנד וסקוט מקטומינאי גם הם רשמו שמות, שלח את נבחרתו של סטיב קלארק לטורניר מלאת ביטחון. האווירה נפגמה מוקדם יותר עם אישור היעדרות מצע נאפולי בילי גילמור, שנפל לאחר שפגע בברכו מול קוראסאו ב-30 במאי. סקוטלנד פותחת מול האיטי בפוקסבורו ב-13 ביוני ואחר כך מרוקו וברזיל. האם ה-Tartan Army תצליח סוף-סוף להגיע לשישה עשר הנבחרות הטובות ביותר בהיסטוריה שלה?",
       "sources": [
         { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12017/13549373/billy-gilmour-scotland-midfielder-ruled-out-of-world-cup-with-knee-injury" },
         { "name": "Scottish FA", "url": "https://www.scottishfa.co.uk/en/news/scotland-secure-comfortable-win-over-bolivia-in-final-world-cup-warm-up-match" },
@@ -92,14 +92,27 @@
       "expires_at": "2026-06-15T23:59:59Z"
     },
     {
-      "id": "ger-usa-soldier-field-2026-06-06",
+      "id": "ger-karl-out-ouedraogo-in-2026-06-07",
       "confidence": "confirmed",
-      "en": "Germany gave the USA a pointed pre-tournament lesson, beating the co-hosts 2-1 at Soldier Field in Chicago on June 6, the same stadium that staged the very first match at the 1994 World Cup. Kai Havertz headed Germany in front inside two minutes, Antonee Robinson equalised with a stunning 23-yard volley, but Leroy Sane put Germany back ahead before the hour. A sell-out crowd of 63,636 packed the stadium. Germany open against Curacao in Houston on June 14; the USA host Paraguay at SoFi Stadium on June 12. History hung over Soldier Field, and Germany made it count.",
-      "he": "גרמניה העניקה לארה\"ב שיעור חד לפני הטורניר, וניצחה את המארחת המשותפת 2:1 ב-Soldier Field בשיקגו ב-6 ביוני, אותו אצטדיון ממש שאירח את המשחק הראשון של מונדיאל 1994. קאי האברץ קדם את גרמניה בנגיחה תוך שתי דקות, אנטוניי רובינסון השווה בצלייה מרהיבה מ-23 יארד, אך לרוי סאנה החזיר את גרמניה לפני השעה. קהל מלא של 63,636 גדש את האצטדיון. גרמניה פותחת מול קוראסאו בהיוסטון ב-14 ביוני; ארה\"ב מארחת את פרגוואי ב-SoFi Stadium ב-12 ביוני. ההיסטוריה ריחפה מעל Soldier Field, וגרמניה ניצלה אותה.",
+      "team": "GER",
+      "en": "Germany suffered a devastating squad blow on June 6 when 18-year-old Bayern Munich midfielder Lennart Karl tore a muscle in his adductor during a finishing drill in training, just hours before the USA warm-up at Soldier Field. The German Football Association confirmed Karl is out of the World Cup and has called up RB Leipzig's Assan Ouedraogo, 20, as replacement. Karl had already been selected ahead of several veteran alternatives, so Nagelsmann described losing him as a huge shock. Germany open their campaign against Curacao in Houston on June 14. Ouedraogo arrives with one senior cap and a point to prove - will the emergency call-up become a tournament revelation?",
+      "he": "גרמניה ספגה מכה קשה בסגל ב-6 ביוני, כשפוגע שרירי שחקן בייארן מינכן בן 18 לנארט קארל - קרע בשריר המקרב - בתרגיל גמר במהלך אימון, שעות ספורות לפני חימום ארה\"ב ב-Soldier Field. ההתאחדות הגרמנית לכדורגל אישרה שקארל מחוץ למונדיאל וזימנה את אסאן אואדראוגו מ-RB ליפציג, בן 20, כמחליף. קארל כבר נבחר בהעדפה על פני מספר חלופות ותיקות, ולכן נגלסמן תיאר את אובדנו כהלם עצום. גרמניה פותחת את מסעה מול קוראסאו בהיוסטון ב-14 ביוני. אואדראוגו מגיע עם כובע בינלאומי בכיר אחד ועם עמדה להוכיח - האם המתגייס החירום יהפוך לגילוי הטורניר?",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/762260" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/soccer/live/usmnt-vs-germany-live-updates-lineups-how-to-watch-score-latest-news-from-pre-world-cup-friendly-173000166.html" },
-        { "name": "Geo.tv", "url": "https://www.geo.tv/latest/667609-germany-beat-usa-21-in-final-world-cup-warm-up-friendly" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48977173/lennart-karl-injured-germany-training-miss-world-cup" },
+        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12098/13549070/lennart-karl-germany-miss-world-cup" },
+        { "name": "Bundesliga.com", "url": "https://www.bundesliga.com/en/bundesliga/news/lennart-karl-world-cup-injury-bayern-munich-germany-37718" }
+      ],
+      "expires_at": "2026-06-14T23:59:59Z"
+    },
+    {
+      "id": "eng-kane-79-goals-record-2026-06-06",
+      "confidence": "confirmed",
+      "team": "ENG",
+      "en": "Harry Kane scored his record-extending 79th goal for England with a deft flicked header from Djed Spence's delivery in first-half stoppage time, giving England a 1-0 win over New Zealand at Raymond James Stadium in Tampa on June 6. Kane, who scored 61 goals in 51 games as Bayern Munich won the domestic double last season, now stands 26 goals clear of Wayne Rooney's previous England record. England open the World Cup against Senegal in Los Angeles on June 14. There are whispers that Kane can become the tournament's top scorer, and at this rate the whispers are not without foundation.",
+      "he": "הארי קיין הבקיע את השער ה-79 שלו לאנגליה בנגיחה עדינה מהאגף של ג'ד ספנס בתוספת הזמן של המחצית הראשונה, ונתן לאנגליה ניצחון 1:0 על ניו זילנד ב-Raymond James Stadium בטמפה ב-6 ביוני. קיין, שהבקיע 61 שערים ב-51 משחקים כשבייארן מינכן זכתה בדאבל הלאומי בעונה שעברה, מוביל כעת 26 שערים מעל שיא אנגליה הקודם של וויין רוני. אנגליה פותחת את המונדיאל מול סנגל בלוס אנג'לס ב-14 ביוני. יש לחישות שקיין יכול להיות מלך השערים של הטורניר, ובקצב הזה הלחישות לא חסרות בסיס.",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48986657/england-win-new-zealand-reminder-harry-kane-importance" },
+        { "name": "101 Great Goals", "url": "https://www.101greatgoals.com/football/world-cup-news/england-vs-new-zealand-world-cup-friendly-report-result-goals/" }
       ],
       "expires_at": "2026-06-14T23:59:59Z"
     },
@@ -152,19 +165,6 @@
         { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" }
       ],
       "expires_at": "2026-07-06T00:00:00Z"
-    },
-    {
-      "id": "por-leao-red-card-chile-warmup-2026-06-06",
-      "confidence": "confirmed",
-      "team": "POR",
-      "en": "Portugal forward Rafael Leao was sent off for punching Chile defender Ivan Roman just before halftime during Portugal's 2-1 warmup win on June 6. Leao felt he had been unfairly challenged by a different opponent, reacted by throwing a punch at Roman, and both players received straight red cards. The good news for Portugal is that suspensions earned in exhibition matches do not carry over to official World Cup fixtures, so Leao is fully eligible for Portugal's Group K opener against DR Congo in Houston on June 17. The incident nonetheless raises questions about the Milan star's temperament as Portugal chase the trophy they have never won, with Cristiano Ronaldo leading what is widely expected to be his final tournament. Will Leao channel that fire into goals instead?",
-      "he": "תוקף פורטוגל ראפאל לאאו גורש לאחר שניפץ אגרוף לעבר מגן צ'ילה איוון רומן זמן קצר לפני ההפסקה, בניצחון ידידותי של פורטוגל 2:1 ב-6 ביוני. לאאו חש שנפגע שלא כדין על ידי יריב אחר, הגיב בניפוץ אגרוף לעבר רומן, ושני השחקנים קיבלו כרטיסים אדומים ישירים. הבשורה הטובה לפורטוגל: השעיות ממשחקי תערוכה אינן עוברות למשחקי גביע העולם הרשמיים, ולכן לאאו זכאי לפתיחה בקבוצה K מול ד.ר. קונגו בהיוסטון ב-17 ביוני. האירוע מעלה בכל זאת שאלות על מזגו של כוכב מילאן, בזמן שפורטוגל רודפת אחרי הגביע שלא זכתה בו מעולם עם קריסטיאנו רונאלדו מוביל במה שצפוי להיות הטורניר האחרון שלו. האם לאאו יסנן את האש לשערים?",
-      "sources": [
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/portugals-leao-sent-off-for-punching-in-world-cup-warmup-win-over-chile" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/401862883" },
-        { "name": "Athlon Sports", "url": "https://athlonsports.com/soccer/will-rafael-leao-miss-portugal-world-cup-opening-game-red-card" }
-      ],
-      "expires_at": "2026-06-17T23:59:59Z"
     },
     {
       "id": "ifab-var-corners-second-yellow-2026-06-05",
