@@ -1,7 +1,30 @@
 {
-  "updatedAt": "2026-06-06T21:31:53.922Z",
+  "updatedAt": "2026-06-07T00:27:48.889Z",
   "count": 12,
   "items": [
+    {
+      "id": "bra-neymar-mri-monday-2026-06-07",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "המאמן קרלו אנצ'לוטי מתעקש שניימאר, בן 34, ישחק במונדיאל הזה למרות שהחמיץ את שני משחקי ההכנה לפני הטורניר עם מתח בדרגה שנייה בשריר השוק הימני. אנצ'לוטי אישר ב-7 ביוני שניימאר יעבור בדיקת MRI ביום שני, 8 ביוני, וצופה שהתוצאה תפנה לו את הדרך לחזור לאימוני הסגל המלאים בשבוע שלאחר מכן. היעד הראשוני נותר הפתיחה מול מרוקו ב-13 ביוני בניו ג'רזי, אך אם לא יהיה כשיר בזמן, הסגל יכוון לכשירותו למשחק מול האיטי ב-19 ביוני. ברזיל ניצחה את מצרים 2:1 בהכנה האחרונה ללא ניימאר, כשאנדריק סיים מסירה של ראפיניה בשער הניצחון. הכל תלוי בבדיקת יום שני.",
+      "en": "Brazil coach Carlo Ancelotti insists Neymar, 34, will play at this World Cup despite missing both pre-tournament warmups with a grade-two right calf strain. Ancelotti confirmed on June 7 that Neymar will undergo an MRI scan on Monday, June 8, with the result expected to clear him to rejoin full squad training the following week. The primary target remains Brazil's June 13 opener against Morocco in New Jersey, but if he cannot be ready in time, the staff will shift focus to the June 19 group match against Haiti. Brazil beat Egypt 2-1 in their final warmup without him, teenager Endrick converting a Raphinha assist to seal the win. Everything hinges on Monday's scan.",
+      "team": "BRA",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48975653/brazil-coach-ancelotti-confirms-neymar-mri-monday"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/neymar-injury-carlo-ancelotti-offers-145705972.html"
+        },
+        {
+          "name": "Goal.com",
+          "url": "https://www.goal.com/en/lists/brazil-world-cup-injury-news-neymar-carlo-ancelotti-egypt-friendly/blt14a5b98e48cb2d26"
+        }
+      ],
+      "expires_at": "2026-06-13T23:59:59Z"
+    },
     {
       "id": "arg-messi-hamstring-doubt-2026-06-06",
       "type": "news",
@@ -26,27 +49,27 @@
       "expires_at": "2026-06-16T23:59:59Z"
     },
     {
-      "id": "ger-usa-friendly-2-1-2026-06-06",
+      "id": "eng-tuchel-drops-palmer-foden-trent-2026-05-22",
       "type": "news",
       "confidence": "confirmed",
-      "he": "גרמניה ניצחה את ארצות הברית 2:1 ב-Soldier Field בשיקגו ב-6 ביוני בסיבוב ההכנה האחרון לפני המונדיאל. קאי האברץ נגח לרשת מבעיטה חופשית של יושואה קימיך בדקה השנייה, אנטואן רובינסון השווה עם בעיטה ראשונית עזה בדקה ה-37, ולרוי זאנה החזיר את יתרון גרמניה עם סיום נמוך מדויק בדקה ה-56. למרות שארה\"ב יצרה יותר בעיטות, 16 לעומת 12, גרמניה הפגינה את החדות מול השער שהופכת אותה למועמדת אמיתית לתואר. גרמניה פותחת מול קוראסאו בהיוסטון ב-14 ביוני. האם הצוות של נגלסמן יוכל לשמור על האכזריות הזאת גם בתוך הטורניר?",
-      "en": "Germany beat the United States 2-1 at Soldier Field in Chicago on June 6 in their final World Cup warm-up. Kai Havertz headed home a Joshua Kimmich free-kick in the 2nd minute, Antonee Robinson equalized with a fierce first-time volley in the 37th, and Leroy Sane restored Germany's lead with a clinical low finish in the 56th. Despite the USA outshooting Germany 16 to 12, the Germans showed the cutting edge in front of goal that makes them a genuine title contender. Germany open against Curacao in Houston on June 14. Can Nagelsmann's side carry that ruthlessness into the tournament itself?",
-      "team": null,
+      "he": "תומאס טוכל הפתיע את עולם הכדורגל בהשמטות הגדולות ביותר של חלון ההכנות, כשהשמיט את קול פלמר, פיל פודן, טרנט אלכסנדר-ארנולד והארי מגווייר מסגל 26 שחקני אנגליה למונדיאל. פודן ופלמר שילמו מחיר על עונת מועדונים חסרת ברק, ואילו טוכל אמר שאחדות קבוצתית חשובה לו יותר מבריקות אישיות ורצה לשחזר את הרוח ממחנות הכשורים הקודמים. מגווייר תיאר את עצמו כ'המום ושבור'. אנגליה רודפת אחרי תואר גברים ראשון ב-60 שנה כשתפתח את קבוצת L במונדיאל 2026. האם סגל הבנוי על רוח קולקטיבית יצליח במקום שקבוצות אנגלית מנוכרות לא הצליחו שוב ושוב?",
+      "en": "Thomas Tuchel delivered the biggest squad shock of the pre-tournament window, leaving Cole Palmer, Phil Foden, Trent Alexander-Arnold and Harry Maguire all out of England's 26-man World Cup squad. Foden and Palmer paid the price for below-par club seasons, while Tuchel said team unity mattered more than individual brilliance and that he wanted to recreate the spirit of earlier qualifying camps. Maguire described himself as shocked and gutted. England hunt a first major men's title in 60 years when they open Group L at the 2026 World Cup. Can a squad built on collective spirit succeed where star-studded England teams have so often fallen short?",
+      "team": "ENG",
       "sources": [
         {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/5/22/tuchel-leaves-palmer-and-foden-out-of-englands-2026-world-cup-squad"
+        },
+        {
+          "name": "Sky Sports",
+          "url": "https://www.skysports.com/football/news/12016/13543455/england-world-cup-squad-announcement-ruthless-thomas-tuchel-leaves-big-names-out-of-26-man-squad"
+        },
+        {
           "name": "ESPN",
-          "url": "https://www.espn.com/soccer/match/_/gameId/762260/germany-united-states"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/soccer/live/usmnt-vs-germany-live-updates-lineups-how-to-watch-score-latest-news-from-pre-world-cup-friendly-173000166.html"
-        },
-        {
-          "name": "Bolavip",
-          "url": "https://bolavip.com/en/soccer/usa-vs-germany-live-international-friendly-ahead-of-2026-world-cup"
+          "url": "https://www.espn.com/soccer/story/_/id/48836123/harry-maguire-shocked-gutted-miss-england-world-cup-squad"
         }
       ],
-      "expires_at": "2026-06-14T23:59:59Z"
+      "expires_at": "2026-06-21T23:59:59Z"
     },
     {
       "id": "por-leao-red-card-chile-warmup-2026-06-06",
@@ -72,98 +95,6 @@
       "expires_at": "2026-06-17T23:59:59Z"
     },
     {
-      "id": "wc26-hydration-breaks-all-matches-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "כל 64 המשחקים במונדיאל 2026 יכללו הפסקת שתייה חובה של שלוש דקות בכל מחצית, כשהשופט יעצור את המשחק בדקה ה-22 ללא קשר למזג האוויר או לטמפרטורה. בטורנירים קודמים, הפסקות קירור הופעלו רק כשסף חום מסוים נחצה. פיפ\"א הציגה את הכלל הגורף כדי להגן על שחקנים מפני חום הקיץ העז באתרים כמו דאלאס, יוסטון, מיאמי, אטלנטה ומונטריי, שבהן הטמפרטורות עוברות לעתים קרובות 35 מעלות ביוני וביולי. קבוצות לא יוכלו להשתמש בהפסקה לצורך ביצוע החלפות טקטיות. שינוי כלל קטן עם השפעות פוטנציאליות גדולות על התנופה בסוף המשחק וניהול העייפות ב-64 המשחקים.",
-      "en": "All 64 matches at the 2026 World Cup will include a mandatory three-minute hydration break in each half, with the referee stopping play at the 22-minute mark regardless of weather or temperature. Previous tournaments applied cooling breaks only when heat thresholds were exceeded. FIFA introduced the blanket rule to protect players from the intense summer conditions at venues in Dallas, Houston, Miami, Atlanta and Monterrey, where temperatures routinely exceed 35 degrees Celsius in June and July. Teams cannot use the break for tactical substitutions. A small rule change with potentially large effects on late-game momentum and fatigue management across all 64 games.",
-      "team": null,
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://inside.fifa.com/news/hydration-breaks-world-cup-2026-player-welfare"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/47245760/2026-world-cup-feature-hydration-break-every-half"
-        },
-        {
-          "name": "Sports Illustrated",
-          "url": "https://www.si.com/soccer/fifa-rules-on-usmnt-water-break-strategy-for-2026-world-cup"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "wc26-opening-ceremony-shakira-2026-06-06",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "חמישה ימים לפני השריקה הפותחת, פיפ\"א אישרה רשמית ששקירה ובורנה בוי יעמדו בראש טקס הפתיחה של מונדיאל 2026 באסטדיו אצטקה במקסיקו סיטי ב-11 ביוני, ויבצעו את הלהיט הרשמי \"דאי דאי\" בהופעה חיה. הטקס, שמתחיל ב-11:30 שעון מקומי לפני המשחק בין מקסיקו לדרום אפריקה ב-13:00, יכלול גם את מאנה, אלחנדרו פרנדס, J בלבין, בלינדה וטיילה. שקירה חוזרת לבמת המונדיאל 16 שנים אחרי ש-Waving Flag הפכה למוזיקת הרקע של דרום אפריקה 2010, וגם נקבעה כמבצעת משותפת בטקס ההפסקה של הגמר ב-19 ביולי. האם היא כתבה שוב לחן שיגדיר טורניר?",
-      "en": "Five days before the opening whistle, FIFA officially confirmed that Shakira and Burna Boy will headline the World Cup 2026 opening ceremony at Estadio Azteca in Mexico City on June 11, performing the official tournament anthem \"Dai Dai\" live. The ceremony, starting at 11:30 local time before Mexico face South Africa at 13:00, also features Mana, Alejandro Fernandez, J Balvin, Belinda and Tyla. Shakira returns to the World Cup stage 16 years after Waving Flag soundtracked South Africa 2010, and is also booked to co-headline the final halftime show on July 19. Has she written another tournament-defining anthem?",
-      "team": null,
-      "sources": [
-        {
-          "name": "FIFA (official)",
-          "url": "https://inside.fifa.com/organisation/media-releases/shakira-burna-dai-dai-world-cup-opening-ceremony-mexico-city"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48972437/shakira-burna-boy-perform-2026-world-cup-opening-ceremony-mexico"
-        },
-        {
-          "name": "Billboard",
-          "url": "https://www.billboard.com/music/latin/shakira-burna-boy-dai-dai-2026-world-cup-opening-ceremony-1236265169/"
-        }
-      ],
-      "expires_at": "2026-06-12T23:59:59Z"
-    },
-    {
-      "id": "bra-neymar-not-traveling-cleveland-2026-06-06",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "ניימאר לא יצטרף לנבחרת ברזיל לקליבלנד למשחק ההכנה האחרון מול מצרים ב-7 ביוני, סימן ברור שפציעת שריר השוק הימני שלו בדרגה שנייה נותרת דאגה רצינית ימים לפני הטורניר. כשירותו לפתיחה מול מרוקו ב-13 ביוני בניו ג'רזי אינה ברורה, ואין תאריך חזרה רשמי. הדאגה מעמיקה כיוון שרודריגו כבר מחוץ לכל הטורניר בשל קרע ברצועה הצולבת, מה שמשאיר את מתקפת אנצ'לוטי דקה מהצפוי לפני שנבעט כדור. האם הכוכב הגדול של הסלסאו יגיע בזמן שיחשוב?",
-      "en": "Brazil's Neymar will not travel to Cleveland with the squad for the final World Cup warmup against Egypt on June 7, a clear sign that his grade-2 right calf injury remains a serious concern days before the tournament. His fitness for Brazil's June 13 opener against Morocco in New Jersey is uncertain, with no official return date set. The worry deepens because Rodrygo is already ruled out for the whole tournament with an ACL rupture, leaving Carlo Ancelotti's attack thinner than expected before a ball is kicked. Will the Selecao's biggest name make it in time to matter?",
-      "team": "BRA",
-      "sources": [
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48572979/2026-fifa-world-cup-injuries-tracker-which-stars-miss-latest-info"
-        },
-        {
-          "name": "Athlon Sports",
-          "url": "https://athlonsports.com/soccer/neymar-injury-brazil-jersey-number-decision-world-cup-2026"
-        }
-      ],
-      "expires_at": "2026-06-13T23:59:59Z"
-    },
-    {
-      "id": "fra-ivory-coast-warmup-loss-2026-06-04",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "צרפת הפסידה 2:1 לחוף השנהב בנאנט ב-4 ביוני בסיבוב האחרון לפני המונדיאל בבית, כשגוואלה דואה ואמאד דיאלו כמחליף ביטלו את שערו של ריאן שרקי. היה זה הניצחון ההיסטורי הראשון של הפילים על לה-בלה. צרפת פותחת מול סנגל בניו ג'רזי ב-16 ביוני. עם אקיטיקה פצוע ומטטה בחוד ההתקפה, האם השערים באמת שם עבור דשאן?",
-      "en": "France fell 1-2 to Ivory Coast in Nantes on June 4 in their final home warm-up, with Guela Doue and substitute Amad Diallo cancelling out Rayan Cherki's opener. It was Ivory Coast's first-ever win over les Bleus. France open their World Cup against Senegal in New Jersey on June 16. With Ekitike injured and Mateta leading the line, are the goals really there for Deschamps?",
-      "team": "FRA",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/report/_/gameId/401864934"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/4/ivory-coast-beat-france-in-world-cup-warning-to-one-of-the-favourites"
-        },
-        {
-          "name": "France 24",
-          "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat"
-        }
-      ],
-      "expires_at": "2026-06-16T23:59:59Z"
-    },
-    {
       "id": "irq-first-wc-since-1986-2026-06-05",
       "type": "news",
       "confidence": "confirmed",
@@ -185,6 +116,52 @@
         }
       ],
       "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "wc26-var-dieperink-dropped-2026-05-15",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "פיפ\"א הסירה את שופט ה-VAR ההולנדי רוב דיפרינק מרשימת מונדיאל 2026 לאחר שנעצר בלונדון ב-9 באפריל בחשד למעשים מיניים. המשטרה הבריטית סגרה לאחר מכן את התיק, בציינה שסף הראיות לא נחצה ולא יינקטו פעולות נוספות. פיפ\"א בחרה בכל זאת להדירו, וממנה השופט הצרפתי ווילי דלאז'וד כמחליפו לצד השופט ההולנדי דני מאקקלי. גם אויפ\"א הסירה את דיפרינק ממשחקי המועדונים הקרובים שלו. הפרשה מעלה שאלות על הליך ראוי בממשל שיפוט הכדורגל, בדיוק בנקודה שבה ה-VAR מקבל סמכויות מורחבות ב-64 המשחקים של הטורניר.",
+      "en": "FIFA removed Dutch video assistant referee Rob Dieperink from the 2026 World Cup list after he was arrested in London on April 9 on suspicion of sexual offences. British police subsequently dropped the case, stating the evidential threshold had not been met and no further action would be taken. FIFA decided to exclude him regardless, with French official Willy Delajod named as his replacement alongside Dutch referee Danny Makkelie. UEFA also removed Dieperink from upcoming club fixtures. The episode raises fresh questions about due process in football's officiating governance, at precisely the moment VAR is being given expanded powers across all 64 matches of this tournament.",
+      "team": null,
+      "sources": [
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/fifa-drop-dutch-referee-world-120933794.html"
+        },
+        {
+          "name": "NL Times",
+          "url": "https://nltimes.nl/2026/05/15/dutch-referee-arrested-alleged-misconduct-17-year-old-charges-later-dropped"
+        },
+        {
+          "name": "Morocco World News",
+          "url": "https://www.moroccoworldnews.com/2026/05/302292/fifa-drops-dutch-referee-rob-dieperink-from-world-cup-list/"
+        }
+      ],
+      "expires_at": "2026-07-05T00:00:00Z"
+    },
+    {
+      "id": "ifab-var-corners-second-yellow-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "IFAB אישרה שה-VAR בגביע העולם 2026 יקבל שלושה תחומי התערבות חדשים: כרטיסים צהובים שניים שניתנו בשגיאה, מקרי זיהוי שגוי שבהם כורטס שחקן הלא נכון, ובעיטות פינה שניתנו שלא כדין. הבודקים יוכלו גם לבחון אם תוקף חוסם מגן לפני ביצוע בעיטה נייחת. בדיקות הפינה חלות רק על שגיאות בוטות ואסורות לאחר את חידוש המשחק. הסמכות המורחבת משלשת את טווח ה-VAR לעומת טורנירים קודמים - האם היא תבטל את ההחלטות השנויות ביותר במחלוקת, או פשוט תוסיף שכבת ויכוח חדשה?",
+      "en": "IFAB has confirmed that VAR at the 2026 World Cup gains three new areas of intervention: wrongly-awarded second yellow cards, cases of mistaken identity where the wrong player is carded, and incorrectly-awarded corner kicks. Officials can also check if an attacker blocked a defender before a set piece was taken. Corner reviews must correct only obvious errors and cannot delay the restart of play. The expanded brief triples VAR's scope compared to past tournaments - will it cut out the game's most controversial decisions, or just add a new layer of debate?",
+      "team": null,
+      "sources": [
+        {
+          "name": "Sky Sports",
+          "url": "https://www.skysports.com/football/news/12098/13549645/world-cup-ifab-confirm-new-var-powers-10-second-substitutions-and-tactical-timeout-ban-in-major-rule-changes"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth"
+        },
+        {
+          "name": "NBC Sports",
+          "url": "https://www.nbcsports.com/soccer/news/rule-changes-confirmed-for-2026-world-cup-as-ifab-alters-var-cracks-down-on-subs-and-timeouts"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
       "id": "alg-stun-ned-luca-zidane-2026-06-03",
@@ -233,24 +210,24 @@
       "expires_at": "2026-06-18T23:59:59Z"
     },
     {
-      "id": "fifa-vuvuzela-ban-2026-06-03",
+      "id": "irn-azmoun-excluded-uae-photo-2026-06-05",
       "type": "news",
       "confidence": "confirmed",
-      "he": "הצליל שהגדיר את דרום אפריקה 2010 אסור ב-2026. קוד ההתנהלות לאצטדיונים של פיפ\"א, שנכנס לתוקף ב-2 ביוני, אוסר על ווּבּוּזלות, צופרי אוויר, שריקות וכל מכשירי הרעש הקוליים האחרים ב-16 האצטדיונים של המונדיאל בקנדה, במקסיקו ובארה\"ב. הסבר פיפ\"א - בטיחות: וובוזלות יכולות להגיע ל-120 דציבל, כמו מסור חשמלי וקרוב לסף הכאב הגופני, ומפריעות לתקשורת בין שחקנים ושופטים. אוהד שייתפס עמה עלול להיות מגורש. שש עשרה שנים אחרי שהצופר הפלסטי הפך לאחד הסמלים השנויים ביותר במחלוקת בכדורגל, האם האווירה באצטדיונים תהיה שקטה ניכר?",
-      "en": "The sound that defined South Africa 2010 is banned in 2026. FIFA's Stadium Code of Conduct, effective June 2, prohibits vuvuzelas, air horns, whistles and all other loud noisemaking devices from all 16 World Cup venues in Canada, Mexico and the USA. FIFA's reasoning is safety: vuvuzelas can reach 120 decibels, comparable to a chainsaw and close to the threshold of physical pain, and they disrupt communication between players and officials. Fans caught with one face ejection. Sixteen years after the plastic horn became one of football's most divisive symbols, will the stadium atmospheres feel noticeably quieter?",
-      "team": null,
+      "he": "איראן אישרה שהתוקף סרדר אזמון נעדר מסגל המונדיאל של 26 שחקנים לאחר שמדיית המדינה האיראנית כינתה בגידה את פרסום שלו באינסטגרם, המציג פגישה עם מוחמד בן ראשד אל-מקתום, שליט דובאי וראש ממשלת האמירויות. השחקן בן ה-31 עיגן את ההתקפה האיראנית לצד מהדי טארמי בקטאר 2022, ומשחק בלהק שבאב אל-אהלי שבאמירויות. האם ההתקפה האיראנית תתפקד בגביע עולם ללא הנבחר הוותיק ביותר שלה?",
+      "en": "Iran confirmed striker Sardar Azmoun is absent from their 26-man World Cup squad after Iranian state media branded his Instagram post, showing a meeting with Mohammed bin Rashid Al Maktoum, the ruler of Dubai and Prime Minister of the UAE, a betrayal. The 31-year-old anchored Iran's frontline alongside Mehdi Taremi at Qatar 2022 and plays club football for Shabab Al-Ahli in the UAE. Can Iran's attack function at a World Cup without their most experienced striker?",
+      "team": "IRN",
       "sources": [
         {
-          "name": "The Star South Africa",
-          "url": "https://thestar.co.za/sport/soccer/bafana/2026-06-03-world-cup-2026-fifa-bans-vuvuzelas-from-all-16-tournament-venues/"
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/5/17/sardar-azmoun-left-out-as-iran-announce-world-cup-2026-squad"
         },
         {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/iconic-vuvuzelas-banned-2026-world-132932215.html"
+          "name": "Fox News",
+          "url": "https://www.foxnews.com/sports/sardar-azmoun-known-iranian-messi-left-countrys-world-cup-squad-accused-treason"
         },
         {
-          "name": "Daily Sabah",
-          "url": "https://www.dailysabah.com/sports/football/fifa-bans-vuvuzelas-other-noisemakers-from-world-cup-stadiums"
+          "name": "Seoul Economic Daily",
+          "url": "https://en.sedaily.com/sports/2026/06/02/iran-drops-azmoun-from-world-cup-squad-over-uae-photo"
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
@@ -274,6 +251,29 @@
         {
           "name": "LBC",
           "url": "https://www.lbc.co.uk/article/world-cup-players-over-40-oldest-5Hjdb7r_2/"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "por-jota-27plus1-squad-2026-05-19",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "סגל ה-26 של פורטוגל בגביע העולם נושא שם 27 קבוע. המאמן רוברטו מרטינז הקדיש את הטורניר כולו לדיוגו ז'וטה, כנף ליברפול שנהרג בתאונת דרכים בספרד ביולי 2025 בגיל 28, כינה את הבחירה '27 שחקנים ועוד אחד' ואמר שמקומו של ז'וטה בקבוצה לא נעלם אי-פעם. מרטינז הוסיף שהמוטיבציה של הנבחרת כולה היא לנצח בגביע העולם עבורו, ופיפ\"א פרסמה מחווה רשמית. האם האבל הלאומי יהפוך לדלק שיקרב את פורטוגל לזכייה ראשונה?",
+      "en": "Portugal's 26-man World Cup squad carries a permanent 27th name. Coach Roberto Martinez dedicated the tournament to Diogo Jota, the Liverpool winger killed in a car crash in Spain in July 2025 at age 28, naming the selection '27 players plus one' and saying Jota's place in the group never disappeared. Martinez said the squad's entire motivation is to win the World Cup for him, and FIFA issued a formal tribute. Can a nation's grief become the fuel that finally gets Portugal over the finish line?",
+      "team": "POR",
+      "sources": [
+        {
+          "name": "FIFA",
+          "url": "https://www.fifa.com/en/news/articles/diogo-jota-tribute"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/46164741/portugal-want-2026-world-cup-success-diogo-jota-roberto-martinez"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/portugal-emotional-jota-gesture-world-133000555.html"
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
