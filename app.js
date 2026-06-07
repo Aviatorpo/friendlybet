@@ -209,6 +209,33 @@ function _rpcMissing(err) {
          /Could not find the function|schema cache/i.test(msg);
 }
 
+// v2.9.12: resilient write-RPC caller. The single-phase pick tables are
+// anon-REVOKEd (writes go ONLY through these SECURITY DEFINER RPCs — the legacy
+// direct write 401s for every real user). PostgREST briefly returns PGRST202
+// ("function not in schema cache") whenever its schema reloads — which happens
+// on EVERY migration/DDL. During that window a save would otherwise fall through
+// to the dead direct-write path and silently lose the user's picks (this was the
+// root cause of the mass knockout-bracket loss: the June-4 anon REVOKE turned the
+// fallback into a guaranteed 401, and the June 5-6 migrations triggered the
+// reload windows). So: retry a transient PGRST202 a few times before giving up.
+// Returns { ok, error, missing } — `missing` true only if STILL PGRST202 after
+// all retries (genuinely undeployed, e.g. a stale environment), so callers fall
+// back only as a true last resort.
+async function _rpcWrite(fn, args, { retries = 4, baseDelayMs = 700 } = {}) {
+  let lastErr = null;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const { data, error } = await supabaseClient.rpc(fn, args);
+    if (!error) return { ok: true, data, error: null, missing: false };
+    lastErr = error;
+    if (!_rpcMissing(error)) return { ok: false, error, missing: false };
+    // transient schema-cache miss — wait (linear backoff) and retry
+    if (attempt < retries) {
+      await new Promise(r => setTimeout(r, baseDelayMs * (attempt + 1)));
+    }
+  }
+  return { ok: false, error: lastErr, missing: true };
+}
+
 // Auto-login from a recovery code (QR scan / ?login= / "Recover with QR" picker).
 // Returns true on success. opts.silent suppresses the success toast.
 async function loginViaRecoveryCode(rawInput, opts = {}) {
@@ -9849,8 +9876,14 @@ async function spReenterKnockout() {
       spState.tournamentWinner = spState.bracketPicks[31];
       spSaveWinnerToDb(false);
     }
-    try { await spSaveBracketToDb(false); } catch (_) {}
+    // v2.9.12: CONFIRM the recovered bracket actually persisted before telling the
+    // user it's recovered. If the DB read-back is short (e.g. server briefly
+    // unreachable), be honest and keep them on the dashboard so the apology banner
+    // (driven by the real DB count) stays up — never a false "recovered".
+    let ok = false;
+    try { ok = await spSaveBracketVerified(koSingle.sequence.length); } catch (_) {}
     state.spInFlow = false;
+    if (!ok) { showToast(t('bracketSave.retryLater'), 'error'); goToDashboard(); return; }
     showToast(t('recoverBracket.recovered'), 'success');
     spRenderSummary();
     showScreen('sp-summary-screen');
@@ -10252,17 +10285,19 @@ async function _spSaveGroupsToDbInner(showFeedback = true) {
   // DELETE+INSERT only when the RPC isn't deployed in this environment.
   const code = _currentRecoveryCode();
   if (code) {
-    const { error: rpcErr } = await supabaseClient.rpc('save_group_position_picks', { p_code: code, p_picks: rows });
-    if (!rpcErr) {
+    // v2.9.12: retry transient PGRST202 (schema-cache reload) before giving up —
+    // the legacy direct write below is REVOKEd for anon and only 401s.
+    const res = await _rpcWrite('save_group_position_picks', { p_code: code, p_picks: rows });
+    if (res.ok) {
       if (showFeedback) showToast(t('groups.picksSaved'), 'success');
       return;
     }
-    if (!_rpcMissing(rpcErr)) {
-      console.error('[spSaveGroupsToDb] RPC error:', rpcErr);
-      showToast('DB error (groups): ' + (rpcErr.message || 'unknown'), 'error');
+    if (!res.missing) {
+      console.error('[spSaveGroupsToDb] RPC error:', res.error);
+      showToast('DB error (groups): ' + (res.error && res.error.message || 'unknown'), 'error');
       return;
     }
-    // RPC absent -> fall through to the legacy direct write below.
+    // RPC still unreachable after retries -> fall through to the legacy direct write below.
   }
 
   try {
@@ -10932,9 +10967,8 @@ function _spCacheKey() {
   return (u && p) ? ('fb_sp_picks_' + u + '_' + p) : null;
 }
 let _spServerBackupTimer = null;
-function _spCacheSave() {
-  const k = _spCacheKey(); if (!k) return;
-  const snapshot = {
+function _spCacheSnapshot() {
+  return {
     groupPositions: spState.groupPositions || {},
     thirdPlaceAdvancers: spState.thirdPlaceAdvancers || [],
     bracketPicks: spState.bracketPicks || {},
@@ -10942,6 +10976,10 @@ function _spCacheSave() {
     topScorer: spState.topScorer || null,
     ts: Date.now()
   };
+}
+function _spCacheSave() {
+  const k = _spCacheKey(); if (!k) return;
+  const snapshot = _spCacheSnapshot();
   try { localStorage.setItem(k, JSON.stringify(snapshot)); } catch (_) {}
   // v2.9.5: DURABLE server-side append-only backup (fire-and-forget, debounced).
   // Independent of the live pick tables, so a future bug/migration that wipes
@@ -10950,12 +10988,15 @@ function _spCacheSave() {
   if (_spServerBackupTimer) clearTimeout(_spServerBackupTimer);
   _spServerBackupTimer = setTimeout(() => _spBackupToServer(snapshot), 1500);
 }
-function _spBackupToServer(snapshot) {
+// Returns a promise so callers that want a GUARANTEED backup (e.g. submit) can
+// await it; the debounced auto-save path just ignores the return (fire-and-forget).
+// v2.9.12: retry transient PGRST202 so a schema-cache reload can't drop the only
+// durable copy of the picks.
+async function _spBackupToServer(snapshot) {
   try {
     const code = _currentRecoveryCode();
     if (!code || !supabaseClient) return;
-    supabaseClient.rpc('backup_picks', { p_code: code, p_payload: snapshot })
-      .then(() => {}, () => {}); // fire-and-forget; RPC may not be deployed yet
+    await _rpcWrite('backup_picks', { p_code: code, p_payload: snapshot }, { retries: 3, baseDelayMs: 600 });
   } catch (_) {}
 }
 function _spCacheLoad() {
@@ -10986,10 +11027,10 @@ async function _spSaveThirdPlaceInner() {
   // Preferred: server-side RPC; legacy direct write only if the RPC is absent.
   const code = _currentRecoveryCode();
   if (code) {
-    const { error: rpcErr } = await supabaseClient.rpc('save_sp_third_place', { p_code: code, p_letters: letters });
-    if (!rpcErr) return;
-    if (!_rpcMissing(rpcErr)) { console.warn('[spSaveThirdPlace] RPC error:', rpcErr); return; }
-    // RPC absent -> fall through to the legacy direct write below.
+    const res = await _rpcWrite('save_sp_third_place', { p_code: code, p_letters: letters }); // v2.9.12: PGRST202 retry
+    if (res.ok) return;
+    if (!res.missing) { console.warn('[spSaveThirdPlace] RPC error:', res.error); return; }
+    // RPC still unreachable after retries -> fall through to the legacy direct write below.
   }
   try {
     await supabaseClient.from('sp_third_place_picks')
@@ -11052,56 +11093,75 @@ async function _spSaveBracketToDbInner(showFeedback = true) {
     return;
   }
 
-  // Preferred: server-side RPC. Falls back to the legacy direct write only when
-  // the RPC isn't deployed (PGRST202). The RPC's DELETE is scoped to
-  // bracket_position IS NOT NULL, so it never clobbers two-phase rows.
+  // v2.9.12: the ONLY working write path is the SECURITY DEFINER RPC — anon
+  // INSERT/DELETE on knockout_picks is REVOKEd (every direct write 401s). So we
+  // call it with PGRST202 retries (rides out a PostgREST schema-cache reload),
+  // and NEVER pretend a failed save succeeded. The local + durable server backup
+  // (written by _spCacheSave before this runs) plus the on-load auto-heal are the
+  // safety net if the server is briefly unreachable.
   const code = _currentRecoveryCode();
-  if (code) {
-    const { error: rpcErr } = await supabaseClient.rpc('save_knockout_bracket', { p_code: code, p_picks: rows });
-    if (!rpcErr) {
-      if (showFeedback) showToast(t('groups.picksSaved'), 'success');
-      return;
-    }
-    if (!_rpcMissing(rpcErr)) {
-      console.error('[spSaveBracketToDb] RPC error:', rpcErr);
-      showToast('DB error (bracket): ' + (rpcErr.message || 'unknown'), 'error');
-      return;
-    }
-    // RPC absent -> fall through to the legacy direct write below.
+  if (!code) {
+    // No recovery code in this session → the RPC can't authenticate the writer
+    // and the direct write is REVOKEd. Don't silently drop: the localStorage
+    // cache holds the picks; tell the user how to make the save stick.
+    console.error('[spSaveBracketToDb] no recovery code in session — cannot save bracket to server');
+    showToast(t('bracketSave.noCode'), 'error');
+    return;
   }
 
-  try {
-    // v2.5.7: scope DELETE to this pool. Without pool_id, saving bracket
-    // picks in pool B would wipe pool A's bracket.
-    const { error: delErr } = await supabaseClient.from('knockout_picks')
-      .delete()
-      .eq('user_id', userId)
-      .eq('pool_id', poolId)
-      .not('bracket_position', 'is', null);
-    if (delErr) {
-      console.error('[spSaveBracketToDb] DELETE error:', delErr);
-      showToast('DB error (bracket DELETE): ' + (delErr.message || 'unknown'), 'error');
-    }
-
-    const { error } = await supabaseClient.from('knockout_picks').insert(rows);
-    if (error) {
-      // v2.5.20: surface save errors loudly (same as spSaveGroupsToDb).
-      console.error('[spSaveBracketToDb] INSERT error:', error);
-      // v2.5.21: friendly hint for the missing-teams FK case.
-      const msg = (error.message || '') + ' ' + (error.details || '');
-      if (/team_code_fkey/.test(msg) || /not present in table.*teams/.test(msg)) {
-        showToast('Missing team codes in DB. Run migrations/2026-05-18-seed-wc2026-teams.sql in Supabase.', 'error');
-      } else {
-        showToast('DB error (bracket): ' + (error.message || 'unknown') + ' - ' + (error.hint || error.details || ''), 'error');
-      }
-      return;
-    }
-
+  const res = await _rpcWrite('save_knockout_bracket', { p_code: code, p_picks: rows });
+  if (res.ok) {
     if (showFeedback) showToast(t('groups.picksSaved'), 'success');
-  } catch (err) {
-    console.error('[spSaveBracketToDb] caught:', err);
-    showToast('DB error (bracket): ' + (err.message || err), 'error');
+    return;
   }
+  if (!res.missing) {
+    // A genuine business error from the deployed RPC (e.g. invalid payload).
+    console.error('[spSaveBracketToDb] RPC error:', res.error);
+    showToast('DB error (bracket): ' + (res.error && res.error.message || 'unknown'), 'error');
+    return;
+  }
+
+  // Still PGRST202 after all retries. The RPC is (transiently) unreachable and
+  // the direct write is dead for anon — so DON'T attempt it (it would only 401
+  // and read as a scary DB error). Force a durable server backup now so the
+  // next app open auto-heals, and tell the user honestly.
+  console.error('[spSaveBracketToDb] save_knockout_bracket unreachable after retries — relying on backup + auto-heal');
+  try { _spBackupToServer(_spCacheSnapshot()); } catch (_) {}
+  showToast(t('bracketSave.retryLater'), 'error');
+}
+
+// v2.9.12: read back the live bracket row count straight from the DB (anon has
+// SELECT). Used to CONFIRM a save actually persisted before we tell the user it
+// did — the guarantee that re-entering picks after the earlier bug can't silently
+// fail a second time. Returns -1 if the read itself failed (treat as unconfirmed).
+async function _spBracketDbCount() {
+  try {
+    if (!supabaseClient || !state.currentUser || !state.currentPool) return -1;
+    const { data, error } = await supabaseClient.from('knockout_picks')
+      .select('bracket_position')
+      .eq('user_id', state.currentUser.id)
+      .eq('pool_id', state.currentPool.id)
+      .not('bracket_position', 'is', null);
+    if (error) return -1;
+    return (data || []).length;
+  } catch (_) { return -1; }
+}
+
+// Save the bracket and VERIFY it landed in the DB, retrying the save if the
+// read-back is short. Returns true only when the DB genuinely holds the expected
+// rows. Callers use this at the commit checkpoints (submit / re-entry) so the UI
+// never claims success on a save that silently didn't persist.
+async function spSaveBracketVerified(expected) {
+  const want = expected || Object.keys(spState.bracketPicks || {}).length;
+  if (!want) return false;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    await spSaveBracketToDb(false);
+    const n = await _spBracketDbCount();
+    if (n >= want) return true;          // confirmed in the DB
+    if (n < 0) return false;             // couldn't read back (offline) — don't claim success
+    await new Promise(r => setTimeout(r, 500 * (attempt + 1)));
+  }
+  return false;
 }
 
 function spBracketNext() {
@@ -11334,13 +11394,13 @@ async function spSaveWinnerToDb(showFeedback = true) {
   // Preferred: server-side RPC; legacy direct write only if the RPC is absent.
   const code = _currentRecoveryCode();
   if (code) {
-    const { error: rpcErr } = await supabaseClient.rpc('save_tournament_winner', { p_code: code, p_team_code: spState.tournamentWinner });
-    if (!rpcErr) {
+    const res = await _rpcWrite('save_tournament_winner', { p_code: code, p_team_code: spState.tournamentWinner }); // v2.9.12: PGRST202 retry
+    if (res.ok) {
       if (showFeedback) showToast(t('groups.picksSaved'), 'success');
       return;
     }
-    if (!_rpcMissing(rpcErr)) { console.warn('Save tournament winner RPC error:', rpcErr); return; }
-    // RPC absent -> fall through to the legacy direct write below.
+    if (!res.missing) { console.warn('Save tournament winner RPC error:', res.error); return; }
+    // RPC still unreachable after retries -> fall through to the legacy direct write below.
   }
   try {
     // v2.5.7: scope DELETE to this pool. Without pool_id, picking the
@@ -11647,10 +11707,29 @@ async function spSubmitPredictions() {
     // advancers + the full bracket here so picks can never be lost just because
     // the timer didn't fire. _spCacheSave keeps a local backup for auto-heal.
     _spCacheSave();
+    // v2.9.12: also write the durable SERVER backup SYNCHRONOUSLY on submit (the
+    // _spCacheSave timer is 1.5s and fast navigation can cancel it). This is the
+    // guarantee that the on-load auto-heal can always recover the bracket even if
+    // the live save below hits a transient PGRST202 window.
+    try { await _spBackupToServer(_spCacheSnapshot()); } catch (_) {}
+    // v2.9.12: VERIFY the bracket actually persisted (read-back from the DB) when
+    // the user has bracket picks. This is the guarantee that re-entering after the
+    // earlier bug can't silently fail again — if we can't confirm it landed, we
+    // tell the user honestly instead of showing a false "saved/ALL SET".
+    let bracketPersisted = true;
     try {
       if ((spState.thirdPlaceAdvancers || []).length === 8) await _spSaveThirdPlaceInner();
-      if (Object.keys(spState.bracketPicks || {}).length) await spSaveBracketToDb(false);
-    } catch (e) { console.warn('[spSubmitPredictions] explicit save warning:', e); }
+      const inMem = Object.keys(spState.bracketPicks || {}).length;
+      if (inMem) bracketPersisted = await spSaveBracketVerified(inMem);
+    } catch (e) { console.warn('[spSubmitPredictions] explicit save warning:', e); bracketPersisted = false; }
+    if (!bracketPersisted) {
+      // Restore the button and stop — do NOT mark submitted / show success on an
+      // unconfirmed bracket. Picks are backed up (local + server) so nothing is
+      // lost; the user just retries when the server is reachable again.
+      if (btn && originalBtnHtml != null) { btn.disabled = false; btn.innerHTML = originalBtnHtml; }
+      showToast(t('bracketSave.retryLater'), 'error');
+      return;
+    }
 
     if (allComplete) {
       const submittedAt = new Date().toISOString();
@@ -11659,10 +11738,10 @@ async function spSubmitPredictions() {
       const code = _currentRecoveryCode();
       let done = false;
       if (code) {
-        const { error: rpcErr } = await supabaseClient.rpc('mark_predictions_submitted', { p_code: code });
-        if (!rpcErr) { done = true; }
-        else if (!_rpcMissing(rpcErr)) { console.warn('mark_predictions_submitted RPC warning:', rpcErr); done = true; }
-        // RPC absent -> fall through to the legacy direct write below.
+        const res = await _rpcWrite('mark_predictions_submitted', { p_code: code }); // v2.9.12: PGRST202 retry
+        if (res.ok) { done = true; }
+        else if (!res.missing) { console.warn('mark_predictions_submitted RPC warning:', res.error); done = true; }
+        // RPC still unreachable after retries -> fall through to the legacy direct write below.
       }
       if (!done) {
         const { error } = await supabaseClient.from('users')

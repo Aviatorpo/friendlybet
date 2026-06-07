@@ -203,7 +203,9 @@ const TRANSLATIONS = {
     'groups.savingPicks': 'שומר...',
     'groups.savedPicks': 'נשמר ✓',
     'groups.picksSaved': 'הבחירות נשמרו',
-    
+    'bracketSave.noCode': 'לא הצלחנו לשמור — התחברו מחדש עם קוד השחזור כדי שהבראקט יישמר',
+    'bracketSave.retryLater': 'השרת לא זמין כרגע. הבחירות שלכם מגובות וייטענו אוטומטית — רעננו בעוד רגע',
+
     // === Knockout ===
     'knockout.title': 'הימור על נוקאאוט',
     'knockout.r32': 'סבב 32',
@@ -1475,7 +1477,9 @@ const TRANSLATIONS = {
     'groups.savingPicks': 'Saving...',
     'groups.savedPicks': 'Saved ✓',
     'groups.picksSaved': 'Predictions saved',
-    
+    'bracketSave.noCode': 'Couldn\'t save — sign in again with your recovery code so your bracket sticks',
+    'bracketSave.retryLater': 'Server is briefly unreachable. Your picks are backed up and will auto-restore — please refresh in a moment',
+
     // === Knockout ===
     'knockout.title': 'Knockout Predictions',
     'knockout.r32': 'Round of 32',
