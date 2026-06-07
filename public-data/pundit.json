@@ -1,7 +1,72 @@
 {
-  "updatedAt": "2026-06-07T06:25:29.428Z",
+  "updatedAt": "2026-06-07T09:29:03.898Z",
   "count": 12,
   "items": [
+    {
+      "id": "can-bombito-miss-wc-2026-06-07",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "קנדה תחליף את המגן המרכזי מואיז בומביטו בסגל המונדיאל שלה, כך אישרה הנבחרת ב-7 ביוני, חמישה ימים לפני שהמארחת המשותפת תפגוש את בוסניה והרצגובינה בטורנטו. בומביטו שבר את רגלו באוקטובר שעבר, שיחק רק 30 דקות בחימום מול אוזבקיסטן לפני שיצא צולע, והסגל הרפואי קבע שהשוק שעברה ניתוח אינה מוכנה לכדורגל ברמת טורניר. לקנדה יש עד 24 שעות לפני הפתיחה ב-12 ביוני לקרוא מחליף מהרשימה המוקדמת. המארחות המשותפות מאבדות מגן ראשון צפוי לפני שנבעטה אפילו בועטת תחרותית אחת בגביע העולם הביתי שלהן.",
+      "en": "Canada will replace centre-back Moise Bombito on their World Cup squad, the team confirmed on June 7, just five days before the co-host nation opens against Bosnia and Herzegovina in Toronto. Bombito fractured his leg last October, played only 30 minutes in Canada's warm-up against Uzbekistan before limping off, and medical staff concluded his surgically repaired tibia is not ready for tournament football. Canada have until 24 hours before the June 12 opener to call up a replacement from their provisional roster. The host nation lose a projected first-choice defender before a single competitive ball has been kicked at their home World Cup.",
+      "team": "CAN",
+      "sources": [
+        {
+          "name": "TSN",
+          "url": "https://www.tsn.ca/soccer/fifa-world-cup/video/2026/06/07/defender-bombito-to-be-replaced-on-canadas-world-cup-roster/"
+        },
+        {
+          "name": "theScore",
+          "url": "https://www.thescore.com/worldcup/news/3550904"
+        }
+      ],
+      "expires_at": "2026-06-12T23:59:59Z"
+    },
+    {
+      "id": "ger-usa-soldier-field-2026-06-06",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "גרמניה העניקה לארה\"ב שיעור חד לפני הטורניר, וניצחה את המארחת המשותפת 2:1 ב-Soldier Field בשיקגו ב-6 ביוני, אותו אצטדיון ממש שאירח את המשחק הראשון של מונדיאל 1994. קאי האברץ קדם את גרמניה בנגיחה תוך שתי דקות, אנטוניי רובינסון השווה בצלייה מרהיבה מ-23 יארד, אך לרוי סאנה החזיר את גרמניה לפני השעה. קהל מלא של 63,636 גדש את האצטדיון. גרמניה פותחת מול קוראסאו בהיוסטון ב-14 ביוני; ארה\"ב מארחת את פרגוואי ב-SoFi Stadium ב-12 ביוני. ההיסטוריה ריחפה מעל Soldier Field, וגרמניה ניצלה אותה.",
+      "en": "Germany gave the USA a pointed pre-tournament lesson, beating the co-hosts 2-1 at Soldier Field in Chicago on June 6, the same stadium that staged the very first match at the 1994 World Cup. Kai Havertz headed Germany in front inside two minutes, Antonee Robinson equalised with a stunning 23-yard volley, but Leroy Sane put Germany back ahead before the hour. A sell-out crowd of 63,636 packed the stadium. Germany open against Curacao in Houston on June 14; the USA host Paraguay at SoFi Stadium on June 12. History hung over Soldier Field, and Germany made it count.",
+      "team": null,
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/report/_/gameId/762260"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/soccer/live/usmnt-vs-germany-live-updates-lineups-how-to-watch-score-latest-news-from-pre-world-cup-friendly-173000166.html"
+        },
+        {
+          "name": "Geo.tv",
+          "url": "https://www.geo.tv/latest/667609-germany-beat-usa-21-in-final-world-cup-warm-up-friendly"
+        }
+      ],
+      "expires_at": "2026-06-14T23:59:59Z"
+    },
+    {
+      "id": "sco-wc-return-1998-gilmour-out-2026-06-07",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "סקוטלנד חוזרת למונדיאל לראשונה מאז צרפת 1998, אחרי 28 שנות המתנה, ובישרה את שובה עם סמכות. ניצחון 4:0 על בוליביה בניו ג'רזי ב-6 ביוני, כששה אדמס הבקיע פעמיים ולורנס שנקלנד וסקוט מקטומינאי גם הם רשמו שמות, שלח את נבחרתו של סטיב קלארק לטורניר מלאת ביטחון. האווירה נפגמה מוקדם יותר עם אישור היעדרות מצע נאפולי בילי גילמור, שנפל לאחר שפגע בברכו מול קוראסאו ב-30 במאי. סקוטלנד פותחת מול האיטי בפוקסבורו ב-13 ביוני, ואחר כך מרוקו וברזיל. האם ה-Tartan Army תצליח סוף-סוף להגיע לשישה עשר הנבחרות הטובות ביותר בהיסטוריה שלה?",
+      "en": "Scotland are back at the World Cup for the first time since France 1998, 28 years in the making, and announced their return with authority. A 4-0 demolition of Bolivia in New Jersey on June 6, Che Adams scoring twice and Lawrence Shankland and Scott McTominay also on target, sent Steve Clarke's side into the tournament full of confidence. The mood was dampened earlier by the confirmed absence of Napoli midfielder Billy Gilmour, ruled out after damaging his knee against Curacao on May 30. Scotland open against Haiti in Foxborough on June 13, with Morocco and Brazil to follow. Can the Tartan Army finally reach a World Cup round of 16 for the very first time in their history?",
+      "team": "SCO",
+      "sources": [
+        {
+          "name": "Sky Sports",
+          "url": "https://www.skysports.com/football/news/12017/13549373/billy-gilmour-scotland-midfielder-ruled-out-of-world-cup-with-knee-injury"
+        },
+        {
+          "name": "Scottish FA",
+          "url": "https://www.scottishfa.co.uk/en/news/scotland-secure-comfortable-win-over-bolivia-in-final-world-cup-warm-up-match"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48701669/scotland-world-cup-2026-schedule-fixtures-results-scores-group-c-how-watch-uk-news-analysis-injuries"
+        }
+      ],
+      "expires_at": "2026-06-13T23:59:59Z"
+    },
     {
       "id": "fifa-water-bottle-reversal-2026-06-06",
       "type": "news",
@@ -102,8 +167,8 @@
       "id": "bra-neymar-mri-monday-2026-06-07",
       "type": "news",
       "confidence": "confirmed",
-      "he": "המאמן קרלו אנצ'לוטי מתעקש שניימאר, בן 34, ישחק במונדיאל הזה למרות שהחמיץ את שני משחקי ההכנה לפני הטורניר עם מתח בדרגה שנייה בשריר השוק הימני. אנצ'לוטי אישר ב-7 ביוני שניימאר יעבור בדיקת MRI ביום שני, 8 ביוני, וצופה שהתוצאה תפנה לו את הדרך לחזור לאימוני הסגל המלאים בשבוע שלאחר מכן. היעד הראשוני נותר הפתיחה מול מרוקו ב-13 ביוני בניו ג'רזי, אך אם לא יהיה כשיר בזמן, הסגל יכוון לכשירותו למשחק מול האיטי ב-19 ביוני. ברזיל ניצחה את מצרים 2:1 בהכנה האחרונה ללא ניימאר, כשאנדריק סיים מסירה של ראפיניה בשער הניצחון. הכל תלוי בבדיקת יום שני.",
-      "en": "Brazil coach Carlo Ancelotti insists Neymar, 34, will play at this World Cup despite missing both pre-tournament warmups with a grade-two right calf strain. Ancelotti confirmed on June 7 that Neymar will undergo an MRI scan on Monday, June 8, with the result expected to clear him to rejoin full squad training the following week. The primary target remains Brazil's June 13 opener against Morocco in New Jersey, but if he cannot be ready in time, the staff will shift focus to the June 19 group match against Haiti. Brazil beat Egypt 2-1 in their final warmup without him, teenager Endrick converting a Raphinha assist to seal the win. Everything hinges on Monday's scan.",
+      "he": "המאמן קרלו אנצ'לוטי מתעקש שניימאר, בן 34, ישחק במונדיאל הזה למרות שהחמיץ את שני משחקי ההכנה לפני הטורניר עם מתח בדרגה שנייה בשריר השוק הימני. אנצ'לוטי אישר ב-7 ביוני שניימאר יעבור בדיקת MRI ביום שני, 8 ביוני, וצופה שהתוצאה תקבע את ציר הזמן לחזרתו. היעד הראשוני נותר הפתיחה מול מרוקו ב-13 ביוני בניו ג'רזי, אך אם לא יהיה כשיר בזמן, הסגל יכוון לכשירותו למשחק מול האיטי ב-19 ביוני. ברזיל ניצחה את מצרים 2:1 בהכנה האחרונה ללא ניימאר, כשאנדריק סיים מסירה של ראפיניה בשער הניצחון. הכל תלוי בבדיקת יום שני.",
+      "en": "Brazil coach Carlo Ancelotti insists Neymar, 34, will play at this World Cup despite missing both pre-tournament warmups with a grade-two right calf strain. Ancelotti confirmed on June 7 that Neymar will undergo an MRI scan on Monday, June 8, with the result expected to determine his return timeline. The primary target remains Brazil's June 13 opener against Morocco in New Jersey, but if he cannot be ready in time, the staff will shift focus to the June 19 group match against Haiti. Brazil beat Egypt 2-1 in their final warmup without him, teenager Endrick converting a Raphinha assist to seal the win. Everything hinges on Monday's scan.",
       "team": "BRA",
       "sources": [
         {
@@ -171,8 +236,8 @@
       "id": "por-leao-red-card-chile-warmup-2026-06-06",
       "type": "news",
       "confidence": "confirmed",
-      "he": "תוקף פורטוגל ראפאל לאאו גורש לאחר שניפץ אגרוף לעבר מגן צ'ילה איוון רומן זמן קצר לפני ההפסקה, בניצחון ידידותי של פורטוגל 2:0 ב-6 ביוני. לאאו חש שנפגע שלא כדין על ידי יריב אחר, הגיב בניפוץ אגרוף לעבר רומן, ושני השחקנים קיבלו כרטיסים אדומים ישירים. הבשורה הטובה לפורטוגל: השעיות ממשחקי תערוכה אינן עוברות למשחקי גביע העולם הרשמיים, ולכן לאאו זכאי לפתיחה בקבוצה K מול ד.ר. קונגו בהיוסטון ב-17 ביוני. האירוע מעלה בכל זאת שאלות על מזגו של כוכב מילאן, בזמן שפורטוגל רודפת אחרי הגביע שלא זכתה בו מעולם עם קריסטיאנו רונאלדו מוביל במה שצפוי להיות הטורניר האחרון שלו. האם לאאו יסנן את האש לשערים?",
-      "en": "Portugal forward Rafael Leao was sent off for punching Chile defender Ivan Roman just before halftime during Portugal's 2-0 warmup win on June 6. Leao felt he had been unfairly challenged by a different opponent, reacted by throwing a punch at Roman, and both players received straight red cards. The good news for Portugal is that suspensions earned in exhibition matches do not carry over to official World Cup fixtures, so Leao is fully eligible for Portugal's Group K opener against DR Congo in Houston on June 17. The incident nonetheless raises questions about the Milan star's temperament as Portugal chase the trophy they have never won, with Cristiano Ronaldo leading what is widely expected to be his final tournament. Will Leao channel that fire into goals instead?",
+      "he": "תוקף פורטוגל ראפאל לאאו גורש לאחר שניפץ אגרוף לעבר מגן צ'ילה איוון רומן זמן קצר לפני ההפסקה, בניצחון ידידותי של פורטוגל 2:1 ב-6 ביוני. לאאו חש שנפגע שלא כדין על ידי יריב אחר, הגיב בניפוץ אגרוף לעבר רומן, ושני השחקנים קיבלו כרטיסים אדומים ישירים. הבשורה הטובה לפורטוגל: השעיות ממשחקי תערוכה אינן עוברות למשחקי גביע העולם הרשמיים, ולכן לאאו זכאי לפתיחה בקבוצה K מול ד.ר. קונגו בהיוסטון ב-17 ביוני. האירוע מעלה בכל זאת שאלות על מזגו של כוכב מילאן, בזמן שפורטוגל רודפת אחרי הגביע שלא זכתה בו מעולם עם קריסטיאנו רונאלדו מוביל במה שצפוי להיות הטורניר האחרון שלו. האם לאאו יסנן את האש לשערים?",
+      "en": "Portugal forward Rafael Leao was sent off for punching Chile defender Ivan Roman just before halftime during Portugal's 2-1 warmup win on June 6. Leao felt he had been unfairly challenged by a different opponent, reacted by throwing a punch at Roman, and both players received straight red cards. The good news for Portugal is that suspensions earned in exhibition matches do not carry over to official World Cup fixtures, so Leao is fully eligible for Portugal's Group K opener against DR Congo in Houston on June 17. The incident nonetheless raises questions about the Milan star's temperament as Portugal chase the trophy they have never won, with Cristiano Ronaldo leading what is widely expected to be his final tournament. Will Leao channel that fire into goals instead?",
       "team": "POR",
       "sources": [
         {
@@ -180,8 +245,8 @@
           "url": "https://www.foxsports.com/stories/soccer/portugals-leao-sent-off-for-punching-in-world-cup-warmup-win-over-chile"
         },
         {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/milan-star-rafael-leao-sent-191000927.html"
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/report/_/gameId/401862883"
         },
         {
           "name": "Athlon Sports",
@@ -212,75 +277,6 @@
         }
       ],
       "expires_at": "2026-06-12T23:59:59Z"
-    },
-    {
-      "id": "wc26-azteca-altitude-2026-06-06",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "היתרון הביתי הגדול של מקסיקו במונדיאל 2026 אינו קשור לטקטיקה. אסטדיו אצטקה שוכן ב-2,240 מטרים מעל פני הים, למעלה מ-7,300 רגל, מה שהופך אותו לאתר הגבוה ביותר בין שלוש מדינות המארחות. נבחרות ממדינות השוכנות בגובה פני הים ירגישו את האוויר הדליל תוך דקות על המגרש. מנהל הכדורגל המקסיקני מיקל אריולה כינה את הגובה 'יתרון עצום' לצד קהל הבית. האצטקה גם עושה היסטוריה כאצטדיון הראשון שמארח משחקי מונדיאל בשלושה טורנירים נפרדים, לאחר שאירח גמרים ב-1970 וב-1986. האם גורם הגובה יעצב את תוצאות שלב הבתים?",
-      "en": "Mexico's biggest home advantage at the 2026 World Cup has nothing to do with tactics. Estadio Azteca sits at 2,240 metres above sea level, over 7,300 feet, making it the highest-altitude venue across all three host nations. Teams travelling from sea-level countries will feel the thin air within minutes on the pitch. Mexican football commissioner Mikel Arriola called it 'a massive advantage' alongside the home crowd. The Azteca also makes history as the first stadium to host World Cup matches across three separate tournaments, having staged finals in both 1970 and 1986. Will the altitude factor shape the early group-stage results?",
-      "team": "MEX",
-      "sources": [
-        {
-          "name": "Washington Post",
-          "url": "https://www.washingtonpost.com/sports/soccer/2026/06/06/world-cup-mexico-altitude-mexico-city-guadalajara/c88cc5ae-61a0-11f1-9c46-d6211372eede_story.html"
-        },
-        {
-          "name": "TSN",
-          "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/mexico-citys-altitude-poses-a-key-challenge-for-teams-at-the-2026-world-cup/"
-        },
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026"
-        }
-      ],
-      "expires_at": "2026-07-06T00:00:00Z"
-    },
-    {
-      "id": "por-ronaldo-age-milestone-2026-06-06",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "קריסטיאנו רונאלדו יהיה בן 41 שנים וארבעה חודשים כשפורטוגל ישחקו את משחקם הראשון במונדיאל 2026, מה שמציב אותו בין השחקנים המגרשיים הוותיקים ביותר שאי פעם התחרו בטורניר. CBS ספורט אישרה שמגרש 2026 יכלול לפחות שמונה שחקנים בני 40 ומעלה, שיא לכל מונדיאל. רונאלדו מוביל את פורטוגל במה שנחשב לטורניר האחרון שלו, ורודף אחרי הגביע הגדול היחיד שמעולם לא השיג. אם פורטוגל תגיע לגמר ב-19 ביולי, הוא יהיה בן 41 שנים ו-164 ימים, שובר את הרשומה לשחקן הוותיק ביותר שאי פעם הופיע בגמר מונדיאל. הזדמנות אחרונה אחת על הכותרת שמעולם לא זכה בה.",
-      "en": "Cristiano Ronaldo will be 41 years and four months old when Portugal play their first 2026 World Cup match, placing him among the oldest outfield players ever to compete in the tournament. CBS Sports confirmed that the 2026 field will feature at least eight players aged 40 or over, a record for any World Cup. Ronaldo leads Portugal in what is widely expected to be his final tournament, chasing the one major trophy that has always escaped him. If Portugal reach the final on July 19, he would be 41 years and 164 days old, breaking the record for the oldest player ever to appear in a World Cup final. One last chance at the title he never won.",
-      "team": "POR",
-      "sources": [
-        {
-          "name": "CBS Sports",
-          "url": "https://www.cbssports.com/soccer/news/cristiano-ronaldo-40-year-olds-set-to-make-2026-world-cup-the-oldest/"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/records-cristiano-ronaldo-break-world-190000060.html"
-        },
-        {
-          "name": "LBC",
-          "url": "https://www.lbc.co.uk/article/world-cup-players-over-40-oldest-5Hjdb7r_2/"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "irq-first-wc-since-1986-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "עיראק חוזרת למונדיאל לראשונה מאז מקסיקו 1986: 40 שנות המתנה הסתיימו לאחר שהמאמן גראהם ארנולד, שהוביל את אוסטרליה לשמינייה גמר בקטאר 2022, קיבל את הניהול במאי 2025 והוביל את אריות מסופוטמיה דרך מסע כישור מפרך של 21 משחקים על פני יותר משנתיים. מסע הפלייאוף הבינאוגדתי כלל הרפתקת נסיעות כאוטית במזרח התיכון, שנגרמה מסכסוך אזורי, שאילצה הפסקה של שלושה ימים לפני המשחק המכריע במקסיקו. עיראק פותחת נגד נורבגיה בבוסטון ב-16 ביוני ואחר כך תיפגש עם צרפת וסנגל. האם 40 שנות סבלנות יתורגמו להפתעת מונדיאל?",
-      "en": "Iraq are back at a World Cup for the first time since Mexico 1986, a 40-year wait finally over after coach Graham Arnold, who steered Australia to the round of 16 at Qatar 2022, took over in May 2025 and guided the Lions of Mesopotamia through a gruelling 21-match qualification campaign spanning more than two years. Their intercontinental playoff journey included a chaotic travel ordeal across the Middle East, caused by regional conflict, that forced a three-day recovery break before the decisive game in Mexico. Iraq open against Norway in Boston on June 16, then face France and Senegal. Can 40 years of patience translate into a World Cup shock?",
-      "team": "IRQ",
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/graham-arnold-iraq-interview"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/5/we-are-fighters-iraq-aim-to-shock-rivals-at-2026-world-cup"
-        },
-        {
-          "name": "The National",
-          "url": "https://www.thenationalnews.com/sport/football/2026/06/04/iraq-world-cup-talking-points-ali-al-hamadi-and-aymen-hussein-reignite-hopes-after-arduous-qualification/"
-        }
-      ],
-      "expires_at": "2026-06-16T23:59:59Z"
     }
   ]
 }
