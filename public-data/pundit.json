@@ -1,7 +1,99 @@
 {
-  "updatedAt": "2026-06-08T06:25:14.133Z",
+  "updatedAt": "2026-06-08T09:42:53.039Z",
   "count": 12,
   "items": [
+    {
+      "id": "sofi-strike-threat-usa-june-2026",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "עובדי שירותי המזון באצטדיון סופי בלוס אנג'לס הצביעו ב-96% לאישור שביתה ב-6 ביוני, ימים ספורים לפני שארה\"ב מארחת את פרגוואי שם ב-12 ביוני במשחק הראשון של הנבחרת האמריקנית בטורניר הביתי שלה. העובדים, המיוצגים על ידי Unite Here Local 11, דורשים שכר גבוה יותר, ביטחון תעסוקתי וערבות שסוכני שירות ההגירה לא יורשו להיכנס לאצטדיון. המשא ומתן עם מפעיל האצטדיון Legends Global ופיפ\"א חודש ביום שני 8 ביוני ללא הסכם עדיין. אם לא יגיעו להסכם, פתיחת הביתית של ארה\"ב עלולה להתקיים ללא דוכן מזון אחד פתוח.",
+      "en": "Food-service workers at SoFi Stadium in Los Angeles voted 96 percent to authorize a strike on June 6, just days before the USA face Paraguay there on June 12 in the American national team's first match of their home World Cup. Workers represented by Unite Here Local 11 are demanding higher pay, job security and a guarantee that Immigration and Customs Enforcement agents are barred from the venue. Negotiations with stadium operator Legends Global and FIFA resumed Monday June 8 with no deal yet reached. If no agreement is signed, the USA's home opener could kick off without a single concession stand open.",
+      "team": "USA",
+      "sources": [
+        {
+          "name": "NPR",
+          "url": "https://www.npr.org/2026/06/06/nx-s1-5848682/sofi-stadium-strike-world-cup"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/espn/story/_/id/48980083/sofi-stadium-workers-authorize-strike-ahead-usa-world-cup-opener"
+        },
+        {
+          "name": "ABC7 Los Angeles",
+          "url": "https://abc7.com/post/world-cup-2026-sofi-stadium-workers-inglewood-vote-authorize-strike-days-before-soccer-tournament-begins/19244116/"
+        }
+      ],
+      "expires_at": "2026-06-20T00:00:00Z"
+    },
+    {
+      "id": "ger-karl-injury-ouedraogo-2026-06-06",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "גרמניה מאבדת את הנער-פנומן שלה לפני שנבעטה כדור אחד במונדיאל 2026. קשר בייארן מינכן לנארט קרל, בן 18, שהפך למבקיע הצעיר ביותר בקריירת ליגת האלופות של הקלוב בעונה שעברה, סבל מקרע שרירים בירך השמאלית בפעולה האחרונה ממש של האימון הגמר של גרמניה בשיקגו ב-6 ביוני. ההתאחדות הגרמנית אישרה שהוא חוץ מהטורניר. המאמן נגלסמן זימן את אסאן אואדראוגו (20) מ-RB לייפציג כממלא מקומו, ואמר שהקשר הצעיר צפוי לשחק בביטחון, באומץ ובחופשיות. גרמניה פותחת קבוצה E מול קוראסאו בהיוסטון ב-14 ביוני. טורניר שהיה מגדיר קריירה, אבד בבעיטה אחת.",
+      "en": "Germany lose their teenage sensation before a ball is kicked at the 2026 World Cup. Bayern Munich midfielder Lennart Karl, 18, who became Bayern's youngest Champions League goal-scorer last season, suffered a torn muscle bundle in his left thigh in the very last action of Germany's final training session in Chicago on June 6. The German Football Association confirmed he is out of the tournament. Coach Nagelsmann has called up RB Leipzig's Assan Ouedraogo, 20, as his replacement, saying the young midfielder is expected to play with confidence, courage and freedom. Germany open Group E against Curacao in Houston on June 14. A career-defining tournament, lost in a single shot.",
+      "team": "GER",
+      "sources": [
+        {
+          "name": "FIFA (official)",
+          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/lennart-karl-germany-injury-withdrawal"
+        },
+        {
+          "name": "Washington Post",
+          "url": "https://www.washingtonpost.com/sports/soccer/2026/06/06/germany-world-cup-karl/c4660332-6209-11f1-9c46-d6211372eede_story.html"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48977173/lennart-karl-injured-germany-training-miss-world-cup"
+        }
+      ],
+      "expires_at": "2026-06-14T23:59:59Z"
+    },
+    {
+      "id": "irn-visa-row-wc26-2026-06-07",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "מסע המונדיאל 2026 של איראן נפתח בעימות גיאופוליטי לפני שנשמעה שריקת הפתיחה. כל 30 השחקנים וצוות האימון קיבלו ויזות אמריקניות, אך 14 מנהלים, כולל מזכ\"ל ההתאחדות וסגן הנשיא, נדחו על רקע ביטחון לאומי. שר החוץ רוביו ציין חשד לקשרים למשמרות המהפכה האיסלאמית. שחקני איראן נתונים לתנאי נסיעה יומית מחמיר: להיכנס ולצאת מארה\"ב באותו יום של כל משחק, ללא לינות. הנבחרת מתבססת במקסיקו ותטוס למשחקים בלוס אנג'לס ובסיאטל. התאחדות הכדורגל האיראנית כינתה את התנאים מפלים ונקמניים ומגישה תלונה רשמית לפיפ\"א. איראן פותחת מול ניו זילנד ב-SoFi Stadium בלוס אנג'לס ב-15 ביוני. האם יצליחו להסיט את הפוליטיקה ולשחק כדורגל?",
+      "en": "Iran's 2026 World Cup campaign started with a geopolitical standoff before the first whistle. All 30 players and coaching staff received US visas, but 14 administrative officials, including the federation secretary-general and vice president, were denied entry on national-security grounds. Secretary of State Rubio cited suspected links to Iran's Revolutionary Guard. Iran's players face a strict day-trip condition: enter and leave the United States on the same day as each match, with no overnight stays permitted. The team is based in Mexico and flies in for games in Los Angeles and Seattle. The Iran Football Federation called the conditions discriminatory and vindictive and is filing a formal grievance with FIFA. Iran open against New Zealand at SoFi Stadium in Los Angeles on June 15. Can they block out the politics and just play football?",
+      "team": "IRN",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48984862/iran-usa-world-cup-visas-officials-2026"
+        },
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/7/irans-world-cup-squad-lands-in-mexico-amid-us-visa-row"
+        },
+        {
+          "name": "Washington Times",
+          "url": "https://www.washingtontimes.com/news/2026/jun/7/iran-accuses-us-discriminatory-treatment-world-cup-visa-denials/"
+        }
+      ],
+      "expires_at": "2026-06-26T23:59:59Z"
+    },
+    {
+      "id": "sui-embolo-visa-drama-2026-06-05",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "חלוץ שוויץ ברל אמבולו חווה סיוט ויזה אמריקנית השבוע ויצא ממנו עם מקומו בטורניר שלם. הרשעה פלילית שקיבלה תוקף סופי לאחרונה גרמה לרשויות האמריקניות לחסום את אישור הנסיעה שלו, ואמבולו נעצר מטיסה של נבחרת שוויץ מציריך ללוס אנג'לס. אמבולו לקח את העניינים לידיו, נסע לשגרירות ארה\"ב בברן בעצמו ופרס את עניינו. הויזה אושרה ב-4 ביוני והוא הצטרף לנבחרת בסן דייגו ב-5 ביוני. שוויץ פותחת קבוצה B מול קטאר בסנטה קלרה ב-13 ביוני. אם הסיפור הזה היה מוגש כתסריט, היו דוחים אותו על שהוא דרמטי מדי.",
+      "en": "Switzerland striker Breel Embolo lived through a World Cup visa nightmare this week and came out the other side with his tournament place intact. A recently finalized criminal conviction caused US authorities to block his travel clearance, and he was stopped from boarding Switzerland's team flight from Zurich to Los Angeles. Embolo took matters into his own hands, travelling to the US embassy in Bern in person to make his case. The visa was approved on June 4 and he joined the squad in San Diego on June 5. Switzerland open Group B against Qatar in Santa Clara on June 13. If that story were pitched as a film script, it would be rejected for being too dramatic.",
+      "team": "SUI",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48969072/switzerland-striker-embolo-gets-visa-us-world-cup"
+        },
+        {
+          "name": "SWI swissinfo.ch",
+          "url": "https://www.swissinfo.ch/eng/culture/swiss-striker-breel-embolo-gets-us-visa-to-travel-to-world-cup/91532865"
+        },
+        {
+          "name": "ABC News",
+          "url": "https://abcnews.com/Sports/wireStory/swiss-forward-embolo-us-embassy-urgent-world-cup-133558069"
+        }
+      ],
+      "expires_at": "2026-06-13T23:59:59Z"
+    },
     {
       "id": "wc26-opening-ceremony-shakira-2026-06-08",
       "type": "news",
@@ -24,6 +116,33 @@
         }
       ],
       "expires_at": "2026-06-11T23:59:59Z"
+    },
+    {
+      "id": "rsa-bafana-visa-debacle-2026-06-08",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "דרום אפריקה הגיעה לבסיס ההכנה שלה בפאצ'וקה, מקסיקו, בצלה של כאוס שנגרם על ידם בעצמם, לאחר שפדרציית הכדורגל שלהם, SAFA, כשלה להשיג ויזות בזמן עבור שחקנים ואנשי מטה. הנבחרת יצאה מג'והנסבורג 24 שעות מאוחר מהמתוכנן, המאמן הוגו ברוס לא היה על טיסת המשלחת הראשונה והגיע בנפרד, ושר הספורט גייטון מקנזי כינה פומבית את הפרשה מביכה ולא הוגנת. SAFA התנצלה. ברגע שהגיעו לפאצ'וקה, האווירה התרוממה: אלפי אוהדים מקסיקנים הגיעו לאימון הפתוח ונתנו לבאפאנה באפאנה קבלת פנים חמה בנגינת מריאצ'י. הסגל המלא נמצא כעת במחנה וחימום מול ג'מייקה נגמר בתיקו. דרום אפריקה חוזרת למונדיאל לראשונה מאז שאירחה ב-2010, ומחכה להם האצטקה מול המארחת המשותפת מקסיקו ב-11 ביוני. האם הבלגן של ההכנה ידליק אותם, או שיגיעו ריקים?",
+      "en": "South Africa arrived at their World Cup base in Pachuca, Mexico under a shadow of self-inflicted chaos after their own federation, SAFA, failed to secure visas on time for multiple players and staff. The squad departed Johannesburg a full 24 hours behind schedule, head coach Hugo Broos was not on the initial delegation flight and joined separately, and Sports Minister Gayton McKenzie publicly called the episode embarrassing and grossly unfair. SAFA apologised. Once in Pachuca, spirits lifted fast: thousands of local Mexican fans turned out for an open training session and gave Bafana Bafana a mariachi welcome. The full squad is now on site and a warmup against Jamaica ended in a draw. South Africa are back at the World Cup for the first time since they hosted in 2010, and they face co-host Mexico at the Azteca on June 11. Will the pre-tournament chaos fire them up, or find them flat?",
+      "team": "RSA",
+      "sources": [
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/5/31/south-africas-world-cup-2026-departure-delayed-over-mexican-visa-debacle"
+        },
+        {
+          "name": "Washington Post",
+          "url": "https://www.washingtonpost.com/sports/soccer/2026/05/31/south-africa-world-cup-visa/8d9fe54e-5d1c-11f1-9c46-d6211372eede_story.html"
+        },
+        {
+          "name": "SAFA (official)",
+          "url": "https://www.safa.net/general-news/bafana-arrive-in-pachuca-mexico/"
+        },
+        {
+          "name": "Africa Soccer",
+          "url": "https://africasoccer.com/world-cup-2026-south-africa-squad-arrives-in-mexico-after-visa-delay/"
+        }
+      ],
+      "expires_at": "2026-06-12T23:59:59Z"
     },
     {
       "id": "bra-neymar-grade2-confirmed-2026-06-08",
@@ -76,33 +195,6 @@
       "expires_at": "2026-06-16T23:59:59Z"
     },
     {
-      "id": "rsa-bafana-visa-debacle-2026-06-08",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "דרום אפריקה הגיעה לבסיס ההכנה שלה בפאצ'וקה, מקסיקו, בצלה של כאוס שנגרם על ידם בעצמם, לאחר שפדרציית הכדורגל שלהם, SAFA, כשלה להשיג ויזות בזמן עבור שחקנים ואנשי מטה. הנבחרת יצאה מג'והנסבורג 24 שעות מאוחר מהמתוכנן, המאמן הוגו ברוס לא היה על טיסת המשלחת הראשונה והגיע בנפרד, ושר הספורט גייטון מקנזי כינה פומבית את הפרשה מביכה ולא הוגנת. SAFA התנצלה. ברגע שהגיעו לפאצ'וקה, האווירה התרוממה: אלפי אוהדים מקסיקנים הגיעו לאימון הפתוח ונתנו לבאפאנה באפאנה קבלת פנים חמה בנגינת מריאצ'י. הסגל המלא נמצא כעת במחנה וחימום מול ג'מייקה נגמר בתיקו. דרום אפריקה חוזרת למונדיאל לראשונה מאז שאירחה ב-2010, ומחכה להם האצטקה מול המארחת המשותפת מקסיקו ב-11 ביוני. האם הבלגן של ההכנה ידליק אותם, או שיגיעו ריקים?",
-      "en": "South Africa arrived at their World Cup base in Pachuca, Mexico under a shadow of self-inflicted chaos after their own federation, SAFA, failed to secure visas on time for multiple players and staff. The squad departed Johannesburg a full 24 hours behind schedule, head coach Hugo Broos was not on the initial delegation flight and joined separately, and Sports Minister Gayton McKenzie publicly called the episode embarrassing and grossly unfair. SAFA apologised. Once in Pachuca, spirits lifted fast: thousands of local Mexican fans turned out for an open training session and gave Bafana Bafana a mariachi welcome. The full squad is now on site and a warmup against Jamaica ended in a draw. South Africa are back at the World Cup for the first time since they hosted in 2010, and they face co-host Mexico at the Azteca on June 11. Will the pre-tournament chaos fire them up, or find them flat?",
-      "team": "RSA",
-      "sources": [
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/5/31/south-africas-world-cup-2026-departure-delayed-over-mexican-visa-debacle"
-        },
-        {
-          "name": "Washington Post",
-          "url": "https://www.washingtonpost.com/sports/soccer/2026/05/31/south-africa-world-cup-visa/8d9fe54e-5d1c-11f1-9c46-d6211372eede_story.html"
-        },
-        {
-          "name": "SAFA (official)",
-          "url": "https://www.safa.net/general-news/bafana-arrive-in-pachuca-mexico/"
-        },
-        {
-          "name": "Africa Soccer",
-          "url": "https://africasoccer.com/world-cup-2026-south-africa-squad-arrives-in-mexico-after-visa-delay/"
-        }
-      ],
-      "expires_at": "2026-06-12T23:59:59Z"
-    },
-    {
       "id": "can-crepeau-goalkeeper-wc-2026-06-08",
       "type": "news",
       "confidence": "confirmed",
@@ -149,6 +241,29 @@
       "expires_at": "2026-06-16T23:59:59Z"
     },
     {
+      "id": "fifa-vuvuzela-ban-wc26-2026-06-03",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "הזמזום שהגדיר את מונדיאל 2010 בדרום אפריקה אסור בכל אצטדיון בטורניר 2026. קוד ההתנהלות של פיפ\"א לאצטדיונים אוסר על ווווזלות, צופרי אוויר, שריקות וכל כלי רעש חזק אחר בכל 16 האתרים בארה\"ב, קנדה ומקסיקו, בין השאר כיוון שווווזלה בעוצמה מלאה יכולה להגיע לכ-120 דציבל, קרוב לסף הכאב הפיזי לאוזן האנושית. האיסור מכה באוהדי דרום אפריקה שקיוו להביא את הכלי כמחווה לאירוח המפורסם של ארצם ב-2010. באפאנה באפאנה נפגשת עם מארחת-שותפה מקסיקו באצטקה ב-11 ביוני. רוח 2010 מגיעה ליבשת אמריקה ללא הכלי המזוהה שלה.",
+      "en": "The hum that defined the 2010 World Cup in South Africa is banned from every stadium at the 2026 tournament. FIFA's Stadium Code of Conduct prohibits vuvuzelas, air horns, whistles and any other loud noisemaker at all 16 venues in the USA, Canada and Mexico, partly because a vuvuzela at full blast can reach around 120 decibels, close to the threshold of physical pain for the human ear. The ban is a blow for South African supporters who had hoped to bring the instrument as a tribute to their country's famous 2010 hosting. Bafana Bafana open against co-host Mexico at the Azteca on June 11. The spirit of 2010 travels to the Americas without its signature instrument.",
+      "team": null,
+      "sources": [
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/iconic-vuvuzelas-banned-2026-world-132932215.html"
+        },
+        {
+          "name": "The Star (SA)",
+          "url": "https://thestar.co.za/sport/soccer/bafana/2026-06-03-world-cup-2026-fifa-bans-vuvuzelas-from-all-16-tournament-venues/"
+        },
+        {
+          "name": "Daily Sabah",
+          "url": "https://www.dailysabah.com/sports/football/fifa-bans-vuvuzelas-other-noisemakers-from-world-cup-stadiums"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
       "id": "fra-deschamps-farewell-dembele-2026-06-08",
       "type": "news",
       "confidence": "confirmed",
@@ -170,121 +285,6 @@
         }
       ],
       "expires_at": "2026-07-19T23:59:59Z"
-    },
-    {
-      "id": "sco-wc-return-1998-gilmour-out-2026-06-07",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "סקוטלנד חוזרת למונדיאל לראשונה מאז צרפת 1998, אחרי 28 שנות המתנה, ובישרה את שובה בסמכות. ניצחון 4:0 על בוליביה בניו ג'רזי ב-6 ביוני, כאשר שה אדמס הבקיע פעמיים ולורנס שנקלנד וסקוט מקטומינאי גם הם רשמו שמות, שלח את נבחרתו של סטיב קלארק לטורניר מלאת ביטחון. האווירה נפגמה מוקדם יותר עם אישור היעדרות מצע נאפולי בילי גילמור, שיצא מהמשחק עם פציעה בברך מול קוראסאו ב-30 במאי. סקוטלנד פותחת מול האיטי בפוקסבורו ב-13 ביוני, ואחר כך מרוקו וברזיל. האם ה-Tartan Army תצליח סוף-סוף להגיע לשמינייה גמר של מונדיאל, לראשונה בהיסטוריה שלה?",
-      "en": "Scotland are back at the World Cup for the first time since France 1998, 28 years in the making, and announced their return with authority. A 4-0 demolition of Bolivia in New Jersey on June 6, Che Adams scoring twice and Lawrence Shankland and Scott McTominay also on target, sent Steve Clarke's side into the tournament full of confidence. The mood was dampened earlier by the confirmed absence of Napoli midfielder Billy Gilmour, ruled out after damaging his knee against Curacao on May 30. Scotland open against Haiti in Foxborough on June 13, with Morocco and Brazil to follow. Can the Tartan Army finally reach a World Cup round of 16 for the very first time in their history?",
-      "team": "SCO",
-      "sources": [
-        {
-          "name": "Sky Sports",
-          "url": "https://www.skysports.com/football/news/12017/13549373/billy-gilmour-scotland-midfielder-ruled-out-of-world-cup-with-knee-injury"
-        },
-        {
-          "name": "Scottish FA",
-          "url": "https://www.scottishfa.co.uk/en/news/scotland-secure-comfortable-win-over-bolivia-in-final-world-cup-warm-up-match"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48701669/scotland-world-cup-2026-schedule-fixtures-results-scores-group-c-how-watch-uk-news-analysis-injuries"
-        }
-      ],
-      "expires_at": "2026-06-13T23:59:59Z"
-    },
-    {
-      "id": "eng-kane-79-goals-record-2026-06-06",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "הארי קיין הבקיע את השער ה-79 שלו לאנגליה בנגיחה עדינה מהאגף של ג'ד ספנס בתוספת הזמן של המחצית הראשונה, ונתן לאנגליה ניצחון 1:0 על ניו זילנד ב-Raymond James Stadium בטמפה ב-6 ביוני. קיין, שהבקיע 61 שערים ב-51 משחקים כשבייארן מינכן זכתה בדאבל הלאומי בעונה שעברה, מוביל כעת ב-26 שערים מעל שיאו הקודם של וויין רוני לאנגליה. אנגליה פותחת את המונדיאל מול סנגל בלוס אנג'לס ב-14 ביוני. יש לחישות שקיין יכול להיות מלך השערים של הטורניר, ובקצב הזה הלחישות לא חסרות בסיס.",
-      "en": "Harry Kane scored his record-extending 79th goal for England with a deft flicked header from Djed Spence's delivery in first-half stoppage time, giving England a 1-0 win over New Zealand at Raymond James Stadium in Tampa on June 6. Kane, who scored 61 goals in 51 games as Bayern Munich won the domestic double last season, now stands 26 goals clear of Wayne Rooney's previous England record. England open the World Cup against Senegal in Los Angeles on June 14. There are whispers that Kane can become the tournament's top scorer, and at this rate the whispers are not without foundation.",
-      "team": "ENG",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48986657/england-win-new-zealand-reminder-harry-kane-importance"
-        },
-        {
-          "name": "101 Great Goals",
-          "url": "https://www.101greatgoals.com/football/world-cup-news/england-vs-new-zealand-world-cup-friendly-report-result-goals/"
-        }
-      ],
-      "expires_at": "2026-06-14T23:59:59Z"
-    },
-    {
-      "id": "irq-first-wc-since-1986-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "עיראק חוזרת למונדיאל לראשונה מאז מקסיקו 1986: 40 שנות המתנה הסתיימו לאחר שהמאמן גראהם ארנולד, שהוביל את אוסטרליה לשמינייה גמר בקטאר 2022, קיבל את הניהול במאי 2025 והוביל את אריות מסופוטמיה דרך מסע כישור מפרך של 21 משחקים על פני יותר משנתיים. מסע הפלייאוף הבינאוגדתי כלל הרפתקת נסיעות כאוטית במזרח התיכון, שנגרמה מסכסוך אזורי, שאילצה הפסקת התאוששות של שלושה ימים לפני המשחק המכריע במקסיקו. עיראק פותחת נגד נורבגיה בבוסטון ב-16 ביוני ואחר כך תיפגש עם צרפת וסנגל. האם 40 שנות סבלנות יתורגמו להפתעת מונדיאל?",
-      "en": "Iraq are back at a World Cup for the first time since Mexico 1986, a 40-year wait finally over after coach Graham Arnold, who steered Australia to the round of 16 at Qatar 2022, took over in May 2025 and guided the Lions of Mesopotamia through a gruelling 21-match qualification campaign spanning more than two years. Their intercontinental playoff journey included a chaotic travel ordeal across the Middle East, caused by regional conflict, that forced a three-day recovery break before the decisive game in Mexico. Iraq open against Norway in Boston on June 16, then face France and Senegal. Can 40 years of patience translate into a World Cup shock?",
-      "team": "IRQ",
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/graham-arnold-iraq-interview"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/5/we-are-fighters-iraq-aim-to-shock-rivals-at-2026-world-cup"
-        },
-        {
-          "name": "The National",
-          "url": "https://www.thenationalnews.com/sport/football/2026/06/04/iraq-world-cup-talking-points-ali-al-hamadi-and-aymen-hussein-reignite-hopes-after-arduous-qualification/"
-        }
-      ],
-      "expires_at": "2026-06-16T23:59:59Z"
-    },
-    {
-      "id": "por-ronaldo-sixth-wc-record-2026-06-08",
-      "type": "news",
-      "confidence": "reported",
-      "he": "בגיל 41, קריסטיאנו רונאלדו הופך לאחד משניים בלבד בהיסטוריה, לצד ליונל מסי, שהשתתפו בשישה מונדיאלים, כאשר פורטוגל פותחת את מסע קבוצה K שלה מול קונגו הדמוקרטית בהיוסטון ב-17 ביוני. לפי הדיווחים, הוא יהיה גם השחקן הרביעי הוותיק ביותר שמופיע במונדיאל. המאמן רוברטו מרטינז אמר שרונאלדו הבקיע 25 שערים ב-30 המשחקים האחרונים ונשאר קפטן מופתי שמציב את הסטנדרט לשחקנים הצעירים בכל אימון. רונאלדו הופיע בכל מונדיאל מאז גרמניה 2006, מכישרון צעיר ועד לרודף שיאים בן 41. האם הוא יזכה סוף-סוף בגביע הגדול היחיד שנמלט ממנו לאורך קריירה שוברת שיאים?",
-      "en": "At 41 years old, Cristiano Ronaldo becomes one of only two players in history to compete at six World Cups, alongside Lionel Messi, when Portugal open their Group K campaign against DR Congo in Houston on June 17. Reports say he will also be the fourth oldest player to appear at a World Cup. Coach Roberto Martinez said Ronaldo has scored 25 goals in his last 30 games and remains an exemplary captain who sets the standard for younger players every day in training. Ronaldo has featured at every World Cup since Germany 2006, from teenage sensation to 41-year-old record-chaser. Can he finally win the one major trophy that has eluded him throughout a record-breaking career?",
-      "team": "POR",
-      "sources": [
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/5/19/ronaldo-to-lead-portugal-at-sixth-world-cup-as-martinez-names-squad"
-        },
-        {
-          "name": "The Canary",
-          "url": "https://www.thecanary.co/global/world-analysis/2026/05/28/ronaldo-old/"
-        },
-        {
-          "name": "ibtimes.com.au",
-          "url": "https://www.ibtimes.com.au/cristiano-ronaldo-prepares-sixth-world-cup-1869981"
-        },
-        {
-          "name": "beIN Sports",
-          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles-video/cristiano-ronaldo-and-the-2026-world-cup-chasing-history-one-last-time-2026-06-07"
-        }
-      ],
-      "expires_at": "2026-07-19T23:59:59Z"
-    },
-    {
-      "id": "mex-quinto-partido-curse-2026-06-07",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "מקסיקו לא עברה מעולם את שלב שישה עשר הנבחרות בשבע הופעות רצופות בגביע העולם בין 1994 ל-2018, ריצה כל-כך כואבת שלמשחק שלא הצליחו לנצח ניתן שם עצמאי בכדורגל המקסיקני: אל קינטו פרטידו, המשחק החמישי. בקטאר 2022 הקללה עמקה כשאל טרי נפלה בשלב הבתים לראשונה מאז 1978. כעת, על אדמת הבית עם קהל האצטקה מאחוריהם, נבחרת אגירה פותחת את מסעה מול דרום אפריקה ב-11 ביוני. הגעות מקסיקו לרבע גמר התרחשו רק כשאירחו ב-1970 וב-1986. עם פורמט 48 הנבחרות המורחב שמוסיף סיבוב של 32, El Tri חייבת כעת לנצח בשני משחקי נוק-אאוט רק להגיע לשלב שבו קדמותיהן נפלו שוב ושוב. האם הטורניר הביתי יהיה סוף-סוף זה שישבור את הקללה?",
-      "en": "Mexico have never advanced beyond the round of 16 in seven consecutive World Cup appearances from 1994 to 2018, a run so painful that the match they could never win was given its own name in Mexican football: el quinto partido, the fifth match. At Qatar 2022 the curse deepened when El Tri were eliminated in the group stage for the first time since 1978. Now, on home soil with the Azteca crowd behind them, coach Javier Aguirre's side open their campaign against South Africa on June 11. Mexico's only quarterfinal appearances came when they hosted in 1970 and 1986. With the expanded 48-team format adding a new round of 32, El Tri must now win two knockout games just to reach the stage where their predecessors kept falling. Can the home tournament finally be the one that breaks the curse for good?",
-      "team": "MEX",
-      "sources": [
-        {
-          "name": "beIN Sports",
-          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles-video/mexico-s-fifth-match-curse-has-a-tougher-new-version-in-the-2026-world-cup-2026-06-05"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/5/mexico-world-cup-2026-preview-players-to-watch-group-matches-and-squad"
-        },
-        {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/mexico-world-cup-2026-javier-chicharito-hernandez-usmnt-canada"
-        }
-      ],
-      "expires_at": "2026-07-06T00:00:00Z"
     }
   ]
 }
