@@ -226,4 +226,4 @@ self.addEventListener('message', event => {
   }
 });
 
-console.log('[SW] Service Worker loaded - v1');
+console.log('[SW] Service Worker loaded - ' + CACHE_VERSION);

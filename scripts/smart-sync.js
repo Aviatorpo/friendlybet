@@ -170,12 +170,41 @@ const TEAM_NAME_TO_CODE = {
   'Haiti': 'HAI', 'Bosnia-Herzegovina': 'BIH', 'Cape Verde Islands': 'CPV',
   'Congo DR': 'COD', 'Ivory Coast': 'CIV', 'Qatar': 'QAT',
   'Scotland': 'SCO', 'Curaçao': 'CUR', 'Ecuador': 'ECU', 'Colombia': 'COL',
+  // Common provider name variants (football-data / FIFA / broadcasters) so a
+  // real team in a live/finished match is never silently dropped (see below).
+  'Côte d\'Ivoire': 'CIV', 'Cote d\'Ivoire': 'CIV',
+  'DR Congo': 'COD', 'Congo': 'COD',
+  'United States of America': 'USA', 'USA': 'USA', 'United States of America (USA)': 'USA',
+  'Korea DPR': 'KOR', // (no DPRK in WC2026; guard against mislabel)
+  'Czech Republic': 'CZE', 'Bosnia and Herzegovina': 'BIH',
+  'Cape Verde': 'CPV', 'Cabo Verde': 'CPV',
 };
+
+// Normalize a provider name for fuzzy matching: strip diacritics, lowercase,
+// collapse whitespace. Lets "Curacao" match "Curaçao", "Cote d'Ivoire" match
+// "Côte d'Ivoire", etc., without enumerating every accent variant.
+function normalizeName(s) {
+  return s.normalize('NFD').replace(/[̀-ͯ]/g, '')
+          .toLowerCase().replace(/\s+/g, ' ').trim();
+}
+const TEAM_NAME_NORM = Object.create(null);
+for (const [name, code] of Object.entries(TEAM_NAME_TO_CODE)) {
+  TEAM_NAME_NORM[normalizeName(name)] = code;
+}
 
 function getTeamCode(teamName) {
   if (!teamName) return null;
-  return TEAM_NAME_TO_CODE[teamName] || null;
+  return TEAM_NAME_TO_CODE[teamName] || TEAM_NAME_NORM[normalizeName(teamName)] || null;
 }
+
+// A real, named team (not a knockout TBD placeholder). football-data leaves
+// homeTeam/awayTeam name null/"TBD" until the bracket is drawn.
+function isRealTeamName(n) {
+  return !!n && !/^(tbd|to be determined|winner |runner|loser )/i.test(String(n).trim());
+}
+// Statuses that mean the match is live or done — an unmapped team here is a
+// SCORING-CRITICAL bug (we'd miss real results), so we fail the run.
+const LIVE_OR_FINAL_STATUS = new Set(['IN_PLAY', 'PAUSED', 'FINISHED', 'LIVE', 'started', 'finished']);
 
 // Probe for matches.winner_code (migration applied manually); only write it
 // once it exists, else the upsert would 400.
@@ -234,10 +263,35 @@ async function performSync() {
   });
   
   const validMatches = transformedMatches.filter(m => m.home_team_code && m.away_team_code);
-  const skippedCount = transformedMatches.length - validMatches.length;
-  
-  if (skippedCount > 0) {
-    console.log(`⏭️  Skipped ${skippedCount} matches with unmapped teams (likely TBD)`);
+
+  // Distinguish genuine TBD knockout placeholders (no real team name yet — safe
+  // to skip) from a REAL team whose name we failed to map (a scoring bug). A
+  // real unmapped team in a LIVE/FINISHED match fails the run loudly so the
+  // workflow goes red (GitHub emails the owner) instead of silently dropping a
+  // result. v2.9.14: previously all skips were logged as "likely TBD".
+  const unmappedReal = [];
+  data.matches.forEach((m, i) => {
+    const t = transformedMatches[i];
+    if (!t.home_team_code && isRealTeamName(m.homeTeam?.name)) {
+      unmappedReal.push({ id: t.external_id, status: t.status, name: m.homeTeam.name });
+    }
+    if (!t.away_team_code && isRealTeamName(m.awayTeam?.name)) {
+      unmappedReal.push({ id: t.external_id, status: t.status, name: m.awayTeam.name });
+    }
+  });
+  const tbdSkipped = (transformedMatches.length - validMatches.length) - unmappedReal.length;
+  if (tbdSkipped > 0) console.log(`⏭️  Skipped ${tbdSkipped} TBD/placeholder matches (no team drawn yet)`);
+
+  if (unmappedReal.length > 0) {
+    const names = [...new Set(unmappedReal.map(u => u.name))];
+    console.warn(`⚠️  ${unmappedReal.length} REAL team name(s) not in TEAM_NAME_TO_CODE: ${names.join(', ')}`);
+    const critical = unmappedReal.filter(u => LIVE_OR_FINAL_STATUS.has(u.status));
+    if (critical.length > 0) {
+      const cNames = [...new Set(critical.map(c => c.name))].join(', ');
+      const cIds = [...new Set(critical.map(c => c.id))].join(', ');
+      throw new Error(`Unmapped team in LIVE/FINISHED match — add to TEAM_NAME_TO_CODE: "${cNames}" (match id ${cIds})`);
+    }
+    console.warn('   (all scheduled, not yet live — add the alias before kickoff to be safe)');
   }
   
   console.log(`💾 Upserting ${validMatches.length} matches to Supabase...`);

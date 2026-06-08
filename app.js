@@ -7399,7 +7399,7 @@ function createMatchCard(match) {
         <span class="match-team-name ${awayClass}">${awayName}</span>
       </div>
     </div>
-    ${match.venue ? `<div class="match-info"><span>${match.venue}</span><span>${formatMatchDate(match.match_date)}</span></div>` : ''}
+    ${match.match_date ? `<div class="match-info">${match.venue ? `<span>${match.venue}</span>` : ''}<span>${formatMatchDate(match.match_date)}</span></div>` : ''}
   `;
   
   return card;

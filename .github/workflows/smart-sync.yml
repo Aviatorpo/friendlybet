@@ -52,10 +52,15 @@ jobs:
           if [ -n "$(git status --porcelain public-data)" ]; then
             git add public-data
             git commit -q -m "data: refresh match snapshot"
+            pushed=0
             for a in 1 2 3; do
-              git pull --rebase --autostash && git push && break
+              if git pull --rebase --autostash && git push; then pushed=1; break; fi
               echo "push retry $a"; sleep 4
             done
+            if [ "$pushed" != "1" ]; then
+              echo "::error::failed to push match snapshot after 3 retries"
+              exit 1
+            fi
           else
             echo "no snapshot change"
           fi
