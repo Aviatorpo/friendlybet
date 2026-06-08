@@ -10,6 +10,7 @@ on:
       - 'scripts/smart-sync.js'
       - 'scripts/test-smart-sync.js'
       - 'scripts/test-sync-transform.js'
+      - 'scripts/test-team-mapping.js'
       - 'scripts/live-poller.js'
       - 'scripts/test-live-poller.js'
       - 'scripts/generate-banter.js'
@@ -22,6 +23,7 @@ on:
       - 'scripts/smart-sync.js'
       - 'scripts/test-smart-sync.js'
       - 'scripts/test-sync-transform.js'
+      - 'scripts/test-team-mapping.js'
       - 'scripts/live-poller.js'
       - 'scripts/test-live-poller.js'
       - 'scripts/generate-banter.js'
@@ -44,6 +46,8 @@ jobs:
         run: node scripts/test-smart-sync.js
       - name: Run sync transform tests
         run: node scripts/test-sync-transform.js
+      - name: Run team-mapping tests
+        run: node scripts/test-team-mapping.js
       - name: Run live-poller tests
         run: node scripts/test-live-poller.js
       - name: Run banter engine tests

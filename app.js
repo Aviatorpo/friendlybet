@@ -10035,6 +10035,10 @@ async function spLoadExistingPicks() {
       // display/state consistency only (no scoring/bonus change).
       if (!spState.tournamentWinner && spState.bracketPicks && spState.bracketPicks[31]) {
         spState.tournamentWinner = spState.bracketPicks[31];
+        // v2.9.17: also re-persist so tournament_winner_picks (read by the
+        // share/OG card) isn't left empty if its original fire-and-forget save
+        // didn't land. Self-heals once; no-op when the pool is locked (RPC guard).
+        try { spSaveWinnerToDb(false); } catch (_) {}
       }
 
       // AUTO-HEAL: if the live bracket is missing/incomplete, restore from the
@@ -11596,6 +11600,12 @@ async function spFlushPendingSavesBeforeSummary() {
     try { await spSaveBracketToDb(false); } catch (_) {}
   }
   try { await _spBracketSaveChain; } catch (_) {}
+  // v2.9.17: third-place advancers (debounced, no chain) — flush the pending
+  // save so the summary can't reload before a just-changed third-place set lands.
+  if (typeof _spTpSaveTimer !== 'undefined' && _spTpSaveTimer) {
+    clearTimeout(_spTpSaveTimer); _spTpSaveTimer = null;
+    try { await _spSaveThirdPlaceInner(); } catch (_) {}
+  }
 }
 
 // v2.9.15: the ONE entry into the summary screen. Flushes any in-flight group +

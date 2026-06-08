@@ -364,5 +364,6 @@ if (require.main === module) {
     });
 } else {
   module.exports = { shouldSync, performSync, getTeamCode, resolveWinnerCode, TERMINAL_STATUSES,
+    isRealTeamName, normalizeName, LIVE_OR_FINAL_STATUS,
     __setFetch: (fn) => { globalThis.fetch = fn; } };
 }
