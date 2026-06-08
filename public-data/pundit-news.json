@@ -1,6 +1,57 @@
 {
-  "updatedAt": "2026-06-09T02:00:00.000Z",
+  "updatedAt": "2026-06-08T09:45:00.000Z",
   "items": [
+    {
+      "id": "artan-somalia-referee-denied-usa-wc2026-2026-06-08",
+      "confidence": "confirmed",
+      "en": "Somalia's Omar Artan, the first Somali referee ever appointed to a World Cup, was denied entry to the United States on June 7 and put on a flight back to Istanbul, just three days before the tournament starts. U.S. Customs and Border Protection confirmed Artan arrived at Miami International Airport from Istanbul and was determined to be inadmissible due to vetting concerns after additional inspection. Somalia is among the countries on President Trump's travel restriction list. To try to overcome the visa difficulties, Artan had acquired a diplomatic passport with support from the Somali embassy in Nairobi, but it made no difference. He was named CAF Best African Referee of 2025 and was set to join 52 officials presiding over 104 matches. FIFA has not publicly confirmed a replacement. The visa and immigration row around this tournament began with Iran's delegation and has now claimed its first referee.",
+      "he": "עומר ארטאן מסומליה, השופט הסומלי הראשון שמונה אי פעם למונדיאל, נדחה ממנגנון הכניסה לארצות הברית ב-7 ביוני ושוגר חזרה לאיסטנבול, שלושה ימים בלבד לפני תחילת הטורניר. שירות המכס וההגנה על הגבולות האמריקני אישר שארטאן הגיע לנמל התעופה הבינלאומי של מיאמי מאיסטנבול ונמצא שאינו קביל לכניסה בשל חששות ביטחוניים לאחר בדיקה נוספת. סומליה היא בין המדינות ברשימת הגבלות הנסיעה של הנשיא טראמפ. כדי לנסות להתגבר על קשיי הויזה, ארטאן השיג דרכון דיפלומטי בסיוע שגרירות סומליה בניירובי, אך ללא הועיל. הוא נבחר לשופט האפריקאי הטוב ביותר של CAF לשנת 2025 והיה אמור להיות אחד מ-52 פקידים שינהלו 104 משחקים. פיפ\"א לא אישרה מחליף פומבי. שורת הסכסוכים סביב ויזות ואמיגרציה בטורניר זה נפתחה עם משלחת איראן וכעת תובעת את שופטו הראשון.",
+      "sources": [
+        { "name": "US News (AP)", "url": "https://www.usnews.com/news/sports/articles/2026-06-08/somali-referee-for-world-cup-is-denied-entry-into-the-united-states" },
+        { "name": "France 24 (AFP)", "url": "https://www.france24.com/en/live-news/20260608-somali-referee-denied-entry-to-us-for-world-cup-official" },
+        { "name": "NBC Washington", "url": "https://www.nbcwashington.com/world-cup/somali-referee-2026-world-cup-denied-entry-united-states/4114000/" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "ned-timber-4th-injury-wc2026-2026-06-08",
+      "confidence": "confirmed",
+      "team": "NED",
+      "en": "The Netherlands injury crisis reached a fourth victim on June 8 when Arsenal full-back Jurrien Timber was ruled out of the World Cup with a groin problem that has lingered since March. The Dutch Football Association confirmed Timber left the team camp in New York after the final warm-up against Uzbekistan on June 8, saying he had not recovered sufficiently to participate in a medically responsible manner. Feyenoord defender Lutsharel Geertruida was named as his replacement. With Matthijs de Ligt, Stefan de Vrij and Xavi Simons already absent, the Netherlands carry four key-position holes into a group that opens against Japan in Arlington on June 14. Ronald Koeman still has Van Dijk, Gakpo and Dumfries to build around, but four unplanned absences before a ball is kicked in anger is a test of any squad's real depth. Can collective quality mask four individual gaps at once?",
+      "he": "משבר הפציעות של הולנד הגיע לקורבן הרביעי ב-8 ביוני כשמגן הגב של ארסנל יוריאן טימבר הוצא מהמונדיאל עם בעיית מפשעה שנגררת מאז מרץ. ההתאחדות ההולנדית אישרה שטימבר עזב את מחנה הנבחרת בניו יורק לאחר חימום הסיום מול אוזבקיסטן ב-8 ביוני, באומרה שלא החלים מספיק כדי להשתתף באופן שקול מבחינה רפואית. לוצ'ארל חרטרוידה מפייינורד מונה כממלא מקומו. עם מתייאס דה ליכט, שטפן דה פריי וחאבי סימונס כבר נפגעים, הולנד נושאת ארבעה חורים בעמדות מפתח לקבוצה הפותחת מול יפן בארלינגטון ב-14 ביוני. קוקמן עדיין מסתמך על ואן דייק, גקפו ודאמפריס, אבל ארבעה היעדרויות לא מתוכננות לפני שנבעטה כדור בכעס הן מבחן לעומק הסגל האמיתי. האם האיכות הקולקטיבית תוכל לכסות ארבעה פערים אישיים בו-זמנית?",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/49001511/netherlands-arsenal-defender-jurrien-timber-miss-world-cup-injury" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/other/netherlands-rules-out-jurrien-timber-for-the-world-cup-lutsharel-geertruida-called-up" },
+        { "name": "Goal.com", "url": "https://www.goal.com/en-us/lists/netherlands-dealt-huge-world-cup-blow-as-jurrien-timber-ruled-out-with-injury/blt561209d6db6a51a7" }
+      ],
+      "expires_at": "2026-06-25T23:59:59Z"
+    },
+    {
+      "id": "mex-ochoa-sixth-wc-retirement-2026-06-11",
+      "confidence": "confirmed",
+      "team": "MEX",
+      "en": "The opening match of the 2026 World Cup carries a story that goes beyond the scoreline. Guillermo Ochoa, 40, lines up for Mexico against South Africa at the Azteca on June 11 in what he has announced will be his farewell tournament, retiring from all football after Mexico's campaign ends. He joins Lionel Messi and Cristiano Ronaldo as the only three players in history to compete at six World Cups. The narrative carries a twist: the coach who denied Ochoa a start at the 2010 World Cup in South Africa, Javier Aguirre, is managing Mexico again in 2026, and after first-choice keeper Luis Malagon was ruled out by an ACL tear earlier this season, Ochoa gets his chance at last. South Africa are his opponents again, the same opponents who played Mexico on the very day Ochoa was on the bench in 2010. On home soil, at his own Azteca, the door is open.",
+      "he": "משחק הפתיחה של מונדיאל 2026 נושא סיפור שחורג מהתוצאה. גיירמו אוצ'ואה בן ה-40 ייצב עבור מקסיקו מול דרום אפריקה באצטקה ב-11 ביוני במה שהכריז כטורניר הפרידה שלו, תוך פרישה מכל הכדורגל בסיום מסע מקסיקו. הוא מצטרף לליונל מסי ולקריסטיאנו רונאלדו כשלושת השחקנים היחידים בהיסטוריה שהשתתפו בשישה מונדיאלים. לנרטיב יש פיתול: המאמן שמנע מאוצ'ואה כינון במונדיאל 2010 בדרום אפריקה, חביאר אגירה, מנהל שוב את מקסיקו ב-2026, ולאחר שהשוער הראשי לואיס מלגון הוצא עם קרע ברצועה הצולבת בתחילת העונה, אוצ'ואה מקבל לבסוף את הסיכוי. דרום אפריקה שוב מולו, אותם יריבים שמול מקסיקו ב-2010 כשאוצ'ואה ישב על הספסל. על אדמת הבית, באצטקה שלו, הדלת פתוחה.",
+      "sources": [
+        { "name": "FIFA (official)", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/guillermo-ochoa-mexico" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48641179/mexico-legend-ochoa-retire-national-team-2026-world-cup" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/mexico-legend-guillermo-ochoa-set-historic-sixth-world-cup-retirement-draft" }
+      ],
+      "expires_at": "2026-06-12T23:59:59Z"
+    },
+    {
+      "id": "esp-yamal-williams-fit-opener-2026-06-08",
+      "confidence": "reported",
+      "team": "ESP",
+      "en": "Spain's pre-tournament injury worries began to ease on June 8. Coach Luis de la Fuente told reporters that Lamine Yamal and Nico Williams are on course to be available for Spain's World Cup opener against Cape Verde in Atlanta on June 15. De la Fuente said: if there are no setbacks in the coming days, we expect them to be available on the 15th. Yamal, 18, had been nursing a groin problem and a hamstring injury sustained in April, while Williams was also carrying a knock. Both stayed at the Chattanooga training base rather than travel for Monday's final warm-up against Peru. Reports say the signs from training are now encouraging. Reigning European champions Spain have the tournament's most dangerous attacking duo when Yamal and Williams are fully fit. The opener against Cape Verde on June 15 will be the first real test of whether both can hit the ground running.",
+      "he": "חששות הפציעות של ספרד לפני הטורניר החלו להתפזר ב-8 ביוני. המאמן לואיס דה לה פואנטה אמר לעיתונאים שלמין יאמאל וניקו וויליאמס צפוי להיות כשירים לפתיחת ספרד מול קייפ ורדה באטלנטה ב-15 ביוני. דה לה פואנטה אמר: אם לא יהיו תקלות בימים הקרובים, אנחנו מצפים שיהיו זמינים ב-15. יאמאל בן ה-18 טיפל בבעיית מפשעה ועם פציעת שריר ירך שנחבל באפריל, בעוד וויליאמס סחב גם הוא פציעה. שניהם נשארו בבסיס האימונים בצ'טנוגה במקום לנסוע לחימום הסיום של יום שני מול פרו. לפי הדיווחים, הסימנים מהאימונים מעודדים כעת. האלופות האירופיות המגנות ספרד מחזיקות בצמד תקיפה המסוכן ביותר בטורניר כשיאמאל ווויליאמס כשירים לחלוטין. הפתיחה מול קייפ ורדה ב-15 ביוני תהיה המבחן הראשון האמיתי אם שניהם יוכלו להתחיל בריצה.",
+      "sources": [
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/8/yamal-williams-to-be-available-for-spains-opening-world-cup-match" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48993924/lamine-yamal-nico-williams-left-spain-last-world-cup-warmup" },
+        { "name": "Sportskeeda", "url": "https://www.sportskeeda.com/football/news-will-lamine-yamal-play-spain-s-2026-world-cup-opening-game-vs-cape-verde-luis-de-la-fuente-provides-latest-injury-update" }
+      ],
+      "expires_at": "2026-06-15T23:59:59Z"
+    },
     {
       "id": "sofi-strike-threat-usa-june-2026",
       "confidence": "confirmed",
