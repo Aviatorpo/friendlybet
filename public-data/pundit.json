@@ -1,7 +1,30 @@
 {
-  "updatedAt": "2026-06-08T03:34:22.351Z",
+  "updatedAt": "2026-06-08T06:25:14.133Z",
   "count": 12,
   "items": [
+    {
+      "id": "wc26-opening-ceremony-shakira-2026-06-08",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "טקס הפתיחה של מונדיאל 2026 יתקיים באסטדיו אצטקה במקסיקו סיטי ב-11 ביוני, כאשר שקירה ובורנה בוי מבצעים את ההמנון הרשמי 'דאי דאי' לראשונה בהופעה חיה, ולצדם ח'יי בלווין, מאנה, בלינדה, לוס אנג'לס אסולס וכוכבים נוספים, 90 דקות לפני שמקסיקו נפגשת עם דרום אפריקה. פיפ\"א אישרה ששקירה תנצח גם על הופעת ההפסקה בגמר ב-19 ביולי. מהצליל הראשון ועד לשריקת הסיום ביולי, הבמה באצטקה שייכת לה. ואחר כך מתחיל המופע האמיתי.",
+      "en": "The 2026 World Cup opening ceremony is at Estadio Azteca in Mexico City on June 11, with Shakira and Burna Boy performing the official tournament anthem 'Dai Dai' live for the first time, joined by J Balvin, Mana, Belinda, Los Angeles Azules and other stars, 90 minutes before Mexico face South Africa in the opener. FIFA has confirmed Shakira will also headline the halftime show at the final on July 19. From the opening note to the last whistle in July, the stage at the Azteca belongs to her. And then the real show begins.",
+      "team": null,
+      "sources": [
+        {
+          "name": "FIFA (official)",
+          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/opening-ceremony-mexico"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48972437/shakira-burna-boy-perform-2026-world-cup-opening-ceremony-mexico"
+        },
+        {
+          "name": "Billboard",
+          "url": "https://www.billboard.com/music/latin/shakira-burna-boy-dai-dai-2026-world-cup-opening-ceremony-1236265169/"
+        }
+      ],
+      "expires_at": "2026-06-11T23:59:59Z"
+    },
     {
       "id": "bra-neymar-grade2-confirmed-2026-06-08",
       "type": "news",
@@ -262,29 +285,6 @@
         }
       ],
       "expires_at": "2026-07-06T00:00:00Z"
-    },
-    {
-      "id": "sofi-strike-threat-usa-june-2026",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "עובדי שירותי המזון באצטדיון סופי בלוס אנג'לס הצביעו ב-96% לאישור שביתה ב-6 ביוני, ימים ספורים לפני שארה\"ב מארחת את פרגוואי שם ב-12 ביוני במשחק הראשון של הנבחרת האמריקנית בטורניר הביתי שלה. העובדים, המיוצגים על ידי Unite Here Local 11, דורשים שכר גבוה יותר, ביטחון תעסוקתי וערבות שסוכני שירות ההגירה לא יורשו להיכנס לאצטדיון. המשא ומתן עם מפעיל האצטדיון Legends Global ופיפ\"א חודש ביום שני 8 ביוני ללא הסכם עדיין. אם לא יגיעו להסכם, פתיחת הביתית של ארה\"ב עלולה להתקיים ללא דוכן מזון אחד פתוח.",
-      "en": "Food-service workers at SoFi Stadium in Los Angeles voted 96 percent to authorize a strike on June 6, just days before the USA face Paraguay there on June 12 in the American national team's first match of their home World Cup. Workers represented by Unite Here Local 11 are demanding higher pay, job security and a guarantee that Immigration and Customs Enforcement agents are barred from the venue. Negotiations with stadium operator Legends Global and FIFA resumed Monday June 8 with no deal yet reached. If no agreement is signed, the USA's home opener could kick off without a single concession stand open.",
-      "team": "USA",
-      "sources": [
-        {
-          "name": "NPR",
-          "url": "https://www.npr.org/2026/06/06/nx-s1-5848682/sofi-stadium-strike-world-cup"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/espn/story/_/id/48980083/sofi-stadium-workers-authorize-strike-ahead-usa-world-cup-opener"
-        },
-        {
-          "name": "ABC7 Los Angeles",
-          "url": "https://abc7.com/post/world-cup-2026-sofi-stadium-workers-inglewood-vote-authorize-strike-days-before-soccer-tournament-begins/19244116/"
-        }
-      ],
-      "expires_at": "2026-06-20T00:00:00Z"
     }
   ]
 }
