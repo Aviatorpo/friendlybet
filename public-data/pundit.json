@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-08T12:33:15.553Z",
+  "updatedAt": "2026-06-08T15:33:07.228Z",
   "count": 12,
   "items": [
     {
@@ -172,6 +172,29 @@
       "expires_at": "2026-06-19T23:59:59Z"
     },
     {
+      "id": "bra-wesley-injury-ederson-2026-06-07",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "רשימת הפצועים של ברזיל ממשיכה לגדול. מגן הימני ווסלי הורד ממגרש ניצחון ברזיל 2:1 על מצרים בקליבלנד ב-7 ביוני עם קרע שריר אדוקטור בירך שמאלית, וה-CBF אישר שהוא חוץ מהטורניר. המאמן אנצ'לוטי זימן את קשר אטלנטה אדרסון, שחקן אחר משוער מנצ'סטר סיטי בעל אותו שם, כממלא מקומו, מה שמשאיר את ברזיל ללא מגן ימני מיוחד בסגל הסופי של 26. כשניימאר כבר מושבת לפתיחה מול מרוקו ב-13 ביוני, אנצ'לוטי חייב כעת לשנות את מערך ההגנה שלו לפני שנבעטה כדור. אנדריק הבריק מול מצרים, אבל נזקי הפציעות של ברזיל לפני הטורניר הם הגדולים ביותר בין כל המועמדים המובילים. האם עומק הסגל יוכל לשאת אותם כשהתוצאות יספרו באמת?",
+      "en": "Brazil's injury list keeps growing. Right-back Wesley was forced off in Brazil's 2-1 win over Egypt in Cleveland on June 7 with a torn adductor muscle in his left thigh, and the CBF confirmed he is out of the tournament. Coach Ancelotti has called up Atalanta midfielder Ederson, a different player from the Manchester City goalkeeper of the same name, as his replacement, leaving Brazil without a specialist right-back in their final 26. With Neymar already sidelined for the June 13 opener against Morocco, Ancelotti must now rejig his defensive shape before a ball is kicked in anger. Endrick lit up the Egypt win but Brazil's pre-tournament injury toll is the heaviest of any major contender. Can their squad depth carry them when the results truly count?",
+      "team": "BRA",
+      "sources": [
+        {
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com/stories/soccer/brazil-right-back-wesley-is-out-of-the-world-cup-with-a-thigh-injury-and-ederson-is-replacing-him"
+        },
+        {
+          "name": "Washington Post",
+          "url": "https://www.washingtonpost.com/sports/soccer/2026/06/07/world-cup-brazil-wesley-injury/c29b57ee-62a1-11f1-bdd4-805ebb99a693_story.html"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/carlo-ancelotti-calls-ederson-replace-170133261.html"
+        }
+      ],
+      "expires_at": "2026-06-20T23:59:59Z"
+    },
+    {
       "id": "arg-messi-bench-honduras-2026-06-07",
       "type": "news",
       "confidence": "confirmed",
@@ -190,6 +213,29 @@
         {
           "name": "Sports Illustrated",
           "url": "https://www.si.com/soccer/why-lionel-messi-isnt-starting-for-argentina-vs-honduras-international-friendly"
+        }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "arg-messi-targeting-iceland-2026-06-08",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "ליונל מסי מתקרב לחזרה לפני הטורניר. מאמן ארגנטינה סקלוני אישר ב-7 ביוני שהשחקן בן ה-38, שלא שיחק בניצחון על הונדורס ב-6 ביוני כאמצעי זהירות בזמן שהחלים ממתח שריר ירך שמאלי, הגיע להתקדמות משמעותית ומכוון לדקות במשחק החימום השני של ארגנטינה מול איסלנד באוברן ב-9 ביוני. ה-AFA אישרה שכל השחקנים המחלימים מתקדמים היטב עם הצוות הרפואי, והמחנה אופטימי שמסי יהיה כשיר לחלוטין לפתיחה מול אלג'יריה ב-16 ביוני בקנזס סיטי. האלופות המגנות, מועדפות-שותפות לתואר יחד עם צרפת, זקוקות לקפטן שלהן בכושרו מתחילת הדרך. חימום מול איסלנד ב-9 ביוני הוא הסיכוי הטוב ביותר שלו להוכיח שהירך מאחוריו לגמרי.",
+      "en": "Lionel Messi is closing in on a pre-tournament comeback. Argentina coach Scaloni confirmed on June 7 that the 38-year-old, who sat out the June 6 win over Honduras as a precaution while recovering from a left hamstring strain, has made significant progress and is targeting minutes in Argentina's second warm-up against Iceland at Auburn on June 9. The AFA confirmed all recovering players are progressing well with the medical staff, and the camp is optimistic Messi will be fully fit for the June 16 opener against Algeria in Kansas City. Defending champions Argentina, co-favourites for the title alongside France, need their captain firing from the start. The Iceland warmup on June 9 is his best chance to prove the hamstring is firmly behind him.",
+      "team": "ARG",
+      "sources": [
+        {
+          "name": "CBS Sports",
+          "url": "https://www.cbssports.com/soccer/news/lionel-messi-injury-argentina-world-cup-2026-inter-miami/"
+        },
+        {
+          "name": "FWCTimes",
+          "url": "https://fwctimes.com/news/messi-world-cup-return-iceland-warm-up/"
+        },
+        {
+          "name": "World Soccer Talk",
+          "url": "https://worldsoccertalk.com/amp/world-cup/scaloni-explains-messis-2026-world-cup-workload-management-following-injury-with-inter-miami/"
         }
       ],
       "expires_at": "2026-06-16T23:59:59Z"
@@ -239,52 +285,6 @@
         }
       ],
       "expires_at": "2026-06-16T23:59:59Z"
-    },
-    {
-      "id": "fifa-vuvuzela-ban-wc26-2026-06-03",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "הזמזום שהגדיר את מונדיאל 2010 בדרום אפריקה אסור בכל אצטדיון בטורניר 2026. קוד ההתנהלות של פיפ\"א לאצטדיונים אוסר על ווווזלות, צופרי אוויר, שריקות וכל כלי רעש חזק אחר בכל 16 האתרים בארה\"ב, קנדה ומקסיקו, בין השאר כיוון שווווזלה בעוצמה מלאה יכולה להגיע לכ-120 דציבל, קרוב לסף הכאב הפיזי לאוזן האנושית. האיסור מכה באוהדי דרום אפריקה שקיוו להביא את הכלי כמחווה לאירוח המפורסם של ארצם ב-2010. באפאנה באפאנה נפגשת עם מארחת-שותפה מקסיקו באצטקה ב-11 ביוני. רוח 2010 מגיעה ליבשת אמריקה ללא הכלי המזוהה שלה.",
-      "en": "The hum that defined the 2010 World Cup in South Africa is banned from every stadium at the 2026 tournament. FIFA's Stadium Code of Conduct prohibits vuvuzelas, air horns, whistles and any other loud noisemaker at all 16 venues in the USA, Canada and Mexico, partly because a vuvuzela at full blast can reach around 120 decibels, close to the threshold of physical pain for the human ear. The ban is a blow for South African supporters who had hoped to bring the instrument as a tribute to their country's famous 2010 hosting. Bafana Bafana open against co-host Mexico at the Azteca on June 11. The spirit of 2010 travels to the Americas without its signature instrument.",
-      "team": null,
-      "sources": [
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/iconic-vuvuzelas-banned-2026-world-132932215.html"
-        },
-        {
-          "name": "The Star (SA)",
-          "url": "https://thestar.co.za/sport/soccer/bafana/2026-06-03-world-cup-2026-fifa-bans-vuvuzelas-from-all-16-tournament-venues/"
-        },
-        {
-          "name": "Daily Sabah",
-          "url": "https://www.dailysabah.com/sports/football/fifa-bans-vuvuzelas-other-noisemakers-from-world-cup-stadiums"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "fra-deschamps-farewell-dembele-2026-06-08",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "כנף צרפת אוסמן דמבלה, זוכה הבלון דאור 2025, אמר שצרפת נחושה לזכות בגביע המונדיאל כפרידה מושלמת מהמאמן דידיה דשאן, שאישר מוקדם יותר השנה שיפרוש לאחר סיום הטורניר ויסגור 14 שנות כהונה. דשאן זכה בגביע העולם 2018 ובדוף האומות 2021 עם צרפת. דמבלה אמר לעיתונאים שהסגל מאוחד סביב מתן אות הצטיינות כפרידה למאמן, כשזינדין זידאן הוא המועמד המוביל לרשת אותו. צרפת פותחת קבוצה I מול סנגל ב-MetLife Stadium ב-16 ביוני, ואחר כך נפגשת עם עיראק ונורבגיה. ארבע עשרה שנות הגה, ירייה אחרונה לכוכב שני.",
-      "en": "France winger Ousmane Dembele, the reigning 2025 Ballon d'Or winner, said France are determined to win the World Cup trophy as the perfect farewell for coach Didier Deschamps, who confirmed earlier this year that he will step down after the tournament, closing 14 years as France's manager. Deschamps won the 2018 World Cup and the 2021 UEFA Nations League with France. Dembele told reporters the squad is united around giving the coach a title send-off, with Zinedine Zidane the heavy favourite to succeed him. France open Group I against Senegal at MetLife Stadium on June 16, then face Iraq and Norway. Fourteen years at the helm, one last shot at a second star.",
-      "team": "FRA",
-      "sources": [
-        {
-          "name": "FIFA (official)",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/didier-deschamps-france-coach"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2025/1/8/france-coach-didier-deschamps-says-hell-leave-after-fifa-world-cup-2026"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48988194/dembele-france-end-deschamps-reign-trophy"
-        }
-      ],
-      "expires_at": "2026-07-19T23:59:59Z"
     }
   ]
 }

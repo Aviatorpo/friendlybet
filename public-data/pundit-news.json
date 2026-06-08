@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-08T23:00:00.000Z",
+  "updatedAt": "2026-06-09T02:00:00.000Z",
   "items": [
     {
       "id": "sofi-strike-threat-usa-june-2026",
@@ -94,6 +94,19 @@
       "expires_at": "2026-06-19T23:59:59Z"
     },
     {
+      "id": "bra-wesley-injury-ederson-2026-06-07",
+      "confidence": "confirmed",
+      "team": "BRA",
+      "en": "Brazil's injury list keeps growing. Right-back Wesley was forced off in Brazil's 2-1 win over Egypt in Cleveland on June 7 with a torn adductor muscle in his left thigh, and the CBF confirmed he is out of the tournament. Coach Ancelotti has called up Atalanta midfielder Ederson, a different player from the Manchester City goalkeeper of the same name, as his replacement, leaving Brazil without a specialist right-back in their final 26. With Neymar already sidelined for the June 13 opener against Morocco, Ancelotti must now rejig his defensive shape before a ball is kicked in anger. Endrick lit up the Egypt win but Brazil's pre-tournament injury toll is the heaviest of any major contender. Can their squad depth carry them when the results truly count?",
+      "he": "רשימת הפצועים של ברזיל ממשיכה לגדול. מגן הימני ווסלי הורד ממגרש ניצחון ברזיל 2:1 על מצרים בקליבלנד ב-7 ביוני עם קרע שריר אדוקטור בירך שמאלית, וה-CBF אישר שהוא חוץ מהטורניר. המאמן אנצ'לוטי זימן את קשר אטלנטה אדרסון, שחקן אחר משוער מנצ'סטר סיטי בעל אותו שם, כממלא מקומו, מה שמשאיר את ברזיל ללא מגן ימני מיוחד בסגל הסופי של 26. כשניימאר כבר מושבת לפתיחה מול מרוקו ב-13 ביוני, אנצ'לוטי חייב כעת לשנות את מערך ההגנה שלו לפני שנבעטה כדור. אנדריק הבריק מול מצרים, אבל נזקי הפציעות של ברזיל לפני הטורניר הם הגדולים ביותר בין כל המועמדים המובילים. האם עומק הסגל יוכל לשאת אותם כשהתוצאות יספרו באמת?",
+      "sources": [
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/brazil-right-back-wesley-is-out-of-the-world-cup-with-a-thigh-injury-and-ederson-is-replacing-him" },
+        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/06/07/world-cup-brazil-wesley-injury/c29b57ee-62a1-11f1-bdd4-805ebb99a693_story.html" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/carlo-ancelotti-calls-ederson-replace-170133261.html" }
+      ],
+      "expires_at": "2026-06-20T23:59:59Z"
+    },
+    {
       "id": "arg-messi-bench-honduras-2026-06-07",
       "confidence": "confirmed",
       "team": "ARG",
@@ -103,6 +116,19 @@
         { "name": "Outlook India", "url": "https://www.outlookindia.com/sports/football/argentina-vs-honduras-live-score-international-friendly-2026-updates-highlights-texas" },
         { "name": "Heavy.com", "url": "https://heavy.com/sports/soccer/world-cup/argentina-honduras-results-score-updates-stats/" },
         { "name": "Sports Illustrated", "url": "https://www.si.com/soccer/why-lionel-messi-isnt-starting-for-argentina-vs-honduras-international-friendly" }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "arg-messi-targeting-iceland-2026-06-08",
+      "confidence": "confirmed",
+      "team": "ARG",
+      "en": "Lionel Messi is closing in on a pre-tournament comeback. Argentina coach Scaloni confirmed on June 7 that the 38-year-old, who sat out the June 6 win over Honduras as a precaution while recovering from a left hamstring strain, has made significant progress and is targeting minutes in Argentina's second warm-up against Iceland at Auburn on June 9. The AFA confirmed all recovering players are progressing well with the medical staff, and the camp is optimistic Messi will be fully fit for the June 16 opener against Algeria in Kansas City. Defending champions Argentina, co-favourites for the title alongside France, need their captain firing from the start. The Iceland warmup on June 9 is his best chance to prove the hamstring is firmly behind him.",
+      "he": "ליונל מסי מתקרב לחזרה לפני הטורניר. מאמן ארגנטינה סקלוני אישר ב-7 ביוני שהשחקן בן ה-38, שלא שיחק בניצחון על הונדורס ב-6 ביוני כאמצעי זהירות בזמן שהחלים ממתח שריר ירך שמאלי, הגיע להתקדמות משמעותית ומכוון לדקות במשחק החימום השני של ארגנטינה מול איסלנד באוברן ב-9 ביוני. ה-AFA אישרה שכל השחקנים המחלימים מתקדמים היטב עם הצוות הרפואי, והמחנה אופטימי שמסי יהיה כשיר לחלוטין לפתיחה מול אלג'יריה ב-16 ביוני בקנזס סיטי. האלופות המגנות, מועדפות-שותפות לתואר יחד עם צרפת, זקוקות לקפטן שלהן בכושרו מתחילת הדרך. חימום מול איסלנד ב-9 ביוני הוא הסיכוי הטוב ביותר שלו להוכיח שהירך מאחוריו לגמרי.",
+      "sources": [
+        { "name": "CBS Sports", "url": "https://www.cbssports.com/soccer/news/lionel-messi-injury-argentina-world-cup-2026-inter-miami/" },
+        { "name": "FWCTimes", "url": "https://fwctimes.com/news/messi-world-cup-return-iceland-warm-up/" },
+        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/amp/world-cup/scaloni-explains-messis-2026-world-cup-workload-management-following-injury-with-inter-miami/" }
       ],
       "expires_at": "2026-06-16T23:59:59Z"
     },
@@ -222,6 +248,19 @@
       "expires_at": "2026-07-19T23:59:59Z"
     },
     {
+      "id": "por-leao-redcard-chile-2026-06-07",
+      "confidence": "reported",
+      "team": "POR",
+      "en": "Portugal's key attacker faces a nervous wait before the World Cup. Reports say Rafael Leao was sent off for violent conduct in the 44th minute of Portugal's 2-1 warm-up win over Chile on June 7, after punching Chile defender Ivan Roman when he felt he had been fouled. Both players received straight red cards. Under FIFA rules a red card in a friendly normally leads only to a ban in further friendlies, not competitive fixtures. However, because the charge is violent conduct, FIFA's Disciplinary Committee could extend the punishment to World Cup matches. Most reports expect Leao to miss only Portugal's final warmup against Nigeria, remaining eligible for the June 17 opener against DR Congo. Coach Roberto Martinez defended his winger, saying he was trying to protect a team-mate. If FIFA rules otherwise, Portugal lose their sharpest attacking threat for the group stage. A decision is expected in the coming days.",
+      "he": "התוקף המרכזי של פורטוגל מחכה בחרדה לפני המונדיאל. לפי הדיווחים, ראפאל לאו קיבל כרטיס אדום בגין התנהגות אלימה בדקה ה-44 של ניצחון ידידות 2:1 של פורטוגל על צ'ילה ב-7 ביוני, לאחר שהכה את מגן צ'ילה איוון רומן כשחשב שנאנס. שני השחקנים קיבלו כרטיס אדום ישיר. על פי כללי פיפ\"א, כרטיס אדום בידידות מוביל בדרך כלל רק לאיסור במשחקי ידידות נוספים ולא לאליפויות. אולם מכיוון שהאשמה היא התנהגות אלימה, ועדת המשמעת של פיפ\"א יכולה להרחיב את העונש למשחקי גביע העולם. רוב הדיווחים צופים שלאו יפסיד רק את חימום פורטוגל מול ניגריה, ויישאר כשיר לפתיחה מול קונגו הדמוקרטית ב-17 ביוני. המאמן רוברטו מרטינז הגן על הכנף שלו ואמר שניסה להגן על חבר לקבוצה. אם פיפ\"א תפסוק אחרת, פורטוגל תאבד את התוקף החד ביותר שלה בשלב הבתים. החלטה צפויה בימים הקרובים.",
+      "sources": [
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/portugals-leao-sent-off-for-punching-in-world-cup-warmup-win-over-chile" },
+        { "name": "Goal.com", "url": "https://www.goal.com/en/lists/a-friendly-match-just-before-the-world-cup-spiralled-completely-out-of-control-a-portugal-star-was-sent-off-for-violent-conduct-and-now-faces-severe-consequences/bltaecb4cfeaad8f53e" },
+        { "name": "Africa Soccer", "url": "https://africasoccer.com/rafael-leao-suspension-risk-dr-congo/" }
+      ],
+      "expires_at": "2026-06-17T23:59:59Z"
+    },
+    {
       "id": "mex-quinto-partido-curse-2026-06-07",
       "confidence": "confirmed",
       "team": "MEX",
@@ -233,6 +272,19 @@
         { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/mexico-world-cup-2026-javier-chicharito-hernandez-usmnt-canada" }
       ],
       "expires_at": "2026-07-06T00:00:00Z"
+    },
+    {
+      "id": "mex-humanwave-record-2026-06-07",
+      "confidence": "reported",
+      "team": "MEX",
+      "en": "The World Cup has not even started and Mexico City is already writing its own headlines. On June 7, thousands of fans packed the Paseo de la Reforma, the capital's grand central boulevard, for a mass attempt at the Guinness World Record for the world's largest human wave. The wave holds deep roots in Mexican football history: it is widely credited as having been born at the Estadio Azteca during the 1986 World Cup, and the record attempt came exactly 40 years later. Reports say city cultural authorities declared the record broken on social media later that Saturday, with Guinness World Records yet to give official confirmation. Mexico open the 2026 World Cup at that same Azteca on June 11. If this is the mood three days before kickoff, the host nation has no intention of playing it quiet.",
+      "he": "המונדיאל עוד לא התחיל ומקסיקו סיטי כבר כותבת כותרות משלה. ב-7 ביוני, אלפי אוהדים מילאו את פסאו דה לה רפורמה, הבולוואר המרכזי הגרנדיוזי של הבירה, לניסיון המוני לשבור את שיא גינס לגל אנושי הגדול בעולם. לגל יש שורשים עמוקים בהיסטוריית הכדורגל המקסיקני: הוא זוכה באופן נרחב כמי שנולד באסטדיו אצטקה בזמן המונדיאל 1986, וניסיון השיא הגיע בדיוק 40 שנה אחר כך. לפי הדיווחים, רשויות תרבות העיר הכריזו על שבירת השיא ברשתות החברתיות מאוחר ביום שבת, כאשר שיאי גינס עדיין לא נתנו אישור רשמי. מקסיקו פותחת את מונדיאל 2026 באותה האצטקה ב-11 ביוני. אם זה מצב הרוח שלושה ימים לפני הקיקאוף, למארחת אין כוונה לשחק בשקט.",
+      "sources": [
+        { "name": "Euronews", "url": "https://www.euronews.com/video/2026/06/07/thousands-join-record-breaking-human-wave-attempt-in-mexico-city-ahead-of-world-cup" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/video/newsfeed/2026/6/7/massive-human-wave-in-mexico-ahead-of-world-cup-2026" },
+        { "name": "CNN", "url": "https://www.cnn.com/2026/06/07/americas/world-cup-mexican-wave-soccer-traditions-latam-intl" }
+      ],
+      "expires_at": "2026-06-14T00:00:00Z"
     },
     {
       "id": "wc26-azteca-altitude-2026-06-06",
