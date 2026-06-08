@@ -184,6 +184,7 @@ const TEAM_NAME_TO_CODE = {
 // "Côte d'Ivoire", etc., without enumerating every accent variant.
 function normalizeName(s) {
   return s.normalize('NFD').replace(/[̀-ͯ]/g, '')
+          .replace(/[‘’ʼ`´]/g, "'") // curly/back apostrophes → straight (Côte d'Ivoire variants)
           .toLowerCase().replace(/\s+/g, ' ').trim();
 }
 const TEAM_NAME_NORM = Object.create(null);

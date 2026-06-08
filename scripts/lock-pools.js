@@ -30,6 +30,9 @@
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 const DRY_RUN = process.argv.includes('--dry-run') || process.env.LOCK_DRY_RUN === '1';
+// Explicit kickoff trigger (NOT min(matches.match_date)) so a stale/test/misdated
+// DB row can't lock every pool early. Override via env if FIFA shifts the opener.
+const CONFIGURED_KICKOFF_ISO = process.env.LOCK_KICKOFF_ISO || '2026-06-11T19:00:00.000Z';
 
 const H = {
   apikey: SUPABASE_KEY,
@@ -56,18 +59,31 @@ async function main() {
   const now = new Date();
   const nowIso = now.toISOString();
 
-  const kickoff = await firstKickoff();
-  const reached = !!(kickoff && now >= kickoff);
+  // Kickoff trigger = explicit constant. Read the DB earliest match only as a
+  // sanity/log signal; a DB row earlier than the configured kickoff must NOT
+  // trigger an early global lock.
+  const configuredKickoff = new Date(CONFIGURED_KICKOFF_ISO);
+  const dbKickoff = await firstKickoff();
+  if (dbKickoff) {
+    const diffMin = Math.round((dbKickoff.getTime() - configuredKickoff.getTime()) / 60000);
+    if (dbKickoff < configuredKickoff) {
+      console.warn(`[lock-pools] WARNING: DB earliest match ${dbKickoff.toISOString()} is BEFORE configured kickoff ${CONFIGURED_KICKOFF_ISO} by ${-diffMin} min — ignoring DB, using configured kickoff to avoid a premature global lock.`);
+    } else if (diffMin > 5) {
+      console.warn(`[lock-pools] note: DB earliest match ${dbKickoff.toISOString()} is ${diffMin} min AFTER configured kickoff.`);
+    }
+  }
+  const reached = now >= configuredKickoff;
 
   // Pools eligible to lock now: single-phase, not yet locked, effective deadline passed.
-  const filter = `betting_mode=eq.single_phase&locked_at=is.null&or=(lock_at_override.is.null,lock_at_override.lte.${nowIso})`;
-  const due = await dueCount(filter);
+  const nowParam = encodeURIComponent(nowIso);
+  const filter = `betting_mode=eq.single_phase&locked_at=is.null&or=(lock_at_override.is.null,lock_at_override.lte.${nowParam})`;
+  const before = await dueCount(filter);
 
-  console.log(`[lock-pools] now=${nowIso} | first match=${kickoff ? kickoff.toISOString() : 'none'} | kickoff reached=${reached} | single-phase pools due-to-lock=${due}`);
+  console.log(`[lock-pools] now=${nowIso} | configured kickoff=${CONFIGURED_KICKOFF_ISO} | db earliest=${dbKickoff ? dbKickoff.toISOString() : 'none'} | reached=${reached} | single-phase due-to-lock=${before}`);
 
   if (!reached) { console.log('[lock-pools] kickoff not reached → no-op'); return; }
   if (DRY_RUN) { console.log('[lock-pools] DRY RUN → would lock the pools above, but not writing'); return; }
-  if (due === 0) { console.log('[lock-pools] nothing to lock'); return; }
+  if (before === 0) { console.log('[lock-pools] nothing to lock'); return; }
 
   const patch = await fetch(`${SUPABASE_URL}/rest/v1/pools?${filter}`, {
     method: 'PATCH',
@@ -75,7 +91,15 @@ async function main() {
     body: JSON.stringify({ locked_at: nowIso }),
   });
   if (!patch.ok) throw new Error(`lock PATCH ${patch.status}: ${(await patch.text()).slice(0, 200)}`);
-  console.log(`[lock-pools] ✓ locked ${due} single-phase pool(s) at ${nowIso}`);
+
+  // Verify the write took effect — fail loud if no progress (a silent
+  // permission/filter issue would otherwise leave the workflow green).
+  const after = await dueCount(filter);
+  console.log(`[lock-pools] PATCH ok | due before=${before} after=${after}`);
+  if (after >= before) {
+    throw new Error(`[lock-pools] lock made NO progress: ${after} single-phase pools still due (was ${before}) — possible permission/filter failure`);
+  }
+  console.log(`[lock-pools] ✓ locked ${before - after} single-phase pool(s) at ${nowIso}`);
 }
 
 main().catch(e => { console.error('[lock-pools] ERROR:', e.message); process.exit(1); });

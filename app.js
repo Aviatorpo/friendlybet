@@ -3737,7 +3737,14 @@ async function selectTopScorer(player) {
     }));
     if (!confirmed) return;
   }
-  
+
+  // v2.9.17: expose the in-flight save so spTopScorerNext can await it — prevents
+  // the summary reload from racing a scorer the user just tapped (fast tap →
+  // Continue could otherwise show "Not picked"). Resolved in finally below.
+  let _resolveSave;
+  topScorerState.savingPromise = new Promise(r => { _resolveSave = r; });
+  topScorerState.isSaving = true;
+  try {
   const playerName = player.name_he || player.name_en || t('tsUnlocked.fallbackPlayer');
   // Preferred: server-side RPC; legacy direct write only if the RPC is absent.
   const rcode = _currentRecoveryCode();
@@ -3804,6 +3811,10 @@ async function selectTopScorer(player) {
   } catch (err) {
     console.error('Select top scorer error:', err);
     showToast(t('errors.unexpectedMsg', { msg: err.message || '' }), 'error');
+  }
+  } finally {
+    topScorerState.isSaving = false;
+    if (_resolveSave) _resolveSave();
   }
 }
 
@@ -10016,6 +10027,16 @@ async function spLoadExistingPicks() {
       if (!twpErr) spState.tournamentWinner = newWinner;
       if (!tpErr)  spState.thirdPlaceAdvancers = newThirdPlace || [];
 
+      // v2.9.17: the champion IS bracket position 31. tournament_winner_picks is
+      // saved on a SEPARATE fire-and-forget path, so if that row hasn't landed
+      // yet, derive the champion from the already-loaded (and flushed) bracket —
+      // otherwise the summary's champion row shows "Not picked" while the final
+      // pick exists. Scoring already reads bracket position 31, so this is
+      // display/state consistency only (no scoring/bonus change).
+      if (!spState.tournamentWinner && spState.bracketPicks && spState.bracketPicks[31]) {
+        spState.tournamentWinner = spState.bracketPicks[31];
+      }
+
       // AUTO-HEAL: if the live bracket is missing/incomplete, restore from the
       // most-complete backup we can find — first this browser's localStorage
       // (v2.9.2), then the durable server-side backup (v2.9.5, covers a new
@@ -11528,10 +11549,14 @@ function spTopScorerBack() {
   showScreen('sp-bracket-screen');
 }
 
-function spTopScorerNext() {
+async function spTopScorerNext() {
   state.spInFlow = false;
   const nav = document.getElementById('ts-sp-flow-nav');
   if (nav) nav.style.display = 'none';
+  // v2.9.17: if the user tapped a scorer and immediately tapped Continue, wait
+  // for that save to land before the summary reloads from the DB (else the
+  // summary could show the top scorer as "Not picked").
+  try { if (topScorerState.savingPromise) await topScorerState.savingPromise; } catch (_) {}
   spShowSummary(); // self-awaits the render, then reveals the screen
 }
 

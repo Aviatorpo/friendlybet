@@ -1,12 +1,19 @@
 name: Lock Pools At Kickoff
 
-# Guarantees single-phase pools lock when the World Cup kicks off, even if no
+# Guarantees SINGLE-PHASE pools lock when the World Cup kicks off, even if no
 # member opens the app (client-side autolock only fires on app open). The script
-# is a cheap no-op until the first match's scheduled time passes, then it locks
-# every unlocked single-phase pool whose effective deadline has passed.
+# is a cheap no-op until the configured kickoff (LOCK_KICKOFF_ISO) passes, then it
+# locks every unlocked single-phase pool whose effective deadline has passed.
+# Runs every 5 min so a pool can't stay editable for long after kickoff (the repo
+# is public → Actions are free; the cost concern doesn't apply).
+#
+# NOTE: TWO-PHASE pools are intentionally NOT locked here — they have their own
+# lock windowing (group-phase lock, then a knockout window). They currently rely
+# on client-side autolock only; a server-side guarantee for two-phase is an OPEN
+# task tied to the deferred two-phase fix.
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 permissions:
