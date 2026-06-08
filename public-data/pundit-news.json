@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-08T19:30:00.000Z",
+  "updatedAt": "2026-06-08T23:00:00.000Z",
   "items": [
     {
       "id": "sofi-strike-threat-usa-june-2026",
@@ -56,12 +56,12 @@
     {
       "id": "wc26-opening-ceremony-shakira-2026-06-08",
       "confidence": "confirmed",
-      "en": "The 2026 World Cup opening ceremony is at Estadio Azteca in Mexico City on June 11, with Shakira and Burna Boy performing the official tournament anthem 'Dai Dai' live for the first time, joined by J Balvin, Mana, Belinda, Los Angeles Azules and other stars, 90 minutes before Mexico face South Africa in the opener. FIFA has confirmed Shakira will also headline the halftime show at the final on July 19. From the opening note to the last whistle in July, the stage at the Azteca belongs to her. And then the real show begins.",
-      "he": "טקס הפתיחה של מונדיאל 2026 יתקיים באסטדיו אצטקה במקסיקו סיטי ב-11 ביוני, כאשר שקירה ובורנה בוי מבצעים את ההמנון הרשמי 'דאי דאי' לראשונה בהופעה חיה, ולצדם ח'יי בלווין, מאנה, בלינדה, לוס אנג'לס אסולס וכוכבים נוספים, 90 דקות לפני שמקסיקו נפגשת עם דרום אפריקה. פיפ\"א אישרה ששקירה תנצח גם על הופעת ההפסקה בגמר ב-19 ביולי. מהצליל הראשון ועד לשריקת הסיום ביולי, הבמה באצטקה שייכת לה. ואחר כך מתחיל המופע האמיתי.",
+      "en": "The 2026 World Cup opening ceremony is at Estadio Azteca in Mexico City on June 11, with Shakira and Burna Boy performing the official tournament anthem 'Dai Dai' live for the first time, joined by J Balvin, Mana, Belinda, Los Angeles Azules, Tyla and other stars, 90 minutes before Mexico face South Africa in the opener. FIFA has confirmed Shakira will also headline the halftime show at the final on July 19. From the opening note to the last whistle in July, the stage at the Azteca belongs to her. And then the real show begins.",
+      "he": "טקס הפתיחה של מונדיאל 2026 יתקיים באסטדיו אצטקה במקסיקו סיטי ב-11 ביוני, כאשר שקירה ובורנה בוי מבצעים את ההמנון הרשמי 'דאי דאי' לראשונה בהופעה חיה, ולצדם ח'יי בלווין, מאנה, בלינדה, לוס אנג'לס אסולס, טילה וכוכבים נוספים, 90 דקות לפני שמקסיקו נפגשת עם דרום אפריקה. פיפ\"א אישרה ששקירה תנצח גם על הופעת ההפסקה בגמר ב-19 ביולי. מהצליל הראשון ועד לשריקת הסיום ביולי, הבמה באצטקה שייכת לה. ואחר כך מתחיל המופע האמיתי.",
       "sources": [
-        { "name": "FIFA (official)", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/opening-ceremony-mexico" },
+        { "name": "FIFA (official)", "url": "https://inside.fifa.com/organisation/media-releases/world-cup-2026-opening-ceremony-mexico-city" },
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48972437/shakira-burna-boy-perform-2026-world-cup-opening-ceremony-mexico" },
-        { "name": "Billboard", "url": "https://www.billboard.com/music/latin/shakira-burna-boy-dai-dai-2026-world-cup-opening-ceremony-1236265169/" }
+        { "name": "Olympics.com", "url": "https://www.olympics.com/en/news/fifa-world-cup-2026-opening-ceremonies-everything-you-need-to-know" }
       ],
       "expires_at": "2026-06-11T23:59:59Z"
     },
@@ -294,6 +294,44 @@
         { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/fifa-world-cup-group-stage-third-place-tiebreakers" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "ned-triple-injury-blow-wc2026-2026-06-08",
+      "confidence": "confirmed",
+      "team": "NED",
+      "en": "The Netherlands arrive at the World Cup without three players who were expected to anchor Koeman's system. Centre-back Matthijs de Ligt needed back surgery in April and will not play until the start of the next season. Stefan de Vrij limped out of Inter Milan's final league fixture with a thigh problem and could not recover in time. Most damaging of all, 22-year-old Xavi Simons ruptured his ACL at Tottenham in late April, ending the campaign of the player Koeman counted on to create and connect the Dutch attack. Van Dijk captains a side with genuine title ambitions, but replacing two centre-backs and a creative midfielder before the first match is a serious test of squad depth. The Netherlands open Group F against Japan in Arlington on June 14. A team built to go deep, tested before it has started.",
+      "he": "הולנד מגיעה למונדיאל ללא שלושה שחקנים שהיו אמורים לעגן את שיטת קוקמן. הבלם מתייאס דה ליכט עבר ניתוח גב באפריל ולא ישחק עד תחילת העונה הבאה. שטפן דה פריי נפל עם בעיית ירך במשחק הסיום של אינטר מילאן בליגה ולא הצליח להחלים בזמן. המכאיב ביותר מכולם, חאבי סימונס בן ה-22 קרע את הרצועה הצולבת בטוטנהאם בסוף אפריל, ובכך סיים את מסע השחקן שעליו סמך קוקמן ליצור ולחבר את ההתקפה ההולנדית. ואן דייק מוביל נבחרת עם שאיפות אמיתיות לתואר, אבל להחליף שני בלמים מרכזיים וקשר יוצר לפני המשחק הראשון הוא מבחן רציני של עומק הסגל. הולנד פותחת קבוצה F מול יפן בארלינגטון ב-14 ביוני. נבחרת שנבנתה להגיע רחוק, שנבחנת לפני שהתחילה.",
+      "sources": [
+        { "name": "FIFA (official)", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/xavi-simons-netherlands-injured-ruled-out" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48783229/netherlands-defender-matthijs-de-ligt-ruled-world-cup-back-surgery" },
+        { "name": "The Score", "url": "https://www.thescore.com/news/3546837/inter-milans-stefan-de-vrij-will-miss-world-cup" }
+      ],
+      "expires_at": "2026-06-25T23:59:59Z"
+    },
+    {
+      "id": "civ-beat-france-warmup-2026-06-04",
+      "confidence": "confirmed",
+      "en": "The team most widely tipped to win the 2026 World Cup walked into their opening warmup and lost. France fell 2-1 to Ivory Coast in Nantes on June 4: Rayan Cherki gave France the lead in first-half stoppage time, but Ivory Coast levelled and then Amad Diallo scored the winner six minutes from time to complete a famous result for the reigning African Cup of Nations champions. ESPN ran a post-match feature arguing that as France just learned, the Ivory Coast should not be dismissed at this World Cup. France open Group I favourites against Senegal at MetLife on June 16. Ivory Coast move into Group E, where they face Germany in Toronto on June 20. After what just happened to France, Germany will want to prepare very carefully for that one.",
+      "he": "הנבחרת שמוצבת כמועדפת הרחבה לגביע העולם 2026 יצאה לחימום הפתיחה שלה ונפלה. צרפת הפסידה 2:1 לחוף השנהב בנאנט ב-4 ביוני: ריאן שרקי נתן לצרפת את הפתיחה בתוספת הזמן של המחצית הראשונה, אך חוף השנהב השווה ואז אמאד דיאלו הבקיע את שער הניצחון שש דקות לסיום להשלים תוצאה מפוארת לאלופות גביע האומות האפריקני הנוכחיות. ESPN פרסמה כתבה שטענה שכפי שצרפת זה עתה למדה, לא כדאי לזלזל בחוף השנהב במונדיאל. צרפת פותחת כמועדפת בקבוצה I מול סנגל ב-MetLife ב-16 ביוני. חוף השנהב עוברת לקבוצה E שבה תיפגש עם גרמניה בטורנטו ב-20 ביוני. אחרי מה שקרה לצרפת, גרמניה תרצה להכין את עצמה בקפידה יתרה לפני אותו המשחק.",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/401864934" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/france-stunned-by-ivory-coast-in-world-cup-warmup-spain-held-by-iraq" },
+        { "name": "France 24", "url": "https://www.france24.com/en/sport/20260605-2026-world-cup-france-begin-their-preparation-with-defeat-against-ivory-coast" }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "can-bombito-ruled-out-wc2026-2026-06-08",
+      "confidence": "confirmed",
+      "team": "CAN",
+      "en": "Canada received a blow to their defensive preparations less than four days before their World Cup opener. Centre-back Moise Bombito has been ruled out of the tournament after the federation's medical staff determined his surgically repaired tibia, broken last October, is not strong enough to withstand World Cup football. Bombito played only 30 minutes in a warmup against Uzbekistan before limping off with ice on his leg. Canada have until June 11 to name a replacement from their provisional 55-player list. Jesse Marsch already faced a hard call naming Maxime Crepeau as starting goalkeeper, and now a defensive reshuffle looms on top. Canada open against Bosnia and Herzegovina in Toronto on June 12. A squad determined to write history, absorbing one more unwanted test of their depth on the eve of the tournament.",
+      "he": "קנדה ספגה מכה להכנותיה ההגנתיות פחות מארבעה ימים לפני פתיחת המונדיאל שלה. הבלם מואיז בומביטו הוצא מהטורניר לאחר שהצוות הרפואי של ההתאחדות קבע שהשוקה שלו, שתוקנה בניתוח ונשברה באוקטובר האחרון, אינה חזקה מספיק לכדורגל מונדיאל. בומביטו שיחק רק 30 דקות בחימום מול אוזבקיסטן לפני שיצא עם קרח על הרגל. לקנדה יש עד 11 ביוני לרשום מחליף מרשימת 55 השחקנים הזמנית שלה. ג'סי מרש כבר התמודד עם החלטה קשה כשמינה את מקסים קרפו כשוער המתחיל, ועכשיו שינוי ערך בהגנה מצטרף לאגרת. קנדה פותחת מול בוסניה והרצגובינה בטורנטו ב-12 ביוני. סגל שנחוש לכתוב היסטוריה, סופג עוד מבחן לא רצוי של עומקו ערב הטורניר.",
+      "sources": [
+        { "name": "TSN", "url": "https://www.tsn.ca/soccer/article/report-defender-bombito-to-be-replaced-on-canadas-world-cup-roster/" },
+        { "name": "The Score", "url": "https://www.thescore.com/worldcup/news/3550904" },
+        { "name": "Daily Hive", "url": "https://dailyhive.com/vancouver/canada-best-players-miss-fifa-world-cup-injury-bombito" }
+      ],
+      "expires_at": "2026-06-13T23:59:59Z"
     }
   ]
 }
