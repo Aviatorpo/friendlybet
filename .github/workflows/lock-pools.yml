@@ -1,0 +1,35 @@
+name: Lock Pools At Kickoff
+
+# Guarantees single-phase pools lock when the World Cup kicks off, even if no
+# member opens the app (client-side autolock only fires on app open). The script
+# is a cheap no-op until the first match's scheduled time passes, then it locks
+# every unlocked single-phase pool whose effective deadline has passed.
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lock-pools
+  cancel-in-progress: false
+
+jobs:
+  lock-pools:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Lock single-phase pools once the World Cup has kicked off
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/lock-pools.js
