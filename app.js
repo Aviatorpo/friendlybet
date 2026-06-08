@@ -3831,10 +3831,13 @@ async function clearTopScorerPick() {
   }
 
   try {
-    const { error } = await supabaseClient
-      .from('top_scorer_picks')
-      .delete()
-      .eq('user_id', state.currentUser.id);
+    // v2.9.16: scope this destructive delete to the current pool. With the
+    // confirmed 1-pool-per-user model this is belt-and-suspenders (a user_id
+    // only ever has rows in one pool), but a delete should never be broader
+    // than necessary and the save-path delete above is already pool-scoped.
+    let _del = supabaseClient.from('top_scorer_picks').delete().eq('user_id', state.currentUser.id);
+    if (state.currentPool && state.currentPool.id) _del = _del.eq('pool_id', state.currentPool.id);
+    const { error } = await _del;
 
     if (error) {
       console.error('Clear top scorer error:', error);
@@ -10303,6 +10306,14 @@ async function _spSaveGroupsToDbInner(showFeedback = true) {
     return { ok: true, skipped: 'empty' };
   }
 
+  // v2.9.16: mirror the latest in-memory state to local (+ debounced server)
+  // backup BEFORE attempting the DB write. Group drag-reorders aren't cached
+  // until this point (the drag handler intentionally doesn't auto-save), so
+  // without this a failed save could lose the latest order on refresh and the
+  // "your picks are backed up" retry toast would be untrue. Now the backup is
+  // written first, so auto-heal can always recover and the message is honest.
+  _spCacheSave();
+
   // Preferred: server-side RPC (validates the code, replaces only the caller's
   // own rows, blocks when the pool is locked). Falls back to the legacy direct
   // DELETE+INSERT only when the RPC isn't deployed in this environment.
@@ -11541,14 +11552,36 @@ window.topScorerBack = topScorerBack;
 window.spTopScorerBack = spTopScorerBack;
 window.spTopScorerNext = spTopScorerNext;
 
-// v2.9.15: the ONE entry into the summary screen. Flushes any in-flight group
-// save, then reloads + renders the summary from the DB, and only THEN reveals
-// the screen — so it never flashes stale "Not Picked" rows while the async
-// reload is still pending (the race behind several "my picks vanished" reports).
-// On render error it logs and still shows the screen with whatever rendered
-// (never blanks existing picks). Safe to call without await; async callers await.
-async function spShowSummary() {
+// v2.9.16: flush BOTH the group and bracket pending saves before the summary
+// reloads from the DB. Groups and the knockout bracket each have their own
+// debounced timer + serialized save chain; if either is still in flight when
+// spRenderSummary reloads, the summary flashes "Not Picked" for picks the user
+// JUST made. v2.9.15 awaited only the group chain — this extends it to the
+// bracket (the final-match → summary path was still racing). Never throws.
+async function spFlushPendingSavesBeforeSummary() {
+  // Group: fire any pending debounced save now, then drain the chain.
+  if (_spSaveTimer) {
+    clearTimeout(_spSaveTimer); _spSaveTimer = null;
+    try { await spSaveGroupsToDb(false); } catch (_) {}
+  }
   try { await _spGroupsSaveChain; } catch (_) {}
+  // Bracket: same — clear the 600ms debounce and flush before reload.
+  if (_spBracketSaveTimer) {
+    clearTimeout(_spBracketSaveTimer); _spBracketSaveTimer = null;
+    try { await spSaveBracketToDb(false); } catch (_) {}
+  }
+  try { await _spBracketSaveChain; } catch (_) {}
+}
+
+// v2.9.15: the ONE entry into the summary screen. Flushes any in-flight group +
+// bracket save (v2.9.16), then reloads + renders the summary from the DB, and
+// only THEN reveals the screen — so it never flashes stale "Not Picked" rows
+// while the async reload/save is still pending (the race behind several "my
+// picks vanished" reports). On render error it logs and still shows the screen
+// with whatever rendered (never blanks existing picks). Safe to call without
+// await; async callers await.
+async function spShowSummary() {
+  try { await spFlushPendingSavesBeforeSummary(); } catch (_) {}
   try {
     if (typeof spRenderSummary === 'function') await spRenderSummary();
   } catch (e) {
@@ -13084,8 +13117,9 @@ startKnockoutBetting = async function() {
 
 // Wrap spGroupsNext to route to single-match bracket walkthrough on first pass
 const _origSpGroupsNext = spGroupsNext;
-spGroupsNext = function() {
-  // Let the original handle "not at last group" and validation
+spGroupsNext = async function() {
+  // Let the original handle "not at last group" (it animates + awaits the save
+  // via the async _spGroupsAdvance).
   if (spState.currentGroupIdx < 11) {
     return _origSpGroupsNext();
   }
@@ -13097,11 +13131,24 @@ spGroupsNext = function() {
     showToast(t('betting.groupsIncomplete', { letters: incomplete.join(', ') }), 'error');
     return;
   }
-  spSaveGroupsToDb(false);
-
-  // v2.5.81: always go through the "pick your 8 third-place advancers" step
-  // first (it routes onward to the walkthrough or the grid bracket).
-  spStartThirdPlaceStep();
+  // v2.9.16: AWAIT the final-group save and block on failure. This path
+  // previously fire-and-forgot spSaveGroupsToDb() and advanced regardless,
+  // bypassing the v2.9.15 awaited fix for the single most important transition
+  // (final group → bracket). Disable the buttons so a fast tap can't double-fire.
+  const nextBtn = document.getElementById('sp-groups-next');
+  const skipBtn = document.getElementById('sp-groups-skip');
+  if (nextBtn) nextBtn.disabled = true;
+  if (skipBtn) skipBtn.disabled = true;
+  try {
+    const res = await spSaveGroupsToDb(false);
+    if (res && res.ok === false) return; // save failed → stay on groups, picks intact
+    // v2.5.81: always go through the "pick your 8 third-place advancers" step
+    // first (it routes onward to the walkthrough or the grid bracket).
+    spStartThirdPlaceStep();
+  } finally {
+    if (nextBtn) nextBtn.disabled = false;
+    if (skipBtn) skipBtn.disabled = false;
+  }
 };
 
 window.koSinglePrev = koSinglePrev;

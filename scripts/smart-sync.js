@@ -175,7 +175,6 @@ const TEAM_NAME_TO_CODE = {
   'Côte d\'Ivoire': 'CIV', 'Cote d\'Ivoire': 'CIV',
   'DR Congo': 'COD', 'Congo': 'COD',
   'United States of America': 'USA', 'USA': 'USA', 'United States of America (USA)': 'USA',
-  'Korea DPR': 'KOR', // (no DPRK in WC2026; guard against mislabel)
   'Czech Republic': 'CZE', 'Bosnia and Herzegovina': 'BIH',
   'Cape Verde': 'CPV', 'Cabo Verde': 'CPV',
 };
@@ -204,7 +203,9 @@ function isRealTeamName(n) {
 }
 // Statuses that mean the match is live or done — an unmapped team here is a
 // SCORING-CRITICAL bug (we'd miss real results), so we fail the run.
-const LIVE_OR_FINAL_STATUS = new Set(['IN_PLAY', 'PAUSED', 'FINISHED', 'LIVE', 'started', 'finished']);
+// AWARDED = forfeit/walkover result; SUSPENDED = match halted — both are
+// scoring-relevant, so an unmapped real team in any of these must fail loudly.
+const LIVE_OR_FINAL_STATUS = new Set(['IN_PLAY', 'PAUSED', 'FINISHED', 'LIVE', 'started', 'finished', 'AWARDED', 'SUSPENDED']);
 
 // Probe for matches.winner_code (migration applied manually); only write it
 // once it exists, else the upsert would 400.
