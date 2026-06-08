@@ -3726,6 +3726,7 @@ function highlightMatch(text, query) {
   return escapedText.replace(regex, '<span class="ts-highlight">$1</span>');
 }
 
+let _spTsSaveChain = Promise.resolve();
 async function selectTopScorer(player) {
   if (!state.currentUser || !state.currentPool) return;
   
@@ -3738,13 +3739,17 @@ async function selectTopScorer(player) {
     if (!confirmed) return;
   }
 
-  // v2.9.17: expose the in-flight save so spTopScorerNext can await it — prevents
-  // the summary reload from racing a scorer the user just tapped (fast tap →
-  // Continue could otherwise show "Not picked"). Resolved in finally below.
+  // v2.9.17/18: serialize saves on a chain so rapid A→B taps persist IN ORDER —
+  // the DB deterministically ends on the LAST tap (B), never an out-of-order A.
+  // savingPromise points at this (latest) save so spTopScorerNext awaits it before
+  // opening the summary. Resolved in finally below.
+  const _prevSave = _spTsSaveChain;
   let _resolveSave;
-  topScorerState.savingPromise = new Promise(r => { _resolveSave = r; });
+  _spTsSaveChain = new Promise(r => { _resolveSave = r; });
+  topScorerState.savingPromise = _spTsSaveChain;
   topScorerState.isSaving = true;
   try {
+  try { await _prevSave; } catch (_) {}  // wait for any in-flight save to land first
   const playerName = player.name_he || player.name_en || t('tsUnlocked.fallbackPlayer');
   // Preferred: server-side RPC; legacy direct write only if the RPC is absent.
   const rcode = _currentRecoveryCode();
@@ -11102,9 +11107,13 @@ function spAutoSaveBracket() {
 
 // v2.5.79: persist the 8 chosen third-place advancer group letters.
 let _spTpSaveTimer = null;
+let _spTpSavePromise = Promise.resolve();
 function spSaveThirdPlaceToDb() {
   if (_spTpSaveTimer) clearTimeout(_spTpSaveTimer);
-  _spTpSaveTimer = setTimeout(() => _spSaveThirdPlaceInner(), 600);
+  // v2.9.18: null the handle when it fires (so the summary flush won't redundantly
+  // re-run this save — third-place has no serialized chain), and track the in-flight
+  // save in _spTpSavePromise so the flush can still await it.
+  _spTpSaveTimer = setTimeout(() => { _spTpSaveTimer = null; _spTpSavePromise = _spSaveThirdPlaceInner(); }, 600);
 }
 async function _spSaveThirdPlaceInner() {
   if (!state.currentPool || !state.currentUser || !supabaseClient) return;
@@ -11600,12 +11609,15 @@ async function spFlushPendingSavesBeforeSummary() {
     try { await spSaveBracketToDb(false); } catch (_) {}
   }
   try { await _spBracketSaveChain; } catch (_) {}
-  // v2.9.17: third-place advancers (debounced, no chain) — flush the pending
-  // save so the summary can't reload before a just-changed third-place set lands.
+  // v2.9.17/18: third-place advancers (debounced, no chain). Fire any still-pending
+  // save now; either way await the latest in-flight third-place save (tracked in
+  // _spTpSavePromise) before the summary reloads — works whether the debounce timer
+  // is still pending or already fired.
   if (typeof _spTpSaveTimer !== 'undefined' && _spTpSaveTimer) {
     clearTimeout(_spTpSaveTimer); _spTpSaveTimer = null;
-    try { await _spSaveThirdPlaceInner(); } catch (_) {}
+    _spTpSavePromise = _spSaveThirdPlaceInner();
   }
+  try { await _spTpSavePromise; } catch (_) {}
 }
 
 // v2.9.15: the ONE entry into the summary screen. Flushes any in-flight group +
