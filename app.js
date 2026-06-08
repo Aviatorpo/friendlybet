@@ -5173,11 +5173,15 @@ async function updateBettingStatusOnDashboard() {
     // even right after a page load. `predictions_submitted_at` is no longer the
     // sole gate; the actual picks decide the label.
     const uid = state.currentUser.id;
+    // v2.9.15: scope every count to the CURRENT pool. Without the pool_id
+    // filter, a user in multiple pools (or with legacy cross-pool rows) saw
+    // wrong start/continue/all-set state on the dashboard.
+    const pid = state.currentPool.id;
     const [gpp, kop, twp, tsp] = await Promise.all([
-      supabaseClient.from('group_position_picks').select('id').eq('user_id', uid),
-      supabaseClient.from('knockout_picks').select('bracket_position').eq('user_id', uid),
-      supabaseClient.from('tournament_winner_picks').select('id').eq('user_id', uid),
-      supabaseClient.from('top_scorer_picks').select('id').eq('user_id', uid)
+      supabaseClient.from('group_position_picks').select('id').eq('user_id', uid).eq('pool_id', pid),
+      supabaseClient.from('knockout_picks').select('bracket_position').eq('user_id', uid).eq('pool_id', pid),
+      supabaseClient.from('tournament_winner_picks').select('id').eq('user_id', uid).eq('pool_id', pid),
+      supabaseClient.from('top_scorer_picks').select('id').eq('user_id', uid).eq('pool_id', pid)
     ]);
     const groupRows    = (gpp.data || []).length;                 // 4 per group, max 48
     const groupsFilled = Math.floor(groupRows / 4);                // 0..12
@@ -7638,9 +7642,8 @@ async function fbViewMyPicks() {
   if (!state.currentPool || !state.currentUser) { showToast(t('errors.reconnect'), 'error'); return; }
   if (state.currentPool.betting_mode === 'single_phase') {
     state.spInFlow = false;
-    // spRenderSummary() reloads picks fresh from the DB itself.
-    spRenderSummary();
-    showScreen('sp-summary-screen');
+    // v2.9.15: await the fresh DB render before revealing the screen.
+    await spShowSummary();
   } else {
     // Two-phase has no unified summary screen — fall back to the dashboard.
     await goToDashboard();
@@ -9840,8 +9843,7 @@ async function startSinglePhaseBetting() {
     return;
   }
   // Everything complete (or already submitted) → the summary review.
-  spRenderSummary();
-  showScreen('sp-summary-screen');
+  await spShowSummary();
 }
 
 // v2.9.2: dedicated entry for the "recover bracket" banner. Affected users HAVE
@@ -9885,8 +9887,7 @@ async function spReenterKnockout() {
     state.spInFlow = false;
     if (!ok) { showToast(t('bracketSave.retryLater'), 'error'); goToDashboard(); return; }
     showToast(t('recoverBracket.recovered'), 'success');
-    spRenderSummary();
-    showScreen('sp-summary-screen');
+    await spShowSummary();
     return;
   }
 
@@ -10263,9 +10264,14 @@ async function spSaveGroupsToDb(showFeedback = true) {
   }
 }
 
+// Returns a result object so callers can await and react: { ok: true } on a
+// confirmed save (or a safe skip), { ok: false, reason, error } on a real
+// failure. v2.9.15: previously returned undefined everywhere, so the group
+// flow advanced screens without knowing whether the write landed (the race
+// behind the "I picked teams but the summary shows Not Picked" reports).
 async function _spSaveGroupsToDbInner(showFeedback = true) {
-  if (!state.currentPool || !state.currentUser) return;
-  if (spIsLocked()) return;
+  if (!state.currentPool || !state.currentUser) return { ok: false, reason: 'no-session' };
+  if (spIsLocked()) return { ok: true, skipped: 'locked' };
 
   const userId = state.currentUser.id;
   const poolId = state.currentPool.id;
@@ -10294,7 +10300,7 @@ async function _spSaveGroupsToDbInner(showFeedback = true) {
   // picked. Without this guard we were wiping good DB data on edge cases.
   if (rows.length === 0) {
     console.warn('spSaveGroupsToDb: in-memory state is empty - skipping DB write to avoid wiping real picks');
-    return;
+    return { ok: true, skipped: 'empty' };
   }
 
   // Preferred: server-side RPC (validates the code, replaces only the caller's
@@ -10307,12 +10313,12 @@ async function _spSaveGroupsToDbInner(showFeedback = true) {
     const res = await _rpcWrite('save_group_position_picks', { p_code: code, p_picks: rows });
     if (res.ok) {
       if (showFeedback) showToast(t('groups.picksSaved'), 'success');
-      return;
+      return { ok: true };
     }
     if (!res.missing) {
       console.error('[spSaveGroupsToDb] RPC error:', res.error);
-      showToast('DB error (groups): ' + (res.error && res.error.message || 'unknown'), 'error');
-      return;
+      showToast(t('bracketSave.retryLater'), 'error');
+      return { ok: false, reason: 'rpc', error: res.error };
     }
     // RPC still unreachable after retries -> fall through to the legacy direct write below.
   }
@@ -10323,8 +10329,9 @@ async function _spSaveGroupsToDbInner(showFeedback = true) {
     const { error: delErr } = await supabaseClient.from('group_position_picks')
       .delete().eq('user_id', userId).eq('pool_id', poolId);
     if (delErr) {
+      // Intermediate step — don't toast here; the INSERT result below decides
+      // the user-facing outcome (avoids a scary mid-save error message).
       console.error('[spSaveGroupsToDb] DELETE error:', delErr);
-      showToast('DB error (groups DELETE): ' + (delErr.message || 'unknown'), 'error');
     }
     const { error } = await supabaseClient.from('group_position_picks').insert(rows);
     if (error) {
@@ -10339,14 +10346,16 @@ async function _spSaveGroupsToDbInner(showFeedback = true) {
       if (/team_code_fkey/.test(msg) || /not present in table.*teams/.test(msg)) {
         showToast('Missing team codes in DB. Run migrations/2026-05-18-seed-wc2026-teams.sql in Supabase.', 'error');
       } else {
-        showToast('DB error (groups): ' + (error.message || 'unknown') + ' - ' + (error.hint || error.details || ''), 'error');
+        showToast(t('bracketSave.retryLater'), 'error');
       }
-      return;
+      return { ok: false, reason: 'insert', error };
     }
     if (showFeedback) showToast(t('groups.picksSaved'), 'success');
+    return { ok: true };
   } catch (err) {
     console.error('[spSaveGroupsToDb] caught:', err);
-    showToast('DB error (groups): ' + (err.message || err), 'error');
+    showToast(t('bracketSave.retryLater'), 'error');
+    return { ok: false, reason: 'exception', error: err };
   }
 }
 
@@ -10359,29 +10368,44 @@ function spGroupsPrev() {
 
 // v2.5.67: real advance logic split out so spGroupsNext can play a brief
 // confirmation animation on the slot rows first.
-function _spGroupsAdvance() {
-  // v2.6.11: commit the current group (and everything ranked so far) to the DB
-  // here — this is the single save point for the groups stage.
-  spSaveGroupsToDb(false);
-  if (spState.currentGroupIdx < 11) {
-    spState.currentGroupIdx++;
-    spRenderGroups();
-    return;
+async function _spGroupsAdvance() {
+  // v2.9.15: AWAIT the save before moving on, so a fast Next tap can't outrun
+  // the DB write (the race behind the "summary shows Not Picked" reports).
+  // Disable Next/Skip while the save is in flight; on failure stay on this
+  // screen with the user's picks intact (the save already showed a friendly
+  // retry toast) instead of advancing past an unsaved group.
+  const nextBtn = document.getElementById('sp-groups-next');
+  const skipBtn = document.getElementById('sp-groups-skip');
+  if (nextBtn) nextBtn.disabled = true;
+  if (skipBtn) skipBtn.disabled = true;
+  try {
+    // v2.6.11: this is the single commit point for the groups stage (the
+    // duplicate last-group save was removed in v2.9.15 — one awaited save).
+    const res = await spSaveGroupsToDb(false);
+    if (res && res.ok === false) return; // save failed → don't advance
+
+    if (spState.currentGroupIdx < 11) {
+      spState.currentGroupIdx++;
+      spRenderGroups();
+      return;
+    }
+    // Last group → bracket transition is permissive (v2.5.62). Users can
+    // advance even if some groups aren't complete — the bracket will show
+    // TBD slots for missing positions and the summary screen will surface
+    // "Not picked" lines for anything skipped. A soft info toast tells the
+    // user what they still owe without blocking them.
+    const incomplete = WC2026_GROUP_LETTERS.filter(l =>
+      !spState.groupPositions[l] || !spState.groupPositions[l].every(x => x)
+    );
+    if (incomplete.length > 0) {
+      showToast(t('betting.groupsIncompleteHint', { letters: incomplete.join(', ') }), 'info');
+    }
+    // v2.5.81: route through the third-place selection step before the knockout.
+    spStartThirdPlaceStep();
+  } finally {
+    if (nextBtn) nextBtn.disabled = false;
+    if (skipBtn) skipBtn.disabled = false;
   }
-  // Last group → bracket transition is permissive (v2.5.62). Users can
-  // advance even if some groups aren't complete — the bracket will show
-  // TBD slots for missing positions and the summary screen will surface
-  // "Not picked" lines for anything skipped. A soft info toast tells the
-  // user what they still owe without blocking them.
-  const incomplete = WC2026_GROUP_LETTERS.filter(l =>
-    !spState.groupPositions[l] || !spState.groupPositions[l].every(x => x)
-  );
-  if (incomplete.length > 0) {
-    showToast(t('betting.groupsIncompleteHint', { letters: incomplete.join(', ') }), 'info');
-  }
-  spSaveGroupsToDb(false);
-  // v2.5.81: route through the third-place selection step before the knockout.
-  spStartThirdPlaceStep();
 }
 
 function spGroupsNext() {
@@ -10411,9 +10435,21 @@ function spGroupsNext() {
   }, 500);
 }
 
-function spGroupsSaveAndExit() {
-  spSaveGroupsToDb(true);
-  setTimeout(() => goToDashboard(), 400);
+async function spGroupsSaveAndExit() {
+  // v2.9.15: AWAIT the save before navigating (was a fixed 400ms timer that
+  // raced the DB write — the dashboard could reload and show stale progress
+  // before the save landed). On success the save toasts "saved"; on failure it
+  // shows a friendly retry toast (picks are mirrored locally + auto-heal on
+  // next load). Either way the user chose to leave, so we then go home — but
+  // only AFTER the write resolves, never before.
+  const exitBtn = document.querySelector('[onclick="spGroupsSaveAndExit()"]');
+  if (exitBtn) exitBtn.disabled = true;
+  try {
+    await spSaveGroupsToDb(true);
+  } finally {
+    if (exitBtn) exitBtn.disabled = false;
+  }
+  goToDashboard();
 }
 
 // v2.5.66: "Skip for now" - clear THIS group's picks and advance. The
@@ -11458,8 +11494,7 @@ function spStartTopScorerStep() {
   const released = (localStorage.getItem('fb_squads_released') === 'true');
   if (!released) {
     state.spInFlow = false;
-    if (typeof spRenderSummary === 'function') spRenderSummary();
-    showScreen('sp-summary-screen');
+    spShowSummary(); // self-awaits the render, then reveals the screen
     return;
   }
 
@@ -11486,8 +11521,7 @@ function spTopScorerNext() {
   state.spInFlow = false;
   const nav = document.getElementById('ts-sp-flow-nav');
   if (nav) nav.style.display = 'none';
-  spRenderSummary();
-  showScreen('sp-summary-screen');
+  spShowSummary(); // self-awaits the render, then reveals the screen
 }
 
 // Smart back handler for the standalone top-scorer screen.
@@ -11506,6 +11540,23 @@ function topScorerBack() {
 window.topScorerBack = topScorerBack;
 window.spTopScorerBack = spTopScorerBack;
 window.spTopScorerNext = spTopScorerNext;
+
+// v2.9.15: the ONE entry into the summary screen. Flushes any in-flight group
+// save, then reloads + renders the summary from the DB, and only THEN reveals
+// the screen — so it never flashes stale "Not Picked" rows while the async
+// reload is still pending (the race behind several "my picks vanished" reports).
+// On render error it logs and still shows the screen with whatever rendered
+// (never blanks existing picks). Safe to call without await; async callers await.
+async function spShowSummary() {
+  try { await _spGroupsSaveChain; } catch (_) {}
+  try {
+    if (typeof spRenderSummary === 'function') await spRenderSummary();
+  } catch (e) {
+    console.error('[spShowSummary] render failed:', e);
+  }
+  showScreen('sp-summary-screen');
+}
+window.spShowSummary = spShowSummary;
 
 async function spRenderSummary() {
   // v2.5.19: ALWAYS reload from DB at the top of summary render. The
