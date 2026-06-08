@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-06-07T21:23:46.370Z",
+  "updatedAt": "2026-06-08T00:34:23.506Z",
   "count": 12,
   "items": [
     {
       "id": "can-bombito-miss-wc-2026-06-07",
       "type": "news",
       "confidence": "confirmed",
-      "he": "קנדה תחליף את המגן המרכזי מואיז בומביטו בסגל המונדיאל שלה, כך אישרה הנבחרת ב-7 ביוני, חמישה ימים לפני שהמארחת המשותפת תפגוש את בוסניה והרצגובינה בטורנטו. בומביטו שבר את רגלו באוקטובר שעבר, שיחק רק 30 דקות בחימום מול אוזבקיסטן לפני שיצא צולע, והסגל הרפואי קבע שהשוק שעברה ניתוח אינה מוכנה לכדורגל ברמת טורניר. לקנדה יש עד 24 שעות לפני הפתיחה ב-12 ביוני לקרוא מחליף מהרשימה המוקדמת. המארחות המשותפות מאבדות מגן ראשון צפוי לפני שנבעטה אפילו בועטת תחרותית אחת בגביע העולם הביתי שלהן.",
+      "he": "קנדה תחליף את המגן המרכזי מואיז בומביטו בסגל המונדיאל שלה, כך אישרה הנבחרת ב-7 ביוני, חמישה ימים בלבד לפני שהמארחת המשותפת תפגוש את בוסניה והרצגובינה בטורנטו. בומביטו שבר את רגלו באוקטובר שעבר, שיחק רק 30 דקות בחימום מול אוזבקיסטן לפני שיצא צולע, והסגל הרפואי קבע שהשוק שעברה ניתוח אינה מוכנה לכדורגל ברמת טורניר. לקנדה יש עד 24 שעות לפני הפתיחה ב-12 ביוני לקרוא מחליף מהרשימה המוקדמת. המארחת המשותפת מאבדת מגן ראשון צפוי לפני שנבעטה אפילו כדור תחרותי אחד בגביע העולם הביתי שלה.",
       "en": "Canada will replace centre-back Moise Bombito on their World Cup squad, the team confirmed on June 7, just five days before the co-host nation opens against Bosnia and Herzegovina in Toronto. Bombito fractured his leg last October, played only 30 minutes in Canada's warm-up against Uzbekistan before limping off, and medical staff concluded his surgically repaired tibia is not ready for tournament football. Canada have until 24 hours before the June 12 opener to call up a replacement from their provisional roster. The host nation lose a projected first-choice defender before a single competitive ball has been kicked at their home World Cup.",
       "team": "CAN",
       "sources": [
@@ -25,7 +25,7 @@
       "id": "arg-messi-bench-honduras-2026-06-07",
       "type": "news",
       "confidence": "confirmed",
-      "he": "ליונל מסי ישב כמחליף שלא השתמשו בו בעת שארגנטינה מחצה את הונדורס 2:0 בחימום ההכנה האחרון שלה לטורניר בקייל פילד בקולג' סטיישן, טקסס, ב-7 ביוני, כשלאוטרו מרטינז המיר פנדל וג'וליאנו סימאונה הכפיל. המאמן סקלוני אמר שההחלטה להשאיר את מסי בחוץ היתה אך ורק מניעתית בזמן שמנצח גביע הבלון דאור שמונה פעמים ממשיך להחלים ממתח בשוק השמאל, וכי זמינותו לפתיחה מול אלג'יריה ב-16 ביוני בקנזס סיטי תיבחן יום אחרי יום. האלופות המגנות הראו שהן יכולות לנצח בלעדי הקמע שלהן, אבל העולם רוצה לראות אותו על אותו מגרש משריקה ראשונה. האם הוא יהיה כשיר להתחיל כשהטורניר האמיתי יפתח?",
+      "he": "ליונל מסי ישב כמחליף שלא השתמשו בו בעת שארגנטינה מחצה את הונדורס 2:0 בחימום ההכנה האחרון שלה לטורניר בקייל פילד בקולג' סטיישן, טקסס, ב-7 ביוני, כשלאוטרו מרטינז המיר פנדל וג'וליאנו סימאונה הכפיל. המאמן סקלוני אמר שההחלטה להשאיר את מסי בחוץ היתה אך ורק מניעתית, בזמן שמנצח גביע הבלון דאור שמונה פעמים ממשיך להחלים ממתח בשריר הירך השמאלי, וכי זמינותו לפתיחה מול אלג'יריה ב-16 ביוני בקנזס סיטי תיבחן יום אחרי יום. האלופות המגנות הוכיחו שהן יכולות לנצח בלעדי הקמע שלהן, אבל העולם רוצה לראות אותו על המגרש משריקה ראשונה. האם הוא יהיה כשיר להתחיל כשהטורניר האמיתי יפתח?",
       "en": "Lionel Messi sat as an unused substitute as Argentina crushed Honduras 2-0 in their final pre-tournament warm-up at Kyle Field in College Station, Texas on June 7, with Lautaro Martinez converting a penalty and Giuliano Simeone doubling the lead. Coach Scaloni said the decision was purely precautionary as the eight-time Ballon d'Or winner continues his recovery from a left hamstring strain, and that his status for the June 16 opener against Algeria in Kansas City will be assessed day by day. Defending champions Argentina showed they can win without their talisman, but the world wants to see him on that pitch from the first whistle. Will he be fit to start when the real tournament begins?",
       "team": "ARG",
       "sources": [
@@ -45,33 +45,37 @@
       "expires_at": "2026-06-16T23:59:59Z"
     },
     {
-      "id": "bra-neymar-mri-monday-2026-06-07",
+      "id": "bra-neymar-grade2-confirmed-2026-06-08",
       "type": "news",
       "confidence": "confirmed",
-      "he": "המאמן קרלו אנצ'לוטי מתעקש שניימאר, בן 34, ישחק במונדיאל הזה למרות שהחמיץ את שני משחקי ההכנה לפני הטורניר עם מתח בדרגה שנייה בשריר השוק הימני. אנצ'לוטי אישר ב-7 ביוני שניימאר יעבור בדיקת MRI ביום שני, 8 ביוני, וצופה שהתוצאה תקבע את ציר הזמן לחזרתו. היעד הראשוני נותר הפתיחה מול מרוקו ב-13 ביוני בניו ג'רזי, אך אם לא יהיה כשיר בזמן, הסגל יכוון לכשירותו למשחק מול האיטי ב-19 ביוני. ברזיל ניצחה את מצרים 2:1 בהכנה האחרונה ללא ניימאר, כשאנדריק סיים מסירה של ראפיניה בשער הניצחון. הכל תלוי בבדיקת יום שני.",
-      "en": "Brazil coach Carlo Ancelotti insists Neymar, 34, will play at this World Cup despite missing both pre-tournament warmups with a grade-two right calf strain. Ancelotti confirmed on June 7 that Neymar will undergo an MRI scan on Monday, June 8, with the result expected to determine his return timeline. The primary target remains Brazil's June 13 opener against Morocco in New Jersey, but if he cannot be ready in time, the staff will shift focus to the June 19 group match against Haiti. Brazil beat Egypt 2-1 in their final warmup without him, teenager Endrick converting a Raphinha assist to seal the win. Everything hinges on Monday's scan.",
+      "he": "ברזיל אישרה שלניימאר יש מתח בדרגה שנייה בשריר השוק הימני שמוציא אותו מהפתיחה מול מרוקו ב-13 ביוני בניו ג'רזי, כאשר המאמן קרלו אנצ'לוטי מכוון לחזרה אפשרית במשחק מול האיטי ב-19 ביוני לכל המוקדם. אנצ'לוטי, שאמר ב-7 ביוני שניימאר יעבור בדיקת MRI מעודכנת ב-8 ביוני, מדגיש שאינו מתחרט על בחירת הפורווארד בן ה-34 ולא יחליף אותו בסגל. ברזיל ניצחה את מצרים 2:1 בחימום ללא ניימאר, כאשר אנדריק בן ה-18 הבקיע ועידן את עומק הסגל. ויניסיוס ג'וניור אישר שהוא מחזיר לניימאר את חולצת מספר 10 האיקונית לקראת הטורניר. האם הסלסאו יכולה להתקדם עמוק אם המבקיע השיאי שלה מבלה את שלב הבתים על שולחן הטיפולים?",
+      "en": "Brazil confirmed Neymar has a Grade 2 right calf strain that rules him out of their June 13 World Cup opener against Morocco in New Jersey, with coach Carlo Ancelotti targeting a return for the June 19 match against Haiti at the earliest. Ancelotti, who said on June 7 that Neymar would undergo an updated MRI on June 8, insists he has no regrets about picking the 34-year-old and will not replace him in the squad. Brazil beat Egypt 2-1 in their warm-up without him, 18-year-old Endrick stepping up to score and underline the squad depth. Vinicius Jr confirmed he is handing back the iconic No. 10 shirt to Neymar for the tournament. Can the Selecao go deep if their record scorer spends the group stage on the treatment table?",
       "team": "BRA",
       "sources": [
         {
+          "name": "FIFA (official)",
+          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/brazil-neymar-injury"
+        },
+        {
           "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48975653/brazil-coach-ancelotti-confirms-neymar-mri-monday"
+          "url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup"
         },
         {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/neymar-injury-carlo-ancelotti-offers-145705972.html"
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury"
         },
         {
-          "name": "Goal.com",
-          "url": "https://www.goal.com/en/lists/brazil-world-cup-injury-news-neymar-carlo-ancelotti-egypt-friendly/blt14a5b98e48cb2d26"
+          "name": "Sports Illustrated",
+          "url": "https://www.si.com/soccer/neymar-injury-timeline-brazil-matches-miss-2026-world-cup"
         }
       ],
-      "expires_at": "2026-06-13T23:59:59Z"
+      "expires_at": "2026-06-19T23:59:59Z"
     },
     {
       "id": "sco-wc-return-1998-gilmour-out-2026-06-07",
       "type": "news",
       "confidence": "confirmed",
-      "he": "סקוטלנד חוזרת למונדיאל לראשונה מאז צרפת 1998, אחרי 28 שנות המתנה, ובישרה את שובה עם סמכות. ניצחון 4:0 על בוליביה בניו ג'רזי ב-6 ביוני, כששה אדמס הבקיע פעמיים ולורנס שנקלנד וסקוט מקטומינאי גם הם רשמו שמות, שלח את נבחרתו של סטיב קלארק לטורניר מלאת ביטחון. האווירה נפגמה מוקדם יותר עם אישור היעדרות מצע נאפולי בילי גילמור, שנפל לאחר שפגע בברכו מול קוראסאו ב-30 במאי. סקוטלנד פותחת מול האיטי בפוקסבורו ב-13 ביוני ואחר כך מרוקו וברזיל. האם ה-Tartan Army תצליח סוף-סוף להגיע לשישה עשר הנבחרות הטובות ביותר בהיסטוריה שלה?",
+      "he": "סקוטלנד חוזרת למונדיאל לראשונה מאז צרפת 1998, אחרי 28 שנות המתנה, ובישרה את שובה בסמכות. ניצחון 4:0 על בוליביה בניו ג'רזי ב-6 ביוני, כאשר שה אדמס הבקיע פעמיים ולורנס שנקלנד וסקוט מקטומינאי גם הם רשמו שמות, שלח את נבחרתו של סטיב קלארק לטורניר מלאת ביטחון. האווירה נפגמה מוקדם יותר עם אישור היעדרות מצע נאפולי בילי גילמור, שיצא מהמשחק עם פציעה בברך מול קוראסאו ב-30 במאי. סקוטלנד פותחת מול האיטי בפוקסבורו ב-13 ביוני, ואחר כך מרוקו וברזיל. האם ה-Tartan Army תצליח סוף-סוף להגיע לשמינייה גמר של מונדיאל, לראשונה בהיסטוריה שלה?",
       "en": "Scotland are back at the World Cup for the first time since France 1998, 28 years in the making, and announced their return with authority. A 4-0 demolition of Bolivia in New Jersey on June 6, Che Adams scoring twice and Lawrence Shankland and Scott McTominay also on target, sent Steve Clarke's side into the tournament full of confidence. The mood was dampened earlier by the confirmed absence of Napoli midfielder Billy Gilmour, ruled out after damaging his knee against Curacao on May 30. Scotland open against Haiti in Foxborough on June 13, with Morocco and Brazil to follow. Can the Tartan Army finally reach a World Cup round of 16 for the very first time in their history?",
       "team": "SCO",
       "sources": [
@@ -94,7 +98,7 @@
       "id": "esp-yamal-fit-for-opener-2026-06-07",
       "type": "news",
       "confidence": "confirmed",
-      "he": "המאמן לואיס דה לה פואנטה אמר ב-6 ביוני שלמין יאמאל צפוי להיות כשיר לפגישה עם כף ורדה בפתיחה של ספרד ב-15 ביוני באטלנטה, יותר משישה שבועות אחרי שבן ה-18 קרע את שריר הירך השמאלי במשחק ברצלונה ב-22 באפריל. יאמאל הושאר בחוץ בחימום ספרד מול עיראק כאמצעי מניעתי. דה לה פואנטה אמר שההחלמה מתקדמת מצוין, אך שההחלטה הסופית על זמן המשחק שלו תלויה בהערכה קרובה יותר לתאריך. אם אלוף אירופה המגן ייצא לשדה עם ההתקפה המלאה שלו מהשריקה הראשונה, שלוש הנבחרות האחרות בקבוצה C צריכות להתכונן היטב.",
+      "he": "המאמן לואיס דה לה פואנטה אמר ב-6 ביוני שלמין יאמאל צפוי להיות כשיר לפגישה עם כף ורדה בפתיחה של ספרד ב-15 ביוני באטלנטה, יותר משישה שבועות לאחר שבן ה-18 קרע את שריר הירך השמאלי במשחק ברצלונה ב-22 באפריל. יאמאל הושאר בחוץ בחימום ספרד מול עיראק כאמצעי מניעתי. דה לה פואנטה אמר שההחלמה מתקדמת מצוין, אך שההחלטה הסופית על זמן המשחק שלו תלויה בהערכה קרובה יותר לתאריך. אם אלוף אירופה המגן ייצא לשדה עם ההתקפה המלאה שלו מהשריקה הראשונה, שלוש הנבחרות האחרות בקבוצה C צריכות להתכונן היטב.",
       "en": "Spain coach Luis de la Fuente said on June 6 that Lamine Yamal is expected to be fit to face Cape Verde in Spain's World Cup opener in Atlanta on June 15, over six weeks after the 18-year-old tore his left hamstring during a Barcelona match on April 22. Yamal was left out of Spain's warmup against Iraq as a precaution. De la Fuente said his recovery is going very well but that a final decision on his playing time will depend on a closer assessment nearer to the game. If the reigning European champions field their full attack from the first whistle, Group C's other three teams need to brace themselves.",
       "team": "ESP",
       "sources": [
@@ -117,7 +121,7 @@
       "id": "mex-quinto-partido-curse-2026-06-07",
       "type": "news",
       "confidence": "confirmed",
-      "he": "מקסיקו לא עברה מעולם את שלב שישה עשר הנבחרות בשבע הופעות רצופות בגביע העולם בין 1994 ל-2018, ריצה כל-כך כואבת שלמשחק שלא הצליחו לנצח ניתן שם עצמאי בכדורגל המקסיקני: אל קינטו פרטידו, המשחק החמישי. בקטאר 2022 הקללה עמקה כשאל טרי נפלה בשלב הבתים לראשונה מאז 1978. כעת, על אדמת הבית עם קהל האצטקה מאחוריהם, נבחרת אגירה פותחת את מסעה מול דרום אפריקה ב-11 ביוני. הגעות מקסיקו לשמינייה גמר התרחשו רק כשאירחו ב-1970 וב-1986. עם פורמט 48 הנבחרות המורחב שמוסיף סיבוב של 32, El Tri חייבת כעת לנצח בשני משחקי נוק-אאוט רק להגיע לשלב שבו קדמותיהן נפלו שוב ושוב. האם הטורניר הביתי יהיה סוף-סוף זה שישבור את הקללה?",
+      "he": "מקסיקו לא עברה מעולם את שלב שישה עשר הנבחרות בשבע הופעות רצופות בגביע העולם בין 1994 ל-2018, ריצה כל-כך כואבת שלמשחק שלא הצליחו לנצח ניתן שם עצמאי בכדורגל המקסיקני: אל קינטו פרטידו, המשחק החמישי. בקטאר 2022 הקללה עמקה כשאל טרי נפלה בשלב הבתים לראשונה מאז 1978. כעת, על אדמת הבית עם קהל האצטקה מאחוריהם, נבחרת אגירה פותחת את מסעה מול דרום אפריקה ב-11 ביוני. הגעות מקסיקו לרבע גמר התרחשו רק כשאירחו ב-1970 וב-1986. עם פורמט 48 הנבחרות המורחב שמוסיף סיבוב של 32, El Tri חייבת כעת לנצח בשני משחקי נוק-אאוט רק להגיע לשלב שבו קדמותיהן נפלו שוב ושוב. האם הטורניר הביתי יהיה סוף-סוף זה שישבור את הקללה?",
       "en": "Mexico have never advanced beyond the round of 16 in seven consecutive World Cup appearances from 1994 to 2018, a run so painful that the match they could never win was given its own name in Mexican football: el quinto partido, the fifth match. At Qatar 2022 the curse deepened when El Tri were eliminated in the group stage for the first time since 1978. Now, on home soil with the Azteca crowd behind them, coach Javier Aguirre's side open their campaign against South Africa on June 11. Mexico's only quarterfinal appearances came when they hosted in 1970 and 1986. With the expanded 48-team format adding a new round of 32, El Tri must now win two knockout games just to reach the stage where their predecessors kept falling. Can the home tournament finally be the one that breaks the curse for good?",
       "team": "MEX",
       "sources": [
@@ -140,8 +144,8 @@
       "id": "irn-tijuana-basecamp-2026-06-07",
       "type": "news",
       "confidence": "confirmed",
-      "he": "איראן הגיעה לטיחואנה, מקסיקו ב-7 ביוני לפתוח בהכנות הסופיות למונדיאל, לאחר שפדרציית הכדורגל, באישור פיפ\"א, העבירה את בסיס ההכשרה מטוסון, אריזונה. חששות ביטחוניים ובעיות ויזה הקשורות למתחים פוליטיים עם ארה\"ב הביאו להחלטה. הנבחרת תיכנס לארה\"ב דרך מעבר הגבול בטיחואנה לפני משחקי הקבוצה ב-SoFi Stadium באינגלווד, מול ניו זילנד ב-15 ביוני ובלגיה ב-21 ביוני, ואז תנסע לסיאטל לפגישה עם מצרים ב-26 ביוני. אימון בטורקיה, טיסה בין-יבשתית, מעבר בסיס לטיחואנה ומעבר גבול: האם נבחרת מלי תצליח להפוך את כל ההפרעות האלו לתוצאה שתזעזע את הסגל?",
-      "en": "Iran arrived in Tijuana, Mexico on June 7 to begin final World Cup preparations after their football federation, with FIFA approval, shifted the training base from Tucson, Arizona. Security concerns and visa complications tied to political tensions with the United States drove the move. Iran's federation said the team will enter the USA through the Tijuana border crossing ahead of their group matches at SoFi Stadium in Inglewood - against New Zealand on June 15 and Belgium on June 21 - then travel to Seattle to face Egypt on June 26. A training camp in Turkey, a cross-Pacific flight, a base switch to Tijuana and a border crossing: can Team Melli channel all that disruption into a result that shakes the bracket?",
+      "he": "איראן הגיעה לטיחואנה, מקסיקו ב-7 ביוני לפתוח בהכנות הסופיות למונדיאל, לאחר שפדרציית הכדורגל, באישור פיפ\"א, העבירה את בסיס ההכשרה מטוסון, אריזונה. חששות ביטחוניים ובעיות ויזה הקשורות למתחים פוליטיים עם ארה\"ב הניעו את המהלך. הפדרציה אמרה שהנבחרת תיכנס לארה\"ב דרך מעבר הגבול בטיחואנה לפני משחקי הקבוצה ב-SoFi Stadium באינגלווד, מול ניו זילנד ב-15 ביוני ובלגיה ב-21 ביוני, ואז תנסע לסיאטל לפגישה עם מצרים ב-26 ביוני. מחנה אימונים בטורקיה, טיסה חוצה-יבשות, החלפת בסיס לטיחואנה ומעבר גבול: האם נבחרת מלי תצליח להפוך את כל ההפרעות האלה לתוצאה שתזעזע את הסגל?",
+      "en": "Iran arrived in Tijuana, Mexico on June 7 to begin final World Cup preparations after their football federation, with FIFA approval, shifted the training base from Tucson, Arizona. Security concerns and visa complications tied to political tensions with the United States drove the move. Iran's federation said the team will enter the USA through the Tijuana border crossing ahead of their group matches at SoFi Stadium in Inglewood, against New Zealand on June 15 and Belgium on June 21, then travel to Seattle to face Egypt on June 26. A training camp in Turkey, a cross-Pacific flight, a base switch to Tijuana and a border crossing: can Team Melli channel all that disruption into a result that shakes the bracket?",
       "team": "IRN",
       "sources": [
         {
@@ -163,7 +167,7 @@
       "id": "ger-karl-out-ouedraogo-in-2026-06-07",
       "type": "news",
       "confidence": "confirmed",
-      "he": "גרמניה ספגה מכה קשה בסגל ב-6 ביוני, כשפוגע שרירי שחקן בייארן מינכן בן 18 לנארט קארל - קרע בשריר המקרב - בתרגיל גמר במהלך אימון, שעות ספורות לפני חימום ארה\"ב ב-Soldier Field. ההתאחדות הגרמנית לכדורגל אישרה שקארל מחוץ למונדיאל וזימנה את אסאן אואדראוגו מ-RB ליפציג, בן 20, כמחליף. קארל כבר נבחר בהעדפה על פני מספר חלופות ותיקות, ולכן נגלסמן תיאר את אובדנו כהלם עצום. גרמניה פותחת את מסעה מול קוראסאו בהיוסטון ב-14 ביוני. אואדראוגו מגיע עם כובע בינלאומי בכיר אחד ועם עמדה להוכיח - האם המתגייס החירום יהפוך לגילוי הטורניר?",
+      "he": "גרמניה ספגה מכה קשה בסגל ב-6 ביוני, כשמצע בייארן מינכן בן ה-18 לנארט קארל קרע שריר במפשעה בתרגיל גמר במהלך אימון, שעות ספורות לפני חימום ארה\"ב ב-Soldier Field. ההתאחדות הגרמנית לכדורגל אישרה שקארל מחוץ למונדיאל וזימנה את אסאן אואדראוגו מ-RB ליפציג, בן 20, כמחליף. קארל כבר נבחר בהעדפה על פני מספר חלופות ותיקות, ולכן נגלסמן תיאר את אובדנו כהלם עצום. גרמניה פותחת את מסעה מול קוראסאו בהיוסטון ב-14 ביוני. אואדראוגו מגיע עם כובע בינלאומי בכיר אחד ועם עמדה להוכיח - האם המתגייס החירום יהפוך לגילוי הטורניר?",
       "en": "Germany suffered a devastating squad blow on June 6 when 18-year-old Bayern Munich midfielder Lennart Karl tore a muscle in his adductor during a finishing drill in training, just hours before the USA warm-up at Soldier Field. The German Football Association confirmed Karl is out of the World Cup and has called up RB Leipzig's Assan Ouedraogo, 20, as replacement. Karl had already been selected ahead of several veteran alternatives, so Nagelsmann described losing him as a huge shock. Germany open their campaign against Curacao in Houston on June 14. Ouedraogo arrives with one senior cap and a point to prove - will the emergency call-up become a tournament revelation?",
       "team": "GER",
       "sources": [
@@ -186,7 +190,7 @@
       "id": "eng-kane-79-goals-record-2026-06-06",
       "type": "news",
       "confidence": "confirmed",
-      "he": "הארי קיין הבקיע את השער ה-79 שלו לאנגליה בנגיחה עדינה מהאגף של ג'ד ספנס בתוספת הזמן של המחצית הראשונה, ונתן לאנגליה ניצחון 1:0 על ניו זילנד ב-Raymond James Stadium בטמפה ב-6 ביוני. קיין, שהבקיע 61 שערים ב-51 משחקים כשבייארן מינכן זכתה בדאבל הלאומי בעונה שעברה, מוביל כעת 26 שערים מעל שיא אנגליה הקודם של וויין רוני. אנגליה פותחת את המונדיאל מול סנגל בלוס אנג'לס ב-14 ביוני. יש לחישות שקיין יכול להיות מלך השערים של הטורניר, ובקצב הזה הלחישות לא חסרות בסיס.",
+      "he": "הארי קיין הבקיע את השער ה-79 שלו לאנגליה בנגיחה עדינה מהאגף של ג'ד ספנס בתוספת הזמן של המחצית הראשונה, ונתן לאנגליה ניצחון 1:0 על ניו זילנד ב-Raymond James Stadium בטמפה ב-6 ביוני. קיין, שהבקיע 61 שערים ב-51 משחקים כשבייארן מינכן זכתה בדאבל הלאומי בעונה שעברה, מוביל כעת ב-26 שערים מעל שיאו הקודם של וויין רוני לאנגליה. אנגליה פותחת את המונדיאל מול סנגל בלוס אנג'לס ב-14 ביוני. יש לחישות שקיין יכול להיות מלך השערים של הטורניר, ובקצב הזה הלחישות לא חסרות בסיס.",
       "en": "Harry Kane scored his record-extending 79th goal for England with a deft flicked header from Djed Spence's delivery in first-half stoppage time, giving England a 1-0 win over New Zealand at Raymond James Stadium in Tampa on June 6. Kane, who scored 61 goals in 51 games as Bayern Munich won the domestic double last season, now stands 26 goals clear of Wayne Rooney's previous England record. England open the World Cup against Senegal in Los Angeles on June 14. There are whispers that Kane can become the tournament's top scorer, and at this rate the whispers are not without foundation.",
       "team": "ENG",
       "sources": [
@@ -205,8 +209,8 @@
       "id": "fifa-water-bottle-reversal-2026-06-06",
       "type": "news",
       "confidence": "confirmed",
-      "he": "פיפ\"א עדכנה בשקט את קוד ההתנהלות שלה לאצטדיונים ואסרה על אוהדים להכניס בקבוקי מים לאתרי המונדיאל, ולאחר מכן הפכה את ההחלטה ב-6 ביוני אחרי גל זעם מאוהדים, פוליטיקאים ומומחי בריאות שהצביעו על חום הקיץ המסוכן באצטדיוני היוסטון, דאלאס, מיאמי ואטלנטה. המדיניות החדשה מאפשרת לכל אוהד להכניס בקבוק פלסטיק רך חתום ממפעל אחד, עד 590 מ\"ל, למשחקים בארה\"ב ובקנדה. בקבוקים קשיחים עדיין אסורים מטעמי בטיחות. לטעות במדיניות בקבוקי המים ארבעה ימים לפני הטורניר הגדול ביותר בכדורגל אינו פרסומת מצוינת לתכנון פיפ\"א.",
-      "en": "FIFA quietly updated its Stadium Code of Conduct to ban fans from bringing any water bottles into World Cup venues, then reversed course on June 6 after fierce backlash from supporters, politicians and health experts who pointed to dangerous summer heat at stadiums in Houston, Dallas, Miami and Atlanta. The new policy allows each fan one sealed, soft-plastic, factory-sealed disposable bottle of up to 20oz (590ml) at matches in the USA and Canada. Hard-sided reusable bottles remain banned on safety grounds. Getting the water-bottle policy wrong four days before the biggest football tournament on the planet is not a great advertisement for FIFA's pre-tournament planning.",
+      "he": "פיפ\"א עדכנה בשקט את קוד ההתנהלות שלה לאצטדיונים ואסרה על אוהדים להכניס בקבוקי מים לאתרי המונדיאל, ולאחר מכן הפכה את ההחלטה ב-6 ביוני אחרי גל זעם מאוהדים, פוליטיקאים ומומחי בריאות שהצביעו על חום הקיץ המסוכן באצטדיוני היוסטון, דאלאס, מיאמי ואטלנטה. המדיניות החדשה מאפשרת לכל אוהד להכניס בקבוק פלסטיק רך חתום ממפעל, עד 590 מ\"ל, למשחקים בארה\"ב ובקנדה. בקבוקים קשיחים עדיין אסורים מטעמי בטיחות. לטעות במדיניות בקבוקי המים ארבעה ימים לפני הטורניר הגדול ביותר בכדורגל אינו פרסומת מצוינת לתכנון טרום-הטורניר של פיפ\"א.",
+      "en": "FIFA quietly updated its Stadium Code of Conduct to ban fans from bringing any water bottles into World Cup venues, then reversed course on June 6 after fierce backlash from supporters, politicians and health experts who pointed to dangerous summer heat at stadiums in Houston, Dallas, Miami and Atlanta. The new policy allows each fan one sealed, soft-plastic, factory-sealed disposable bottle of up to 20oz at matches in the USA and Canada. Hard-sided reusable bottles remain banned on safety grounds. Getting the water-bottle policy wrong four days before the biggest football tournament on the planet is not a great advertisement for FIFA's pre-tournament planning.",
       "team": null,
       "sources": [
         {
@@ -228,7 +232,7 @@
       "id": "sofi-strike-threat-usa-june-2026",
       "type": "news",
       "confidence": "confirmed",
-      "he": "עובדי שירותי המזון באצטדיון סופי בלוס אנג'לס הצביעו ב-96% לאישור שביתה ב-6 ביוני, ימים ספורים לפני שארה\"ב מארחת את פרגוואי שם ב-12 ביוני במשחק הראשון של הנבחרת האמריקנית בטורניר הביתי שלה. העובדים, המיוצגים על ידי Unite Here Local 11, דורשים שכר גבוה יותר, ביטחון תעסוקתי וערבות שסוכני שירות ההגירה (ICE) לא יורשו להיכנס לאצטדיון. המשא ומתן עם מפעיל האצטדיון Legends Global ופיפ\"א חודש ביום שני. אם לא יגיעו להסכם, פתיחת ביתה של ארה\"ב עלולה להתקיים ללא דוכן מזון אחד פתוח.",
+      "he": "עובדי שירותי המזון באצטדיון סופי בלוס אנג'לס הצביעו ב-96% לאישור שביתה ב-6 ביוני, ימים ספורים לפני שארה\"ב מארחת את פרגוואי שם ב-12 ביוני במשחק הראשון של הנבחרת האמריקנית בטורניר הביתי שלה. העובדים, המיוצגים על ידי Unite Here Local 11, דורשים שכר גבוה יותר, ביטחון תעסוקתי וערבות שסוכני שירות ההגירה לא יורשו להיכנס לאצטדיון. המשא ומתן עם מפעיל האצטדיון Legends Global ופיפ\"א חודש ביום שני. אם לא יגיעו להסכם, פתיחת ביתה של ארה\"ב עלולה להתקיים ללא דוכן מזון אחד פתוח.",
       "en": "Food-service workers at SoFi Stadium in Los Angeles voted 96 percent to authorize a strike on June 6, just days before the USA face Paraguay there on June 12 in the American national team's first match of their home World Cup. Workers represented by Unite Here Local 11 are demanding higher pay, job security and a guarantee that Immigration and Customs Enforcement agents are barred from the venue. Negotiations with stadium operator Legends Global and FIFA resumed Monday. If no deal is reached, the USA's home opener could kick off without a single concession stand open.",
       "team": "USA",
       "sources": [
@@ -248,11 +252,11 @@
       "expires_at": "2026-06-20T00:00:00Z"
     },
     {
-      "id": "wc26-opening-ceremony-shakira-2026-06-06",
+      "id": "wc26-three-ceremonies-2026-06-08",
       "type": "news",
       "confidence": "confirmed",
-      "he": "חמישה ימים לפני השריקה הפותחת, פיפ\"א אישרה רשמית ששקירה ובורנה בוי יעמדו בראש טקס הפתיחה של מונדיאל 2026 באסטדיו אצטקה במקסיקו סיטי ב-11 ביוני, ויבצעו את הלהיט הרשמי 'דאי דאי' בהופעה חיה. הטקס, שמתחיל ב-11:30 שעון מקומי לפני המשחק בין מקסיקו לדרום אפריקה ב-13:00, יכלול גם את מאנה, אלחנדרו פרנדס, J בלבין, בלינדה וטיילה. שקירה חוזרת לבמת המונדיאל 16 שנים אחרי ש-Waving Flag הפכה למוזיקת הרקע של דרום אפריקה 2010, וגם נקבעה כמבצעת משותפת בטקס ההפסקה של הגמר ב-19 ביולי. האם היא כתבה שוב לחן שיגדיר טורניר?",
-      "en": "Five days before the opening whistle, FIFA officially confirmed that Shakira and Burna Boy will headline the World Cup 2026 opening ceremony at Estadio Azteca in Mexico City on June 11, performing the official tournament anthem 'Dai Dai' live. The ceremony, starting at 11:30 local time before Mexico face South Africa at 13:00, also features Mana, Alejandro Fernandez, J Balvin, Belinda and Tyla. Shakira returns to the World Cup stage 16 years after Waving Flag soundtracked South Africa 2010, and is also booked to co-headline the final halftime show on July 19. Has she written another tournament-defining anthem?",
+      "he": "לראשונה בהיסטוריית המונדיאל, שלושה טקסי פתיחה נפרדים יפתחו את הטורניר, אחד בכל מדינה מארחת. במקסיקו סיטי ב-11 ביוני, שקירה ובורנה בוי מובילים באצטקה עם ביצוע ההמנון הרשמי דאי דאי, לצד אלחנדרו פרנדס, ג'יי בלבין, מאנה וטיילה. בטורנטו ב-12 ביוני, מייקל בובלה ואלניס מוריסט עומדים בראש אירוע עמוס כוכבים ב-BMO Field לפני שקנדה נפגשת עם בוסניה. שעות לאחר מכן בלוס אנג'לס, קייטי פרי ופיוצ'ר מובילים ב-SoFi Stadium לצד LISA, רמה ואניטה לפני משחק ארה\"ב מול פרגוואי. פיפ\"א אישרה ששקירה תשמש גם כמבצעת משותפת בטקס ההפסקה של הגמר ב-MetLife Stadium ב-19 ביולי. שלוש מדינות, שלוש הופעות, מונדיאל אחד.",
+      "en": "For the first time in World Cup history, three separate opening ceremonies will launch the tournament, one in each host nation. In Mexico City on June 11, Shakira and Burna Boy headline at the Azteca performing official anthem Dai Dai, joined by Alejandro Fernandez, J Balvin, Mana and Tyla. In Toronto on June 12, Michael Buble and Alanis Morissette lead a star-filled event at BMO Field before Canada face Bosnia and Herzegovina. Hours later in Los Angeles, Katy Perry and Future headline at SoFi Stadium alongside LISA, Rema and Anitta before the USA face Paraguay. FIFA confirmed Shakira will also co-headline the final halftime show at MetLife Stadium on July 19. Three countries, three concerts, one World Cup.",
       "team": null,
       "sources": [
         {
@@ -260,15 +264,19 @@
           "url": "https://inside.fifa.com/organisation/media-releases/shakira-burna-dai-dai-world-cup-opening-ceremony-mexico-city"
         },
         {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48972437/shakira-burna-boy-perform-2026-world-cup-opening-ceremony-mexico"
+          "name": "NBC Los Angeles",
+          "url": "https://www.nbclosangeles.com/world-cup/world-cup-2026-opening-ceremonies-date-time-performers/3900269/"
         },
         {
-          "name": "Billboard",
-          "url": "https://www.billboard.com/music/latin/shakira-burna-boy-dai-dai-2026-world-cup-opening-ceremony-1236265169/"
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/world-cup-2026-opening-ceremonies-165821593.html"
+        },
+        {
+          "name": "The National",
+          "url": "https://www.thenationalnews.com/arts-culture/2026/06/05/world-cup-2026-opening-ceremonies-guide-elyanna-tyla-and-other-stars-performing-in-mexico-canada-and-the-us/"
         }
       ],
-      "expires_at": "2026-06-12T23:59:59Z"
+      "expires_at": "2026-06-14T00:00:00Z"
     }
   ]
 }
