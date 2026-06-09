@@ -13,7 +13,9 @@
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
-const LIMIT = parseInt(process.env.HEAL_LIMIT || '400', 10);
+// Smaller batches are fine — the job runs every 10 min and the RPC isolates
+// per-user failures, so there's no benefit to a large single run.
+const LIMIT = parseInt(process.env.HEAL_LIMIT || '150', 10);
 
 (async () => {
   if (!SUPABASE_KEY) { console.error('[heal-brackets] missing SUPABASE_SECRET_KEY'); process.exit(1); }
@@ -23,9 +25,17 @@ const LIMIT = parseInt(process.env.HEAL_LIMIT || '400', 10);
     body: JSON.stringify({ p_limit: LIMIT }),
   });
   if (!r.ok) {
-    console.error(`[heal-brackets] RPC failed ${r.status}: ${(await r.text()).slice(0, 200)}`);
+    // total RPC failure (auth/permission/timeout) → fail the workflow loudly.
+    console.error(`::error::[heal-brackets] RPC failed ${r.status}: ${(await r.text()).slice(0, 300)}`);
     process.exit(1);
   }
-  const res = await r.json();
-  console.log('[heal-brackets]', JSON.stringify(res));
-})().catch(e => { console.error('[heal-brackets] ERROR:', e.message); process.exit(1); });
+  const body = await r.json();
+  const t = Array.isArray(body) ? body[0] : body;   // PostgREST returns the jsonb value (object)
+  console.log('[heal-brackets]', JSON.stringify(t));
+  if (t && t.note) console.log(`[heal-brackets] note: ${t.note}`);
+  // per-user failures are isolated (other users still healed) — surface them as a
+  // GitHub Actions warning (visible, but don't fail the whole run for one bad user).
+  if (t && t.failed > 0) {
+    console.error(`::warning::[heal-brackets] ${t.failed} user(s) failed to heal — sample: ${JSON.stringify((t.failures || []).slice(0, 5))}`);
+  }
+})().catch(e => { console.error('::error::[heal-brackets] ERROR:', e.message); process.exit(1); });
