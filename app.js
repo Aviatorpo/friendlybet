@@ -1123,6 +1123,7 @@ function _recordShare(source, kind) {
 }
 
 async function goToDashboard() {
+  spReopenActive = false;   // v2.10: never let the recovery flag leak outside the flow
   // v2.5.49: defensive guards. If we hit this without a supabase client
   // (very slow network) or any of the DB reads fail, fall back to the
   // home-screen instead of half-rendering a blank dashboard.
@@ -1230,7 +1231,9 @@ async function goToDashboard() {
 
   // Update betting status based on actual picks
   updateBettingStatusOnDashboard();
-  updateKnockoutStatusOnDashboard();
+  // v2.10: await so state._userNeedsKnockoutRecovery is set before the admin nudge
+  // reads it (an affected admin must never briefly see both banners).
+  try { await updateKnockoutStatusOnDashboard(); } catch (_) {}
 
   // v2.9.22: admin-only nudge about members who lost their knockout bracket.
   updateAdminNudgeOnDashboard();
@@ -1258,6 +1261,10 @@ async function updateAdminNudgeOnDashboard() {
   try {
     if (!state.currentUser || !state.currentUser.is_admin || !state.currentPool) return hide();
     if (state.currentPool.betting_mode !== 'single_phase') return hide();
+    // v2.10: if the admin THEMSELVES still needs to recover their own knockout,
+    // their personal recovery banner takes priority — don't stack the members
+    // nudge on top of it (no two overlapping banners). It returns once they're done.
+    if (state._userNeedsKnockoutRecovery) return hide();
     // Include the admin in the count (no p_exclude) so the banner number matches
     // the ⚠️-flagged members in the "Who?" list (which shows everyone). If the
     // admin themselves is affected, they also get their own recover banner.
@@ -2769,9 +2776,52 @@ function renderAdminMembers() {
     } else {
       card.style.cursor = 'default';
     }
-    
+
     list.appendChild(card);
+
+    // v2.10: post-lock, let the admin approve THIS member's 72h knockout re-entry
+    // and copy a ready personal nudge. Appended as a full-width sibling so it
+    // doesn't disturb the card's row layout. Server validates full eligibility.
+    if (spIsLocked() && needsKnockout && !member.isAdmin) {
+      const rec = document.createElement('div');
+      rec.className = 'admin-member-reopen';
+      rec.innerHTML = `<button type="button" class="amr-allow">${t('reopen.admin.allowBtn')}</button>`;
+      rec.addEventListener('click', e => e.stopPropagation());
+      const allowBtn = rec.querySelector('.amr-allow');
+      allowBtn.addEventListener('click', async () => {
+        allowBtn.disabled = true; allowBtn.textContent = '…';
+        const res = await _adminApproveReopen(member.id);
+        if (res && res.ok) {
+          rec.innerHTML = `<div class="amr-ok">${t('reopen.admin.granted')}</div>` +
+            `<button type="button" class="amr-copy">${t('reopen.admin.copyBtn', { name: member.nickname || '' })}</button>`;
+          const cp = rec.querySelector('.amr-copy');
+          cp.addEventListener('click', (ev) => { ev.stopPropagation(); _adminCopyReopenMsg(member.nickname); });
+        } else {
+          allowBtn.disabled = false; allowBtn.textContent = t('reopen.admin.allowBtn');
+          showToast(t('reopen.admin.notEligible'), 'error');
+        }
+      });
+      list.appendChild(rec);
+    }
   });
+}
+
+// v2.10: admin approves a member's knockout re-entry (server validates admin-of-pool
+// + full eligibility). Returns the RPC result {ok:...}.
+async function _adminApproveReopen(targetUserId) {
+  try {
+    const code = _currentRecoveryCode();
+    if (!code) { showToast(t('reopen.admin.noCode'), 'error'); return { ok: false }; }
+    const { data, error } = await supabaseClient.rpc('approve_knockout_reopen', { p_code: code, p_target_user: targetUserId });
+    return error ? { ok: false } : (data || { ok: false });
+  } catch (_) { return { ok: false }; }
+}
+
+// Copy a ready, personalized re-entry reminder the admin can DM to that member.
+function _adminCopyReopenMsg(name) {
+  const msg = t('reopen.admin.personalMsg', { name: name || '' });
+  try { navigator.clipboard.writeText(msg); showToast(t('reopen.admin.copied'), 'success'); }
+  catch (_) { showToast(msg, 'info'); }
 }
 
 // Quick approve - one click
@@ -5307,10 +5357,19 @@ async function updateBettingStatusOnDashboard() {
     // v2.9.2: apology + recover banner — show when the user has engaged (champion
     // or groups) but their knockout bracket didn't fully save. Tapping it reopens
     // the flow to re-enter the knockout stage.
+    // v2.10: MUTUAL EXCLUSIVITY after kickoff. Pre-lock → the original recover
+    // banner (tapping it re-enters the knockout, which works while unlocked).
+    // Post-lock → that banner is hidden and the NEW recovery banner takes over
+    // (amber "ask your admin" / green "you're approved"). The two are gated on
+    // opposite lock states, so a user never sees both at once.
+    const affected = (winnerChosen || groupsDone) && !bracketDone;
+    const locked = spIsLocked();
+    state._userNeedsKnockoutRecovery = (affected && locked);
     try {
       const brb = document.getElementById('bracket-recover-banner');
-      if (brb) brb.style.display = ((winnerChosen || groupsDone) && !bracketDone) ? 'flex' : 'none';
+      if (brb) brb.style.display = (affected && !locked) ? 'flex' : 'none';
     } catch (_) {}
+    try { await _updateReopenBanner(affected && locked); } catch (_) {}
 
     // Overall progress (drives the bar): groups + bracket (+ top scorer if open).
     const total  = 48 + 31 + (tsRequired ? 1 : 0);
@@ -9865,6 +9924,23 @@ function spIsLocked() {
   return !!(state.currentPool && state.currentPool.locked_at);
 }
 
+// v2.10: 72h knockout recovery. When true, the bracket walkthrough's saves route
+// to the dedicated post-lock RPC (save_knockout_bracket_reopen) and bypass the
+// lock gate. Set ONLY by spReopenKnockout() for an admin-approved affected user.
+let spReopenActive = false;
+let _spReopenStatus = null;   // last my_knockout_reopen result {locked,eligible,approved,used,can_reenter,expires_at}
+
+// Fetch the caller's recovery-grant status (cached on state). Fire-and-forget safe.
+async function _spFetchReopenStatus() {
+  try {
+    const code = _currentRecoveryCode();
+    if (!code || !supabaseClient) { _spReopenStatus = null; return null; }
+    const { data, error } = await supabaseClient.rpc('my_knockout_reopen', { p_code: code });
+    _spReopenStatus = error ? null : data;
+    return _spReopenStatus;
+  } catch (_) { _spReopenStatus = null; return null; }
+}
+
 // v2.3: informational only - true once the user has "saved" their full
 // set of picks at least once. Does NOT block further edits; the user
 // can keep editing until the pool itself locks. Used by the dashboard
@@ -11241,7 +11317,9 @@ async function spSaveBracketToDb(showFeedback = true) {
 
 async function _spSaveBracketToDbInner(showFeedback = true) {
   if (!state.currentPool || !state.currentUser) return;
-  if (spIsLocked()) return;
+  // v2.10: a locked pool blocks bracket saves — UNLESS we're in the approved
+  // 72h recovery flow, which routes to the dedicated post-lock RPC below.
+  if (spIsLocked() && !spReopenActive) return;
   const userId = state.currentUser.id;
   const poolId = state.currentPool.id;
 
@@ -11293,7 +11371,10 @@ async function _spSaveBracketToDbInner(showFeedback = true) {
     return;
   }
 
-  const res = await _rpcWrite('save_knockout_bracket', { p_code: code, p_picks: rows });
+  // v2.10: in the 72h recovery flow, the pool is locked, so the normal RPC would
+  // reject — route to the dedicated, grant-gated recovery RPC instead.
+  const rpcName = spReopenActive ? 'save_knockout_bracket_reopen' : 'save_knockout_bracket';
+  const res = await _rpcWrite(rpcName, { p_code: code, p_picks: rows });
   if (res.ok) {
     if (showFeedback) showToast(t('groups.picksSaved'), 'success');
     return;
@@ -11573,6 +11654,9 @@ function spPickWinner(code) {
 
 async function spSaveWinnerToDb(showFeedback = true) {
   if (!state.currentPool || !state.currentUser || !spState.tournamentWinner) return;
+  // v2.10: in recovery, the champion is LOCKED (the bracket's final must equal the
+  // already-saved tournament winner, enforced server-side). Never re-write it here.
+  if (spReopenActive) return;
   const userId = state.currentUser.id;
   const poolId = state.currentPool.id;
   // Preferred: server-side RPC; legacy direct write only if the RPC is absent.
@@ -12997,6 +13081,13 @@ function _koSingleSetPick(teamCode) {
     propagateKnockoutBracket();
     autoSaveKnockoutPicks();
   } else {
+    // v2.10: in recovery the champion is LOCKED — the FINAL winner (pos 31) must be
+    // the user's already-saved champion (also enforced server-side). Block other picks.
+    if (spReopenActive && step.pos === 31 && spState.tournamentWinner && teamCode !== spState.tournamentWinner) {
+      showToast(t('reopen.championLocked', { team: (typeof teamName === 'function' ? teamName(spState.tournamentWinner) : spState.tournamentWinner) }), 'error');
+      koSingleRender();
+      return;
+    }
     const prev = spState.bracketPicks[step.pos];
     // v2.9.10: warn before a change cascades away later-round picks.
     if (prev && prev !== teamCode) {
@@ -13197,6 +13288,10 @@ function koSingleFinish() {
     // the user can re-enter the walkthrough (or the bracket view) to edit.
     showToast(t('knockoutFirst.completedToast'), 'success');
     goToDashboard();
+  } else if (spReopenActive) {
+    // v2.10: recovery is BRACKET-ONLY — champion/top-scorer stay locked. Flush the
+    // final save through the reopen RPC, confirm, then exit (no top-scorer detour).
+    spReopenFinish();
   } else {
     // v2.4.3: single-phase - the FINAL match (bracket position 15) is
     // the tournament winner, so we go straight to top scorer; no
@@ -13208,6 +13303,91 @@ function koSingleFinish() {
     state.spInFlow = true;
     spStartTopScorerStep();
   }
+}
+
+// v2.10: enter the bracket-only recovery walkthrough for an admin-approved affected
+// user (pool is locked). Saves route to save_knockout_bracket_reopen; groups/
+// third-place/champion stay locked (loaded as fixed context); champion is enforced.
+async function spReopenKnockout() {
+  if (!state.currentPool || !state.currentUser) { showToast(t('errors.reconnect'), 'error'); return; }
+  const st = await _spFetchReopenStatus();
+  if (!st || !st.can_reenter) { showToast(t('reopen.notAvailable'), 'error'); await spShowLockedView(); return; }
+  spReopenActive = true;
+  try {
+    await spLoadExistingPicks();  // loads groups, third-place, champion, any partial bracket
+    // Eligibility guards (the grant required these; re-check defensively).
+    const groupsComplete = WC2026_GROUP_LETTERS.every(l => {
+      const arr = spState.groupPositions[l]; return arr && arr.length >= 4 && arr.slice(0, 4).every(x => x);
+    });
+    if (!groupsComplete || (spState.thirdPlaceAdvancers || []).length !== 8 || !spState.tournamentWinner) {
+      spReopenActive = false; showToast(t('reopen.notAvailable'), 'error'); await spShowLockedView(); return;
+    }
+    koSingle.sequence = _koSinglePhaseSequence();
+    koSingle.mode = 'single-phase';
+    const firstIncomplete = koSingle.sequence.findIndex(s => !(spState.bracketPicks && spState.bracketPicks[s.pos]));
+    koSingle.idx = firstIncomplete >= 0 ? firstIncomplete : 0;
+    state.spInFlow = true;
+    koSingleRender();
+    showScreen('ko-single-screen');
+  } catch (e) {
+    spReopenActive = false; console.error('[spReopenKnockout]', e); showToast(t('reopen.notAvailable'), 'error'); await spShowLockedView();
+  }
+}
+window.spReopenKnockout = spReopenKnockout;
+
+// Finish the recovery flow: flush the bracket via the reopen RPC, confirm 31, exit.
+async function spReopenFinish() {
+  if (koSingle.advanceTimer) { clearTimeout(koSingle.advanceTimer); koSingle.advanceTimer = null; }
+  koSingle.mode = null;
+  try {
+    if (_spBracketSaveTimer) { clearTimeout(_spBracketSaveTimer); _spBracketSaveTimer = null; }
+    await spSaveBracketToDb(false);   // routes to save_knockout_bracket_reopen (spReopenActive still true)
+  } catch (_) {}
+  const complete = koSingle.sequence && koSingle.sequence.every(s => spState.bracketPicks && spState.bracketPicks[s.pos]);
+  state.spInFlow = false;
+  spReopenActive = false;
+  _spReopenStatus = null;
+  showToast(complete ? t('reopen.done') : t('bracketSave.retryLater'), complete ? 'success' : 'error');
+  goToDashboard();
+}
+
+function _fmtReopenExpiry(iso) {
+  try {
+    const d = new Date(iso);
+    const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+    return d.toLocaleString(lang === 'he' ? 'he-IL' : 'en-US', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  } catch (_) { return ''; }
+}
+
+// v2.10: the post-lock recovery banner on the user's dashboard. Shown ONLY when
+// the pool is locked AND the user is affected (mutually exclusive with the
+// pre-lock #bracket-recover-banner). Green = approved (tap to fill); amber = not
+// yet approved (ask the admin).
+async function _updateReopenBanner(active) {
+  const el = document.getElementById('knockout-reopen-banner');
+  if (!el) return;
+  const hide = () => { el.style.display = 'none'; };
+  if (!active) return hide();
+  const st = await _spFetchReopenStatus();
+  if (st && st.used) return hide();   // already completed via recovery
+  const titleEl = document.getElementById('kr-title');
+  const subEl = document.getElementById('kr-sub');
+  const ctaEl = document.getElementById('kr-cta');
+  const expEl = document.getElementById('kr-exp');
+  if (st && st.can_reenter) {
+    el.className = 'knockout-reopen-banner approved';
+    if (titleEl) titleEl.textContent = t('reopen.user.approvedTitle');
+    if (subEl) subEl.textContent = t('reopen.user.approvedSub');
+    if (ctaEl) { ctaEl.style.display = ''; ctaEl.textContent = t('reopen.user.cta'); ctaEl.onclick = () => spReopenKnockout(); }
+    if (expEl) expEl.textContent = st.expires_at ? t('reopen.user.expires', { time: _fmtReopenExpiry(st.expires_at) }) : '';
+  } else {
+    el.className = 'knockout-reopen-banner pending';
+    if (titleEl) titleEl.textContent = t('reopen.user.pendingTitle');
+    if (subEl) subEl.textContent = t('reopen.user.pendingSub');
+    if (ctaEl) ctaEl.style.display = 'none';
+    if (expEl) expEl.textContent = '';
+  }
+  el.style.display = 'flex';
 }
 
 // Entry-point overrides ----------------------------------------------------

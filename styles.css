@@ -3991,6 +3991,62 @@ body.ltr #next-group-btn svg {
   padding: 11px 16px;
   cursor: pointer;
 }
+
+/* v2.10: post-lock knockout-recovery banner (user dashboard) */
+.knockout-reopen-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.knockout-reopen-banner.pending {
+  background: rgba(232, 168, 90, 0.08);
+  border: 1px solid rgba(232, 168, 90, 0.45);
+}
+.knockout-reopen-banner.approved {
+  background:
+    radial-gradient(520px 150px at 50% -20%, rgba(61, 220, 151, .16), transparent 70%),
+    rgba(61, 220, 151, 0.08);
+  border: 1px solid rgba(61, 220, 151, 0.5);
+}
+.knockout-reopen-banner .kr-head { display: flex; align-items: center; gap: 8px; }
+.knockout-reopen-banner .kr-icon { font-size: 18px; }
+.knockout-reopen-banner.approved .kr-icon::before { content: '✅'; }
+.knockout-reopen-banner .kr-title { font-size: 15px; font-weight: 800; }
+.knockout-reopen-banner.pending .kr-title { color: #f3c987; }
+.knockout-reopen-banner.approved .kr-title { color: #7df0bf; }
+.knockout-reopen-banner .kr-sub { font-size: 12.5px; line-height: 1.5; }
+.knockout-reopen-banner.pending .kr-sub { color: rgba(243, 201, 135, 0.85); }
+.knockout-reopen-banner.approved .kr-sub { color: rgba(220, 255, 238, 0.85); }
+.knockout-reopen-banner .kr-cta {
+  width: 100%;
+  background: linear-gradient(140deg, #3ddc97, #27b07a);
+  color: #06210f; font-weight: 800; font-size: 15px;
+  border: none; border-radius: 11px; padding: 13px; cursor: pointer;
+}
+.knockout-reopen-banner .kr-exp { font-size: 10.5px; color: rgba(125, 240, 191, 0.75); text-align: center; }
+
+/* v2.10: per-member recovery actions in the admin members screen */
+.admin-member-reopen {
+  display: flex; flex-direction: column; gap: 8px;
+  margin: -3px 0 9px; padding: 10px 12px;
+  background: rgba(61, 220, 151, 0.06);
+  border: .5px solid rgba(61, 220, 151, 0.3);
+  border-radius: 10px;
+}
+.admin-member-reopen .amr-allow {
+  width: 100%; background: linear-gradient(140deg, #ecd49a, #d9b46a);
+  color: #1a1408; font-weight: 800; font-size: 12.5px;
+  border: none; border-radius: 9px; padding: 9px; cursor: pointer;
+}
+.admin-member-reopen .amr-ok { font-size: 11.5px; color: #3ddc97; font-weight: 700; }
+.admin-member-reopen .amr-copy {
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 7px;
+  background: rgba(61, 220, 151, 0.14); color: #7df0bf; font-weight: 700; font-size: 12px;
+  border: 1px solid rgba(61, 220, 151, 0.4); border-radius: 9px; padding: 9px; cursor: pointer;
+}
 .admin-ko-nudge-banner .akn-text {
   color: #f3c987;
   font-size: 13px;

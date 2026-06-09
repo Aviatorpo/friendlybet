@@ -1464,6 +1464,16 @@ function loadTablerFallback() {
         <div class="brb-cta" id="brb-cta" data-i18n="recoverBracket.cta">מלא את הנוקאאוט</div>
       </div>
 
+      <!-- v2.10: post-lock knockout-recovery banner. Mutually exclusive with the
+           pre-lock banner above (one gated on locked, the other on unlocked).
+           amber = waiting for admin approval; green (.approved) = approved → fill. -->
+      <div class="knockout-reopen-banner pending" id="knockout-reopen-banner" style="display:none;">
+        <div class="kr-head"><span class="kr-icon">⚠️</span><span class="kr-title" id="kr-title"></span></div>
+        <div class="kr-sub" id="kr-sub"></div>
+        <button type="button" class="kr-cta" id="kr-cta" style="display:none;"></button>
+        <div class="kr-exp" id="kr-exp"></div>
+      </div>
+
       <!-- v2.9.22: admin-only nudge. Shown to a pool admin when members lost their
            knockout bracket to the save bug. Offers a one-tap copy of a ready-made
            reminder for the group chat (we have no email/push to reach members). -->
@@ -3047,7 +3057,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.9.25</span>
+      <span class="menu-version">v2.10.0</span>
     </div>
   </div>
 
