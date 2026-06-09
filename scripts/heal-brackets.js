@@ -47,4 +47,16 @@ const LIMIT = parseInt(process.env.HEAL_LIMIT || '150', 10);
     }
     console.error(`::warning::[heal-brackets] ${failed} user(s) failed to heal — sample: ${sample}`);
   }
+
+  // Record an incident snapshot so the owner dashboard can chart the gap shrinking
+  // over time. Best-effort — never fail the heal run over telemetry.
+  try {
+    const sr = await fetch(`${SUPABASE_URL}/rest/v1/rpc/record_incident_snapshot`, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: '{}',
+    });
+    if (sr.ok) console.log('[heal-brackets] snapshot:', JSON.stringify(await sr.json()));
+    else console.log(`[heal-brackets] snapshot skipped (${sr.status})`);
+  } catch (e) { console.log('[heal-brackets] snapshot error:', e.message); }
 })().catch(e => { console.error('::error::[heal-brackets] ERROR:', e.message); process.exit(1); });
