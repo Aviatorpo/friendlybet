@@ -1,7 +1,53 @@
 {
-  "updatedAt": "2026-06-08T21:33:46.279Z",
+  "updatedAt": "2026-06-09T00:47:15.638Z",
   "count": 12,
   "items": [
+    {
+      "id": "arg-emiliano-martinez-finger-2026-06-09",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "מצב שוערי ארגנטינה מכיל תרחיש משני שאף אחד לא היה צריך. אמיליאנו מרטינז, שוער אסטון וילה ומספר 1 הבלתי מעורער של ארגנטינה, סבל משבר קטן בטבעת של יד ימינו בחימום לפני גמר הליגה האירופית, שהסתיים בניצחון אסטון וילה 3:0 על פריבורג. הוא נמנע מניתוח ומתאמן בנפרד מהסגל במחנה ארגנטינה בקנזס סיטי, ומחמיץ את שני חימומי הטורניר מול הונדורס ואיסלנד. ליד האוטובוס, מרטינז אמר לאוהדים: אני אגיע. המאמן סקלוני אישר שגרונימו רולי מנהל את השמירה בחימומים ומצפה שמרטינז יחזור לפתיחה מול אלג'יריה ב-16 ביוני. מונדיאל ללא דיבו בין הקורות עבור ארגנטינה אינו חלק מאף תסריט שהאלופות המגנות כתבו. האם הפרק יחזיק לשישה משחקים?",
+      "en": "Argentina's World Cup goalkeeper situation has a subplot nobody needed. Emiliano Martinez, the Aston Villa keeper and Argentina's undisputed No. 1, suffered a small fracture of the ring finger on his right hand in the pre-match warm-up before Aston Villa's Europa League final win over Freiburg. He avoided surgery and has been training separately from the main squad at Argentina's Kansas City camp, sitting out both pre-tournament warmups against Honduras and Iceland. Walking past the team bus, Martinez told supporters: I will arrive. Coach Scaloni confirmed Geronimo Rulli handles goalkeeping duty in the warmups and expects Martinez back for the June 16 opener against Algeria in Kansas City. A World Cup without Dibu between the sticks for Argentina is not part of any script the defending champions had written. Can the finger hold for six matches?",
+      "team": "ARG",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48954908/emiliano-martinez-return-injury-argentina-world-cup-opener"
+        },
+        {
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com/articles/soccer/is-emi-martinez-a-world-cup-doubt-for-argentina-surgery-update-on-broken-finger-as-lionel-messi-and-co-sweat-on-aston-villa-goalkeepers-fitness"
+        },
+        {
+          "name": "Goal.com",
+          "url": "https://www.goal.com/en-us/lists/emi-martinez-argentina-world-cup-injury-update/blte73edffce2df0783"
+        }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "usa-germany-sendoff-2026-06-06",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "ארצות הברית ספגה בדיקת מציאות אחרונה לפני המונדיאל הביתי שלה, ונפלה 2:1 מגרמניה ב-Soldier Field בשיקגו ב-6 ביוני. קאי האברץ פתח לגרמניה אחרי שתי דקות, אנטוני רובינסון השווה בשוט מדהים מרחוק, ולרואי סאנה חתם את העניין באמצע המחצית השנייה. הנבחרת של פוצ'טינו סיימה את ריצת החימום עם שני ניצחונות, שתי תיקו ושתי הפסדים בשישה ידידויות. פוצ'טינו גורס שמבחן קשה הוא בדיוק ההכנה שהסגל שלו היה צריך לפני פתיחת הבית מול פרגוואי ב-SoFi Stadium בלוס אנג'לס ב-12 ביוני. השוט של רובינסון היה הרגע של הלילה. שורת הניקוד הסופית, לא. האם ארה\"ב תמצא הילוך אחר כשהמציאות תתחיל על סף ביתה?",
+      "en": "The United States took a final reality check before their home World Cup, falling 2-1 to Germany at Soldier Field in Chicago on June 6 in their pre-tournament sendoff. Kai Havertz struck after just two minutes to put Germany ahead, Antonee Robinson equalised with a spectacular long-range strike, and Leroy Sane sealed it midway through the second half. Mauricio Pochettino's side finished their warmup run with two wins, two draws and two losses across six friendlies. Pochettino holds that a stern test is exactly the preparation his squad needed before a home opener against Paraguay at SoFi Stadium in Los Angeles on June 12. Robinson's rocket was the highlight of the night. The scoreline was not. Can the USA find another gear when the real thing starts on their own doorstep?",
+      "team": null,
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/match/_/gameId/762260/germany-united-states"
+        },
+        {
+          "name": "NBC Sports",
+          "url": "https://www.nbcsports.com/soccer/news/usmnt-vs-germany-live-updates-score-highlights-stats-watch"
+        },
+        {
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com/stories/soccer/usmnt-germany-world-cup-friendly-4-takeaways"
+        }
+      ],
+      "expires_at": "2026-06-12T23:59:59Z"
+    },
     {
       "id": "artan-somalia-referee-denied-usa-wc2026-2026-06-08",
       "type": "news",
@@ -235,56 +281,6 @@
         }
       ],
       "expires_at": "2026-06-12T23:59:59Z"
-    },
-    {
-      "id": "bra-neymar-grade2-confirmed-2026-06-08",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "ברזיל אישרה שלניימאר יש מתח בדרגה שנייה בשריר השוק הימני שמוציא אותו מהפתיחה מול מרוקו ב-13 ביוני בניו ג'רזי, כאשר המאמן קרלו אנצ'לוטי מכוון לחזרה אפשרית במשחק מול האיטי ב-19 ביוני לכל המוקדם. אנצ'לוטי, שאמר ב-7 ביוני שניימאר יעבור בדיקת MRI מעודכנת ב-8 ביוני, מדגיש שאינו מתחרט על בחירת הפורווארד בן ה-34 ולא יחליף אותו בסגל. ברזיל ניצחה את מצרים 2:1 בחימום ללא ניימאר, כאשר אנדריק בן ה-18 הבקיע ועידד את עומק הסגל. ויניסיוס ג'וניור אישר שהוא מחזיר לניימאר את חולצת מספר 10 האיקונית לקראת הטורניר. האם הסלסאו יכולה להתקדם עמוק אם המבקיע השיאי שלה מבלה את שלב הבתים על שולחן הטיפולים?",
-      "en": "Brazil confirmed Neymar has a Grade 2 right calf strain that rules him out of their June 13 World Cup opener against Morocco in New Jersey, with coach Carlo Ancelotti targeting a return for the June 19 match against Haiti at the earliest. Ancelotti, who said on June 7 that Neymar would undergo an updated MRI on June 8, insists he has no regrets about picking the 34-year-old and will not replace him in the squad. Brazil beat Egypt 2-1 in their warm-up without him, 18-year-old Endrick stepping up to score and underline the squad depth. Vinicius Jr confirmed he is handing back the iconic No. 10 shirt to Neymar for the tournament. Can the Selecao go deep if their record scorer spends the group stage on the treatment table?",
-      "team": "BRA",
-      "sources": [
-        {
-          "name": "FIFA (official)",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/brazil-neymar-injury"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury"
-        },
-        {
-          "name": "Sports Illustrated",
-          "url": "https://www.si.com/soccer/neymar-injury-timeline-brazil-matches-miss-2026-world-cup"
-        }
-      ],
-      "expires_at": "2026-06-19T23:59:59Z"
-    },
-    {
-      "id": "bra-wesley-injury-ederson-2026-06-07",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "רשימת הפצועים של ברזיל ממשיכה לגדול. מגן הימני ווסלי הורד ממגרש ניצחון ברזיל 2:1 על מצרים בקליבלנד ב-7 ביוני עם קרע שריר אדוקטור בירך שמאלית, וה-CBF אישר שהוא חוץ מהטורניר. המאמן אנצ'לוטי זימן את קשר אטלנטה אדרסון, שחקן אחר משוער מנצ'סטר סיטי בעל אותו שם, כממלא מקומו, מה שמשאיר את ברזיל ללא מגן ימני מיוחד בסגל הסופי של 26. כשניימאר כבר מושבת לפתיחה מול מרוקו ב-13 ביוני, אנצ'לוטי חייב כעת לשנות את מערך ההגנה שלו לפני שנבעטה כדור. אנדריק הבריק מול מצרים, אבל נזקי הפציעות של ברזיל לפני הטורניר הם הגדולים ביותר בין כל המועמדים המובילים. האם עומק הסגל יוכל לשאת אותם כשהתוצאות יספרו באמת?",
-      "en": "Brazil's injury list keeps growing. Right-back Wesley was forced off in Brazil's 2-1 win over Egypt in Cleveland on June 7 with a torn adductor muscle in his left thigh, and the CBF confirmed he is out of the tournament. Coach Ancelotti has called up Atalanta midfielder Ederson, a different player from the Manchester City goalkeeper of the same name, as his replacement, leaving Brazil without a specialist right-back in their final 26. With Neymar already sidelined for the June 13 opener against Morocco, Ancelotti must now rejig his defensive shape before a ball is kicked in anger. Endrick lit up the Egypt win but Brazil's pre-tournament injury toll is the heaviest of any major contender. Can their squad depth carry them when the results truly count?",
-      "team": "BRA",
-      "sources": [
-        {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/brazil-right-back-wesley-is-out-of-the-world-cup-with-a-thigh-injury-and-ederson-is-replacing-him"
-        },
-        {
-          "name": "Washington Post",
-          "url": "https://www.washingtonpost.com/sports/soccer/2026/06/07/world-cup-brazil-wesley-injury/c29b57ee-62a1-11f1-bdd4-805ebb99a693_story.html"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/carlo-ancelotti-calls-ederson-replace-170133261.html"
-        }
-      ],
-      "expires_at": "2026-06-20T23:59:59Z"
     }
   ]
 }

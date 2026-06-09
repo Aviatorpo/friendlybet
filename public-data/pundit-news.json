@@ -1,6 +1,31 @@
 {
-  "updatedAt": "2026-06-08T09:45:00.000Z",
+  "updatedAt": "2026-06-09T12:00:00.000Z",
   "items": [
+    {
+      "id": "arg-emiliano-martinez-finger-2026-06-09",
+      "confidence": "confirmed",
+      "team": "ARG",
+      "en": "Argentina's World Cup goalkeeper situation has a subplot nobody needed. Emiliano Martinez, the Aston Villa keeper and Argentina's undisputed No. 1, suffered a small fracture of the ring finger on his right hand in the pre-match warm-up before Aston Villa's Europa League final win over Freiburg. He avoided surgery and has been training separately from the main squad at Argentina's Kansas City camp, sitting out both pre-tournament warmups against Honduras and Iceland. Walking past the team bus, Martinez told supporters: I will arrive. Coach Scaloni confirmed Geronimo Rulli handles goalkeeping duty in the warmups and expects Martinez back for the June 16 opener against Algeria in Kansas City. A World Cup without Dibu between the sticks for Argentina is not part of any script the defending champions had written. Can the finger hold for six matches?",
+      "he": "מצב שוערי ארגנטינה מכיל תרחיש משני שאף אחד לא היה צריך. אמיליאנו מרטינז, שוער אסטון וילה ומספר 1 הבלתי מעורער של ארגנטינה, סבל משבר קטן בטבעת של יד ימינו בחימום לפני גמר הליגה האירופית, שהסתיים בניצחון אסטון וילה 3:0 על פריבורג. הוא נמנע מניתוח ומתאמן בנפרד מהסגל במחנה ארגנטינה בקנזס סיטי, ומחמיץ את שני חימומי הטורניר מול הונדורס ואיסלנד. ליד האוטובוס, מרטינז אמר לאוהדים: אני אגיע. המאמן סקלוני אישר שגרונימו רולי מנהל את השמירה בחימומים ומצפה שמרטינז יחזור לפתיחה מול אלג'יריה ב-16 ביוני. מונדיאל ללא דיבו בין הקורות עבור ארגנטינה אינו חלק מאף תסריט שהאלופות המגנות כתבו. האם הפרק יחזיק לשישה משחקים?",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48954908/emiliano-martinez-return-injury-argentina-world-cup-opener" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/articles/soccer/is-emi-martinez-a-world-cup-doubt-for-argentina-surgery-update-on-broken-finger-as-lionel-messi-and-co-sweat-on-aston-villa-goalkeepers-fitness" },
+        { "name": "Goal.com", "url": "https://www.goal.com/en-us/lists/emi-martinez-argentina-world-cup-injury-update/blte73edffce2df0783" }
+      ],
+      "expires_at": "2026-06-16T23:59:59Z"
+    },
+    {
+      "id": "usa-germany-sendoff-2026-06-06",
+      "confidence": "confirmed",
+      "en": "The United States took a final reality check before their home World Cup, falling 2-1 to Germany at Soldier Field in Chicago on June 6 in their pre-tournament sendoff. Kai Havertz struck after just two minutes to put Germany ahead, Antonee Robinson equalised with a spectacular long-range strike, and Leroy Sane sealed it midway through the second half. Mauricio Pochettino's side finished their warmup run with two wins, two draws and two losses across six friendlies. Pochettino holds that a stern test is exactly the preparation his squad needed before a home opener against Paraguay at SoFi Stadium in Los Angeles on June 12. Robinson's rocket was the highlight of the night. The scoreline was not. Can the USA find another gear when the real thing starts on their own doorstep?",
+      "he": "ארצות הברית ספגה בדיקת מציאות אחרונה לפני המונדיאל הביתי שלה, ונפלה 2:1 מגרמניה ב-Soldier Field בשיקגו ב-6 ביוני. קאי האברץ פתח לגרמניה אחרי שתי דקות, אנטוני רובינסון השווה בשוט מדהים מרחוק, ולרואי סאנה חתם את העניין באמצע המחצית השנייה. הנבחרת של פוצ'טינו סיימה את ריצת החימום עם שני ניצחונות, שתי תיקו ושתי הפסדים בשישה ידידויות. פוצ'טינו גורס שמבחן קשה הוא בדיוק ההכנה שהסגל שלו היה צריך לפני פתיחת הבית מול פרגוואי ב-SoFi Stadium בלוס אנג'לס ב-12 ביוני. השוט של רובינסון היה הרגע של הלילה. שורת הניקוד הסופית, לא. האם ארה\"ב תמצא הילוך אחר כשהמציאות תתחיל על סף ביתה?",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/match/_/gameId/762260/germany-united-states" },
+        { "name": "NBC Sports", "url": "https://www.nbcsports.com/soccer/news/usmnt-vs-germany-live-updates-score-highlights-stats-watch" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/usmnt-germany-world-cup-friendly-4-takeaways" }
+      ],
+      "expires_at": "2026-06-12T23:59:59Z"
+    },
     {
       "id": "artan-somalia-referee-denied-usa-wc2026-2026-06-08",
       "confidence": "confirmed",
@@ -156,32 +181,6 @@
         { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/carlo-ancelotti-calls-ederson-replace-170133261.html" }
       ],
       "expires_at": "2026-06-20T23:59:59Z"
-    },
-    {
-      "id": "arg-messi-bench-honduras-2026-06-07",
-      "confidence": "confirmed",
-      "team": "ARG",
-      "en": "Lionel Messi sat as an unused substitute as Argentina crushed Honduras 2-0 in their final pre-tournament warm-up at Kyle Field in College Station, Texas on June 7, with Lautaro Martinez converting a penalty and Giuliano Simeone doubling the lead. Coach Scaloni said the decision was purely precautionary as the eight-time Ballon d'Or winner continues his recovery from a left hamstring strain, and that his status for the June 16 opener against Algeria in Kansas City will be assessed day by day. Defending champions Argentina showed they can win without their talisman, but the world wants to see him on that pitch from the first whistle. Will he be fit to start when the real tournament begins?",
-      "he": "ליונל מסי ישב כמחליף שלא השתמשו בו בעת שארגנטינה מחצה את הונדורס 2:0 בחימום ההכנה האחרון שלה לטורניר ב-7 ביוני, כשלאוטרו מרטינז המיר פנדל וג'וליאנו סימאונה הכפיל. המאמן סקלוני אמר שההחלטה היתה אך ורק מניעתית, בזמן שמנצח גביע הבלון דאור שמונה פעמים ממשיך להחלים ממתח בשריר הירך השמאלי, וכי זמינותו לפתיחה מול אלג'יריה ב-16 ביוני בקנזס סיטי תיבחן יום אחרי יום. האלופות המגנות הוכיחו שהן יכולות לנצח בלעדי הקמע שלהן, אבל העולם רוצה לראות אותו על המגרש משריקה ראשונה. האם הוא יהיה כשיר להתחיל כשהטורניר האמיתי יפתח?",
-      "sources": [
-        { "name": "Outlook India", "url": "https://www.outlookindia.com/sports/football/argentina-vs-honduras-live-score-international-friendly-2026-updates-highlights-texas" },
-        { "name": "Heavy.com", "url": "https://heavy.com/sports/soccer/world-cup/argentina-honduras-results-score-updates-stats/" },
-        { "name": "Sports Illustrated", "url": "https://www.si.com/soccer/why-lionel-messi-isnt-starting-for-argentina-vs-honduras-international-friendly" }
-      ],
-      "expires_at": "2026-06-16T23:59:59Z"
-    },
-    {
-      "id": "arg-messi-targeting-iceland-2026-06-08",
-      "confidence": "confirmed",
-      "team": "ARG",
-      "en": "Lionel Messi is closing in on a pre-tournament comeback. Argentina coach Scaloni confirmed on June 7 that the 38-year-old, who sat out the June 6 win over Honduras as a precaution while recovering from a left hamstring strain, has made significant progress and is targeting minutes in Argentina's second warm-up against Iceland at Auburn on June 9. The AFA confirmed all recovering players are progressing well with the medical staff, and the camp is optimistic Messi will be fully fit for the June 16 opener against Algeria in Kansas City. Defending champions Argentina, co-favourites for the title alongside France, need their captain firing from the start. The Iceland warmup on June 9 is his best chance to prove the hamstring is firmly behind him.",
-      "he": "ליונל מסי מתקרב לחזרה לפני הטורניר. מאמן ארגנטינה סקלוני אישר ב-7 ביוני שהשחקן בן ה-38, שלא שיחק בניצחון על הונדורס ב-6 ביוני כאמצעי זהירות בזמן שהחלים ממתח שריר ירך שמאלי, הגיע להתקדמות משמעותית ומכוון לדקות במשחק החימום השני של ארגנטינה מול איסלנד באוברן ב-9 ביוני. ה-AFA אישרה שכל השחקנים המחלימים מתקדמים היטב עם הצוות הרפואי, והמחנה אופטימי שמסי יהיה כשיר לחלוטין לפתיחה מול אלג'יריה ב-16 ביוני בקנזס סיטי. האלופות המגנות, מועדפות-שותפות לתואר יחד עם צרפת, זקוקות לקפטן שלהן בכושרו מתחילת הדרך. חימום מול איסלנד ב-9 ביוני הוא הסיכוי הטוב ביותר שלו להוכיח שהירך מאחוריו לגמרי.",
-      "sources": [
-        { "name": "CBS Sports", "url": "https://www.cbssports.com/soccer/news/lionel-messi-injury-argentina-world-cup-2026-inter-miami/" },
-        { "name": "FWCTimes", "url": "https://fwctimes.com/news/messi-world-cup-return-iceland-warm-up/" },
-        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/amp/world-cup/scaloni-explains-messis-2026-world-cup-workload-management-following-injury-with-inter-miami/" }
-      ],
-      "expires_at": "2026-06-16T23:59:59Z"
     },
     {
       "id": "can-crepeau-goalkeeper-wc-2026-06-08",
@@ -365,7 +364,7 @@
     {
       "id": "ifab-var-corners-second-yellow-2026-06-05",
       "confidence": "confirmed",
-      "en": "IFAB has confirmed that VAR at the 2026 World Cup gains three new areas of intervention: wrongly-awarded second yellow cards, cases of mistaken identity where the wrong player is carded, and incorrectly-awarded corner kicks. Officials can also check if an attacker blocked a defender before a set piece was taken. Corner reviews must correct only obvious errors and cannot delay the restart of play. The expanded brief triples VAR's scope compared to past tournaments - will it cut out the game's most controversial decisions, or just add a new layer of debate?",
+      "en": "IFAB has confirmed that VAR at the 2026 World Cup gains three new areas of intervention: wrongly-awarded second yellow cards, cases of mistaken identity where the wrong player is carded, and incorrectly-awarded corner kicks. Officials can also check if an attacker blocked a defender before a set piece was taken. Corner reviews must correct only obvious errors and cannot delay the restart of play. The expanded brief triples VAR's scope compared to past tournaments. Will it cut out the game's most controversial decisions, or just add a new layer of debate?",
       "he": "IFAB אישרה שה-VAR בגביע העולם 2026 יקבל שלושה תחומי התערבות חדשים: כרטיסים צהובים שניים שניתנו בשגיאה, מקרי זיהוי שגוי שבהם כורטס שחקן הלא נכון, ובעיטות פינה שניתנו שלא כדין. הבודקים יוכלו גם לבחון אם תוקף חוסם מגן לפני ביצוע בעיטה נייחת. בדיקות הפינה חלות רק על שגיאות בוטות ואינן רשאיות לעכב את חידוש המשחק. הסמכות המורחבת משלשת את טווח ה-VAR לעומת טורנירים קודמים. האם היא תבטל את ההחלטות השנויות ביותר במחלוקת, או פשוט תוסיף שכבת ויכוח חדשה?",
       "sources": [
         { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12098/13549645/world-cup-ifab-confirm-new-var-powers-10-second-substitutions-and-tactical-timeout-ban-in-major-rule-changes" },
@@ -397,19 +396,6 @@
         { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/fifa-world-cup-group-stage-third-place-tiebreakers" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "ned-triple-injury-blow-wc2026-2026-06-08",
-      "confidence": "confirmed",
-      "team": "NED",
-      "en": "The Netherlands arrive at the World Cup without three players who were expected to anchor Koeman's system. Centre-back Matthijs de Ligt needed back surgery in April and will not play until the start of the next season. Stefan de Vrij limped out of Inter Milan's final league fixture with a thigh problem and could not recover in time. Most damaging of all, 22-year-old Xavi Simons ruptured his ACL at Tottenham in late April, ending the campaign of the player Koeman counted on to create and connect the Dutch attack. Van Dijk captains a side with genuine title ambitions, but replacing two centre-backs and a creative midfielder before the first match is a serious test of squad depth. The Netherlands open Group F against Japan in Arlington on June 14. A team built to go deep, tested before it has started.",
-      "he": "הולנד מגיעה למונדיאל ללא שלושה שחקנים שהיו אמורים לעגן את שיטת קוקמן. הבלם מתייאס דה ליכט עבר ניתוח גב באפריל ולא ישחק עד תחילת העונה הבאה. שטפן דה פריי נפל עם בעיית ירך במשחק הסיום של אינטר מילאן בליגה ולא הצליח להחלים בזמן. המכאיב ביותר מכולם, חאבי סימונס בן ה-22 קרע את הרצועה הצולבת בטוטנהאם בסוף אפריל, ובכך סיים את מסע השחקן שעליו סמך קוקמן ליצור ולחבר את ההתקפה ההולנדית. ואן דייק מוביל נבחרת עם שאיפות אמיתיות לתואר, אבל להחליף שני בלמים מרכזיים וקשר יוצר לפני המשחק הראשון הוא מבחן רציני של עומק הסגל. הולנד פותחת קבוצה F מול יפן בארלינגטון ב-14 ביוני. נבחרת שנבנתה להגיע רחוק, שנבחנת לפני שהתחילה.",
-      "sources": [
-        { "name": "FIFA (official)", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/xavi-simons-netherlands-injured-ruled-out" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48783229/netherlands-defender-matthijs-de-ligt-ruled-world-cup-back-surgery" },
-        { "name": "The Score", "url": "https://www.thescore.com/news/3546837/inter-milans-stefan-de-vrij-will-miss-world-cup" }
-      ],
-      "expires_at": "2026-06-25T23:59:59Z"
     },
     {
       "id": "civ-beat-france-warmup-2026-06-04",
