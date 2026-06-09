@@ -1,6 +1,33 @@
 {
-  "updatedAt": "2026-06-09T13:30:00.000Z",
+  "updatedAt": "2026-06-09T16:00:00.000Z",
   "items": [
+    {
+      "id": "esp-no-real-madrid-wc2026-2026-05-25",
+      "confidence": "confirmed",
+      "team": "ESP",
+      "en": "Spain enter the 2026 World Cup without a single Real Madrid player in their squad, a first in the tournament's history. Coach Luis de la Fuente named eight Barcelona players and seven Premier League-based players in his final 26, leaving out Dani Carvajal and Dean Huijsen after their inconsistent seasons at the Bernabeu. De la Fuente defended the selection, saying his squad is 'perfect' and that he picks on capability, not club badge. Rodri, the 2024 Ballon d'Or winner who missed almost the entire 2024-25 club season with a knee injury, has returned to full fitness and is expected to start. Spain open Group H against Cape Verde on June 15. A squad built entirely without the world's most decorated club - statement of philosophy or gamble?",
+      "he": "ספרד נכנסת למונדיאל 2026 ללא שחקן אחד מריאל מדריד - לראשונה בתולדות הטורניר. המאמן לואיס דה לה פואנטה כלל שמונה שחקנים מברצלונה ושבעה ששוחקים בפרמייר ליג ב-26 שחקניו הסופיים, ודחה את דני קרבחל ודין הויסן לאחר עונות לא עקביות בברנבאו. דה לה פואנטה הגן על הבחירה ואמר שהסגל 'מושלם' ושהוא בוחר לפי יכולת ולא לפי סמל מועדון. רודרי, זוכה הבלון דאור 2024 שהחסיר כמעט את כל עונת 2024-25 בגלל פציעת ברך, חזר לכושר מלא ומצופה שיפתח. ספרד פותחת קבוצה H מול קאבו ורדה ב-15 ביוני. סגל שבנוי לגמרי ללא המועדון המפורסם ביותר בעולם - הצהרת פילוסופיה או הימור?",
+      "sources": [
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/spain-faces-the-2026-world-cup-without-real-madrid-players-for-the-first-time-in-world-cup-history-2026-05-25" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48956714/spain-boss-defends-perfect-world-cup-squad-real-madrid-players" },
+        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/world-cup/spain-leave-real-madrid-players-out-of-final-26-man-2026-world-cup-squad-for-first-time-in-history/" }
+      ],
+      "expires_at": "2026-07-04T00:00:00Z"
+    },
+    {
+      "id": "eng-tuchel-shock-omissions-wc2026-2026-05-22",
+      "confidence": "confirmed",
+      "team": "ENG",
+      "en": "Thomas Tuchel named an England World Cup squad that Sky Sports News called 'probably the most shocking since 1998', omitting Cole Palmer, Phil Foden, Trent Alexander-Arnold and Harry Maguire. Tuchel explained he did not want five No. 10s playing out of position, but the cuts to Palmer and Foden in particular drew fierce public backlash. Maguire posted on social media that he was 'shocked and gutted'. In their place, Tuchel recalled Ivan Toney, who scored 32 goals in 32 Saudi Pro League matches for Al-Ahli. Jude Bellingham wears the No. 10 shirt. England are in Group L with Croatia, Ghana and Panama, opening against Croatia at AT&T Stadium in Dallas on June 17. Has Tuchel found a bold new formula, or does the gamble fall apart at the first hurdle?",
+      "he": "תומאס טוכל מינה סגל אנגלי לגביע העולם ש-Sky Sports News כינה 'כנראה המקפיץ ביותר מאז 1998', תוך השמטת קול פאלמר, פיל פודן, טרנט אלכסנדר-ארנולד והארי מגווייר. טוכל הסביר שלא רצה חמישה שחקני מספר 10 שישחקו מחוץ לעמדתם, אך ההשמטות של פאלמר ופודן בפרט עוררו זעם ציבורי נרחב. מגווייר פרסם ברשתות החברתיות שהוא 'בהלם ולב שבור'. במקומם, טוכל זימן בחזרה את איוון טוני, שהבקיע 32 שערים ב-32 משחקים בליגה הסעודית עבור אל-אהלי. ג'וד בלינגהאם עוטה את חולצת מספר 10. אנגלייה נמצאת בקבוצה L עם קרואטיה, גאנה ופנמה, עם הפתיחה מול קרואטיה ב-AT&T Stadium בדאלאס ב-17 ביוני. האם טוכל מצא פורמולה נועזת חדשה, או שההימור מתפרק בחישוק הראשון?",
+      "sources": [
+        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12016/13543455/england-world-cup-squad-announcement-ruthless-thomas-tuchel-leaves-big-names-out-of-26-man-squad" },
+        { "name": "France 24", "url": "https://www.france24.com/en/sport/20260522-tuchel-axes-foden-palmer-surprise-england-world-cup-team-shake-up" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/22/tuchel-leaves-palmer-and-foden-out-of-englands-2026-world-cup-squad" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48823863/meet-england-2026-world-cup-squad-26-players-picked-thomas-tuchel-why" }
+      ],
+      "expires_at": "2026-07-04T00:00:00Z"
+    },
     {
       "id": "wc26-opening-ceremony-shakira-2026-06-08",
       "confidence": "confirmed",

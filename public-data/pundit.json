@@ -1,7 +1,57 @@
 {
-  "updatedAt": "2026-06-09T18:28:09.273Z",
+  "updatedAt": "2026-06-09T21:31:09.024Z",
   "count": 12,
   "items": [
+    {
+      "id": "esp-no-real-madrid-wc2026-2026-05-25",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "ספרד נכנסת למונדיאל 2026 ללא שחקן אחד מריאל מדריד - לראשונה בתולדות הטורניר. המאמן לואיס דה לה פואנטה כלל שמונה שחקנים מברצלונה ושבעה ששוחקים בפרמייר ליג ב-26 שחקניו הסופיים, ודחה את דני קרבחל ודין הויסן לאחר עונות לא עקביות בברנבאו. דה לה פואנטה הגן על הבחירה ואמר שהסגל 'מושלם' ושהוא בוחר לפי יכולת ולא לפי סמל מועדון. רודרי, זוכה הבלון דאור 2024 שהחסיר כמעט את כל עונת 2024-25 בגלל פציעת ברך, חזר לכושר מלא ומצופה שיפתח. ספרד פותחת קבוצה H מול קאבו ורדה ב-15 ביוני. סגל שבנוי לגמרי ללא המועדון המפורסם ביותר בעולם - הצהרת פילוסופיה או הימור?",
+      "en": "Spain enter the 2026 World Cup without a single Real Madrid player in their squad, a first in the tournament's history. Coach Luis de la Fuente named eight Barcelona players and seven Premier League-based players in his final 26, leaving out Dani Carvajal and Dean Huijsen after their inconsistent seasons at the Bernabeu. De la Fuente defended the selection, saying his squad is 'perfect' and that he picks on capability, not club badge. Rodri, the 2024 Ballon d'Or winner who missed almost the entire 2024-25 club season with a knee injury, has returned to full fitness and is expected to start. Spain open Group H against Cape Verde on June 15. A squad built entirely without the world's most decorated club - statement of philosophy or gamble?",
+      "team": "ESP",
+      "sources": [
+        {
+          "name": "beIN Sports",
+          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/spain-faces-the-2026-world-cup-without-real-madrid-players-for-the-first-time-in-world-cup-history-2026-05-25"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48956714/spain-boss-defends-perfect-world-cup-squad-real-madrid-players"
+        },
+        {
+          "name": "World Soccer Talk",
+          "url": "https://worldsoccertalk.com/world-cup/spain-leave-real-madrid-players-out-of-final-26-man-2026-world-cup-squad-for-first-time-in-history/"
+        }
+      ],
+      "expires_at": "2026-07-04T00:00:00Z"
+    },
+    {
+      "id": "eng-tuchel-shock-omissions-wc2026-2026-05-22",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "תומאס טוכל מינה סגל אנגלי לגביע העולם ש-Sky Sports News כינה 'כנראה המקפיץ ביותר מאז 1998', תוך השמטת קול פאלמר, פיל פודן, טרנט אלכסנדר-ארנולד והארי מגווייר. טוכל הסביר שלא רצה חמישה שחקני מספר 10 שישחקו מחוץ לעמדתם, אך ההשמטות של פאלמר ופודן בפרט עוררו זעם ציבורי נרחב. מגווייר פרסם ברשתות החברתיות שהוא 'בהלם ולב שבור'. במקומם, טוכל זימן בחזרה את איוון טוני, שהבקיע 32 שערים ב-32 משחקים בליגה הסעודית עבור אל-אהלי. ג'וד בלינגהאם עוטה את חולצת מספר 10. אנגלייה נמצאת בקבוצה L עם קרואטיה, גאנה ופנמה, עם הפתיחה מול קרואטיה ב-AT&T Stadium בדאלאס ב-17 ביוני. האם טוכל מצא פורמולה נועזת חדשה, או שההימור מתפרק בחישוק הראשון?",
+      "en": "Thomas Tuchel named an England World Cup squad that Sky Sports News called 'probably the most shocking since 1998', omitting Cole Palmer, Phil Foden, Trent Alexander-Arnold and Harry Maguire. Tuchel explained he did not want five No. 10s playing out of position, but the cuts to Palmer and Foden in particular drew fierce public backlash. Maguire posted on social media that he was 'shocked and gutted'. In their place, Tuchel recalled Ivan Toney, who scored 32 goals in 32 Saudi Pro League matches for Al-Ahli. Jude Bellingham wears the No. 10 shirt. England are in Group L with Croatia, Ghana and Panama, opening against Croatia at AT&T Stadium in Dallas on June 17. Has Tuchel found a bold new formula, or does the gamble fall apart at the first hurdle?",
+      "team": "ENG",
+      "sources": [
+        {
+          "name": "Sky Sports",
+          "url": "https://www.skysports.com/football/news/12016/13543455/england-world-cup-squad-announcement-ruthless-thomas-tuchel-leaves-big-names-out-of-26-man-squad"
+        },
+        {
+          "name": "France 24",
+          "url": "https://www.france24.com/en/sport/20260522-tuchel-axes-foden-palmer-surprise-england-world-cup-team-shake-up"
+        },
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/5/22/tuchel-leaves-palmer-and-foden-out-of-englands-2026-world-cup-squad"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48823863/meet-england-2026-world-cup-squad-26-players-picked-thomas-tuchel-why"
+        }
+      ],
+      "expires_at": "2026-07-04T00:00:00Z"
+    },
     {
       "id": "wc26-opening-ceremony-shakira-2026-06-08",
       "type": "news",
@@ -231,52 +281,6 @@
         }
       ],
       "expires_at": "2026-06-26T23:59:59Z"
-    },
-    {
-      "id": "mex-quinto-partido-curse-2026-06-07",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "מקסיקו לא עברה מעולם את שלב שישה עשר הנבחרות בשבע הופעות רצופות בגביע העולם בין 1994 ל-2018, ריצה כל-כך כואבת שלמשחק שלא הצליחו לנצח ניתן שם עצמאי בכדורגל המקסיקני: אל קינטו פרטידו, המשחק החמישי. בקטאר 2022 הקללה עמקה כשאל טרי נפלה בשלב הבתים לראשונה מאז 1978. כעת, על אדמת הבית עם קהל האצטקה מאחוריהם, נבחרת אגירה פותחת את מסעה מול דרום אפריקה ב-11 ביוני. הגעות מקסיקו לרבע גמר התרחשו רק כשאירחו ב-1970 וב-1986. עם פורמט 48 הנבחרות המורחב שמוסיף סיבוב של 32, El Tri חייבת כעת לנצח בשני משחקי נוק-אאוט רק להגיע לשלב שבו קדמותיהן נפלו שוב ושוב. האם הטורניר הביתי יהיה סוף-סוף זה שישבור את הקללה?",
-      "en": "Mexico have never advanced beyond the round of 16 in seven consecutive World Cup appearances from 1994 to 2018, a run so painful that the match they could never win was given its own name in Mexican football: el quinto partido, the fifth match. At Qatar 2022 the curse deepened when El Tri were eliminated in the group stage for the first time since 1978. Now, on home soil with the Azteca crowd behind them, coach Javier Aguirre's side open their campaign against South Africa on June 11. Mexico's only quarterfinal appearances came when they hosted in 1970 and 1986. With the expanded 48-team format adding a new round of 32, El Tri must now win two knockout games just to reach the stage where their predecessors kept falling. Can the home tournament finally be the one that breaks the curse for good?",
-      "team": "MEX",
-      "sources": [
-        {
-          "name": "beIN Sports",
-          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles-video/mexico-s-fifth-match-curse-has-a-tougher-new-version-in-the-2026-world-cup-2026-06-05"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/5/mexico-world-cup-2026-preview-players-to-watch-group-matches-and-squad"
-        },
-        {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/mexico-world-cup-2026-javier-chicharito-hernandez-usmnt-canada"
-        }
-      ],
-      "expires_at": "2026-07-06T00:00:00Z"
-    },
-    {
-      "id": "fra-deschamps-farewell-dembele-2026-06-08",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "כנף צרפת אוסמן דמבלה, זוכה הבלון דאור 2025, אמר שצרפת נחושה לזכות בגביע המונדיאל כפרידה מושלמת מהמאמן דידיה דשאן, שאישר מוקדם יותר השנה שיפרוש לאחר סיום הטורניר ויסגור 14 שנות כהונה. דשאן זכה בגביע העולם 2018 ובדוף האומות 2021 עם צרפת. דמבלה אמר לעיתונאים שהסגל מאוחד סביב מתן אות הצטיינות כפרידה למאמן, כשזינדין זידאן הוא המועמד המוביל לרשת אותו. צרפת פותחת קבוצה I מול סנגל ב-MetLife Stadium ב-16 ביוני, ואחר כך נפגשת עם עיראק ונורבגיה. ארבע עשרה שנות הגה, ירייה אחרונה לכוכב שני.",
-      "en": "France winger Ousmane Dembele, the reigning 2025 Ballon d'Or winner, said France are determined to win the World Cup trophy as the perfect farewell for coach Didier Deschamps, who confirmed earlier this year that he will step down after the tournament, closing 14 years as France's manager. Deschamps won the 2018 World Cup and the 2021 UEFA Nations League with France. Dembele told reporters the squad is united around giving the coach a title send-off, with Zinedine Zidane the heavy favourite to succeed him. France open Group I against Senegal at MetLife Stadium on June 16, then face Iraq and Norway. Fourteen years at the helm, one last shot at a second star.",
-      "team": "FRA",
-      "sources": [
-        {
-          "name": "FIFA (official)",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/didier-deschamps-france-coach"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2025/1/8/france-coach-didier-deschamps-says-hell-leave-after-fifa-world-cup-2026"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48988194/dembele-france-end-deschamps-reign-trophy"
-        }
-      ],
-      "expires_at": "2026-07-19T23:59:59Z"
     }
   ]
 }
