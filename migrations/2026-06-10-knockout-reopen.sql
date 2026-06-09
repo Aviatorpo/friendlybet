@@ -115,9 +115,19 @@ begin
   delete from public.knockout_picks where user_id=v_uid and pool_id=v_pid
     and (bracket_position is not null or match_id ~ '^sp_([1-9]|[12][0-9]|3[01])$');
   begin
+    -- SYNTHESIZE match_id + round server-side from bracket_position (1..31, already
+    -- validated). Do NOT trust client match_id/round — guarantees only sp_1..sp_31
+    -- rows are written, even for a crafted direct RPC payload.
     insert into public.knockout_picks(pool_id,user_id,match_id,round,predicted_winner,bracket_position)
       select distinct on ((e->>'bracket_position')::int)
-             v_pid, v_uid, e->>'match_id', e->>'round', e->>'predicted_winner', (e->>'bracket_position')::int
+             v_pid, v_uid,
+             'sp_' || (e->>'bracket_position')::int,
+             case when (e->>'bracket_position')::int <= 16 then 'r32'
+                  when (e->>'bracket_position')::int <= 24 then 'r16'
+                  when (e->>'bracket_position')::int <= 28 then 'qf'
+                  when (e->>'bracket_position')::int <= 30 then 'sf'
+                  else 'final' end,
+             e->>'predicted_winner', (e->>'bracket_position')::int
       from jsonb_array_elements(p_picks) e order by (e->>'bracket_position')::int;
   exception when foreign_key_violation then raise exception 'unknown team code in bracket'; end;
   -- one-shot: mark the grant used once the bracket is complete

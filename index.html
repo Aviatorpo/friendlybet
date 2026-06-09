@@ -3057,7 +3057,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.10.0</span>
+      <span class="menu-version">v2.10.1</span>
     </div>
   </div>
 
@@ -3384,6 +3384,8 @@ function loadTablerFallback() {
   </div>
 
   <div class="container ko-single-container">
+    <!-- v2.10: shown only during knockout recovery (champion is locked). -->
+    <div class="ko-reopen-note" id="ko-reopen-note" style="display:none;"></div>
     <div class="ko-single-instructions" data-i18n="knockoutFirst.instructions">
       בחר את הקבוצה שלדעתך תעלה לסבב הבא
     </div>

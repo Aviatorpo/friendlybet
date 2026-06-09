@@ -4028,6 +4028,18 @@ body.ltr #next-group-btn svg {
 }
 .knockout-reopen-banner .kr-exp { font-size: 10.5px; color: rgba(125, 240, 191, 0.75); text-align: center; }
 
+/* v2.10: persistent champion-locked note inside the recovery walkthrough */
+.ko-reopen-note {
+  background: rgba(61, 220, 151, 0.08);
+  border: .5px solid rgba(61, 220, 151, 0.35);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #7df0bf;
+}
+
 /* v2.10: per-member recovery actions in the admin members screen */
 .admin-member-reopen {
   display: flex; flex-direction: column; gap: 8px;

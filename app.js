@@ -25,6 +25,11 @@ function showScreen(screenId) {
   if (state.currentScreen === 'matches-screen' && screenId !== 'matches-screen') {
     if (typeof _stopMatchesAutoRefresh === 'function') _stopMatchesAutoRefresh();
   }
+  // v2.10: leaving the knockout walkthrough by ANY route clears the recovery flag
+  // (declared later, hence the typeof guard) so it can't leak into a normal save.
+  if (typeof spReopenActive !== 'undefined' && spReopenActive && screenId !== 'ko-single-screen') {
+    spReopenActive = false;
+  }
   // Stop the pundit rotation when leaving the dashboard so its 9s interval can't
   // pile up (re-entering the dashboard restarts it). _punditState is defined
   // later but exists by the time showScreen runs.
@@ -11317,9 +11322,12 @@ async function spSaveBracketToDb(showFeedback = true) {
 
 async function _spSaveBracketToDbInner(showFeedback = true) {
   if (!state.currentPool || !state.currentUser) return;
-  // v2.10: a locked pool blocks bracket saves — UNLESS we're in the approved
-  // 72h recovery flow, which routes to the dedicated post-lock RPC below.
-  if (spIsLocked() && !spReopenActive) return;
+  // v2.10: treat this as a recovery save ONLY when the flag is set AND we're
+  // actually on the recovery walkthrough screen — so a stale flag (e.g. the user
+  // left recovery via back/menu) can never route a later/normal save through the
+  // recovery RPC or bypass the lock. A locked pool blocks every other save.
+  const inRecoverySave = spReopenActive && state.currentScreen === 'ko-single-screen';
+  if (spIsLocked() && !inRecoverySave) return;
   const userId = state.currentUser.id;
   const poolId = state.currentPool.id;
 
@@ -11373,7 +11381,7 @@ async function _spSaveBracketToDbInner(showFeedback = true) {
 
   // v2.10: in the 72h recovery flow, the pool is locked, so the normal RPC would
   // reject — route to the dedicated, grant-gated recovery RPC instead.
-  const rpcName = spReopenActive ? 'save_knockout_bracket_reopen' : 'save_knockout_bracket';
+  const rpcName = inRecoverySave ? 'save_knockout_bracket_reopen' : 'save_knockout_bracket';
   const res = await _rpcWrite(rpcName, { p_code: code, p_picks: rows });
   if (res.ok) {
     if (showFeedback) showToast(t('groups.picksSaved'), 'success');
@@ -13103,6 +13111,18 @@ function _koSingleSetPick(teamCode) {
 function koSingleRender() {
   const step = koSingle.sequence[koSingle.idx];
   if (!step) return;
+
+  // v2.10: persistent recovery note — the champion is locked; the final must lead to them.
+  try {
+    const note = document.getElementById('ko-reopen-note');
+    if (note) {
+      if (spReopenActive && spState.tournamentWinner) {
+        const tn = (typeof teamName === 'function' ? teamName(spState.tournamentWinner) : spState.tournamentWinner);
+        note.textContent = t('reopen.walkthroughNote', { team: tn });
+        note.style.display = 'block';
+      } else { note.style.display = 'none'; }
+    }
+  } catch (_) {}
 
   const { home, away, label } = _koSingleCurrentTeams();
   const pick = _koSingleCurrentPick();
