@@ -1,0 +1,35 @@
+name: Heal Brackets From Backup
+
+# Restores full 31-pick brackets from pick_backups to live knockout_picks for any
+# single-phase user whose live bracket is incomplete (server-side safety net for
+# the client "bracket save didn't land" failure class). Idempotent; no-op when
+# there's nothing to heal. Runs every 10 minutes pre-tournament.
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: heal-brackets
+  cancel-in-progress: false
+
+jobs:
+  heal-brackets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Heal incomplete brackets from durable backups
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/heal-brackets.js
