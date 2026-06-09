@@ -4035,9 +4035,16 @@ function setupToggleListeners() {
 function setToggleValue(settingName, value) {
   const group = document.querySelector(`.settings-toggle-group[data-setting="${settingName}"]`);
   if (!group) return;
-  group.querySelectorAll('.toggle-option').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.value === value);
+  const opts = group.querySelectorAll('.toggle-option');
+  let matched = false;
+  opts.forEach(btn => {
+    const on = btn.dataset.value === value;
+    btn.classList.toggle('active', on);
+    if (on) matched = true;
   });
+  // Deprecated values (e.g. legacy 6-stage / full_ranking pools) no longer have
+  // a button — keep the first (only) remaining option selected instead of blank.
+  if (!matched && opts.length) opts[0].classList.add('active');
 }
 
 function getToggleValue(settingName) {
