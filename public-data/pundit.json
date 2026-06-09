@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-09T15:30:50.750Z",
+  "updatedAt": "2026-06-09T18:28:09.273Z",
   "count": 12,
   "items": [
     {
@@ -141,13 +141,17 @@
       "expires_at": "2026-06-19T23:59:59Z"
     },
     {
-      "id": "sofi-strike-threat-usa-june-2026",
+      "id": "sofi-workers-deal-2026-06-09",
       "type": "news",
       "confidence": "confirmed",
-      "he": "עובדי שירותי המזון באצטדיון סופי בלוס אנג'לס הצביעו ב-96% לאישור שביתה ב-6 ביוני, ימים ספורים לפני שארה\"ב מארחת את פרגוואי שם ב-12 ביוני במשחק הראשון של הנבחרת האמריקנית בטורניר הביתי שלה. העובדים, המיוצגים על ידי Unite Here Local 11, דורשים שכר גבוה יותר, ביטחון תעסוקתי וערבות שסוכני שירות ההגירה לא יורשו להיכנס לאצטדיון. המשא ומתן עם מפעיל האצטדיון Legends Global ופיפ\"א חודש ביום שני 8 ביוני ללא הסכם עדיין. אם לא יגיעו להסכם, פתיחת הביתית של ארה\"ב עלולה להתקיים ללא דוכן מזון אחד פתוח.",
-      "en": "Food-service workers at SoFi Stadium in Los Angeles voted 96 percent to authorize a strike on June 6, just days before the USA face Paraguay there on June 12 in the American national team's first match of their home World Cup. Workers represented by Unite Here Local 11 are demanding higher pay, job security and a guarantee that Immigration and Customs Enforcement agents are barred from the venue. Negotiations with stadium operator Legends Global and FIFA resumed Monday June 8 with no deal yet reached. If no agreement is signed, the USA's home opener could kick off without a single concession stand open.",
+      "he": "ארגון Unite Here Local 11 ומפעיל האצטדיון Legends Global הגיעו להסכם עבודה זמני ב-9 ביוני שמונע שביתה מאוימת של כ-2,000 עובדי מזון ומשקאות ב-SoFi Stadium, ומפנה את הדרך לפתיחת הביתית של ארה\"ב מול פרגוואי ב-12 ביוני עם כל דוכני המזון פתוחים. העובדים הצביעו ב-96% לאישור שביתה ב-6 ביוני בשל שכר, ביטחון תעסוקתי ודרישות לאסור כניסת סוכני ICE לאצטדיון. ההסכם הזמני הוכרז בכנס עיתונאים מחוץ לאצטדיון באינגלווד ביום שלישי; הפרטים לא נחשפו מיד, כאשר העובדים צפויים לאשר את ההסכם ביום רביעי. דוכני המזון יהיו פתוחים ביום שישי. השאלה הגדולה יותר כעת היא מה יקרה על הדשא.",
+      "en": "Unite Here Local 11 and stadium operator Legends Global reached a tentative labor agreement on June 9 that averts a threatened strike by roughly 2,000 food-and-beverage workers at SoFi Stadium, clearing the way for the USA's home World Cup opener against Paraguay on June 12 to have fully staffed concessions. Workers had voted 96 percent in favor of authorizing a strike on June 6 over pay, job security, and demands to bar ICE agents from the venue. The tentative deal was announced at a news conference outside the stadium in Inglewood on Tuesday; terms were not immediately disclosed and workers were expected to ratify the agreement on Wednesday. The concession stands will be open on Friday. The bigger question now is what happens on the pitch.",
       "team": "USA",
       "sources": [
+        {
+          "name": "NBC Los Angeles",
+          "url": "https://www.nbclosangeles.com/world-cup/sofi-stadium-workers-strike-world-cup/3901439/"
+        },
         {
           "name": "NPR",
           "url": "https://www.npr.org/2026/06/06/nx-s1-5848682/sofi-stadium-strike-world-cup"
@@ -155,10 +159,6 @@
         {
           "name": "ESPN",
           "url": "https://www.espn.com/espn/story/_/id/48980083/sofi-stadium-workers-authorize-strike-ahead-usa-world-cup-opener"
-        },
-        {
-          "name": "ABC7 Los Angeles",
-          "url": "https://abc7.com/post/world-cup-2026-sofi-stadium-workers-inglewood-vote-authorize-strike-days-before-soccer-tournament-begins/19244116/"
         }
       ],
       "expires_at": "2026-06-20T00:00:00Z"

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-09T09:15:00.000Z",
+  "updatedAt": "2026-06-09T13:30:00.000Z",
   "items": [
     {
       "id": "wc26-opening-ceremony-shakira-2026-06-08",
@@ -79,15 +79,15 @@
       "expires_at": "2026-06-19T23:59:59Z"
     },
     {
-      "id": "sofi-strike-threat-usa-june-2026",
+      "id": "sofi-workers-deal-2026-06-09",
       "confidence": "confirmed",
       "team": "USA",
-      "en": "Food-service workers at SoFi Stadium in Los Angeles voted 96 percent to authorize a strike on June 6, just days before the USA face Paraguay there on June 12 in the American national team's first match of their home World Cup. Workers represented by Unite Here Local 11 are demanding higher pay, job security and a guarantee that Immigration and Customs Enforcement agents are barred from the venue. Negotiations with stadium operator Legends Global and FIFA resumed Monday June 8 with no deal yet reached. If no agreement is signed, the USA's home opener could kick off without a single concession stand open.",
-      "he": "עובדי שירותי המזון באצטדיון סופי בלוס אנג'לס הצביעו ב-96% לאישור שביתה ב-6 ביוני, ימים ספורים לפני שארה\"ב מארחת את פרגוואי שם ב-12 ביוני במשחק הראשון של הנבחרת האמריקנית בטורניר הביתי שלה. העובדים, המיוצגים על ידי Unite Here Local 11, דורשים שכר גבוה יותר, ביטחון תעסוקתי וערבות שסוכני שירות ההגירה לא יורשו להיכנס לאצטדיון. המשא ומתן עם מפעיל האצטדיון Legends Global ופיפ\"א חודש ביום שני 8 ביוני ללא הסכם עדיין. אם לא יגיעו להסכם, פתיחת הביתית של ארה\"ב עלולה להתקיים ללא דוכן מזון אחד פתוח.",
+      "en": "Unite Here Local 11 and stadium operator Legends Global reached a tentative labor agreement on June 9 that averts a threatened strike by roughly 2,000 food-and-beverage workers at SoFi Stadium, clearing the way for the USA's home World Cup opener against Paraguay on June 12 to have fully staffed concessions. Workers had voted 96 percent in favor of authorizing a strike on June 6 over pay, job security, and demands to bar ICE agents from the venue. The tentative deal was announced at a news conference outside the stadium in Inglewood on Tuesday; terms were not immediately disclosed and workers were expected to ratify the agreement on Wednesday. The concession stands will be open on Friday. The bigger question now is what happens on the pitch.",
+      "he": "ארגון Unite Here Local 11 ומפעיל האצטדיון Legends Global הגיעו להסכם עבודה זמני ב-9 ביוני שמונע שביתה מאוימת של כ-2,000 עובדי מזון ומשקאות ב-SoFi Stadium, ומפנה את הדרך לפתיחת הביתית של ארה\"ב מול פרגוואי ב-12 ביוני עם כל דוכני המזון פתוחים. העובדים הצביעו ב-96% לאישור שביתה ב-6 ביוני בשל שכר, ביטחון תעסוקתי ודרישות לאסור כניסת סוכני ICE לאצטדיון. ההסכם הזמני הוכרז בכנס עיתונאים מחוץ לאצטדיון באינגלווד ביום שלישי; הפרטים לא נחשפו מיד, כאשר העובדים צפויים לאשר את ההסכם ביום רביעי. דוכני המזון יהיו פתוחים ביום שישי. השאלה הגדולה יותר כעת היא מה יקרה על הדשא.",
       "sources": [
+        { "name": "NBC Los Angeles", "url": "https://www.nbclosangeles.com/world-cup/sofi-stadium-workers-strike-world-cup/3901439/" },
         { "name": "NPR", "url": "https://www.npr.org/2026/06/06/nx-s1-5848682/sofi-stadium-strike-world-cup" },
-        { "name": "ESPN", "url": "https://www.espn.com/espn/story/_/id/48980083/sofi-stadium-workers-authorize-strike-ahead-usa-world-cup-opener" },
-        { "name": "ABC7 Los Angeles", "url": "https://abc7.com/post/world-cup-2026-sofi-stadium-workers-inglewood-vote-authorize-strike-days-before-soccer-tournament-begins/19244116/" }
+        { "name": "ESPN", "url": "https://www.espn.com/espn/story/_/id/48980083/sofi-stadium-workers-authorize-strike-ahead-usa-world-cup-opener" }
       ],
       "expires_at": "2026-06-20T00:00:00Z"
     },
@@ -237,6 +237,31 @@
       "sources": [
         { "name": "CNBC", "url": "https://www.cnbc.com/2026/06/04/world-cup-2026-health-officials-focused-on-ebola-measles.html" },
         { "name": "Fort Worth Report", "url": "https://fortworthreport.org/2026/06/07/sewage-samples-could-help-track-pathogens-surveil-illness-during-world-cup/" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "fra-ivory-coast-loss-2026-06-04",
+      "confidence": "confirmed",
+      "team": "FRA",
+      "en": "France suffered a shock 2-1 defeat to Ivory Coast in Nantes on June 4, their final home match before flying to the United States. Rayan Cherki put France ahead before halftime, but sweeping second-half changes let Ivory Coast back in, and Guela Doue then substitute Amad Diallo completed the comeback. Deschamps called the result 'a timely reminder' rather than a crisis, and France head to New Jersey insisting the loss will sharpen their focus. Sportsbooks moved Spain narrowly ahead of France as tournament favorites in the days that followed. France open against Senegal at MetLife Stadium on June 16. One warning sign or one useful alarm: the group stage will reveal which.",
+      "he": "צרפת ספגה הפסד מפתיע 2:1 מחוף השנהב בנאנט ב-4 ביוני, משחקה הביתי האחרון לפני הטיסה לארצות הברית. רייאן שרקי העלה את צרפת לאחר חצי שעה, אך שינויים נרחבים שביצע דשאן בהפסקה פתחו את הדלת, וגואלה דואה ואחד דיאלו כמחליף סיימו את ההיפוך. דשאן כינה את התוצאה 'תזכורת בזמן' ולא משבר, וצרפת יוצאת לניו ג'רזי עם הטענה שההפסד יחדד את המיקוד שלה. סוכני ההימורים העמידו את ספרד מעט לפני צרפת כמועדפות הטורניר בימים שאחרי התוצאה. צרפת פותחת מול סנגל ב-MetLife Stadium ב-16 ביוני. אות אזהרה אחד או אזעקה שימושית: שלב הבתים יגלה את האמת.",
+      "sources": [
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/4/ivory-coast-beat-france-in-world-cup-warning-to-one-of-the-favourites" },
+        { "name": "France 24", "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/match/_/gameId/401864934/ivory-coast-france" }
+      ],
+      "expires_at": "2026-07-04T00:00:00Z"
+    },
+    {
+      "id": "wc26-cooling-breaks-heat-2026",
+      "confidence": "confirmed",
+      "en": "For the first time at a World Cup, FIFA has made mandatory three-minute hydration breaks compulsory in each half of every match, regardless of weather conditions, a direct response to the heat and humidity risks across North American host cities. The rule is most critical at Estadio BBVA in Monterrey, where June afternoon temperatures routinely reach 38 to 40 degrees Celsius in an open-air stadium with no cooling infrastructure, and where experts warn that even with the breaks, afternoon kick-offs still carry meaningful heat-stress risk for players. FIFA has also required cooled dugout benches at all outdoor venues. Forty-eight teams are running their summer tournament on a continent where parts of the schedule carry genuine medical risk. Three minutes twice a match will not remove the danger. They will just tell you how hot things really are.",
+      "he": "לראשונה במונדיאל, פיפ\"א הנהיגה הפסקות שתייה חובה בנות שלוש דקות בכל מחצית בכל משחק, ללא תלות בתנאי מזג האוויר, בתגובה ישירה לסיכוני חום ולחות בערי המארח בצפון אמריקה. הכלל קריטי ביותר באסטדיו BBVA במונטריי, שם הטמפרטורות בצהרי יוני מגיעות שגרתית ל-38 עד 40 מעלות צלזיוס, באצטדיון פתוח ללא תשתית קירור, ומומחים מזהירים כי גם עם ההפסקות, משחקי אחה\"צ עדיין טומנים סיכון ממשי לפגיעת חום בשחקנים. פיפ\"א גם חייבה ספסלי בקמה מקוררים בכל האצטדיונים הפתוחים. 48 נבחרות מנהלות את טורניר הקיץ שלהן ביבשת שבחלקים ממנה לוח הזמנים של המשחקים נושא סיכון רפואי ממשי. שלוש דקות פעמיים למשחק לא יסלקו את הסכנה. הן פשוט יגידו לך כמה חם באמת.",
+      "sources": [
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/8/how-extreme-weather-and-heat-could-affect-players-at-world-cup-2026" },
+        { "name": "The Conversation", "url": "https://theconversation.com/extreme-heat-at-the-world-cup-are-fifas-safeguards-enough-282489" },
+        { "name": "Bloomberg", "url": "https://www.bloomberg.com/graphics/2026-fifa-world-cup-games-weather/" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     }
