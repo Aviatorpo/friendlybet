@@ -38,15 +38,17 @@ declare
   rec record;
   v_bp jsonb;
 begin
-  -- HARD GLOBAL GATE: never heal once any real match has kicked off (in addition
-  -- to the per-pool locked_at gate below). Defends the window before the lock job
-  -- stamps locked_at. After this point picks are final / scoring is live.
+  -- HARD GLOBAL GATE: never heal once the tournament has started. Uses an
+  -- EXPLICIT kickoff timestamp (matches scripts/lock-pools.js LOCK_KICKOFF_ISO),
+  -- NOT raw match_date — a stray/misdated `matches` row must not disable the heal
+  -- early. The status check still catches a match actually going live/final (in
+  -- case kickoff is brought forward). After this point picks are final / scoring
+  -- is live. (If FIFA shifts the opener, update this constant + LOCK_KICKOFF_ISO.)
   select exists(
     select 1 from public.matches
     where status in ('IN_PLAY','PAUSED','FINISHED','LIVE','AWARDED','SUSPENDED','started','finished')
-       or (match_date is not null and match_date <= now())
   ) into v_started;
-  if v_started then
+  if v_started or now() >= timestamptz '2026-06-11 19:00:00+00' then
     return jsonb_build_object('scanned',0,'healed',0,'skipped_no_valid_backup',0,
       'skipped_locked',0,'failed',0,'note','tournament started — heal disabled');
   end if;
@@ -77,9 +79,12 @@ begin
         and not exists (                              -- every key 1..31 must be present + non-empty
           select 1 from generate_series(1,31) g(pos)
           where coalesce(b.payload -> 'bracketPicks' ->> (g.pos::text), '') = '')
-        and not exists (                              -- no key outside 1..31
-          select 1 from jsonb_object_keys(b.payload -> 'bracketPicks') as kk(key)
-          where kk.key !~ '^[0-9]+$' or (kk.key)::int < 1 or (kk.key)::int > 31)
+        and not exists (                              -- keys must all be numeric 1..31; CASE evaluates
+          select 1 from jsonb_object_keys(b.payload -> 'bracketPicks') as kk(key)  -- in order so a nonnumeric
+          where case when kk.key !~ '^[0-9]+$' then true      -- key (e.g. "foo") is rejected WITHOUT casting
+                     when (kk.key)::int < 1 then true          -- it → a malformed backup is skipped cleanly,
+                     when (kk.key)::int > 31 then true         -- never a per-user function failure.
+                     else false end)
         and not exists (                              -- every value is a real team code
           select 1 from jsonb_each_text(b.payload -> 'bracketPicks') e
           where e.value not in (select code from public.teams))

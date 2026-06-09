@@ -30,12 +30,21 @@ const LIMIT = parseInt(process.env.HEAL_LIMIT || '150', 10);
     process.exit(1);
   }
   const body = await r.json();
-  const t = Array.isArray(body) ? body[0] : body;   // PostgREST returns the jsonb value (object)
+  const t = (Array.isArray(body) ? body[0] : body) || {};   // PostgREST returns the jsonb value (object)
   console.log('[heal-brackets]', JSON.stringify(t));
-  if (t && t.note) console.log(`[heal-brackets] note: ${t.note}`);
-  // per-user failures are isolated (other users still healed) — surface them as a
-  // GitHub Actions warning (visible, but don't fail the whole run for one bad user).
-  if (t && t.failed > 0) {
-    console.error(`::warning::[heal-brackets] ${t.failed} user(s) failed to heal — sample: ${JSON.stringify((t.failures || []).slice(0, 5))}`);
+  if (t.note) console.log(`[heal-brackets] note: ${t.note}`);
+  // Failure policy: a single isolated bad user is a warning (other users still
+  // healed). Persistent breakage is loud (red workflow → owner notified):
+  //   - >= 5 failed in one run, OR
+  //   - failed > 0 while NOTHING healed (looks systemic, not one stray user).
+  // skipped_no_valid_backup is NOT a failure (those users just need to re-enter).
+  const failed = t.failed || 0;
+  if (failed > 0) {
+    const sample = JSON.stringify((t.failures || []).slice(0, 5));
+    if (failed >= 5 || (t.healed || 0) === 0) {
+      console.error(`::error::[heal-brackets] ${failed} user(s) failed to heal (healed=${t.healed || 0}) — sample: ${sample}`);
+      process.exit(1);
+    }
+    console.error(`::warning::[heal-brackets] ${failed} user(s) failed to heal — sample: ${sample}`);
   }
 })().catch(e => { console.error('::error::[heal-brackets] ERROR:', e.message); process.exit(1); });
