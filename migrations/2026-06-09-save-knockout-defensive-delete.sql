@@ -54,3 +54,9 @@ begin
   end;
   return jsonb_build_object('ok',true);
 end$function$;
+
+-- Self-contained grants (CREATE OR REPLACE preserves grants on an existing
+-- function, but a fresh/disaster-recovery rebuild needs them explicit, else
+-- anon/authenticated couldn't call it and bracket saves would break). Idempotent.
+revoke all on function public.save_knockout_bracket(text, jsonb) from public;
+grant execute on function public.save_knockout_bracket(text, jsonb) to anon, authenticated;

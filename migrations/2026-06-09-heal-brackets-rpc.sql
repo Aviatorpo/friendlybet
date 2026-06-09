@@ -48,6 +48,9 @@ begin
     select 1 from public.matches
     where status in ('IN_PLAY','PAUSED','FINISHED','LIVE','AWARDED','SUSPENDED','started','finished')
   ) into v_started;
+  -- ⚠️ DRIFT: this timestamp MUST match scripts/lock-pools.js LOCK_KICKOFF_ISO.
+  -- If kickoff moves, update BOTH. Never replace it with raw matches.match_date<=now()
+  -- (a single bad/misdated row would disable the heal early).
   if v_started or now() >= timestamptz '2026-06-11 19:00:00+00' then
     return jsonb_build_object('scanned',0,'healed',0,'skipped_no_valid_backup',0,
       'skipped_locked',0,'failed',0,'note','tournament started — heal disabled');
