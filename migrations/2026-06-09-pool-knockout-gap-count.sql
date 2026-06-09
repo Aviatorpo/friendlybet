@@ -8,12 +8,17 @@
 -- group-pick rows, far past PostgREST's 1000-row default cap). Returns just an
 -- integer (no PII). p_exclude lets the caller omit themselves so the count means
 -- "other members". Idempotent.
+--
+-- TODO (post-kickoff): anon-callable; returns only an integer derived from
+-- already-anon-readable data, so exposure is low — but re-scope it to
+-- admin-of-this-pool via a recovery code (_auth_writer) once the rush is over.
 
 create or replace function public.pool_knockout_gap_count(p_pool_id uuid, p_exclude uuid default null)
 returns int
 language sql
 security definer
 set search_path to ''
+set statement_timeout to '5s'
 stable
 as $$
   with grp as (select user_id, count(*) n from public.group_position_picks where pool_id = p_pool_id group by 1),

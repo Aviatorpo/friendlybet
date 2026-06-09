@@ -2286,6 +2286,23 @@ function showRecoveryCodeAgain() {
   showScreen('recovery-display-screen');
 }
 
+// v2.9.24: fetch ALL rows for a pool, paging past PostgREST's hard 1000-row cap
+// (.range does not lift it on this project). Used by the members list so big
+// pools aren't silently truncated. Stops on a short page or an error.
+async function _fetchAllPoolRows(table, cols, poolId) {
+  const PAGE = 1000;
+  let all = [], from = 0;
+  for (let guard = 0; guard < 50; guard++) {   // 50k-row safety ceiling
+    const { data, error } = await supabaseClient
+      .from(table).select(cols).eq('pool_id', poolId).range(from, from + PAGE - 1);
+    if (error || !data || data.length === 0) break;
+    all = all.concat(data);
+    if (data.length < PAGE) break;
+    from += PAGE;
+  }
+  return all;
+}
+
 async function showMembers() {
   closeMenu();
 
@@ -2316,18 +2333,23 @@ async function showMembers() {
   // "groups done but knockout not done" vs. "everything done".
   const isV2 = state.currentPool.betting_mode === 'single_phase';
   const picksTable = isV2 ? 'group_position_picks' : 'group_picks';
-  const [groupRes, koRes] = await Promise.all([
-    supabaseClient.from(picksTable).select('user_id').eq('pool_id', state.currentPool.id),
-    supabaseClient.from('knockout_picks').select('user_id').eq('pool_id', state.currentPool.id)
+  // v2.9.24: PostgREST caps a query at 1000 rows (verified on prod — .range does
+  // NOT lift it), so a big pool (e.g. 200 members ≈ 10k group-pick rows) was
+  // truncated and most members showed a WRONG status. Page through all rows so
+  // the per-member counts (and the ⚠️ "needs knockout" flag) are correct, and
+  // agree with the dashboard nudge count.
+  const [groupData, koData] = await Promise.all([
+    _fetchAllPoolRows(picksTable, 'user_id', state.currentPool.id),
+    _fetchAllPoolRows('knockout_picks', 'user_id', state.currentPool.id)
   ]);
 
   // Count group + knockout picks per user
   const picksPerUser = {};
   const koPerUser = {};
-  (groupRes.data || []).forEach(p => {
+  groupData.forEach(p => {
     picksPerUser[p.user_id] = (picksPerUser[p.user_id] || 0) + 1;
   });
-  (koRes.data || []).forEach(p => {
+  koData.forEach(p => {
     koPerUser[p.user_id] = (koPerUser[p.user_id] || 0) + 1;
   });
 
