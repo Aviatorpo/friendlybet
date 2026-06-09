@@ -18,6 +18,12 @@ const state = {
 // Screen Navigation
 // ============================================================
 
+// v2.10: 72h knockout-recovery flag. Declared HERE (above showScreen, which clears
+// it on leaving the walkthrough) so it's always initialized before showScreen can
+// run — no temporal-dead-zone risk. Set true ONLY inside spReopenKnockout().
+let spReopenActive = false;
+let _spReopenStatus = null;   // last my_knockout_reopen result {locked,eligible,approved,used,can_reenter,expires_at}
+
 function showScreen(screenId) {
   // v2.5.37: stop any auto-refresh that was running on the previous screen.
   // Currently only matches-screen registers timers; this hook keeps it
@@ -26,8 +32,8 @@ function showScreen(screenId) {
     if (typeof _stopMatchesAutoRefresh === 'function') _stopMatchesAutoRefresh();
   }
   // v2.10: leaving the knockout walkthrough by ANY route clears the recovery flag
-  // (declared later, hence the typeof guard) so it can't leak into a normal save.
-  if (typeof spReopenActive !== 'undefined' && spReopenActive && screenId !== 'ko-single-screen') {
+  // so it can't leak into a normal save. (Flag is declared just above, so no TDZ.)
+  if (spReopenActive && screenId !== 'ko-single-screen') {
     spReopenActive = false;
   }
   // Stop the pundit rotation when leaving the dashboard so its 9s interval can't
@@ -9929,11 +9935,9 @@ function spIsLocked() {
   return !!(state.currentPool && state.currentPool.locked_at);
 }
 
-// v2.10: 72h knockout recovery. When true, the bracket walkthrough's saves route
-// to the dedicated post-lock RPC (save_knockout_bracket_reopen) and bypass the
-// lock gate. Set ONLY by spReopenKnockout() for an admin-approved affected user.
-let spReopenActive = false;
-let _spReopenStatus = null;   // last my_knockout_reopen result {locked,eligible,approved,used,can_reenter,expires_at}
+// v2.10: 72h knockout recovery. spReopenActive (declared near the top, above
+// showScreen) routes the walkthrough's saves to save_knockout_bracket_reopen and
+// bypasses the lock gate. Set ONLY by spReopenKnockout() for an approved user.
 
 // Fetch the caller's recovery-grant status (cached on state). Fire-and-forget safe.
 async function _spFetchReopenStatus() {
