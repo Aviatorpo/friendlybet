@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-09T12:00:00.000Z",
+  "updatedAt": "2026-06-09T18:30:00.000Z",
   "items": [
     {
       "id": "arg-emiliano-martinez-finger-2026-06-09",
@@ -15,16 +15,17 @@
       "expires_at": "2026-06-16T23:59:59Z"
     },
     {
-      "id": "usa-germany-sendoff-2026-06-06",
+      "id": "arg-balerdi-ruled-out-wc2026-2026-06-06",
       "confidence": "confirmed",
-      "en": "The United States took a final reality check before their home World Cup, falling 2-1 to Germany at Soldier Field in Chicago on June 6 in their pre-tournament sendoff. Kai Havertz struck after just two minutes to put Germany ahead, Antonee Robinson equalised with a spectacular long-range strike, and Leroy Sane sealed it midway through the second half. Mauricio Pochettino's side finished their warmup run with two wins, two draws and two losses across six friendlies. Pochettino holds that a stern test is exactly the preparation his squad needed before a home opener against Paraguay at SoFi Stadium in Los Angeles on June 12. Robinson's rocket was the highlight of the night. The scoreline was not. Can the USA find another gear when the real thing starts on their own doorstep?",
-      "he": "ארצות הברית ספגה בדיקת מציאות אחרונה לפני המונדיאל הביתי שלה, ונפלה 2:1 מגרמניה ב-Soldier Field בשיקגו ב-6 ביוני. קאי האברץ פתח לגרמניה אחרי שתי דקות, אנטוני רובינסון השווה בשוט מדהים מרחוק, ולרואי סאנה חתם את העניין באמצע המחצית השנייה. הנבחרת של פוצ'טינו סיימה את ריצת החימום עם שני ניצחונות, שתי תיקו ושתי הפסדים בשישה ידידויות. פוצ'טינו גורס שמבחן קשה הוא בדיוק ההכנה שהסגל שלו היה צריך לפני פתיחת הבית מול פרגוואי ב-SoFi Stadium בלוס אנג'לס ב-12 ביוני. השוט של רובינסון היה הרגע של הלילה. שורת הניקוד הסופית, לא. האם ארה\"ב תמצא הילוך אחר כשהמציאות תתחיל על סף ביתה?",
+      "team": "ARG",
+      "en": "Argentina suffered another defensive setback on June 6 when Marseille captain Leonardo Balerdi was ruled out of the World Cup with a soleus muscle tear in his right leg, sustained during Argentina's final training session in Kansas City. The Argentine Football Association confirmed the injury, with coach Scaloni saying the decision was taken with all the pain in the world. Balerdi had made seven appearances in Argentina's qualifying campaign but had never featured at a World Cup. Marcos Senesi is the candidate to replace him. With Emiliano Martinez also nursing a broken finger, the defending champions carry two injury subplots into a title defence that begins against Algeria on June 16. Can collective quality paper over the cracks when the stakes are highest?",
+      "he": "ארגנטינה ספגה מכה הגנתית נוספת ב-6 ביוני כשקפטן מרסיי לאונרדו בלרדי הוצא מהמונדיאל עם קרע בשריר הסולאוס ברגל ימין, שנפגע באימון הסיום של ארגנטינה בקנזס סיטי. ההתאחדות הארגנטינאית לכדורגל אישרה את הפציעה, כשהמאמן סקלוני אמר שההחלטה התקבלה עם כל הכאב שבעולם. לבלרדי שבע הופעות בסיבוב הכישורים של ארגנטינה, אך הוא מעולם לא שיחק במונדיאל. מרקוס סנזי הוא המועמד הסביר כממלא מקום. כשאמיליאנו מרטינז גם הוא מטפל בשבר באצבע, האלופות המגנות נכנסות להגנת התואר, שמתחילה מול אלג'יריה ב-16 ביוני, עם שני סיפורי-פציעות שלא היו בתסריט. האם האיכות הקולקטיבית תוכל לכסות את החורים ברגע המכריע?",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/match/_/gameId/762260/germany-united-states" },
-        { "name": "NBC Sports", "url": "https://www.nbcsports.com/soccer/news/usmnt-vs-germany-live-updates-score-highlights-stats-watch" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/usmnt-germany-world-cup-friendly-4-takeaways" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48985334/argentina-defender-leonardo-balerdi-suffers-calf-injury-world-cup" },
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/balerdi-to-miss-argentinas-world-cup-title-defence-with-calf-injury-2026-06-06" },
+        { "name": "OneFootball", "url": "https://onefootball.com/en/news/leonardo-balerdi-ruled-out-of-2026-world-cup-after-argentina-training-injury-42977137" }
       ],
-      "expires_at": "2026-06-12T23:59:59Z"
+      "expires_at": "2026-06-16T23:59:59Z"
     },
     {
       "id": "artan-somalia-referee-denied-usa-wc2026-2026-06-08",
@@ -117,19 +118,6 @@
       "expires_at": "2026-06-26T23:59:59Z"
     },
     {
-      "id": "sui-embolo-visa-drama-2026-06-05",
-      "confidence": "confirmed",
-      "team": "SUI",
-      "en": "Switzerland striker Breel Embolo lived through a World Cup visa nightmare this week and came out the other side with his tournament place intact. A recently finalized criminal conviction caused US authorities to block his travel clearance, and he was stopped from boarding Switzerland's team flight from Zurich to Los Angeles. Embolo took matters into his own hands, travelling to the US embassy in Bern in person to make his case. The visa was approved on June 4 and he joined the squad in San Diego on June 5. Switzerland open Group B against Qatar in Santa Clara on June 13. If that story were pitched as a film script, it would be rejected for being too dramatic.",
-      "he": "חלוץ שוויץ ברל אמבולו חווה סיוט ויזה אמריקנית השבוע ויצא ממנו עם מקומו בטורניר שלם. הרשעה פלילית שקיבלה תוקף סופי לאחרונה גרמה לרשויות האמריקניות לחסום את אישור הנסיעה שלו, ואמבולו נעצר מטיסה של נבחרת שוויץ מציריך ללוס אנג'לס. אמבולו לקח את העניינים לידיו, נסע לשגרירות ארה\"ב בברן בעצמו ופרס את עניינו. הויזה אושרה ב-4 ביוני והוא הצטרף לנבחרת בסן דייגו ב-5 ביוני. שוויץ פותחת קבוצה B מול קטאר בסנטה קלרה ב-13 ביוני. אם הסיפור הזה היה מוגש כתסריט, היו דוחים אותו על שהוא דרמטי מדי.",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48969072/switzerland-striker-embolo-gets-visa-us-world-cup" },
-        { "name": "SWI swissinfo.ch", "url": "https://www.swissinfo.ch/eng/culture/swiss-striker-breel-embolo-gets-us-visa-to-travel-to-world-cup/91532865" },
-        { "name": "ABC News", "url": "https://abcnews.com/Sports/wireStory/swiss-forward-embolo-us-embassy-urgent-world-cup-133558069" }
-      ],
-      "expires_at": "2026-06-13T23:59:59Z"
-    },
-    {
       "id": "wc26-opening-ceremony-shakira-2026-06-08",
       "confidence": "confirmed",
       "en": "The 2026 World Cup opening ceremony is at Estadio Azteca in Mexico City on June 11, with Shakira and Burna Boy performing the official tournament anthem 'Dai Dai' live for the first time, joined by J Balvin, Mana, Belinda, Los Angeles Azules, Tyla and other stars, 90 minutes before Mexico face South Africa in the opener. FIFA has confirmed Shakira will also headline the halftime show at the final on July 19. From the opening note to the last whistle in July, the stage at the Azteca belongs to her. And then the real show begins.",
@@ -170,57 +158,6 @@
       "expires_at": "2026-06-19T23:59:59Z"
     },
     {
-      "id": "bra-wesley-injury-ederson-2026-06-07",
-      "confidence": "confirmed",
-      "team": "BRA",
-      "en": "Brazil's injury list keeps growing. Right-back Wesley was forced off in Brazil's 2-1 win over Egypt in Cleveland on June 7 with a torn adductor muscle in his left thigh, and the CBF confirmed he is out of the tournament. Coach Ancelotti has called up Atalanta midfielder Ederson, a different player from the Manchester City goalkeeper of the same name, as his replacement, leaving Brazil without a specialist right-back in their final 26. With Neymar already sidelined for the June 13 opener against Morocco, Ancelotti must now rejig his defensive shape before a ball is kicked in anger. Endrick lit up the Egypt win but Brazil's pre-tournament injury toll is the heaviest of any major contender. Can their squad depth carry them when the results truly count?",
-      "he": "רשימת הפצועים של ברזיל ממשיכה לגדול. מגן הימני ווסלי הורד ממגרש ניצחון ברזיל 2:1 על מצרים בקליבלנד ב-7 ביוני עם קרע שריר אדוקטור בירך שמאלית, וה-CBF אישר שהוא חוץ מהטורניר. המאמן אנצ'לוטי זימן את קשר אטלנטה אדרסון, שחקן אחר משוער מנצ'סטר סיטי בעל אותו שם, כממלא מקומו, מה שמשאיר את ברזיל ללא מגן ימני מיוחד בסגל הסופי של 26. כשניימאר כבר מושבת לפתיחה מול מרוקו ב-13 ביוני, אנצ'לוטי חייב כעת לשנות את מערך ההגנה שלו לפני שנבעטה כדור. אנדריק הבריק מול מצרים, אבל נזקי הפציעות של ברזיל לפני הטורניר הם הגדולים ביותר בין כל המועמדים המובילים. האם עומק הסגל יוכל לשאת אותם כשהתוצאות יספרו באמת?",
-      "sources": [
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/brazil-right-back-wesley-is-out-of-the-world-cup-with-a-thigh-injury-and-ederson-is-replacing-him" },
-        { "name": "Washington Post", "url": "https://www.washingtonpost.com/sports/soccer/2026/06/07/world-cup-brazil-wesley-injury/c29b57ee-62a1-11f1-bdd4-805ebb99a693_story.html" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/carlo-ancelotti-calls-ederson-replace-170133261.html" }
-      ],
-      "expires_at": "2026-06-20T23:59:59Z"
-    },
-    {
-      "id": "can-crepeau-goalkeeper-wc-2026-06-08",
-      "confidence": "confirmed",
-      "team": "CAN",
-      "en": "Canada coach Jesse Marsch named Maxime Crepeau as his No. 1 goalkeeper for the World Cup, ending a prolonged battle with Dayne St. Clair for the starting shirt. Marsch called it the hardest decision of his coaching career but said Crepeau's experience, maturity and game-reading gave Canada exactly the security it needed. The choice carries a powerful personal story: four years ago, Crepeau broke his leg just 18 days before Canada's 2022 World Cup opener and watched the entire tournament from his couch in a cast. Now fully fit and finally on home soil, he gets his long-awaited chance as Canada face Bosnia and Herzegovina in Toronto on June 12. Four years of waiting, one game to make it count.",
-      "he": "מאמן קנדה ג'סי מרש בחר במקסים קרפו כשוער המתחיל שלו למונדיאל, ובכך שם קץ לתחרות ממושכת עם דיין סנט קלייר. מרש תיאר את זה כהחלטה הקשה ביותר בקריירת האימון שלו, אך אמר שניסיון קרפו, בגרותו ויכולת קריאת המשחק שלו העניקו לקנדה בדיוק את הביטחון שהיא זקוקה לו בשערים. לבחירה יש סיפור אישי עמוק: לפני ארבע שנים, קרפו שבר רגל 18 ימים בלבד לפני הפתיחה של קנדה במונדיאל 2022 וצפה בכל הטורניר מהספה בגבס על הרגל. עכשיו, כשיר לגמרי ועל אדמת הבית סוף-סוף, הוא מקבל את הסיכוי הנכסף שלו כשקנדה נפגשת עם בוסניה והרצגובינה בטורנטו ב-12 ביוני. ארבע שנות המתנה, משחק אחד לממש אותן.",
-      "sources": [
-        { "name": "MLS Soccer (official)", "url": "https://www.mlssoccer.com/competitions/fifa-world-cup/news/orlando-city-maxime-crepeau-named-canada-starting-goalkeeper-for-2026-fifa-world-cup" },
-        { "name": "TSN", "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/marsch-names-crepeau-canadas-starting-gk-for-world-cup/" },
-        { "name": "CBC Sports", "url": "https://www.cbc.ca/sports/soccer/worldcup/maxime-crepeau-named-canada-s-starting-goalkeeper-for-world-cup-9.7223714" }
-      ],
-      "expires_at": "2026-06-12T23:59:59Z"
-    },
-    {
-      "id": "nor-viking-photo-wc-return-2026-06-08",
-      "confidence": "confirmed",
-      "team": "NOR",
-      "en": "Norway are back at the World Cup for the first time in 28 years, and they have already gone viral worldwide before a ball is kicked. The full squad, including Erling Haaland, posed for a cinematic Viking-warrior photoshoot by photographer David Yarrow, dressed in Norse armour with swords and shields before three longships on a Norwegian coastline. Fans worldwide called it one of the greatest team photos in football history. Haaland leads Norway as their all-time top scorer with 55 international goals. They open Group I against Iraq in Boston on June 16, then face Senegal and France. The last time Norway appeared at a World Cup, in 1998, they beat Brazil 2-1 in the group stage before falling to Italy in the round of 16. Can Haaland's golden generation go further?",
-      "he": "נורבגיה חוזרת למונדיאל לראשונה מזה 28 שנה, והנבחרת כבר הפכה לוויראלית ברחבי העולם לפני שנבעטה כדור אחד. הסגל כולו, כולל ארלינג הולאנד, צולם בצילום קבוצתי קולנועי של לוחמי ויקינגים על ידי הצלם דייוויד ירו, לבוש בשריון נורדי עם חרבות ומגנים לפני שלושה ספינות לונגשיפ על החוף הנורבגי. אוהדים ברחבי העולם כינו את זה אחד מצילומי הקבוצה הגדולים ביותר בהיסטוריית הכדורגל. הולאנד מוביל את נורבגיה כמבקיע השיאי שלה עם 55 שערים בינלאומיים. הם פותחים קבוצה I מול עיראק בבוסטון ב-16 ביוני, ואחר כך מתמודדים עם סנגל וצרפת. בפעם האחרונה שנורבגיה הופיעה במונדיאל, ב-1998, הם ניצחו את ברזיל 2:1 בשלב הבתים לפני שנפלו לאיטליה בשמינייה גמר. האם הדור הזהוב של הולאנד יכול להגיע רחוק יותר?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48987566/norway-2026-world-cup-vikings-erling-haaland" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/norway-world-cup-squad-team-143651883.html" },
-        { "name": "PetaPixel", "url": "https://petapixel.com/2026/06/05/did-norway-just-take-the-greatest-world-cup-team-photo-ever/" }
-      ],
-      "expires_at": "2026-06-16T23:59:59Z"
-    },
-    {
-      "id": "fifa-vuvuzela-ban-wc26-2026-06-03",
-      "confidence": "confirmed",
-      "en": "The hum that defined the 2010 World Cup in South Africa is banned from every stadium at the 2026 tournament. FIFA's Stadium Code of Conduct prohibits vuvuzelas, air horns, whistles and any other loud noisemaker at all 16 venues in the USA, Canada and Mexico, partly because a vuvuzela at full blast can reach around 120 decibels, close to the threshold of physical pain for the human ear. The ban is a blow for South African supporters who had hoped to bring the instrument as a tribute to their country's famous 2010 hosting. Bafana Bafana open against co-host Mexico at the Azteca on June 11. The spirit of 2010 travels to the Americas without its signature instrument.",
-      "he": "הזמזום שהגדיר את מונדיאל 2010 בדרום אפריקה אסור בכל אצטדיון בטורניר 2026. קוד ההתנהלות של פיפ\"א לאצטדיונים אוסר על ווווזלות, צופרי אוויר, שריקות וכל כלי רעש חזק אחר בכל 16 האתרים בארה\"ב, קנדה ומקסיקו, בין השאר כיוון שווווזלה בעוצמה מלאה יכולה להגיע לכ-120 דציבל, קרוב לסף הכאב הפיזי לאוזן האנושית. האיסור מכה באוהדי דרום אפריקה שקיוו להביא את הכלי כמחווה לאירוח המפורסם של ארצם ב-2010. באפאנה באפאנה נפגשת עם מארחת-שותפה מקסיקו באצטקה ב-11 ביוני. רוח 2010 מגיעה ליבשת אמריקה ללא הכלי המזוהה שלה.",
-      "sources": [
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/iconic-vuvuzelas-banned-2026-world-132932215.html" },
-        { "name": "The Star (SA)", "url": "https://thestar.co.za/sport/soccer/bafana/2026-06-03-world-cup-2026-fifa-bans-vuvuzelas-from-all-16-tournament-venues/" },
-        { "name": "Daily Sabah", "url": "https://www.dailysabah.com/sports/football/fifa-bans-vuvuzelas-other-noisemakers-from-world-cup-stadiums" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
       "id": "fra-deschamps-farewell-dembele-2026-06-08",
       "confidence": "confirmed",
       "team": "FRA",
@@ -234,52 +171,15 @@
       "expires_at": "2026-07-19T23:59:59Z"
     },
     {
-      "id": "fifa-anthem-ceremony-wc26-2026-06-07",
+      "id": "nor-viking-photo-wc-return-2026-06-08",
       "confidence": "confirmed",
-      "en": "For the first time in World Cup history, the full squad stands on the pitch for the national anthems. FIFA has introduced a new 360-degree pre-match ceremony in which all 26 players from each team, not just the starting eleven, gather inside the centre circle, face their opponents, and hear their anthem side by side with the match officials. Massive national flags spanning nearly half the pitch will frame the moment, with pyrotechnics added later in the tournament. FIFA president Infantino said the change creates a moment of unity, pride and emotion that truly belongs to the teams and to everyone. In the old format, substitutes watched from the tunnel. Now every player in the squad stands at the centre of the field when their anthem is played.",
-      "he": "לראשונה בהיסטוריית המונדיאל, הסגל כולו עומד על המגרש בזמן ההמנון. פיפ\"א הכניסה טקס טרום-משחק חדש ב-360 מעלות שבו כל 26 שחקני כל נבחרת, לא רק ה-11 המתחילים, מתאספים במעגל המרכז, עומדים מול יריביהם ושומעים את ההמנון שלהם לצד שופטי המשחק. דגלי לאום ענקיים המשתרעים על כמעט חצי מגרש ימסגרו את הרגע, ובהמשך הטורניר יתווספו זיקוקי-דינור. נשיא פיפ\"א אינפנטינו אמר שהשינוי יוצר רגע של אחדות, גאווה ורגש ששייך באמת לנבחרות ולכולם. בפורמט הישן, שחקני ספסל צפו מהמנהרה. עכשיו כל שחקן בסגל עומד במרכז המגרש כשהמנון ארצו מושמע.",
+      "team": "NOR",
+      "en": "Norway are back at the World Cup for the first time in 28 years, and they have already gone viral worldwide before a ball is kicked. The full squad, including Erling Haaland, posed for a cinematic Viking-warrior photoshoot by photographer David Yarrow, dressed in Norse armour with swords and shields before three longships on a Norwegian coastline. Fans worldwide called it one of the greatest team photos in football history. Haaland leads Norway as their all-time top scorer with 55 international goals. They open Group I against Iraq in Boston on June 16, then face Senegal and France. The last time Norway appeared at a World Cup, in 1998, they beat Brazil 2-1 in the group stage before falling to Italy in the round of 16. Can Haaland's golden generation go further?",
+      "he": "נורבגיה חוזרת למונדיאל לראשונה מזה 28 שנה, והנבחרת כבר הפכה לוויראלית ברחבי העולם לפני שנבעטה כדור אחד. הסגל כולו, כולל ארלינג הולאנד, צולם בצילום קבוצתי קולנועי של לוחמי ויקינגים על ידי הצלם דייוויד ירו, לבוש בשריון נורדי עם חרבות ומגנים לפני שלושה ספינות לונגשיפ על החוף הנורבגי. אוהדים ברחבי העולם כינו את זה אחד מצילומי הקבוצה הגדולים ביותר בהיסטוריית הכדורגל. הולאנד מוביל את נורבגיה כמבקיע השיאי שלה עם 55 שערים בינלאומיים. הם פותחים קבוצה I מול עיראק בבוסטון ב-16 ביוני, ואחר כך מתמודדים עם סנגל וצרפת. בפעם האחרונה שנורבגיה הופיעה במונדיאל, ב-1998, הם ניצחו את ברזיל 2:1 בשלב הבתים לפני שנפלו לאיטליה בשמינייה גמר. האם הדור הזהוב של הולאנד יכול להגיע רחוק יותר?",
       "sources": [
-        { "name": "FIFA (official)", "url": "https://inside.fifa.com/media-releases/debut-fan-centric-pre-match-ceremony-world-cup-2026" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48972979/fifa-announces-national-anthems-involve-all-26-players-world-cup" },
-        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/world-cup/fifa-president-gianni-infantino-announces-new-national-anthem-protocol-for-2026-world-cup/" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "sco-wc-return-1998-gilmour-out-2026-06-07",
-      "confidence": "confirmed",
-      "team": "SCO",
-      "en": "Scotland are back at the World Cup for the first time since France 1998, 28 years in the making, and announced their return with authority. A 4-0 demolition of Bolivia in New Jersey on June 6, Che Adams scoring twice and Lawrence Shankland and Scott McTominay also on target, sent Steve Clarke's side into the tournament full of confidence. The mood was dampened earlier by the confirmed absence of Napoli midfielder Billy Gilmour, ruled out after damaging his knee against Curacao on May 30. Scotland open against Haiti in Foxborough on June 13, with Morocco and Brazil to follow. Can the Tartan Army finally reach a World Cup round of 16 for the very first time in their history?",
-      "he": "סקוטלנד חוזרת למונדיאל לראשונה מאז צרפת 1998, אחרי 28 שנות המתנה, ובישרה את שובה בסמכות. ניצחון 4:0 על בוליביה בניו ג'רזי ב-6 ביוני, כאשר שה אדמס הבקיע פעמיים ולורנס שנקלנד וסקוט מקטומינאי גם הם רשמו שמות, שלח את נבחרתו של סטיב קלארק לטורניר מלאת ביטחון. האווירה נפגמה מוקדם יותר עם אישור היעדרות מצע נאפולי בילי גילמור, שיצא מהמשחק עם פציעה בברך מול קוראסאו ב-30 במאי. סקוטלנד פותחת מול האיטי בפוקסבורו ב-13 ביוני, ואחר כך מרוקו וברזיל. האם ה-Tartan Army תצליח סוף-סוף להגיע לשמינייה גמר של מונדיאל, לראשונה בהיסטוריה שלה?",
-      "sources": [
-        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12017/13549373/billy-gilmour-scotland-midfielder-ruled-out-of-world-cup-with-knee-injury" },
-        { "name": "Scottish FA", "url": "https://www.scottishfa.co.uk/en/news/scotland-secure-comfortable-win-over-bolivia-in-final-world-cup-warm-up-match" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48701669/scotland-world-cup-2026-schedule-fixtures-results-scores-group-c-how-watch-uk-news-analysis-injuries" }
-      ],
-      "expires_at": "2026-06-13T23:59:59Z"
-    },
-    {
-      "id": "eng-kane-79-goals-record-2026-06-06",
-      "confidence": "confirmed",
-      "team": "ENG",
-      "en": "Harry Kane scored his record-extending 79th goal for England with a deft flicked header from Djed Spence's delivery in first-half stoppage time, giving England a 1-0 win over New Zealand at Raymond James Stadium in Tampa on June 6. Kane, who scored 61 goals in 51 games as Bayern Munich won the domestic double last season, now stands 26 goals clear of Wayne Rooney's previous England record. England open the World Cup against Senegal in Los Angeles on June 14. There are whispers that Kane can become the tournament's top scorer, and at this rate the whispers are not without foundation.",
-      "he": "הארי קיין הבקיע את השער ה-79 שלו לאנגליה בנגיחה עדינה מהאגף של ג'ד ספנס בתוספת הזמן של המחצית הראשונה, ונתן לאנגליה ניצחון 1:0 על ניו זילנד ב-Raymond James Stadium בטמפה ב-6 ביוני. קיין, שהבקיע 61 שערים ב-51 משחקים כשבייארן מינכן זכתה בדאבל הלאומי בעונה שעברה, מוביל כעת ב-26 שערים מעל שיאו הקודם של וויין רוני לאנגליה. אנגליה פותחת את המונדיאל מול סנגל בלוס אנג'לס ב-14 ביוני. יש לחישות שקיין יכול להיות מלך השערים של הטורניר, ובקצב הזה הלחישות לא חסרות בסיס.",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48986657/england-win-new-zealand-reminder-harry-kane-importance" },
-        { "name": "101 Great Goals", "url": "https://www.101greatgoals.com/football/world-cup-news/england-vs-new-zealand-world-cup-friendly-report-result-goals/" }
-      ],
-      "expires_at": "2026-06-14T23:59:59Z"
-    },
-    {
-      "id": "irq-first-wc-since-1986-2026-06-05",
-      "confidence": "confirmed",
-      "team": "IRQ",
-      "en": "Iraq are back at a World Cup for the first time since Mexico 1986, a 40-year wait finally over after coach Graham Arnold, who steered Australia to the round of 16 at Qatar 2022, took over in May 2025 and guided the Lions of Mesopotamia through a gruelling 21-match qualification campaign spanning more than two years. Their intercontinental playoff journey included a chaotic travel ordeal across the Middle East, caused by regional conflict, that forced a three-day recovery break before the decisive game in Mexico. Iraq open against Norway in Boston on June 16, then face France and Senegal. Can 40 years of patience translate into a World Cup shock?",
-      "he": "עיראק חוזרת למונדיאל לראשונה מאז מקסיקו 1986: 40 שנות המתנה הסתיימו לאחר שהמאמן גראהם ארנולד, שהוביל את אוסטרליה לשמינייה גמר בקטאר 2022, קיבל את הניהול במאי 2025 והוביל את אריות מסופוטמיה דרך מסע כישור מפרך של 21 משחקים על פני יותר משנתיים. מסע הפלייאוף הבינאוגדתי כלל הרפתקת נסיעות כאוטית במזרח התיכון, שנגרמה מסכסוך אזורי, שאילצה הפסקת התאוששות של שלושה ימים לפני המשחק המכריע במקסיקו. עיראק פותחת נגד נורבגיה בבוסטון ב-16 ביוני ואחר כך תיפגש עם צרפת וסנגל. האם 40 שנות סבלנות יתורגמו להפתעת מונדיאל?",
-      "sources": [
-        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/graham-arnold-iraq-interview" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/5/we-are-fighters-iraq-aim-to-shock-rivals-at-2026-world-cup" },
-        { "name": "The National", "url": "https://www.thenationalnews.com/sport/football/2026/06/04/iraq-world-cup-talking-points-ali-al-hamadi-and-aymen-hussein-reignite-hopes-after-arduous-qualification/" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48987566/norway-2026-world-cup-vikings-erling-haaland" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/norway-world-cup-squad-team-143651883.html" },
+        { "name": "PetaPixel", "url": "https://petapixel.com/2026/06/05/did-norway-just-take-the-greatest-world-cup-team-photo-ever/" }
       ],
       "expires_at": "2026-06-16T23:59:59Z"
     },
@@ -324,19 +224,6 @@
       "expires_at": "2026-07-06T00:00:00Z"
     },
     {
-      "id": "mex-humanwave-record-2026-06-07",
-      "confidence": "reported",
-      "team": "MEX",
-      "en": "The World Cup has not even started and Mexico City is already writing its own headlines. On June 7, thousands of fans packed the Paseo de la Reforma, the capital's grand central boulevard, for a mass attempt at the Guinness World Record for the world's largest human wave. The wave holds deep roots in Mexican football history: it is widely credited as having been born at the Estadio Azteca during the 1986 World Cup, and the record attempt came exactly 40 years later. Reports say city cultural authorities declared the record broken on social media later that Saturday, with Guinness World Records yet to give official confirmation. Mexico open the 2026 World Cup at that same Azteca on June 11. If this is the mood three days before kickoff, the host nation has no intention of playing it quiet.",
-      "he": "המונדיאל עוד לא התחיל ומקסיקו סיטי כבר כותבת כותרות משלה. ב-7 ביוני, אלפי אוהדים מילאו את פסאו דה לה רפורמה, הבולוואר המרכזי הגרנדיוזי של הבירה, לניסיון המוני לשבור את שיא גינס לגל אנושי הגדול בעולם. לגל יש שורשים עמוקים בהיסטוריית הכדורגל המקסיקני: הוא זוכה באופן נרחב כמי שנולד באסטדיו אצטקה בזמן המונדיאל 1986, וניסיון השיא הגיע בדיוק 40 שנה אחר כך. לפי הדיווחים, רשויות תרבות העיר הכריזו על שבירת השיא ברשתות החברתיות מאוחר ביום שבת, כאשר שיאי גינס עדיין לא נתנו אישור רשמי. מקסיקו פותחת את מונדיאל 2026 באותה האצטקה ב-11 ביוני. אם זה מצב הרוח שלושה ימים לפני הקיקאוף, למארחת אין כוונה לשחק בשקט.",
-      "sources": [
-        { "name": "Euronews", "url": "https://www.euronews.com/video/2026/06/07/thousands-join-record-breaking-human-wave-attempt-in-mexico-city-ahead-of-world-cup" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/video/newsfeed/2026/6/7/massive-human-wave-in-mexico-ahead-of-world-cup-2026" },
-        { "name": "CNN", "url": "https://www.cnn.com/2026/06/07/americas/world-cup-mexican-wave-soccer-traditions-latam-intl" }
-      ],
-      "expires_at": "2026-06-14T00:00:00Z"
-    },
-    {
       "id": "wc26-azteca-altitude-2026-06-06",
       "confidence": "confirmed",
       "team": "MEX",
@@ -348,18 +235,6 @@
         { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" }
       ],
       "expires_at": "2026-07-06T00:00:00Z"
-    },
-    {
-      "id": "fifa-water-bottle-reversal-2026-06-06",
-      "confidence": "confirmed",
-      "en": "FIFA quietly updated its Stadium Code of Conduct to ban fans from bringing any water bottles into World Cup venues, then reversed course on June 6 after fierce backlash from supporters, politicians and health experts who pointed to dangerous summer heat at stadiums in Houston, Dallas, Miami and Atlanta. The new policy allows each fan one sealed, soft-plastic, factory-sealed disposable bottle of up to 20oz at matches in the USA and Canada. Hard-sided reusable bottles remain banned on safety grounds. Getting the water-bottle policy wrong four days before the biggest football tournament on the planet is not a great advertisement for FIFA's pre-tournament planning.",
-      "he": "פיפ\"א עדכנה בשקט את קוד ההתנהלות שלה לאצטדיונים ואסרה על אוהדים להכניס בקבוקי מים לאתרי המונדיאל, ולאחר מכן הפכה את ההחלטה ב-6 ביוני אחרי גל זעם מאוהדים, פוליטיקאים ומומחי בריאות שהצביעו על חום הקיץ המסוכן באצטדיוני היוסטון, דאלאס, מיאמי ואטלנטה. המדיניות החדשה מאפשרת לכל אוהד להכניס בקבוק פלסטיק רך חתום ממפעל, עד 590 מ\"ל, למשחקים בארה\"ב ובקנדה. בקבוקים קשיחים עדיין אסורים מטעמי בטיחות. לטעות במדיניות בקבוקי המים ארבעה ימים לפני הטורניר הגדול ביותר בכדורגל אינו פרסומת מצוינת לתכנון טרום-הטורניר של פיפ\"א.",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48978502/fifa-reverses-world-cup-water-bottle-ban-backlash" },
-        { "name": "Sports Illustrated", "url": "https://www.si.com/soccer/fifa-reverses-decision-allows-fans-bring-water-bottles-after-mass-backlash" },
-        { "name": "NBC News", "url": "https://www.nbcnews.com/sports/soccer/fifa-bans-water-bottles-world-cup-stadiums-fans-heat-rcna348419" }
-      ],
-      "expires_at": "2026-07-04T00:00:00Z"
     },
     {
       "id": "ifab-var-corners-second-yellow-2026-06-05",
@@ -374,18 +249,6 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "var-dieperink-dropped-wc2026-2026-05-15",
-      "confidence": "confirmed",
-      "en": "Dutch VAR official Rob Dieperink was removed from the 2026 World Cup roster after his arrest in London on April 9 over allegations of sexual assault involving a teenage boy. British police later closed the case, saying the evidential threshold was not met. Despite the dropped charges, FIFA confirmed on May 15 that Dieperink is out and named French official Willy Delajod as his replacement. With 170 officials set to referee 104 matches, FIFA's message is clear: off-field conduct counts, regardless of the courtroom outcome.",
-      "he": "קצין ה-VAR ההולנדי רוב דייפרינק הוסר מרשימת שופטי מונדיאל 2026 לאחר מעצרו בלונדון ב-9 באפריל בגין חשד לתקיפה מינית של נער. המשטרה הבריטית סגרה את התיק בהמשך, בציינה שהרף הראייתי לא מולא. חרף ביטול האישומים, פיפ\"א אישרה ב-15 במאי שדייפרינק הוסר ומינתה את הקצין הצרפתי וילי דלאז'ו כממלא מקומו. עם 170 פקידים שינהלו 104 משחקים, המסר של פיפ\"א ברור: ההתנהגות מחוץ למגרש חשובה, בלי קשר לתוצאת ההליך המשפטי.",
-      "sources": [
-        { "name": "NL Times", "url": "https://nltimes.nl/2026/05/15/dutch-referee-arrested-alleged-misconduct-17-year-old-charges-later-dropped" },
-        { "name": "Morocco World News", "url": "https://www.moroccoworldnews.com/2026/05/302292/fifa-drops-dutch-referee-rob-dieperink-from-world-cup-list/" },
-        { "name": "Businessday NG", "url": "https://businessday.ng/sports/article/fifa-drops-dutch-referee-from-world-cup-roster-over-sexual-assault-arrest/" }
-      ],
-      "expires_at": "2026-07-19T23:59:59Z"
-    },
-    {
       "id": "wc26-format-third-place-rule-2026",
       "confidence": "confirmed",
       "en": "For the first time in World Cup history, 32 of 48 teams advance from the group stage. The 12-group format means the top two from each group go through automatically, and the best eight of 12 third-placed teams also qualify for the new Round of 32. A side can lose twice in the group stage and still survive the knockout roulette if enough other third-placed teams do worse. The ranking tiebreaker for the eight spots: points, then goal difference, then goals scored, then FIFA ranking. For anyone running a prediction pool, that eighth third-place slot could be the most dramatic group-stage storyline of the whole tournament.",
@@ -398,29 +261,16 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "civ-beat-france-warmup-2026-06-04",
+      "id": "eng-kane-79-goals-record-2026-06-06",
       "confidence": "confirmed",
-      "en": "The team most widely tipped to win the 2026 World Cup walked into their opening warmup and lost. France fell 2-1 to Ivory Coast in Nantes on June 4: Rayan Cherki gave France the lead in first-half stoppage time, but Ivory Coast levelled and then Amad Diallo scored the winner six minutes from time to complete a famous result for the reigning African Cup of Nations champions. ESPN ran a post-match feature arguing that as France just learned, the Ivory Coast should not be dismissed at this World Cup. France open Group I favourites against Senegal at MetLife on June 16. Ivory Coast move into Group E, where they face Germany in Toronto on June 20. After what just happened to France, Germany will want to prepare very carefully for that one.",
-      "he": "הנבחרת שמוצבת כמועדפת הרחבה לגביע העולם 2026 יצאה לחימום הפתיחה שלה ונפלה. צרפת הפסידה 2:1 לחוף השנהב בנאנט ב-4 ביוני: ריאן שרקי נתן לצרפת את הפתיחה בתוספת הזמן של המחצית הראשונה, אך חוף השנהב השווה ואז אמאד דיאלו הבקיע את שער הניצחון שש דקות לסיום להשלים תוצאה מפוארת לאלופות גביע האומות האפריקני הנוכחיות. ESPN פרסמה כתבה שטענה שכפי שצרפת זה עתה למדה, לא כדאי לזלזל בחוף השנהב במונדיאל. צרפת פותחת כמועדפת בקבוצה I מול סנגל ב-MetLife ב-16 ביוני. חוף השנהב עוברת לקבוצה E שבה תיפגש עם גרמניה בטורנטו ב-20 ביוני. אחרי מה שקרה לצרפת, גרמניה תרצה להכין את עצמה בקפידה יתרה לפני אותו המשחק.",
+      "team": "ENG",
+      "en": "Harry Kane scored his record-extending 79th goal for England with a deft flicked header from Djed Spence's delivery in first-half stoppage time, giving England a 1-0 win over New Zealand at Raymond James Stadium in Tampa on June 6. Kane, who scored 61 goals in 51 games as Bayern Munich won the domestic double last season, now stands 26 goals clear of Wayne Rooney's previous England record. England open the World Cup against Senegal in Los Angeles on June 14. There are whispers that Kane can become the tournament's top scorer, and at this rate the whispers are not without foundation.",
+      "he": "הארי קיין הבקיע את השער ה-79 שלו לאנגליה בנגיחה עדינה מהאגף של ג'ד ספנס בתוספת הזמן של המחצית הראשונה, ונתן לאנגליה ניצחון 1:0 על ניו זילנד ב-Raymond James Stadium בטמפה ב-6 ביוני. קיין, שהבקיע 61 שערים ב-51 משחקים כשבייארן מינכן זכתה בדאבל הלאומי בעונה שעברה, מוביל כעת ב-26 שערים מעל שיאו הקודם של וויין רוני לאנגליה. אנגליה פותחת את המונדיאל מול סנגל בלוס אנג'לס ב-14 ביוני. יש לחישות שקיין יכול להיות מלך השערים של הטורניר, ובקצב הזה הלחישות לא חסרות בסיס.",
       "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/401864934" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/france-stunned-by-ivory-coast-in-world-cup-warmup-spain-held-by-iraq" },
-        { "name": "France 24", "url": "https://www.france24.com/en/sport/20260605-2026-world-cup-france-begin-their-preparation-with-defeat-against-ivory-coast" }
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48986657/england-win-new-zealand-reminder-harry-kane-importance" },
+        { "name": "101 Great Goals", "url": "https://www.101greatgoals.com/football/world-cup-news/england-vs-new-zealand-world-cup-friendly-report-result-goals/" }
       ],
-      "expires_at": "2026-06-16T23:59:59Z"
-    },
-    {
-      "id": "can-bombito-ruled-out-wc2026-2026-06-08",
-      "confidence": "confirmed",
-      "team": "CAN",
-      "en": "Canada received a blow to their defensive preparations less than four days before their World Cup opener. Centre-back Moise Bombito has been ruled out of the tournament after the federation's medical staff determined his surgically repaired tibia, broken last October, is not strong enough to withstand World Cup football. Bombito played only 30 minutes in a warmup against Uzbekistan before limping off with ice on his leg. Canada have until June 11 to name a replacement from their provisional 55-player list. Jesse Marsch already faced a hard call naming Maxime Crepeau as starting goalkeeper, and now a defensive reshuffle looms on top. Canada open against Bosnia and Herzegovina in Toronto on June 12. A squad determined to write history, absorbing one more unwanted test of their depth on the eve of the tournament.",
-      "he": "קנדה ספגה מכה להכנותיה ההגנתיות פחות מארבעה ימים לפני פתיחת המונדיאל שלה. הבלם מואיז בומביטו הוצא מהטורניר לאחר שהצוות הרפואי של ההתאחדות קבע שהשוקה שלו, שתוקנה בניתוח ונשברה באוקטובר האחרון, אינה חזקה מספיק לכדורגל מונדיאל. בומביטו שיחק רק 30 דקות בחימום מול אוזבקיסטן לפני שיצא עם קרח על הרגל. לקנדה יש עד 11 ביוני לרשום מחליף מרשימת 55 השחקנים הזמנית שלה. ג'סי מרש כבר התמודד עם החלטה קשה כשמינה את מקסים קרפו כשוער המתחיל, ועכשיו שינוי ערך בהגנה מצטרף לאגרת. קנדה פותחת מול בוסניה והרצגובינה בטורנטו ב-12 ביוני. סגל שנחוש לכתוב היסטוריה, סופג עוד מבחן לא רצוי של עומקו ערב הטורניר.",
-      "sources": [
-        { "name": "TSN", "url": "https://www.tsn.ca/soccer/article/report-defender-bombito-to-be-replaced-on-canadas-world-cup-roster/" },
-        { "name": "The Score", "url": "https://www.thescore.com/worldcup/news/3550904" },
-        { "name": "Daily Hive", "url": "https://dailyhive.com/vancouver/canada-best-players-miss-fifa-world-cup-injury-bombito" }
-      ],
-      "expires_at": "2026-06-13T23:59:59Z"
+      "expires_at": "2026-06-14T23:59:59Z"
     }
   ]
 }

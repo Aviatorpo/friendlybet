@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-09T00:47:15.638Z",
+  "updatedAt": "2026-06-09T03:28:00.341Z",
   "count": 12,
   "items": [
     {
@@ -26,27 +26,27 @@
       "expires_at": "2026-06-16T23:59:59Z"
     },
     {
-      "id": "usa-germany-sendoff-2026-06-06",
+      "id": "arg-balerdi-ruled-out-wc2026-2026-06-06",
       "type": "news",
       "confidence": "confirmed",
-      "he": "ארצות הברית ספגה בדיקת מציאות אחרונה לפני המונדיאל הביתי שלה, ונפלה 2:1 מגרמניה ב-Soldier Field בשיקגו ב-6 ביוני. קאי האברץ פתח לגרמניה אחרי שתי דקות, אנטוני רובינסון השווה בשוט מדהים מרחוק, ולרואי סאנה חתם את העניין באמצע המחצית השנייה. הנבחרת של פוצ'טינו סיימה את ריצת החימום עם שני ניצחונות, שתי תיקו ושתי הפסדים בשישה ידידויות. פוצ'טינו גורס שמבחן קשה הוא בדיוק ההכנה שהסגל שלו היה צריך לפני פתיחת הבית מול פרגוואי ב-SoFi Stadium בלוס אנג'לס ב-12 ביוני. השוט של רובינסון היה הרגע של הלילה. שורת הניקוד הסופית, לא. האם ארה\"ב תמצא הילוך אחר כשהמציאות תתחיל על סף ביתה?",
-      "en": "The United States took a final reality check before their home World Cup, falling 2-1 to Germany at Soldier Field in Chicago on June 6 in their pre-tournament sendoff. Kai Havertz struck after just two minutes to put Germany ahead, Antonee Robinson equalised with a spectacular long-range strike, and Leroy Sane sealed it midway through the second half. Mauricio Pochettino's side finished their warmup run with two wins, two draws and two losses across six friendlies. Pochettino holds that a stern test is exactly the preparation his squad needed before a home opener against Paraguay at SoFi Stadium in Los Angeles on June 12. Robinson's rocket was the highlight of the night. The scoreline was not. Can the USA find another gear when the real thing starts on their own doorstep?",
-      "team": null,
+      "he": "ארגנטינה ספגה מכה הגנתית נוספת ב-6 ביוני כשקפטן מרסיי לאונרדו בלרדי הוצא מהמונדיאל עם קרע בשריר הסולאוס ברגל ימין, שנפגע באימון הסיום של ארגנטינה בקנזס סיטי. ההתאחדות הארגנטינאית לכדורגל אישרה את הפציעה, כשהמאמן סקלוני אמר שההחלטה התקבלה עם כל הכאב שבעולם. לבלרדי שבע הופעות בסיבוב הכישורים של ארגנטינה, אך הוא מעולם לא שיחק במונדיאל. מרקוס סנזי הוא המועמד הסביר כממלא מקום. כשאמיליאנו מרטינז גם הוא מטפל בשבר באצבע, האלופות המגנות נכנסות להגנת התואר, שמתחילה מול אלג'יריה ב-16 ביוני, עם שני סיפורי-פציעות שלא היו בתסריט. האם האיכות הקולקטיבית תוכל לכסות את החורים ברגע המכריע?",
+      "en": "Argentina suffered another defensive setback on June 6 when Marseille captain Leonardo Balerdi was ruled out of the World Cup with a soleus muscle tear in his right leg, sustained during Argentina's final training session in Kansas City. The Argentine Football Association confirmed the injury, with coach Scaloni saying the decision was taken with all the pain in the world. Balerdi had made seven appearances in Argentina's qualifying campaign but had never featured at a World Cup. Marcos Senesi is the candidate to replace him. With Emiliano Martinez also nursing a broken finger, the defending champions carry two injury subplots into a title defence that begins against Algeria on June 16. Can collective quality paper over the cracks when the stakes are highest?",
+      "team": "ARG",
       "sources": [
         {
           "name": "ESPN",
-          "url": "https://www.espn.com/soccer/match/_/gameId/762260/germany-united-states"
+          "url": "https://www.espn.com/soccer/story/_/id/48985334/argentina-defender-leonardo-balerdi-suffers-calf-injury-world-cup"
         },
         {
-          "name": "NBC Sports",
-          "url": "https://www.nbcsports.com/soccer/news/usmnt-vs-germany-live-updates-score-highlights-stats-watch"
+          "name": "beIN Sports",
+          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/balerdi-to-miss-argentinas-world-cup-title-defence-with-calf-injury-2026-06-06"
         },
         {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/usmnt-germany-world-cup-friendly-4-takeaways"
+          "name": "OneFootball",
+          "url": "https://onefootball.com/en/news/leonardo-balerdi-ruled-out-of-2026-world-cup-after-argentina-training-injury-42977137"
         }
       ],
-      "expires_at": "2026-06-12T23:59:59Z"
+      "expires_at": "2026-06-16T23:59:59Z"
     },
     {
       "id": "artan-somalia-referee-denied-usa-wc2026-2026-06-08",
@@ -210,29 +210,6 @@
       "expires_at": "2026-06-26T23:59:59Z"
     },
     {
-      "id": "sui-embolo-visa-drama-2026-06-05",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "חלוץ שוויץ ברל אמבולו חווה סיוט ויזה אמריקנית השבוע ויצא ממנו עם מקומו בטורניר שלם. הרשעה פלילית שקיבלה תוקף סופי לאחרונה גרמה לרשויות האמריקניות לחסום את אישור הנסיעה שלו, ואמבולו נעצר מטיסה של נבחרת שוויץ מציריך ללוס אנג'לס. אמבולו לקח את העניינים לידיו, נסע לשגרירות ארה\"ב בברן בעצמו ופרס את עניינו. הויזה אושרה ב-4 ביוני והוא הצטרף לנבחרת בסן דייגו ב-5 ביוני. שוויץ פותחת קבוצה B מול קטאר בסנטה קלרה ב-13 ביוני. אם הסיפור הזה היה מוגש כתסריט, היו דוחים אותו על שהוא דרמטי מדי.",
-      "en": "Switzerland striker Breel Embolo lived through a World Cup visa nightmare this week and came out the other side with his tournament place intact. A recently finalized criminal conviction caused US authorities to block his travel clearance, and he was stopped from boarding Switzerland's team flight from Zurich to Los Angeles. Embolo took matters into his own hands, travelling to the US embassy in Bern in person to make his case. The visa was approved on June 4 and he joined the squad in San Diego on June 5. Switzerland open Group B against Qatar in Santa Clara on June 13. If that story were pitched as a film script, it would be rejected for being too dramatic.",
-      "team": "SUI",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48969072/switzerland-striker-embolo-gets-visa-us-world-cup"
-        },
-        {
-          "name": "SWI swissinfo.ch",
-          "url": "https://www.swissinfo.ch/eng/culture/swiss-striker-breel-embolo-gets-us-visa-to-travel-to-world-cup/91532865"
-        },
-        {
-          "name": "ABC News",
-          "url": "https://abcnews.com/Sports/wireStory/swiss-forward-embolo-us-embassy-urgent-world-cup-133558069"
-        }
-      ],
-      "expires_at": "2026-06-13T23:59:59Z"
-    },
-    {
       "id": "wc26-opening-ceremony-shakira-2026-06-08",
       "type": "news",
       "confidence": "confirmed",
@@ -281,6 +258,33 @@
         }
       ],
       "expires_at": "2026-06-12T23:59:59Z"
+    },
+    {
+      "id": "bra-neymar-grade2-confirmed-2026-06-08",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "ברזיל אישרה שלניימאר יש מתח בדרגה שנייה בשריר השוק הימני שמוציא אותו מהפתיחה מול מרוקו ב-13 ביוני בניו ג'רזי, כאשר המאמן קרלו אנצ'לוטי מכוון לחזרה אפשרית במשחק מול האיטי ב-19 ביוני לכל המוקדם. אנצ'לוטי, שאמר ב-7 ביוני שניימאר יעבור בדיקת MRI מעודכנת ב-8 ביוני, מדגיש שאינו מתחרט על בחירת הפורווארד בן ה-34 ולא יחליף אותו בסגל. ברזיל ניצחה את מצרים 2:1 בחימום ללא ניימאר, כאשר אנדריק בן ה-18 הבקיע ועידד את עומק הסגל. ויניסיוס ג'וניור אישר שהוא מחזיר לניימאר את חולצת מספר 10 האיקונית לקראת הטורניר. האם הסלסאו יכולה להתקדם עמוק אם המבקיע השיאי שלה מבלה את שלב הבתים על שולחן הטיפולים?",
+      "en": "Brazil confirmed Neymar has a Grade 2 right calf strain that rules him out of their June 13 World Cup opener against Morocco in New Jersey, with coach Carlo Ancelotti targeting a return for the June 19 match against Haiti at the earliest. Ancelotti, who said on June 7 that Neymar would undergo an updated MRI on June 8, insists he has no regrets about picking the 34-year-old and will not replace him in the squad. Brazil beat Egypt 2-1 in their warm-up without him, 18-year-old Endrick stepping up to score and underline the squad depth. Vinicius Jr confirmed he is handing back the iconic No. 10 shirt to Neymar for the tournament. Can the Selecao go deep if their record scorer spends the group stage on the treatment table?",
+      "team": "BRA",
+      "sources": [
+        {
+          "name": "FIFA (official)",
+          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/brazil-neymar-injury"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup"
+        },
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury"
+        },
+        {
+          "name": "Sports Illustrated",
+          "url": "https://www.si.com/soccer/neymar-injury-timeline-brazil-matches-miss-2026-world-cup"
+        }
+      ],
+      "expires_at": "2026-06-19T23:59:59Z"
     }
   ]
 }
