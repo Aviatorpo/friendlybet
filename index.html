@@ -1464,6 +1464,23 @@ function loadTablerFallback() {
         <div class="brb-cta" id="brb-cta" data-i18n="recoverBracket.cta">מלא את הנוקאאוט</div>
       </div>
 
+      <!-- v2.9.22: admin-only nudge. Shown to a pool admin when members lost their
+           knockout bracket to the save bug. Offers a one-tap copy of a ready-made
+           reminder for the group chat (we have no email/push to reach members). -->
+      <div class="admin-nudge-banner" id="admin-nudge-banner" style="display:none;">
+        <div class="anb-head">
+          <span class="anb-icon">⚠️</span>
+          <span class="anb-title" id="admin-nudge-title"></span>
+        </div>
+        <div class="anb-sub" id="admin-nudge-sub" data-i18n="dashboard.adminNudge.sub">חלק מחברי הפול השלימו בתים ואלופה, אך הבראקט שלהם לא נשמר עקב תקלה. תזכיר להם להשלים אותו לפני תחילת המונדיאל.</div>
+        <div class="anb-actions">
+          <button type="button" class="anb-copy" id="admin-nudge-copy">
+            <i class="ti ti-copy"></i><span data-i18n="adminMembersEx.copyNudge">העתק הודעה לקבוצה</span>
+          </button>
+          <button type="button" class="anb-view" id="admin-nudge-view" data-i18n="dashboard.adminNudge.view">מי הם?</button>
+        </div>
+      </div>
+
       <div class="dashboard-countdown" id="dashboard-countdown" style="display:none;">
         <div class="countdown-label" id="countdown-label" data-i18n="dashboard.countdown.title">המשחק הראשון מתחיל בעוד</div>
         <div class="countdown-clock" id="countdown-clock">
@@ -3030,7 +3047,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.9.21</span>
+      <span class="menu-version">v2.9.22</span>
     </div>
   </div>
 

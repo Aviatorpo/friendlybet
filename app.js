@@ -1232,6 +1232,9 @@ async function goToDashboard() {
   updateBettingStatusOnDashboard();
   updateKnockoutStatusOnDashboard();
 
+  // v2.9.22: admin-only nudge about members who lost their knockout bracket.
+  updateAdminNudgeOnDashboard();
+
   // The Pundit - live rotating commentary (fire-and-forget, never blocks the dashboard)
   renderPundit();
 
@@ -1240,6 +1243,41 @@ async function goToDashboard() {
   initDashboardCountdown(tournamentStarted);
 
   showScreen('user-dashboard-screen');
+}
+
+// v2.9.22: admin-only dashboard nudge. When members of the admin's single-phase
+// pool lost their knockout bracket to the save bug (groups complete but bracket
+// < 31), surface a banner with a one-tap copy of a ready-made reminder for the
+// group chat — the realistic outreach channel, since we have no email/push.
+// The count is computed DB-side (pool_knockout_gap_count) so it's correct for
+// big pools past the 1000-row REST cap. Fire-and-forget; never blocks the render.
+async function updateAdminNudgeOnDashboard() {
+  const el = document.getElementById('admin-nudge-banner');
+  if (!el) return;
+  const hide = () => { el.style.display = 'none'; };
+  try {
+    if (!state.currentUser || !state.currentUser.is_admin || !state.currentPool) return hide();
+    if (state.currentPool.betting_mode !== 'single_phase') return hide();
+    const { data, error } = await supabaseClient.rpc('pool_knockout_gap_count', {
+      p_pool_id: state.currentPool.id, p_exclude: state.currentUser.id
+    });
+    const n = (typeof data === 'number') ? data : parseInt(data, 10);
+    if (error || !n || n < 1) return hide();
+
+    const titleEl = document.getElementById('admin-nudge-title');
+    if (titleEl) titleEl.textContent = t('dashboard.adminNudge.title', { n });
+    // onclick (not addEventListener) so repeated dashboard renders never stack.
+    const copyBtn = document.getElementById('admin-nudge-copy');
+    if (copyBtn) copyBtn.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(t('adminMembersEx.nudgeMessage'));
+        showToast(t('adminMembersEx.nudgeCopied'), 'success');
+      } catch (_) { showToast(t('adminMembersEx.nudgeMessage'), 'info'); }
+    };
+    const viewBtn = document.getElementById('admin-nudge-view');
+    if (viewBtn) viewBtn.onclick = () => { showMembers(); };
+    el.style.display = 'flex';
+  } catch (_) { hide(); }
 }
 
 // ============================================================
