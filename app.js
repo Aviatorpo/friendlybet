@@ -1258,8 +1258,11 @@ async function updateAdminNudgeOnDashboard() {
   try {
     if (!state.currentUser || !state.currentUser.is_admin || !state.currentPool) return hide();
     if (state.currentPool.betting_mode !== 'single_phase') return hide();
+    // Include the admin in the count (no p_exclude) so the banner number matches
+    // the ⚠️-flagged members in the "Who?" list (which shows everyone). If the
+    // admin themselves is affected, they also get their own recover banner.
     const { data, error } = await supabaseClient.rpc('pool_knockout_gap_count', {
-      p_pool_id: state.currentPool.id, p_exclude: state.currentUser.id
+      p_pool_id: state.currentPool.id
     });
     const n = (typeof data === 'number') ? data : parseInt(data, 10);
     if (error || !n || n < 1) return hide();
@@ -2291,14 +2294,23 @@ function showRecoveryCodeAgain() {
 // pools aren't silently truncated. Stops on a short page or an error.
 async function _fetchAllPoolRows(table, cols, poolId) {
   const PAGE = 1000;
-  let all = [], from = 0;
-  for (let guard = 0; guard < 50; guard++) {   // 50k-row safety ceiling
-    const { data, error } = await supabaseClient
-      .from(table).select(cols).eq('pool_id', poolId).range(from, from + PAGE - 1);
-    if (error || !data || data.length === 0) break;
+  let all = [];
+  for (let from = 0, guard = 0; guard < 50; guard++, from += PAGE) {   // 50k-row ceiling
+    let data = null, lastError = null;
+    for (let attempt = 0; attempt < 3; attempt++) {   // retry a transient page error
+      const res = await supabaseClient
+        .from(table).select(cols).eq('pool_id', poolId).range(from, from + PAGE - 1);
+      if (!res.error) { data = res.data || []; lastError = null; break; }
+      lastError = res.error;
+      await new Promise(r => setTimeout(r, 300 * (attempt + 1)));
+    }
+    // Never return PARTIAL data on a page failure — that would silently re-create
+    // the truncation bug. Throw so the caller shows an error instead of rendering
+    // confidently-wrong member statuses.
+    if (lastError) throw lastError;
+    if (!data.length) break;
     all = all.concat(data);
     if (data.length < PAGE) break;
-    from += PAGE;
   }
   return all;
 }
@@ -2338,10 +2350,17 @@ async function showMembers() {
   // truncated and most members showed a WRONG status. Page through all rows so
   // the per-member counts (and the ⚠️ "needs knockout" flag) are correct, and
   // agree with the dashboard nudge count.
-  const [groupData, koData] = await Promise.all([
-    _fetchAllPoolRows(picksTable, 'user_id', state.currentPool.id),
-    _fetchAllPoolRows('knockout_picks', 'user_id', state.currentPool.id)
-  ]);
+  let groupData, koData;
+  try {
+    [groupData, koData] = await Promise.all([
+      _fetchAllPoolRows(picksTable, 'user_id', state.currentPool.id),
+      _fetchAllPoolRows('knockout_picks', 'user_id', state.currentPool.id)
+    ]);
+  } catch (err) {
+    console.error('Members pick pagination failed:', err);
+    showToast(t('membersList.loadError'), 'error');
+    return;   // don't render partial/misleading statuses
+  }
 
   // Count group + knockout picks per user
   const picksPerUser = {};
