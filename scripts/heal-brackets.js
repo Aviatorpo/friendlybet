@@ -33,6 +33,19 @@ const LIMIT = parseInt(process.env.HEAL_LIMIT || '150', 10);
   const t = (Array.isArray(body) ? body[0] : body) || {};   // PostgREST returns the jsonb value (object)
   console.log('[heal-brackets]', JSON.stringify(t));
   if (t.note) console.log(`[heal-brackets] note: ${t.note}`);
+
+  // MASS-LOSS ALARM (added after the 2026-06-10 knockout_picks TRUNCATE incident).
+  // Steady-state this job heals 0–few brackets per run. A spike means a large
+  // number of brackets just vanished from live knockout_picks and were auto-
+  // restored from backup THIS run — i.e. a wipe/mass-delete just happened. Fail
+  // loudly so the owner gets the red-workflow email and can investigate the cause
+  // (a healthy save flow never produces this). Tune via HEAL_MASS_ALERT.
+  const MASS_HEAL_ALERT = parseInt(process.env.HEAL_MASS_ALERT || '50', 10);
+  let massEvent = false;
+  if ((t.healed || 0) >= MASS_HEAL_ALERT) {
+    massEvent = true;
+    console.error(`::error::[heal-brackets] MASS-LOSS ALARM — healed ${t.healed} brackets in ONE run (>=${MASS_HEAL_ALERT}). A large number of live brackets just disappeared and were auto-restored from backup. Likely a TRUNCATE/mass-delete on knockout_picks — investigate immediately (pg_stat_statements, Postgres logs around now).`);
+  }
   // Failure policy: a single isolated bad user is a warning (other users still
   // healed). Persistent breakage is loud (red workflow → owner notified):
   //   - >= 5 failed in one run, OR
@@ -56,7 +69,23 @@ const LIMIT = parseInt(process.env.HEAL_LIMIT || '150', 10);
       headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' },
       body: '{}',
     });
-    if (sr.ok) console.log('[heal-brackets] snapshot:', JSON.stringify(await sr.json()));
-    else console.log(`[heal-brackets] snapshot skipped (${sr.status})`);
+    if (sr.ok) {
+      const snap = await sr.json();
+      console.log('[heal-brackets] snapshot:', JSON.stringify(snap));
+      // Second mass-loss signal: must-re-enter (submitted users with no live
+      // bracket) far above the normal baseline (~370–400). The TRUNCATE pushed it
+      // to ~1290. A wipe that backups CAN'T fully restore (post-kickoff heal
+      // disabled, or no-backup users) won't show as a `healed` spike, but it WILL
+      // spike this. Threshold sits well clear of normal pre-kickoff drift.
+      const GAP_ALERT = parseInt(process.env.HEAL_GAP_ALERT || '650', 10);
+      const gap = (snap && (snap.gap_submitted != null ? snap.gap_submitted : snap.must_reenter)) || 0;
+      if (gap >= GAP_ALERT) {
+        massEvent = true;
+        console.error(`::error::[heal-brackets] MASS-LOSS ALARM — must-re-enter=${gap} (>=${GAP_ALERT}, normal ~370). A large number of submitted users have no live bracket — likely a wipe that backups couldn't fully restore. Investigate immediately.`);
+      }
+    } else console.log(`[heal-brackets] snapshot skipped (${sr.status})`);
   } catch (e) { console.log('[heal-brackets] snapshot error:', e.message); }
+
+  // If either mass-loss alarm tripped, exit red so GitHub emails the owner.
+  if (massEvent) process.exit(1);
 })().catch(e => { console.error('::error::[heal-brackets] ERROR:', e.message); process.exit(1); });
