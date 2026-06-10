@@ -1,56 +1,75 @@
 {
-  "updatedAt": "2026-06-09T21:31:09.024Z",
+  "updatedAt": "2026-06-10T00:45:53.424Z",
   "count": 12,
   "items": [
     {
-      "id": "esp-no-real-madrid-wc2026-2026-05-25",
+      "id": "mex-cdmx-closures-wc2026-2026-06-09",
       "type": "news",
       "confidence": "confirmed",
-      "he": "ספרד נכנסת למונדיאל 2026 ללא שחקן אחד מריאל מדריד - לראשונה בתולדות הטורניר. המאמן לואיס דה לה פואנטה כלל שמונה שחקנים מברצלונה ושבעה ששוחקים בפרמייר ליג ב-26 שחקניו הסופיים, ודחה את דני קרבחל ודין הויסן לאחר עונות לא עקביות בברנבאו. דה לה פואנטה הגן על הבחירה ואמר שהסגל 'מושלם' ושהוא בוחר לפי יכולת ולא לפי סמל מועדון. רודרי, זוכה הבלון דאור 2024 שהחסיר כמעט את כל עונת 2024-25 בגלל פציעת ברך, חזר לכושר מלא ומצופה שיפתח. ספרד פותחת קבוצה H מול קאבו ורדה ב-15 ביוני. סגל שבנוי לגמרי ללא המועדון המפורסם ביותר בעולם - הצהרת פילוסופיה או הימור?",
-      "en": "Spain enter the 2026 World Cup without a single Real Madrid player in their squad, a first in the tournament's history. Coach Luis de la Fuente named eight Barcelona players and seven Premier League-based players in his final 26, leaving out Dani Carvajal and Dean Huijsen after their inconsistent seasons at the Bernabeu. De la Fuente defended the selection, saying his squad is 'perfect' and that he picks on capability, not club badge. Rodri, the 2024 Ballon d'Or winner who missed almost the entire 2024-25 club season with a knee injury, has returned to full fitness and is expected to start. Spain open Group H against Cape Verde on June 15. A squad built entirely without the world's most decorated club - statement of philosophy or gamble?",
-      "team": "ESP",
+      "he": "הנשיאה המקסיקנית קלאודיה שיינבאום הורתה על סגירת כל בתי הספר במקסיקו סיטי ועבודה מרחוק לעובדי הממשלה הפדרלית ב-11 ביוני, יום שבו מקסיקו נפגשת עם דרום אפריקה באצטקה בפתיחת המונדיאל. הצו חל על כל מוסד חינוכי מגן ילדים ועד לאוניברסיטה, ציבורי ופרטי. הרשויות אמרו שהסגירות נועדו להקל על עומס התנועה כאשר 60,000 אוהדים מתכנסים לאצטדיון. לעיר מקסיקו סיטי לעתים נדירות יש תירוץ טוב כל-כך לעצור את השבוע באמצע. מה שהשחקנים מביאים באצטקה הוא הדבר היחיד שאף נשיאה לא יכולה להורות עליו מראש.",
+      "en": "Mexican President Claudia Sheinbaum ordered all schools in Mexico City to close and federal government employees to work from home on June 11, the day Mexico face South Africa at the Azteca in the World Cup opener. The decree covers every educational institution from preschool to university level, both public and private. Authorities say the closures are intended to ease traffic and public transport pressure as 60,000 fans converge on the stadium. Mexico City has rarely had an excuse this good to halt the week mid-stride. What the players deliver at the Azteca is the one thing no president can decree in advance.",
+      "team": "MEX",
       "sources": [
         {
-          "name": "beIN Sports",
-          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/spain-faces-the-2026-world-cup-without-real-madrid-players-for-the-first-time-in-world-cup-history-2026-05-25"
+          "name": "US News (AP)",
+          "url": "https://www.usnews.com/news/top-news/articles/2026-06-09/mexico-city-suspends-classes-shifts-to-remote-work-for-world-cup-kickoff"
         },
         {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48956714/spain-boss-defends-perfect-world-cup-squad-real-madrid-players"
+          "name": "WION News",
+          "url": "https://www.wionews.com/sports/mexican-president-claudia-sheinbaum-announces-remote-work-and-school-closures-for-fifa-world-cup-2026-opener-1781017468829"
         },
         {
-          "name": "World Soccer Talk",
-          "url": "https://worldsoccertalk.com/world-cup/spain-leave-real-madrid-players-out-of-final-26-man-2026-world-cup-squad-for-first-time-in-history/"
+          "name": "Open The Magazine",
+          "url": "https://openthemagazine.com/sports/mexico-president-orders-remote-work-school-closures-for-fifa-world-cup-opener"
         }
       ],
-      "expires_at": "2026-07-04T00:00:00Z"
+      "expires_at": "2026-06-12T00:00:00Z"
     },
     {
-      "id": "eng-tuchel-shock-omissions-wc2026-2026-05-22",
+      "id": "irn-tickets-revoked-wc2026-2026-06-09",
       "type": "news",
       "confidence": "confirmed",
-      "he": "תומאס טוכל מינה סגל אנגלי לגביע העולם ש-Sky Sports News כינה 'כנראה המקפיץ ביותר מאז 1998', תוך השמטת קול פאלמר, פיל פודן, טרנט אלכסנדר-ארנולד והארי מגווייר. טוכל הסביר שלא רצה חמישה שחקני מספר 10 שישחקו מחוץ לעמדתם, אך ההשמטות של פאלמר ופודן בפרט עוררו זעם ציבורי נרחב. מגווייר פרסם ברשתות החברתיות שהוא 'בהלם ולב שבור'. במקומם, טוכל זימן בחזרה את איוון טוני, שהבקיע 32 שערים ב-32 משחקים בליגה הסעודית עבור אל-אהלי. ג'וד בלינגהאם עוטה את חולצת מספר 10. אנגלייה נמצאת בקבוצה L עם קרואטיה, גאנה ופנמה, עם הפתיחה מול קרואטיה ב-AT&T Stadium בדאלאס ב-17 ביוני. האם טוכל מצא פורמולה נועזת חדשה, או שההימור מתפרק בחישוק הראשון?",
-      "en": "Thomas Tuchel named an England World Cup squad that Sky Sports News called 'probably the most shocking since 1998', omitting Cole Palmer, Phil Foden, Trent Alexander-Arnold and Harry Maguire. Tuchel explained he did not want five No. 10s playing out of position, but the cuts to Palmer and Foden in particular drew fierce public backlash. Maguire posted on social media that he was 'shocked and gutted'. In their place, Tuchel recalled Ivan Toney, who scored 32 goals in 32 Saudi Pro League matches for Al-Ahli. Jude Bellingham wears the No. 10 shirt. England are in Group L with Croatia, Ghana and Panama, opening against Croatia at AT&T Stadium in Dallas on June 17. Has Tuchel found a bold new formula, or does the gamble fall apart at the first hurdle?",
-      "team": "ENG",
+      "he": "משבר המונדיאל של איראן העמיק ב-9 ביוני כשפיפ\"א הסירה את הקצאת הכרטיסים הרשמית לאוהדי איראן לשלושת משחקי שלב הבתים שלה בארצות הברית, ומותירה אלפי מעריצים ללא אפשרות לרכוש כרטיסים בערוצים הרשמיים פחות משלושה ימים לפני פתיחת הטורניר. התאחדות הכדורגל האיראנית אמרה שכבר פתחה במכירת כרטיסים לפני שנמשכו מהשוק ללא אזהרה, תיארה את הצעד כהפרה של עקרונות השוויון של פיפ\"א, והכריזה על הגשת תלונה רשמית. לאחר אובדן 14 פקידי ההתאחדות בשל דחיות ויזות, מעבר מחנה האימונים מאריזונה למקסיקו, ועכשיו הקפאת הכרטיסים, השאלה היא מה הסגל עצמו עושה עם כל הרעש הזה כשהשופט סוף-סוף שורק.",
+      "en": "The Iran World Cup crisis deepened on June 9 when FIFA removed Iran's official supporter ticket allocation for all three of its group matches in the United States, leaving thousands of fans unable to purchase seats through official channels with less than three days before the tournament opened. Iran's Football Federation said it had already begun selling tickets when they were pulled from the market without warning, described the move as a violation of FIFA's own equality principles, and announced a formal complaint. Iran had already lost 14 federation officials to US visa denials, was forced to base its camp in Mexico rather than Arizona, and now faced the prospect of playing to a largely empty Iranian section. After the visa row, the day-trip travel conditions for players, and now a ticket freeze, the question is what Iran's squad does with all this noise when the referee finally blows the opening whistle.",
+      "team": "IRN",
       "sources": [
         {
-          "name": "Sky Sports",
-          "url": "https://www.skysports.com/football/news/12016/13543455/england-world-cup-squad-announcement-ruthless-thomas-tuchel-leaves-big-names-out-of-26-man-squad"
+          "name": "NBC News",
+          "url": "https://www.nbcnews.com/sports/soccer/iran-says-ticket-allocation-world-cup-withdrawn-days-tournament-rcna349152"
         },
         {
-          "name": "France 24",
-          "url": "https://www.france24.com/en/sport/20260522-tuchel-axes-foden-palmer-surprise-england-world-cup-team-shake-up"
+          "name": "LBC",
+          "url": "https://www.lbc.co.uk/article/world-cup-2026-iran-tickets-withdraw-5HjdbKf_2/"
         },
         {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/5/22/tuchel-leaves-palmer-and-foden-out-of-englands-2026-world-cup-squad"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48823863/meet-england-2026-world-cup-squad-26-players-picked-thomas-tuchel-why"
+          "name": "Heavy.com",
+          "url": "https://heavy.com/sports/soccer/world-cup/fifa-world-cup-2026-shock-iran-fans-left-stranded-after-fifa-revokes-thousands-of-tickets/"
         }
       ],
-      "expires_at": "2026-07-04T00:00:00Z"
+      "expires_at": "2026-06-26T23:59:59Z"
+    },
+    {
+      "id": "wc26-saot-upgrade-2026-06-07",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "פיפ\"א שדרגה את טכנולוגיית המחוץ-לשטח האוטומטית למחצה לקראת 2026, וההבדל יהיה מיידי במגרש. זמינות ברורה תפעיל כעת התראה קולית ישירות לאוזנייה של שופט המגרש בזמן אמת, ללא המתנה לצוות ה-VAR. סף הזיהוי הוקטן מ-50 סנטימטרים ל-10 סנטימטרים, כלומר ייתפסו אוטומטית הרבה יותר קריאות גבוליות. כל 1,248 השחקנים ב-48 הסגלים נסרקו ליצירת אווטרי בינה מלאכותית לצורך מעקב מיקומי, ומצלמות גוף לשופטים עם תוכנת ייצוב יוצבו ב-104 המשחקים לראשונה. החלטות מהירות יותר, הסברות ברורות יותר. האם הכדורגל יגמור לו ויכוחי מחוץ, זו השאלה שאף טכנולוגיה אינה יכולה להבטיח.",
+      "en": "FIFA has upgraded its Semi-Automated Offside Technology for 2026, and the difference will be immediate on the pitch. Clear offsides now trigger an audio alert piped directly into the on-field referee's earpiece in real time, cutting out the old wait for VAR to relay the verdict. The detection threshold has been tightened from 50 centimetres to 10 centimetres, so far more borderline calls will be flagged automatically. All 1,248 players across the 48 squads have been 3D-scanned to create AI avatars that power the positional tracking, and referee body cameras with stabilisation software will be deployed at all 104 matches for the first time. Faster calls, clearer reasoning. Whether the game finally runs out of offside debates is the one question technology cannot guarantee.",
+      "team": null,
+      "sources": [
+        {
+          "name": "FIFA (official)",
+          "url": "https://inside.fifa.com/news/offside-decisions-referee-body-cams-innovation-world-cup-2026"
+        },
+        {
+          "name": "TNT Sports",
+          "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml"
+        },
+        {
+          "name": "Tech Times",
+          "url": "https://www.techtimes.com/articles/317958/20260607/world-cup-2026s-ai-offside-system-now-pipes-calls-straight-referees-ear.htm"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
       "id": "wc26-opening-ceremony-shakira-2026-06-08",
@@ -99,50 +118,27 @@
       "expires_at": "2026-06-12T23:59:59Z"
     },
     {
-      "id": "can-toronto-opening-ceremony-2026-06-12",
+      "id": "sofi-workers-deal-2026-06-09",
       "type": "news",
       "confidence": "confirmed",
-      "he": "פיפ\"א אישרה שטקס הפתיחה הקנדי של מונדיאל 2026 יתקיים ב-Toronto Stadium ב-12 ביוני, תשעים דקות לפני שקנדה נפגשת עם בוסניה-הרצגובינה בפתיחת הנבחרת המארחת. הטקס בנוי סביב הנושא 'פסיפס', חגיגת הזהות הרב-תרבותית של קנדה, עם אמנים מאושרים כולל מייקל בובלה, אלאניס מוריסט, אלסיה קרה, ג'סי רייס, נורה פאטה, האמנית הפלסטינית אליאנה, האמן הצרפתי ווג'דרים, ה-DJ סנג'וי וויליאם פרינס. קנדה מעולם לא ניצחה במשחק מונדיאל בשתי הופעותיה הקודמות, כשהפסידה את כל שישה משחקיה ב-1986 ובקטאר 2022. אצטדיון ביתי מלא ושני אייקוני מוזיקה קנדיים על הבמה מכינים את הקרקע. ההופעה מובטחת. התוצאה לא.",
-      "en": "FIFA confirmed Canada's World Cup opening ceremony takes place at Toronto Stadium on June 12, ninety minutes before Canada face Bosnia and Herzegovina in the host nation's tournament opener. The ceremony is built around the theme 'Mosaic', a celebration of Canada's multicultural identity, with confirmed performers including Michael Buble, Alanis Morissette, Alessia Cara, Jessie Reyez, Nora Fatehi, Palestinian artist Elyanna, French artist Vegedream, DJ Sanjoy, and William Prince. Canada have never won a World Cup match in their two previous tournaments, losing all six games in 1986 and at Qatar 2022. A sold-out home stadium and two Canadian music icons on the stage set the scene. The show is guaranteed. The result is not.",
-      "team": "CAN",
+      "he": "ארגון Unite Here Local 11 ומפעיל האצטדיון Legends Global הגיעו להסכם עבודה זמני ב-9 ביוני שמונע שביתה מאוימת של כ-2,000 עובדי מזון ומשקאות ב-SoFi Stadium, ומפנה את הדרך לפתיחת הביתית של ארה\"ב מול פרגוואי ב-12 ביוני עם כל דוכני המזון פתוחים. העובדים הצביעו ב-96% לאישור שביתה ב-6 ביוני בשל שכר, ביטחון תעסוקתי ודרישות לאסור כניסת סוכני ICE לאצטדיון. ההסכם הזמני הוכרז בכנס עיתונאים מחוץ לאצטדיון באינגלווד ביום שלישי; הפרטים לא נחשפו מיד, כאשר העובדים צפויים לאשר את ההסכם ביום רביעי. דוכני המזון יהיו פתוחים ביום שישי. השאלה הגדולה יותר כעת היא מה יקרה על הדשא.",
+      "en": "Unite Here Local 11 and stadium operator Legends Global reached a tentative labor agreement on June 9 that averts a threatened strike by roughly 2,000 food-and-beverage workers at SoFi Stadium, clearing the way for the USA's home World Cup opener against Paraguay on June 12 to have fully staffed concessions. Workers had voted 96 percent in favor of authorizing a strike on June 6 over pay, job security, and demands to bar ICE agents from the venue. The tentative deal was announced at a news conference outside the stadium in Inglewood on Tuesday; terms were not immediately disclosed and workers were expected to ratify the agreement on Wednesday. The concession stands will be open on Friday. The bigger question now is what happens on the pitch.",
+      "team": "USA",
       "sources": [
         {
-          "name": "FIFA (official)",
-          "url": "https://inside.fifa.com/organisation/media-releases/canada-welcome-opening-ceremony-world-cup-2026-tm"
+          "name": "NBC Los Angeles",
+          "url": "https://www.nbclosangeles.com/world-cup/sofi-stadium-workers-strike-world-cup/3901439/"
         },
         {
-          "name": "CP24",
-          "url": "https://www.cp24.com/local/toronto/2026/05/09/here-are-the-performers-at-fifa-world-cup-opening-ceremony-in-toronto/"
-        },
-        {
-          "name": "Time",
-          "url": "https://time.com/article/2026/05/29/world-cup-2026-opening-ceremonies-performers-usa-mexico-canada-fifa/"
-        }
-      ],
-      "expires_at": "2026-06-13T23:59:59Z"
-    },
-    {
-      "id": "nzl-tim-payne-viral-wc2026-2026-06-03",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "תחושת הוויראליות הראשונה של מונדיאל 2026 לא הייתה שער, עבירה או שריקת שופט. זה היה מגן גב ימין מניו זילנד עם פחות מ-5,000 עוקבים באינסטגרם. היוצר הארגנטינאי ולנטין סקארסיני, המכונה El Scarso, העלה סרטון ב-3 ביוני שכינה את מגן וולינגטון פניקס, טים פיין, השחקן הפחות מוכר בטורניר, וביקש מהמיליונים שעוקבים אחריו לתת לפיין קצת אהבה. תוך ימים ספורים צבר פיין יותר מ-4.8 מיליון עוקבים, יותר מקבוצת הרוגבי האגדית All Blacks. סרטון ההודיה שהעלה משך יותר מ-3.2 מיליון לייקים. ניו זילנד פותחת את מסעה מול איראן ב-SoFi Stadium בלוס אנג'לס ב-15 ביוני. העולם כבר בחר את המועדף שלו.",
-      "en": "The first viral sensation of the 2026 World Cup was not a goal, a foul, or a referee call. It was a New Zealand right-back with fewer than 5,000 Instagram followers. Argentine influencer Valentin Scarsini, known online as El Scarso, posted a video on June 3 calling Wellington Phoenix defender Tim Payne the least-known player at the tournament and asking his millions of followers to give Payne some love. Within days Payne had more than 4.8 million followers, surpassing the All Blacks rugby team. His thank-you video drew over 3.2 million likes. New Zealand open their campaign against Iran at SoFi Stadium in Los Angeles on June 15. The world has already decided who its underdog favourite is.",
-      "team": "NZL",
-      "sources": [
-        {
-          "name": "NBC News",
-          "url": "https://www.nbcnews.com/sports/soccer/tim-payne-new-zealand-world-cup-influencer-rcna347297"
-        },
-        {
-          "name": "Colombia One",
-          "url": "https://colombiaone.com/2026/06/03/tim-payne-instagram-followers-world-cup/"
+          "name": "NPR",
+          "url": "https://www.npr.org/2026/06/06/nx-s1-5848682/sofi-stadium-strike-world-cup"
         },
         {
           "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48901215/how-2026-world-cup-least-known-player-became-viral-sensation"
+          "url": "https://www.espn.com/espn/story/_/id/48980083/sofi-stadium-workers-authorize-strike-ahead-usa-world-cup-opener"
         }
       ],
-      "expires_at": "2026-06-15T23:59:59Z"
+      "expires_at": "2026-06-20T00:00:00Z"
     },
     {
       "id": "arg-messi-returns-iceland-2026-06-09",
@@ -191,52 +187,6 @@
       "expires_at": "2026-06-19T23:59:59Z"
     },
     {
-      "id": "sofi-workers-deal-2026-06-09",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "ארגון Unite Here Local 11 ומפעיל האצטדיון Legends Global הגיעו להסכם עבודה זמני ב-9 ביוני שמונע שביתה מאוימת של כ-2,000 עובדי מזון ומשקאות ב-SoFi Stadium, ומפנה את הדרך לפתיחת הביתית של ארה\"ב מול פרגוואי ב-12 ביוני עם כל דוכני המזון פתוחים. העובדים הצביעו ב-96% לאישור שביתה ב-6 ביוני בשל שכר, ביטחון תעסוקתי ודרישות לאסור כניסת סוכני ICE לאצטדיון. ההסכם הזמני הוכרז בכנס עיתונאים מחוץ לאצטדיון באינגלווד ביום שלישי; הפרטים לא נחשפו מיד, כאשר העובדים צפויים לאשר את ההסכם ביום רביעי. דוכני המזון יהיו פתוחים ביום שישי. השאלה הגדולה יותר כעת היא מה יקרה על הדשא.",
-      "en": "Unite Here Local 11 and stadium operator Legends Global reached a tentative labor agreement on June 9 that averts a threatened strike by roughly 2,000 food-and-beverage workers at SoFi Stadium, clearing the way for the USA's home World Cup opener against Paraguay on June 12 to have fully staffed concessions. Workers had voted 96 percent in favor of authorizing a strike on June 6 over pay, job security, and demands to bar ICE agents from the venue. The tentative deal was announced at a news conference outside the stadium in Inglewood on Tuesday; terms were not immediately disclosed and workers were expected to ratify the agreement on Wednesday. The concession stands will be open on Friday. The bigger question now is what happens on the pitch.",
-      "team": "USA",
-      "sources": [
-        {
-          "name": "NBC Los Angeles",
-          "url": "https://www.nbclosangeles.com/world-cup/sofi-stadium-workers-strike-world-cup/3901439/"
-        },
-        {
-          "name": "NPR",
-          "url": "https://www.npr.org/2026/06/06/nx-s1-5848682/sofi-stadium-strike-world-cup"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/espn/story/_/id/48980083/sofi-stadium-workers-authorize-strike-ahead-usa-world-cup-opener"
-        }
-      ],
-      "expires_at": "2026-06-20T00:00:00Z"
-    },
-    {
-      "id": "wc26-security-incidents-nyc-kc-2026-06-08",
-      "type": "news",
-      "confidence": "reported",
-      "he": "לפי הדיווחים, שני אירועי אלימות בערי המארח ב-7-8 ביוני העלו שאלות ביטחוניות חדשות ממש לפני פתיחת הטורניר. שישה אנשים נדקרו בתחנת Penn Station בניו יורק ביום ראשון על ידי תוקף חסר בית, וכל הנפגעים צפויים להחלים; רשויות ניו יורק ביטלו מסיבת צפייה חיצונית ועצרו 26 אנשים לאחר שאוהדים הפכו אלימים. בקנזס סיטי ביום שבת נפצעו תשעה אנשים ללא סיכון לחיים בירי ב-79th Street ו-Troost Avenue; כלי תקשורת בינלאומיים תיארו את המיקום כסמוך לבסיס הנבחרת האנגלית, אם כי ראש עיריית קנזס סיטי דחה את הניסוח הזה. ה-FBI מפעיל מרכזי מבצעים משותפים בכל עיר מארחת בימות המשחקים, עם מצלמות בינה מלאכותית, רובוטי בדיקת תיקים וטכנולוגיית יירוט כלי טיס לטורניר שצפוי למשוך עד שבעה מיליון מבקרים. שני אירועים, שתי ערי מארח, יומיים לפני הפיצוח.",
-      "en": "Reports say two violent incidents in World Cup host cities on June 7-8 raised fresh security questions just days before the tournament opened. Six people were stabbed at New York's Penn Station on Sunday by a homeless attacker, with all victims expected to survive; New York authorities cancelled a planned outdoor watch party and made 26 arrests after some fans turned rowdy. In Kansas City on Saturday, nine people sustained non-life-threatening injuries in a shooting on 79th Street and Troost Avenue; global media described the address as near England's World Cup base camp, though the Kansas City mayor pushed back against that framing. The FBI activates joint operations centres in each host city on match days, deploying AI-powered cameras, robot bag scanners, and drone-intercept systems for a tournament expected to draw up to seven million visitors. Two incidents, two host cities, two days before kick-off.",
-      "team": null,
-      "sources": [
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/8/new-york-stabbing-kansas-city-shooting-raise-world-cup-security-concerns"
-        },
-        {
-          "name": "The News Pakistan (AFP)",
-          "url": "https://www.thenews.com.pk/latest/1405200-shooting-and-stabbing-incidents-ahead-of-fifa-world-cup-2026-spark-security-concerns"
-        },
-        {
-          "name": "KCTV5",
-          "url": "https://www.kctv5.com/2026/06/08/kansas-city-mayor-pushes-back-after-global-media-links-shooting-englands-world-cup-camp/"
-        }
-      ],
-      "expires_at": "2026-06-25T00:00:00Z"
-    },
-    {
       "id": "ned-timber-4th-injury-wc2026-2026-06-08",
       "type": "news",
       "confidence": "confirmed",
@@ -281,6 +231,52 @@
         }
       ],
       "expires_at": "2026-06-26T23:59:59Z"
+    },
+    {
+      "id": "artan-somalia-referee-denied-usa-wc2026-2026-06-08",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "עומר ארטאן מסומליה, השופט הסומלי הראשון שמונה אי פעם למונדיאל, נדחה ממנגנון הכניסה לארצות הברית ב-7 ביוני ושוגר חזרה לאיסטנבול, שלושה ימים בלבד לפני תחילת הטורניר. שירות המכס וההגנה על הגבולות האמריקני אישר שארטאן הגיע לנמל התעופה הבינלאומי של מיאמי מאיסטנבול ונמצא שאינו קביל לכניסה בשל חששות ביטחוניים לאחר בדיקה נוספת. סומליה היא בין המדינות ברשימת הגבלות הנסיעה של הנשיא טראמפ. כדי לנסות להתגבר על קשיי הויזה, ארטאן השיג דרכון דיפלומטי בסיוע שגרירות סומליה בניירובי, אך ללא הועיל. הוא נבחר לשופט האפריקאי הטוב ביותר של CAF לשנת 2025 והיה אמור להיות אחד מ-52 פקידים שינהלו 104 משחקים. פיפ\"א לא אישרה מחליף פומבי. שורת הסכסוכים סביב ויזות ואמיגרציה בטורניר זה נפתחה עם משלחת איראן וכעת תובעת את שופטו הראשון.",
+      "en": "Somalia's Omar Artan, the first Somali referee ever appointed to a World Cup, was denied entry to the United States on June 7 and put on a flight back to Istanbul, just three days before the tournament starts. U.S. Customs and Border Protection confirmed Artan arrived at Miami International Airport from Istanbul and was determined to be inadmissible due to vetting concerns after additional inspection. Somalia is among the countries on President Trump's travel restriction list. To try to overcome the visa difficulties, Artan had acquired a diplomatic passport with support from the Somali embassy in Nairobi, but it made no difference. He was named CAF Best African Referee of 2025 and was set to join 52 officials presiding over 104 matches. FIFA has not publicly confirmed a replacement. The visa and immigration row around this tournament began with Iran's delegation and has now claimed its first referee.",
+      "team": null,
+      "sources": [
+        {
+          "name": "US News (AP)",
+          "url": "https://www.usnews.com/news/sports/articles/2026-06-08/somali-referee-for-world-cup-is-denied-entry-into-the-united-states"
+        },
+        {
+          "name": "France 24 (AFP)",
+          "url": "https://www.france24.com/en/live-news/20260608-somali-referee-denied-entry-to-us-for-world-cup-official"
+        },
+        {
+          "name": "NBC Washington",
+          "url": "https://www.nbcwashington.com/world-cup/somali-referee-2026-world-cup-denied-entry-united-states/4114000/"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "wc26-security-incidents-nyc-kc-2026-06-08",
+      "type": "news",
+      "confidence": "reported",
+      "he": "לפי הדיווחים, שני אירועי אלימות בערי המארח ב-7-8 ביוני העלו שאלות ביטחוניות חדשות ממש לפני פתיחת הטורניר. שישה אנשים נדקרו בתחנת Penn Station בניו יורק ביום ראשון על ידי תוקף חסר בית, וכל הנפגעים צפויים להחלים; רשויות ניו יורק ביטלו מסיבת צפייה חיצונית ועצרו 26 אנשים לאחר שאוהדים הפכו אלימים. בקנזס סיטי ביום שבת נפצעו תשעה אנשים ללא סיכון לחיים בירי ב-79th Street ו-Troost Avenue; כלי תקשורת בינלאומיים תיארו את המיקום כסמוך לבסיס הנבחרת האנגלית, אם כי ראש עיריית קנזס סיטי דחה את הניסוח הזה. ה-FBI מפעיל מרכזי מבצעים משותפים בכל עיר מארחת בימות המשחקים, עם מצלמות בינה מלאכותית, רובוטי בדיקת תיקים וטכנולוגיית יירוט כלי טיס לטורניר שצפוי למשוך עד שבעה מיליון מבקרים. שני אירועים, שתי ערי מארח, יומיים לפני הפיצוח.",
+      "en": "Reports say two violent incidents in World Cup host cities on June 7-8 raised fresh security questions just days before the tournament opened. Six people were stabbed at New York's Penn Station on Sunday by a homeless attacker, with all victims expected to survive; New York authorities cancelled a planned outdoor watch party and made 26 arrests after some fans turned rowdy. In Kansas City on Saturday, nine people sustained non-life-threatening injuries in a shooting on 79th Street and Troost Avenue; global media described the address as near England's World Cup base camp, though the Kansas City mayor pushed back against that framing. The FBI activates joint operations centres in each host city on match days, deploying AI-powered cameras, robot bag scanners, and drone-intercept systems for a tournament expected to draw up to seven million visitors. Two incidents, two host cities, two days before kick-off.",
+      "team": null,
+      "sources": [
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/8/new-york-stabbing-kansas-city-shooting-raise-world-cup-security-concerns"
+        },
+        {
+          "name": "The News Pakistan (AFP)",
+          "url": "https://www.thenews.com.pk/latest/1405200-shooting-and-stabbing-incidents-ahead-of-fifa-world-cup-2026-spark-security-concerns"
+        },
+        {
+          "name": "KCTV5",
+          "url": "https://www.kctv5.com/2026/06/08/kansas-city-mayor-pushes-back-after-global-media-links-shooting-englands-world-cup-camp/"
+        }
+      ],
+      "expires_at": "2026-06-25T00:00:00Z"
     }
   ]
 }
