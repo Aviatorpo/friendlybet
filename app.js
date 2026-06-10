@@ -13753,7 +13753,12 @@ async function _updateReopenBanner(active, opts = {}) {
   const hardAffected = !!(st && st.impact_kind === 'hard_invalid_r32');
   if (approved) {
     el.className = 'knockout-reopen-banner pending';
-    if (titleEl) titleEl.textContent = t(afterKickoff ? 'reopen.user.approvedTitle' : 'reopen.user.preKickoffTitle');
+    if (titleEl) {
+      const titleKey = afterKickoff
+        ? (hardAffected ? 'reopen.user.approvedTitle' : 'reopen.user.approvedTitlePool')
+        : (hardAffected ? 'reopen.user.preKickoffTitle' : 'reopen.user.preKickoffTitlePool');
+      titleEl.textContent = t(titleKey);
+    }
     if (subEl) {
       const subKey = afterKickoff
         ? (hardAffected ? 'reopen.user.approvedSubHard' : 'reopen.user.approvedSubPool')
