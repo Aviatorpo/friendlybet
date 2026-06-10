@@ -30,20 +30,23 @@ begin
   if v_mode = 'two_phase' then
     select payload into v from (
       select b.payload, b.created_at,
-        -- total picks across groupPositions (0 when absent / not an object)
+        -- total picks across the real A-L group keys only (junk keys ignored)
         case when jsonb_typeof(b.payload->'groupPositions') = 'object' then
           coalesce((select sum(jsonb_array_length(e.value))
                     from jsonb_each(b.payload->'groupPositions') e
-                    where jsonb_typeof(e.value) = 'array'), 0)
+                    where e.key in ('A','B','C','D','E','F','G','H','I','J','K','L')
+                      and jsonb_typeof(e.value) = 'array'), 0)
         else 0 end as g_total,
-        -- complete = exactly 12 groups each holding 2-3, total 32
+        -- complete = ALL 12 real groups A-L present, each holding 2-3, total 32
         case when jsonb_typeof(b.payload->'groupPositions') = 'object'
+          and (select count(*) from jsonb_each(b.payload->'groupPositions') e
+               where e.key in ('A','B','C','D','E','F','G','H','I','J','K','L')
+                 and jsonb_typeof(e.value) = 'array'
+                 and jsonb_array_length(e.value) between 2 and 3) = 12
           and coalesce((select sum(jsonb_array_length(e.value))
                         from jsonb_each(b.payload->'groupPositions') e
-                        where jsonb_typeof(e.value) = 'array'), 0) = 32
-          and (select count(*) from jsonb_each(b.payload->'groupPositions') e
-               where jsonb_typeof(e.value) = 'array'
-                 and jsonb_array_length(e.value) between 2 and 3) = 12
+                        where e.key in ('A','B','C','D','E','F','G','H','I','J','K','L')
+                          and jsonb_typeof(e.value) = 'array'), 0) = 32
         then 1 else 0 end as g_valid
       from public.pick_backups b
       where b.user_id = v_uid and b.pool_id = v_pid

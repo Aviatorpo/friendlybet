@@ -80,7 +80,8 @@ Two remaining gaps from the Codex re-audit, fixed:
 
 2. **`get_pick_backup` returns the BEST snapshot, not blindly the latest.** Migration
    `2026-06-10-get-pick-backup-best-two-phase.sql`: for two_phase pools it ranks backups by
-   complete-groups (exactly 32, 2-3/group) → most group picks → created_at; single_phase
+   complete-groups (the 12 real keys A-L each present with 2-3, total 32) → most A-L
+   group picks → created_at; single_phase
    keeps latest (its snapshots are full cumulative state). Verified in rolled-back tx:
    two-phase returns the complete-32 even when it's the OLDEST (beating a sparse latest and a
    bracket-only middle); single-phase still returns the latest (a user-removed pick is honored).
