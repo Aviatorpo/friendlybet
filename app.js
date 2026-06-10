@@ -5073,88 +5073,45 @@ async function savePicksToDb(showFeedback = true) {
     return;
   }
 
-  // Preferred: server-side RPC. It computes multiplier_applied SERVER-SIDE from
-  // the caller's own pool rules (closing the multiplier cheat vector), so the
-  // client no longer sends a multiplier. Replaces only the caller's group_picks.
-  // Falls back to the legacy direct write only when the RPC isn't deployed.
+  // v2.10.7: the ONLY working write path is the SECURITY DEFINER RPC. anon
+  // INSERT/DELETE on group_picks is REVOKEd (June-4 hardening), so the legacy
+  // direct write below 401s for every real user. Mirror the single-phase v2.9.12
+  // fix: retry a transient PGRST202 (PostgREST schema-cache reload after any
+  // migration) before giving up, and NEVER silently fall through to the dead
+  // direct write — that silent failure is exactly why two-phase pools ended up
+  // with empty brackets at scale (0 saved knockout rows across 313 pools). The
+  // RPC computes multiplier_applied SERVER-SIDE (closes the multiplier cheat).
   const code = _currentRecoveryCode();
-  if (code) {
-    const picks = [];
-    bettingState.groupOrder.forEach(letter => {
-      (bettingState.picks[letter] || []).forEach(teamCode => picks.push({ group_letter: letter, team_code: teamCode }));
-    });
-    const { error: rpcErr } = await supabaseClient.rpc('save_group_picks_2p', { p_code: code, p_picks: picks });
-    if (!rpcErr) {
-      if (showFeedback) showToast(t('groups.savedOk'), 'success');
-      bettingState.loading = false;
-      return;
-    }
-    if (!_rpcMissing(rpcErr)) {
-      console.error('Save picks RPC error:', rpcErr);
-      if (showFeedback) showToast(t('groups.saveError'), 'error');
-      bettingState.loading = false;
-      return;
-    }
-    // RPC absent -> fall through to the legacy direct write below.
-  }
-
-  try {
-    // First, delete all existing picks for this user
-    await supabaseClient
-      .from('group_picks')
-      .delete()
-      .eq('user_id', state.currentUser.id);
-    
-    // Build new picks array
-    const newPicks = [];
-    bettingState.groupOrder.forEach(letter => {
-      const teams = bettingState.picks[letter] || [];
-      teams.forEach(teamCode => {
-        // v2.5.35: persist the pool-resolved multiplier (per-team override →
-        // category → default). Server-side scoring reads this value directly,
-        // so a snapshot at save time is the authoritative number per pick.
-        const multiplier = (state.currentPool.use_multipliers !== false)
-          ? getPoolTeamMultiplier(state.currentPool, teamCode)
-          : 1.0;
-
-        newPicks.push({
-          user_id: state.currentUser.id,
-          pool_id: state.currentPool.id,
-          group_letter: letter,
-          team_code: teamCode,
-          multiplier_applied: multiplier
-        });
-      });
-    });
-    
-    // Insert new picks
-    if (newPicks.length > 0) {
-      const { error } = await supabaseClient
-        .from('group_picks')
-        .insert(newPicks);
-      
-      if (error) {
-        console.error('Save picks error:', error);
-        if (showFeedback) {
-          showToast(t('groups.saveError'), 'error');
-        }
-        bettingState.loading = false;
-        return;
-      }
-    }
-
-    if (showFeedback) {
-      showToast(t('groups.savedOk'), 'success');
-    }
-
-  } catch (err) {
-    console.error('Save picks error:', err);
-    if (showFeedback) {
-      showToast(t('groups.saveError'), 'error');
-    }
-  } finally {
+  if (!code) {
+    // No code in this session → the RPC can't authenticate the writer and the
+    // direct write is REVOKEd. Be honest instead of dropping the save silently.
+    console.error('savePicksToDb: no recovery code in session — cannot save group picks');
+    showToast(t('bracketSave.noCode'), 'error');
     bettingState.loading = false;
+    return;
   }
+
+  const picks = [];
+  bettingState.groupOrder.forEach(letter => {
+    (bettingState.picks[letter] || []).forEach(teamCode => picks.push({ group_letter: letter, team_code: teamCode }));
+  });
+  const res = await _rpcWrite('save_group_picks_2p', { p_code: code, p_picks: picks });
+  bettingState.loading = false;
+  if (res.ok) {
+    if (showFeedback) showToast(t('groups.savedOk'), 'success');
+    return;
+  }
+  if (!res.missing) {
+    // Genuine business error from the deployed RPC (e.g. 'pool locked').
+    console.error('Save picks RPC error:', res.error);
+    showToast(t('groups.saveError'), 'error');
+    return;
+  }
+  // Still PGRST202 after all retries: RPC transiently unreachable and the direct
+  // write is dead for anon — don't attempt it (it would only 401). Tell the user
+  // honestly so they retry instead of losing picks silently.
+  console.error('savePicksToDb: save_group_picks_2p unreachable after retries');
+  showToast(t('bracketSave.retryLater'), 'error');
 }
 
 async function saveProgressAndExit() {
@@ -5949,74 +5906,39 @@ async function saveKnockoutPicksToDb(showFeedback = true) {
     return;
   }
 
-  // Preferred: server-side RPC (multiplier computed server-side; replaces only the
-  // caller's two-phase knockout rows, bracket_position IS NULL). Legacy fallback
-  // only when the RPC isn't deployed.
+  // v2.10.7: server-side RPC is the ONLY working write path (anon write on
+  // knockout_picks is REVOKEd; the legacy direct write below 401s for every real
+  // user). Mirror the single-phase v2.9.12 fix: retry a transient PGRST202
+  // (schema-cache reload) and NEVER silently fall through to the dead direct
+  // write — the silent failure is why two-phase brackets vanished at scale. The
+  // RPC replaces only the caller's two-phase knockout rows (bracket_position NULL)
+  // and computes multiplier_applied server-side.
   const code = _currentRecoveryCode();
-  if (code) {
-    const picks = Object.keys(knockoutState.picks).map(matchId => ({
-      match_id: matchId,
-      round: matchId.split('_')[0],
-      predicted_winner: knockoutState.picks[matchId]
-    }));
-    const { error: rpcErr } = await supabaseClient.rpc('save_knockout_picks_2p', { p_code: code, p_picks: picks });
-    if (!rpcErr) {
-      if (showFeedback) showToast(t('knockoutEx.savedOk'), 'success');
-      return;
-    }
-    if (!_rpcMissing(rpcErr)) {
-      console.error('Knockout save RPC error:', rpcErr);
-      if (showFeedback) showToast(t('groups.saveError'), 'error');
-      return;
-    }
-    // RPC absent -> fall through to the legacy direct write below.
+  if (!code) {
+    console.error('saveKnockoutPicksToDb: no recovery code in session — cannot save knockout picks');
+    showToast(t('bracketSave.noCode'), 'error');
+    return;
   }
 
-  try {
-    // Delete existing
-    await supabaseClient
-      .from('knockout_picks')
-      .delete()
-      .eq('user_id', state.currentUser.id);
-    
-    // Build new picks
-    const newPicks = [];
-    Object.keys(knockoutState.picks).forEach(matchId => {
-      const round = matchId.split('_')[0];
-      const winnerCode = knockoutState.picks[matchId];
-      // v2.5.35: pool-aware multiplier (per-team override → category → default)
-      const multiplier = (state.currentPool.use_multipliers !== false)
-        ? getPoolTeamMultiplier(state.currentPool, winnerCode)
-        : 1.0;
-      
-      newPicks.push({
-        user_id: state.currentUser.id,
-        pool_id: state.currentPool.id,
-        match_id: matchId,
-        round: round,
-        predicted_winner: winnerCode,
-        multiplier_applied: multiplier
-      });
-    });
-    
-    if (newPicks.length > 0) {
-      const { error } = await supabaseClient
-        .from('knockout_picks')
-        .insert(newPicks);
-      
-      if (error) {
-        console.error('Knockout save error:', error);
-        if (showFeedback) showToast(t('groups.saveError'), 'error');
-        return;
-      }
-    }
-
+  const picks = Object.keys(knockoutState.picks).map(matchId => ({
+    match_id: matchId,
+    round: matchId.split('_')[0],
+    predicted_winner: knockoutState.picks[matchId]
+  }));
+  const res = await _rpcWrite('save_knockout_picks_2p', { p_code: code, p_picks: picks });
+  if (res.ok) {
     if (showFeedback) showToast(t('knockoutEx.savedOk'), 'success');
-
-  } catch (err) {
-    console.error('Knockout save error:', err);
-    if (showFeedback) showToast(t('groups.saveError'), 'error');
+    return;
   }
+  if (!res.missing) {
+    console.error('Knockout save RPC error:', res.error);
+    showToast(t('groups.saveError'), 'error');
+    return;
+  }
+  // Still PGRST202 after all retries: don't attempt the dead anon direct write
+  // (it would only 401). Be honest so the user retries instead of losing picks.
+  console.error('saveKnockoutPicksToDb: save_knockout_picks_2p unreachable after retries');
+  showToast(t('bracketSave.retryLater'), 'error');
 }
 
 function exitKnockoutBetting() {
