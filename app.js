@@ -2903,6 +2903,21 @@ function renderAdminMembers() {
           ? `<span class="admin-member-ko-flag missing">${t('adminMembersEx.needsKnockout')}</span>`
           : (annexCount > 0 ? `<span class="admin-member-ko-flag clear">${t('adminMembersEx.annexNoIssue')}</span>` : '')));
 
+    const grant = member.reopenGrant || {};
+    const reopenActive = !!grant.grant_active;
+    const showReopenControl = (spIsLocked() || annexReview) && adminState.isV2 && !member.isAdmin;
+    const reopenHtml = showReopenControl
+      ? `<div class="admin-member-reopen" data-member-id="${member.id}">` +
+        (reopenActive
+          ? `<div class="amr-ok">${t('reopen.admin.grantedUntil', { time: _fmtReopenExpiry(grant.expires_at) })}</div>` +
+            `<div class="amr-actions">` +
+              `<button type="button" class="amr-allow">${t('reopen.admin.extendBtn')}</button>` +
+              `<button type="button" class="amr-copy">${t('reopen.admin.copyBtn', { name: member.nickname || '' })}</button>` +
+            `</div>`
+          : `<button type="button" class="amr-allow">${t('reopen.admin.allowBtn')}</button>`) +
+        `</div>`
+      : '';
+
     // Quick action buttons for pending users
     let quickActions = '';
     if (member.approval_status === 'pending' && !member.isAdmin) {
@@ -2940,6 +2955,7 @@ function renderAdminMembers() {
           </span>
           ${koFlag}
         </div>
+        ${reopenHtml}
       </div>
       ${quickActions}
     `;
@@ -2973,18 +2989,10 @@ function renderAdminMembers() {
     list.appendChild(card);
 
     // v2.10: post-lock, let the admin approve/extend THIS member's knockout review
-    // and copy a ready personal nudge. Appended as a full-width sibling so it
-    // doesn't disturb the card's row layout. Server validates full eligibility.
-    if ((spIsLocked() || annexReview) && adminState.isV2 && !member.isAdmin) {
-      const rec = document.createElement('div');
-      rec.className = 'admin-member-reopen';
-      const grant = member.reopenGrant || {};
-      const active = !!grant.grant_active;
-      rec.innerHTML = active
-        ? `<div class="amr-ok">${t('reopen.admin.grantedUntil', { time: _fmtReopenExpiry(grant.expires_at) })}</div>` +
-          `<button type="button" class="amr-allow">${t('reopen.admin.extendBtn')}</button>` +
-          `<button type="button" class="amr-copy">${t('reopen.admin.copyBtn', { name: member.nickname || '' })}</button>`
-        : `<button type="button" class="amr-allow">${t('reopen.admin.allowBtn')}</button>`;
+    // and copy a ready personal nudge. Rendered inside the member card so the
+    // deadline belongs visually to the participant.
+    if (showReopenControl) {
+      const rec = card.querySelector('.admin-member-reopen');
       rec.addEventListener('click', e => e.stopPropagation());
       const allowBtn = rec.querySelector('.amr-allow');
       allowBtn.addEventListener('click', async () => {
@@ -2993,7 +3001,7 @@ function renderAdminMembers() {
         if (res && res.ok) {
           member.reopenGrant = { ...(member.reopenGrant || {}), grant_active: true, expires_at: res.expires_at || null, incident_key: 'manual_reopen' };
           rec.innerHTML = `<div class="amr-ok">${res.expires_at ? t('reopen.admin.grantedUntil', { time: _fmtReopenExpiry(res.expires_at) }) : t('reopen.admin.granted')}</div>` +
-            `<button type="button" class="amr-copy">${t('reopen.admin.copyBtn', { name: member.nickname || '' })}</button>`;
+            `<div class="amr-actions"><button type="button" class="amr-copy">${t('reopen.admin.copyBtn', { name: member.nickname || '' })}</button></div>`;
           const cp = rec.querySelector('.amr-copy');
           cp.addEventListener('click', (ev) => { ev.stopPropagation(); _adminCopyReopenMsg(member.nickname); });
         } else {
@@ -3003,7 +3011,6 @@ function renderAdminMembers() {
       });
       const cp = rec.querySelector('.amr-copy');
       if (cp) cp.addEventListener('click', (ev) => { ev.stopPropagation(); _adminCopyReopenMsg(member.nickname); });
-      list.appendChild(rec);
     }
   });
 }

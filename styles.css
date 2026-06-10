@@ -1912,7 +1912,7 @@ body.rtl .wizard-mult-power input:checked + .wizard-mult-power-track .wizard-mul
   cursor: pointer;
   padding: 12px 14px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
   font-size: 13.5px;
   font-weight: 700;
@@ -3853,6 +3853,7 @@ body.ltr #next-group-btn svg {
   font-weight: 700;
   font-size: 14px;
   flex-shrink: 0;
+  margin-top: 1px;
 }
 
 .admin-member-info {
@@ -3891,6 +3892,7 @@ body.ltr #next-group-btn svg {
 
 .admin-member-progress {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
   margin-top: 4px;
 }
@@ -3967,8 +3969,8 @@ body.ltr #next-group-btn svg {
   border-top: 1px solid rgba(232, 168, 90, 0.28);
 }
 .admin-ko-nudge-banner .akn-actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -4167,22 +4169,27 @@ body.ltr #next-group-btn svg {
 
 /* v2.10: per-member recovery actions in the admin members screen */
 .admin-member-reopen {
-  display: flex; flex-direction: column; gap: 8px;
-  margin: -3px 0 9px; padding: 10px 12px;
+  display: flex; flex-direction: column; gap: 7px;
+  margin-top: 8px; padding: 8px 9px;
   background: rgba(61, 220, 151, 0.06);
   border: .5px solid rgba(61, 220, 151, 0.3);
-  border-radius: 10px;
+  border-radius: 9px;
 }
 .admin-member-reopen .amr-allow {
   width: 100%; background: linear-gradient(140deg, #ecd49a, #d9b46a);
   color: #1a1408; font-weight: 800; font-size: 12.5px;
-  border: none; border-radius: 9px; padding: 9px; cursor: pointer;
+  border: none; border-radius: 8px; padding: 8px 9px; cursor: pointer;
 }
-.admin-member-reopen .amr-ok { font-size: 11.5px; color: #3ddc97; font-weight: 700; }
+.admin-member-reopen .amr-ok { font-size: 11.5px; color: #3ddc97; font-weight: 800; line-height: 1.3; }
+.admin-member-reopen .amr-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  gap: 6px;
+}
 .admin-member-reopen .amr-copy {
-  width: 100%; display: flex; align-items: center; justify-content: center; gap: 7px;
+  width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px;
   background: rgba(61, 220, 151, 0.14); color: #7df0bf; font-weight: 700; font-size: 12px;
-  border: 1px solid rgba(61, 220, 151, 0.4); border-radius: 9px; padding: 9px; cursor: pointer;
+  border: 1px solid rgba(61, 220, 151, 0.4); border-radius: 8px; padding: 8px 9px; cursor: pointer;
 }
 .admin-ko-nudge-banner .akn-text {
   color: #f3c987;
@@ -4191,7 +4198,6 @@ body.ltr #next-group-btn svg {
   line-height: 1.5;
 }
 .admin-ko-nudge-banner .akn-copy {
-  flex: 1 1 150px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4200,13 +4206,15 @@ body.ltr #next-group-btn svg {
   color: #1a1408;
   font-weight: 800;
   font-size: 13px;
-  padding: 10px 14px;
+  min-height: 40px;
+  padding: 9px 10px;
   border: 0;
   border-radius: 10px;
   cursor: pointer;
+  text-align: center;
+  line-height: 1.2;
 }
 .admin-ko-nudge-banner .akn-view {
-  flex: 1 1 140px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4215,10 +4223,18 @@ body.ltr #next-group-btn svg {
   color: #f3c987;
   font-weight: 700;
   font-size: 13px;
-  padding: 10px 14px;
+  min-height: 40px;
+  padding: 9px 10px;
   border: 1px solid rgba(232, 168, 90, 0.5);
   border-radius: 10px;
   cursor: pointer;
+  text-align: center;
+  line-height: 1.2;
+}
+@media (max-width: 380px) {
+  .admin-ko-nudge-banner .akn-actions {
+    grid-template-columns: 1fr;
+  }
 }
 .admin-member-card.annex-hard {
   border-color: rgba(232, 168, 90, 0.62);
