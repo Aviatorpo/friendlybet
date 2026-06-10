@@ -52,10 +52,14 @@ for (const f of fs.existsSync(migDir) ? fs.readdirSync(migDir) : []) {
   let m;
   while ((m = re.exec(src))) {
     const tail = m[2] || '';
-    const hasWhere = /\bwhere\b/i.test(tail);
     const fakeFilter = /(!=|<>|\bneq\b|\bnot\s+in\b)[^;]*(0{4,}|__NEVER__)/i.test(tail);
-    if (!hasWhere || fakeFilter) {
-      findings.push(`${f}: blanket DELETE FROM ${m[1]} (no scoped WHERE, no replay guard)`);
+    // A delete is SCOPED (safe) only if it pins specific rows: references user_id/pool_id,
+    // or an equality on id/code (e.g. delete_pool's `where id = v_pool`). Anything else —
+    // no WHERE, `WHERE true`, `WHERE 1=1`, `WHERE <col> IS NOT NULL`, a fake never-filter —
+    // is a blanket wipe of a protected table and must be flagged.
+    const scoped = /\b(user_id|pool_id)\b/i.test(tail) || /\b(id|code)\b\s*=/i.test(tail);
+    if (!scoped || fakeFilter) {
+      findings.push(`${f}: unscoped DELETE FROM ${m[1]} (not pinned by user_id/pool_id/id=, no replay guard)`);
     }
   }
 }
