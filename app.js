@@ -2843,17 +2843,14 @@ function renderAdminMembers() {
           '<div class="akn-title">' + t('adminMembersEx.annexCReviewTitle') + '</div>' +
           '<div class="akn-text">' + t('adminMembersEx.annexCReviewGlitch', { n: annexCount, hard: annexHardCount, remind: annexReminderCount }) + '</div>' +
         '</div></div>' +
-        '<div class="akn-meta">' +
-          '<span>' + t('adminMembersEx.annexPoolCount', { n: annexCount }) + '</span>' +
-          '<span>' + t('adminMembersEx.annexHardCount', { n: annexHardCount }) + '</span>' +
-          '<span>' + t('adminMembersEx.annexReminderCount', { n: annexReminderCount }) + '</span>' +
-        '</div>' +
         '<div class="akn-you">' + adminAnnexStatus + '</div>' +
         '<div class="akn-actions">' +
           '<button type="button" class="akn-copy" id="admin-ko-copy-btn">' +
           '<i class="ti ti-copy"></i><span>' + t('adminMembersEx.copyNudge') + '</span></button>' +
           '<button type="button" class="akn-view" id="admin-ko-view-btn">' +
           '<i class="ti ti-users"></i><span>' + t('adminMembersEx.viewAffectedMembers') + '</span></button>' +
+          '<button type="button" class="akn-view" id="admin-ko-own-btn">' +
+          '<i class="ti ti-tournament"></i><span>' + t('adminMembersEx.reviewMyBracket') + '</span></button>' +
         '</div>';
     } else {
       nudge.innerHTML =
@@ -2874,6 +2871,8 @@ function renderAdminMembers() {
       const target = list.querySelector('.admin-member-card.annex-hard') || list.querySelector('.admin-member-card.annex-review');
       if (target && target.scrollIntoView) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
+    const ownBtn = nudge.querySelector('#admin-ko-own-btn');
+    if (ownBtn) ownBtn.addEventListener('click', () => _adminOpenOwnCorrectionBracket());
   }
 
   sorted.forEach(member => {
@@ -3023,6 +3022,15 @@ function _adminCopyReopenMsg(name) {
   const msg = t('reopen.admin.personalMsg', { name: name || '' });
   try { navigator.clipboard.writeText(msg); showToast(t('reopen.admin.copied'), 'success'); }
   catch (_) { showToast(msg, 'info'); }
+}
+
+async function _adminOpenOwnCorrectionBracket() {
+  try {
+    const st = await _spFetchReopenStatus();
+    if (st && st.can_reenter) { await spReopenKnockout(); return; }
+    if (typeof startSinglePhaseBetting === 'function') { await startSinglePhaseBetting(); return; }
+  } catch (_) {}
+  try { goToDashboard(); } catch (_) {}
 }
 
 // Quick approve - one click
