@@ -1,6 +1,45 @@
 {
-  "updatedAt": "2026-06-11T00:20:00.000Z",
+  "updatedAt": "2026-06-11T03:30:00.000Z",
   "items": [
+    {
+      "id": "civ-beat-france-wc2026-warmup-2026-06-04",
+      "confidence": "confirmed",
+      "team": "CIV",
+      "en": "Ivory Coast made history on June 4, beating France 2-1 in Nantes in a World Cup warm-up to record their first-ever victory against France in any match. Rayan Cherki gave Les Bleus the lead but Guela Doue and then Amad Diallo, the Manchester United winger, turned the result around in the second half as Ivory Coast outpressed a rotated French squad. Deschamps made ten substitutions in the second half and called it a useful reminder rather than a crisis, and five days later France beat Northern Ireland 3-1. The result matters more because of what comes next: Ivory Coast and Germany share Group E, opening on June 14 against Ecuador in Philadelphia and Curacao in Houston respectively. A team that beat one of the tournament co-favourites in a warm-up has already served notice on the group. If they can unsettle France off a standing start, can they do it again over 90 real minutes?",
+      "he": "קוט דיבואר עשתה היסטוריה ב-4 ביוני, כשניצחה את צרפת 2:1 בנאנט בחימום לפני המונדיאל, בניצחון הראשון שלה אי-פעם על צרפת בכל משחק שהוא. ריאן שרקי פתח לצרפת, אך גואלה דואה ואמאד דיאלו, הקצה של מנצ'סטר יונייטד, הפכו את התוצאה במחצית השנייה כשהאיבוארים לחצו על קבוצה צרפתית מסובבת. דשאן ביצע עשרה חילופים במחצית השנייה וכינה זאת תזכורת שימושית ולא משבר, ולאחר חמישה ימים צרפת ניצחה את אירלנד הצפונית 3:1. התוצאה חשובה עוד יותר לנוכח מה שעומד בפניה: קוט דיבואר וגרמניה חולקות קבוצה E, ופותחות ב-14 ביוני מול אקוואדור בפילדלפיה ומול קוראסאו בהיוסטון בהתאמה. קבוצה שניצחה אחת ממועדפות הטורניר בחימום כבר שלחה אזהרה לכל קבוצה אחרת בקבוצה. אם הן יכולות להרעיש את צרפת בנקודת פתיחה, האם הן יוכלו לעשות זאת שוב על פני 90 דקות אמיתיות?",
+      "sources": [
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/4/ivory-coast-beat-france-in-world-cup-warning-to-one-of-the-favourites" },
+        { "name": "France 24", "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/401864934" }
+      ],
+      "expires_at": "2026-06-21T23:59:59Z"
+    },
+    {
+      "id": "esp-yamal-barcelona-conditions-wc2026-2026-06-10",
+      "confidence": "reported",
+      "team": "ESP",
+      "en": "Reports say Barcelona have handed Spain a staged recovery plan for Lamine Yamal, sidelined since April 22 with a left hamstring tear. The preferred schedule: no more than 15 minutes against Cape Verde in the June 15 opener, around 45 to 60 minutes against Saudi Arabia, and only a full start in the final group match against Uruguay. Spain coach De la Fuente confirmed on June 8 that Yamal and two other injured forwards are on track if there are no setbacks, and the final call rests with his coaching staff, not the club. But Barcelona's physiotherapist is embedded in Spain's medical team and monitors Yamal's recovery daily. An 18-year-old at his first World Cup with his club writing the script for how many minutes he plays in each game: that is a genuinely new kind of story. Spain's best hope for the next decade arrives in North America on a countdown clock.",
+      "he": "לפי הדיווחים, ברצלונה מסרה לספרד תוכנית שיקום מדורגת עבור לאמין יאמאל, שמחוץ מאז ה-22 באפריל עם קרע בשריר הירך השמאלי. לוח הזמנים המועדף: לא יותר מ-15 דקות מול קאבו ורדה בפתיחה ב-15 ביוני, כ-45 עד 60 דקות מול ערב הסעודית, ורק פתיחה מלאה במשחק הקבוצה האחרון מול אורוגוואי. המאמן דה לה פואנטה אישר ב-8 ביוני שיאמאל ושני חלוצים פצועים נוספים בתהליך אם לא יהיו תקלות, וההחלטה הסופית בידי הצוות המאמן שלו, לא של המועדון. אבל הפיזיותרפיסט של ברצלונה משובץ בצוות הרפואי של ספרד ועוקב אחרי ההתאוששות של יאמאל מדי יום. בן 18 במונדיאל הראשון שלו, כשהמועדון שלו כותב את התסריט לכמה דקות הוא ישחק בכל משחק: זה סיפור מסוג חדש. התקווה הטובה ביותר של ספרד לעשור הבא מגיעה לצפון אמריקה עם שעון ספירה לאחור.",
+      "sources": [
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/why-barcelona-are-worried-about-lamine-yamal-as-teenage-wonderkid-prepares-for-a-shot-at-world-cup-glory-with-spain" },
+        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/world-cup/barcelona-reportedly-sets-conditions-for-lamine-yamals-participation-with-spain-at-the-2026-world-cup/" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/spain-world-cup-favorite-one-193020572.html" }
+      ],
+      "expires_at": "2026-07-02T23:59:59Z"
+    },
+    {
+      "id": "ger-karl-ouedraogo-squad-wc2026-2026-06-06",
+      "confidence": "confirmed",
+      "team": "GER",
+      "en": "When RB Leipzig's Assan Ouedraogo got the call to join Germany's World Cup squad, he had 48 hours notice. Bayern Munich midfielder Lennart Karl, 18, suffered a torn muscle in training in Chicago on June 6, just days before Germany open Group E against Curacao in Houston on June 14. Karl had delivered 17 goal contributions for Bayern this season and was among the youngest players in any of the 48 squads. Ouedraogo, 20, steps in with coach Julian Nagelsmann's direct backing: Nagelsmann said he made an excellent start in his early Germany appearances and told him to play with courage and confidence. Germany's squad depth absorbed the blow without a crisis. For Ouedraogo, it was the phone call every young player imagines. The question is whether he can deliver when the tournament actually starts.",
+      "he": "כאשר אסאן אואדראוגו של RB Leipzig קיבל את השיחה להצטרף לסגל המונדיאל של גרמניה, היו לו 48 שעות הודעה. לנרט קרל, בן ה-18 מ-Bayern Munich, קרע שריר באימון בשיקגו ב-6 ביוני, ימים ספורים לפני פתיחת גרמניה בקבוצה E מול קוראסאו בהיוסטון ב-14 ביוני. לקרל היו 17 תרומות שערים לבייארן העונה והוא היה אחד השחקנים הצעירים ביותר מבין 48 הסגלים. אואדראוגו, בן 20, נכנס עם גיבוי ישיר של המאמן יוליאן נאגלסמן, שאמר שהוא עשה התחלה מצוינת בהופעותיו הראשונות לגרמניה ואמר לו לשחק עם אומץ וביטחון. עומק הסגל של גרמניה ספג את המכה ללא משבר. עבור אואדראוגו, זו היתה השיחה שכל שחקן צעיר מדמיין לעצמו. השאלה היא האם הוא יוכל לספק כשהטורניר מתחיל באמת.",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48977173/lennart-karl-injured-germany-training-miss-world-cup" },
+        { "name": "Bundesliga.com", "url": "https://www.bundesliga.com/en/bundesliga/news/lennart-karl-world-cup-injury-bayern-munich-germany-37718" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/confirmed-assan-ou-draogo-replaces-220200348.html" }
+      ],
+      "expires_at": "2026-07-05T23:59:59Z"
+    },
     {
       "id": "fra-olise-hattrick-warmup-wc2026-2026-06-09",
       "confidence": "confirmed",
@@ -14,18 +53,6 @@
         { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/france-ease-past-northern-ireland-224000732.html" }
       ],
       "expires_at": "2026-06-23T00:00:00Z"
-    },
-    {
-      "id": "wc26-goldman-bca-prediction-2026-06-10",
-      "confidence": "confirmed",
-      "en": "On the eve of the 2026 World Cup, two closely-watched forecasting models agree on the favourites but disagree on the winner. Goldman Sachs, whose model analysed nearly 20,000 matches using an Elo-based statistical framework, makes Spain the 26% favourite, France second at 19% and Argentina third at 14%. The bank notes that history almost always favours a European team in the cycle after a South American winner, and that defending champions carry a statistical drag at the following tournament. BCA Research, the Montreal investment firm that correctly predicted both France's 2018 title and Argentina's 2022 penalty-shootout win, has published its third forecast and this time picks France to beat Portugal in the 2026 final. Two models agree France and Spain are the standout candidates but disagree on which one lifts the trophy. The pitch in Mexico City opens on Thursday. The forecasters have had their say.",
-      "he": "ערב מונדיאל 2026, שני מודלי חיזוי נצפים מסכימים על המועדפות אך חלוקים לגבי המנצחת. גולדמן זאקס, שמודלו ניתח כמעט 20,000 משחקים באמצעות מסגרת סטטיסטית מבוססת Elo, מציב את ספרד כמועדפת ב-26%, צרפת שנייה ב-19% וארגנטינה שלישית ב-14%. הבנק מציין שההיסטוריה כמעט תמיד מעדיפה קבוצה אירופית במחזור שאחרי ניצחון דרום-אמריקני, ושאלופות מתגוננות סובלות מירידה סטטיסטית בטורניר הבא. BCA Research, חברת ההשקעות ממונטריאול שניבאה נכון הן את תואר צרפת ב-2018 והן את ניצחון ארגנטינה בבעיטות עונשין ב-2022, פרסמה את תחזיתה השלישית ובפעם זו בוחרת בצרפת לנצח את פורטוגל בגמר 2026. שני מודלים מסכימים שצרפת וספרד הן המועמדות הבולטות אך חלוקים לגבי מי מרימה את הגביע. המגרש במקסיקו סיטי נפתח ביום חמישי. המנבאים אמרו את דברם.",
-      "sources": [
-        { "name": "Euronews", "url": "https://www.euronews.com/business/2026/06/10/world-cup-2026-market-analysts-who-called-it-twice-have-picked-a-new-winner" },
-        { "name": "CNN Business", "url": "https://www.cnn.com/2026/06/01/business/betting-world-cup-goldman-sachs-prediction-markets" },
-        { "name": "Bloomberg", "url": "https://www.bloomberg.com/news/articles/2026-05-29/goldman-s-model-shows-spain-as-26-probable-world-cup-winner" }
-      ],
-      "expires_at": "2026-06-30T00:00:00Z"
     },
     {
       "id": "can-flores-nelson-squad-wc2026-2026-06-09",
@@ -55,18 +82,6 @@
       "expires_at": "2026-06-30T00:00:00Z"
     },
     {
-      "id": "mex-rsa-2010-echo-wc2026-2026-06-10",
-      "confidence": "confirmed",
-      "en": "The 2026 World Cup opens with a piece of living history: Mexico vs South Africa on June 11 is a replay of the tournament's opening fixture from exactly 16 years ago, when Bafana Bafana met Mexico on June 11, 2010 in Johannesburg. Siphiwe Tshabalala scored what many still call the greatest opening goal in World Cup history that day, a booming left-footed strike that rocked a stadium and a nation, before Rafael Marquez equalised for a 1-1 draw. Tshabalala broke his silence ahead of the 2026 rematch with a direct warning to Mexico: 'We are ready, it's a World Cup.' This time Mexico are the hosts, the altitude of Mexico City at 2,240 metres replacing the roar of Soccer City in Soweto. South Africa arrive as heavy underdogs. The venue, the opponents, and even the calendar date are the same. The result is the only thing that can be different.",
-      "he": "מונדיאל 2026 נפתח עם חתיכת היסטוריה חיה: מקסיקו מול דרום אפריקה ב-11 ביוני הוא חזרה על משחק הפתיחה של הטורניר מלפני 16 שנה בדיוק, כשבאפאנה בפאנה נפגשה עם מקסיקו ב-11 ביוני 2010 ביוהנסבורג. ציפיווה צ'אבאלאלה הבקיע מה שרבים עדיין מכנים השער הפותח הגדול ביותר בהיסטוריית גביע העולם, מכה עוצמתית ברגל שמאל שהרעידה אצטדיון ועם, לפני שרפאל מרקז השווה לתוצאה 1:1. לקראת ה-2026 שבר צ'אבאלאלה את שתיקתו עם אזהרה ישירה: אנחנו מוכנים, זה גביע עולם. הפעם מקסיקו היא המארחת, כשגובה 2,240 מטרים של מקסיקו סיטי מחליף את השאגה של Soccer City בסוווטו. דרום אפריקה מגיעה כמועדפת-נגד ברורה. האצטדיון, היריבות ואפילו תאריך הלוח - זהים. התוצאה היא הדבר היחיד שיכול להיות שונה.",
-      "sources": [
-        { "name": "CNN", "url": "https://www.cnn.com/2026/06/09/sport/siphiwe-tshabalala-south-africa-mexico-world-cup" },
-        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/tshabalala-warns-mexico-we-are-ready-it-s-a-world-cup-2026-06-08" },
-        { "name": "ESPN", "url": "https://www.espn.com/espn/story/_/id/48998339/mexico-vs-south-africa-kick-team-news-how-watch-fifa-world-cup-opener" }
-      ],
-      "expires_at": "2026-06-12T23:59:59Z"
-    },
-    {
       "id": "wc26-sofi-stadium-los-angeles-2026-06-10",
       "confidence": "confirmed",
       "en": "SoFi Stadium in Inglewood will be known as Los Angeles Stadium during the 2026 World Cup, per FIFA rules barring competing sponsors. The transformation from NFL to soccer venue required far more than a name change: the stadium's artificial turf was ripped out and replaced by natural grass grown in Washington State and delivered in refrigerated trucks more than 1,600 miles south. To meet FIFA's minimum pitch width of 74 yards, wider than the NFL standard of 54 yards, engineers physically removed more than 400 corner seats. LED grow lights now run roughly 18 hours a day to sustain the grass inside the covered stadium. Los Angeles Stadium will host eight World Cup matches, including the United States' Group D opener against Paraguay on June 12. The grass is in, the seats are gone, and one of the most expensive stadiums ever built is ready for a different kind of football.",
@@ -77,19 +92,6 @@
         { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/sofi-stadium-gets-dramatic-fifa-203711439.html" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "pry-alfaro-qualifying-run-wc2026-2026-06-10",
-      "confidence": "confirmed",
-      "team": "PAR",
-      "en": "Paraguay arrive at their first World Cup since 2010 as one of the tournament's most compelling underdog stories. Under Gustavo Alfaro, appointed in August 2024 after a dismal Copa America exit, Paraguay ran an eight-match unbeaten streak in CONMEBOL qualifying and recorded wins over Argentina, Brazil and Uruguay, feats that would have seemed fantasy when the campaign began. The defensive platform was extraordinary: only 10 goals conceded in 18 qualifying matches, one of the tightest records in South American qualifying history. Alfaro built his side in a disciplined mid-to-low block designed to suffocate central spaces and counter with quick, direct football led by talent like Enciso. Paraguay open Group D against the host United States at Los Angeles Stadium on June 12. A team that almost missed the tournament entirely, and the squad that silenced three continental giants along the way. What happens when they face a different kind of pressure, playing the host nation on its home turf?",
-      "he": "פרגוואי מגיעה למונדיאל הראשון שלה מאז 2010 כאחד מסיפורי הגמד המרתקים ביותר של הטורניר. תחת גוסטבו אלפארו, שמונה באוגוסט 2024 לאחר יציאה כושלת מקופה אמריקה, רשמה פרגוואי רצף של שמונה משחקים ללא הפסד בשלבי ההכשרה של קונמבול, כולל ניצחונות מול ארגנטינה, ברזיל ואורוגוואי, הישגים שנראו כדמיון בתחילת הקמפיין. הבסיס ההגנתי היה יוצא דופן: רק 10 שערים ספגו ב-18 משחקי ההכשרה, אחד מהשיאים ההדוקים ביותר בהיסטוריית ההכשרה הדרום-אמריקנית. אלפארו בנה את קבוצתו בבלוק ביניים-נמוך ממושמע שנועד לחנוק את האזורים המרכזיים ולתקוף בנגדגול עם כדורגל ישיר ומהיר. פרגוואי פותחת קבוצה D מול ארצות הברית המארחת ב-Los Angeles Stadium ב-12 ביוני. קבוצה שכמעט לא התכשרה לטורניר, עם הנבחרת שהשתיקה שלושה ענקיות יבשתיות בדרך. מה קורה כשמתמודדים עם לחץ מסוג אחר, ומשחקים מול נבחרת המארחת על הדשא שלה?",
-      "sources": [
-        { "name": "FIFA (official)", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/paraguay-squad-announcement-gustavo-alfaro" },
-        { "name": "Goal.com", "url": "https://www.goal.com/en/originals/world-cup-2026-guide-paraguay/blt294602f9f302d111" },
-        { "name": "Sports Illustrated", "url": "https://www.si.com/soccer/paraguay-2026-world-cup-preview" }
-      ],
-      "expires_at": "2026-06-30T00:00:00Z"
     },
     {
       "id": "arg-messi-3-0-iceland-wc26-2026-06-09",
@@ -113,7 +115,7 @@
       "he": "משבר המונדיאל של איראן העמיק ב-9 ביוני כשפיפ\"א הסירה את הקצאת הכרטיסים הרשמית לאוהדי איראן לשלושת משחקי שלב הבתים שלה בארצות הברית, ומותירה אלפי מעריצים ללא אפשרות לרכוש כרטיסים בערוצים הרשמיים פחות משלושה ימים לפני פתיחת הטורניר. התאחדות הכדורגל האיראנית אמרה שכבר פתחה במכירת כרטיסים לפני שנמשכו מהשוק ללא אזהרה, תיארה את הצעד כהפרה של עקרונות השוויון של פיפ\"א, והכריזה על הגשת תלונה רשמית. לאחר אובדן 14 פקידי ההתאחדות בשל דחיות ויזות, מעבר מחנה האימונים מאריזונה למקסיקו, ועכשיו הקפאת הכרטיסים, השאלה היא מה הסגל עצמו עושה עם כל הרעש הזה כשהשופט סוף-סוף שורק.",
       "sources": [
         { "name": "NBC News", "url": "https://www.nbcnews.com/sports/soccer/iran-says-ticket-allocation-world-cup-withdrawn-days-tournament-rcna349152" },
-        { "name": "LBC", "url": "https://www.lbc.co.uk/article/world-cup-2026-iran-tickets-withdraw-5HjdbKf_2/" },
+        { "name": "LBC", "url": "https://www.lbc.co.uk/article/world-cup-2026/iran-tickets-withdraw-5HjdbKf_2/" },
         { "name": "Heavy.com", "url": "https://heavy.com/sports/soccer/world-cup/fifa-world-cup-2026-shock-iran-fans-left-stranded-after-fifa-revokes-thousands-of-tickets/" }
       ],
       "expires_at": "2026-06-26T23:59:59Z"
@@ -132,18 +134,6 @@
       "expires_at": "2026-07-19T23:59:59Z"
     },
     {
-      "id": "wc26-water-bottle-uturn-2026-06-10",
-      "confidence": "confirmed",
-      "en": "FIFA reversed an unpopular ban on outside water bottles at World Cup venues in the United States and Canada just days before the tournament began, following fierce backlash from fan groups and politicians. The updated policy allows each fan to bring in one soft, factory-sealed plastic bottle of up to 590 ml. Reusable and hard-sided containers remain banned on safety grounds, with FIFA citing concerns about thrown objects. The original ban drew particular criticism because many open-air host-city stadiums are expecting afternoon match-day temperatures above 35 degrees Celsius. With a 48-team World Cup spread across three countries, tournament rules were still shifting on the eve of kickoff. Fans pushed back and won a partial reversal.",
-      "he": "פיפ\"א ביטלה איסור לא פופולרי על הכנסת בקבוקי מים חיצוניים לאצטדיוני גביע העולם בארצות הברית ובקנדה, ימים ספורים לפני תחילת הטורניר, בעקבות לחץ עז מקבוצות אוהדים ומנבחרי ציבור. המדיניות המעודכנת מאפשרת לכל אוהד להכניס בקבוק פלסטיק אחד רך, אטום מהמפעל, של עד 590 מ\"ל. בקבוקים לשימוש חוזר ובקבוקים קשיחים נותרים אסורים מטעמי בטיחות, כשפיפ\"א מזכירה חששות מהשלכת חפצים. האיסור המקורי זכה לביקורת חריפה במיוחד לנוכח העובדה שאצטדיונים פתוחים רבים בערים המארחות צפויים לטמפרטורות צהרים מעל 35 מעלות ביום המשחק. עם מונדיאל של 48 נבחרות בשלוש מדינות, כללי הטורניר עוד השתנו בערב הקיק-אוף. האוהדים לחצו וזכו בביטול חלקי.",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48978502/fifa-reverses-world-cup-water-bottle-ban-backlash" },
-        { "name": "NBC News", "url": "https://www.nbcnews.com/sports/soccer/fifa-bans-water-bottles-world-cup-stadiums-fans-heat-rcna348419" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/7/fifa-u-turns-on-water-bottle-policy-in-us-canada-stadiums-after-backlash" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
       "id": "wc26-new-rules-gk-timeout-red-cards-2026-06-10",
       "confidence": "confirmed",
       "en": "IFAB and FIFA confirmed a set of rule changes taking effect from game one of the 2026 World Cup. Goalkeepers can no longer use a real or feigned injury to create a tactical timeout: referees will now prevent outfield players from visiting the bench during treatment stoppages. Players caught covering their mouths during confrontational exchanges on the pitch risk a straight red card, a rule prompted by racism allegations in a Champions League match this season. Restarts now carry a five-second countdown: miss the window on a throw-in or goal-kick and possession switches immediately to the opposition. VAR has been extended to review incorrectly awarded corner kicks as well. Four changes targeting four of the game's most persistent habits. Whether referees hold the line across all 104 matches is the test no rulebook can guarantee.",
@@ -154,44 +144,6 @@
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "mex-cdmx-closures-wc2026-2026-06-09",
-      "confidence": "confirmed",
-      "team": "MEX",
-      "en": "Mexican President Claudia Sheinbaum ordered all schools in Mexico City to close and federal government employees to work from home on June 11, the day Mexico face South Africa at the Azteca in the World Cup opener. The decree covers every educational institution from preschool to university level, both public and private. Authorities say the closures are intended to ease traffic and public transport pressure as 60,000 fans converge on the stadium. Mexico City has rarely had an excuse this good to halt the week mid-stride. What the players deliver at the Azteca is the one thing no president can decree in advance.",
-      "he": "הנשיאה המקסיקנית קלאודיה שיינבאום הורתה על סגירת כל בתי הספר במקסיקו סיטי ועבודה מרחוק לעובדי הממשלה הפדרלית ב-11 ביוני, יום שבו מקסיקו נפגשת עם דרום אפריקה באצטקה בפתיחת המונדיאל. הצו חל על כל מוסד חינוכי מגן ילדים ועד לאוניברסיטה, ציבורי ופרטי. הרשויות אמרו שהסגירות נועדו להקל על עומס התנועה כאשר 60,000 אוהדים מתכנסים לאצטדיון. לעיר מקסיקו סיטי לעתים נדירות יש תירוץ טוב כל-כך לעצור את השבוע באמצע. מה שהשחקנים מביאים באצטקה הוא הדבר היחיד שאף נשיאה לא יכולה להורות עליו מראש.",
-      "sources": [
-        { "name": "US News (AP)", "url": "https://www.usnews.com/news/top-news/articles/2026-06-09/mexico-city-suspends-classes-shifts-to-remote-work-for-world-cup-kickoff" },
-        { "name": "WION News", "url": "https://www.wionews.com/sports/mexican-president-claudia-sheinbaum-announces-remote-work-and-school-closures-for-fifa-world-cup-2026-opener-1781017468829" },
-        { "name": "Open The Magazine", "url": "https://openthemagazine.com/sports/mexico-president-orders-remote-work-school-closures-for-fifa-world-cup-opener" }
-      ],
-      "expires_at": "2026-06-12T00:00:00Z"
-    },
-    {
-      "id": "wc26-opening-ceremony-shakira-2026-06-08",
-      "confidence": "confirmed",
-      "en": "The 2026 World Cup opening ceremony is at Estadio Azteca in Mexico City on June 11, with Shakira and Burna Boy performing the official tournament anthem 'Dai Dai' live for the first time, joined by J Balvin, Mana, Belinda, Los Angeles Azules, Tyla and other stars, 90 minutes before Mexico face South Africa in the opener. FIFA has confirmed Shakira will also headline the halftime show at the final on July 19. From the opening note to the last whistle in July, the stage at the Azteca belongs to her. And then the real show begins.",
-      "he": "טקס הפתיחה של מונדיאל 2026 יתקיים באסטדיו אצטקה במקסיקו סיטי ב-11 ביוני, כאשר שקירה ובורנה בוי מבצעים את ההמנון הרשמי 'דאי דאי' לראשונה בהופעה חיה, ולצדם ח'יי בלווין, מאנה, בלינדה, לוס אנג'לס אסולס, טילה וכוכבים נוספים, 90 דקות לפני שמקסיקו נפגשת עם דרום אפריקה. פיפ\"א אישרה ששקירה תנצח גם על הופעת ההפסקה בגמר ב-19 ביולי. מהצליל הראשון ועד לשריקת הסיום ביולי, הבמה באצטקה שייכת לה. ואחר כך מתחיל המופע האמיתי.",
-      "sources": [
-        { "name": "FIFA (official)", "url": "https://inside.fifa.com/organisation/media-releases/world-cup-2026-opening-ceremony-mexico-city" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48972437/shakira-burna-boy-perform-2026-world-cup-opening-ceremony-mexico" },
-        { "name": "Olympics.com", "url": "https://www.olympics.com/en/news/fifa-world-cup-2026-opening-ceremonies-everything-you-need-to-know" }
-      ],
-      "expires_at": "2026-06-11T23:59:59Z"
-    },
-    {
-      "id": "mex-ochoa-sixth-wc-retirement-2026-06-11",
-      "confidence": "confirmed",
-      "team": "MEX",
-      "en": "The opening match of the 2026 World Cup carries a story that goes beyond the scoreline. Guillermo Ochoa, 40, lines up for Mexico against South Africa at the Azteca on June 11 in what he has announced will be his farewell tournament, retiring from all football after Mexico's campaign ends. He joins Lionel Messi and Cristiano Ronaldo as the only three players in history to compete at six World Cups. The narrative carries a twist: the coach who denied Ochoa a start at the 2010 World Cup in South Africa, Javier Aguirre, is managing Mexico again in 2026, and after first-choice keeper Luis Malagon was ruled out by an ACL tear earlier this season, Ochoa gets his chance at last. South Africa are his opponents again, the same opponents who played Mexico on the very day Ochoa was on the bench in 2010. On home soil, at his own Azteca, the door is open.",
-      "he": "משחק הפתיחה של מונדיאל 2026 נושא סיפור שחורג מהתוצאה. גיירמו אוצ'ואה בן ה-40 ייצב עבור מקסיקו מול דרום אפריקה באצטקה ב-11 ביוני במה שהכריז כטורניר הפרידה שלו, תוך פרישה מכל הכדורגל בסיום מסע מקסיקו. הוא מצטרף לליונל מסי ולקריסטיאנו רונאלדו כשלושת השחקנים היחידים בהיסטוריה שהשתתפו בשישה מונדיאלים. לנרטיב יש פיתול: המאמן שמנע מאוצ'ואה כינון במונדיאל 2010 בדרום אפריקה, חביאר אגירה, מנהל שוב את מקסיקו ב-2026, ולאחר שהשוער הראשי לואיס מלגון הוצא עם קרע ברצועה הצולבת בתחילת העונה, אוצ'ואה מקבל לבסוף את הסיכוי. דרום אפריקה שוב מולו, אותם יריבים שמול מקסיקו ב-2010 כשאוצ'ואה ישב על הספסל. על אדמת הבית, באצטקה שלו, הדלת פתוחה.",
-      "sources": [
-        { "name": "FIFA (official)", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/guillermo-ochoa-mexico" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48641179/mexico-legend-ochoa-retire-national-team-2026-world-cup" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/mexico-legend-guillermo-ochoa-set-historic-sixth-world-cup-retirement-draft" }
-      ],
-      "expires_at": "2026-06-12T23:59:59Z"
     },
     {
       "id": "bra-neymar-mri-progress-wc2026-2026-06-09",
@@ -207,39 +159,14 @@
       "expires_at": "2026-06-21T23:59:59Z"
     },
     {
-      "id": "ned-timber-4th-injury-wc2026-2026-06-08",
-      "confidence": "confirmed",
-      "team": "NED",
-      "en": "The Netherlands injury crisis reached a fourth victim on June 8 when Arsenal full-back Jurrien Timber was ruled out of the World Cup with a groin problem that has lingered since March. The Dutch Football Association confirmed Timber left the team camp in New York after the final warm-up against Uzbekistan on June 8, saying he had not recovered sufficiently to participate in a medically responsible manner. Feyenoord defender Lutsharel Geertruida was named as his replacement. With Matthijs de Ligt, Stefan de Vrij and Xavi Simons already absent, the Netherlands carry four key-position holes into a group that opens against Japan in Arlington on June 14. Ronald Koeman still has Van Dijk, Gakpo and Dumfries to build around, but four unplanned absences before a ball is kicked in anger is a test of any squad's real depth. Can collective quality mask four individual gaps at once?",
-      "he": "משבר הפציעות של הולנד הגיע לקורבן הרביעי ב-8 ביוני כשמגן הגב של ארסנל יוריאן טימבר הוצא מהמונדיאל עם בעיית מפשעה שנגררת מאז מרץ. ההתאחדות ההולנדית אישרה שטימבר עזב את מחנה הנבחרת בניו יורק לאחר חימום הסיום מול אוזבקיסטן ב-8 ביוני, באומרה שלא החלים מספיק כדי להשתתף באופן שקול מבחינה רפואית. לוצ'ארל חרטרוידה מפייינורד מונה כממלא מקומו. עם מתייאס דה ליכט, שטפן דה פריי וחאבי סימונס כבר נפגעים, הולנד נושאת ארבעה חורים בעמדות מפתח לקבוצה הפותחת מול יפן בארלינגטון ב-14 ביוני. קוקמן עדיין מסתמך על ואן דייק, גקפו ודאמפריס, אבל ארבעה היעדרויות לא מתוכננות לפני שנבעטה כדור בכעס הן מבחן לעומק הסגל האמיתי. האם האיכות הקולקטיבית תוכל לכסות ארבעה פערים אישיים בו-זמנית?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/49001511/netherlands-arsenal-defender-jurrien-timber-miss-world-cup-injury" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/other/netherlands-rules-out-jurrien-timber-for-the-world-cup-lutsharel-geertruida-called-up" },
-        { "name": "Goal.com", "url": "https://www.goal.com/en-us/lists/netherlands-dealt-huge-world-cup-blow-as-jurrien-timber-ruled-out-with-injury/blt561209d6db6a51a7" }
-      ],
-      "expires_at": "2026-06-25T23:59:59Z"
-    },
-    {
       "id": "artan-somalia-referee-denied-usa-wc2026-2026-06-08",
       "confidence": "confirmed",
       "en": "Somalia's Omar Artan, the first Somali referee ever appointed to a World Cup, was denied entry to the United States on June 7 and put on a flight back to Istanbul, just three days before the tournament starts. U.S. Customs and Border Protection confirmed Artan arrived at Miami International Airport from Istanbul and was determined to be inadmissible due to vetting concerns after additional inspection. Somalia is among the countries on President Trump's travel restriction list. To try to overcome the visa difficulties, Artan had acquired a diplomatic passport with support from the Somali embassy in Nairobi, but it made no difference. He was named CAF Best African Referee of 2025 and was set to join 52 officials presiding over 104 matches. FIFA has not publicly confirmed a replacement. The visa and immigration row around this tournament began with Iran's delegation and has now claimed its first referee.",
-      "he": "עומר ארטאן מסומליה, השופט הסומלי הראשון שמונה אי פעם למונדיאל, נדחה ממנגנון הכניסה לארצות הברית ב-7 ביוני ושוגר חזרה לאיסטנבול, שלושה ימים בלבד לפני תחילת הטורניר. שירות המכס וההגנה על הגבולות האמריקני אישר שארטאן הגיע לנמל התעופה הבינלאומי של מיאמי מאיסטנבול ונמצא שאינו קביל לכניסה בשל חששות ביטחוניים לאחר בדיקה נוספת. סומליה היא בין המדינות ברשימת הגבלות הנסיעה של הנשיא טראמפ. כדי לנסות להתגבר על קשיי הויזה, ארטאן השיג דרכון דיפלומטי בסיוע שגרירות סומליה בניירובי, אך ללא הועיל. הוא נבחר לשופט האפריקאי הטוב ביותר של CAF לשנת 2025 והיה אמור להיות אחד מ-52 פקידים שינהלו 104 משחקים. פיפ\"א לא אישרה מחליף פומבי. שורת הסכסוכים סביב ויזות ואמיגרציה בטורניר זה נפתחה עם משלחת איראן וכעת תובעת את שופטו הראשון.",
+      "he": "עומר ארטאן מסומליה, השופט הסומלי הראשון שמונה אי-פעם למונדיאל, נדחה ממנגנון הכניסה לארצות הברית ב-7 ביוני ושוגר חזרה לאיסטנבול, שלושה ימים בלבד לפני תחילת הטורניר. שירות המכס וההגנה על הגבולות האמריקני אישר שארטאן הגיע לנמל התעופה הבינלאומי של מיאמי מאיסטנבול ונמצא שאינו קביל לכניסה בשל חששות ביטחוניים לאחר בדיקה נוספת. סומליה היא בין המדינות ברשימת הגבלות הנסיעה של הנשיא טראמפ. כדי לנסות להתגבר על קשיי הויזה, ארטאן השיג דרכון דיפלומטי בסיוע שגרירות סומליה בניירובי, אך ללא הועיל. הוא נבחר לשופט האפריקאי הטוב ביותר של CAF לשנת 2025 והיה אמור להיות אחד מ-52 פקידים שינהלו 104 משחקים. פיפ\"א לא אישרה מחליף פומבי. שורת הסכסוכים סביב ויזות ואמיגרציה בטורניר זה נפתחה עם משלחת איראן וכעת תובעת את שופטו הראשון.",
       "sources": [
         { "name": "US News (AP)", "url": "https://www.usnews.com/news/sports/articles/2026-06-08/somali-referee-for-world-cup-is-denied-entry-into-the-united-states" },
         { "name": "France 24 (AFP)", "url": "https://www.france24.com/en/live-news/20260608-somali-referee-denied-entry-to-us-for-world-cup-official" },
         { "name": "NBC Washington", "url": "https://www.nbcwashington.com/world-cup/somali-referee-2026-world-cup-denied-entry-united-states/4114000/" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "wc26-saot-upgrade-2026-06-07",
-      "confidence": "confirmed",
-      "en": "FIFA has upgraded its Semi-Automated Offside Technology for 2026, and the difference will be immediate on the pitch. Clear offsides now trigger an audio alert piped directly into the on-field referee's earpiece in real time, cutting out the old wait for VAR to relay the verdict. The detection threshold has been tightened from 50 centimetres to 10 centimetres, so far more borderline calls will be flagged automatically. All 1,248 players across the 48 squads have been 3D-scanned to create AI avatars that power the positional tracking, and referee body cameras with stabilisation software will be deployed at all 104 matches for the first time. Faster calls, clearer reasoning. Whether the game finally runs out of offside debates is the one question technology cannot guarantee.",
-      "he": "פיפ\"א שדרגה את טכנולוגיית המחוץ-לשטח האוטומטית למחצה לקראת 2026, וההבדל יהיה מיידי במגרש. זמינות ברורה תפעיל כעת התראה קולית ישירות לאוזנייה של שופט המגרש בזמן אמת, ללא המתנה לצוות ה-VAR. סף הזיהוי הוקטן מ-50 סנטימטרים ל-10 סנטימטרים, כלומר ייתפסו אוטומטית הרבה יותר קריאות גבוליות. כל 1,248 השחקנים ב-48 הסגלים נסרקו ליצירת אווטרי בינה מלאכותית לצורך מעקב מיקומי, ומצלמות גוף לשופטים עם תוכנת ייצוב יוצבו ב-104 המשחקים לראשונה. החלטות מהירות יותר, הסברות ברורות יותר. האם הכדורגל יגמור לו ויכוחי מחוץ, זו השאלה שאף טכנולוגיה אינה יכולה להבטיח.",
-      "sources": [
-        { "name": "FIFA (official)", "url": "https://inside.fifa.com/news/offside-decisions-referee-body-cams-innovation-world-cup-2026" },
-        { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml" },
-        { "name": "Tech Times", "url": "https://www.techtimes.com/articles/317958/20260607/world-cup-2026s-ai-offside-system-now-pipes-calls-straight-referees-ear.htm" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     },
@@ -266,58 +193,6 @@
         { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/fifa-world-cup-group-stage-third-place-tiebreakers" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "wc26-azteca-three-openers-2026",
-      "confidence": "confirmed",
-      "en": "Estadio Azteca in Mexico City makes history on June 11 as the first stadium to host three World Cup opening matches, having staged the openers in 1970 and 1986 on both occasions Mexico hosted the tournament. The Azteca also holds the distinction of being the only stadium to have hosted two World Cup finals, in 1970 and 1986. No other venue in football history can claim either landmark, let alone both. Sixty thousand fans will fill the terraces on Thursday evening to witness another chapter in the most storied stadium on earth. For Mexico, that weight of history is both a privilege and a demand: the Azteca has seen two titles crowned here. The question is whether 2026 adds a third.",
-      "he": "אסטדיו אצטקה במקסיקו סיטי עושה היסטוריה ב-11 ביוני כאצטדיון הראשון בהיסטוריית המונדיאל לארח שלושה משחקי פתיחה, לאחר שכבר עשה זאת ב-1970 וב-1986 כשמקסיקו אירחה את הטורניר. האצטקה גם מחזיקה בייחוד של האצטדיון היחיד שאירח שני גמרים של גביע העולם, ב-1970 וב-1986. שום מגרש אחר בהיסטוריית הכדורגל לא יכול לדרוש אף אחד מהישגים אלה, שלא לדבר על שניהם. שישים אלף אוהדים ימלאו את הטריבונות ביום חמישי בערב כדי לעדות לפרק נוסף באצטדיון המיתולוגי ביותר בעולם. עבור מקסיקו, משקל ההיסטוריה הזו הוא גם זכות וגם דרישה: האצטקה ראה שני תארים שנכתרו כאן. השאלה היא האם 2026 יוסיף שלישי.",
-      "sources": [
-        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/estadio-azteca-will-make-history-at-the-2026-world-cup-as-the-first-stadium-to-host-three-fifa-world-cup-opening-matches-2026-06-02" },
-        { "name": "The Mirror US", "url": "https://www.themirror.com/sport/soccer/azteca-stadium-world-cup-2026-1864970" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/mexico-citys-estadio-azteca-become-183000365.html" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "can-toronto-opening-ceremony-2026-06-12",
-      "confidence": "confirmed",
-      "team": "CAN",
-      "en": "FIFA confirmed Canada's World Cup opening ceremony takes place at Toronto Stadium on June 12, ninety minutes before Canada face Bosnia and Herzegovina in the host nation's tournament opener. The ceremony is built around the theme 'Mosaic', a celebration of Canada's multicultural identity, with confirmed performers including Michael Buble, Alanis Morissette, Alessia Cara, Jessie Reyez, Nora Fatehi, Palestinian artist Elyanna, French artist Vegedream, DJ Sanjoy, and William Prince. Canada have never won a World Cup match in their two previous tournaments, losing all six games in 1986 and at Qatar 2022. A sold-out home stadium and two Canadian music icons on the stage set the scene. The show is guaranteed. The result is not.",
-      "he": "פיפ\"א אישרה שטקס הפתיחה הקנדי של מונדיאל 2026 יתקיים ב-Toronto Stadium ב-12 ביוני, תשעים דקות לפני שקנדה נפגשת עם בוסניה-הרצגובינה בפתיחת הנבחרת המארחת. הטקס בנוי סביב הנושא 'פסיפס', חגיגת הזהות הרב-תרבותית של קנדה, עם אמנים מאושרים כולל מייקל בובלה, אלאניס מוריסט, אלסיה קרה, ג'סי רייס, נורה פאטה, האמנית הפלסטינית אליאנה, האמן הצרפתי ווג'דרים, ה-DJ סנג'וי וויליאם פרינס. קנדה מעולם לא ניצחה במשחק מונדיאל בשתי הופעותיה הקודמות, כשהפסידה את כל שישה משחקיה ב-1986 ובקטאר 2022. אצטדיון ביתי מלא ושני אייקוני מוזיקה קנדיים על הבמה מכינים את הקרקע. ההופעה מובטחת. התוצאה לא.",
-      "sources": [
-        { "name": "FIFA (official)", "url": "https://inside.fifa.com/organisation/media-releases/canada-welcome-opening-ceremony-world-cup-2026-tm" },
-        { "name": "CP24", "url": "https://www.cp24.com/local/toronto/2026/05/09/here-are-the-performers-at-fifa-world-cup-opening-ceremony-in-toronto/" },
-        { "name": "Time", "url": "https://time.com/article/2026/05/29/world-cup-2026-opening-ceremonies-performers-usa-mexico-canada-fifa/" }
-      ],
-      "expires_at": "2026-06-13T23:59:59Z"
-    },
-    {
-      "id": "esp-no-real-madrid-wc2026-2026-05-25",
-      "confidence": "confirmed",
-      "team": "ESP",
-      "en": "Spain enter the 2026 World Cup without a single Real Madrid player in their squad, a first in the tournament's history. Coach Luis de la Fuente named eight Barcelona players and seven Premier League-based players in his final 26, leaving out Dani Carvajal and Dean Huijsen after their inconsistent seasons at the Bernabeu. De la Fuente defended the selection, saying his squad is 'perfect' and that he picks on capability, not club badge. Rodri, the 2024 Ballon d'Or winner who missed almost the entire 2024-25 club season with a knee injury, has returned to full fitness and is expected to start. Spain open Group H against Cape Verde on June 15. A squad built entirely without the world's most decorated club - statement of philosophy or gamble?",
-      "he": "ספרד נכנסת למונדיאל 2026 ללא שחקן אחד מריאל מדריד - לראשונה בתולדות הטורניר. המאמן לואיס דה לה פואנטה כלל שמונה שחקנים מברצלונה ושבעה ששוחקים בפרמייר ליג ב-26 שחקניו הסופיים, ודחה את דני קרבחל ודין הויסן לאחר עונות לא עקביות בברנבאו. דה לה פואנטה הגן על הבחירה ואמר שהסגל 'מושלם' ושהוא בוחר לפי יכולת ולא לפי סמל מועדון. רודרי, זוכה הבלון דאור 2024 שהחסיר כמעט את כל עונת 2024-25 בגלל פציעת ברך, חזר לכושר מלא ומצופה שיפתח. ספרד פותחת קבוצה H מול קאבו ורדה ב-15 ביוני. סגל שבנוי לגמרי ללא המועדון המפורסם ביותר בעולם - הצהרת פילוסופיה או הימור?",
-      "sources": [
-        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/spain-faces-the-2026-world-cup-without-real-madrid-players-for-the-first-time-in-world-cup-history-2026-05-25" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48956714/spain-boss-defends-perfect-world-cup-squad-real-madrid-players" },
-        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/world-cup/spain-leave-real-madrid-players-out-of-final-26-man-2026-world-cup-squad-for-first-time-in-history/" }
-      ],
-      "expires_at": "2026-07-04T00:00:00Z"
-    },
-    {
-      "id": "eng-tuchel-shock-omissions-wc2026-2026-05-22",
-      "confidence": "confirmed",
-      "team": "ENG",
-      "en": "Thomas Tuchel named an England World Cup squad that Sky Sports News called 'probably the most shocking since 1998', omitting Cole Palmer, Phil Foden, Trent Alexander-Arnold and Harry Maguire. Tuchel explained he did not want five No. 10s playing out of position, but the cuts to Palmer and Foden in particular drew fierce public backlash. Maguire posted on social media that he was 'shocked and gutted'. In their place, Tuchel recalled Ivan Toney, who scored 32 goals in 32 Saudi Pro League matches for Al-Ahli. Jude Bellingham wears the No. 10 shirt. England are in Group L with Croatia, Ghana and Panama, opening against Croatia at AT&T Stadium in Dallas on June 17. Has Tuchel found a bold new formula, or does the gamble fall apart at the first hurdle?",
-      "he": "תומאס טוכל מינה סגל אנגלי לגביע העולם ש-Sky Sports News כינה 'כנראה המקפיץ ביותר מאז 1998', תוך השמטת קול פאלמר, פיל פודן, טרנט אלכסנדר-ארנולד והארי מגווייר. טוכל הסביר שלא רצה חמישה שחקני מספר 10 שישחקו מחוץ לעמדתם, אך ההשמטות של פאלמר ופודן בפרט עוררו זעם ציבורי נרחב. מגווייר פרסם ברשתות החברתיות שהוא 'בהלם ולב שבור'. במקומם, טוכל זימן בחזרה את איוון טוני, שהבקיע 32 שערים ב-32 משחקים בליגה הסעודית עבור אל-אהלי. ג'וד בלינגהאם עוטה את חולצת מספר 10. אנגלייה נמצאת בקבוצה L עם קרואטיה, גאנה ופנמה, עם הפתיחה מול קרואטיה ב-AT&T Stadium בדאלאס ב-17 ביוני. האם טוכל מצא פורמולה נועזת חדשה, או שההימור מתפרק בחישוק הראשון?",
-      "sources": [
-        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12016/13543455/england-world-cup-squad-announcement-ruthless-thomas-tuchel-leaves-big-names-out-of-26-man-squad" },
-        { "name": "France 24", "url": "https://www.france24.com/en/sport/20260522-tuchel-axes-foden-palmer-surprise-england-world-cup-team-shake-up" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/22/tuchel-leaves-palmer-and-foden-out-of-englands-2026-world-cup-squad" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48823863/meet-england-2026-world-cup-squad-26-players-picked-thomas-tuchel-why" }
-      ],
-      "expires_at": "2026-07-04T00:00:00Z"
     },
     {
       "id": "por-ronaldo-sixth-wc-record-2026-06-08",
