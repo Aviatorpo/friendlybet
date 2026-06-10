@@ -2078,9 +2078,12 @@ async function fetchMatchesFromCDN(maxAgeMs = 25000) {
 const _LIVE_MATCH_STATUSES = ['IN_PLAY', 'PAUSED', 'LIVE'];
 // All user columns EXCEPT recovery_code_hash (a credential). Cross-user reads
 // (leaderboard, members list) must use this so a pool member can't dump every
-// other member's auth hash from the network response. NOTE: this is
-// defense-in-depth at the client; the DB still permits reading the hash via a
-// crafted request - see the RLS note flagged to the owner.
+// other member's auth hash from the network response. NOTE (updated 2026-06-10):
+// this is no longer only client-side — production now enforces COLUMN-LEVEL grants:
+// anon can SELECT the public columns (verified `?select=id,nickname,...` -> 200) but
+// SELECTing recovery_code_hash (or `select=*`, which includes it) -> 401. So the
+// hash is protected at the DB, and these public-column cross-user reads work as
+// intended; do NOT "fix" them by re-granting broad anon SELECT on users.
 // NOTE: signup_source/signup_referrer/utm_*/country are intentionally EXCLUDED.
 // They are write-only attribution (set at signup, consumed only by backend
 // analytics, never rendered in-app), so the client never needs to read them.

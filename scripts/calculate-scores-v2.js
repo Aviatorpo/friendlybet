@@ -149,10 +149,15 @@ function computeGroupStandings(matches, groupTeams) {
   return result;
 }
 
-// Return true if every group match in this group is FINISHED
+// A 4-team group is a 6-match round robin. It is SETTLED only when all its matches
+// reach a TERMINAL status (FINISHED/AWARDED) — NOT merely when they have scores:
+// football-data fills home_score/away_score while a match is IN_PLAY, so the old
+// "has scores" check could settle standings (and award group-position points) from a
+// still-running final match, then flip when it actually finished. (fix 2026-06-10)
+const TERMINAL_MATCH_STATUS = new Set(['FINISHED', 'AWARDED']);
+function isTerminalMatch(m) { return !!m && TERMINAL_MATCH_STATUS.has(m.status); }
 function groupIsComplete(matches) {
-  if (matches.length === 0) return false;
-  return matches.every(m => m.status === 'FINISHED' || (m.home_score != null && m.away_score != null));
+  return (matches || []).filter(isTerminalMatch).length >= 6;
 }
 
 // Knockout winner. Prefer the explicit winner_code (from football-data
@@ -289,7 +294,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     }
     const groupMatches = allGroupMatchesAny.filter(m => (m.group_letter || m.group) === letter);
     if (!groupIsComplete(groupMatches)) return;
-    const orderedStats = computeGroupStandings(groupMatches, teams);
+    const orderedStats = computeGroupStandings(groupMatches.filter(isTerminalMatch), teams);
     standings[letter] = orderedStats.map(s => s.code);
     thirdStats[letter] = orderedStats[2]; // {code, points, gd, gf, ...}
   });
@@ -459,7 +464,7 @@ async function computeAdvancedTeams(finishedMatches) {
     if (teams.length !== 4) return;
     const groupMatches = allGroupMatchesAny.filter(m => (m.group_letter || m.group) === letter);
     if (!groupIsComplete(groupMatches)) return;
-    const ordered = computeGroupStandings(groupMatches, teams);
+    const ordered = computeGroupStandings(groupMatches.filter(isTerminalMatch), teams);
     advanced.add(ordered[0].code); advanced.add(ordered[1].code); // top 2 advance directly
     thirdStats[letter] = ordered[2];
   });

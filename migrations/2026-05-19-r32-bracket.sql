@@ -1,3 +1,8 @@
+-- ☠️☠️ DO NOT RE-RUN ON PRODUCTION — DESTRUCTIVE / ONE-OFF (applied 2026-05-19) ☠️☠️
+-- This migration DELETEs ALL single-phase knockout_picks (to re-number bracket
+-- positions). It was a one-time pre-launch schema change. Replaying it on the live
+-- DB WIPES EVERY USER'S KNOCKOUT BRACKET. Do not re-apply; if a bracket re-number is
+-- ever needed again, write a new, scoped, snapshot-first migration.
 -- ============================================================
 -- FriendlyBet v2.5.68 - R32 bracket (official WC 2026 format)
 -- ============================================================

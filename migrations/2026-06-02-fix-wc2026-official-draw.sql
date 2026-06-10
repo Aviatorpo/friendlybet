@@ -1,3 +1,11 @@
+-- ☠️☠️ DO NOT RE-RUN ON PRODUCTION — DESTRUCTIVE / ONE-OFF (applied 2026-06-02) ☠️☠️
+-- This migration DELETEs ALL rows from group_position_picks, knockout_picks,
+-- tournament_winner_picks, group_picks (+ some top_scorer_picks). It was a one-time
+-- pre-launch draw correction. Replaying it on the live DB WIPES EVERY USER'S
+-- PREDICTIONS (this exact class of accident — a destructive statement re-run against
+-- real data — is what caused the 2026-06-10 knockout_picks mass loss via sync-teams).
+-- If you must re-apply ANY part, snapshot first and run ONLY the specific teams fix,
+-- never the pick DELETEs.
 -- ============================================================
 -- FriendlyBet - Correct the teams table to the OFFICIAL WC2026 draw
 -- ============================================================

@@ -231,6 +231,15 @@ S.__setFetch(async (url, opts) => {
   eq('U4 group (round(4.5+1.5)=6, not 7)', captured.U4.group_points, 6);
   eq('U4 total', captured.U4.total_score, 6);
 
+  console.log('\n== unit: groupIsComplete requires TERMINAL status, not live scores ==');
+  const finished6 = Array.from({ length: 6 }, () => ({ status: 'FINISHED', home_score: 1, away_score: 0 }));
+  // a final match still IN_PLAY but already carrying a live score (football-data fills it):
+  const fiveDoneOneLive = finished6.map((m, i) => (i === 5 ? { status: 'IN_PLAY', home_score: 1, away_score: 0 } : m));
+  eq('6 FINISHED -> group complete', S.groupIsComplete(finished6), true);
+  eq('5 FINISHED + 1 IN_PLAY (with live score) -> NOT complete', S.groupIsComplete(fiveDoneOneLive), false);
+  eq('AWARDED counts as terminal', S.groupIsComplete(finished6.map((m, i) => (i === 0 ? { status: 'AWARDED', home_score: 3, away_score: 0 } : m))), true);
+  eq('only 5 matches present -> NOT complete', S.groupIsComplete(finished6.slice(0, 5)), false);
+
   console.log(`\n==== ${pass} passed, ${fail} failed ====`);
   process.exit(fail ? 1 : 0);
 })();

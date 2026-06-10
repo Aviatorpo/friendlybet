@@ -247,7 +247,7 @@ const TRANSLATIONS = {
     'topScorer.title': 'מלך השערים',
     'topScorer.heroTitle': 'נחש את מלך השערים',
     'topScorer.heroDesc': 'מי יבקיע הכי הרבה שערים במונדיאל?',
-    'topScorer.heroBonus': '+25 נקודות בונוס',
+    'topScorer.heroBonus': '+10 נקודות בונוס',
     'topScorer.heroBonusEnd': 'אם תנחש נכון!',
     'topScorer.searchPlaceholder': 'חיפוש שחקן (באנגלית בלבד)...',
     'topScorer.hintsTitle': '💡 דוגמאות לחיפוש:',
@@ -1110,7 +1110,7 @@ const TRANSLATIONS = {
     'wizard.multipliers.explainTitle': 'איך זה עובד',
     'wizard.multipliers.explain': 'כל קבוצה מסווגת לאחד משלושה דירוגים לפי דירוג FIFA. הימור על קבוצה חלשה יותר שמתממש מזכה אותך ביותר נקודות: פייבוריטית ×1, מתמודדת ×1.5, אנדרדוג ×2. המכפיל מוחל על הנקודות שמרוויחים על הקבוצה הזו בלבד.',
     // v2.5.47: single_phase-only note + power-toggle label
-    'wizard.multipliers.singlePhaseNote': 'בהימור חד-שלבי המכפילים משפיעים רק משלב הנוקאאוט. ניחושי הבתים שווים נקודה אחת לכל קבוצה.',
+    'wizard.multipliers.singlePhaseNote': 'בהימור חד-שלבי המכפילים משפיעים רק משלב הנוקאאוט. ניחושי מיקומי הבתים מנוקדים לפי המיקום שניחשת (4/3/2/1 כברירת מחדל) וללא מכפיל.',
     'wizard.multipliers.powerOn': 'מכפילים מופעלים',
     'wizard.multipliers.powerOff': 'מכפילים כבויים',
     // v2.5.56: "Optional" tag next to the multipliers title in the wizard
@@ -1541,7 +1541,7 @@ const TRANSLATIONS = {
     'topScorer.title': 'Top Scorer',
     'topScorer.heroTitle': 'Predict the Top Scorer',
     'topScorer.heroDesc': 'Who will score the most goals at the World Cup?',
-    'topScorer.heroBonus': '+25 bonus points',
+    'topScorer.heroBonus': '+10 bonus points',
     'topScorer.heroBonusEnd': 'if you predict correctly!',
     'topScorer.searchPlaceholder': 'Search player (English only)...',
     'topScorer.hintsTitle': '💡 Search examples:',
@@ -2402,7 +2402,7 @@ const TRANSLATIONS = {
     'wizard.multipliers.explainTitle': 'How it works',
     'wizard.multipliers.explain': 'Every team is rated in one of three tiers based on FIFA ranking. Correctly betting on a weaker team scores you more: Favorite ×1, Contender ×1.5, Underdog ×2. The multiplier applies only to points earned from that specific team.',
     // v2.5.47: single_phase-only note + power-toggle label
-    'wizard.multipliers.singlePhaseNote': 'In single-phase pools, multipliers apply only from the knockout stage onward. Group-position picks award one flat point per team.',
+    'wizard.multipliers.singlePhaseNote': 'In single-phase pools, multipliers apply only from the knockout stage onward. Group-position picks are scored by the position you predicted (4/3/2/1 by default) and are not multiplied.',
     'wizard.multipliers.powerOn': 'Multipliers on',
     'wizard.multipliers.powerOff': 'Multipliers off',
     // v2.5.56: "Optional" tag next to the multipliers title in the wizard
