@@ -1,6 +1,43 @@
 {
-  "updatedAt": "2026-06-10T15:30:00.000Z",
+  "updatedAt": "2026-06-10T18:30:00.000Z",
   "items": [
+    {
+      "id": "mex-rsa-2010-echo-wc2026-2026-06-10",
+      "confidence": "confirmed",
+      "en": "The 2026 World Cup opens with a piece of living history: Mexico vs South Africa on June 11 is a replay of the tournament's opening fixture from exactly 16 years ago, when Bafana Bafana met Mexico on June 11, 2010 in Johannesburg. Siphiwe Tshabalala scored what many still call the greatest opening goal in World Cup history that day, a booming left-footed strike that rocked a stadium and a nation, before Rafael Marquez equalised for a 1-1 draw. Tshabalala broke his silence ahead of the 2026 rematch with a direct warning to Mexico: 'We are ready, it's a World Cup.' This time Mexico are the hosts, the altitude of Mexico City at 2,240 metres replacing the roar of Soccer City in Soweto. South Africa arrive as heavy underdogs. The venue, the opponents, and even the calendar date are the same. The result is the only thing that can be different.",
+      "he": "מונדיאל 2026 נפתח עם חתיכת היסטוריה חיה: מקסיקו מול דרום אפריקה ב-11 ביוני הוא חזרה על משחק הפתיחה של הטורניר מלפני 16 שנה בדיוק, כשבאפאנה בפאנה נפגשה עם מקסיקו ב-11 ביוני 2010 ביוהנסבורג. ציפיווה צ'אבאלאלה הבקיע מה שרבים עדיין מכנים השער הפותח הגדול ביותר בהיסטוריית גביע העולם, מכה עוצמתית ברגל שמאל שהרעידה אצטדיון ועם, לפני שרפאל מרקז השווה לתוצאה 1:1. לקראת ה-2026 שבר צ'אבאלאלה את שתיקתו עם אזהרה ישירה: אנחנו מוכנים, זה גביע עולם. הפעם מקסיקו היא המארחת, כשגובה 2,240 מטרים של מקסיקו סיטי מחליף את השאגה של Soccer City בסוווטו. דרום אפריקה מגיעה כמועדפת-נגד ברורה. האצטדיון, היריבות ואפילו תאריך הלוח - זהים. התוצאה היא הדבר היחיד שיכול להיות שונה.",
+      "sources": [
+        { "name": "CNN", "url": "https://www.cnn.com/2026/06/09/sport/siphiwe-tshabalala-south-africa-mexico-world-cup" },
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/tshabalala-warns-mexico-we-are-ready-it-s-a-world-cup-2026-06-08" },
+        { "name": "ESPN", "url": "https://www.espn.com/espn/story/_/id/48998339/mexico-vs-south-africa-kick-team-news-how-watch-fifa-world-cup-opener" }
+      ],
+      "expires_at": "2026-06-12T23:59:59Z"
+    },
+    {
+      "id": "wc26-sofi-stadium-los-angeles-2026-06-10",
+      "confidence": "confirmed",
+      "en": "SoFi Stadium in Inglewood will be known as Los Angeles Stadium during the 2026 World Cup, per FIFA rules barring competing sponsors. The transformation from NFL to soccer venue required far more than a name change: the stadium's artificial turf was ripped out and replaced by natural grass grown in Washington State and delivered in refrigerated trucks more than 1,600 miles south. To meet FIFA's minimum pitch width of 74 yards, wider than the NFL standard of 54 yards, engineers physically removed more than 400 corner seats. LED grow lights now run roughly 18 hours a day to sustain the grass inside the covered stadium. Los Angeles Stadium will host eight World Cup matches, including the United States' Group D opener against Paraguay on June 12. The grass is in, the seats are gone, and one of the most expensive stadiums ever built is ready for a different kind of football.",
+      "he": "אצטדיון SoFi באינגלווד ייקרא Los Angeles Stadium לאורך מונדיאל 2026, לפי כללי פיפ\"א האוסרים על נותני חסות מתחרים. ההסבה מאצטדיון NFL למגרש כדורגל דרשה הרבה יותר משינוי שם: הדשא המלאכותי פורק והוחלף בדשא טבעי שגודל במדינת וושינגטון ונשלח במשאיות מקוררות ביותר מ-1,600 מייל דרומה. כדי לעמוד בדרישת פיפ\"א לרוחב מגרש מינימלי של 74 יארדים, רחב יותר מהסטנדרט של 54 יארדים ב-NFL, הוצאו פיזית יותר מ-400 מושבים בפינות האצטדיון. נורות LED לגידול צמחים פועלות כ-18 שעות ביום לשמירת הדשא בתוך האצטדיון המקורה. האצטדיון יאחסן שמונה משחקי מונדיאל, כולל פתיחת קבוצה D של ארצות הברית מול פרגוואי ב-12 ביוני. הדשא פנימה, המושבים החוצה, ואחד האצטדיונים היקרים ביותר שנבנו אי-פעם מוכן לסוג שונה של כדורגל.",
+      "sources": [
+        { "name": "NBC Los Angeles", "url": "https://www.nbclosangeles.com/video/world-cup/sofi-stadium-world-cup-transformation-2026/3902095/" },
+        { "name": "CBS Los Angeles", "url": "https://www.cbsnews.com/losangeles/news/sofi-stadium-2026-fifa-world-cup-30-days-away-transformation-soccer-pitch/" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/sofi-stadium-gets-dramatic-fifa-203711439.html" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "pry-alfaro-qualifying-run-wc2026-2026-06-10",
+      "confidence": "confirmed",
+      "team": "PAR",
+      "en": "Paraguay arrive at their first World Cup since 2010 as one of the tournament's most compelling underdog stories. Under Gustavo Alfaro, appointed in August 2024 after a dismal Copa America exit, Paraguay ran an eight-match unbeaten streak in CONMEBOL qualifying and recorded wins over Argentina, Brazil and Uruguay, feats that would have seemed fantasy when the campaign began. The defensive platform was extraordinary: only 10 goals conceded in 18 qualifying matches, one of the tightest records in South American qualifying history. Alfaro built his side in a disciplined mid-to-low block designed to suffocate central spaces and counter with quick, direct football led by talent like Enciso. Paraguay open Group D against the host United States at Los Angeles Stadium on June 12. A team that almost missed the tournament entirely, and the squad that silenced three continental giants along the way. What happens when they face a different kind of pressure, playing the host nation on its home turf?",
+      "he": "פרגוואי מגיעה למונדיאל הראשון שלה מאז 2010 כאחד מסיפורי הגמד המרתקים ביותר של הטורניר. תחת גוסטבו אלפארו, שמונה באוגוסט 2024 לאחר יציאה כושלת מקופה אמריקה, רשמה פרגוואי רצף של שמונה משחקים ללא הפסד בשלבי ההכשרה של קונמבול, כולל ניצחונות מול ארגנטינה, ברזיל ואורוגוואי, הישגים שנראו כדמיון בתחילת הקמפיין. הבסיס ההגנתי היה יוצא דופן: רק 10 שערים ספגו ב-18 משחקי ההכשרה, אחד מהשיאים ההדוקים ביותר בהיסטוריית ההכשרה הדרום-אמריקנית. אלפארו בנה את קבוצתו בבלוק ביניים-נמוך ממושמע שנועד לחנוק את האזורים המרכזיים ולתקוף בנגדגול עם כדורגל ישיר ומהיר. פרגוואי פותחת קבוצה D מול ארצות הברית המארחת ב-Los Angeles Stadium ב-12 ביוני. קבוצה שכמעט לא התכשרה לטורניר, עם הנבחרת שהשתיקה שלושה ענקיות יבשתיות בדרך. מה קורה כשמתמודדים עם לחץ מסוג אחר, ומשחקים מול נבחרת המארחת על הדשא שלה?",
+      "sources": [
+        { "name": "FIFA (official)", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/paraguay-squad-announcement-gustavo-alfaro" },
+        { "name": "Goal.com", "url": "https://www.goal.com/en/originals/world-cup-2026-guide-paraguay/blt294602f9f302d111" },
+        { "name": "Sports Illustrated", "url": "https://www.si.com/soccer/paraguay-2026-world-cup-preview" }
+      ],
+      "expires_at": "2026-06-30T00:00:00Z"
+    },
     {
       "id": "arg-messi-3-0-iceland-wc26-2026-06-09",
       "confidence": "confirmed",
