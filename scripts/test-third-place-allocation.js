@@ -4,6 +4,42 @@
 (async () => {
   const assert = require('assert');
   const { resolveBracket } = await import('../lib/bracket-core.mjs');
+  const { SP_THIRD_PLACE_ALLOCATION_ROWS, resolveThirdPlaceAssignment } = await import('../lib/third-place-allocation.mjs');
+
+  const slotAllowed = {
+    2:  ['A', 'B', 'C', 'D', 'F'],
+    5:  ['C', 'D', 'F', 'G', 'H'],
+    7:  ['C', 'E', 'F', 'H', 'I'],
+    8:  ['E', 'H', 'I', 'J', 'K'],
+    9:  ['B', 'E', 'F', 'I', 'J'],
+    10: ['A', 'E', 'H', 'I', 'J'],
+    13: ['E', 'F', 'G', 'I', 'J'],
+    15: ['D', 'E', 'I', 'J', 'L']
+  };
+
+  function combinations(items, k, start = 0, prefix = [], out = []) {
+    if (prefix.length === k) {
+      out.push(prefix.join(''));
+      return out;
+    }
+    for (let i = start; i <= items.length - (k - prefix.length); i++) {
+      prefix.push(items[i]);
+      combinations(items, k, i + 1, prefix, out);
+      prefix.pop();
+    }
+    return out;
+  }
+
+  const expectedCombos = combinations('ABCDEFGHIJKL'.split(''), 8);
+  assert.strictEqual(Object.keys(SP_THIRD_PLACE_ALLOCATION_ROWS).length, 495);
+  for (const combo of expectedCombos) {
+    const row = resolveThirdPlaceAssignment(combo.split(''));
+    assert(row, `missing allocation row for ${combo}`);
+    assert.deepStrictEqual(Object.values(row).sort(), combo.split('').sort(), `assignment groups mismatch for ${combo}`);
+    for (const [pos, group] of Object.entries(row)) {
+      assert(slotAllowed[pos].includes(group), `illegal slot assignment ${combo}: pos ${pos} -> ${group}`);
+    }
+  }
 
   const groupPositions = {
     A: ['A1', 'A2', 'A3'],
@@ -38,5 +74,5 @@
 
   assert.notStrictEqual(germanyR32.away, 'BIH');
 
-  console.log('PASS third-place allocation: Annex C option 486 sends 1E to 3D.');
+  console.log('PASS third-place allocation: 495 rows valid; Annex C option 486 sends 1E to 3D.');
 })();

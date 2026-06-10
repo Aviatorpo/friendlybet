@@ -10994,15 +10994,7 @@ const SP_THIRD_PLACE_SLOTS = [2, 5, 7, 8, 9, 10, 13, 15].map(pos => ({
   allowed: SP_R32_DEF[pos].find(f => f.type === 'third').allowed
 }));
 
-// Official Annex C allocation overrides for combinations where FIFA's fixed
-// table differs from a generic "any valid matching" result. Keys are the eight
-// advancing third-place groups sorted alphabetically. Slot order here is app
-// bracket position, not FIFA's printed column order.
-const SP_OFFICIAL_THIRD_PLACE_OVERRIDES = {
-  // FIFA Regulations Annex C option 486:
-  // A B C D E F I J -> 1A:3C, 1B:3J, 1D:3B, 1E:3D, 1G:3A, 1I:3F, 1K:3E, 1L:3I
-  ABCDEFIJ: { 2:'D', 5:'F', 7:'C', 8:'I', 9:'B', 10:'A', 13:'J', 15:'E' }
-};
+const SP_THIRD_PLACE_ALLOCATION = window.FB_THIRD_PLACE_ALLOCATION || null;
 
 function _spThirdPlaceKey(chosenGroups) {
   return [...new Set(chosenGroups || [])].filter(Boolean).sort().join('');
@@ -11010,34 +11002,15 @@ function _spThirdPlaceKey(chosenGroups) {
 
 // v2.5.79: user picks WHICH 8 of the 12 group 3rd-place teams advance
 // (spState.thirdPlaceAdvancers = array of group letters). Given those 8
-// groups, assign each to exactly one R32 slot. FIFA Annex C uses a fixed row
-// per exact combination; when no official override is present yet, keep the
-// existing constrained matching as a deterministic fallback.
+// groups, assign each to exactly one R32 slot using FIFA Regulations Annex C.
 function _spMatchThirdPlace(chosenGroups) {
-  const official = SP_OFFICIAL_THIRD_PLACE_OVERRIDES[_spThirdPlaceKey(chosenGroups)];
-  if (official) return { ...official };
-
-  const chosen = new Set(chosenGroups);
-  const slots = SP_THIRD_PLACE_SLOTS
-    .map(s => ({ pos: s.pos, opts: s.allowed.filter(g => chosen.has(g)) }))
-    .sort((a, b) => a.opts.length - b.opts.length); // most-constrained first
-  const assignment = {};
-  const used = new Set();
-  const bt = (i) => {
-    if (i === slots.length) return true;
-    for (const g of slots[i].opts) {
-      if (used.has(g)) continue;
-      assignment[slots[i].pos] = g; used.add(g);
-      if (bt(i + 1)) return true;
-      used.delete(g); delete assignment[slots[i].pos];
-    }
-    return false;
-  };
-  return bt(0) ? assignment : null;
+  return SP_THIRD_PLACE_ALLOCATION
+    ? SP_THIRD_PLACE_ALLOCATION.resolveThirdPlaceAssignment(chosenGroups)
+    : null;
 }
 
-// Greedy fallback: lowest-letter group per slot (used before the user has
-// chosen 8, or if a chosen combination can't be matched to the slots).
+// Placeholder fallback: used only before the user has chosen all 8 advancing
+// third-place groups, so the bracket can still render a deterministic preview.
 function _spGreedyThirdPlaceSlots() {
   const used = new Set();
   const assignment = {};
@@ -11053,6 +11026,8 @@ function _spResolveThirdPlaceSlots() {
   if (picks.length === 8) {
     const matched = _spMatchThirdPlace(picks);
     if (matched) return { assignment: matched, used: new Set(Object.values(matched)) };
+    console.error('[third-place] missing FIFA Annex C allocation row for', _spThirdPlaceKey(picks));
+    return { assignment: {}, used: new Set() };
   }
   // Not enough chosen (or unmatchable) → fall back to a deterministic set.
   const assignment = _spGreedyThirdPlaceSlots();
@@ -12558,7 +12533,7 @@ async function showUserHypotheticalBracket(userId, userName) {
       // the R32 slots), exactly like the live flow. Fall back to the greedy
       // default only if they haven't chosen 8 / the set can't be matched.
       const matched = chosenThird.length === 8 ? _spMatchThirdPlace(chosenThird) : null;
-      const assignment = matched || _spGreedyThirdPlaceSlots();
+      const assignment = matched || (chosenThird.length === 8 ? {} : _spGreedyThirdPlaceSlots());
       const thirdSlots = { assignment };
 
       const r32 = [];
