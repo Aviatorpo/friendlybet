@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "completedMatchIds": [],
+  "backups": [
+    {
+      "createdAt": "2026-06-10T12:26:29.487Z",
+      "file": "private-backups/2026-06-10T12-26-29-487Z__baseline.json.enc",
+      "encrypted": true,
+      "reason": "force-baseline",
+      "triggerMatchIds": [],
+      "tableCounts": {
+        "pools": 1188,
+        "users": 3335,
+        "group_picks": 1530,
+        "knockout_picks": 35448,
+        "group_position_picks": 82041,
+        "tournament_winner_picks": 1568,
+        "top_scorer_picks": 1394,
+        "sp_third_place_picks": 14047,
+        "pick_backups": 14952,
+        "knockout_reopen_grants": 0,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
+    }
+  ],
+  "updatedAt": "2026-06-10T12:26:29.487Z"
+}
