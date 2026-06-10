@@ -61,7 +61,9 @@ async function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
+const { fbGuardDelete } = require('./lib-guard');
 async function callSupabase(method, table, options = {}) {
+  fbGuardDelete(method, table);  // never let a sync job DELETE user-data tables
   const { data, query = '' } = options;
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
     method,

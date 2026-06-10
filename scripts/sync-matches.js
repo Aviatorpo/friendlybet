@@ -73,9 +73,11 @@ async function callFootballAPI(endpoint) {
   }
 }
 
+const { fbGuardDelete } = require('./lib-guard');
 async function callSupabase(method, table, data = null, query = '') {
+  fbGuardDelete(method, table);  // never let a sync job DELETE user-data tables
   const url = `${SUPABASE_URL}/rest/v1/${table}${query}`;
-  
+
   const options = {
     method: method,
     headers: {

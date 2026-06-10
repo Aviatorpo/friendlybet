@@ -47,7 +47,9 @@ const TIER_MULTIPLIERS = {
 
 // ===== Helpers =====
 
+const { fbGuardDelete } = require('./lib-guard');
 async function callSupabase(method, table, options = {}) {
+  fbGuardDelete(method, table);  // never let a sync job DELETE user-data tables
   const { data, query = '', headers = {} } = options;
   const url = `${SUPABASE_URL}/rest/v1/${table}${query}`;
   
