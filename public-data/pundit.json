@@ -1,7 +1,30 @@
 {
-  "updatedAt": "2026-06-10T09:29:01.829Z",
+  "updatedAt": "2026-06-10T12:30:36.191Z",
   "count": 12,
   "items": [
+    {
+      "id": "jpn-elite-scalps-form-wc2026-2026-06-10",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "יפן מגיעה למונדיאל 2026 עם שיא מול יריבות עילית שקשה להאמין בו עבור נבחרת המדורגת ב-18 בעולם. מאז קטאר 2022 ניצחו את גרמניה פעמיים (1:2 בשלב הבתים, ואז 4:1 בידידות בספטמבר 2023), את ספרד (2:1 כשהיו מאחור במונדיאל 2022), את ברזיל (3:2 לאחר שהיו מאחור בשניים באוקטובר 2025 בטוקיו), ואת אנגליה (0:1 בוומבלי במרץ 2026, כאשר מיטומה סיים בשקט למרות ששליטת הכדור היתה 70-30 לטובת אנגליה). המאמן מוריאסו בנה קבוצה קומפקטית ומדויקת טכנית שסופגת לחץ ותוקפת בנגד-גול. יפן פותחת קבוצה F מול הולנד ב-14 ביוני, נבחרת הולנדית שכבר איבדה ארבעה שחקנים מפתח לפציעות. כל נבחרת שניצחה את גרמניה, ספרד, ברזיל ואנגליה באותו מחזור של ארבע שנים יודעת בדיוק מה עולה להלם את העולם. השאלה ב-2026 היא האם הם יכולים לעשות זאת פעמיים תוך שלושה שבועות.",
+      "en": "Japan arrive at the 2026 World Cup with a record against elite opponents that is genuinely hard to believe for an 18th-ranked nation. Since Qatar 2022 they have beaten Germany twice (1-2 in the group stage, then 4-1 in a September 2023 friendly), Spain (2-1 from behind at the 2022 World Cup), Brazil (3-2 after trailing by two goals in October 2025 in Tokyo), and England (1-0 at Wembley in March 2026, Kaoru Mitoma finishing calmly after the hosts controlled possession 70-30). Coach Hajime Moriyasu has built a compact, technically precise team that absorbs pressure and punishes on the counter-attack. Japan open Group F against the Netherlands on June 14, a Dutch side already missing four key players to injury. Any team that has beaten Germany, Spain, Brazil, and England in the same four-year cycle knows exactly what it costs to shock the world. The question for 2026 is whether they can do it twice in three weeks.",
+      "team": "JPN",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/report/_/gameId/762554"
+        },
+        {
+          "name": "Sky Sports",
+          "url": "https://www.skysports.com/football/news/11095/12757077/world-cup-2022-japan-2-1-spain-ao-tanakas-controversial-goal-stuns-luis-enriques-side-but-both-sides-advance"
+        },
+        {
+          "name": "Outlook India",
+          "url": "https://www.outlookindia.com/sports/football/japan-vs-brazil-live-score-international-friendly-2025-jpn-v-bra-updates"
+        }
+      ],
+      "expires_at": "2026-06-30T00:00:00Z"
+    },
     {
       "id": "mex-rsa-2010-echo-wc2026-2026-06-10",
       "type": "news",
@@ -258,33 +281,6 @@
         }
       ],
       "expires_at": "2026-06-12T23:59:59Z"
-    },
-    {
-      "id": "bra-neymar-grade2-confirmed-2026-06-08",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "ברזיל אישרה שלניימאר יש מתח בדרגה שנייה בשריר השוק הימני שמוציא אותו מהפתיחה מול מרוקו ב-13 ביוני בניו ג'רזי, כאשר המאמן קרלו אנצ'לוטי מכוון לחזרה אפשרית במשחק מול האיטי ב-18 ביוני לכל המוקדם. אנצ'לוטי, שאמר ב-7 ביוני שניימאר יעבור בדיקת MRI מעודכנת ב-8 ביוני, מדגיש שאינו מתחרט על בחירת הפורווארד בן ה-34 ולא יחליף אותו בסגל. ברזיל ניצחה את מצרים 2:1 בחימום ללא ניימאר, כאשר אנדריק בן ה-18 הבקיע ועידד את עומק הסגל. ויניסיוס ג'וניור אישר שהוא מחזיר לניימאר את חולצת מספר 10 האיקונית לקראת הטורניר. האם הסלסאו יכולה להתקדם עמוק אם המבקיע השיאי שלה מבלה את שלב הבתים על שולחן הטיפולים?",
-      "en": "Brazil confirmed Neymar has a Grade 2 right calf strain that rules him out of their June 13 World Cup opener against Morocco in New Jersey, with coach Carlo Ancelotti targeting a return for the June 18 match against Haiti at the earliest. Ancelotti, who said on June 7 that Neymar would undergo an updated MRI on June 8, insists he has no regrets about picking the 34-year-old and will not replace him in the squad. Brazil beat Egypt 2-1 in their warm-up without him, 18-year-old Endrick stepping up to score and underline the squad depth. Vinicius Jr confirmed he is handing back the iconic No. 10 shirt to Neymar for the tournament. Can the Selecao go deep if their record scorer spends the group stage on the treatment table?",
-      "team": "BRA",
-      "sources": [
-        {
-          "name": "FIFA (official)",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/brazil-neymar-injury"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48922562/brazil-carlo-ancelotti-neymar-injury-2026-world-cup"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/5/28/neymar-out-of-brazil-world-cup-opener-due-to-calf-injury"
-        },
-        {
-          "name": "Sports Illustrated",
-          "url": "https://www.si.com/soccer/neymar-injury-timeline-brazil-matches-miss-2026-world-cup"
-        }
-      ],
-      "expires_at": "2026-06-19T23:59:59Z"
     }
   ]
 }
