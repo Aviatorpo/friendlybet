@@ -2779,6 +2779,13 @@ function renderAdminMembers() {
   const finishedCount = adminState.members.filter(m => _adminMemberProgress(m).finished).length;
   const needsKoCount = adminState.members.filter(m => _adminMemberProgress(m).needsKnockout).length;
   const annexCount = adminState.members.filter(m => _adminMemberProgress(m).annexReview).length;
+  const annexHardCount = adminState.members.filter(m => _adminMemberProgress(m).annexHardAffected).length;
+  const annexReminderCount = adminState.members.filter(m => !m.isAdmin && _adminMemberProgress(m).annexReview).length;
+  const adminMember = adminState.members.find(m => state.currentUser && m.id === state.currentUser.id);
+  const adminProgress = adminMember ? _adminMemberProgress(adminMember) : {};
+  const adminAnnexStatus = adminProgress.annexHardAffected
+    ? t('adminMembersEx.annexYouHard')
+    : (adminProgress.annexReview ? t('adminMembersEx.annexYouReview') : t('adminMembersEx.annexYouClear'));
 
   document.getElementById('admin-stat-total').textContent = total;
   document.getElementById('admin-stat-groups').textContent = startedCount;
@@ -2818,10 +2825,26 @@ function renderAdminMembers() {
   if (needsKoCount > 0) {
     const nudge = document.createElement('div');
     nudge.className = 'admin-ko-nudge-banner';
-    nudge.innerHTML =
-      '<div class="akn-text">⚠️ ' + t(annexCount > 0 ? 'adminMembersEx.annexCReviewGlitch' : 'adminMembersEx.needsKnockoutGlitch', { n: needsKoCount, annex: annexCount }) + '</div>' +
-      '<button type="button" class="akn-copy" id="admin-ko-copy-btn">' +
-      '<i class="ti ti-copy"></i><span>' + t('adminMembersEx.copyNudge') + '</span></button>';
+    if (annexCount > 0) {
+      nudge.innerHTML =
+        '<div class="akn-head"><span class="akn-icon">⚠️</span><div>' +
+          '<div class="akn-title">' + t('adminMembersEx.annexCReviewTitle') + '</div>' +
+          '<div class="akn-text">' + t('adminMembersEx.annexCReviewGlitch', { n: annexCount, hard: annexHardCount, remind: annexReminderCount }) + '</div>' +
+        '</div></div>' +
+        '<div class="akn-meta">' +
+          '<span>' + t('adminMembersEx.annexPoolCount', { n: annexCount }) + '</span>' +
+          '<span>' + t('adminMembersEx.annexHardCount', { n: annexHardCount }) + '</span>' +
+          '<span>' + t('adminMembersEx.annexReminderCount', { n: annexReminderCount }) + '</span>' +
+        '</div>' +
+        '<div class="akn-you">' + adminAnnexStatus + '</div>' +
+        '<button type="button" class="akn-copy" id="admin-ko-copy-btn">' +
+        '<i class="ti ti-copy"></i><span>' + t('adminMembersEx.copyNudge') + '</span></button>';
+    } else {
+      nudge.innerHTML =
+        '<div class="akn-text">⚠️ ' + t('adminMembersEx.needsKnockoutGlitch', { n: needsKoCount }) + '</div>' +
+        '<button type="button" class="akn-copy" id="admin-ko-copy-btn">' +
+        '<i class="ti ti-copy"></i><span>' + t('adminMembersEx.copyNudge') + '</span></button>';
+    }
     list.appendChild(nudge);
     const copyBtn = nudge.querySelector('#admin-ko-copy-btn');
     if (copyBtn) copyBtn.addEventListener('click', async () => {
