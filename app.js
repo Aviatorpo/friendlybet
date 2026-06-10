@@ -1235,9 +1235,15 @@ async function goToDashboard() {
   // v2.5.38: only admins see the "invite friends" CTA on the dashboard.
   // Regular members joined via a link or pool code - they don't need to
   // recruit. The menu still has a share entry for admins to find anytime.
+  // v2.10.4: once the pool locks (tournament started), hide it entirely -
+  // a locked pool rejects new members (checkPoolCode -> errors.poolLockedNoJoin),
+  // so inviting after kickoff is a dead-end. tournamentStarted is a fallback
+  // in case locked_at hasn't been written yet for this pool.
   const inviteBtn = document.querySelector('#user-dashboard-screen .invite-friends-btn');
   if (inviteBtn) {
-    inviteBtn.style.display = (state.currentUser && state.currentUser.is_admin) ? '' : 'none';
+    const poolLocked = !!(state.currentPool && state.currentPool.locked_at) || tournamentStarted;
+    const showInvite = state.currentUser && state.currentUser.is_admin && !poolLocked;
+    inviteBtn.style.display = showInvite ? '' : 'none';
   }
 
   // Update betting status based on actual picks
