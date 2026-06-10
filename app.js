@@ -18,7 +18,7 @@ const state = {
 // Screen Navigation
 // ============================================================
 
-// v2.10: 72h knockout-recovery flag. Declared HERE (above showScreen, which clears
+// v2.10: knockout correction flag. Declared HERE (above showScreen, which clears
 // it on leaving the walkthrough) so it's always initialized before showScreen can
 // run — no temporal-dead-zone risk. Set true ONLY inside spReopenKnockout().
 let spReopenActive = false;
@@ -2702,6 +2702,19 @@ async function loadAdminMembers() {
     const hasTopScorerByUser = {};
     (topScorerPicksRes.data || []).forEach(p => { hasTopScorerByUser[p.user_id] = true; });
 
+    const reopenByUser = {};
+    if (isV2) {
+      try {
+        const code = _currentRecoveryCode();
+        if (code && supabaseClient) {
+          const { data, error } = await supabaseClient.rpc('admin_knockout_reopen_members', { p_code: code });
+          if (!error && Array.isArray(data)) {
+            data.forEach(r => { if (r && r.user_id) reopenByUser[r.user_id] = r; });
+          }
+        }
+      } catch (_) {}
+    }
+
     // Enrich users with stats
     adminState.members = users.map(u => ({
       ...u,
@@ -2709,6 +2722,7 @@ async function loadAdminMembers() {
       knockoutPicksCount: knockoutPicksByUser[u.id] || 0,
       hasWinner: !!hasWinnerByUser[u.id],
       hasTopScorer: !!hasTopScorerByUser[u.id],
+      reopenGrant: reopenByUser[u.id] || null,
       isAdmin: u.is_admin === true
     }));
     adminState.isV2 = isV2;
@@ -2745,9 +2759,11 @@ function _adminMemberProgress(member) {
 
   // v2.9.8: groups in but the knockout bracket isn't full → the member needs to
   // (re-)fill the knockout. Surfaced so the admin can see exactly who to nudge.
-  const needsKnockout = isV2 && groupsFull && !bracketFull;
+  const grant = member.reopenGrant || {};
+  const annexReview = isV2 && grant.incident_key === 'annex_c_2026' && grant.grant_active;
+  const needsKnockout = isV2 && ((groupsFull && !bracketFull) || annexReview);
 
-  return { started, finished, needsKnockout };
+  return { started, finished, needsKnockout, annexReview, annexHardAffected: annexReview && grant.impact_kind === 'hard_invalid_r32' };
 }
 
 function renderAdminMembers() {
@@ -2797,11 +2813,12 @@ function renderAdminMembers() {
   // bracket. Explains the technical glitch + offers a ready-to-send message the
   // admin can paste into the group chat to ask those members to re-fill it.
   const needsKoCount = adminState.members.filter(m => _adminMemberProgress(m).needsKnockout).length;
+  const annexCount = adminState.members.filter(m => _adminMemberProgress(m).annexReview).length;
   if (needsKoCount > 0) {
     const nudge = document.createElement('div');
     nudge.className = 'admin-ko-nudge-banner';
     nudge.innerHTML =
-      '<div class="akn-text">⚠️ ' + t('adminMembersEx.needsKnockoutGlitch', { n: needsKoCount }) + '</div>' +
+      '<div class="akn-text">⚠️ ' + t(annexCount > 0 ? 'adminMembersEx.annexCReviewGlitch' : 'adminMembersEx.needsKnockoutGlitch', { n: needsKoCount, annex: annexCount }) + '</div>' +
       '<button type="button" class="akn-copy" id="admin-ko-copy-btn">' +
       '<i class="ti ti-copy"></i><span>' + t('adminMembersEx.copyNudge') + '</span></button>';
     list.appendChild(nudge);
@@ -2830,9 +2847,13 @@ function renderAdminMembers() {
       : '';
 
     // Two distinct statuses: Started (>=1 group) and Finished (everything incl. champion + top scorer)
-    const { started, finished, needsKnockout } = _adminMemberProgress(member);
+    const { started, finished, needsKnockout, annexReview, annexHardAffected } = _adminMemberProgress(member);
     // v2.9.8: amber flag so the admin instantly spots who must (re-)fill the knockout.
-    const koFlag = needsKnockout ? `<span class="admin-member-ko-flag">${t('adminMembersEx.needsKnockout')}</span>` : '';
+    const koFlag = annexHardAffected
+      ? `<span class="admin-member-ko-flag">${t('adminMembersEx.annexHardAffected')}</span>`
+      : (annexReview
+        ? `<span class="admin-member-ko-flag">${t('adminMembersEx.annexReview')}</span>`
+        : (needsKnockout ? `<span class="admin-member-ko-flag">${t('adminMembersEx.needsKnockout')}</span>` : ''));
 
     // Quick action buttons for pending users
     let quickActions = '';
@@ -2903,20 +2924,27 @@ function renderAdminMembers() {
 
     list.appendChild(card);
 
-    // v2.10: post-lock, let the admin approve THIS member's 72h knockout re-entry
+    // v2.10: post-lock, let the admin approve/extend THIS member's knockout review
     // and copy a ready personal nudge. Appended as a full-width sibling so it
     // doesn't disturb the card's row layout. Server validates full eligibility.
-    if (spIsLocked() && needsKnockout && !member.isAdmin) {
+    if (spIsLocked() && adminState.isV2 && !member.isAdmin) {
       const rec = document.createElement('div');
       rec.className = 'admin-member-reopen';
-      rec.innerHTML = `<button type="button" class="amr-allow">${t('reopen.admin.allowBtn')}</button>`;
+      const grant = member.reopenGrant || {};
+      const active = !!grant.grant_active;
+      rec.innerHTML = active
+        ? `<div class="amr-ok">${t('reopen.admin.grantedUntil', { time: _fmtReopenExpiry(grant.expires_at) })}</div>` +
+          `<button type="button" class="amr-allow">${t('reopen.admin.extendBtn')}</button>` +
+          `<button type="button" class="amr-copy">${t('reopen.admin.copyBtn', { name: member.nickname || '' })}</button>`
+        : `<button type="button" class="amr-allow">${t('reopen.admin.allowBtn')}</button>`;
       rec.addEventListener('click', e => e.stopPropagation());
       const allowBtn = rec.querySelector('.amr-allow');
       allowBtn.addEventListener('click', async () => {
         allowBtn.disabled = true; allowBtn.textContent = '…';
         const res = await _adminApproveReopen(member.id);
         if (res && res.ok) {
-          rec.innerHTML = `<div class="amr-ok">${t('reopen.admin.granted')}</div>` +
+          member.reopenGrant = { ...(member.reopenGrant || {}), grant_active: true, expires_at: res.expires_at || null, incident_key: 'manual_reopen' };
+          rec.innerHTML = `<div class="amr-ok">${res.expires_at ? t('reopen.admin.grantedUntil', { time: _fmtReopenExpiry(res.expires_at) }) : t('reopen.admin.granted')}</div>` +
             `<button type="button" class="amr-copy">${t('reopen.admin.copyBtn', { name: member.nickname || '' })}</button>`;
           const cp = rec.querySelector('.amr-copy');
           cp.addEventListener('click', (ev) => { ev.stopPropagation(); _adminCopyReopenMsg(member.nickname); });
@@ -2925,6 +2953,8 @@ function renderAdminMembers() {
           showToast(t('reopen.admin.notEligible'), 'error');
         }
       });
+      const cp = rec.querySelector('.amr-copy');
+      if (cp) cp.addEventListener('click', (ev) => { ev.stopPropagation(); _adminCopyReopenMsg(member.nickname); });
       list.appendChild(rec);
     }
   });
@@ -5491,12 +5521,17 @@ async function updateBettingStatusOnDashboard() {
     // opposite lock states, so a user never sees both at once.
     const affected = (winnerChosen || groupsDone) && !bracketDone;
     const locked = spIsLocked();
+    let reopenStatus = null;
+    if (locked) {
+      try { reopenStatus = await _spFetchReopenStatus(); } catch (_) { reopenStatus = null; }
+    }
+    const hasCorrectionGrant = !!(reopenStatus && (reopenStatus.can_reenter || reopenStatus.approved));
     state._userNeedsKnockoutRecovery = (affected && locked);
     try {
       const brb = document.getElementById('bracket-recover-banner');
       if (brb) brb.style.display = (affected && !locked) ? 'flex' : 'none';
     } catch (_) {}
-    try { await _updateReopenBanner(affected && locked); } catch (_) {}
+    try { await _updateReopenBanner(locked && (affected || hasCorrectionGrant)); } catch (_) {}
 
     // Overall progress (drives the bar): groups + bracket (+ top scorer if open).
     const total  = 48 + 31 + (tsRequired ? 1 : 0);
@@ -10060,7 +10095,7 @@ function spIsLocked() {
   return isPoolWriteLocked();
 }
 
-// v2.10: 72h knockout recovery. spReopenActive (declared near the top, above
+// v2.10: knockout correction recovery. spReopenActive (declared near the top, above
 // showScreen) routes the walkthrough's saves to save_knockout_bracket_reopen and
 // bypasses the lock gate. Set ONLY by spReopenKnockout() for an approved user.
 
@@ -11641,7 +11676,7 @@ async function _spSaveBracketToDbInner(showFeedback = true) {
     return;
   }
 
-  // v2.10: in the 72h recovery flow, the pool is locked, so the normal RPC would
+  // v2.10: in the correction recovery flow, the pool is locked, so the normal RPC would
   // reject — route to the dedicated, grant-gated recovery RPC instead.
   const rpcName = inRecoverySave ? 'save_knockout_bracket_reopen' : 'save_knockout_bracket';
   const res = await _rpcWrite(rpcName, { p_code: code, p_picks: rows });
@@ -11924,8 +11959,8 @@ function spPickWinner(code) {
 
 async function spSaveWinnerToDb(showFeedback = true) {
   if (!state.currentPool || !state.currentUser || !spState.tournamentWinner) return;
-  // v2.10: in recovery, the champion is LOCKED (the bracket's final must equal the
-  // already-saved tournament winner, enforced server-side). Never re-write it here.
+  // In the correction walkthrough, the final winner is saved with bracket position 31
+  // through save_knockout_bracket_reopen, so the standalone winner RPC stays off.
   if (spReopenActive) return;
   const userId = state.currentUser.id;
   const poolId = state.currentPool.id;
@@ -13353,13 +13388,7 @@ function _koSingleSetPick(teamCode) {
     propagateKnockoutBracket();
     autoSaveKnockoutPicks();
   } else {
-    // v2.10: in recovery the champion is LOCKED — the FINAL winner (pos 31) must be
-    // the user's already-saved champion (also enforced server-side). Block other picks.
-    if (spReopenActive && step.pos === 31 && spState.tournamentWinner && teamCode !== spState.tournamentWinner) {
-      showToast(t('reopen.championLocked', { team: (typeof teamName === 'function' ? teamName(spState.tournamentWinner) : spState.tournamentWinner) }), 'error');
-      koSingleRender();
-      return;
-    }
+    // v2.10.12: Annex C recovery is knockout-only, including the final winner.
     const prev = spState.bracketPicks[step.pos];
     // v2.9.10: warn before a change cascades away later-round picks.
     if (prev && prev !== teamCode) {
@@ -13367,6 +13396,7 @@ function _koSingleSetPick(teamCode) {
       if (n > 0 && !confirm(t('betting.cascadeWarn', { n }))) { koSingleRender(); return; }
     }
     spState.bracketPicks[step.pos] = teamCode;
+    if (parseInt(step.pos, 10) === 31) spState.tournamentWinner = teamCode;
     if (prev && prev !== teamCode) spClearDownstream(step.pos);
     spAutoSaveBracket();
   }
@@ -13380,9 +13410,8 @@ function koSingleRender() {
   try {
     const note = document.getElementById('ko-reopen-note');
     if (note) {
-      if (spReopenActive && spState.tournamentWinner) {
-        const tn = (typeof teamName === 'function' ? teamName(spState.tournamentWinner) : spState.tournamentWinner);
-        note.textContent = t('reopen.walkthroughNote', { team: tn });
+      if (spReopenActive) {
+        note.textContent = t('reopen.walkthroughNote');
         note.style.display = 'block';
       } else { note.style.display = 'none'; }
     }
@@ -13590,8 +13619,8 @@ function koSingleFinish() {
 }
 
 // v2.10: enter the bracket-only recovery walkthrough for an admin-approved affected
-// user (pool is locked). Saves route to save_knockout_bracket_reopen; groups/
-// third-place/champion stay locked (loaded as fixed context); champion is enforced.
+// user (pool is locked). Saves route to save_knockout_bracket_reopen; groups,
+// third-place advancers, and top scorer stay locked; the final winner may change.
 async function spReopenKnockout() {
   if (!state.currentPool || !state.currentUser) { showToast(t('errors.reconnect'), 'error'); return; }
   const st = await _spFetchReopenStatus();
@@ -13653,7 +13682,6 @@ async function _updateReopenBanner(active) {
   const hide = () => { el.style.display = 'none'; };
   if (!active) return hide();
   const st = await _spFetchReopenStatus();
-  if (st && st.used) return hide();   // already completed via recovery
   const titleEl = document.getElementById('kr-title');
   const subEl = document.getElementById('kr-sub');
   const ctaEl = document.getElementById('kr-cta');
