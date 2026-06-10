@@ -2767,6 +2767,13 @@ function _adminMemberProgress(member) {
   return { started, finished, needsKnockout, annexReview, annexHardAffected: annexReview && grant.impact_kind === 'hard_invalid_r32' };
 }
 
+function _adminAnnexRank(member) {
+  const p = _adminMemberProgress(member);
+  if (p.annexHardAffected) return 0;
+  if (p.annexReview) return 1;
+  return 2;
+}
+
 function renderAdminMembers() {
   const list = document.getElementById('admin-members-list');
   
@@ -2811,6 +2818,11 @@ function renderAdminMembers() {
   const sorted = [...adminState.members].sort((a, b) => {
     if (a.isAdmin && !b.isAdmin) return -1;
     if (!a.isAdmin && b.isAdmin) return 1;
+    if (annexCount > 0) {
+      const ar = _adminAnnexRank(a);
+      const br = _adminAnnexRank(b);
+      if (ar !== br) return ar - br;
+    }
     if (a.approval_status === 'pending' && b.approval_status !== 'pending') return -1;
     if (a.approval_status !== 'pending' && b.approval_status === 'pending') return 1;
     return (a.nickname || '').localeCompare(b.nickname || '');
@@ -2837,8 +2849,12 @@ function renderAdminMembers() {
           '<span>' + t('adminMembersEx.annexReminderCount', { n: annexReminderCount }) + '</span>' +
         '</div>' +
         '<div class="akn-you">' + adminAnnexStatus + '</div>' +
-        '<button type="button" class="akn-copy" id="admin-ko-copy-btn">' +
-        '<i class="ti ti-copy"></i><span>' + t('adminMembersEx.copyNudge') + '</span></button>';
+        '<div class="akn-actions">' +
+          '<button type="button" class="akn-copy" id="admin-ko-copy-btn">' +
+          '<i class="ti ti-copy"></i><span>' + t('adminMembersEx.copyNudge') + '</span></button>' +
+          '<button type="button" class="akn-view" id="admin-ko-view-btn">' +
+          '<i class="ti ti-users"></i><span>' + t('adminMembersEx.viewAffectedMembers') + '</span></button>' +
+        '</div>';
     } else {
       nudge.innerHTML =
         '<div class="akn-text">⚠️ ' + t('adminMembersEx.needsKnockoutGlitch', { n: needsKoCount }) + '</div>' +
@@ -2852,6 +2868,11 @@ function renderAdminMembers() {
         await navigator.clipboard.writeText(t('adminMembersEx.nudgeMessage'));
         showToast(t('adminMembersEx.nudgeCopied'), 'success');
       } catch (_) { showToast(t('adminMembersEx.nudgeMessage'), 'info'); }
+    });
+    const viewBtn = nudge.querySelector('#admin-ko-view-btn');
+    if (viewBtn) viewBtn.addEventListener('click', () => {
+      const target = list.querySelector('.admin-member-card.annex-hard') || list.querySelector('.admin-member-card.annex-review');
+      if (target && target.scrollIntoView) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   }
 
@@ -2872,6 +2893,8 @@ function renderAdminMembers() {
 
     // Two distinct statuses: Started (>=1 group) and Finished (everything incl. champion + top scorer)
     const { started, finished, needsKnockout, annexReview, annexHardAffected } = _adminMemberProgress(member);
+    if (annexHardAffected) card.classList.add('annex-hard');
+    else if (annexReview) card.classList.add('annex-review');
     // v2.9.8: amber flag so the admin instantly spots who must (re-)fill the knockout.
     const koFlag = annexHardAffected
       ? `<span class="admin-member-ko-flag">${t('adminMembersEx.annexHardAffected')}</span>`
@@ -13710,10 +13733,16 @@ async function _updateReopenBanner(active, opts = {}) {
   const afterKickoff = _annexCopyAfterKickoff(opts.locked);
   const approved = !!(st && st.approved);
   const canEdit = !!(st && st.can_reenter) || (!opts.locked && approved);
+  const hardAffected = !!(st && st.impact_kind === 'hard_invalid_r32');
   if (approved) {
     el.className = 'knockout-reopen-banner pending';
     if (titleEl) titleEl.textContent = t(afterKickoff ? 'reopen.user.approvedTitle' : 'reopen.user.preKickoffTitle');
-    if (subEl) subEl.textContent = t(afterKickoff ? 'reopen.user.approvedSub' : 'reopen.user.preKickoffSub');
+    if (subEl) {
+      const subKey = afterKickoff
+        ? (hardAffected ? 'reopen.user.approvedSubHard' : 'reopen.user.approvedSubPool')
+        : (hardAffected ? 'reopen.user.preKickoffSubHard' : 'reopen.user.preKickoffSubPool');
+      subEl.textContent = t(subKey);
+    }
     if (ctaEl) {
       ctaEl.style.display = canEdit ? '' : 'none';
       ctaEl.textContent = t(afterKickoff ? 'reopen.user.cta' : 'reopen.user.preKickoffCta');
