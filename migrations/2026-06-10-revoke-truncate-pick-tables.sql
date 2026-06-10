@@ -40,6 +40,10 @@ revoke truncate on public.top_scorer_picks         from anon, authenticated, pub
 revoke truncate on public.group_picks              from anon, authenticated, public;
 revoke truncate on public.sp_third_place_picks     from anon, authenticated, public;
 revoke truncate on public.pick_backups             from anon, authenticated, public;
+-- 2026-06-10 follow-up: the account tables still held a stray anon/authenticated
+-- TRUNCATE grant too (found via live verification). Close them for the same reason.
+revoke truncate on public.users                    from anon, authenticated, public;
+revoke truncate on public.pools                    from anon, authenticated, public;
 
 -- After this, anon/authenticated retain only SELECT, REFERENCES, TRIGGER on these
 -- tables; all writes (incl. TRUNCATE) go exclusively through the SECURITY DEFINER

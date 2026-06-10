@@ -351,6 +351,11 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
       // team_code column); keep team_code as a defensive fallback.
       const pickTeam = p.predicted_winner || p.team_code;
       if (!pickTeam) return;
+      // SCORING MODEL = ADVANCEMENT (Option A, owner-approved 2026-06-10). INTENTIONAL,
+      // not a bug: a picked team scores for a round if it actually won a match at that
+      // stage in the real world — regardless of which bracket SLOT/branch the user
+      // placed it in. We deliberately do NOT require the exact path/position (that
+      // would be Option B). Keep it this way unless Eyal explicitly switches to B.
       // Did user's picked team win their actual real-world match at this stage?
       const stageMap = {
         round_of_32:  ['ROUND_OF_32','LAST_32','R32'],
