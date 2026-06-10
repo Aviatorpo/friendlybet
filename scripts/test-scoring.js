@@ -165,14 +165,17 @@ bracket('U2',3,'ARG');                  // 2 * x1 = 2
 bracket('U2',5,'MEX');                  // 2 * x1.5 = 3
 // expected: group=20, knockout=4+2+3=9, bonus=0, total=29
 
-// U3 two-phase, multipliers OFF. Two-phase groups score ADVANCEMENT now:
-// A1 (1st) + A2 (2nd) advance -> +1 each; A4 (4th) does NOT advance -> +0.
-const gp3 = [{ team_code:'A1' }, { team_code:'A2' }, { team_code:'A4' }];
+// U3 two-phase, multipliers OFF. v2.10.9: two-phase group points now require a
+// VALID FINAL set (exactly 32 real-WC2026 teams, 2-3 per group). This synthetic
+// 3-pick set is intentionally INCOMPLETE -> 0 group points (the validator's
+// accept/reject behaviour is covered exhaustively by the validateTwoPhaseGroupPickSet
+// unit tests below). Knockout + bonus scoring is unaffected.
+const gp3 = [{ group_letter:'A', team_code:'A1' }, { group_letter:'A', team_code:'A2' }, { group_letter:'A', team_code:'A4' }];
 const kp3 = [{ predicted_winner:'KO1' }, { predicted_winner:'KOP2' }];
 kpByUser['U3'] = kp3;                    // wire U3's two-phase knockout picks into the mock
 // KO1 wins LAST_32+LAST_16+QF+SF+FINAL = 2+4+8+16+32=62 ; KOP2 penalty r32 = +2 -> 64
 // U3 top scorer correct -> +10
-// expected: group=2 (A1,A2 advanced; A4 did not), knockout=64, bonus=10, total=76
+// expected: group=0 (incomplete set, not a valid 32), knockout=64, bonus=10, total=74
 
 // U4 single-phase, multipliers ON, ALL teams x1.5 -> rounding (sum-then-round) check.
 gpp('U4','C',[null,'C2',null,'C4']);    // pos2=3*1.5=4.5 ; pos4=1*1.5=1.5 ; sum=6.0 -> round 6 (NOT 7)
@@ -220,10 +223,10 @@ S.__setFetch(async (url, opts) => {
   console.log('\n== integration: two-phase (U3) ==');
   await S.scoreTwoPhasePool({ id:'P3', code:'P3', use_multipliers:false }, rulesTwo,
     [{ id:'U3', nickname:'U3' }], finishedMatches, tsMapTwo, 'TS1');
-  eq('U3 group (A1,A2 advanced; A4 not)', captured.U3.group_points, 2);
+  eq('U3 group (incomplete set -> 0)', captured.U3.group_points, 0);
   eq('U3 knockout (62 + 2 penalty)', captured.U3.knockout_points, 64);
   eq('U3 bonus (top scorer)', captured.U3.bonus_points, 10);
-  eq('U3 total', captured.U3.total_score, 76);
+  eq('U3 total', captured.U3.total_score, 74);
 
   console.log('\n== integration: rounding sum-then-round (U4) ==');
   await S.scoreSinglePhasePool({ id:'P4', code:'P4', use_multipliers:true }, rulesAllX15,
@@ -240,28 +243,38 @@ S.__setFetch(async (url, opts) => {
   eq('AWARDED counts as terminal', S.groupIsComplete(finished6.map((m, i) => (i === 0 ? { status: 'AWARDED', home_score: 3, away_score: 0 } : m))), true);
   eq('only 5 matches present -> NOT complete', S.groupIsComplete(finished6.slice(0, 5)), false);
 
-  console.log('\n== unit: sanitizeTwoPhaseGroupPicks (two-phase scoring fairness) ==');
-  // a duplicate team cannot double-score
-  eq('duplicate team deduped to 1', S.sanitizeTwoPhaseGroupPicks([
-    { group_letter: 'A', team_code: 'MEX' }, { group_letter: 'A', team_code: 'MEX' }
-  ]).length, 1);
-  // a team tagged under a group it isn't in is dropped (BRA is group C, not A)
-  eq('wrong-group row ignored', S.sanitizeTwoPhaseGroupPicks([
-    { group_letter: 'A', team_code: 'BRA' }, { group_letter: 'A', team_code: 'MEX' }
-  ]).map(p => p.team_code), ['MEX']);
-  // the same team can't advance from two groups -> scored once
-  eq('cross-group same team -> 1', S.sanitizeTwoPhaseGroupPicks([
-    { group_letter: 'C', team_code: 'BRA' }, { group_letter: 'A', team_code: 'BRA' }
-  ]).length, 1);
-  // an over-complete 36-row VALID set keeps 36 distinct teams; scoring is still
-  // bounded because only teams in the real 32-team `advanced` set earn points.
+  console.log('\n== unit: validateTwoPhaseGroupPickSet (two-phase scoring fairness) ==');
+  const LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+  // a VALID exactly-32 set: 3 from the first 8 groups, 2 from the last 4 (8*3+4*2=32)
+  const valid32 = [];
+  LETTERS.forEach((L, i) => S.WC2026_GROUPS[L].slice(0, i < 8 ? 3 : 2).forEach(tc => valid32.push({ group_letter: L, team_code: tc })));
+  eq('valid 32 accepted', S.validateTwoPhaseGroupPickSet(valid32).ok, true);
+  eq('valid 32 picks length', S.validateTwoPhaseGroupPickSet(valid32).picks.length, 32);
+
+  // an over-complete 36 set (3 in every group) is INVALID -> not scoreable as 36
   const over36 = [];
-  Object.entries(S.WC2026_GROUPS).forEach(([L, teams]) => teams.slice(0, 3).forEach(tc => over36.push({ group_letter: L, team_code: tc })));
-  eq('36 valid distinct survive sanitize', S.sanitizeTwoPhaseGroupPicks(over36).length, 36);
-  // duplicates + wrong-group mixed into the 36 still collapse to the 36 valid
-  eq('dirty set collapses to valid distinct', S.sanitizeTwoPhaseGroupPicks(
-    [...over36, { group_letter: 'A', team_code: 'MEX' }, { group_letter: 'A', team_code: 'BRA' }]
-  ).length, 36);
+  LETTERS.forEach(L => S.WC2026_GROUPS[L].slice(0, 3).forEach(tc => over36.push({ group_letter: L, team_code: tc })));
+  const r36 = S.validateTwoPhaseGroupPickSet(over36);
+  eq('36 rejected (ok=false)', r36.ok, false);
+  eq('36 yields NO scoreable picks', r36.picks.length, 0);
+
+  // under-complete 24 (2 per group) and 31 are NOT a final scoreable set
+  const set24 = [];
+  LETTERS.forEach(L => S.WC2026_GROUPS[L].slice(0, 2).forEach(tc => set24.push({ group_letter: L, team_code: tc })));
+  eq('24 rejected (not final)', S.validateTwoPhaseGroupPickSet(set24).ok, false);
+  const set31 = valid32.slice(0, 31);
+  eq('31 rejected (not final)', S.validateTwoPhaseGroupPickSet(set31).ok, false);
+
+  // duplicates / wrong-group rows cannot inflate: a valid 32 + a dup + a wrong-group
+  // row still validates to exactly the clean 32 (the noise is ignored)
+  const dirty = [...valid32, { group_letter: 'A', team_code: S.WC2026_GROUPS.A[0] }, { group_letter: 'A', team_code: 'BRA' }];
+  const rDirty = S.validateTwoPhaseGroupPickSet(dirty);
+  eq('dirty-but-32 still valid', rDirty.ok, true);
+  eq('dirty cleaned to 32', rDirty.picks.length, 32);
+  // a wrong-group team alone (BRA tagged A) does not count toward group A
+  eq('wrong-group ignored -> A incomplete', S.validateTwoPhaseGroupPickSet([
+    { group_letter: 'A', team_code: 'BRA' }
+  ]).ok, false);
 
   console.log(`\n==== ${pass} passed, ${fail} failed ====`);
   process.exit(fail ? 1 : 0);

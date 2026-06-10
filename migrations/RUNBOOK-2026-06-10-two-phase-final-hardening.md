@@ -64,6 +64,34 @@ pools have a future `lock_at_override`; 0 are locked.
 - `scripts/test-live-poller.js` — 5/0
 - Read-only prod: `verify-no-truncate-grants.sql` → 0 rows; 77 grace pools.
 
+## Follow-up patch (Codex gap-fixes, same day)
+
+Two remaining gaps from the Codex re-audit, fixed:
+
+1. **Scoring no longer lets an over-complete set score unfairly.** Replaced
+   `sanitizeTwoPhaseGroupPicks` with `validateTwoPhaseGroupPickSet(rows) -> {ok,picks,reason}`
+   in `scripts/calculate-scores-v2.js`. Two-phase group points are awarded ONLY for a
+   valid FINAL set: exactly 32 distinct teams, groups A-L each 2-3, correct membership,
+   no duplicates. Under-complete (24/31) and over-complete (36) sets score 0 group points
+   (logged via `console.warn`) until corrected — the affected users are in graced pools and
+   the banner nudges them to complete to 32. Tests updated (test-scoring.js: valid-32 accepted,
+   36/24/31 rejected, dup/wrong-group ignored; U3 integration now group=0/total=74 because
+   its synthetic 3-pick set isn't a valid 32).
+
+2. **`get_pick_backup` returns the BEST snapshot, not blindly the latest.** Migration
+   `2026-06-10-get-pick-backup-best-two-phase.sql`: for two_phase pools it ranks backups by
+   complete-groups (exactly 32, 2-3/group) → most group picks → created_at; single_phase
+   keeps latest (its snapshots are full cumulative state). Verified in rolled-back tx:
+   two-phase returns the complete-32 even when it's the OLDEST (beating a sparse latest and a
+   bracket-only middle); single-phase still returns the latest (a user-removed pick is honored).
+
+**Prod verification (read-only, post-fix):** get_pick_backup ranks by completeness (g_valid
+present, not latest-only); save_group_picks_2p still rejects >32; _auth_writer still honors a
+future lock_at_override. Two-phase distribution: 758×0, 1×1, 1×24, 1×31, **31×32**, 1×36
+(the 36-row user now scores 0 group points until fixed). Full suite green (test-scoring 63/0,
+check-destructive-sql, sync-transform 12/0, banter, live-poller 5/0, node --check all).
+No client/version bump — changes are the scoring engine + a DB function only.
+
 ## Owner follow-ups (deferred / not done here)
 
 - DELETE (not just TRUNCATE) is still granted to anon/authenticated on some reference

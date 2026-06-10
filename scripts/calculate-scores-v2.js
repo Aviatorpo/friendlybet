@@ -58,20 +58,33 @@ const WC2026_GROUPS = {
 const TEAM_TO_GROUP = {};
 for (const [L, teams] of Object.entries(WC2026_GROUPS)) teams.forEach(tc => { TEAM_TO_GROUP[tc] = L; });
 
-// Keep only VALID, non-duplicated two-phase group picks for scoring: a team must
-// belong to the group it was picked under, and a team scores at most ONCE per
-// user (no cross-group double-count). Exported for the scoring tests.
-function sanitizeTwoPhaseGroupPicks(rows) {
+// Validate a two-phase group-pick SET for scoring. A legal advancing set is
+// EXACTLY 32 distinct teams, each in its real group, with 2-3 picks per group
+// A-L. Anything else (under-complete like 24/31, OR over-complete like 36 which
+// would unfairly cover more teams) is NOT a scoreable final set. We first drop
+// wrong-group rows and duplicate teams, then require the cleaned set to be a
+// valid 32. Returns { ok, picks, reason }: when ok, `picks` is the cleaned,
+// score-ready list; when not ok, scoring must award 0 group points. Exported for
+// tests. (Replaces the earlier sanitize-only helper, which let 36 score as 36.)
+function validateTwoPhaseGroupPickSet(rows) {
+  const LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L'];
   const seen = new Set();
-  const out = [];
+  const byGroup = {};
   for (const p of (rows || [])) {
     if (!p || !p.team_code) continue;
-    if (TEAM_TO_GROUP[p.team_code] && TEAM_TO_GROUP[p.team_code] !== p.group_letter) continue; // wrong group
-    if (seen.has(p.team_code)) continue; // duplicate team
+    if (TEAM_TO_GROUP[p.team_code] !== p.group_letter) continue; // wrong group / unknown team
+    if (seen.has(p.team_code)) continue;                          // duplicate team
     seen.add(p.team_code);
-    out.push(p);
+    (byGroup[p.group_letter] = byGroup[p.group_letter] || []).push(p);
   }
-  return out;
+  let total = 0;
+  for (const L of LETTERS) {
+    const n = (byGroup[L] || []).length;
+    if (n < 2 || n > 3) return { ok: false, picks: [], reason: `group ${L} has ${n} valid pick(s) (need 2-3)` };
+    total += n;
+  }
+  if (total !== 32) return { ok: false, picks: [], reason: `${total} valid picks (need exactly 32)` };
+  return { ok: true, picks: LETTERS.flatMap(L => byGroup[L]), reason: null };
 }
 
 const DEFAULT_CAT_MULT = { favorite: 1.0, contender: 1.5, underdog: 2.0 };
@@ -523,17 +536,24 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     let knockoutPoints = 0;
     let bonusPoints = 0;
 
-    // Group picks. Sanitize first: drop team-in-wrong-group rows and de-duplicate
-    // a team so it can only score once per user (the RPC enforces this on write
-    // now, but historical/over-complete rows still exist — e.g. a 36-row user).
+    // Group picks. Only a VALID FINAL set (exactly 32, 2-3 per group, correct
+    // membership, no dupes) scores — an under-complete (24/31) or over-complete
+    // (36, which unfairly covers more teams) set earns 0 group points until it's
+    // corrected. The RPC enforces this on new writes; historical rows still exist.
     const gpRaw = await sb('GET', 'group_picks',
       { query: `?user_id=eq.${user.id}&select=*` });
-    const gp = sanitizeTwoPhaseGroupPicks(gpRaw);
-    gp.forEach(p => {
-      if (!advanced.has(p.team_code)) return;
-      const mult = resolveMult(p.team_code, p.multiplier_applied);
-      groupPoints += (rules.group_first || 0) * mult;
-    });
+    const gpValid = validateTwoPhaseGroupPickSet(gpRaw);
+    if (!gpValid.ok) {
+      if ((gpRaw || []).length > 0) {
+        console.warn(`[scoreTwoPhasePool] user ${user.id}: invalid two-phase group set (${gpValid.reason}) — 0 group points`);
+      }
+    } else {
+      gpValid.picks.forEach(p => {
+        if (!advanced.has(p.team_code)) return;
+        const mult = resolveMult(p.team_code, p.multiplier_applied);
+        groupPoints += (rules.group_first || 0) * mult;
+      });
+    }
 
     // Knockout picks - per-match
     const kp = await sb('GET', 'knockout_picks',
@@ -605,7 +625,7 @@ if (require.main === module) {
     main, scoreSinglePhasePool, scoreTwoPhasePool,
     computeGroupStandings, groupIsComplete, knockoutWinner,
     bracketPosRuleKey, stageRuleKey, poolMultResolver,
-    sanitizeTwoPhaseGroupPicks, WC2026_GROUPS, TEAM_TO_GROUP,
+    validateTwoPhaseGroupPickSet, WC2026_GROUPS, TEAM_TO_GROUP,
     DEFAULT_RULES_SINGLE, DEFAULT_RULES_TWO, DEFAULT_CAT_MULT, FIFA_RANK,
     // allow tests to inject a fake Supabase transport
     __setFetch: (fn) => { globalThis.fetch = fn; },
