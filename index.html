@@ -1491,6 +1491,20 @@ function loadTablerFallback() {
         </div>
       </div>
 
+      <!-- v2.10.8: two-phase incident banner. Shown to members AND admin of an
+           AFFECTED two-phase pool (lock_at_override grace set) whose group picks are
+           incomplete. Apology + re-enter CTA + 72h grace deadline; the admin also
+           gets a one-tap copy of an apology message to share with the group. -->
+      <div class="tp-incident-banner" id="tp-incident-banner" style="display:none;">
+        <div class="tpi-head"><span class="tpi-icon">⚠️</span><span class="tpi-title" id="tpi-title"></span></div>
+        <div class="tpi-sub" id="tpi-sub"></div>
+        <div class="tpi-deadline" id="tpi-deadline"></div>
+        <div class="tpi-actions">
+          <button type="button" class="tpi-cta" id="tpi-cta"></button>
+          <button type="button" class="tpi-copy" id="tpi-copy" style="display:none;"></button>
+        </div>
+      </div>
+
       <div class="dashboard-countdown" id="dashboard-countdown" style="display:none;">
         <div class="countdown-label" id="countdown-label" data-i18n="dashboard.countdown.title">המשחק הראשון מתחיל בעוד</div>
         <div class="countdown-clock" id="countdown-clock">
@@ -3057,7 +3071,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.10.7</span>
+      <span class="menu-version">v2.10.8</span>
     </div>
   </div>
 

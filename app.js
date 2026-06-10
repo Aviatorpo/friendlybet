@@ -1259,6 +1259,10 @@ async function goToDashboard() {
   // v2.9.22: admin-only nudge about members who lost their knockout bracket.
   updateAdminNudgeOnDashboard();
 
+  // v2.10.8: two-phase incident banner (members + admin) — apology + re-enter +
+  // 72h grace deadline for pools affected by the two-phase pick-loss bug.
+  updateTwoPhaseIncidentBanner();
+
   // The Pundit - live rotating commentary (fire-and-forget, never blocks the dashboard)
   renderPundit();
 
@@ -1307,6 +1311,82 @@ async function updateAdminNudgeOnDashboard() {
     };
     const viewBtn = document.getElementById('admin-nudge-view');
     if (viewBtn) viewBtn.onclick = () => { showMembers(); };
+    el.style.display = 'flex';
+  } catch (_) { hide(); }
+}
+
+// v2.10.8: two-phase incident banner. The two-phase save path lost picks at scale
+// (silent save failure + a destructive sync job; two-phase had no backup). The
+// AFFECTED pools were granted a 72h post-kickoff grace (pools.lock_at_override).
+// This banner — shown to members AND the admin of such a pool whose group picks
+// are still incomplete — apologises, points them to re-enter, and shows the new
+// deadline. The admin additionally gets a one-tap copy of an apology message to
+// paste into the group chat (our only realistic outreach channel).
+function _formatGraceDeadline(iso) {
+  try {
+    const d = new Date(iso);
+    const lang = (typeof currentLanguage !== 'undefined' && currentLanguage === 'he') ? 'he-IL' : 'en-US';
+    return d.toLocaleString(lang, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+  } catch (_) { return ''; }
+}
+async function updateTwoPhaseIncidentBanner() {
+  const el = document.getElementById('tp-incident-banner');
+  if (!el) return;
+  const hide = () => { el.style.display = 'none'; };
+  try {
+    if (!state.currentUser || !state.currentPool) return hide();
+    if (state.currentPool.betting_mode !== 'two_phase') return hide();
+    // Only AFFECTED pools got the grace override; unaffected pools show nothing.
+    let override = state.currentPool.lock_at_override;
+    // Defensive: some login paths hydrate currentPool without this column. If it's
+    // not present at all (undefined, not an explicit null), read it authoritatively.
+    if (typeof override === 'undefined') {
+      try {
+        const { data } = await supabaseClient.from('pools')
+          .select('lock_at_override, locked_at').eq('id', state.currentPool.id).maybeSingle();
+        if (data) {
+          override = data.lock_at_override;
+          state.currentPool.lock_at_override = data.lock_at_override;
+          if (data.locked_at) state.currentPool.locked_at = data.locked_at;
+        }
+      } catch (_) {}
+    }
+    if (!override || state.currentPool.locked_at) return hide();
+    // Only nudge users whose group picks are INCOMPLETE (those who lost / never
+    // finished). A user with a full set saved doesn't need the apology.
+    const { data: gp } = await supabaseClient.from('group_picks')
+      .select('group_letter, team_code')
+      .eq('user_id', state.currentUser.id).eq('pool_id', state.currentPool.id);
+    const byGroup = {};
+    (gp || []).forEach(r => { (byGroup[r.group_letter] = byGroup[r.group_letter] || []).push(r.team_code); });
+    const completeGroups = Object.values(byGroup).filter(a => a.length >= 2).length;
+    if (completeGroups >= 12) return hide();
+
+    const deadline = _formatGraceDeadline(override);
+    const isAdmin = !!state.currentUser.is_admin;
+    const titleEl = document.getElementById('tpi-title');
+    const subEl = document.getElementById('tpi-sub');
+    const dlEl = document.getElementById('tpi-deadline');
+    const cta = document.getElementById('tpi-cta');
+    const copy = document.getElementById('tpi-copy');
+    if (titleEl) titleEl.textContent = t('dashboard.tpIncident.title');
+    if (subEl) subEl.textContent = t('dashboard.tpIncident.sub');
+    if (dlEl) dlEl.textContent = t('dashboard.tpIncident.deadline', { date: deadline });
+    if (cta) { cta.textContent = t('dashboard.tpIncident.cta'); cta.onclick = () => startBettingFromDashboard(); }
+    if (copy) {
+      if (isAdmin) {
+        copy.style.display = '';
+        copy.textContent = t('dashboard.tpIncident.copy');
+        copy.onclick = async () => {
+          const link = (window.location.origin || 'https://friendlybet.live') + '/?join=' + state.currentPool.code;
+          const msg = t('dashboard.tpIncident.copyMessage', { date: deadline, link });
+          try { await navigator.clipboard.writeText(msg); showToast(t('dashboard.tpIncident.copied'), 'success'); }
+          catch (_) { showToast(msg, 'info'); }
+        };
+      } else {
+        copy.style.display = 'none';
+      }
+    }
     el.style.display = 'flex';
   } catch (_) { hide(); }
 }
@@ -4480,7 +4560,13 @@ async function startGroupBetting() {
         bettingState.picks[pick.group_letter].push(pick.team_code);
       });
     }
-    
+
+    // v2.10.8: self-heal — if the live group_picks are missing/short but a durable
+    // backup or local cache holds picks (a prior save was blocked/wiped), restore
+    // the missing groups so the user never sees a wrongly-empty bracket. Only FILLS
+    // empty groups; never overwrites a group that already loaded from the DB.
+    await _tpSelfHealGroups();
+
     // If user already has picks in most groups, assume they completed first cycle
     const groupsWithPicks = bettingState.groupOrder.filter(l => (bettingState.picks[l] || []).length > 0).length;
     bettingState.completedFirstCycle = groupsWithPicks >= 10;
@@ -5044,6 +5130,7 @@ function goToNextGroup() {
 // Debounced auto-save
 let autoSaveTimeout;
 function autoSavePicks() {
+  _tpCacheSave(); // v2.10.8: mirror locally + durable backup FIRST so a failed/blocked DB save never loses work
   clearTimeout(autoSaveTimeout);
   autoSaveTimeout = setTimeout(() => savePicksToDb(false), 1000);
 }
@@ -5891,6 +5978,7 @@ function updateKnockoutFinishButton() {
 // Debounced save
 let knockoutSaveTimeout;
 function autoSaveKnockoutPicks() {
+  _tpCacheSave(); // v2.10.8: mirror locally + durable backup FIRST so a failed/blocked DB save never loses work
   clearTimeout(knockoutSaveTimeout);
   knockoutSaveTimeout = setTimeout(() => saveKnockoutPicksToDb(false), 1000);
 }
@@ -11240,6 +11328,86 @@ async function _spBackupToServer(snapshot) {
 function _spCacheLoad() {
   const k = _spCacheKey(); if (!k) return null;
   try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (_) { return null; }
+}
+
+// ============================================================
+// v2.10.8: TWO-PHASE durable backup (parity with single-phase).
+// Two-phase pools had NO backup, so when group_picks/knockout_picks were lost
+// (silent save failure + a destructive sync job) the data was unrecoverable.
+// These helpers give two-phase the same bulletproof safety net: an IMMEDIATE
+// localStorage mirror (synchronous — can't fail) PLUS an append-only, undeletable
+// server backup (pick_backups, REVOKEd from every external role), written through
+// the PGRST202-retrying _rpcWrite so a schema reload can't silently drop it.
+// The payload reuses the `groupPositions`/`bracketPicks` keys so the existing
+// backup_picks() content-guard accepts it and get_pick_backup() reads it back.
+function _tpCacheKey() {
+  const u = state.currentUser && state.currentUser.id;
+  const p = state.currentPool && state.currentPool.id;
+  return (u && p) ? ('fb_2p_picks_' + u + '_' + p) : null;
+}
+function _tpSnapshot() {
+  return {
+    mode: 'two_phase',
+    groupPositions: (typeof bettingState !== 'undefined' && bettingState.picks) || {},
+    bracketPicks: (typeof knockoutState !== 'undefined' && knockoutState.picks) || {},
+    ts: Date.now()
+  };
+}
+let _tpServerBackupTimer = null;
+function _tpCacheSave() {
+  const k = _tpCacheKey(); if (!k) return;
+  const snapshot = _tpSnapshot();
+  try { localStorage.setItem(k, JSON.stringify(snapshot)); } catch (_) {}
+  if (_tpServerBackupTimer) clearTimeout(_tpServerBackupTimer);
+  _tpServerBackupTimer = setTimeout(() => _tpBackupToServer(snapshot), 1200);
+}
+async function _tpBackupToServer(snapshot) {
+  try {
+    const code = _currentRecoveryCode();
+    if (!code || !supabaseClient) return;
+    await _rpcWrite('backup_picks', { p_code: code, p_payload: snapshot }, { retries: 3, baseDelayMs: 600 });
+  } catch (_) {}
+}
+function _tpCacheLoad() {
+  const k = _tpCacheKey(); if (!k) return null;
+  try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (_) { return null; }
+}
+// v2.10.8: restore missing two-phase group picks from the most complete backup
+// (local cache or durable server backup). Per-group fill only — never clobbers a
+// group already loaded from the DB. Re-persists what it heals so it's durable.
+async function _tpSelfHealGroups() {
+  try {
+    if (typeof bettingState === 'undefined' || !bettingState.groupOrder) return;
+    let backupGroups = null, bestCount = -1;
+    const pick = (groups) => {
+      if (!groups || typeof groups !== 'object') return;
+      const n = Object.values(groups).reduce((s, a) => s + ((a || []).length), 0);
+      if (n > bestCount) { bestCount = n; backupGroups = groups; }
+    };
+    const local = _tpCacheLoad();
+    if (local && local.groupPositions) pick(local.groupPositions);
+    const code = _currentRecoveryCode();
+    if (code && supabaseClient) {
+      try {
+        const { data } = await supabaseClient.rpc('get_pick_backup', { p_code: code });
+        if (data && data.groupPositions) pick(data.groupPositions);
+      } catch (_) {}
+    }
+    if (!backupGroups || bestCount <= 0) return;
+    let healed = 0;
+    bettingState.groupOrder.forEach(letter => {
+      const cur = bettingState.picks[letter] || [];
+      const bk = Array.isArray(backupGroups[letter]) ? backupGroups[letter] : [];
+      if (cur.length === 0 && bk.length > 0) {
+        bettingState.picks[letter] = bk.slice(0, 3);
+        healed += bettingState.picks[letter].length;
+      }
+    });
+    if (healed > 0) {
+      console.log('[_tpSelfHealGroups] restored ' + healed + ' group picks from backup');
+      try { savePicksToDb(false); } catch (_) {}
+    }
+  } catch (_) {}
 }
 
 let _spBracketSaveTimer = null;
