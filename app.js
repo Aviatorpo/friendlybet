@@ -600,7 +600,7 @@ async function checkPoolCode() {
     // not just the manual is_locked flag - so a tournament-locked pool fails
     // this preflight early instead of only at the final join_pool RPC. The
     // server RPC remains the source of truth and rejects both.
-    if (data.is_locked === true || data.locked_at) {
+    if (isPoolWriteLocked(data)) {
       showError('join-error', t('errors.poolLockedNoJoin'));
       return;
     }
@@ -1329,6 +1329,20 @@ function _formatGraceDeadline(iso) {
     return d.toLocaleString(lang, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
   } catch (_) { return ''; }
 }
+
+function _poolGraceActive(pool) {
+  const iso = pool && pool.lock_at_override;
+  if (!iso) return false;
+  const t = Date.parse(iso);
+  return Number.isFinite(t) && t > Date.now();
+}
+
+function isPoolWriteLocked(pool = state.currentPool) {
+  if (!pool) return false;
+  if (_poolGraceActive(pool)) return false;
+  return !!(pool.locked_at || pool.is_locked);
+}
+
 async function updateTwoPhaseIncidentBanner() {
   const el = document.getElementById('tp-incident-banner');
   if (!el) return;
@@ -1351,7 +1365,7 @@ async function updateTwoPhaseIncidentBanner() {
         }
       } catch (_) {}
     }
-    if (!override || state.currentPool.locked_at) return hide();
+    if (!_poolGraceActive({ lock_at_override: override })) return hide();
     // Only nudge users whose group picks are INCOMPLETE (those who lost / never
     // finished). A user with a full set saved doesn't need the apology.
     const { data: gp } = await supabaseClient.from('group_picks')
@@ -4852,7 +4866,7 @@ function toggleTeamSelection(teamCode) {
   // v2.4: soft lock - groups freeze automatically once the tournament starts
   // (pool.locked_at set by spAutoLockPoolIfNeeded). Admins can still see them
   // read-only via the leaderboard.
-  if (state.currentPool && state.currentPool.locked_at) {
+  if (isPoolWriteLocked()) {
     showToast(t('groups.lockedTournamentStarted'), 'error');
     return;
   }
@@ -5175,7 +5189,7 @@ async function savePicksToDb(showFeedback = true) {
   if (!supabaseClient) return { ok: false, reason: 'no-client' };
 
   // v2.4: soft lock - block writes once the tournament has started.
-  if (state.currentPool.locked_at) {
+  if (isPoolWriteLocked()) {
     if (showFeedback) showToast(t('groups.lockedTournamentStarted'), 'error');
     return { ok: false, reason: 'locked' };
   }
@@ -8223,7 +8237,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // link once the pool locks at kickoff (locked_at) or is manually locked
 // (is_locked). Sharing a bracket / leaderboard / recap is NOT gated by this.
 function isPoolJoinClosed() {
-  return !!(state.currentPool && (state.currentPool.locked_at || state.currentPool.is_locked));
+  return isPoolWriteLocked();
 }
 
 // Guard for invite-link share paths. Returns true (and toasts) when the pool no
@@ -10041,7 +10055,7 @@ const spState = {
 function spIsLocked() {
   // The only hard gate on edits: pool.locked_at is set once the
   // first World Cup match starts (auto-locked by spAutoLockPoolIfNeeded).
-  return !!(state.currentPool && state.currentPool.locked_at);
+  return isPoolWriteLocked();
 }
 
 // v2.10: 72h knockout recovery. spReopenActive (declared near the top, above
@@ -12365,7 +12379,7 @@ async function spAutoLockPoolIfNeeded() {
   // (block all edits once the tournament starts) is mode-agnostic. For
   // two_phase pools this only affects group editing; the knockout-stage
   // flow remains gated by its own legacy admin lock.
-  if (!state.currentPool || state.currentPool.locked_at) return;
+  if (!state.currentPool || _poolGraceActive(state.currentPool) || isPoolWriteLocked()) return;
   if (!supabaseClient) return;
 
   try {

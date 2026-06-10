@@ -1,12 +1,12 @@
 // ============================================================
 // LOCK POOLS AT KICKOFF (server-side guarantee)
 // ============================================================
-// Guarantees single-phase pools lock when the World Cup kicks off, EVEN IF no
+// Guarantees pools lock when the World Cup kicks off, EVEN IF no
 // member opens the app. Complements the client-side autolock_pool_if_started
 // and the server-side _auth_writer enforcement (which already rejects writes
 // once locked_at/is_locked is set — that part is verified).
 //
-// Locks a single-phase pool when:
+// Locks a pool when:
 //   - the first scheduled match has kicked off (earliest matches.match_date <= now), AND
 //   - the pool isn't already locked (locked_at IS NULL), AND
 //   - the pool's effective deadline has passed: lock_at_override IS NULL (normal
@@ -18,9 +18,8 @@
 // affected pools is a pure data change (set the override) with NO change to this
 // job — see Codex/PLAN-extra-time-knockout-extension.md.
 //
-// Two-phase pools are intentionally NOT touched here: they have their own lock
-// windowing (group-phase lock, then a knockout window). They keep using the
-// client autolock. This job is single_phase only.
+// Applies to single_phase and two_phase. A future lock_at_override keeps the pool
+// editable until that deadline, so incident grace windows remain authoritative.
 //
 // Usage:
 //   node scripts/lock-pools.js            # apply (CI)
@@ -74,12 +73,12 @@ async function main() {
   }
   const reached = now >= configuredKickoff;
 
-  // Pools eligible to lock now: single-phase, not yet locked, effective deadline passed.
+  // Pools eligible to lock now: not yet locked, effective deadline passed.
   const nowParam = encodeURIComponent(nowIso);
-  const filter = `betting_mode=eq.single_phase&locked_at=is.null&or=(lock_at_override.is.null,lock_at_override.lte.${nowParam})`;
+  const filter = `betting_mode=in.(single_phase,two_phase)&locked_at=is.null&or=(lock_at_override.is.null,lock_at_override.lte.${nowParam})`;
   const before = await dueCount(filter);
 
-  console.log(`[lock-pools] now=${nowIso} | configured kickoff=${CONFIGURED_KICKOFF_ISO} | db earliest=${dbKickoff ? dbKickoff.toISOString() : 'none'} | reached=${reached} | single-phase due-to-lock=${before}`);
+  console.log(`[lock-pools] now=${nowIso} | configured kickoff=${CONFIGURED_KICKOFF_ISO} | db earliest=${dbKickoff ? dbKickoff.toISOString() : 'none'} | reached=${reached} | pools due-to-lock=${before}`);
 
   if (!reached) { console.log('[lock-pools] kickoff not reached → no-op'); return; }
   if (DRY_RUN) { console.log('[lock-pools] DRY RUN → would lock the pools above, but not writing'); return; }

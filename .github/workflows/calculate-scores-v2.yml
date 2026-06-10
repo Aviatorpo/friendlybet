@@ -48,6 +48,13 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/export-snapshots.js all
 
+      - name: Encrypted critical-data backup after finished matches
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+        run: node scripts/backup-critical-data.js
+
       # "Pool Pundit" leaderboard banter: diff standings vs the stored snapshot and
       # turn the moves into witty per-pool commentary (public-data/banter/*.json).
       # Best-effort: never fail the scoring run if banter generation stumbles.
@@ -62,9 +69,9 @@ jobs:
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
-          if [ -n "$(git status --porcelain public-data)" ]; then
-            git add public-data
-            git commit -q -m "data: refresh CDN snapshots (scores)"
+          if [ -n "$(git status --porcelain public-data private-backups)" ]; then
+            git add public-data private-backups
+            git commit -q -m "data: refresh CDN snapshots / critical backup"
             pushed=0
             for a in 1 2 3; do
               if git pull --rebase --autostash && git push; then pushed=1; break; fi
