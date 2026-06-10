@@ -596,8 +596,11 @@ async function checkPoolCode() {
       return;
     }
 
-    // Check if pool is locked
-    if (data.is_locked === true) {
+    // Check if pool is locked. v2.10.5: also reject locked_at (set at kickoff) -
+    // not just the manual is_locked flag - so a tournament-locked pool fails
+    // this preflight early instead of only at the final join_pool RPC. The
+    // server RPC remains the source of truth and rejects both.
+    if (data.is_locked === true || data.locked_at) {
       showError('join-error', t('errors.poolLockedNoJoin'));
       return;
     }
@@ -1235,13 +1238,14 @@ async function goToDashboard() {
   // v2.5.38: only admins see the "invite friends" CTA on the dashboard.
   // Regular members joined via a link or pool code - they don't need to
   // recruit. The menu still has a share entry for admins to find anytime.
-  // v2.10.4: once the pool locks (tournament started), hide it entirely -
-  // a locked pool rejects new members (checkPoolCode -> errors.poolLockedNoJoin),
-  // so inviting after kickoff is a dead-end. tournamentStarted is a fallback
-  // in case locked_at hasn't been written yet for this pool.
+  // v2.10.4/v2.10.5: once the pool locks, hide it entirely - a locked pool
+  // rejects new members (server join_pool RPC + checkPoolCode), so inviting
+  // after kickoff is a dead-end. isPoolJoinClosed() covers both locked_at
+  // (kickoff) and is_locked (manual); tournamentStarted is a score-based
+  // fallback in case locked_at hasn't been written yet for this pool.
   const inviteBtn = document.querySelector('#user-dashboard-screen .invite-friends-btn');
   if (inviteBtn) {
-    const poolLocked = !!(state.currentPool && state.currentPool.locked_at) || tournamentStarted;
+    const poolLocked = isPoolJoinClosed() || tournamentStarted;
     const showInvite = state.currentUser && state.currentUser.is_admin && !poolLocked;
     inviteBtn.style.display = showInvite ? '' : 'none';
   }
@@ -2496,6 +2500,7 @@ function createMemberCard(member, picksCount, koPicksCount, isV2) {
 }
 
 function shareInviteFromMembers() {
+  if (_inviteShareBlocked()) return;
   shareWhatsApp();
 }
 
@@ -8151,12 +8156,38 @@ document.addEventListener('DOMContentLoaded', () => {
 // VIRAL SHARING - Invite Friends
 // ============================================================
 
+// v2.10.5: single source of truth for "can a new member still join this pool?".
+// The server-side join_pool RPC already rejects both states (is_locked OR
+// locked_at) - this mirrors that so the client never offers a dead-end invite
+// link once the pool locks at kickoff (locked_at) or is manually locked
+// (is_locked). Sharing a bracket / leaderboard / recap is NOT gated by this.
+function isPoolJoinClosed() {
+  return !!(state.currentPool && (state.currentPool.locked_at || state.currentPool.is_locked));
+}
+
+// Guard for invite-link share paths. Returns true (and toasts) when the pool no
+// longer accepts members, so callers can early-return. Defense in depth: even a
+// direct JS call to a share helper can't leak a locked-pool join link.
+function _inviteShareBlocked() {
+  if (!isPoolJoinClosed()) return false;
+  showToast(t('errors.poolLockedNoJoin'), 'error');
+  return true;
+}
+
 function showShareModal() {
   if (!state.currentPool) {
     showToast(t('errors.tryAgain'), 'error');
     return;
   }
-  
+
+  // Once the pool locks, joining is impossible - don't open the invite modal
+  // (reachable from the menu even after the dashboard banner is hidden).
+  if (isPoolJoinClosed()) {
+    showToast(t('errors.poolLockedNoJoin'), 'error');
+    closeMenu();
+    return;
+  }
+
   closeMenu();
   
   // Build invite URL
@@ -8294,6 +8325,7 @@ async function _bracketImageFirst(app) {
 
 async function shareToWhatsApp(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (mode === 'invite' && _inviteShareBlocked()) return;
   if (await _bracketChipImageShared(mode)) return;
   if (mode === 'bracket') _prewarmBracketOg();
   const message = _shareMsg(mode, 'whatsapp');
@@ -8304,6 +8336,7 @@ async function shareToWhatsApp(mode = 'invite') {
 
 async function shareToTelegram(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (mode === 'invite' && _inviteShareBlocked()) return;
   if (await _bracketChipImageShared(mode)) return;
   if (mode === 'bracket') _prewarmBracketOg();
   const inviteUrl = _shareLink(mode, 'telegram');
@@ -8317,6 +8350,7 @@ async function shareToTelegram(mode = 'invite') {
 // desktop, where navigator.share isn't available.
 async function shareToX(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (mode === 'invite' && _inviteShareBlocked()) return;
   if (await _bracketChipImageShared(mode)) return;
   if (mode === 'bracket') _prewarmBracketOg();
   const text = _shareMsg(mode, 'x');
@@ -8326,6 +8360,7 @@ async function shareToX(mode = 'invite') {
 
 async function shareToFacebook(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (mode === 'invite' && _inviteShareBlocked()) return;
   if (await _bracketChipImageShared(mode)) return;
   // Desktop: open the FB sharer with the personalized /share link. The OG card
   // (pre-warmed on share so it's never an empty cold render) is the 1200x630
@@ -8339,6 +8374,7 @@ async function shareToFacebook(mode = 'invite') {
 
 async function shareToInstagram(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (mode === 'invite' && _inviteShareBlocked()) return;
   // Bracket on mobile: share the real image via the native sheet (Instagram is
   // one of the targets) — far more reliable than the old download + deep-link
   // hack, which the OS popup-blocker killed because it ran after an await.
@@ -8362,6 +8398,7 @@ async function shareToInstagram(mode = 'invite') {
 
 async function shareToReddit(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (mode === 'invite' && _inviteShareBlocked()) return;
   if (await _bracketChipImageShared(mode)) return;
   // Desktop: Reddit's submit page takes a URL + title and shows the OG card as
   // the post thumbnail (pre-warmed so it isn't an empty cold render).
@@ -8375,6 +8412,7 @@ async function shareToReddit(mode = 'invite') {
 
 async function shareByEmail(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (mode === 'invite' && _inviteShareBlocked()) return;
   if (await _bracketChipImageShared(mode)) return;
   const poolName = state.currentPool?.name || t('dashboard.fallback.poolName');
   const subject = mode === 'bracket' ? t('bracketShare.emailSubject') : t('shareModal.emailSubject', { poolName });
@@ -8384,6 +8422,7 @@ async function shareByEmail(mode = 'invite') {
 
 async function shareBySMS(mode = 'invite') {
   if (_bracketChipBlocked(mode)) return;
+  if (mode === 'invite' && _inviteShareBlocked()) return;
   if (await _bracketChipImageShared(mode)) return;
   const body = _shareMsg(mode, 'sms');
   // `sms:?&body=` is the most cross-platform form (works on both iOS and Android).
@@ -8391,6 +8430,7 @@ async function shareBySMS(mode = 'invite') {
 }
 
 function shareNative() {
+  if (_inviteShareBlocked()) return;
   if (!navigator.share) {
     copyInviteLink();
     return;
@@ -8411,8 +8451,9 @@ function shareNative() {
 }
 
 async function copyInviteLink() {
+  if (_inviteShareBlocked()) return;
   const url = getInviteUrl('copy');
-  
+
   try {
     await navigator.clipboard.writeText(url);
     showToast(t('shareModal.copyLinkOk'), 'success');
@@ -8850,6 +8891,7 @@ window.openBracketShareCelebration = openBracketShareCelebration;
 window.closeBracketShareCelebration = closeBracketShareCelebration;
 
 async function copyPoolCodeOnly() {
+  if (_inviteShareBlocked()) return;
   const code = state.currentPool?.code;
   if (!code) return;
 
