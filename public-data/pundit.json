@@ -1,7 +1,84 @@
 {
-  "updatedAt": "2026-06-10T12:30:36.191Z",
+  "updatedAt": "2026-06-10T18:38:31.830Z",
   "count": 12,
   "items": [
+    {
+      "id": "fra-olise-hattrick-warmup-wc2026-2026-06-09",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "צרפת שלחה את ההודעה החדה ביותר האפשרית ב-9 ביוני: מייקל אוליז הבקיע שלישיית שערים כשלה-בלה ניצחה את אירלנד הצפונית 3:1 בליל בידידות ההכנה האחרונה שלהם לפני הטורניר, והפך לשחקן הצרפתי הראשון שמבקיע שלישייה בידידות מאז אוליבייה ז'ירו מול פרגוואי ב-2017. אוליז הבקיע בדקה 43, 49 ו-75, האחרון שוט מסולסל מהכנף הימנית מ-20 מטר שהשאיר את השוער חסר אונים. השלישייה הביאה אותו לשבעה שערים ב-17 ההופעות הראשונות שלו לצרפת, קצב שאף שחקן צרפתי לא הגיע אליו כל-כך מהר מאז יורי ז'ורקאף ביוני 1996. המאמן דידייה דשאן, שמסיים לאחר מונדיאל זה אחרי 14 שנים בתפקיד, אמר שאוליז יכול לזרוח ברמה הגבוהה ביותר. המשחק היה גם המשחק האחרון של דשאן על אדמת הבית כמנהל לאומי. צרפת פותחת קבוצה I מול סנגל ב-22 ביוני, כשמבאפה רודף את שיאו של פונטן. אם אוליז מגיע בכושר הזה, השאלה עבור כל יריב אינה האם הוא יפגע בה, אלא מתי.",
+      "en": "France served the most emphatic possible notice on June 9: Michael Olise scored a hat-trick as Les Bleus beat Northern Ireland 3-1 in Lille in their final pre-tournament warm-up, making him the first France player to net a treble in a friendly since Olivier Giroud against Paraguay in 2017. Olise struck in the 43rd, 49th and 75th minutes, his third a curling right-wing effort from 20 metres that left the goalkeeper helpless. The hat-trick brought him to seven goals in his first 17 France appearances, a mark no French player has reached this quickly since Youri Djorkaeff in June 1996. Coach Didier Deschamps, who steps down after this World Cup after 14 years in charge, said Olise can shine at the highest level. The match was also Deschamps' final game on home soil as national manager. France open Group I against Senegal on June 22, with Mbappe chasing Fontaine's all-time French record. If Olise arrives in this form, the question for every rival is not whether he will hurt them, but when.",
+      "team": "FRA",
+      "sources": [
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/9/deschamps-backs-hat-trick-hero-olise-to-shine-for-france-at-world-cup"
+        },
+        {
+          "name": "France 24",
+          "url": "https://www.france24.com/en/sport/20260609-michael-olise-hat-trick-rounds-off-france-world-cup-preparations-sends-ominous-warning"
+        },
+        {
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com/stories/soccer/olise-scores-3-as-france-beats-northern-ireland-in-world-cup-warmup"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/france-ease-past-northern-ireland-224000732.html"
+        }
+      ],
+      "expires_at": "2026-06-23T00:00:00Z"
+    },
+    {
+      "id": "wc26-goldman-bca-prediction-2026-06-10",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "ערב מונדיאל 2026, שני מודלי חיזוי נצפים מסכימים על המועדפות אך חלוקים לגבי המנצחת. גולדמן זאקס, שמודלו ניתח כמעט 20,000 משחקים באמצעות מסגרת סטטיסטית מבוססת Elo, מציב את ספרד כמועדפת ב-26%, צרפת שנייה ב-19% וארגנטינה שלישית ב-14%. הבנק מציין שההיסטוריה כמעט תמיד מעדיפה קבוצה אירופית במחזור שאחרי ניצחון דרום-אמריקני, ושאלופות מתגוננות סובלות מירידה סטטיסטית בטורניר הבא. BCA Research, חברת ההשקעות ממונטריאול שניבאה נכון הן את תואר צרפת ב-2018 והן את ניצחון ארגנטינה בבעיטות עונשין ב-2022, פרסמה את תחזיתה השלישית ובפעם זו בוחרת בצרפת לנצח את פורטוגל בגמר 2026. שני מודלים מסכימים שצרפת וספרד הן המועמדות הבולטות אך חלוקים לגבי מי מרימה את הגביע. המגרש במקסיקו סיטי נפתח ביום חמישי. המנבאים אמרו את דברם.",
+      "en": "On the eve of the 2026 World Cup, two closely-watched forecasting models agree on the favourites but disagree on the winner. Goldman Sachs, whose model analysed nearly 20,000 matches using an Elo-based statistical framework, makes Spain the 26% favourite, France second at 19% and Argentina third at 14%. The bank notes that history almost always favours a European team in the cycle after a South American winner, and that defending champions carry a statistical drag at the following tournament. BCA Research, the Montreal investment firm that correctly predicted both France's 2018 title and Argentina's 2022 penalty-shootout win, has published its third forecast and this time picks France to beat Portugal in the 2026 final. Two models agree France and Spain are the standout candidates but disagree on which one lifts the trophy. The pitch in Mexico City opens on Thursday. The forecasters have had their say.",
+      "team": null,
+      "sources": [
+        {
+          "name": "Euronews",
+          "url": "https://www.euronews.com/business/2026/06/10/world-cup-2026-market-analysts-who-called-it-twice-have-picked-a-new-winner"
+        },
+        {
+          "name": "CNN Business",
+          "url": "https://www.cnn.com/2026/06/01/business/betting-world-cup-goldman-sachs-prediction-markets"
+        },
+        {
+          "name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-05-29/goldman-s-model-shows-spain-as-26-probable-world-cup-winner"
+        }
+      ],
+      "expires_at": "2026-06-30T00:00:00Z"
+    },
+    {
+      "id": "can-flores-nelson-squad-wc2026-2026-06-09",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "קנדה ספגה מכה בסגל לקראת פתיחת המונדיאל שלה כאשר קשר הקדמה מרצלו פלורס עבר ניתוח ב-5 ביוני על קרע ב-ACL שנגרם בגמר גביע האלופות של קונקאקאף, ומנוע מהשתתפות בטורניר כולו. קנדה אישרה ב-9 ביוני שג'יידן נלסון, בן 23, קצה של אוסטין FC ממברמפטון אונטריו, מונה כממלא מקומו. לנלסון שלושה שערים ב-14 הופעות עבור נבחרת קנדה הבכירה, כולל שער בדקות הנוספות בניצחון 2:0 על אוזבקיסטן בשבוע שעבר, ושני שערים ב-MLS העונה. קנדה מעולם לא ניצחה במשחק מונדיאל בשתי הופעותיה הקודמות, כשהפסידה את כל שישה משחקיה ב-1986 ובקטאר 2022. הם פותחים קבוצה B מול בוסניה-הרצגובינה בפני קהל מלא ב-Toronto Stadium ב-12 ביוני, תשעים דקות אחרי טקס הפתיחה. נבחרת מארחת, אצטדיון מלא, היסטוריה ללא ניצחון. האם משהו סוף-סוף ישתנה?",
+      "en": "Canada suffered a significant blow ahead of their World Cup opener when attacking midfielder Marcelo Flores underwent surgery on June 5 for a torn ACL sustained in the Concacaf Champions Cup final, ruling him out of the entire tournament. Canada confirmed on June 9 that Austin FC winger Jayden Nelson, 23, from Brampton, Ontario, has been named as his replacement. Nelson has scored three goals in 14 appearances for Canada's senior side, including a stoppage-time goal in a 2-0 warm-up win over Uzbekistan last week, and has two MLS goals for Austin FC this season. Canada have never won a World Cup match across two previous appearances, losing all six games in 1986 and at Qatar 2022. They open Group B against Bosnia and Herzegovina in front of a sold-out home crowd at Toronto Stadium on June 12, ninety minutes after the opening ceremony. A host nation, a full stadium, a history with no wins. Does something finally give?",
+      "team": "CAN",
+      "sources": [
+        {
+          "name": "CBC Sports",
+          "url": "https://www.cbc.ca/sports/soccer/worldcup/jayden-nelson-injury-replacement-canada-world-cup-marcelo-flores-9.7228625"
+        },
+        {
+          "name": "TSN",
+          "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/nelson-replaces-flores-on-canada-roster/"
+        },
+        {
+          "name": "beIN Sports",
+          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/canada-replaces-marcelo-flores-with-jayden-nelson-for-world-cup-2026-06-09"
+        },
+        {
+          "name": "Globe and Mail",
+          "url": "https://www.theglobeandmail.com/sports/soccer/article-fifa-world-cup-nelson-flores-replacement/"
+        }
+      ],
+      "expires_at": "2026-06-30T00:00:00Z"
+    },
     {
       "id": "jpn-elite-scalps-form-wc2026-2026-06-10",
       "type": "news",
@@ -212,75 +289,6 @@
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "mex-cdmx-closures-wc2026-2026-06-09",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "הנשיאה המקסיקנית קלאודיה שיינבאום הורתה על סגירת כל בתי הספר במקסיקו סיטי ועבודה מרחוק לעובדי הממשלה הפדרלית ב-11 ביוני, יום שבו מקסיקו נפגשת עם דרום אפריקה באצטקה בפתיחת המונדיאל. הצו חל על כל מוסד חינוכי מגן ילדים ועד לאוניברסיטה, ציבורי ופרטי. הרשויות אמרו שהסגירות נועדו להקל על עומס התנועה כאשר 60,000 אוהדים מתכנסים לאצטדיון. לעיר מקסיקו סיטי לעתים נדירות יש תירוץ טוב כל-כך לעצור את השבוע באמצע. מה שהשחקנים מביאים באצטקה הוא הדבר היחיד שאף נשיאה לא יכולה להורות עליו מראש.",
-      "en": "Mexican President Claudia Sheinbaum ordered all schools in Mexico City to close and federal government employees to work from home on June 11, the day Mexico face South Africa at the Azteca in the World Cup opener. The decree covers every educational institution from preschool to university level, both public and private. Authorities say the closures are intended to ease traffic and public transport pressure as 60,000 fans converge on the stadium. Mexico City has rarely had an excuse this good to halt the week mid-stride. What the players deliver at the Azteca is the one thing no president can decree in advance.",
-      "team": "MEX",
-      "sources": [
-        {
-          "name": "US News (AP)",
-          "url": "https://www.usnews.com/news/top-news/articles/2026-06-09/mexico-city-suspends-classes-shifts-to-remote-work-for-world-cup-kickoff"
-        },
-        {
-          "name": "WION News",
-          "url": "https://www.wionews.com/sports/mexican-president-claudia-sheinbaum-announces-remote-work-and-school-closures-for-fifa-world-cup-2026-opener-1781017468829"
-        },
-        {
-          "name": "Open The Magazine",
-          "url": "https://openthemagazine.com/sports/mexico-president-orders-remote-work-school-closures-for-fifa-world-cup-opener"
-        }
-      ],
-      "expires_at": "2026-06-12T00:00:00Z"
-    },
-    {
-      "id": "wc26-opening-ceremony-shakira-2026-06-08",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "טקס הפתיחה של מונדיאל 2026 יתקיים באסטדיו אצטקה במקסיקו סיטי ב-11 ביוני, כאשר שקירה ובורנה בוי מבצעים את ההמנון הרשמי 'דאי דאי' לראשונה בהופעה חיה, ולצדם ח'יי בלווין, מאנה, בלינדה, לוס אנג'לס אסולס, טילה וכוכבים נוספים, 90 דקות לפני שמקסיקו נפגשת עם דרום אפריקה. פיפ\"א אישרה ששקירה תנצח גם על הופעת ההפסקה בגמר ב-19 ביולי. מהצליל הראשון ועד לשריקת הסיום ביולי, הבמה באצטקה שייכת לה. ואחר כך מתחיל המופע האמיתי.",
-      "en": "The 2026 World Cup opening ceremony is at Estadio Azteca in Mexico City on June 11, with Shakira and Burna Boy performing the official tournament anthem 'Dai Dai' live for the first time, joined by J Balvin, Mana, Belinda, Los Angeles Azules, Tyla and other stars, 90 minutes before Mexico face South Africa in the opener. FIFA has confirmed Shakira will also headline the halftime show at the final on July 19. From the opening note to the last whistle in July, the stage at the Azteca belongs to her. And then the real show begins.",
-      "team": null,
-      "sources": [
-        {
-          "name": "FIFA (official)",
-          "url": "https://inside.fifa.com/organisation/media-releases/world-cup-2026-opening-ceremony-mexico-city"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48972437/shakira-burna-boy-perform-2026-world-cup-opening-ceremony-mexico"
-        },
-        {
-          "name": "Olympics.com",
-          "url": "https://www.olympics.com/en/news/fifa-world-cup-2026-opening-ceremonies-everything-you-need-to-know"
-        }
-      ],
-      "expires_at": "2026-06-11T23:59:59Z"
-    },
-    {
-      "id": "mex-ochoa-sixth-wc-retirement-2026-06-11",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "משחק הפתיחה של מונדיאל 2026 נושא סיפור שחורג מהתוצאה. גיירמו אוצ'ואה בן ה-40 ייצב עבור מקסיקו מול דרום אפריקה באצטקה ב-11 ביוני במה שהכריז כטורניר הפרידה שלו, תוך פרישה מכל הכדורגל בסיום מסע מקסיקו. הוא מצטרף לליונל מסי ולקריסטיאנו רונאלדו כשלושת השחקנים היחידים בהיסטוריה שהשתתפו בשישה מונדיאלים. לנרטיב יש פיתול: המאמן שמנע מאוצ'ואה כינון במונדיאל 2010 בדרום אפריקה, חביאר אגירה, מנהל שוב את מקסיקו ב-2026, ולאחר שהשוער הראשי לואיס מלגון הוצא עם קרע ברצועה הצולבת בתחילת העונה, אוצ'ואה מקבל לבסוף את הסיכוי. דרום אפריקה שוב מולו, אותם יריבים שמול מקסיקו ב-2010 כשאוצ'ואה ישב על הספסל. על אדמת הבית, באצטקה שלו, הדלת פתוחה.",
-      "en": "The opening match of the 2026 World Cup carries a story that goes beyond the scoreline. Guillermo Ochoa, 40, lines up for Mexico against South Africa at the Azteca on June 11 in what he has announced will be his farewell tournament, retiring from all football after Mexico's campaign ends. He joins Lionel Messi and Cristiano Ronaldo as the only three players in history to compete at six World Cups. The narrative carries a twist: the coach who denied Ochoa a start at the 2010 World Cup in South Africa, Javier Aguirre, is managing Mexico again in 2026, and after first-choice keeper Luis Malagon was ruled out by an ACL tear earlier this season, Ochoa gets his chance at last. South Africa are his opponents again, the same opponents who played Mexico on the very day Ochoa was on the bench in 2010. On home soil, at his own Azteca, the door is open.",
-      "team": "MEX",
-      "sources": [
-        {
-          "name": "FIFA (official)",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/guillermo-ochoa-mexico"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48641179/mexico-legend-ochoa-retire-national-team-2026-world-cup"
-        },
-        {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/mexico-legend-guillermo-ochoa-set-historic-sixth-world-cup-retirement-draft"
-        }
-      ],
-      "expires_at": "2026-06-12T23:59:59Z"
     }
   ]
 }

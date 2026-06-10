@@ -1,6 +1,46 @@
 {
-  "updatedAt": "2026-06-10T23:50:00.000Z",
+  "updatedAt": "2026-06-11T00:20:00.000Z",
   "items": [
+    {
+      "id": "fra-olise-hattrick-warmup-wc2026-2026-06-09",
+      "confidence": "confirmed",
+      "team": "FRA",
+      "en": "France served the most emphatic possible notice on June 9: Michael Olise scored a hat-trick as Les Bleus beat Northern Ireland 3-1 in Lille in their final pre-tournament warm-up, making him the first France player to net a treble in a friendly since Olivier Giroud against Paraguay in 2017. Olise struck in the 43rd, 49th and 75th minutes, his third a curling right-wing effort from 20 metres that left the goalkeeper helpless. The hat-trick brought him to seven goals in his first 17 France appearances, a mark no French player has reached this quickly since Youri Djorkaeff in June 1996. Coach Didier Deschamps, who steps down after this World Cup after 14 years in charge, said Olise can shine at the highest level. The match was also Deschamps' final game on home soil as national manager. France open Group I against Senegal on June 22, with Mbappe chasing Fontaine's all-time French record. If Olise arrives in this form, the question for every rival is not whether he will hurt them, but when.",
+      "he": "צרפת שלחה את ההודעה החדה ביותר האפשרית ב-9 ביוני: מייקל אוליז הבקיע שלישיית שערים כשלה-בלה ניצחה את אירלנד הצפונית 3:1 בליל בידידות ההכנה האחרונה שלהם לפני הטורניר, והפך לשחקן הצרפתי הראשון שמבקיע שלישייה בידידות מאז אוליבייה ז'ירו מול פרגוואי ב-2017. אוליז הבקיע בדקה 43, 49 ו-75, האחרון שוט מסולסל מהכנף הימנית מ-20 מטר שהשאיר את השוער חסר אונים. השלישייה הביאה אותו לשבעה שערים ב-17 ההופעות הראשונות שלו לצרפת, קצב שאף שחקן צרפתי לא הגיע אליו כל-כך מהר מאז יורי ז'ורקאף ביוני 1996. המאמן דידייה דשאן, שמסיים לאחר מונדיאל זה אחרי 14 שנים בתפקיד, אמר שאוליז יכול לזרוח ברמה הגבוהה ביותר. המשחק היה גם המשחק האחרון של דשאן על אדמת הבית כמנהל לאומי. צרפת פותחת קבוצה I מול סנגל ב-22 ביוני, כשמבאפה רודף את שיאו של פונטן. אם אוליז מגיע בכושר הזה, השאלה עבור כל יריב אינה האם הוא יפגע בה, אלא מתי.",
+      "sources": [
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/9/deschamps-backs-hat-trick-hero-olise-to-shine-for-france-at-world-cup" },
+        { "name": "France 24", "url": "https://www.france24.com/en/sport/20260609-michael-olise-hat-trick-rounds-off-france-world-cup-preparations-sends-ominous-warning" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/olise-scores-3-as-france-beats-northern-ireland-in-world-cup-warmup" },
+        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/france-ease-past-northern-ireland-224000732.html" }
+      ],
+      "expires_at": "2026-06-23T00:00:00Z"
+    },
+    {
+      "id": "wc26-goldman-bca-prediction-2026-06-10",
+      "confidence": "confirmed",
+      "en": "On the eve of the 2026 World Cup, two closely-watched forecasting models agree on the favourites but disagree on the winner. Goldman Sachs, whose model analysed nearly 20,000 matches using an Elo-based statistical framework, makes Spain the 26% favourite, France second at 19% and Argentina third at 14%. The bank notes that history almost always favours a European team in the cycle after a South American winner, and that defending champions carry a statistical drag at the following tournament. BCA Research, the Montreal investment firm that correctly predicted both France's 2018 title and Argentina's 2022 penalty-shootout win, has published its third forecast and this time picks France to beat Portugal in the 2026 final. Two models agree France and Spain are the standout candidates but disagree on which one lifts the trophy. The pitch in Mexico City opens on Thursday. The forecasters have had their say.",
+      "he": "ערב מונדיאל 2026, שני מודלי חיזוי נצפים מסכימים על המועדפות אך חלוקים לגבי המנצחת. גולדמן זאקס, שמודלו ניתח כמעט 20,000 משחקים באמצעות מסגרת סטטיסטית מבוססת Elo, מציב את ספרד כמועדפת ב-26%, צרפת שנייה ב-19% וארגנטינה שלישית ב-14%. הבנק מציין שההיסטוריה כמעט תמיד מעדיפה קבוצה אירופית במחזור שאחרי ניצחון דרום-אמריקני, ושאלופות מתגוננות סובלות מירידה סטטיסטית בטורניר הבא. BCA Research, חברת ההשקעות ממונטריאול שניבאה נכון הן את תואר צרפת ב-2018 והן את ניצחון ארגנטינה בבעיטות עונשין ב-2022, פרסמה את תחזיתה השלישית ובפעם זו בוחרת בצרפת לנצח את פורטוגל בגמר 2026. שני מודלים מסכימים שצרפת וספרד הן המועמדות הבולטות אך חלוקים לגבי מי מרימה את הגביע. המגרש במקסיקו סיטי נפתח ביום חמישי. המנבאים אמרו את דברם.",
+      "sources": [
+        { "name": "Euronews", "url": "https://www.euronews.com/business/2026/06/10/world-cup-2026-market-analysts-who-called-it-twice-have-picked-a-new-winner" },
+        { "name": "CNN Business", "url": "https://www.cnn.com/2026/06/01/business/betting-world-cup-goldman-sachs-prediction-markets" },
+        { "name": "Bloomberg", "url": "https://www.bloomberg.com/news/articles/2026-05-29/goldman-s-model-shows-spain-as-26-probable-world-cup-winner" }
+      ],
+      "expires_at": "2026-06-30T00:00:00Z"
+    },
+    {
+      "id": "can-flores-nelson-squad-wc2026-2026-06-09",
+      "confidence": "confirmed",
+      "team": "CAN",
+      "en": "Canada suffered a significant blow ahead of their World Cup opener when attacking midfielder Marcelo Flores underwent surgery on June 5 for a torn ACL sustained in the Concacaf Champions Cup final, ruling him out of the entire tournament. Canada confirmed on June 9 that Austin FC winger Jayden Nelson, 23, from Brampton, Ontario, has been named as his replacement. Nelson has scored three goals in 14 appearances for Canada's senior side, including a stoppage-time goal in a 2-0 warm-up win over Uzbekistan last week, and has two MLS goals for Austin FC this season. Canada have never won a World Cup match across two previous appearances, losing all six games in 1986 and at Qatar 2022. They open Group B against Bosnia and Herzegovina in front of a sold-out home crowd at Toronto Stadium on June 12, ninety minutes after the opening ceremony. A host nation, a full stadium, a history with no wins. Does something finally give?",
+      "he": "קנדה ספגה מכה בסגל לקראת פתיחת המונדיאל שלה כאשר קשר הקדמה מרצלו פלורס עבר ניתוח ב-5 ביוני על קרע ב-ACL שנגרם בגמר גביע האלופות של קונקאקאף, ומנוע מהשתתפות בטורניר כולו. קנדה אישרה ב-9 ביוני שג'יידן נלסון, בן 23, קצה של אוסטין FC ממברמפטון אונטריו, מונה כממלא מקומו. לנלסון שלושה שערים ב-14 הופעות עבור נבחרת קנדה הבכירה, כולל שער בדקות הנוספות בניצחון 2:0 על אוזבקיסטן בשבוע שעבר, ושני שערים ב-MLS העונה. קנדה מעולם לא ניצחה במשחק מונדיאל בשתי הופעותיה הקודמות, כשהפסידה את כל שישה משחקיה ב-1986 ובקטאר 2022. הם פותחים קבוצה B מול בוסניה-הרצגובינה בפני קהל מלא ב-Toronto Stadium ב-12 ביוני, תשעים דקות אחרי טקס הפתיחה. נבחרת מארחת, אצטדיון מלא, היסטוריה ללא ניצחון. האם משהו סוף-סוף ישתנה?",
+      "sources": [
+        { "name": "CBC Sports", "url": "https://www.cbc.ca/sports/soccer/worldcup/jayden-nelson-injury-replacement-canada-world-cup-marcelo-flores-9.7228625" },
+        { "name": "TSN", "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/nelson-replaces-flores-on-canada-roster/" },
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/canada-replaces-marcelo-flores-with-jayden-nelson-for-world-cup-2026-06-09" },
+        { "name": "Globe and Mail", "url": "https://www.theglobeandmail.com/sports/soccer/article-fifa-world-cup-nelson-flores-replacement/" }
+      ],
+      "expires_at": "2026-06-30T00:00:00Z"
+    },
     {
       "id": "jpn-elite-scalps-form-wc2026-2026-06-10",
       "confidence": "confirmed",
