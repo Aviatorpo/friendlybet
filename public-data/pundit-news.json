@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T14:00:00.000Z",
+  "updatedAt": "2026-06-10T15:30:00.000Z",
   "items": [
     {
       "id": "arg-messi-3-0-iceland-wc26-2026-06-09",
@@ -27,6 +27,43 @@
         { "name": "Heavy.com", "url": "https://heavy.com/sports/soccer/world-cup/fifa-world-cup-2026-shock-iran-fans-left-stranded-after-fifa-revokes-thousands-of-tickets/" }
       ],
       "expires_at": "2026-06-26T23:59:59Z"
+    },
+    {
+      "id": "fra-mbappe-fontaine-record-wc2026-2026-06-10",
+      "confidence": "confirmed",
+      "team": "FRA",
+      "en": "Kylian Mbappe arrives at the 2026 World Cup with 12 career goals in the tournament, needing just one more to match Just Fontaine as the leading French scorer in World Cup history. Fontaine scored all 13 of his World Cup goals in a single extraordinary campaign at the 1958 tournament in Sweden, a total that also stands as the all-time record for most goals in one World Cup. Mbappe spread his 12 across four in Russia in 2018 and eight in Qatar in 2022, the latter including a hat-trick in the final. Coach Didier Deschamps, who led Les Bleus to the 2018 title and the 2022 final, has confirmed this World Cup is his last with the national side. France open Group I against Senegal. A record-chaser and a departing architect, in the same squad at the same time.",
+      "he": "קיליאן מבאפה מגיע למונדיאל 2026 עם 12 שערים בסה\"כ בטורניר, וזקוק לשער אחד נוסף כדי להשוות לז'וסט פונטן כמבקיע הצרפתי הרב ביותר בהיסטוריית גביע העולם. פונטן הבקיע את כל 13 שעריו בקמפיין יחיד ויוצא דופן, בטורניר 1958 בשוודיה, שמהווה גם שיא כל הזמנים של שערים בגביע עולם אחד. מבאפה פיזר את 12 שעריו: ארבעה ברוסיה 2018 ושמונה בקטאר 2022, כולל האטריק בגמר. המאמן דידייה דשאן, שהוביל את הלה-בלה לתואר 2018 ולגמר 2022, אישר כי מונדיאל זה הוא אחרונו עם הנבחרת הלאומית. צרפת פותחת את קבוצה I מול סנגל. רודף שיאים וארכיטקט שעוזב, באותו סגל באותו זמן.",
+      "sources": [
+        { "name": "UEFA", "url": "https://www.uefa.com/european-qualifiers/news/02a6-20d159288012-ce02189d2504-1000--france-at-the-world-cup-2026-squad-fixtures-group-and-hi/" },
+        { "name": "Olympics.com", "url": "https://www.olympics.com/en/news/kylian-mbappe-fifa-world-cup-records-goals-stats" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48979217/kylian-mbappe-fifa-world-cup-history-results-stats" }
+      ],
+      "expires_at": "2026-07-19T23:59:59Z"
+    },
+    {
+      "id": "wc26-water-bottle-uturn-2026-06-10",
+      "confidence": "confirmed",
+      "en": "FIFA reversed an unpopular ban on outside water bottles at World Cup venues in the United States and Canada just days before the tournament began, following fierce backlash from fan groups and politicians. The updated policy allows each fan to bring in one soft, factory-sealed plastic bottle of up to 590 ml. Reusable and hard-sided containers remain banned on safety grounds, with FIFA citing concerns about thrown objects. The original ban drew particular criticism because many open-air host-city stadiums are expecting afternoon match-day temperatures above 35 degrees Celsius. With a 48-team World Cup spread across three countries, tournament rules were still shifting on the eve of kickoff. Fans pushed back and won a partial reversal.",
+      "he": "פיפ\"א ביטלה איסור לא פופולרי על הכנסת בקבוקי מים חיצוניים לאצטדיוני גביע העולם בארצות הברית ובקנדה, ימים ספורים לפני תחילת הטורניר, בעקבות לחץ עז מקבוצות אוהדים ומנבחרי ציבור. המדיניות המעודכנת מאפשרת לכל אוהד להכניס בקבוק פלסטיק אחד רך, אטום מהמפעל, של עד 590 מ\"ל. בקבוקים לשימוש חוזר ובקבוקים קשיחים נותרים אסורים מטעמי בטיחות, כשפיפ\"א מזכירה חששות מהשלכת חפצים. האיסור המקורי זכה לביקורת חריפה במיוחד לנוכח העובדה שאצטדיונים פתוחים רבים בערים המארחות צפויים לטמפרטורות צהרים מעל 35 מעלות ביום המשחק. עם מונדיאל של 48 נבחרות בשלוש מדינות, כללי הטורניר עוד השתנו בערב הקיק-אוף. האוהדים לחצו וזכו בביטול חלקי.",
+      "sources": [
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48978502/fifa-reverses-world-cup-water-bottle-ban-backlash" },
+        { "name": "NBC News", "url": "https://www.nbcnews.com/sports/soccer/fifa-bans-water-bottles-world-cup-stadiums-fans-heat-rcna348419" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/7/fifa-u-turns-on-water-bottle-policy-in-us-canada-stadiums-after-backlash" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "wc26-new-rules-gk-timeout-red-cards-2026-06-10",
+      "confidence": "confirmed",
+      "en": "IFAB and FIFA confirmed a set of rule changes taking effect from game one of the 2026 World Cup. Goalkeepers can no longer use a real or feigned injury to create a tactical timeout: referees will now prevent outfield players from visiting the bench during treatment stoppages. Players caught covering their mouths during confrontational exchanges on the pitch risk a straight red card, a rule prompted by racism allegations in a Champions League match this season. Restarts now carry a five-second countdown: miss the window on a throw-in or goal-kick and possession switches immediately to the opposition. VAR has been extended to review incorrectly awarded corner kicks as well. Four changes targeting four of the game's most persistent habits. Whether referees hold the line across all 104 matches is the test no rulebook can guarantee.",
+      "he": "IFAB ופיפ\"א אישרו סט שינויי חוקים שנכנסים לתוקף כבר במשחק הראשון של מונדיאל 2026. שוערים לא יוכלו עוד להשתמש בפציעה אמיתית או מדומה כדי ליצור פסק זמן טקטי: שופטים ימנעו כעת מהשחקנים להגיע לספסל המאמנים בזמן הפסקות טיפול. שחקנים שנתפסים מכסים את פיהם במהלך חילופי דברים עוינים במגרש מסתכנים בקלף אדום ישיר, כלל שנבע מהאשמות גזענות בליגת האלופות השנה. לחידושי משחק נוספה ספירה לאחור של חמש שניות: איחור בביצוע כיסוי-ידיים או בעיטת שוער גורר מסירת הכדור מיד ליריב. ה-VAR הורחב גם לבחון פינות שנפסקו בטעות. ארבעה שינויים המכוונים לארבעת ההרגלים הישנים ביותר במשחק. השאלה היא האם השופטים יאכפו אותם בעקביות ב-104 משחקים, דבר שאף ספר חוקים אינו יכול להבטיח.",
+      "sources": [
+        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12098/13549645/world-cup-ifab-confirm-new-var-powers-10-second-substitutions-and-tactical-timeout-ban-in-major-rule-changes" },
+        { "name": "NBC Sports", "url": "https://www.nbcsports.com/soccer/news/rule-changes-confirmed-for-2026-world-cup-as-ifab-alters-var-cracks-down-on-subs-and-timeouts" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth" }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
       "id": "mex-cdmx-closures-wc2026-2026-06-09",
@@ -197,8 +234,8 @@
       "id": "por-ronaldo-sixth-wc-record-2026-06-08",
       "confidence": "reported",
       "team": "POR",
-      "en": "At 41 years old, Cristiano Ronaldo becomes one of only two players in history to compete at six World Cups, alongside Lionel Messi, when Portugal open their Group K campaign against DR Congo in Houston on June 17. Reports say he will also be the fourth oldest player to appear at a World Cup. Coach Roberto Martinez said Ronaldo has scored 25 goals in his last 30 games and remains an exemplary captain who sets the standard for younger players every day in training. Ronaldo has featured at every World Cup since Germany 2006, from teenage sensation to 41-year-old record-chaser. Can he finally win the one major trophy that has eluded him throughout a record-breaking career?",
-      "he": "בגיל 41, קריסטיאנו רונאלדו הופך לאחד משניים בלבד בהיסטוריה, לצד ליונל מסי, שהשתתפו בשישה מונדיאלים, כאשר פורטוגל פותחת את מסע קבוצה K שלה מול קונגו הדמוקרטית בהיוסטון ב-17 ביוני. לפי הדיווחים, הוא יהיה גם השחקן הרביעי הוותיק ביותר שמופיע במונדיאל. המאמן רוברטו מרטינז אמר שרונאלדו הבקיע 25 שערים ב-30 המשחקים האחרונים ונשאר קפטן מופתי שמציב את הסטנדרט לשחקנים הצעירים בכל אימון. רונאלדו הופיע בכל מונדיאל מאז גרמניה 2006, מכישרון צעיר ועד לרודף שיאים בן 41. האם הוא יזכה סוף-סוף בגביע הגדול היחיד שנמלט ממנו לאורך קריירה שוברת שיאים?",
+      "en": "At 41 years old, Cristiano Ronaldo becomes one of only three players in history to compete at six World Cups, alongside Lionel Messi and Guillermo Ochoa, when Portugal open their Group K campaign against DR Congo in Houston on June 17. Reports say he will also be the fourth oldest player to appear at a World Cup. Coach Roberto Martinez said Ronaldo has scored 25 goals in his last 30 games and remains an exemplary captain who sets the standard for younger players every day in training. Ronaldo has featured at every World Cup since Germany 2006, from teenage sensation to 41-year-old record-chaser. Can he finally win the one major trophy that has eluded him throughout a record-breaking career?",
+      "he": "בגיל 41, קריסטיאנו רונאלדו הופך לאחד משלושה בלבד בהיסטוריה, לצד ליונל מסי וגיירמו אוצ'ואה, שהשתתפו בשישה מונדיאלים, כאשר פורטוגל פותחת את מסע קבוצה K שלה מול קונגו הדמוקרטית בהיוסטון ב-17 ביוני. לפי הדיווחים, הוא יהיה גם השחקן הרביעי הוותיק ביותר שמופיע במונדיאל. המאמן רוברטו מרטינז אמר שרונאלדו הבקיע 25 שערים ב-30 המשחקים האחרונים ונשאר קפטן מופתי שמציב את הסטנדרט לשחקנים הצעירים בכל אימון. רונאלדו הופיע בכל מונדיאל מאז גרמניה 2006, מכישרון צעיר ועד לרודף שיאים בן 41. האם הוא יזכה סוף-סוף בגביע הגדול היחיד שנמלט ממנו לאורך קריירה שוברת שיאים?",
       "sources": [
         { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/5/19/ronaldo-to-lead-portugal-at-sixth-world-cup-as-martinez-names-squad" },
         { "name": "The Canary", "url": "https://www.thecanary.co/global/world-analysis/2026/05/28/ronaldo-old/" },

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T03:25:56.832Z",
+  "updatedAt": "2026-06-10T06:36:57.858Z",
   "count": 12,
   "items": [
     {
@@ -51,6 +51,75 @@
         }
       ],
       "expires_at": "2026-06-26T23:59:59Z"
+    },
+    {
+      "id": "fra-mbappe-fontaine-record-wc2026-2026-06-10",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "קיליאן מבאפה מגיע למונדיאל 2026 עם 12 שערים בסה\"כ בטורניר, וזקוק לשער אחד נוסף כדי להשוות לז'וסט פונטן כמבקיע הצרפתי הרב ביותר בהיסטוריית גביע העולם. פונטן הבקיע את כל 13 שעריו בקמפיין יחיד ויוצא דופן, בטורניר 1958 בשוודיה, שמהווה גם שיא כל הזמנים של שערים בגביע עולם אחד. מבאפה פיזר את 12 שעריו: ארבעה ברוסיה 2018 ושמונה בקטאר 2022, כולל האטריק בגמר. המאמן דידייה דשאן, שהוביל את הלה-בלה לתואר 2018 ולגמר 2022, אישר כי מונדיאל זה הוא אחרונו עם הנבחרת הלאומית. צרפת פותחת את קבוצה I מול סנגל. רודף שיאים וארכיטקט שעוזב, באותו סגל באותו זמן.",
+      "en": "Kylian Mbappe arrives at the 2026 World Cup with 12 career goals in the tournament, needing just one more to match Just Fontaine as the leading French scorer in World Cup history. Fontaine scored all 13 of his World Cup goals in a single extraordinary campaign at the 1958 tournament in Sweden, a total that also stands as the all-time record for most goals in one World Cup. Mbappe spread his 12 across four in Russia in 2018 and eight in Qatar in 2022, the latter including a hat-trick in the final. Coach Didier Deschamps, who led Les Bleus to the 2018 title and the 2022 final, has confirmed this World Cup is his last with the national side. France open Group I against Senegal. A record-chaser and a departing architect, in the same squad at the same time.",
+      "team": "FRA",
+      "sources": [
+        {
+          "name": "UEFA",
+          "url": "https://www.uefa.com/european-qualifiers/news/02a6-20d159288012-ce02189d2504-1000--france-at-the-world-cup-2026-squad-fixtures-group-and-hi/"
+        },
+        {
+          "name": "Olympics.com",
+          "url": "https://www.olympics.com/en/news/kylian-mbappe-fifa-world-cup-records-goals-stats"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48979217/kylian-mbappe-fifa-world-cup-history-results-stats"
+        }
+      ],
+      "expires_at": "2026-07-19T23:59:59Z"
+    },
+    {
+      "id": "wc26-water-bottle-uturn-2026-06-10",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "פיפ\"א ביטלה איסור לא פופולרי על הכנסת בקבוקי מים חיצוניים לאצטדיוני גביע העולם בארצות הברית ובקנדה, ימים ספורים לפני תחילת הטורניר, בעקבות לחץ עז מקבוצות אוהדים ומנבחרי ציבור. המדיניות המעודכנת מאפשרת לכל אוהד להכניס בקבוק פלסטיק אחד רך, אטום מהמפעל, של עד 590 מ\"ל. בקבוקים לשימוש חוזר ובקבוקים קשיחים נותרים אסורים מטעמי בטיחות, כשפיפ\"א מזכירה חששות מהשלכת חפצים. האיסור המקורי זכה לביקורת חריפה במיוחד לנוכח העובדה שאצטדיונים פתוחים רבים בערים המארחות צפויים לטמפרטורות צהרים מעל 35 מעלות ביום המשחק. עם מונדיאל של 48 נבחרות בשלוש מדינות, כללי הטורניר עוד השתנו בערב הקיק-אוף. האוהדים לחצו וזכו בביטול חלקי.",
+      "en": "FIFA reversed an unpopular ban on outside water bottles at World Cup venues in the United States and Canada just days before the tournament began, following fierce backlash from fan groups and politicians. The updated policy allows each fan to bring in one soft, factory-sealed plastic bottle of up to 590 ml. Reusable and hard-sided containers remain banned on safety grounds, with FIFA citing concerns about thrown objects. The original ban drew particular criticism because many open-air host-city stadiums are expecting afternoon match-day temperatures above 35 degrees Celsius. With a 48-team World Cup spread across three countries, tournament rules were still shifting on the eve of kickoff. Fans pushed back and won a partial reversal.",
+      "team": null,
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48978502/fifa-reverses-world-cup-water-bottle-ban-backlash"
+        },
+        {
+          "name": "NBC News",
+          "url": "https://www.nbcnews.com/sports/soccer/fifa-bans-water-bottles-world-cup-stadiums-fans-heat-rcna348419"
+        },
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/7/fifa-u-turns-on-water-bottle-policy-in-us-canada-stadiums-after-backlash"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
+    },
+    {
+      "id": "wc26-new-rules-gk-timeout-red-cards-2026-06-10",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "IFAB ופיפ\"א אישרו סט שינויי חוקים שנכנסים לתוקף כבר במשחק הראשון של מונדיאל 2026. שוערים לא יוכלו עוד להשתמש בפציעה אמיתית או מדומה כדי ליצור פסק זמן טקטי: שופטים ימנעו כעת מהשחקנים להגיע לספסל המאמנים בזמן הפסקות טיפול. שחקנים שנתפסים מכסים את פיהם במהלך חילופי דברים עוינים במגרש מסתכנים בקלף אדום ישיר, כלל שנבע מהאשמות גזענות בליגת האלופות השנה. לחידושי משחק נוספה ספירה לאחור של חמש שניות: איחור בביצוע כיסוי-ידיים או בעיטת שוער גורר מסירת הכדור מיד ליריב. ה-VAR הורחב גם לבחון פינות שנפסקו בטעות. ארבעה שינויים המכוונים לארבעת ההרגלים הישנים ביותר במשחק. השאלה היא האם השופטים יאכפו אותם בעקביות ב-104 משחקים, דבר שאף ספר חוקים אינו יכול להבטיח.",
+      "en": "IFAB and FIFA confirmed a set of rule changes taking effect from game one of the 2026 World Cup. Goalkeepers can no longer use a real or feigned injury to create a tactical timeout: referees will now prevent outfield players from visiting the bench during treatment stoppages. Players caught covering their mouths during confrontational exchanges on the pitch risk a straight red card, a rule prompted by racism allegations in a Champions League match this season. Restarts now carry a five-second countdown: miss the window on a throw-in or goal-kick and possession switches immediately to the opposition. VAR has been extended to review incorrectly awarded corner kicks as well. Four changes targeting four of the game's most persistent habits. Whether referees hold the line across all 104 matches is the test no rulebook can guarantee.",
+      "team": null,
+      "sources": [
+        {
+          "name": "Sky Sports",
+          "url": "https://www.skysports.com/football/news/12098/13549645/world-cup-ifab-confirm-new-var-powers-10-second-substitutions-and-tactical-timeout-ban-in-major-rule-changes"
+        },
+        {
+          "name": "NBC Sports",
+          "url": "https://www.nbcsports.com/soccer/news/rule-changes-confirmed-for-2026-world-cup-as-ifab-alters-var-cracks-down-on-subs-and-timeouts"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth"
+        }
+      ],
+      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
       "id": "mex-cdmx-closures-wc2026-2026-06-09",
@@ -213,75 +282,6 @@
         {
           "name": "Tech Times",
           "url": "https://www.techtimes.com/articles/317958/20260607/world-cup-2026s-ai-offside-system-now-pipes-calls-straight-referees-ear.htm"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "wc26-cooling-breaks-heat-2026",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "לראשונה במונדיאל, פיפ\"א הנהיגה הפסקות שתייה חובה בנות שלוש דקות בכל מחצית בכל משחק, ללא תלות בתנאי מזג האוויר, בתגובה ישירה לסיכוני חום ולחות בערי המארח בצפון אמריקה. הכלל קריטי ביותר באסטדיו BBVA במונטריי, שם הטמפרטורות בצהרי יוני מגיעות שגרתית ל-38 עד 40 מעלות צלזיוס, באצטדיון פתוח ללא תשתית קירור, ומומחים מזהירים כי גם עם ההפסקות, משחקי אחה\"צ עדיין טומנים סיכון ממשי לפגיעת חום בשחקנים. פיפ\"א גם חייבה ספסלי בקמה מקוררים בכל האצטדיונים הפתוחים. 48 נבחרות מנהלות את טורניר הקיץ שלהן ביבשת שבחלקים ממנה לוח הזמנים של המשחקים נושא סיכון רפואי ממשי. שלוש דקות פעמיים למשחק לא יסלקו את הסכנה. הן פשוט יגידו לך כמה חם באמת.",
-      "en": "For the first time at a World Cup, FIFA has made mandatory three-minute hydration breaks compulsory in each half of every match, regardless of weather conditions, a direct response to the heat and humidity risks across North American host cities. The rule is most critical at Estadio BBVA in Monterrey, where June afternoon temperatures routinely reach 38 to 40 degrees Celsius in an open-air stadium with no cooling infrastructure, and where experts warn that even with the breaks, afternoon kick-offs still carry meaningful heat-stress risk for players. FIFA has also required cooled dugout benches at all outdoor venues. Forty-eight teams are running their summer tournament on a continent where parts of the schedule carry genuine medical risk. Three minutes twice a match will not remove the danger. They will just tell you how hot things really are.",
-      "team": null,
-      "sources": [
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/8/how-extreme-weather-and-heat-could-affect-players-at-world-cup-2026"
-        },
-        {
-          "name": "The Conversation",
-          "url": "https://theconversation.com/extreme-heat-at-the-world-cup-are-fifas-safeguards-enough-282489"
-        },
-        {
-          "name": "Bloomberg",
-          "url": "https://www.bloomberg.com/graphics/2026-fifa-world-cup-games-weather/"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "wc26-format-third-place-rule-2026",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "לראשונה בהיסטוריית המונדיאל, 32 מתוך 48 נבחרות עוברות לסיבובי הנוק-אאוט. הפורמט עם 12 קבוצות אומר ששתי הנבחרות הראשונות מכל קבוצה עוברות אוטומטית, ועוד שמונה הטובות מבין 12 נבחרות שלישיות מתקדמות לסיבוב 32 החדש. נבחרת יכולה להפסיד פעמיים בשלב הבתים ועדיין לשרוד את הרולטה, אם מספיק נבחרות שלישיות אחרות מציגות תוצאות גרועות יותר. המדד להכרעה על שמונת המקומות: נקודות, הפרש שערים, שערים שנכבשו ודירוג פיפ\"א. למי שמנהל מאגר תחזיות, מקום שמיני זה בין הנבחרות השלישיות עשוי להיות הסיפור הדרמטי ביותר בשלב הבתים של הטורניר כולו.",
-      "en": "For the first time in World Cup history, 32 of 48 teams advance from the group stage. The 12-group format means the top two from each group go through automatically, and the best eight of 12 third-placed teams also qualify for the new Round of 32. A side can lose twice in the group stage and still survive the knockout roulette if enough other third-placed teams do worse. The ranking tiebreaker for the eight spots: points, then goal difference, then goals scored, then FIFA ranking. For anyone running a prediction pool, that eighth third-place slot could be the most dramatic group-stage storyline of the whole tournament.",
-      "team": null,
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/groups-how-teams-qualify-tie-breakers"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48703925/world-cup-group-stage-explained-tiebreakers-third-place-teams"
-        },
-        {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/fifa-world-cup-group-stage-third-place-tiebreakers"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "wc26-azteca-three-openers-2026",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "אסטדיו אצטקה במקסיקו סיטי עושה היסטוריה ב-11 ביוני כאצטדיון הראשון בהיסטוריית המונדיאל לארח שלושה משחקי פתיחה, לאחר שכבר עשה זאת ב-1970 וב-1986 כשמקסיקו אירחה את הטורניר. האצטקה גם מחזיקה בייחוד של האצטדיון היחיד שאירח שני גמרים של גביע העולם, ב-1970 וב-1986. שום מגרש אחר בהיסטוריית הכדורגל לא יכול לדרוש אף אחד מהישגים אלה, שלא לדבר על שניהם. שישים אלף אוהדים ימלאו את הטריבונות ביום חמישי בערב כדי לעדות לפרק נוסף באצטדיון המיתולוגי ביותר בעולם. עבור מקסיקו, משקל ההיסטוריה הזו הוא גם זכות וגם דרישה: האצטקה ראה שני תארים שנכתרו כאן. השאלה היא האם 2026 יוסיף שלישי.",
-      "en": "Estadio Azteca in Mexico City makes history on June 11 as the first stadium to host three World Cup opening matches, having staged the openers in 1970 and 1986 on both occasions Mexico hosted the tournament. The Azteca also holds the distinction of being the only stadium to have hosted two World Cup finals, in 1970 and 1986. No other venue in football history can claim either landmark, let alone both. Sixty thousand fans will fill the terraces on Thursday evening to witness another chapter in the most storied stadium on earth. For Mexico, that weight of history is both a privilege and a demand: the Azteca has seen two titles crowned here. The question is whether 2026 adds a third.",
-      "team": null,
-      "sources": [
-        {
-          "name": "beIN Sports",
-          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/estadio-azteca-will-make-history-at-the-2026-world-cup-as-the-first-stadium-to-host-three-fifa-world-cup-opening-matches-2026-06-02"
-        },
-        {
-          "name": "The Mirror US",
-          "url": "https://www.themirror.com/sport/soccer/azteca-stadium-world-cup-2026-1864970"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/mexico-citys-estadio-azteca-become-183000365.html"
         }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
