@@ -15,7 +15,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.s
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 // Smaller batches are fine — the job runs every 10 min and the RPC isolates
 // per-user failures, so there's no benefit to a large single run.
-const LIMIT = parseInt(process.env.HEAL_LIMIT || '150', 10);
+const LIMIT = parseInt(process.env.HEAL_LIMIT || '1000', 10);  // raised from 150 to clear the 2026-06-10 sync-teams wipe backlog in one run; safe (RPC isolates per-user, bounded by statement_timeout)
 
 (async () => {
   if (!SUPABASE_KEY) { console.error('[heal-brackets] missing SUPABASE_SECRET_KEY'); process.exit(1); }

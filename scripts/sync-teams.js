@@ -291,34 +291,18 @@ async function syncTeams() {
     return;
   }
   
-  // Step 4: Clean up existing teams + picks
-  console.log('🧹 Cleaning up existing data...');
-  
-  // Delete all picks (they may reference teams that won't exist)
-  try {
-    await callSupabase('DELETE', 'group_picks', { query: '?id=neq.00000000-0000-0000-0000-000000000000' });
-    console.log('   ✅ Deleted all group_picks');
-  } catch (err) {
-    console.log(`   ⚠️  group_picks cleanup: ${err.message}`);
-  }
-  
-  try {
-    await callSupabase('DELETE', 'knockout_picks', { query: '?id=neq.00000000-0000-0000-0000-000000000000' });
-    console.log('   ✅ Deleted all knockout_picks');
-  } catch (err) {
-    console.log(`   ⚠️  knockout_picks cleanup: ${err.message}`);
-  }
-  
-  // Delete teams - use code instead of id (teams table uses 'code' as primary key)
-  try {
-    await callSupabase('DELETE', 'teams', { query: '?code=neq.__NEVER__' });
-    console.log('   ✅ Deleted all teams\n');
-  } catch (err) {
-    console.log(`   ⚠️  teams cleanup: ${err.message}\n`);
-  }
-  
-  // Step 5: Insert new teams
-  console.log('💾 Inserting teams...');
+  // Step 4: UPSERT teams (NEVER delete user picks).
+  // ⚠️ HISTORY: this step used to DELETE ALL group_picks + knockout_picks + teams
+  // before re-inserting. That was written for the disposable-test-data phase and
+  // it WIPED every user's live knockout bracket on each run — the root cause of the
+  // 2026-06-10 mass knockout_picks loss (this job ran 04:59 manual + 07:57 cron and
+  // each run deleted ~32k bracket rows). NEVER delete picks from a sync job.
+  // teams' primary key is `code`, and callSupabase already sends
+  // `Prefer: resolution=merge-duplicates`, so the POST below UPSERTs on `code`:
+  // new teams are inserted, existing teams updated, NOTHING is deleted. A team that
+  // leaves the tournament (rare) is handled by a separate, explicit one-off
+  // migration — never by this scheduled sync.
+  console.log('💾 Upserting teams (no deletes — picks are never touched)...');
   
   for (let i = 0; i < teamsToInsert.length; i += 50) {
     const batch = teamsToInsert.slice(i, i + 50);
