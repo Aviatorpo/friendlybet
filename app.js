@@ -5471,13 +5471,15 @@ async function updateBettingStatusOnDashboard() {
     const winnerChosen = (twp.data || []).length >= 1;
     const championDone = winnerChosen || bracketDone;              // final pick = champion
     const tsChosen     = (tsp.data || []).length >= 1;
-    let tsRequired = false;
-    try { tsRequired = localStorage.getItem('fb_squads_released') === 'true'; } catch (e) {}
+    const tsRequired = spTopScorerRequired();
 
     // v2.9.2: a full bracket is now REQUIRED for "all set" — previously groups +
     // champion alone counted as complete, which hid the silent bracket-save loss
     // (users saw "ALL SET" while having 0 knockout picks → 0 knockout points).
     const allComplete = groupsDone && bracketDone && championDone && (!tsRequired || tsChosen);
+    if (allComplete && !spHasUserSubmitted()) {
+      await spMarkPredictionsSubmitted('dashboard-complete');
+    }
 
     // v2.9.2: apology + recover banner — show when the user has engaged (champion
     // or groups) but their knockout bracket didn't fully save. Tapping it reopens
@@ -10083,6 +10085,57 @@ function spHasUserSubmitted() {
 // Back-compat shim
 function spIsUserSubmitted() { return false; }
 
+function spTopScorerRequired() {
+  if (state.currentPool && state.currentPool.top_scorer_enabled === false) return false;
+  try { return localStorage.getItem('fb_squads_released') === 'true'; } catch (_) { return false; }
+}
+
+function spBracketComplete() {
+  const bp = spState.bracketPicks || {};
+  for (let p = 1; p <= 31; p++) if (!bp[p]) return false;
+  return true;
+}
+
+function spCompletionState(hasTopScorerPick = false) {
+  const incompleteGroups = WC2026_GROUP_LETTERS.filter(l =>
+    !spState.groupPositions[l] || !spState.groupPositions[l].every(x => x)
+  );
+  const bracketComplete = spBracketComplete();
+  const missingWinner = !(spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
+  const missingTopScorer = spTopScorerRequired() && !hasTopScorerPick;
+  const allComplete = incompleteGroups.length === 0 && bracketComplete && !missingWinner && !missingTopScorer;
+  return { incompleteGroups, bracketComplete, missingWinner, missingTopScorer, allComplete };
+}
+
+async function spMarkPredictionsSubmitted(reason = 'complete') {
+  if (!state.currentUser || !supabaseClient) return false;
+  if (state.currentUser.predictions_submitted_at) return true;
+
+  const submittedAt = new Date().toISOString();
+  const code = _currentRecoveryCode();
+  if (code) {
+    const res = await _rpcWrite('mark_predictions_submitted', { p_code: code });
+    if (res.ok) {
+      state.currentUser.predictions_submitted_at = submittedAt;
+      return true;
+    }
+    if (!res.missing) {
+      console.warn(`[spMarkPredictionsSubmitted] ${reason} RPC warning:`, res.error);
+      return false;
+    }
+  }
+
+  const { error } = await supabaseClient.from('users')
+    .update({ predictions_submitted_at: submittedAt })
+    .eq('id', state.currentUser.id);
+  if (error && !/column .* does not exist/i.test(error.message || '')) {
+    console.warn(`[spMarkPredictionsSubmitted] ${reason} update warning:`, error);
+    return false;
+  }
+  state.currentUser.predictions_submitted_at = submittedAt;
+  return true;
+}
+
 async function startSinglePhaseBetting() {
   // Entry point from dashboard
   if (!state.currentPool || !state.currentUser) {
@@ -12053,6 +12106,18 @@ async function spRenderSummary() {
     ' bracket=' + Object.keys(spState.bracketPicks || {}).length +
     ' winner=' + (spState.tournamentWinner || 'none'));
 
+  let summaryTopScorerPick = null;
+  try {
+    const { data: ts } = await supabaseClient.from('top_scorer_picks')
+      .select('*').eq('user_id', state.currentUser.id).eq('pool_id', state.currentPool.id).maybeSingle();
+    summaryTopScorerPick = ts || null;
+  } catch (e) { /* ignore */ }
+
+  const completion = spCompletionState(!!summaryTopScorerPick);
+  if (completion.allComplete && !spHasUserSubmitted()) {
+    await spMarkPredictionsSubmitted('summary-complete');
+  }
+
   // v2.5.15: always reset the Save button to its clean state when entering
   // the summary screen. Previously the button was left in "Saving..." +
   // disabled after a successful submit (spSubmitPredictions transitioned
@@ -12229,11 +12294,18 @@ async function spSubmitPredictions() {
   //     dashboard correctly stays on the "partial" state. The user lands
   //     on the dashboard either way. A soft info toast tells them what's
   //     still open. Auto-save has already persisted the partial picks.
-  const incompleteGroups = WC2026_GROUP_LETTERS.filter(l =>
-    !spState.groupPositions[l] || !spState.groupPositions[l].every(x => x)
-  );
-  const missingWinner = !spState.tournamentWinner;
-  const allComplete = incompleteGroups.length === 0 && !missingWinner;
+  let hasTopScorerPick = false;
+  if (spTopScorerRequired()) {
+    try {
+      const { data: ts } = await supabaseClient.from('top_scorer_picks')
+        .select('id').eq('user_id', state.currentUser.id).eq('pool_id', state.currentPool.id);
+      hasTopScorerPick = (ts || []).length >= 1;
+    } catch (_) {}
+  }
+  const completion = spCompletionState(hasTopScorerPick);
+  const incompleteGroups = completion.incompleteGroups;
+  const missingWinner = completion.missingWinner;
+  const allComplete = completion.allComplete;
   // Show the share-celebration only on the FIRST full completion, not on re-saves.
   const firstComplete = allComplete && !(state.currentUser && state.currentUser.predictions_submitted_at);
 
@@ -12276,32 +12348,15 @@ async function spSubmitPredictions() {
     }
 
     if (allComplete) {
-      const submittedAt = new Date().toISOString();
-      // Preferred: server-side mark_predictions_submitted RPC (self, idempotent).
-      // Falls back to the legacy direct update only when the RPC isn't deployed.
-      const code = _currentRecoveryCode();
-      let done = false;
-      if (code) {
-        const res = await _rpcWrite('mark_predictions_submitted', { p_code: code }); // v2.9.12: PGRST202 retry
-        if (res.ok) { done = true; }
-        else if (!res.missing) { console.warn('mark_predictions_submitted RPC warning:', res.error); done = true; }
-        // RPC still unreachable after retries -> fall through to the legacy direct write below.
-      }
-      if (!done) {
-        const { error } = await supabaseClient.from('users')
-          .update({ predictions_submitted_at: submittedAt })
-          .eq('id', state.currentUser.id);
-        if (error && !/column .* does not exist/i.test(error.message || '')) {
-          console.warn('predictions_submitted_at update warning:', error);
-        }
-      }
-      state.currentUser.predictions_submitted_at = submittedAt;
+      await spMarkPredictionsSubmitted('summary-save');
     } else {
       // Partial save - don't set predictions_submitted_at so the dashboard
       // stays in "partial" mode with the Continue CTA. Surface what's left.
       const bits = [];
       if (incompleteGroups.length > 0) bits.push(t('betting.groupsIncomplete', { letters: incompleteGroups.join(', ') }));
+      if (!completion.bracketComplete) bits.push(t('dashboard.continueCta.bracket'));
       if (missingWinner) bits.push(t('betting.winnerRequired'));
+      if (completion.missingTopScorer) bits.push(t('dashboard.continueCta.topScorer'));
       showToast(t('betting.partialSaveHint', { details: bits.join(' · ') }), 'info');
     }
 
