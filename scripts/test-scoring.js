@@ -240,6 +240,29 @@ S.__setFetch(async (url, opts) => {
   eq('AWARDED counts as terminal', S.groupIsComplete(finished6.map((m, i) => (i === 0 ? { status: 'AWARDED', home_score: 3, away_score: 0 } : m))), true);
   eq('only 5 matches present -> NOT complete', S.groupIsComplete(finished6.slice(0, 5)), false);
 
+  console.log('\n== unit: sanitizeTwoPhaseGroupPicks (two-phase scoring fairness) ==');
+  // a duplicate team cannot double-score
+  eq('duplicate team deduped to 1', S.sanitizeTwoPhaseGroupPicks([
+    { group_letter: 'A', team_code: 'MEX' }, { group_letter: 'A', team_code: 'MEX' }
+  ]).length, 1);
+  // a team tagged under a group it isn't in is dropped (BRA is group C, not A)
+  eq('wrong-group row ignored', S.sanitizeTwoPhaseGroupPicks([
+    { group_letter: 'A', team_code: 'BRA' }, { group_letter: 'A', team_code: 'MEX' }
+  ]).map(p => p.team_code), ['MEX']);
+  // the same team can't advance from two groups -> scored once
+  eq('cross-group same team -> 1', S.sanitizeTwoPhaseGroupPicks([
+    { group_letter: 'C', team_code: 'BRA' }, { group_letter: 'A', team_code: 'BRA' }
+  ]).length, 1);
+  // an over-complete 36-row VALID set keeps 36 distinct teams; scoring is still
+  // bounded because only teams in the real 32-team `advanced` set earn points.
+  const over36 = [];
+  Object.entries(S.WC2026_GROUPS).forEach(([L, teams]) => teams.slice(0, 3).forEach(tc => over36.push({ group_letter: L, team_code: tc })));
+  eq('36 valid distinct survive sanitize', S.sanitizeTwoPhaseGroupPicks(over36).length, 36);
+  // duplicates + wrong-group mixed into the 36 still collapse to the 36 valid
+  eq('dirty set collapses to valid distinct', S.sanitizeTwoPhaseGroupPicks(
+    [...over36, { group_letter: 'A', team_code: 'MEX' }, { group_letter: 'A', team_code: 'BRA' }]
+  ).length, 36);
+
   console.log(`\n==== ${pass} passed, ${fail} failed ====`);
   process.exit(fail ? 1 : 0);
 })();

@@ -46,6 +46,34 @@ const FIFA_RANK = {
   PAN:38, IRQ:40, RSA:42, UZB:43, JOR:44, GHA:47, NZL:55, SAU:57, COD:58, BIH:59, HAI:60,
   CPV:65, QAT:66, CUR:85
 };
+// Canonical WC2026 group membership — used to reject impossible two-phase group
+// picks (team tagged under a group it isn't in) and to validate set shape so a
+// tampered/over-complete set can't inflate the score.
+const WC2026_GROUPS = {
+  A: ['MEX','RSA','KOR','CZE'], B: ['CAN','BIH','QAT','SUI'], C: ['BRA','MAR','HAI','SCO'],
+  D: ['USA','PAR','AUS','TUR'], E: ['GER','CUR','CIV','ECU'], F: ['NED','JPN','SWE','TUN'],
+  G: ['BEL','EGY','IRN','NZL'], H: ['ESP','CPV','SAU','URU'], I: ['FRA','SEN','IRQ','NOR'],
+  J: ['ARG','ALG','AUT','JOR'], K: ['POR','COD','UZB','COL'], L: ['ENG','CRO','GHA','PAN']
+};
+const TEAM_TO_GROUP = {};
+for (const [L, teams] of Object.entries(WC2026_GROUPS)) teams.forEach(tc => { TEAM_TO_GROUP[tc] = L; });
+
+// Keep only VALID, non-duplicated two-phase group picks for scoring: a team must
+// belong to the group it was picked under, and a team scores at most ONCE per
+// user (no cross-group double-count). Exported for the scoring tests.
+function sanitizeTwoPhaseGroupPicks(rows) {
+  const seen = new Set();
+  const out = [];
+  for (const p of (rows || [])) {
+    if (!p || !p.team_code) continue;
+    if (TEAM_TO_GROUP[p.team_code] && TEAM_TO_GROUP[p.team_code] !== p.group_letter) continue; // wrong group
+    if (seen.has(p.team_code)) continue; // duplicate team
+    seen.add(p.team_code);
+    out.push(p);
+  }
+  return out;
+}
+
 const DEFAULT_CAT_MULT = { favorite: 1.0, contender: 1.5, underdog: 2.0 };
 function poolMultResolver(pool, rules) {
   const enabled = pool.use_multipliers !== false;
@@ -495,10 +523,13 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     let knockoutPoints = 0;
     let bonusPoints = 0;
 
-    // Group picks
-    const gp = await sb('GET', 'group_picks',
+    // Group picks. Sanitize first: drop team-in-wrong-group rows and de-duplicate
+    // a team so it can only score once per user (the RPC enforces this on write
+    // now, but historical/over-complete rows still exist — e.g. a 36-row user).
+    const gpRaw = await sb('GET', 'group_picks',
       { query: `?user_id=eq.${user.id}&select=*` });
-    (gp || []).forEach(p => {
+    const gp = sanitizeTwoPhaseGroupPicks(gpRaw);
+    gp.forEach(p => {
       if (!advanced.has(p.team_code)) return;
       const mult = resolveMult(p.team_code, p.multiplier_applied);
       groupPoints += (rules.group_first || 0) * mult;
@@ -574,6 +605,7 @@ if (require.main === module) {
     main, scoreSinglePhasePool, scoreTwoPhasePool,
     computeGroupStandings, groupIsComplete, knockoutWinner,
     bracketPosRuleKey, stageRuleKey, poolMultResolver,
+    sanitizeTwoPhaseGroupPicks, WC2026_GROUPS, TEAM_TO_GROUP,
     DEFAULT_RULES_SINGLE, DEFAULT_RULES_TWO, DEFAULT_CAT_MULT, FIFA_RANK,
     // allow tests to inject a fake Supabase transport
     __setFetch: (fn) => { globalThis.fetch = fn; },

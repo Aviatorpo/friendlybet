@@ -1359,8 +1359,10 @@ async function updateTwoPhaseIncidentBanner() {
       .eq('user_id', state.currentUser.id).eq('pool_id', state.currentPool.id);
     const byGroup = {};
     (gp || []).forEach(r => { (byGroup[r.group_letter] = byGroup[r.group_letter] || []).push(r.team_code); });
-    const completeGroups = Object.values(byGroup).filter(a => a.length >= 2).length;
-    if (completeGroups >= 12) return hide();
+    // Hide only when the user's two-phase group stage is genuinely COMPLETE
+    // (exactly 32 with 2-3 per group). 24 (top-2 each group, no thirds) still
+    // needs the 8 best-third picks, so the banner stays up for 24-31 too.
+    if (isTwoPhaseGroupComplete(byGroup)) return hide();
 
     const deadline = _formatGraceDeadline(override);
     const isAdmin = !!state.currentUser.is_admin;
@@ -2527,7 +2529,9 @@ function createMemberCard(member, picksCount, koPicksCount, isV2) {
   // we no longer trust predictions_submitted_at alone, because the silent
   // bracket-save bug let users submit with groups+champion but no bracket. Those
   // members must show as needing their knockout, so the admin can nudge them.
-  const groupComplete = isV2 ? (picksCount >= 48) : (picksCount >= 24);
+  // v2.10.9: two-phase group stage is complete at EXACTLY 32 (not 24) — see
+  // isTwoPhaseGroupComplete. single_phase keeps its 48-cell check.
+  const groupComplete = isV2 ? (picksCount >= 48) : isTwoPhaseGroupComplete(picksCount);
   const koComplete = isV2 ? (koPicksCount >= 31) : (koPicksCount >= 16);
   const allDone = groupComplete && koComplete;
 
@@ -2712,7 +2716,8 @@ async function loadAdminMembers() {
 //    step until then).
 function _adminMemberProgress(member) {
   const isV2 = adminState.isV2;
-  const groupsFull = member.groupPicksCount >= (isV2 ? 48 : 24);
+  // v2.10.9: two-phase groups complete at EXACTLY 32 (not 24). single_phase 48.
+  const groupsFull = isV2 ? (member.groupPicksCount >= 48) : isTwoPhaseGroupComplete(member.groupPicksCount);
   const bracketFull = member.knockoutPicksCount >= (isV2 ? 31 : 16);
   let squadsReleased = false;
   try { squadsReleased = localStorage.getItem('fb_squads_released') === 'true'; } catch (_) {}
@@ -4859,9 +4864,16 @@ function toggleTeamSelection(teamCode) {
     // Remove
     bettingState.picks[currentLetter] = picks.filter(c => c !== teamCode);
   } else {
-    // Add - but max 3
+    // Add - but max 3 per group
     if (picks.length >= 3) {
       showToast(t('groups.maxReachedToast'), 'error');
+      return;
+    }
+    // v2.10.9: and at most 32 advancing picks total (the real knockout size).
+    // Mirrors the server cap in save_group_picks_2p so a legal selection never
+    // trips a save rejection; over-32 was an invalid, score-inflating shape.
+    if (countTotalPicks() >= 32) {
+      showToast(t('groups.maxTotalReached'), 'error');
       return;
     }
     bettingState.picks[currentLetter] = [...picks, teamCode];
@@ -4939,6 +4951,26 @@ function countTotalPicks() {
     total += (bettingState.picks[letter] || []).length;
   });
   return total;
+}
+
+// v2.10.9: single source of truth for "is the two-phase group stage COMPLETE".
+// WC2026 = 12 groups of 4; the knockout takes 32 teams (top-2 of each group = 24,
+// plus the 8 best third-placed teams), so a complete advancing set is EXACTLY 32
+// picks with 2-3 per group. 24 (just the obvious top-2 of every group) is NOT
+// complete. Accepts a raw pick COUNT (number) or a {group_letter: array|count}
+// map; the map form also enforces the per-group 2-3 shape.
+function isTwoPhaseGroupComplete(arg) {
+  if (typeof arg === 'number') return arg === 32;
+  if (!arg || typeof arg !== 'object') return false;
+  const letters = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+  let total = 0;
+  for (const L of letters) {
+    const v = arg[L];
+    const n = Array.isArray(v) ? v.length : (typeof v === 'number' ? v : 0);
+    if (n < 2 || n > 3) return false;
+    total += n;
+  }
+  return total === 32;
 }
 
 function renderQuickGroupsNav() {
@@ -5135,17 +5167,20 @@ function autoSavePicks() {
   autoSaveTimeout = setTimeout(() => savePicksToDb(false), 1000);
 }
 
+// v2.10.9: returns a STRUCTURED result { ok, reason? } so callers (finish/exit)
+// can block "completed/saved" UI when the save didn't actually land. ok:true also
+// covers the legitimate empty-skip (nothing to save); every failure is ok:false.
 async function savePicksToDb(showFeedback = true) {
-  if (!state.currentUser || !state.currentPool) return;
-  if (!supabaseClient) return;
+  if (!state.currentUser || !state.currentPool) return { ok: false, reason: 'no-context' };
+  if (!supabaseClient) return { ok: false, reason: 'no-client' };
 
   // v2.4: soft lock - block writes once the tournament has started.
   if (state.currentPool.locked_at) {
     if (showFeedback) showToast(t('groups.lockedTournamentStarted'), 'error');
-    return;
+    return { ok: false, reason: 'locked' };
   }
 
-  if (bettingState.loading) return;
+  if (bettingState.loading) return { ok: false, reason: 'busy' };
   bettingState.loading = true;
 
   // SAFETY GUARD (parity with the single-phase saves): never let a stale EMPTY
@@ -5157,7 +5192,7 @@ async function savePicksToDb(showFeedback = true) {
   if (_totalGroupPicks === 0) {
     console.warn('savePicksToDb: in-memory picks empty - skipping DB write to avoid wiping real picks');
     bettingState.loading = false;
-    return;
+    return { ok: true, skipped: 'empty' };
   }
 
   // v2.10.7: the ONLY working write path is the SECURITY DEFINER RPC. anon
@@ -5175,7 +5210,7 @@ async function savePicksToDb(showFeedback = true) {
     console.error('savePicksToDb: no recovery code in session — cannot save group picks');
     showToast(t('bracketSave.noCode'), 'error');
     bettingState.loading = false;
-    return;
+    return { ok: false, reason: 'no-code' };
   }
 
   const picks = [];
@@ -5186,24 +5221,29 @@ async function savePicksToDb(showFeedback = true) {
   bettingState.loading = false;
   if (res.ok) {
     if (showFeedback) showToast(t('groups.savedOk'), 'success');
-    return;
+    return { ok: true };
   }
   if (!res.missing) {
     // Genuine business error from the deployed RPC (e.g. 'pool locked').
     console.error('Save picks RPC error:', res.error);
     showToast(t('groups.saveError'), 'error');
-    return;
+    return { ok: false, reason: 'rpc-error', error: res.error };
   }
   // Still PGRST202 after all retries: RPC transiently unreachable and the direct
   // write is dead for anon — don't attempt it (it would only 401). Tell the user
   // honestly so they retry instead of losing picks silently.
   console.error('savePicksToDb: save_group_picks_2p unreachable after retries');
   showToast(t('bracketSave.retryLater'), 'error');
+  return { ok: false, reason: 'unreachable' };
 }
 
 async function saveProgressAndExit() {
-  // Force save and exit
-  await savePicksToDb(true);
+  // v2.10.9: only leave to the dashboard if the save actually landed. On failure
+  // savePicksToDb already showed an honest error toast — stay put so the user can
+  // retry instead of walking away thinking their progress was saved. (An empty
+  // in-progress state legitimately returns ok:true/skipped and exits.)
+  const res = await savePicksToDb(true);
+  if (!res || !res.ok) return;
   setTimeout(() => {
     goToDashboard();
   }, 500);
@@ -5242,10 +5282,12 @@ async function finishGroupBetting() {
     return;
   }
 
-  // v2.4.2: removed "Saving..." toast - the completion screen we're about
-  // to show is itself the success confirmation.
-  await savePicksToDb(false);
-  
+  // v2.10.9: the completion screen IS the success confirmation, so it must only
+  // appear when the save genuinely landed. savePicksToDb already toasts an honest
+  // error on failure (even with showFeedback=false), so just block here.
+  const _saveRes = await savePicksToDb(false);
+  if (!_saveRes || !_saveRes.ok) return;
+
   // v2.5.35: use pool-aware multiplier resolver (scoring_rules.team_multipliers
   // override → scoring_rules.multipliers[tier] → global default). Falls back
   // to legacy tier-only lookup when the pool has no custom multipliers config.
@@ -5983,15 +6025,17 @@ function autoSaveKnockoutPicks() {
   knockoutSaveTimeout = setTimeout(() => saveKnockoutPicksToDb(false), 1000);
 }
 
+// v2.10.9: returns a STRUCTURED result { ok, reason? } so finishKnockoutBetting
+// can block the "completed" screen when the save didn't land.
 async function saveKnockoutPicksToDb(showFeedback = true) {
-  if (!state.currentUser || !state.currentPool || !supabaseClient) return;
+  if (!state.currentUser || !state.currentPool || !supabaseClient) return { ok: false, reason: 'no-context' };
 
   // SAFETY GUARD (parity with the single-phase saves): an empty in-memory state
   // would make both the RPC and the legacy path delete-then-insert-nothing and
   // WIPE every saved knockout pick. Skip when there's nothing to save.
   if (Object.keys(knockoutState.picks).length === 0) {
     console.warn('saveKnockoutPicksToDb: in-memory picks empty - skipping DB write to avoid wiping real picks');
-    return;
+    return { ok: true, skipped: 'empty' };
   }
 
   // v2.10.7: server-side RPC is the ONLY working write path (anon write on
@@ -6005,7 +6049,7 @@ async function saveKnockoutPicksToDb(showFeedback = true) {
   if (!code) {
     console.error('saveKnockoutPicksToDb: no recovery code in session — cannot save knockout picks');
     showToast(t('bracketSave.noCode'), 'error');
-    return;
+    return { ok: false, reason: 'no-code' };
   }
 
   const picks = Object.keys(knockoutState.picks).map(matchId => ({
@@ -6016,17 +6060,18 @@ async function saveKnockoutPicksToDb(showFeedback = true) {
   const res = await _rpcWrite('save_knockout_picks_2p', { p_code: code, p_picks: picks });
   if (res.ok) {
     if (showFeedback) showToast(t('knockoutEx.savedOk'), 'success');
-    return;
+    return { ok: true };
   }
   if (!res.missing) {
     console.error('Knockout save RPC error:', res.error);
     showToast(t('groups.saveError'), 'error');
-    return;
+    return { ok: false, reason: 'rpc-error', error: res.error };
   }
   // Still PGRST202 after all retries: don't attempt the dead anon direct write
   // (it would only 401). Be honest so the user retries instead of losing picks.
   console.error('saveKnockoutPicksToDb: save_knockout_picks_2p unreachable after retries');
   showToast(t('bracketSave.retryLater'), 'error');
+  return { ok: false, reason: 'unreachable' };
 }
 
 function exitKnockoutBetting() {
@@ -6044,7 +6089,10 @@ function exitKnockoutBetting() {
 }
 
 async function finishKnockoutBetting() {
-  await saveKnockoutPicksToDb(false);
+  // v2.10.9: only show "completed" + leave if the save actually landed
+  // (saveKnockoutPicksToDb toasts an honest error on failure).
+  const res = await saveKnockoutPicksToDb(false);
+  if (!res || !res.ok) return;
   showToast(t('knockoutEx.completed'), 'success');
   setTimeout(() => goToDashboard(), 1000);
 }
@@ -11346,10 +11394,21 @@ function _tpCacheKey() {
   return (u && p) ? ('fb_2p_picks_' + u + '_' + p) : null;
 }
 function _tpSnapshot() {
+  // v2.10.9: NEVER regress a slice to empty. When saving from the knockout flow
+  // `bettingState.picks` (groups) may be empty (not loaded), and from the group
+  // flow `knockoutState.picks` may be empty. Carrying the empty slice into the
+  // snapshot would let a sparse backup become the "latest" and crowd out the good
+  // one (the 12-row cap). So each slice falls back to the last cached value when
+  // the live one has no content — every snapshot holds the UNION of known picks.
+  const liveGroups = (typeof bettingState !== 'undefined' && bettingState.picks) || {};
+  const liveBracket = (typeof knockoutState !== 'undefined' && knockoutState.picks) || {};
+  const prev = _tpCacheLoad() || {};
+  const groupsHaveContent = Object.values(liveGroups).some(a => Array.isArray(a) && a.length > 0);
+  const bracketHasContent = liveBracket && Object.keys(liveBracket).length > 0;
   return {
     mode: 'two_phase',
-    groupPositions: (typeof bettingState !== 'undefined' && bettingState.picks) || {},
-    bracketPicks: (typeof knockoutState !== 'undefined' && knockoutState.picks) || {},
+    groupPositions: groupsHaveContent ? liveGroups : (prev.groupPositions || liveGroups),
+    bracketPicks: bracketHasContent ? liveBracket : (prev.bracketPicks || liveBracket),
     ts: Date.now()
   };
 }
