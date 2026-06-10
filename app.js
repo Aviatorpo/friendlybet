@@ -10994,13 +10994,29 @@ const SP_THIRD_PLACE_SLOTS = [2, 5, 7, 8, 9, 10, 13, 15].map(pos => ({
   allowed: SP_R32_DEF[pos].find(f => f.type === 'third').allowed
 }));
 
+// Official Annex C allocation overrides for combinations where FIFA's fixed
+// table differs from a generic "any valid matching" result. Keys are the eight
+// advancing third-place groups sorted alphabetically. Slot order here is app
+// bracket position, not FIFA's printed column order.
+const SP_OFFICIAL_THIRD_PLACE_OVERRIDES = {
+  // FIFA Regulations Annex C option 486:
+  // A B C D E F I J -> 1A:3C, 1B:3J, 1D:3B, 1E:3D, 1G:3A, 1I:3F, 1K:3E, 1L:3I
+  ABCDEFIJ: { 2:'D', 5:'F', 7:'C', 8:'I', 9:'B', 10:'A', 13:'J', 15:'E' }
+};
+
+function _spThirdPlaceKey(chosenGroups) {
+  return [...new Set(chosenGroups || [])].filter(Boolean).sort().join('');
+}
+
 // v2.5.79: user picks WHICH 8 of the 12 group 3rd-place teams advance
 // (spState.thirdPlaceAdvancers = array of group letters). Given those 8
-// groups, assign each to exactly one R32 slot respecting the slot's allowed
-// set (a bipartite perfect matching). Backtracking; slots ordered by fewest
-// options first. Returns { [pos]: letter } or null if no perfect matching
-// exists for that combination.
+// groups, assign each to exactly one R32 slot. FIFA Annex C uses a fixed row
+// per exact combination; when no official override is present yet, keep the
+// existing constrained matching as a deterministic fallback.
 function _spMatchThirdPlace(chosenGroups) {
+  const official = SP_OFFICIAL_THIRD_PLACE_OVERRIDES[_spThirdPlaceKey(chosenGroups)];
+  if (official) return { ...official };
+
   const chosen = new Set(chosenGroups);
   const slots = SP_THIRD_PLACE_SLOTS
     .map(s => ({ pos: s.pos, opts: s.allowed.filter(g => chosen.has(g)) }))
