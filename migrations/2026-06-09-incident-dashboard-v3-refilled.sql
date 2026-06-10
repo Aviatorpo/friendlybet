@@ -18,7 +18,7 @@ declare v_now record; v_pools jsonb; v_trend jsonb; v_ref1 int; v_real int;
   -- user activity, NOT the restore (the restore writes knockout_picks but creates NO pick_backups).
   c_restore_end constant timestamptz := timestamptz '2026-06-09 03:45:00+00';
 begin
-  if p_secret is null or p_secret <> 'e7f0cae4b489a60a6372a1303bd70c2d3451d4188523199f' then
+  if p_secret is null or p_secret <> 'REDACTED_OWNER_DASHBOARD_SECRET' then
     raise exception 'unauthorized'; end if;
   select * into v_now from public._incident_now();
 

@@ -79,7 +79,7 @@ returns jsonb language plpgsql security definer set search_path to '' set statem
 as $$
 declare v_now record; v_pools jsonb; v_trend jsonb;
 begin
-  if p_secret is null or p_secret <> 'e7f0cae4b489a60a6372a1303bd70c2d3451d4188523199f' then
+  if p_secret is null or p_secret <> 'REDACTED_OWNER_DASHBOARD_SECRET' then
     raise exception 'unauthorized'; end if;
   select * into v_now from public._incident_now();
 

@@ -1,6 +1,10 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/owner-annex-dashboard", "destination": "/", "permanent": false },
+    { "source": "/owner-annex-dashboard.html", "destination": "/", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/blog", "destination": "/guides/" },
     { "source": "/blog/he/:slug", "destination": "/guides/he/:slug" },

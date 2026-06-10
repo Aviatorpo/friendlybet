@@ -98,7 +98,7 @@ declare
   v_trend jsonb;
 begin
   -- Existing owner dashboard secret. Do not expose it in frontend code.
-  if p_secret is null or p_secret <> 'e7f0cae4b489a60a6372a1303bd70c2d3451d4188523199f' then
+  if p_secret is null or p_secret <> 'REDACTED_OWNER_DASHBOARD_SECRET' then
     raise exception 'unauthorized';
   end if;
 
