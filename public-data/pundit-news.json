@@ -1,18 +1,19 @@
 {
-  "updatedAt": "2026-06-10T11:00:00.000Z",
+  "updatedAt": "2026-06-10T14:00:00.000Z",
   "items": [
     {
-      "id": "mex-cdmx-closures-wc2026-2026-06-09",
+      "id": "arg-messi-3-0-iceland-wc26-2026-06-09",
       "confidence": "confirmed",
-      "team": "MEX",
-      "en": "Mexican President Claudia Sheinbaum ordered all schools in Mexico City to close and federal government employees to work from home on June 11, the day Mexico face South Africa at the Azteca in the World Cup opener. The decree covers every educational institution from preschool to university level, both public and private. Authorities say the closures are intended to ease traffic and public transport pressure as 60,000 fans converge on the stadium. Mexico City has rarely had an excuse this good to halt the week mid-stride. What the players deliver at the Azteca is the one thing no president can decree in advance.",
-      "he": "הנשיאה המקסיקנית קלאודיה שיינבאום הורתה על סגירת כל בתי הספר במקסיקו סיטי ועבודה מרחוק לעובדי הממשלה הפדרלית ב-11 ביוני, יום שבו מקסיקו נפגשת עם דרום אפריקה באצטקה בפתיחת המונדיאל. הצו חל על כל מוסד חינוכי מגן ילדים ועד לאוניברסיטה, ציבורי ופרטי. הרשויות אמרו שהסגירות נועדו להקל על עומס התנועה כאשר 60,000 אוהדים מתכנסים לאצטדיון. לעיר מקסיקו סיטי לעתים נדירות יש תירוץ טוב כל-כך לעצור את השבוע באמצע. מה שהשחקנים מביאים באצטקה הוא הדבר היחיד שאף נשיאה לא יכולה להורות עליו מראש.",
+      "team": "ARG",
+      "en": "Messi answered every question about his fitness in the best way possible. The Argentina captain came on as a substitute in the final warm-up against Iceland on June 9 and scored from the penalty spot within minutes of entering the pitch, then set up Rodrigo De Paul for the move that led to Thiago Almada's third. Valentin Barco had already put Argentina ahead in the eighth minute with a long-range strike. Argentina win 3-0 and head to the World Cup, where they open their Group D title defence against Algeria in Kansas City on June 16, with their captain fit, sharp, and scoring. The only question left is whether the trophy follows.",
+      "he": "מסי ענה על כל שאלה לגבי כשירותו בצורה שאין עליה עוררין. קפטן ארגנטינה נכנס כמחליף בידידות האחרונה מול איסלנד ב-9 ביוני, הבקיע מנקודת האחד-עשר דקות ספורות לאחר כניסתו, ואז שלח אסיסט לדה-פאול שהוביל לשלישי של אלמאדה. ולנטין בארקו פתח בשמינייה עם שוט ארוך מחוץ לקופסה. ארגנטינה ניצחה 3:0 ופותחת את ההגנה על התואר בקבוצה D מול אלג'יריה בקנזס סיטי ב-16 ביוני, עם קפטן כשיר, חד ומבקיע. השאלה היחידה שנותרת היא האם הגביע יבוא בעקבות.",
       "sources": [
-        { "name": "US News (AP)", "url": "https://www.usnews.com/news/top-news/articles/2026-06-09/mexico-city-suspends-classes-shifts-to-remote-work-for-world-cup-kickoff" },
-        { "name": "WION News", "url": "https://www.wionews.com/sports/mexican-president-claudia-sheinbaum-announces-remote-work-and-school-closures-for-fifa-world-cup-2026-opener-1781017468829" },
-        { "name": "Open The Magazine", "url": "https://openthemagazine.com/sports/mexico-president-orders-remote-work-school-closures-for-fifa-world-cup-opener" }
+        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/world-cup/argentina-vs-iceland-live-updates-minute-by-minute-coverage-of-2026-international-friendly/" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/match/_/gameId/401867950/iceland-argentina" },
+        { "name": "Bolavip US", "url": "https://bolavip.com/en/soccer/iceland-vs-argentina-live-lionel-messis-last-friendly-before-2026-world-cup" },
+        { "name": "VAVEL USA", "url": "https://www.vavel.com/en-us/soccer/2026/06/10/1263020-argentina-vs-iceland-live-score-friendly.html" }
       ],
-      "expires_at": "2026-06-12T00:00:00Z"
+      "expires_at": "2026-06-20T23:59:59Z"
     },
     {
       "id": "irn-tickets-revoked-wc2026-2026-06-09",
@@ -28,16 +29,17 @@
       "expires_at": "2026-06-26T23:59:59Z"
     },
     {
-      "id": "wc26-saot-upgrade-2026-06-07",
+      "id": "mex-cdmx-closures-wc2026-2026-06-09",
       "confidence": "confirmed",
-      "en": "FIFA has upgraded its Semi-Automated Offside Technology for 2026, and the difference will be immediate on the pitch. Clear offsides now trigger an audio alert piped directly into the on-field referee's earpiece in real time, cutting out the old wait for VAR to relay the verdict. The detection threshold has been tightened from 50 centimetres to 10 centimetres, so far more borderline calls will be flagged automatically. All 1,248 players across the 48 squads have been 3D-scanned to create AI avatars that power the positional tracking, and referee body cameras with stabilisation software will be deployed at all 104 matches for the first time. Faster calls, clearer reasoning. Whether the game finally runs out of offside debates is the one question technology cannot guarantee.",
-      "he": "פיפ\"א שדרגה את טכנולוגיית המחוץ-לשטח האוטומטית למחצה לקראת 2026, וההבדל יהיה מיידי במגרש. זמינות ברורה תפעיל כעת התראה קולית ישירות לאוזנייה של שופט המגרש בזמן אמת, ללא המתנה לצוות ה-VAR. סף הזיהוי הוקטן מ-50 סנטימטרים ל-10 סנטימטרים, כלומר ייתפסו אוטומטית הרבה יותר קריאות גבוליות. כל 1,248 השחקנים ב-48 הסגלים נסרקו ליצירת אווטרי בינה מלאכותית לצורך מעקב מיקומי, ומצלמות גוף לשופטים עם תוכנת ייצוב יוצבו ב-104 המשחקים לראשונה. החלטות מהירות יותר, הסברות ברורות יותר. האם הכדורגל יגמור לו ויכוחי מחוץ, זו השאלה שאף טכנולוגיה אינה יכולה להבטיח.",
+      "team": "MEX",
+      "en": "Mexican President Claudia Sheinbaum ordered all schools in Mexico City to close and federal government employees to work from home on June 11, the day Mexico face South Africa at the Azteca in the World Cup opener. The decree covers every educational institution from preschool to university level, both public and private. Authorities say the closures are intended to ease traffic and public transport pressure as 60,000 fans converge on the stadium. Mexico City has rarely had an excuse this good to halt the week mid-stride. What the players deliver at the Azteca is the one thing no president can decree in advance.",
+      "he": "הנשיאה המקסיקנית קלאודיה שיינבאום הורתה על סגירת כל בתי הספר במקסיקו סיטי ועבודה מרחוק לעובדי הממשלה הפדרלית ב-11 ביוני, יום שבו מקסיקו נפגשת עם דרום אפריקה באצטקה בפתיחת המונדיאל. הצו חל על כל מוסד חינוכי מגן ילדים ועד לאוניברסיטה, ציבורי ופרטי. הרשויות אמרו שהסגירות נועדו להקל על עומס התנועה כאשר 60,000 אוהדים מתכנסים לאצטדיון. לעיר מקסיקו סיטי לעתים נדירות יש תירוץ טוב כל-כך לעצור את השבוע באמצע. מה שהשחקנים מביאים באצטקה הוא הדבר היחיד שאף נשיאה לא יכולה להורות עליו מראש.",
       "sources": [
-        { "name": "FIFA (official)", "url": "https://inside.fifa.com/news/offside-decisions-referee-body-cams-innovation-world-cup-2026" },
-        { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml" },
-        { "name": "Tech Times", "url": "https://www.techtimes.com/articles/317958/20260607/world-cup-2026s-ai-offside-system-now-pipes-calls-straight-referees-ear.htm" }
+        { "name": "US News (AP)", "url": "https://www.usnews.com/news/top-news/articles/2026-06-09/mexico-city-suspends-classes-shifts-to-remote-work-for-world-cup-kickoff" },
+        { "name": "WION News", "url": "https://www.wionews.com/sports/mexican-president-claudia-sheinbaum-announces-remote-work-and-school-closures-for-fifa-world-cup-2026-opener-1781017468829" },
+        { "name": "Open The Magazine", "url": "https://openthemagazine.com/sports/mexico-president-orders-remote-work-school-closures-for-fifa-world-cup-opener" }
       ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "expires_at": "2026-06-12T00:00:00Z"
     },
     {
       "id": "wc26-opening-ceremony-shakira-2026-06-08",
@@ -63,31 +65,6 @@
         { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/mexico-legend-guillermo-ochoa-set-historic-sixth-world-cup-retirement-draft" }
       ],
       "expires_at": "2026-06-12T23:59:59Z"
-    },
-    {
-      "id": "sofi-workers-deal-2026-06-09",
-      "confidence": "confirmed",
-      "team": "USA",
-      "en": "Unite Here Local 11 and stadium operator Legends Global reached a tentative labor agreement on June 9 that averts a threatened strike by roughly 2,000 food-and-beverage workers at SoFi Stadium, clearing the way for the USA's home World Cup opener against Paraguay on June 12 to have fully staffed concessions. Workers had voted 96 percent in favor of authorizing a strike on June 6 over pay, job security, and demands to bar ICE agents from the venue. The tentative deal was announced at a news conference outside the stadium in Inglewood on Tuesday; terms were not immediately disclosed and workers were expected to ratify the agreement on Wednesday. The concession stands will be open on Friday. The bigger question now is what happens on the pitch.",
-      "he": "ארגון Unite Here Local 11 ומפעיל האצטדיון Legends Global הגיעו להסכם עבודה זמני ב-9 ביוני שמונע שביתה מאוימת של כ-2,000 עובדי מזון ומשקאות ב-SoFi Stadium, ומפנה את הדרך לפתיחת הביתית של ארה\"ב מול פרגוואי ב-12 ביוני עם כל דוכני המזון פתוחים. העובדים הצביעו ב-96% לאישור שביתה ב-6 ביוני בשל שכר, ביטחון תעסוקתי ודרישות לאסור כניסת סוכני ICE לאצטדיון. ההסכם הזמני הוכרז בכנס עיתונאים מחוץ לאצטדיון באינגלווד ביום שלישי; הפרטים לא נחשפו מיד, כאשר העובדים צפויים לאשר את ההסכם ביום רביעי. דוכני המזון יהיו פתוחים ביום שישי. השאלה הגדולה יותר כעת היא מה יקרה על הדשא.",
-      "sources": [
-        { "name": "NBC Los Angeles", "url": "https://www.nbclosangeles.com/world-cup/sofi-stadium-workers-strike-world-cup/3901439/" },
-        { "name": "NPR", "url": "https://www.npr.org/2026/06/06/nx-s1-5848682/sofi-stadium-strike-world-cup" },
-        { "name": "ESPN", "url": "https://www.espn.com/espn/story/_/id/48980083/sofi-stadium-workers-authorize-strike-ahead-usa-world-cup-opener" }
-      ],
-      "expires_at": "2026-06-20T00:00:00Z"
-    },
-    {
-      "id": "arg-messi-returns-iceland-2026-06-09",
-      "confidence": "reported",
-      "team": "ARG",
-      "en": "Reports say Argentina coach Lionel Scaloni confirmed on June 9 that Lionel Messi will return to action in the final pre-World Cup friendly against Iceland at Jordan-Hare Stadium in Auburn, Alabama, ending more than two weeks on the sidelines since his hamstring injury during an Inter Miami MLS match on May 24. Scaloni said 'Messi will play, I just don't know how many minutes,' making the 38-year-old's appearance a deliberate fitness test ahead of Argentina's Group D opener against Algeria in Kansas City on June 16. Messi sat out the 2-0 warm-up win over Honduras on June 6 despite joining the pre-match warm-up. Argentina are the defending champions. With one competitive outing between their captain and the most important tournament of his life, the only question left is: how many minutes does it take to know a legend is ready?",
-      "he": "לפי הדיווחים, מאמן ארגנטינה ליונל סקלוני אישר ב-9 ביוני שליונל מסי יחזור למגרש בידידות האחרונה לפני המונדיאל מול איסלנד ב-Jordan-Hare Stadium באובורן, אלבמה, ויסיים יותר משבועיים הרחק מהמגרש מאז שנפצע בשריר הירך בהפסקת ה-MLS של אינטר מיאמי ב-24 במאי. סקלוני אמר 'מסי ישחק, אני רק לא יודע כמה דקות', כך שהנוכחות של הכוכב בן ה-38 היא מבחן כשירות מבוקר לפני פתיחת ארגנטינה בקבוצה D מול אלג'יריה בקנזס סיטי ב-16 ביוני. מסי החסיר את הניצחון 2:0 על הונדורס ב-6 ביוני אחרי שהשתתף בחימום לפני המשחק. ארגנטינה היא אלופת העולם המגנה. עם משחק תחרותי אחד בין הקפטן לטורניר החשוב ביותר בחייו, השאלה היחידה שנותרת: כמה דקות לוקח לדעת שאגדה מוכנה?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/49004047/argentina-avoid-risks-messi-play-friendly" },
-        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/news/lionel-messi-to-return-for-argentinas-final-pre-world-cup-friendly-against-iceland-confirms-lionel-scaloni/" }
-      ],
-      "expires_at": "2026-06-16T23:59:59Z"
     },
     {
       "id": "bra-neymar-grade2-confirmed-2026-06-08",
@@ -117,19 +94,6 @@
       "expires_at": "2026-06-25T23:59:59Z"
     },
     {
-      "id": "irn-visa-row-wc26-2026-06-07",
-      "confidence": "confirmed",
-      "team": "IRN",
-      "en": "Iran's 2026 World Cup campaign started with a geopolitical standoff before the first whistle. All 30 players and coaching staff received US visas, but 14 administrative officials, including the federation secretary-general and vice president, were denied entry on national-security grounds. Secretary of State Rubio cited suspected links to Iran's Revolutionary Guard. Iran's players face a strict day-trip condition: enter and leave the United States on the same day as each match, with no overnight stays permitted. The team is based in Mexico and flies in for games in Los Angeles and Seattle. The Iran Football Federation called the conditions discriminatory and vindictive and is filing a formal grievance with FIFA. Iran open against New Zealand at SoFi Stadium in Los Angeles on June 15. Can they block out the politics and just play football?",
-      "he": "מסע המונדיאל 2026 של איראן נפתח בעימות גיאופוליטי לפני שנשמעה שריקת הפתיחה. כל 30 השחקנים וצוות האימון קיבלו ויזות אמריקניות, אך 14 מנהלים, כולל מזכ\"ל ההתאחדות וסגן הנשיא, נדחו על רקע ביטחון לאומי. שר החוץ רוביו ציין חשד לקשרים למשמרות המהפכה האיסלאמית. שחקני איראן נתונים לתנאי נסיעה יומית מחמיר: להיכנס ולצאת מארה\"ב באותו יום של כל משחק, ללא לינות. הנבחרת מתבססת במקסיקו ותטוס למשחקים בלוס אנג'לס ובסיאטל. התאחדות הכדורגל האיראנית כינתה את התנאים מפלים ונקמניים ומגישה תלונה רשמית לפיפ\"א. איראן פותחת מול ניו זילנד ב-SoFi Stadium בלוס אנג'לס ב-15 ביוני. האם יצליחו להסיט את הפוליטיקה ולשחק כדורגל?",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48984862/iran-usa-world-cup-visas-officials-2026" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/7/irans-world-cup-squad-lands-in-mexico-amid-us-visa-row" },
-        { "name": "Washington Times", "url": "https://www.washingtontimes.com/news/2026/jun/7/iran-accuses-us-discriminatory-treatment-world-cup-visa-denials/" }
-      ],
-      "expires_at": "2026-06-26T23:59:59Z"
-    },
-    {
       "id": "artan-somalia-referee-denied-usa-wc2026-2026-06-08",
       "confidence": "confirmed",
       "en": "Somalia's Omar Artan, the first Somali referee ever appointed to a World Cup, was denied entry to the United States on June 7 and put on a flight back to Istanbul, just three days before the tournament starts. U.S. Customs and Border Protection confirmed Artan arrived at Miami International Airport from Istanbul and was determined to be inadmissible due to vetting concerns after additional inspection. Somalia is among the countries on President Trump's travel restriction list. To try to overcome the visa difficulties, Artan had acquired a diplomatic passport with support from the Somali embassy in Nairobi, but it made no difference. He was named CAF Best African Referee of 2025 and was set to join 52 officials presiding over 104 matches. FIFA has not publicly confirmed a replacement. The visa and immigration row around this tournament began with Iran's delegation and has now claimed its first referee.",
@@ -142,81 +106,16 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "wc26-security-incidents-nyc-kc-2026-06-08",
-      "confidence": "reported",
-      "en": "Reports say two violent incidents in World Cup host cities on June 7-8 raised fresh security questions just days before the tournament opened. Six people were stabbed at New York's Penn Station on Sunday by a homeless attacker, with all victims expected to survive; New York authorities cancelled a planned outdoor watch party and made 26 arrests after some fans turned rowdy. In Kansas City on Saturday, nine people sustained non-life-threatening injuries in a shooting on 79th Street and Troost Avenue; global media described the address as near England's World Cup base camp, though the Kansas City mayor pushed back against that framing. The FBI activates joint operations centres in each host city on match days, deploying AI-powered cameras, robot bag scanners, and drone-intercept systems for a tournament expected to draw up to seven million visitors. Two incidents, two host cities, two days before kick-off.",
-      "he": "לפי הדיווחים, שני אירועי אלימות בערי המארח ב-7-8 ביוני העלו שאלות ביטחוניות חדשות ממש לפני פתיחת הטורניר. שישה אנשים נדקרו בתחנת Penn Station בניו יורק ביום ראשון על ידי תוקף חסר בית, וכל הנפגעים צפויים להחלים; רשויות ניו יורק ביטלו מסיבת צפייה חיצונית ועצרו 26 אנשים לאחר שאוהדים הפכו אלימים. בקנזס סיטי ביום שבת נפצעו תשעה אנשים ללא סיכון לחיים בירי ב-79th Street ו-Troost Avenue; כלי תקשורת בינלאומיים תיארו את המיקום כסמוך לבסיס הנבחרת האנגלית, אם כי ראש עיריית קנזס סיטי דחה את הניסוח הזה. ה-FBI מפעיל מרכזי מבצעים משותפים בכל עיר מארחת בימות המשחקים, עם מצלמות בינה מלאכותית, רובוטי בדיקת תיקים וטכנולוגיית יירוט כלי טיס לטורניר שצפוי למשוך עד שבעה מיליון מבקרים. שני אירועים, שתי ערי מארח, יומיים לפני הפיצוח.",
-      "sources": [
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/8/new-york-stabbing-kansas-city-shooting-raise-world-cup-security-concerns" },
-        { "name": "The News Pakistan (AFP)", "url": "https://www.thenews.com.pk/latest/1405200-shooting-and-stabbing-incidents-ahead-of-fifa-world-cup-2026-spark-security-concerns" },
-        { "name": "KCTV5", "url": "https://www.kctv5.com/2026/06/08/kansas-city-mayor-pushes-back-after-global-media-links-shooting-englands-world-cup-camp/" }
-      ],
-      "expires_at": "2026-06-25T00:00:00Z"
-    },
-    {
-      "id": "fra-ivory-coast-loss-2026-06-04",
+      "id": "wc26-saot-upgrade-2026-06-07",
       "confidence": "confirmed",
-      "team": "FRA",
-      "en": "France suffered a shock 2-1 defeat to Ivory Coast in Nantes on June 4, their final home match before flying to the United States. Rayan Cherki put France ahead before halftime, but sweeping second-half changes let Ivory Coast back in, and Guela Doue then substitute Amad Diallo completed the comeback. Deschamps called the result 'a timely reminder' rather than a crisis, and France head to New Jersey insisting the loss will sharpen their focus. Sportsbooks moved Spain narrowly ahead of France as tournament favorites in the days that followed. France open against Senegal at MetLife Stadium on June 16. One warning sign or one useful alarm: the group stage will reveal which.",
-      "he": "צרפת ספגה הפסד מפתיע 2:1 מחוף השנהב בנאנט ב-4 ביוני, משחקה הביתי האחרון לפני הטיסה לארצות הברית. רייאן שרקי העלה את צרפת לאחר חצי שעה, אך שינויים נרחבים שביצע דשאן בהפסקה פתחו את הדלת, וגואלה דואה ואחד דיאלו כמחליף סיימו את ההיפוך. דשאן כינה את התוצאה 'תזכורת בזמן' ולא משבר, וצרפת יוצאת לניו ג'רזי עם הטענה שההפסד יחדד את המיקוד שלה. סוכני ההימורים העמידו את ספרד מעט לפני צרפת כמועדפות הטורניר בימים שאחרי התוצאה. צרפת פותחת מול סנגל ב-MetLife Stadium ב-16 ביוני. אות אזהרה אחד או אזעקה שימושית: שלב הבתים יגלה את האמת.",
+      "en": "FIFA has upgraded its Semi-Automated Offside Technology for 2026, and the difference will be immediate on the pitch. Clear offsides now trigger an audio alert piped directly into the on-field referee's earpiece in real time, cutting out the old wait for VAR to relay the verdict. The detection threshold has been tightened from 50 centimetres to 10 centimetres, so far more borderline calls will be flagged automatically. All 1,248 players across the 48 squads have been 3D-scanned to create AI avatars that power the positional tracking, and referee body cameras with stabilisation software will be deployed at all 104 matches for the first time. Faster calls, clearer reasoning. Whether the game finally runs out of offside debates is the one question technology cannot guarantee.",
+      "he": "פיפ\"א שדרגה את טכנולוגיית המחוץ-לשטח האוטומטית למחצה לקראת 2026, וההבדל יהיה מיידי במגרש. זמינות ברורה תפעיל כעת התראה קולית ישירות לאוזנייה של שופט המגרש בזמן אמת, ללא המתנה לצוות ה-VAR. סף הזיהוי הוקטן מ-50 סנטימטרים ל-10 סנטימטרים, כלומר ייתפסו אוטומטית הרבה יותר קריאות גבוליות. כל 1,248 השחקנים ב-48 הסגלים נסרקו ליצירת אווטרי בינה מלאכותית לצורך מעקב מיקומי, ומצלמות גוף לשופטים עם תוכנת ייצוב יוצבו ב-104 המשחקים לראשונה. החלטות מהירות יותר, הסברות ברורות יותר. האם הכדורגל יגמור לו ויכוחי מחוץ, זו השאלה שאף טכנולוגיה אינה יכולה להבטיח.",
       "sources": [
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/4/ivory-coast-beat-france-in-world-cup-warning-to-one-of-the-favourites" },
-        { "name": "France 24", "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/match/_/gameId/401864934/ivory-coast-france" }
+        { "name": "FIFA (official)", "url": "https://inside.fifa.com/news/offside-decisions-referee-body-cams-innovation-world-cup-2026" },
+        { "name": "TNT Sports", "url": "https://www.tntsports.co.uk/football/world-cup/2026/updated-semi-automated-offside-technology_sto23305967/story.shtml" },
+        { "name": "Tech Times", "url": "https://www.techtimes.com/articles/317958/20260607/world-cup-2026s-ai-offside-system-now-pipes-calls-straight-referees-ear.htm" }
       ],
-      "expires_at": "2026-07-04T00:00:00Z"
-    },
-    {
-      "id": "fra-deschamps-farewell-dembele-2026-06-08",
-      "confidence": "confirmed",
-      "team": "FRA",
-      "en": "France winger Ousmane Dembele, the reigning 2025 Ballon d'Or winner, said France are determined to win the World Cup trophy as the perfect farewell for coach Didier Deschamps, who confirmed earlier this year that he will step down after the tournament, closing 14 years as France's manager. Deschamps won the 2018 World Cup and the 2021 UEFA Nations League with France. Dembele told reporters the squad is united around giving the coach a title send-off, with Zinedine Zidane the heavy favourite to succeed him. France open Group I against Senegal at MetLife Stadium on June 16, then face Iraq and Norway. Fourteen years at the helm, one last shot at a second star.",
-      "he": "כנף צרפת אוסמן דמבלה, זוכה הבלון דאור 2025, אמר שצרפת נחושה לזכות בגביע המונדיאל כפרידה מושלמת מהמאמן דידיה דשאן, שאישר מוקדם יותר השנה שיפרוש לאחר סיום הטורניר ויסגור 14 שנות כהונה. דשאן זכה בגביע העולם 2018 ובדוף האומות 2021 עם צרפת. דמבלה אמר לעיתונאים שהסגל מאוחד סביב מתן אות הצטיינות כפרידה למאמן, כשזינדין זידאן הוא המועמד המוביל לרשת אותו. צרפת פותחת קבוצה I מול סנגל ב-MetLife Stadium ב-16 ביוני, ואחר כך נפגשת עם עיראק ונורבגיה. ארבע עשרה שנות הגה, ירייה אחרונה לכוכב שני.",
-      "sources": [
-        { "name": "FIFA (official)", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/didier-deschamps-france-coach" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2025/1/8/france-coach-didier-deschamps-says-hell-leave-after-fifa-world-cup-2026" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48988194/dembele-france-end-deschamps-reign-trophy" }
-      ],
-      "expires_at": "2026-07-19T23:59:59Z"
-    },
-    {
-      "id": "can-toronto-opening-ceremony-2026-06-12",
-      "confidence": "confirmed",
-      "team": "CAN",
-      "en": "FIFA confirmed Canada's World Cup opening ceremony takes place at Toronto Stadium on June 12, ninety minutes before Canada face Bosnia and Herzegovina in the host nation's tournament opener. The ceremony is built around the theme 'Mosaic', a celebration of Canada's multicultural identity, with confirmed performers including Michael Buble, Alanis Morissette, Alessia Cara, Jessie Reyez, Nora Fatehi, Palestinian artist Elyanna, French artist Vegedream, DJ Sanjoy, and William Prince. Canada have never won a World Cup match in their two previous tournaments, losing all six games in 1986 and at Qatar 2022. A sold-out home stadium and two Canadian music icons on the stage set the scene. The show is guaranteed. The result is not.",
-      "he": "פיפ\"א אישרה שטקס הפתיחה הקנדי של מונדיאל 2026 יתקיים ב-Toronto Stadium ב-12 ביוני, תשעים דקות לפני שקנדה נפגשת עם בוסניה-הרצגובינה בפתיחת הנבחרת המארחת. הטקס בנוי סביב הנושא 'פסיפס', חגיגת הזהות הרב-תרבותית של קנדה, עם אמנים מאושרים כולל מייקל בובלה, אלאניס מוריסט, אלסיה קרה, ג'סי רייס, נורה פאטה, האמנית הפלסטינית אליאנה, האמן הצרפתי ווג'דרים, ה-DJ סנג'וי וויליאם פרינס. קנדה מעולם לא ניצחה במשחק מונדיאל בשתי הופעותיה הקודמות, כשהפסידה את כל שישה משחקיה ב-1986 ובקטאר 2022. אצטדיון ביתי מלא ושני אייקוני מוזיקה קנדיים על הבמה מכינים את הקרקע. ההופעה מובטחת. התוצאה לא.",
-      "sources": [
-        { "name": "FIFA (official)", "url": "https://inside.fifa.com/organisation/media-releases/canada-welcome-opening-ceremony-world-cup-2026-tm" },
-        { "name": "CP24", "url": "https://www.cp24.com/local/toronto/2026/05/09/here-are-the-performers-at-fifa-world-cup-opening-ceremony-in-toronto/" },
-        { "name": "Time", "url": "https://time.com/article/2026/05/29/world-cup-2026-opening-ceremonies-performers-usa-mexico-canada-fifa/" }
-      ],
-      "expires_at": "2026-06-13T23:59:59Z"
-    },
-    {
-      "id": "nzl-tim-payne-viral-wc2026-2026-06-03",
-      "confidence": "confirmed",
-      "team": "NZL",
-      "en": "The first viral sensation of the 2026 World Cup was not a goal, a foul, or a referee call. It was a New Zealand right-back with fewer than 5,000 Instagram followers. Argentine influencer Valentin Scarsini, known online as El Scarso, posted a video on June 3 calling Wellington Phoenix defender Tim Payne the least-known player at the tournament and asking his millions of followers to give Payne some love. Within days Payne had more than 4.8 million followers, surpassing the All Blacks rugby team. His thank-you video drew over 3.2 million likes. New Zealand open their campaign against Iran at SoFi Stadium in Los Angeles on June 15. The world has already decided who its underdog favourite is.",
-      "he": "תחושת הוויראליות הראשונה של מונדיאל 2026 לא הייתה שער, עבירה או שריקת שופט. זה היה מגן גב ימין מניו זילנד עם פחות מ-5,000 עוקבים באינסטגרם. היוצר הארגנטינאי ולנטין סקארסיני, המכונה El Scarso, העלה סרטון ב-3 ביוני שכינה את מגן וולינגטון פניקס, טים פיין, השחקן הפחות מוכר בטורניר, וביקש מהמיליונים שעוקבים אחריו לתת לפיין קצת אהבה. תוך ימים ספורים צבר פיין יותר מ-4.8 מיליון עוקבים, יותר מקבוצת הרוגבי האגדית All Blacks. סרטון ההודיה שהעלה משך יותר מ-3.2 מיליון לייקים. ניו זילנד פותחת את מסעה מול איראן ב-SoFi Stadium בלוס אנג'לס ב-15 ביוני. העולם כבר בחר את המועדף שלו.",
-      "sources": [
-        { "name": "NBC News", "url": "https://www.nbcnews.com/sports/soccer/tim-payne-new-zealand-world-cup-influencer-rcna347297" },
-        { "name": "Colombia One", "url": "https://colombiaone.com/2026/06/03/tim-payne-instagram-followers-world-cup/" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48901215/how-2026-world-cup-least-known-player-became-viral-sensation" }
-      ],
-      "expires_at": "2026-06-15T23:59:59Z"
-    },
-    {
-      "id": "mex-quinto-partido-curse-2026-06-07",
-      "confidence": "confirmed",
-      "team": "MEX",
-      "en": "Mexico have never advanced beyond the round of 16 in seven consecutive World Cup appearances from 1994 to 2018, a run so painful that the match they could never win was given its own name in Mexican football: el quinto partido, the fifth match. At Qatar 2022 the curse deepened when El Tri were eliminated in the group stage for the first time since 1978. Now, on home soil with the Azteca crowd behind them, coach Javier Aguirre's side open their campaign against South Africa on June 11. Mexico's only quarterfinal appearances came when they hosted in 1970 and 1986. With the expanded 48-team format adding a new round of 32, El Tri must now win two knockout games just to reach the stage where their predecessors kept falling. Can the home tournament finally be the one that breaks the curse for good?",
-      "he": "מקסיקו לא עברה מעולם את שלב שישה עשר הנבחרות בשבע הופעות רצופות בגביע העולם בין 1994 ל-2018, ריצה כל-כך כואבת שלמשחק שלא הצליחו לנצח ניתן שם עצמאי בכדורגל המקסיקני: אל קינטו פרטידו, המשחק החמישי. בקטאר 2022 הקללה עמקה כשאל טרי נפלה בשלב הבתים לראשונה מאז 1978. כעת, על אדמת הבית עם קהל האצטקה מאחוריהם, נבחרת אגירה פותחת את מסעה מול דרום אפריקה ב-11 ביוני. הגעות מקסיקו לרבע גמר התרחשו רק כשאירחו ב-1970 וב-1986. עם פורמט 48 הנבחרות המורחב שמוסיף סיבוב של 32, El Tri חייבת כעת לנצח בשני משחקי נוק-אאוט רק להגיע לשלב שבו קדמותיהן נפלו שוב ושוב. האם הטורניר הביתי יהיה סוף-סוף זה שישבור את הקללה?",
-      "sources": [
-        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles-video/mexico-s-fifth-match-curse-has-a-tougher-new-version-in-the-2026-world-cup-2026-06-05" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/5/mexico-world-cup-2026-preview-players-to-watch-group-matches-and-squad" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/mexico-world-cup-2026-javier-chicharito-hernandez-usmnt-canada" }
-      ],
-      "expires_at": "2026-07-06T00:00:00Z"
+      "expires_at": "2026-07-19T00:00:00Z"
     },
     {
       "id": "wc26-cooling-breaks-heat-2026",
@@ -227,31 +126,6 @@
         { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/8/how-extreme-weather-and-heat-could-affect-players-at-world-cup-2026" },
         { "name": "The Conversation", "url": "https://theconversation.com/extreme-heat-at-the-world-cup-are-fifas-safeguards-enough-282489" },
         { "name": "Bloomberg", "url": "https://www.bloomberg.com/graphics/2026-fifa-world-cup-games-weather/" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "ifab-var-corners-second-yellow-2026-06-05",
-      "confidence": "confirmed",
-      "en": "IFAB has confirmed that VAR at the 2026 World Cup gains three new areas of intervention: wrongly-awarded second yellow cards, cases of mistaken identity where the wrong player is carded, and incorrectly-awarded corner kicks. Officials can also check if an attacker blocked a defender before a set piece was taken. Corner reviews must correct only obvious errors and cannot delay the restart of play. The expanded brief triples VAR's scope compared to past tournaments. Will it cut out the game's most controversial decisions, or just add a new layer of debate?",
-      "he": "IFAB אישרה שה-VAR בגביע העולם 2026 יקבל שלושה תחומי התערבות חדשים: כרטיסים צהובים שניים שניתנו בשגיאה, מקרי זיהוי שגוי שבהם כורטס שחקן הלא נכון, ובעיטות פינה שניתנו שלא כדין. הבודקים יוכלו גם לבחון אם תוקף חוסם מגן לפני ביצוע בעיטה נייחת. בדיקות הפינה חלות רק על שגיאות בוטות ואינן רשאיות לעכב את חידוש המשחק. הסמכות המורחבת משלשת את טווח ה-VAR לעומת טורנירים קודמים. האם היא תבטל את ההחלטות השנויות ביותר במחלוקת, או פשוט תוסיף שכבת ויכוח חדשה?",
-      "sources": [
-        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/12098/13549645/world-cup-ifab-confirm-new-var-powers-10-second-substitutions-and-tactical-timeout-ban-in-major-rule-changes" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48954511/world-cup-new-rules-explained-var-corners-no-gk-outs-red-card-covering-your-mouth" },
-        { "name": "NBC Sports", "url": "https://www.nbcsports.com/soccer/news/rule-changes-confirmed-for-2026-world-cup-as-ifab-alters-var-cracks-down-on-subs-and-timeouts" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "wc26-water-bottle-ban-reversed-2026-06-07",
-      "confidence": "confirmed",
-      "en": "FIFA banned all water bottles from World Cup stadiums on June 2, citing security reasons, then reversed course four days later after fierce protests from fan groups and politicians. At matches in the United States and Canada, every spectator may now bring one soft, factory-sealed plastic bottle of up to 590ml. Hard-sided or reusable bottles remain prohibited at all venues. Mexico's stadiums operate under separate local rules. The episode showed what happens when a global governing body underestimates its own fans on the eve of a tournament. For anyone attending: one factory-sealed bottle is your limit and your lifeline at a summer competition played across a continent.",
-      "he": "פיפ\"א אסרה על הכנסת כל בקבוקי המים לאצטדיוני גביע העולם ב-2 ביוני בטענת שיקולי ביטחון, ואחרי ארבעה ימים של מחאות עזות של ארגוני אוהדים ופוליטיקאים, נסוגה. במשחקים בארצות הברית ובקנדה, כל צופה יכול כעת להכניס בקבוק פלסטיק אחד, רך ואטום במפעל, עד 590 מיליליטר. בקבוקים קשיחים או ניתנים למילוי חוזר נותרים אסורים בכל האתרים. לאצטדיוני מקסיקו חלים כללים מקומיים נפרדים. הפרשה הראתה מה קורה כשגוף שלטוני גלובלי מזלזל באוהדיו ערב טורניר. לכל מי שמגיע: בקבוק אחד אטום מהמפעל הוא המכסה שלך ועורק החיים שלך בתחרות קיץ על פני יבשת שלמה.",
-      "sources": [
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48978502/fifa-reverses-world-cup-water-bottle-ban-backlash" },
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/7/fifa-u-turns-on-water-bottle-policy-in-us-canada-stadiums-after-backlash" },
-        { "name": "Sports Illustrated", "url": "https://www.si.com/soccer/fifa-reverses-decision-allows-fans-bring-water-bottles-after-mass-backlash" },
-        { "name": "Global News", "url": "https://globalnews.ca/news/11892845/fifa-reverses-water-bottle-ban-world-cup-games-restrictions/" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     },
@@ -280,15 +154,17 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "wc26-wastewater-disease-surveillance-2026-06-07",
-      "confidence": "reported",
-      "en": "Reports say epidemiologists in the United States and Canada have built a wastewater surveillance network across World Cup host cities to detect infectious disease outbreaks before traditional testing can identify them. A Washington-based team will analyse sewage samples from match venues and cross-reference the data with social-media monitoring to watch for measles, Ebola, Covid-19, influenza, dengue fever, and other mosquito-borne diseases. The measure follows the US recording its highest measles case count in decades last year, and hosting 6.5 million fans from more than 100 countries over 39 days across three nations is a mass-gathering event of historic scale. Wastewater surveillance became a mainstream public-health tool during the Covid pandemic, with results detectable days before clinical tests confirm an outbreak. Forty-eight teams, three continents, six weeks, one sewage network keeping watch.",
-      "he": "לפי הדיווחים, אפידמיולוגים בארצות הברית ובקנדה הקימו רשת מעקב שפכים ברחבי ערי המארח כדי לאתר פרוצי מחלות לפני שבדיקות מסורתיות מצליחות לזהותן. צוות מבוסס וושינגטון ינתח דגימות ביוב ממתחמי האירוח ויצרף את הנתונים עם ניטור רשתות חברתיות למעקב אחר חצבת, אבולה, קורונה, שפעת, קדחת דנגה ומחלות נוספות המועברות ביתושים. הצעד מגיע לאחר שארה\"ב רשמה שיא מקרי חצבת לעשורים בשנה שעברה, ואירוח 6.5 מיליון אוהדים מ-100 מדינות לאורך 39 ימים בשלוש מדינות הוא אירוע כנס המוני בקנה מידה היסטורי. מעקב שפכים הפך לכלי בריאות ציבורית מרכזי בתקופת הקורונה, עם תוצאות ניתנות לאיתור ימים לפני שבדיקות קליניות מאשרות פרוץ. 48 נבחרות, שלוש יבשות, שישה שבועות, רשת ביוב אחת שומרת.",
+      "id": "can-toronto-opening-ceremony-2026-06-12",
+      "confidence": "confirmed",
+      "team": "CAN",
+      "en": "FIFA confirmed Canada's World Cup opening ceremony takes place at Toronto Stadium on June 12, ninety minutes before Canada face Bosnia and Herzegovina in the host nation's tournament opener. The ceremony is built around the theme 'Mosaic', a celebration of Canada's multicultural identity, with confirmed performers including Michael Buble, Alanis Morissette, Alessia Cara, Jessie Reyez, Nora Fatehi, Palestinian artist Elyanna, French artist Vegedream, DJ Sanjoy, and William Prince. Canada have never won a World Cup match in their two previous tournaments, losing all six games in 1986 and at Qatar 2022. A sold-out home stadium and two Canadian music icons on the stage set the scene. The show is guaranteed. The result is not.",
+      "he": "פיפ\"א אישרה שטקס הפתיחה הקנדי של מונדיאל 2026 יתקיים ב-Toronto Stadium ב-12 ביוני, תשעים דקות לפני שקנדה נפגשת עם בוסניה-הרצגובינה בפתיחת הנבחרת המארחת. הטקס בנוי סביב הנושא 'פסיפס', חגיגת הזהות הרב-תרבותית של קנדה, עם אמנים מאושרים כולל מייקל בובלה, אלאניס מוריסט, אלסיה קרה, ג'סי רייס, נורה פאטה, האמנית הפלסטינית אליאנה, האמן הצרפתי ווג'דרים, ה-DJ סנג'וי וויליאם פרינס. קנדה מעולם לא ניצחה במשחק מונדיאל בשתי הופעותיה הקודמות, כשהפסידה את כל שישה משחקיה ב-1986 ובקטאר 2022. אצטדיון ביתי מלא ושני אייקוני מוזיקה קנדיים על הבמה מכינים את הקרקע. ההופעה מובטחת. התוצאה לא.",
       "sources": [
-        { "name": "CNBC", "url": "https://www.cnbc.com/2026/06/04/world-cup-2026-health-officials-focused-on-ebola-measles.html" },
-        { "name": "Fort Worth Report", "url": "https://fortworthreport.org/2026/06/07/sewage-samples-could-help-track-pathogens-surveil-illness-during-world-cup/" }
+        { "name": "FIFA (official)", "url": "https://inside.fifa.com/organisation/media-releases/canada-welcome-opening-ceremony-world-cup-2026-tm" },
+        { "name": "CP24", "url": "https://www.cp24.com/local/toronto/2026/05/09/here-are-the-performers-at-fifa-world-cup-opening-ceremony-in-toronto/" },
+        { "name": "Time", "url": "https://time.com/article/2026/05/29/world-cup-2026-opening-ceremonies-performers-usa-mexico-canada-fifa/" }
       ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "expires_at": "2026-06-13T23:59:59Z"
     },
     {
       "id": "esp-no-real-madrid-wc2026-2026-05-25",
