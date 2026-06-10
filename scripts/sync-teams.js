@@ -142,18 +142,41 @@ const MANUAL_GROUPS = {
 // Helpers
 // ============================================================
 
-async function callFootballAPI(endpoint) {
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Retry transient failures (network socket drops, 429 rate-limit, 5xx) before
+// giving up — football-data.org occasionally closes the socket mid-request
+// ("other side closed" / UND_ERR_SOCKET), which used to fail the whole sync on
+// the very first call. A real client error (4xx other than 429) still fails fast.
+async function callFootballAPI(endpoint, { retries = 4 } = {}) {
   const url = `${FOOTBALL_API_BASE}${endpoint}`;
-  const response = await fetch(url, {
-    headers: { 'X-Auth-Token': FOOTBALL_TOKEN }
-  });
-  
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`API ${response.status}: ${text}`);
+  let lastErr;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await fetch(url, {
+        headers: { 'X-Auth-Token': FOOTBALL_TOKEN }
+      });
+
+      if (response.ok) return await response.json();
+
+      const text = await response.text();
+      // 429 (rate limit) and 5xx are transient — retry; other 4xx are fatal.
+      if (response.status !== 429 && response.status < 500) {
+        throw new Error(`API ${response.status}: ${text}`);
+      }
+      lastErr = new Error(`API ${response.status}: ${text}`);
+    } catch (err) {
+      // fetch() rejections (socket close, DNS, TLS) land here — all transient.
+      lastErr = err;
+    }
+
+    if (attempt < retries) {
+      const waitMs = 8000 * attempt; // 8s, 16s, 24s — respects the 10 req/min cap too
+      console.log(`   ⚠️  API call failed (attempt ${attempt}/${retries}): ${lastErr.message} — retrying in ${waitMs / 1000}s`);
+      await sleep(waitMs);
+    }
   }
-  
-  return await response.json();
+  throw lastErr;
 }
 
 async function callSupabase(method, table, options = {}) {
