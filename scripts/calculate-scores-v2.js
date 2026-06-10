@@ -62,7 +62,9 @@ function poolMultResolver(pool, rules) {
 }
 
 // ---- Supabase fetch helper ----
+const { fbGuardDelete } = require('./lib-guard');
 async function sb(method, table, options = {}) {
+  fbGuardDelete(method, table);  // scoring must never DELETE user-data tables
   const { data, query = '', headers = {} } = options;
   const url = `${SUPABASE_URL}/rest/v1/${table}${query}`;
   const res = await fetch(url, {

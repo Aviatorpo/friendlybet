@@ -34,17 +34,22 @@ const LIMIT = parseInt(process.env.HEAL_LIMIT || '1000', 10);  // raised from 15
   console.log('[heal-brackets]', JSON.stringify(t));
   if (t.note) console.log(`[heal-brackets] note: ${t.note}`);
 
-  // MASS-LOSS ALARM (added after the 2026-06-10 knockout_picks TRUNCATE incident).
-  // Steady-state this job heals 0–few brackets per run. A spike means a large
-  // number of brackets just vanished from live knockout_picks and were auto-
-  // restored from backup THIS run — i.e. a wipe/mass-delete just happened. Fail
-  // loudly so the owner gets the red-workflow email and can investigate the cause
-  // (a healthy save flow never produces this). Tune via HEAL_MASS_ALERT.
+  // MASS-LOSS ALARM (added after the 2026-06-10 knockout_picks mass-delete incident,
+  // whose root cause was a destructive sync job — sync-teams.js — deleting all picks).
+  // Steady-state this job heals 0–few brackets per run. A spike means a large number
+  // of brackets just vanished from live knockout_picks and were auto-restored from
+  // backup THIS run — i.e. a mass-delete just happened (a destructive sync job, a
+  // blanket REST DELETE, or a manual TRUNCATE). Fail loudly so the owner gets the
+  // red-workflow email (a healthy save flow never produces this). Tune via HEAL_MASS_ALERT.
   const MASS_HEAL_ALERT = parseInt(process.env.HEAL_MASS_ALERT || '50', 10);
   let massEvent = false;
+  const NEXT_STEPS = 'NEXT STEPS: 1) check `gh run list` for a sync/score job that ran just now; '
+    + '2) read Supabase Postgres logs around now for DELETE/TRUNCATE on knockout_picks; '
+    + '3) confirm scripts/lib-guard.js still guards every callSupabase/sb helper; '
+    + '4) the heal already restored from backup — verify counts on the incident dashboard.';
   if ((t.healed || 0) >= MASS_HEAL_ALERT) {
     massEvent = true;
-    console.error(`::error::[heal-brackets] MASS-LOSS ALARM — healed ${t.healed} brackets in ONE run (>=${MASS_HEAL_ALERT}). A large number of live brackets just disappeared and were auto-restored from backup. Likely a TRUNCATE/mass-delete on knockout_picks — investigate immediately (pg_stat_statements, Postgres logs around now).`);
+    console.error(`::error::[heal-brackets] MASS-LOSS ALARM — healed ${t.healed} brackets in ONE run (>=${MASS_HEAL_ALERT}). A large number of live brackets just disappeared and were auto-restored from backup — likely a destructive sync job / blanket DELETE / TRUNCATE on knockout_picks. ${NEXT_STEPS}`);
   }
   // Failure policy: a single isolated bad user is a warning (other users still
   // healed). Persistent breakage is loud (red workflow → owner notified):

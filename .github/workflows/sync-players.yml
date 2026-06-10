@@ -1,10 +1,15 @@
 name: Sync Player Squads
 
 on:
-  schedule:
-    # Daily at 3am UTC (6am Israel time)
-    - cron: '0 3 * * *'
-  
+  # SCHEDULE GATED 2026-06-10 (pre-kickoff): sync-players.js still does a destructive
+  # full rebuild — DELETE all `players` then re-insert. If the API is partial/rate-
+  # limited or an insert fails after the delete, the players table is left empty and
+  # top-scorer pick/display/scoring degrades. Squads are already synced (~1175 rows),
+  # so there is no need to run this on a schedule before kickoff. Re-enable the cron
+  # only after sync-players.js is converted to upsert-only (validate-then-write).
+  # Manual runs are still allowed via workflow_dispatch for a reviewed, deliberate sync.
+  # schedule:
+  #   - cron: '0 3 * * *'   # daily 03:00 UTC — disabled, see note above
   workflow_dispatch:
 
 jobs:

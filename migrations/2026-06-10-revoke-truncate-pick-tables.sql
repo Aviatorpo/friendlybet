@@ -1,6 +1,20 @@
 -- ============================================================
 -- 2026-06-10: HARDENING — revoke TRUNCATE on all pick tables
 -- ============================================================
+-- ⚠️ ROOT-CAUSE CORRECTION (added after fuller investigation): the RECURRING
+-- knockout_picks wipes on 2026-06-10 (~05:00 and ~07:57 UTC) were NOT a malicious
+-- or manual TRUNCATE. The confirmed root cause was `scripts/sync-teams.js`, a
+-- scheduled GitHub Action that, using the service key, ran `DELETE FROM
+-- knockout_picks` (+ group_picks, + teams) on every run as leftover disposable-
+-- test-data code — see commit `1a4a011c` (fix) and the sync-teams runs at
+-- 04:59:53Z (workflow_dispatch) and 07:57:23Z (schedule). The `TRUNCATE … CASCADE`
+-- seen once in pg_stat_statements (no timestamp) was a stale red herring, not the
+-- recurring wipe. PREVENTION now in place: (1) sync-teams no longer deletes picks
+-- (upsert-only); (2) `scripts/lib-guard.js` makes every server REST helper REFUSE
+-- DELETE on user-data tables; (3) the heal job alarms loudly on mass loss. THIS
+-- migration (revoking TRUNCATE from anon/authenticated) remains valid defense-in-
+-- depth and is unchanged. The original (now-superseded) note follows for the record:
+--
 -- INCIDENT (2026-06-10 ~05:00 UTC): a manual `TRUNCATE knockout_picks CASCADE`
 -- (run once in the SQL editor / a direct connection — NOT from app code or any
 -- committed migration) wiped the ENTIRE knockout_picks table: ~1,000 complete
