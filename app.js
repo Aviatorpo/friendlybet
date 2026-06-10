@@ -2842,8 +2842,8 @@ function renderAdminMembers() {
         '<div class="akn-head"><span class="akn-icon">⚠️</span><div>' +
           '<div class="akn-title">' + t('adminMembersEx.annexCReviewTitle') + '</div>' +
           '<div class="akn-text">' + t('adminMembersEx.annexCReviewGlitch', { n: annexCount, hard: annexHardCount, remind: annexReminderCount }) + '</div>' +
+          '<div class="akn-you">' + adminAnnexStatus + '</div>' +
         '</div></div>' +
-        '<div class="akn-you">' + adminAnnexStatus + '</div>' +
         '<div class="akn-actions">' +
           '<button type="button" class="akn-copy" id="admin-ko-copy-btn">' +
           '<i class="ti ti-copy"></i><span>' + t('adminMembersEx.copyNudge') + '</span></button>' +

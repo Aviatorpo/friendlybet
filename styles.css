@@ -3948,6 +3948,9 @@ body.ltr #next-group-btn svg {
   font-size: 12.5px;
   line-height: 1.45;
   font-weight: 700;
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(232, 168, 90, 0.28);
 }
 .admin-ko-nudge-banner .akn-actions {
   display: flex;
