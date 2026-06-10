@@ -13688,7 +13688,7 @@ async function _updateReopenBanner(active, opts = {}) {
   const approved = !!(st && st.approved);
   const canEdit = !!(st && st.can_reenter) || (!opts.locked && approved);
   if (approved) {
-    el.className = 'knockout-reopen-banner approved';
+    el.className = 'knockout-reopen-banner pending';
     if (titleEl) titleEl.textContent = t(afterKickoff ? 'reopen.user.approvedTitle' : 'reopen.user.preKickoffTitle');
     if (subEl) subEl.textContent = t(afterKickoff ? 'reopen.user.approvedSub' : 'reopen.user.preKickoffSub');
     if (ctaEl) {

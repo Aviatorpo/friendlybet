@@ -4093,7 +4093,12 @@ body.ltr #next-group-btn svg {
   color: #06210f; font-weight: 800; font-size: 15px;
   border: none; border-radius: 11px; padding: 13px; cursor: pointer;
 }
+.knockout-reopen-banner.pending .kr-cta {
+  background: linear-gradient(140deg, #f3c987, #e8a85a);
+  color: #20160a;
+}
 .knockout-reopen-banner .kr-exp { font-size: 10.5px; color: rgba(125, 240, 191, 0.75); text-align: center; }
+.knockout-reopen-banner.pending .kr-exp { color: rgba(243, 201, 135, 0.8); }
 
 /* v2.10: persistent champion-locked note inside the recovery walkthrough */
 .ko-reopen-note {
