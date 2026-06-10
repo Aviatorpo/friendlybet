@@ -2839,7 +2839,7 @@ function renderAdminMembers() {
     nudge.className = 'admin-ko-nudge-banner';
     if (annexCount > 0) {
       nudge.innerHTML =
-        '<div class="akn-head"><span class="akn-icon">⚠️</span><div>' +
+        '<div class="akn-head"><span class="akn-icon"><i class="ti ti-alert-triangle"></i></span><div>' +
           '<div class="akn-title">' + t('adminMembersEx.annexCReviewTitle') + '</div>' +
           '<div class="akn-text">' + t('adminMembersEx.annexCReviewGlitch', { n: annexCount, hard: annexHardCount, remind: annexReminderCount }) + '</div>' +
           '<div class="akn-you">' + adminAnnexStatus + '</div>' +
@@ -2896,10 +2896,12 @@ function renderAdminMembers() {
     else if (annexReview) card.classList.add('annex-review');
     // v2.9.8: amber flag so the admin instantly spots who must (re-)fill the knockout.
     const koFlag = annexHardAffected
-      ? `<span class="admin-member-ko-flag">${t('adminMembersEx.annexHardAffected')}</span>`
+      ? `<span class="admin-member-ko-flag hard">${t('adminMembersEx.annexHardAffected')}</span>`
       : (annexReview
-        ? `<span class="admin-member-ko-flag">${t('adminMembersEx.annexReview')}</span>`
-        : (needsKnockout ? `<span class="admin-member-ko-flag">${t('adminMembersEx.needsKnockout')}</span>` : ''));
+        ? `<span class="admin-member-ko-flag review">${t('adminMembersEx.annexReview')}</span>`
+        : (needsKnockout
+          ? `<span class="admin-member-ko-flag missing">${t('adminMembersEx.needsKnockout')}</span>`
+          : (annexCount > 0 ? `<span class="admin-member-ko-flag clear">${t('adminMembersEx.annexNoIssue')}</span>` : '')));
 
     // Quick action buttons for pending users
     let quickActions = '';

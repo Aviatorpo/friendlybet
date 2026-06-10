@@ -3911,11 +3911,22 @@ body.ltr #next-group-btn svg {
 /* v2.9.8: amber "needs knockout" flag + aggregate nudge banner for admins */
 .admin-member-ko-flag {
   font-size: 10px;
-  padding: 1px 6px;
+  padding: 2px 7px;
   border-radius: 8px;
   background: rgba(232, 168, 90, 0.18);
   color: #f3c987;
   font-weight: 700;
+  border: 1px solid rgba(232, 168, 90, 0.24);
+  white-space: nowrap;
+}
+.admin-member-ko-flag.hard {
+  background: rgba(232, 168, 90, 0.22);
+  border-color: rgba(232, 168, 90, 0.58);
+}
+.admin-member-ko-flag.clear {
+  background: rgba(61, 220, 151, 0.10);
+  border-color: rgba(61, 220, 151, 0.28);
+  color: #7df0bf;
 }
 .admin-ko-nudge-banner {
   display: flex;
@@ -3933,8 +3944,11 @@ body.ltr #next-group-btn svg {
   align-items: flex-start;
 }
 .admin-ko-nudge-banner .akn-icon {
-  font-size: 18px;
-  line-height: 1.2;
+  color: #f3c987;
+  font-size: 20px;
+  line-height: 1;
+  display: inline-flex;
+  padding-top: 1px;
 }
 .admin-ko-nudge-banner .akn-title {
   color: #f3c987;
@@ -4109,7 +4123,13 @@ body.ltr #next-group-btn svg {
   border: 1px solid rgba(61, 220, 151, 0.5);
 }
 .knockout-reopen-banner .kr-head { display: flex; align-items: center; gap: 8px; }
-.knockout-reopen-banner .kr-icon { font-size: 18px; }
+.knockout-reopen-banner .kr-icon {
+  color: #f3c987;
+  font-size: 20px;
+  line-height: 1;
+  display: inline-flex;
+  flex-shrink: 0;
+}
 .knockout-reopen-banner.approved .kr-icon::before { content: '✅'; }
 .knockout-reopen-banner .kr-title { font-size: 15px; font-weight: 800; }
 .knockout-reopen-banner.pending .kr-title { color: #f3c987; }
@@ -4118,10 +4138,13 @@ body.ltr #next-group-btn svg {
 .knockout-reopen-banner.pending .kr-sub { color: rgba(243, 201, 135, 0.85); }
 .knockout-reopen-banner.approved .kr-sub { color: rgba(220, 255, 238, 0.85); }
 .knockout-reopen-banner .kr-cta {
-  width: 100%;
+  align-self: flex-start;
+  width: auto;
+  max-width: 100%;
+  min-width: 168px;
   background: linear-gradient(140deg, #3ddc97, #27b07a);
   color: #06210f; font-weight: 800; font-size: 15px;
-  border: none; border-radius: 11px; padding: 13px; cursor: pointer;
+  border: none; border-radius: 10px; padding: 10px 14px; cursor: pointer;
 }
 .knockout-reopen-banner.pending .kr-cta {
   background: linear-gradient(140deg, #f3c987, #e8a85a);
