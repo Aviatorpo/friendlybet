@@ -30,7 +30,7 @@ $$;
 
 create or replace function public.approve_knockout_reopen(p_code text, p_target_user uuid)
 returns jsonb language plpgsql security definer set search_path to '' set statement_timeout to '8s' as $$
-declare v_admin uuid; v_pid uuid; v_tpid uuid; v_exp timestamptz;
+declare v_admin uuid; v_pid uuid; v_tpid uuid; v_exp timestamptz; v_has_annex_grant boolean;
 begin
   v_admin := public._uid_from_code(p_code);
   if v_admin is null then return jsonb_build_object('ok',false); end if;
@@ -38,7 +38,10 @@ begin
   if v_pid is null then return jsonb_build_object('ok',false); end if;
   select u.pool_id into v_tpid from public.users u where u.id=p_target_user;
   if v_tpid is null or v_tpid <> v_pid then return jsonb_build_object('ok',false); end if;
-  if not public._knockout_reopen_eligible(p_target_user, v_pid) then
+  select exists(select 1 from public.knockout_reopen_grants gr
+                 where gr.user_id=p_target_user and gr.pool_id=v_pid and gr.incident_key='annex_c_2026')
+    into v_has_annex_grant;
+  if not v_has_annex_grant and not public._knockout_reopen_eligible(p_target_user, v_pid) then
     return jsonb_build_object('ok',false,'reason','not_eligible');
   end if;
 
@@ -59,11 +62,14 @@ end$$;
 
 create or replace function public.owner_approve_knockout_reopen(p_target_user uuid)
 returns jsonb language plpgsql security definer set search_path to '' set statement_timeout to '8s' as $$
-declare v_pid uuid; v_exp timestamptz;
+declare v_pid uuid; v_exp timestamptz; v_has_annex_grant boolean;
 begin
   select u.pool_id into v_pid from public.users u where u.id=p_target_user;
   if v_pid is null then return jsonb_build_object('ok',false); end if;
-  if not public._knockout_reopen_eligible(p_target_user, v_pid) then
+  select exists(select 1 from public.knockout_reopen_grants gr
+                 where gr.user_id=p_target_user and gr.pool_id=v_pid and gr.incident_key='annex_c_2026')
+    into v_has_annex_grant;
+  if not v_has_annex_grant and not public._knockout_reopen_eligible(p_target_user, v_pid) then
     return jsonb_build_object('ok',false,'reason','not_eligible');
   end if;
   insert into public.knockout_reopen_grants(user_id,pool_id,approved_by,expires_at,reason,incident_key,impact_kind)

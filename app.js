@@ -23,6 +23,7 @@ const state = {
 // run — no temporal-dead-zone risk. Set true ONLY inside spReopenKnockout().
 let spReopenActive = false;
 let _spReopenStatus = null;   // last my_knockout_reopen result {locked,eligible,approved,used,can_reenter,expires_at}
+const WC2026_CORRECTION_COPY_SWITCH_ISO = '2026-06-11T19:00:00.000Z';
 
 function showScreen(screenId) {
   // v2.5.37: stop any auto-refresh that was running on the previous screen.
@@ -2776,6 +2777,8 @@ function renderAdminMembers() {
   // and how many FINISHED (all groups + full bracket + champion + top scorer).
   const startedCount = adminState.members.filter(m => _adminMemberProgress(m).started).length;
   const finishedCount = adminState.members.filter(m => _adminMemberProgress(m).finished).length;
+  const needsKoCount = adminState.members.filter(m => _adminMemberProgress(m).needsKnockout).length;
+  const annexCount = adminState.members.filter(m => _adminMemberProgress(m).annexReview).length;
 
   document.getElementById('admin-stat-total').textContent = total;
   document.getElementById('admin-stat-groups').textContent = startedCount;
@@ -2784,7 +2787,7 @@ function renderAdminMembers() {
   // Show pending banner if any
   const pendingBanner = document.getElementById('admin-pending-banner');
   if (pendingBanner) {
-    if (pending > 0) {
+    if (pending > 0 && needsKoCount === 0) {
       pendingBanner.style.display = 'flex';
       const countEl = document.getElementById('admin-pending-count');
       if (countEl) countEl.textContent = pending;
@@ -2812,8 +2815,6 @@ function renderAdminMembers() {
   // v2.9.8/v2.9.9: aggregate nudge — how many members still need their knockout
   // bracket. Explains the technical glitch + offers a ready-to-send message the
   // admin can paste into the group chat to ask those members to re-fill it.
-  const needsKoCount = adminState.members.filter(m => _adminMemberProgress(m).needsKnockout).length;
-  const annexCount = adminState.members.filter(m => _adminMemberProgress(m).annexReview).length;
   if (needsKoCount > 0) {
     const nudge = document.createElement('div');
     nudge.className = 'admin-ko-nudge-banner';
@@ -2927,7 +2928,7 @@ function renderAdminMembers() {
     // v2.10: post-lock, let the admin approve/extend THIS member's knockout review
     // and copy a ready personal nudge. Appended as a full-width sibling so it
     // doesn't disturb the card's row layout. Server validates full eligibility.
-    if (spIsLocked() && adminState.isV2 && !member.isAdmin) {
+    if ((spIsLocked() || annexReview) && adminState.isV2 && !member.isAdmin) {
       const rec = document.createElement('div');
       rec.className = 'admin-member-reopen';
       const grant = member.reopenGrant || {};
@@ -5511,27 +5512,20 @@ async function updateBettingStatusOnDashboard() {
       await spMarkPredictionsSubmitted('dashboard-complete');
     }
 
-    // v2.9.2: apology + recover banner — show when the user has engaged (champion
-    // or groups) but their knockout bracket didn't fully save. Tapping it reopens
-    // the flow to re-enter the knockout stage.
-    // v2.10: MUTUAL EXCLUSIVITY after kickoff. Pre-lock → the original recover
-    // banner (tapping it re-enters the knockout, which works while unlocked).
-    // Post-lock → that banner is hidden and the NEW recovery banner takes over
-    // (amber "ask your admin" / green "you're approved"). The two are gated on
-    // opposite lock states, so a user never sees both at once.
+    // v2.10.13: a pool-level Annex C grant wins banner precedence both before
+    // and after kickoff. That gives old save-bug + Annex C users one clear 7-day
+    // correction message instead of stacking the older missing-bracket banner.
     const affected = (winnerChosen || groupsDone) && !bracketDone;
     const locked = spIsLocked();
     let reopenStatus = null;
-    if (locked) {
-      try { reopenStatus = await _spFetchReopenStatus(); } catch (_) { reopenStatus = null; }
-    }
-    const hasCorrectionGrant = !!(reopenStatus && (reopenStatus.can_reenter || reopenStatus.approved));
+    try { reopenStatus = await _spFetchReopenStatus(); } catch (_) { reopenStatus = null; }
+    const hasCorrectionGrant = !!(reopenStatus && reopenStatus.incident_key === 'annex_c_2026' && reopenStatus.approved);
     state._userNeedsKnockoutRecovery = (affected && locked);
     try {
       const brb = document.getElementById('bracket-recover-banner');
-      if (brb) brb.style.display = (affected && !locked) ? 'flex' : 'none';
+      if (brb) brb.style.display = (affected && !locked && !hasCorrectionGrant) ? 'flex' : 'none';
     } catch (_) {}
-    try { await _updateReopenBanner(locked && (affected || hasCorrectionGrant)); } catch (_) {}
+    try { await _updateReopenBanner(hasCorrectionGrant || (affected && locked), { locked, affected, hasCorrectionGrant }); } catch (_) {}
 
     // Overall progress (drives the bar): groups + bracket (+ top scorer if open).
     const total  = 48 + 31 + (tsRequired ? 1 : 0);
@@ -13672,11 +13666,15 @@ function _fmtReopenExpiry(iso) {
   } catch (_) { return ''; }
 }
 
-// v2.10: the post-lock recovery banner on the user's dashboard. Shown ONLY when
-// the pool is locked AND the user is affected (mutually exclusive with the
-// pre-lock #bracket-recover-banner). Green = approved (tap to fill); amber = not
-// yet approved (ask the admin).
-async function _updateReopenBanner(active) {
+function _annexCopyAfterKickoff(locked) {
+  const t = Date.parse(WC2026_CORRECTION_COPY_SWITCH_ISO);
+  return !!locked || (Number.isFinite(t) && Date.now() >= t);
+}
+
+// v2.10: the correction banner on the user's dashboard. It is the single banner
+// for Annex C users both pre-kickoff and post-lock; the old missing-bracket banner
+// is hidden whenever an Annex C grant exists.
+async function _updateReopenBanner(active, opts = {}) {
   const el = document.getElementById('knockout-reopen-banner');
   if (!el) return;
   const hide = () => { el.style.display = 'none'; };
@@ -13686,16 +13684,23 @@ async function _updateReopenBanner(active) {
   const subEl = document.getElementById('kr-sub');
   const ctaEl = document.getElementById('kr-cta');
   const expEl = document.getElementById('kr-exp');
-  if (st && st.can_reenter) {
+  const afterKickoff = _annexCopyAfterKickoff(opts.locked);
+  const approved = !!(st && st.approved);
+  const canEdit = !!(st && st.can_reenter) || (!opts.locked && approved);
+  if (approved) {
     el.className = 'knockout-reopen-banner approved';
-    if (titleEl) titleEl.textContent = t('reopen.user.approvedTitle');
-    if (subEl) subEl.textContent = t('reopen.user.approvedSub');
-    if (ctaEl) { ctaEl.style.display = ''; ctaEl.textContent = t('reopen.user.cta'); ctaEl.onclick = () => spReopenKnockout(); }
+    if (titleEl) titleEl.textContent = t(afterKickoff ? 'reopen.user.approvedTitle' : 'reopen.user.preKickoffTitle');
+    if (subEl) subEl.textContent = t(afterKickoff ? 'reopen.user.approvedSub' : 'reopen.user.preKickoffSub');
+    if (ctaEl) {
+      ctaEl.style.display = canEdit ? '' : 'none';
+      ctaEl.textContent = t(afterKickoff ? 'reopen.user.cta' : 'reopen.user.preKickoffCta');
+      ctaEl.onclick = () => (st && st.can_reenter) ? spReopenKnockout() : spReenterKnockout();
+    }
     if (expEl) expEl.textContent = st.expires_at ? t('reopen.user.expires', { time: _fmtReopenExpiry(st.expires_at) }) : '';
   } else {
     el.className = 'knockout-reopen-banner pending';
-    if (titleEl) titleEl.textContent = t('reopen.user.pendingTitle');
-    if (subEl) subEl.textContent = t('reopen.user.pendingSub');
+    if (titleEl) titleEl.textContent = t(afterKickoff ? 'reopen.user.pendingTitle' : 'reopen.user.preKickoffPendingTitle');
+    if (subEl) subEl.textContent = t(afterKickoff ? 'reopen.user.pendingSub' : 'reopen.user.preKickoffPendingSub');
     if (ctaEl) ctaEl.style.display = 'none';
     if (expEl) expEl.textContent = '';
   }
