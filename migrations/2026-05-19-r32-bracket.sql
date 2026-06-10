@@ -40,6 +40,13 @@ ALTER TABLE knockout_picks
 --    Since the tournament has not started, wipe old SP bracket picks so
 --    users redo them under the correct format. Two-phase rows
 --    (bracket_position IS NULL) are untouched.
+-- REPLAY GUARD (2026-06-10): hard-fail unless the operator explicitly opts in after
+-- taking a snapshot. Blocks an accidental re-run from wiping every user's bracket.
+DO $replay_guard$ BEGIN
+  IF current_setting('friendlybet.allow_destructive_replay', true) IS DISTINCT FROM 'yes_i_have_a_snapshot' THEN
+    RAISE EXCEPTION 'BLOCKED: this migration DELETEs all single-phase knockout_picks (one-off, already applied 2026-05-19). To intentionally re-run, snapshot first then run: SET friendlybet.allow_destructive_replay = ''yes_i_have_a_snapshot'';';
+  END IF;
+END $replay_guard$;
 DELETE FROM knockout_picks WHERE bracket_position IS NOT NULL;
 
 -- Done. The app will repopulate bracket_position 1-31 as users predict.

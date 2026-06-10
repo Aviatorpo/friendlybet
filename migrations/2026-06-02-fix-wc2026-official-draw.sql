@@ -35,6 +35,13 @@ BEGIN;
 --    a player from a removed team would block the team DELETE, so we
 --    clear those rows too.
 -- ------------------------------------------------------------
+-- REPLAY GUARD (2026-06-10): hard-fail unless the operator explicitly opts in after
+-- taking a snapshot. Blocks an accidental re-run from wiping live user picks.
+DO $replay_guard$ BEGIN
+  IF current_setting('friendlybet.allow_destructive_replay', true) IS DISTINCT FROM 'yes_i_have_a_snapshot' THEN
+    RAISE EXCEPTION 'BLOCKED: this migration DELETEs all user picks (one-off, already applied 2026-06-02). To intentionally re-run, snapshot first then run: SET friendlybet.allow_destructive_replay = ''yes_i_have_a_snapshot'';';
+  END IF;
+END $replay_guard$;
 DELETE FROM group_position_picks;                       -- single-phase group order
 DELETE FROM knockout_picks WHERE bracket_position IS NOT NULL; -- single-phase bracket
 DELETE FROM tournament_winner_picks;                    -- champion pick (mirror of bracket 31)

@@ -210,6 +210,15 @@ async function smartSync() {
     console.log('🎉 SQUADS RELEASED! Unlocking top scorer feature...\n');
     
     if (allSquadPlayers.length > 0) {
+      // SAFETY GUARD (2026-06-10): this still does a destructive full rebuild — DELETE
+      // ALL players then re-insert. If the API returns partial/empty data or an insert
+      // fails after the delete, the players table is left broken (top-scorer pick/display/
+      // scoring degrades). Refuse to run the wipe unless the operator explicitly opts in.
+      // (The workflow schedule is already disabled; this guards manual workflow_dispatch.)
+      if (process.env.ALLOW_FULL_PLAYER_REBUILD !== 'yes_i_understand') {
+        console.error('::error::[sync-players] REFUSING full-rebuild DELETE of players. This is a destructive operation pending an upsert rewrite. To run it deliberately, set ALLOW_FULL_PLAYER_REBUILD=yes_i_understand (and take a snapshot first).');
+        process.exit(1);
+      }
       await callSupabase('DELETE', 'players', { query: '?id=neq.00000000-0000-0000-0000-000000000000' });
       
       for (let i = 0; i < allSquadPlayers.length; i += 50) {

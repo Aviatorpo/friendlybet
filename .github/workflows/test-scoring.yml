@@ -40,6 +40,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Destructive-SQL guard (no unguarded TRUNCATE / blanket DELETE on user data)
+        run: node scripts/check-destructive-sql.js
       - name: Run scoring tests
         run: node scripts/test-scoring.js
       - name: Run smart-sync window tests
