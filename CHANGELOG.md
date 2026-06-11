@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.15** - Tightened dashboard warning priority for affected admins. If an admin has their own knockout recovery/correction banner visible, the lower-priority members nudge is suppressed, including pre-lock missing-bracket recovery and Annex C review windows. This keeps dashboard recovery messaging to one top-priority banner at a time while preserving the detailed admin-member warning inside the members screen. Version/cache bumped to v2.10.15.
+
 **v2.10.14** - Fixed a two-phase pool status false alarm. The "missing knockout" warning now only appears for single-phase pools, where knockout picks are expected before kickoff or during the Annex C review window. Two-phase pools deliberately collect only group picks first, so members with complete groups and no knockout picks are no longer flagged in the member list or admin nudge. Version/cache bumped to v2.10.14.
 
 **v2.10.13** - Free-tier Vercel request protection. The service worker now stops background-refreshing cache-first static assets on every repeat load, relying on the existing versioned cache key for updates instead. Generated `/public-data/*` snapshots now use short TTLs in the service worker (30s for matches, 2m for banter, 10m for pundit, 60s default) with stale fallback only on network failure. This should reduce repeat Edge Requests without changing Supabase writes, scoring, or core prediction flow. Version/cache bumped to v2.10.13.

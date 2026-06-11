@@ -1292,10 +1292,11 @@ async function updateAdminNudgeOnDashboard() {
   try {
     if (!state.currentUser || !state.currentUser.is_admin || !state.currentPool) return hide();
     if (state.currentPool.betting_mode !== 'single_phase') return hide();
-    // v2.10: if the admin THEMSELVES still needs to recover their own knockout,
-    // their personal recovery banner takes priority — don't stack the members
-    // nudge on top of it (no two overlapping banners). It returns once they're done.
-    if (state._userNeedsKnockoutRecovery) return hide();
+    // v2.10: if the admin THEMSELVES has any active recovery/correction banner,
+    // it takes priority. Do not stack the lower-priority members nudge on top.
+    if (state._userNeedsKnockoutRecovery || state._dashboardKnockoutReviewOpen) return hide();
+    const personalRecover = document.getElementById('bracket-recover-banner');
+    if (personalRecover && personalRecover.style.display !== 'none') return hide();
     // Include the admin in the count (no p_exclude) so the banner number matches
     // the ⚠️-flagged members in the "Who?" list (which shows everyone). If the
     // admin themselves is affected, they also get their own recover banner.
