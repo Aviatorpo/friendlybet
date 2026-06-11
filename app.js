@@ -323,25 +323,67 @@ function _ensureJsQR() {
   });
   return window._jsqrPromise;
 }
+function _qrCanvasFromImage(img, sx, sy, sw, sh, maxSide = 2200) {
+  const scale = Math.min(1, maxSide / Math.max(sw, sh));
+  const W = Math.max(1, Math.round(sw * scale));
+  const H = Math.max(1, Math.round(sh * scale));
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+  return canvas;
+}
+
+async function _decodeQrFromCanvas(canvas) {
+  if (window.BarcodeDetector) {
+    try {
+      const codes = await new window.BarcodeDetector({ formats: ['qr_code'] }).detect(canvas);
+      if (codes && codes.length && codes[0].rawValue) return codes[0].rawValue;
+    } catch (_) {}
+  }
+  await _ensureJsQR();
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const r = window.jsQR(data.data, canvas.width, canvas.height, { inversionAttempts: 'attemptBoth' });
+  return r ? r.data : null;
+}
+
+function _qrDecodeRegions(img) {
+  const w = img.naturalWidth || img.width || 1;
+  const h = img.naturalHeight || img.height || 1;
+  const side = Math.min(w, h);
+  const raw = [
+    [0, 0, w, h],
+    [Math.max(0, (w - side) / 2), 0, side, Math.min(side, h)],
+    [w * 0.15, 0, w * 0.70, h * 0.55],
+    [0, 0, w, h * 0.60],
+    [0, 0, w * 0.55, h * 0.55],
+    [w * 0.45, 0, w * 0.55, h * 0.55],
+    [0, h * 0.35, w * 0.55, h * 0.65],
+    [w * 0.45, h * 0.35, w * 0.55, h * 0.65],
+  ];
+  return raw.map(([x, y, rw, rh]) => {
+    const sx = Math.max(0, Math.round(x));
+    const sy = Math.max(0, Math.round(y));
+    return {
+      sx, sy,
+      sw: Math.max(1, Math.min(w - sx, Math.round(rw))),
+      sh: Math.max(1, Math.min(h - sy, Math.round(rh))),
+    };
+  }).filter(r => r.sw > 20 && r.sh > 20);
+}
+
 // Decode a QR from a picked image File -> the embedded text (or null).
 async function _decodeQrFromFile(file) {
   const url = URL.createObjectURL(file);
   try {
     const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
-    const W = Math.min(img.naturalWidth || 1000, 1600);
-    const H = Math.round((img.naturalHeight || W) * (W / (img.naturalWidth || W)));
-    const canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H;
-    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, W, H);
-    if (window.BarcodeDetector) {
-      try {
-        const codes = await new window.BarcodeDetector({ formats: ['qr_code'] }).detect(canvas);
-        if (codes && codes.length) return codes[0].rawValue;
-      } catch (_) {}
+    for (const region of _qrDecodeRegions(img)) {
+      const canvas = _qrCanvasFromImage(img, region.sx, region.sy, region.sw, region.sh);
+      const decoded = await _decodeQrFromCanvas(canvas);
+      if (decoded) return decoded;
     }
-    await _ensureJsQR();
-    const data = ctx.getImageData(0, 0, W, H);
-    const r = window.jsQR(data.data, W, H);
-    return r ? r.data : null;
+    return null;
   } finally { setTimeout(() => URL.revokeObjectURL(url), 1500); }
 }
 // Pull the recovery code out of a decoded QR value (a ?login=/?recovery= URL or a bare code).
@@ -352,32 +394,59 @@ function _codeFromQrValue(val) {
   const bare = String(val).replace(/[^A-Za-z0-9]/g, '');
   return bare.length >= 12 ? bare : null;
 }
+function _setRecoveryQrBusy(busy) {
+  const btn = document.getElementById('rc-login-qr-btn');
+  if (!btn) return;
+  const label = btn.querySelector('span');
+  if (!btn.dataset.readyLabel && label) btn.dataset.readyLabel = label.textContent || t('recoveryLogin.qrButton');
+  btn.disabled = !!busy;
+  btn.style.opacity = busy ? '0.72' : '';
+  btn.style.pointerEvents = busy ? 'none' : '';
+  if (label) label.textContent = busy ? t('recoveryLogin.processing') : (btn.dataset.readyLabel || t('recoveryLogin.qrButton'));
+}
+
+function _recoveryLoginError(key) {
+  const errEl = document.getElementById('recovery-login-error');
+  if (errEl) {
+    errEl.textContent = t(key);
+    errEl.style.display = '';
+  } else {
+    showToast(t(key), 'error');
+  }
+}
+
 // "Recover with QR" on the login screen: open the photo picker, decode, log in.
 function rcLoginPickQr() {
-  let inp = document.getElementById('rc-login-qr-file');
-  if (!inp) {
-    inp = document.createElement('input');
-    inp.type = 'file'; inp.accept = 'image/*'; inp.id = 'rc-login-qr-file'; inp.style.display = 'none';
-    inp.addEventListener('change', async () => {
-      const f = inp.files && inp.files[0]; inp.value = '';
-      const errEl = document.getElementById('recovery-login-error');
-      if (errEl) errEl.style.display = 'none';
-      if (!f) return;
-      try {
-        const code = _codeFromQrValue(await _decodeQrFromFile(f));
-        if (!code) { if (errEl) { errEl.textContent = t('recoveryLogin.qrNotFound'); errEl.style.display = ''; } return; }
-        const ok = await loginViaRecoveryCode(code);
-        if (!ok && errEl) { errEl.textContent = t('recoveryLogin.errorNotFound'); errEl.style.display = ''; }
-      } catch (e) {
-        console.error('rcLoginPickQr err:', e);
-        if (errEl) { errEl.textContent = t('recoveryLogin.qrNotFound'); errEl.style.display = ''; }
-      }
-    });
-    document.body.appendChild(inp);
-  }
+  const inp = document.getElementById('rc-login-qr-file');
+  if (!inp) { _recoveryLoginError('recoveryLogin.qrNotFound'); return; }
+  inp.value = '';
   inp.click();
 }
 window.rcLoginPickQr = rcLoginPickQr;
+
+async function rcLoginHandleQrFile(ev) {
+  const inp = ev && ev.target ? ev.target : document.getElementById('rc-login-qr-file');
+  const f = inp && inp.files && inp.files[0];
+  const errEl = document.getElementById('recovery-login-error');
+  if (errEl) errEl.style.display = 'none';
+  if (!f) return;
+  _setRecoveryQrBusy(true);
+  try {
+    const code = _codeFromQrValue(await _decodeQrFromFile(f));
+    if (!code) { _recoveryLoginError('recoveryLogin.qrNotFound'); return; }
+    const manualInput = document.getElementById('recovery-login-input');
+    if (manualInput) manualInput.value = _formatRecoveryCodeForHash(code);
+    const ok = await loginViaRecoveryCode(code);
+    if (!ok) _recoveryLoginError('recoveryLogin.errorNotFound');
+  } catch (e) {
+    console.error('rcLoginHandleQrFile err:', e);
+    _recoveryLoginError('recoveryLogin.qrNotFound');
+  } finally {
+    if (inp) inp.value = '';
+    _setRecoveryQrBusy(false);
+  }
+}
+window.rcLoginHandleQrFile = rcLoginHandleQrFile;
 
 // v2.5.29: live auto-format the recovery code input as the user types
 // (and on paste) so it always reads XXXX-XXXX-XXXX-XXXX. The underlying

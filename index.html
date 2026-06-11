@@ -716,10 +716,11 @@ function loadTablerFallback() {
         <p class="form-subtitle" data-i18n="recoveryLogin.subtitle">בחרו את תמונת ה-QR ששמרתם — או הקלידו את קוד השחזור בן 16 התווים.</p>
 
         <!-- Magical path: pick your saved login-QR image -> auto-login, no typing. -->
-        <button class="btn-primary btn-large" onclick="rcLoginPickQr()" style="margin-bottom:6px;">
+        <button class="btn-primary btn-large" id="rc-login-qr-btn" type="button" onclick="rcLoginPickQr()" style="margin-bottom:6px;">
           <svg style="width:20px;height:20px;flex-shrink:0;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><path d="M14 14h.01M20 14h.01M14 20h.01M20 20h.01M17 17h.01"></path></svg>
           <span data-i18n="recoveryLogin.qrButton">התחבר עם ה-QR שלי</span>
         </button>
+        <input type="file" id="rc-login-qr-file" accept="image/*" style="display:none;" onchange="rcLoginHandleQrFile(event)">
         <div class="rc-login-or" data-i18n="recoveryLogin.or" style="text-align:center;color:rgba(255,255,255,0.42);font-size:12px;margin:10px 0 12px;">או הזן את הקוד ידנית</div>
 
         <div class="form-group">
@@ -3073,7 +3074,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.10.20</span>
+      <span class="menu-version">v2.10.21</span>
     </div>
   </div>
 
