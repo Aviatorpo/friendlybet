@@ -2429,16 +2429,30 @@ const _LIVE_MATCH_STATUSES = ['IN_PLAY', 'PAUSED', 'LIVE'];
 // acquisition data from the network response.
 const USER_PUBLIC_COLS = 'id,pool_id,nickname,is_admin,is_approved,is_late_joiner,whatsapp_url,telegram_url,total_score,group_score,knockout_score,top_scorer_score,joined_at,last_active_at,last_score_calc,groups_score,bonus_score,approval_status,approved_at,approved_by,group_points,knockout_points,bonus_points,predictions_locked,predictions_submitted_at';
 const _TERMINAL_MATCH_STATUSES = ['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED'];
+const _FINISHED_MATCH_STATUSES = ['FINISHED', 'AWARDED'];
 const _MAX_MATCH_MS = 3.5 * 60 * 60 * 1000; // longest plausible match incl. ET + pens
+function _matchStatus(m) {
+  return String((m && m.status) || '').toUpperCase();
+}
+function _matchIsLiveStatus(m) {
+  return _LIVE_MATCH_STATUSES.includes(_matchStatus(m));
+}
+function _matchIsFinishedStatus(m) {
+  return _FINISHED_MATCH_STATUSES.includes(_matchStatus(m));
+}
+function _matchIsTerminalStatus(m) {
+  return _TERMINAL_MATCH_STATUSES.includes(_matchStatus(m));
+}
+function _matchIsLiveish(m, now = Date.now()) {
+  if (!m) return false;
+  if (_matchIsLiveStatus(m)) return true;
+  const ko = Date.parse(m.match_date);
+  return !isNaN(ko) && ko <= now && (now - ko) < _MAX_MATCH_MS && !_matchIsTerminalStatus(m);
+}
 function _snapshotStaleDuringLive(matches, maxAgeMs = 60000) {
   if (!matches || !_matchesSnapCache.updatedAt) return false;
   const now = Date.now();
-  const liveish = matches.some(m => {
-    if (_LIVE_MATCH_STATUSES.includes(m.status)) return true;
-    // kicked off (within the last ~3.5h) but not finished -> almost certainly live now
-    const ko = Date.parse(m.match_date);
-    return !isNaN(ko) && ko <= now && (now - ko) < _MAX_MATCH_MS && !_TERMINAL_MATCH_STATUSES.includes(m.status);
-  });
+  const liveish = matches.some(m => _matchIsLiveish(m, now));
   return liveish && (now - _matchesSnapCache.updatedAt) > maxAgeMs;
 }
 
@@ -7936,8 +7950,8 @@ function renderMatches() {
   // Filter matches
   const filtered = matchesState.allMatches.filter(m => {
     if (matchesState.currentFilter === 'all') return true;
-    const isLiveStatus = _LIVE_MATCH_STATUSES.includes(m.status);
-    const isFinishedStatus = m.status === 'FINISHED' || m.status === 'AWARDED';
+    const isLiveStatus = _matchIsLiveish(m);
+    const isFinishedStatus = _matchIsFinishedStatus(m);
     if (matchesState.currentFilter === 'live') return isLiveStatus;
     if (matchesState.currentFilter === 'finished') return isFinishedStatus;
     // upcoming = catch-all so POSTPONED/SUSPENDED/CANCELLED/TBD never vanish from every tab
@@ -7972,12 +7986,13 @@ function createMatchCard(match) {
   
   // PAUSED (halftime / breaks) counts as live too - otherwise the score would
   // vanish and the match would show as "upcoming" for ~15 min every half-time.
-  const isLive = _LIVE_MATCH_STATUSES.includes(match.status);
-  const isFinished = match.status === 'FINISHED';
+  const status = _matchStatus(match);
+  const isLive = _matchIsLiveish(match);
+  const isFinished = _matchIsFinishedStatus(match);
   const isScheduled = !isLive && !isFinished;
   
   card.className = 'match-card';
-  if (match.status === 'PAUSED') card.classList.add('halftime'); // calm break look, not pulsing-live
+  if (status === 'PAUSED') card.classList.add('halftime'); // calm break look, not pulsing-live
   else if (isLive) card.classList.add('live');
   if (isFinished) card.classList.add('finished');
   
@@ -7996,7 +8011,7 @@ function createMatchCard(match) {
   // match_date so the label ticks every refresh without an API call.
   let statusText;
   let statusClass;
-  if (match.status === 'PAUSED') {
+  if (status === 'PAUSED') {
     // Half-time (or any break): show the score with an explicit half-time badge,
     // driven by the real API status - not the elapsed-time guess.
     statusText = t('matchesEx.halftime');
