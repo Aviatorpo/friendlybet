@@ -5,9 +5,18 @@
 // Strategy: Cache-first for assets, Network-first for API
 // ============================================================
 
-const CACHE_VERSION = 'friendlybet-v2.10.12';
+const CACHE_VERSION = 'friendlybet-v2.10.13';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
+
+// v2.10.13: keep live data fresh enough while avoiding a Vercel edge request on
+// every dashboard/leaderboard render. These are deliberately short for match data.
+const PUBLIC_DATA_TTLS = [
+  { test: path => path.endsWith('/matches.json'), ttl: 30 * 1000 },
+  { test: path => path.endsWith('/pundit.json'), ttl: 10 * 60 * 1000 },
+  { test: path => path.includes('/banter/'), ttl: 2 * 60 * 1000 },
+  { test: path => true, ttl: 60 * 1000 }
+];
 
 // Files to pre-cache (the app shell)
 const STATIC_ASSETS = [
@@ -111,9 +120,10 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Pillar 1: CDN data snapshots must always come fresh from the network/edge — never let
-  // the SW serve a stale matches/leaderboard JSON from its runtime cache.
+  // Generated public snapshots: short-TTL cache to reduce repeat edge requests
+  // without making live match/dashboard data feel stale.
   if (url.pathname.startsWith('/public-data/')) {
+    event.respondWith(publicDataWithShortTtl(request, url));
     return;
   }
 
@@ -133,7 +143,7 @@ self.addEventListener('fetch', event => {
 
   // Strategy 1: Cache-first for other static assets (CSS, icons, manifest)
   if (STATIC_ASSETS.some(asset => url.pathname === asset || url.pathname === asset.replace(/^\//, ''))) {
-    event.respondWith(cacheFirst(request));
+    event.respondWith(cacheFirst(request, { refresh: false }));
     return;
   }
 
@@ -142,7 +152,7 @@ self.addEventListener('fetch', event => {
       url.hostname.includes('fonts.gstatic.com') ||
       url.hostname.includes('cdn.jsdelivr.net') ||
       url.hostname.includes('esm.sh')) {
-    event.respondWith(cacheFirst(request));
+    event.respondWith(cacheFirst(request, { refresh: false }));
     return;
   }
 
@@ -153,22 +163,62 @@ self.addEventListener('fetch', event => {
   }
 
   // Default: try cache, fallback to network
-  event.respondWith(cacheFirst(request));
+  event.respondWith(cacheFirst(request, { refresh: false }));
 });
 
 // ============================================================
 // Caching strategies
 // ============================================================
 
-async function cacheFirst(request) {
+function publicDataTtl(pathname) {
+  const rule = PUBLIC_DATA_TTLS.find(item => item.test(pathname));
+  return rule ? rule.ttl : 60 * 1000;
+}
+
+function withCachedAt(response) {
+  const headers = new Headers(response.headers);
+  headers.set('x-fb-sw-cached-at', String(Date.now()));
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+
+async function publicDataWithShortTtl(request, url) {
+  const cache = await caches.open(RUNTIME_CACHE);
+  const cached = await cache.match(request);
+  const ttl = publicDataTtl(url.pathname);
+
+  if (cached) {
+    const cachedAt = Number(cached.headers.get('x-fb-sw-cached-at') || 0);
+    if (cachedAt && Date.now() - cachedAt < ttl) {
+      return cached;
+    }
+  }
+
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      await cache.put(request, withCachedAt(response.clone()));
+    }
+    return response;
+  } catch (err) {
+    if (cached) return cached;
+    throw err;
+  }
+}
+
+async function cacheFirst(request, opts = {}) {
   const cache = await caches.open(RUNTIME_CACHE);
   const cached = await cache.match(request);
   
   if (cached) {
-    // Refresh in background
-    fetch(request).then(response => {
-      if (response.ok) cache.put(request, response.clone());
-    }).catch(() => {});
+    if (opts.refresh) {
+      fetch(request).then(response => {
+        if (response.ok) cache.put(request, response.clone());
+      }).catch(() => {});
+    }
     return cached;
   }
   

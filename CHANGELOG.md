@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.13** - Free-tier Vercel request protection. The service worker now stops background-refreshing cache-first static assets on every repeat load, relying on the existing versioned cache key for updates instead. Generated `/public-data/*` snapshots now use short TTLs in the service worker (30s for matches, 2m for banter, 10m for pundit, 60s default) with stale fallback only on network failure. This should reduce repeat Edge Requests without changing Supabase writes, scoring, or core prediction flow. Version/cache bumped to v2.10.13.
+
 **v2.10.12** - Clarified the Annex C admin banner: it now separates directly affected members from the broader fairness review window, making clear that some members were hit by invalid corrected-bracket matchups while all members in the affected pool can review/update their knockout bracket. The review-window deadline is now shown on the admin banner and all user review banners with the viewer's local timezone. Version/cache bumped to v2.10.12.
 
 **v2.10.11** - Production polish for the Annex C correction experience. Dashboard now distinguishes "World Cup is live" from "pool has scored points": early live days with 0 points show a clear no-points explainer, and users with an open knockout review window no longer see copy saying their predictions are locked. The admin Annex C members banner now uses a reliable inline warning icon, calmer body copy, and better-spaced action buttons. Version/cache bumped to v2.10.11.
