@@ -2624,7 +2624,7 @@ function createMemberCard(member, picksCount, koPicksCount, isV2) {
   } else if (allDone) {
     statusClass = 'completed';
     statusText = t('membersList.allDone');
-  } else if (groupComplete && !koComplete) {
+  } else if (isV2 && groupComplete && !koComplete) {
     // groups in, knockout bracket missing/incomplete — the nudge state
     statusClass = 'partial';
     statusText = t('membersList.needsKnockout');
@@ -2838,7 +2838,7 @@ function _adminMemberProgress(member) {
   // (re-)fill the knockout. Surfaced so the admin can see exactly who to nudge.
   const grant = member.reopenGrant || {};
   const annexReview = isV2 && grant.incident_key === 'annex_c_2026' && grant.grant_active;
-  const needsKnockout = (groupsFull && !bracketFull) || (isV2 && annexReview);
+  const needsKnockout = isV2 && ((groupsFull && !bracketFull) || annexReview);
 
   return { started, finished, needsKnockout, annexReview, annexHardAffected: annexReview && grant.impact_kind === 'hard_invalid_r32' };
 }
