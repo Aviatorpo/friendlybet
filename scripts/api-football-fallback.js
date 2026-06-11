@@ -45,6 +45,16 @@ function _status(m) {
   return String((m && m.status) || '').toUpperCase();
 }
 
+async function fetchWithTimeout(url, options = {}, timeoutMs = 25000) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: ctrl.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 function isStuckCandidate(m, nowMs = Date.now()) {
   if (!m || TERMINAL.has(_status(m))) return false;
   if (!m.home_team_code || !m.away_team_code || !m.match_date) return false;
@@ -55,7 +65,7 @@ function isStuckCandidate(m, nowMs = Date.now()) {
 
 async function callSupabase(method, table, data = null, query = '') {
   fbGuardDelete(method, table);
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
+  const res = await fetchWithTimeout(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
     method,
     headers: {
       apikey: SUPABASE_KEY,
@@ -74,7 +84,7 @@ async function callSupabase(method, table, data = null, query = '') {
 }
 
 async function callApiFootball(endpoint) {
-  const res = await fetch(`${API_FOOTBALL_BASE}${endpoint}`, {
+  const res = await fetchWithTimeout(`${API_FOOTBALL_BASE}${endpoint}`, {
     headers: { 'x-apisports-key': API_FOOTBALL_KEY }
   });
   if (!res.ok) {
@@ -89,7 +99,7 @@ async function callApiFootball(endpoint) {
 }
 
 async function callEspnScoreboard(dateYmd) {
-  const res = await fetch(`${ESPN_SCOREBOARD_BASE}?dates=${encodeURIComponent(dateYmd)}`, {
+  const res = await fetchWithTimeout(`${ESPN_SCOREBOARD_BASE}?dates=${encodeURIComponent(dateYmd)}`, {
     headers: { 'User-Agent': 'FriendlyBet result verifier (+https://friendlybet.live)' }
   });
   if (!res.ok) {
@@ -206,7 +216,7 @@ const buildUpdateFromApiFixture = buildUpdateFromVerifiedFixture;
 async function loadStuckMatches(now = new Date()) {
   const end = new Date(now.getTime() - MIN_AGE_MINUTES * 60 * 1000);
   const start = new Date(now.getTime() - LOOKBACK_HOURS * 60 * 60 * 1000);
-  const q = `?select=*&match_date=gte.${start.toISOString()}&match_date=lte.${end.toISOString()}&order=match_date.asc`;
+  const q = `?select=external_id,status,match_date,home_team_code,away_team_code&match_date=gte.${start.toISOString()}&match_date=lte.${end.toISOString()}&order=match_date.asc`;
   const rows = await callSupabase('GET', 'matches', null, q);
   return (rows || []).filter(m => isStuckCandidate(m, now.getTime()));
 }
@@ -276,13 +286,21 @@ async function verifyFinalResults(opts = {}) {
   let apiFixtures = [];
   let espnEvents = [];
   if (API_FOOTBALL_KEY) {
-    apiFixtures = await loadApiFootballFixturesFor(stuck);
-    console.log(`Loaded ${apiFixtures.length} API-Football fixture(s). league=${API_FOOTBALL_LEAGUE_ID} season=${API_FOOTBALL_SEASON}`);
+    try {
+      apiFixtures = await loadApiFootballFixturesFor(stuck);
+      console.log(`Loaded ${apiFixtures.length} API-Football fixture(s). league=${API_FOOTBALL_LEAGUE_ID} season=${API_FOOTBALL_SEASON}`);
+    } catch (e) {
+      console.warn(`API-Football source unavailable: ${e.message}`);
+    }
   } else {
     console.log('API_FOOTBALL_KEY missing - skipping API-Football source');
   }
-  espnEvents = await loadEspnEventsFor(stuck);
-  console.log(`Loaded ${espnEvents.length} ESPN event(s)`);
+  try {
+    espnEvents = await loadEspnEventsFor(stuck);
+    console.log(`Loaded ${espnEvents.length} ESPN event(s)`);
+  } catch (e) {
+    console.warn(`ESPN source unavailable: ${e.message}`);
+  }
 
   let updated = 0;
   let skipped = 0;
