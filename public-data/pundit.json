@@ -1,12 +1,58 @@
 {
-  "updatedAt": "2026-06-11T00:33:50.545Z",
+  "updatedAt": "2026-06-11T03:28:04.024Z",
   "count": 12,
   "items": [
+    {
+      "id": "can-davies-hamstring-opener-2026-06-11",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "קפטן קנדה אלפונסו דייוויס יפסיד את פתיחת מונדיאל הנבחרת המארחת מול בוסניה-הרצגובינה בטורונטו ב-12 ביוני, כך אישר המאמן ג'סי מארש. מגן הגב של בייארן מינכן עדיין מתאושש מקרע בשריר הירך שנגרם בחצי גמר ליגת האלופות מול פריז סן-ז'רמן ב-6 במאי. מארש מדגיש שדייוויס ישחק בטורניר ומכוון למשחק הקבוצתי השלישי מול קטאר בוונקובר ב-18 ביוני כחלון חזרה ריאלי. קנדה כבר איבדה את קשר הקדמה מרצלו פלורס ל-ACL לפני הטורניר, ומעולם לא ניצחה במשחק מונדיאל בשתי הופעותיה הקודמות. מחר הם מארחים את המשחק הגדול ביותר בהיסטוריית הכדורגל הקנדי, בפני קהל מלא, ועושים זאת ללא הקפטן שלהם. האם שאר הסגל יקום לגובה?",
+      "en": "Canada captain Alphonso Davies will miss the host nation's World Cup opener against Bosnia and Herzegovina in Toronto on June 12, confirmed coach Jesse Marsch, as the Bayern Munich left back continues recovering from a hamstring tear suffered in the Champions League semi-final against Paris Saint-Germain on May 6. Marsch insists Davies will play in the tournament and is targeting the third group match against Qatar in Vancouver on June 18 as the realistic return window. Canada already lost attacking midfielder Marcelo Flores to an ACL injury before the tournament and have never won a World Cup match across two previous appearances. Tomorrow they host the biggest game in Canadian football history, in front of a sold-out home crowd, and they will do it without their captain. Does the rest of the squad step up?",
+      "team": "CAN",
+      "sources": [
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48944438/alphonso-davies-joins-canada-world-cup-prep-unclear-play"
+        },
+        {
+          "name": "Yahoo Sports",
+          "url": "https://sports.yahoo.com/articles/why-alphonso-davies-missing-2026-213721175.html"
+        },
+        {
+          "name": "The Score",
+          "url": "https://www.thescore.com/worldcup/news/3550369"
+        }
+      ],
+      "expires_at": "2026-06-18T23:59:59Z"
+    },
+    {
+      "id": "arg-messi-bench-goal-iceland-wc2026-2026-06-10",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "ליונל מסי יצא כמחליף והבקיע מנקודת האחד-עשר בניצחון ארגנטינה 3:0 על איסלנד ב-10 ביוני, המשחק האחרון לפני מונדיאל 2026. בן ה-38 ישב על הספסל בידידות הקודמת מול הונדורס בשל עייפות בשריר הירך, והחזרה שלו עם שער פיזרה את שאלות הכשירות האחרונות. המאמן סקלוני אישר שמסי מוכן לפתיחת קבוצה J של ארגנטינה מול אלג'יריה בדאלאס ב-16 ביוני. אלוף העולם המגן מגיע למונדיאל שישי עם שער כבר השבוע. השאלה בכל מאגר תחזיות היא לא האם הוא ישחק. אלא עד כמה עמוק ביולי הוא עדיין ישחק.",
+      "en": "Lionel Messi came off the bench to score from the penalty spot in Argentina's 3-0 victory over Iceland on June 10, their final warm-up before the 2026 World Cup. The 38-year-old had sat out the previous friendly against Honduras with hamstring fatigue, and his return with a goal cleared any remaining doubts about his fitness. Coach Scaloni confirmed Messi is ready for Argentina's Group J opener against Algeria in Dallas on June 16. The reigning world champion arrives at a sixth World Cup with a goal on the board this week. The question for every prediction pool is not whether he will play. It is how deep into July he will still be playing.",
+      "team": "ARG",
+      "sources": [
+        {
+          "name": "beIN Sports",
+          "url": "https://www.beinsports.com/en-us/soccer/friendlies/articles/argentina-3-0-iceland-messi-returns-with-goal-off-the-bench-in-final-world-cup-warm-up-2026-06-10"
+        },
+        {
+          "name": "Al Jazeera",
+          "url": "https://www.aljazeera.com/sports/2026/6/10/messi-comes-off-the-bench-to-score-in-argentinas-final-world-cup-warm-up"
+        },
+        {
+          "name": "World Soccer Talk",
+          "url": "https://worldsoccertalk.com/world-cup/argentina-vs-iceland-live-updates-minute-by-minute-coverage-of-2026-international-friendly/"
+        }
+      ],
+      "expires_at": "2026-07-05T23:59:59Z"
+    },
     {
       "id": "wc26-azteca-three-world-cups-2026-06-11",
       "type": "news",
       "confidence": "confirmed",
-      "he": "מונדיאל 2026 נפתח היום באצטדיון המעוטר ביותר בהיסטוריית המשחק. אסטדיו אצטקה במקסיקו סיטי ארח את משחק הפתיחה השלישי שלו במונדיאל, הבלעדי שעשה זאת אי-פעם. הוא ארח את המשחק הראשון בטורניר ב-1970 וב-1986 גם יחד, ושני הגרסאות הללו הסתיימו אף הן עם הגמר באותו מגרש, ברזיל מרימה את הגביע ב-1970 וארגנטינה ב-1986. עם סיום טורניר 2026 יהיו לאצטקה 24 משחקי מונדיאל בסך הכל, יותר מכל אצטדיון אחר בעולם. המגרש שוכן בגובה 2,200 מטר מעל פני הים, שם האוויר הדליל מקצר מסירות, מעייף את הרגליים מהר יותר, והיסטורית נתן יתרון לנבחרות מקסיקו מול יריבות שלא הסתגלו לגובה. זהו גם המגרש שבו מראדונה הבקיע הן את 'יד האל' והן את 'שער המאה' מול אנגליה ברבע גמר 1986, ושבו איטליה ומערב גרמניה שיחקו את 'משחק המאה' בחצי גמר 1970. ארבעים שנה אחרי מראדונה, האצטקה פותח מונדיאל נוסף. מקסיקו מתמודדת מול דרום אפריקה בקבוצה A - האם אצטדיון כה עמוס בהיסטוריה יוכל לייצר פרק אייקוני נוסף?",
+      "he": "מונדיאל 2026 נפתח היום באצטדיון המעוטר ביותר בהיסטוריית המשחק. אסטדיו אצטקה במקסיקו סיטי ארח את משחק הפתיחה השלישי שלו במונדיאל, הבלעדי שעשה זאת אי-פעם. הוא ארח את המשחק הראשון בטורניר ב-1970 וב-1986 גם יחד, ושני הגרסאות הללו הסתיימו אף הן עם הגמר באותו מגרש, ברזיל מרימה את הגביע ב-1970 וארגנטינה ב-1986. עם סיום טורניר 2026 יהיו לאצטקה 24 משחקי מונדיאל בסך הכל, יותר מכל אצטדיון אחר בעולם. המגרש שוכן בגובה 2,200 מטר מעל פני הים, שם האוויר הדליל מקצר מסירות, מעייף את הרגליים מהר יותר, והיסטורית נתן יתרון לנבחרות מקסיקו מול יריבות שלא הסתגלו לגובה. זהו גם המגרש שבו מראדונה הבקיע הן את יד האל והן את שער המאה מול אנגליה ברבע גמר 1986, ושבו איטליה ומערב גרמניה שיחקו את משחק המאה בחצי גמר 1970. ארבעים שנה אחרי מראדונה, האצטקה פותח מונדיאל נוסף. מקסיקו מתמודדת מול דרום אפריקה בקבוצה A - האם אצטדיון כה עמוס בהיסטוריה יוכל לייצר פרק אייקוני נוסף?",
       "en": "The 2026 World Cup began today at the most decorated stadium in the history of the game. Estadio Azteca in Mexico City hosted its third World Cup opening match, the only venue ever to do so - it staged the tournament's first game in both 1970 and 1986, and both those editions also ended with the final at the same ground, Brazil lifting the trophy in 1970 and Argentina in 1986. By the close of the 2026 tournament, the Azteca will have hosted 24 World Cup matches in total, more than any other stadium on earth. The ground sits at 2,200 metres above sea level, where the thinner air shortens passes, tires legs faster, and has historically given Mexican sides an edge over unacclimatised opponents. This is also the ground where Maradona scored both the Hand of God and the Goal of the Century against England in the 1986 quarter-final, and where Italy and West Germany played the Game of the Century in the 1970 semi-final. Forty years on from Maradona, the Azteca opens another World Cup. Mexico face South Africa in Group A - can a stadium this loaded with history produce another iconic chapter?",
       "team": null,
       "sources": [
@@ -26,54 +72,50 @@
       "expires_at": "2026-06-26T00:00:00Z"
     },
     {
-      "id": "bra-rodrygo-acl-wc2026-2026-03-02",
+      "id": "bra-neymar-mri-progress-wc2026-2026-06-09",
       "type": "news",
       "confidence": "confirmed",
-      "he": "ברזיל איבדה שני שחקנים מתוכננים בהרכב הפותח עוד לפני שהתחרות החלה. רודריגו ספג קרע ב-ACL ובמניסקוס הלטרלי כשמשחק עבור ריאל מדריד מול חטאפה ב-2 במרץ ויפסיד את מונדיאל 2026 כולו. בן ה-25 כינה זאת 'אחד הימים הגרועים בחיי', אם כי מאוחר יותר נשבע לחזור חזק יותר. אסטבאו, בן ה-18 של צ'לסי, פוסל גם הוא לאחר פציעת שריר ירך באפריל והושמט מהסגל הסופי. המאמן קרלו אנצ'לוטי פנה לראפיניה ומתאוס קונייה בכנפות, עם אנדריק בן ה-18 כחלוץ. ניימאר, בן 34, נמצא בסגל כמחליף פוטנציאלי אך לא צפוי להיכלל בפתיחת קבוצה C של ברזיל מול מרוקו ב-13 ביוני. ויניסיוס ג'וניור יצטרך לשאת את ההתקפה בחלקים גדולים מהטורניר אם תוכנית הגיבוי תחזיק מעמד. סלסאו מדוללת בכנפות, פותחת מול מרוקו שהגיעה לארבע האחרונות בקטאר. האם עומק יוכל להחליף איכות ברגעים הקריטיים?",
-      "en": "Brazil lost two projected starters before the tournament began. Rodrygo suffered a torn ACL and lateral meniscus playing for Real Madrid against Getafe on March 2 and will miss the 2026 World Cup entirely. The 25-year-old called it one of the worst days of his life, though he later vowed to return stronger. Estevao, Chelsea's incoming 18-year-old, was also ruled out after a hamstring injury in April and was left off the final squad. Coach Carlo Ancelotti has turned to Raphinha and Matheus Cunha on the wings, with 18-year-old Endrick up front. Neymar, 34, is in the squad as cover but is not expected to feature in Brazil's Group C opener against Morocco on June 13. Vinicius Jr will need to carry the attack for large parts of the tournament if the backup plan is to hold. A Selecao depleted on the wings, opening against a Morocco side that reached the last four in Qatar. Can depth replace class when it matters most?",
+      "he": "הצוות הרפואי הברזילאי פרסם עדכון מעודד ב-9 ביוני לאחר שבדיקת MRI חדשה הראתה שמתח הדרגה השנייה בשריר השוק הימני של ניימאר מחלים בפרמטרים הצפויים, לפי ה-CBF. הפורווארד בן ה-34, שנפצע בסנטוס באמצע מאי, עדיין לא צפוי להופיע בפתיחת קבוצה C של ברזיל מול מרוקו בניו ג'רזי ב-13 ביוני. המאמן קרלו אנצ'לוטי מכוון למשחק הקבוצתי השני מול האיטי כחלון החזרה הריאלי ביותר, ומדגיש שלא יפעיל כלל ההחלפה הדחופה. עומק הרזרבות הוכח מול מצרים כשאנדריק בן ה-18 הבקיע בניצחון 2:1, אך ברזיל גם איבדה את מגן הגב וסלי לקרע בשריר המקרב של הירך השמאלית באותו משחק, ואדרסון מאטלנטה נוסף כמחליף. ויניסיוס ג'וניור מחזיר לניימאר את חולצת מספר 10 עם חזרתו. התקדמות טובה אינה אישור כשירות מלאה. האם ברזיל תשמור על עצמה בשלב הבתים עד שמבקיע כל הזמנים שלה יגיע?",
+      "en": "Brazil's medical team issued an encouraging update on June 9 after a new MRI scan showed Neymar's Grade 2 right calf strain healing within expected parameters, per the CBF. The 34-year-old, injured at Santos in mid-May, is still not expected to feature in Brazil's Group C opener against Morocco in New Jersey on June 13. Coach Carlo Ancelotti is targeting the second group match against Haiti as the most realistic return window and insists he will not use the emergency replacement rule on Neymar. Brazil's backup depth was on show against Egypt when 18-year-old Endrick scored in a 2-1 warm-up win, but the Selecao also lost right-back Wesley to a left-thigh adductor tear in that same match, with Atalanta midfielder Ederson called in as cover. Vinicius Jr is handing back the No. 10 shirt to Neymar once he returns. Good progress is not a clean bill of health. Can Brazil hold shape in the group stage until their record goalscorer arrives?",
       "team": "BRA",
       "sources": [
         {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/rodrygo-brazil-injured"
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/49002184/brazil-mri-neymar-good-progress-injury"
         },
         {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48089822/real-madrid-rodrygo-torn-acl-season-miss-world-cup"
+          "name": "Arab News",
+          "url": "https://www.arabnews.com/node/2646471/sport"
         },
         {
           "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/life-has-been-cruel-rodrygo-opens-up-on-heartbreak-as-real-madrid-star-accepts-world-cup-dream-is-over-with-massive-injury-blow"
-        },
-        {
-          "name": "beIN Sports",
-          "url": "https://www.beinsports.com/en-us/soccer/la-liga/articles/rodrygo-ruled-out-of-2026-world-cup-with-acl-injury-2026-03-03"
+          "url": "https://www.foxsports.com/stories/soccer/brazil-right-back-wesley-is-out-of-the-world-cup-with-a-thigh-injury-and-ederson-is-replacing-him"
         }
       ],
-      "expires_at": "2026-07-05T23:59:59Z"
+      "expires_at": "2026-06-21T23:59:59Z"
     },
     {
-      "id": "wc26-toronto-opening-ceremony-2026-06-12",
+      "id": "eng-saka-achilles-wc2026-2026-06-10",
       "type": "news",
       "confidence": "confirmed",
-      "he": "מונדיאל 2026 הוא הראשון בהיסטוריה שמקיים טקסי פתיחה בשלושת מדינות המארחות. משחק הפתיחה של מקסיקו באצטקה קדם היום, וב-12 ביוני בשעה 13:30 שעון מקומי קנדה מארחת את הטקס שלה ב-Toronto Stadium, 90 דקות לפני פתיחת קבוצה B של המארחת מול בוסניה-הרצגובינה. טקס קנדה כולל את אלאניס מוריסט שמבצעת את O Canada, לצד אלסיה קארה, מייקל בובלה, ג'סי רייז, נורה פאתהי ואלייאנה בין המבצעים, כשהשחקן ויל ארנט משמש כשגריר פיפ\"א לגביע העולם 2026. טקס שלישי יתקיים כשארצות הברית תשחק את משחקה הראשון. פיפ\"א מבקשת מהאוהדים להגיע מוקדם, עם פתיחת השערים ארבע שעות לפני הבעיטה וטקס שמתחיל 90 דקות לפניה. לקנדה אין ניצחון במונדיאל בשתי ההשתתפויות הקודמות שלה, ב-1986 ובקטאר 2022. מחר בבית, בפני קהל מלא, הם מקבלים קודם את הבמה ואחר כך את הכדורגל. מה שהטקס בונה, 90 דקות בקבוצה B יבחנו.",
-      "en": "The 2026 World Cup is the first in history to hold opening ceremonies in all three host nations. Mexico's opening match at Azteca came first today, and on June 12 at 13:30 local time Canada stages its ceremony at Toronto Stadium, 90 minutes before the host nation's Group B opener against Bosnia and Herzegovina. The Canada ceremony features Alanis Morissette singing O Canada, alongside Alessia Cara, Michael Buble, Jessie Reyez, Nora Fatehi and Elyanna among the performers, with actor Will Arnett serving as FIFA's World Cup 2026 Ambassador. A third ceremony will take place when the United States play their first match. FIFA is asking fans to arrive early, with gates opening four hours before kick-off and the ceremony beginning 90 minutes before it. Canada have never won a World Cup match in two previous tournaments, in 1986 and Qatar 2022. Tomorrow at home, in front of a capacity crowd, they get the stage first and the football second. What the ceremony builds, 90 minutes of Group B will test.",
-      "team": "CAN",
+      "he": "המאמן תומאס טוכל אמר ב-10 ביוני שבוקאיו סאקה עדיין מנהל בעיית אכילס שנגררת ממרץ, ושסביר מאוד שהמגינה של ארסנל לא יפתח וגם לא יסיים כל משחק במונדיאל. סאקה פרש מידידות אנגלייה מול אורוגוואי ויפן במרץ, לא הופיע עבור הנבחרת מנובמבר, ושיחק תחת הכאב בריצת תואר הפרמייר ליג של ארסנל ובגמר ליגת האלופות במקום לנוח. הוא צפוי להישאר הקצה הימני הראשי של אנגלייה, אך הדקות שלו ינוהלו בקפידה לאורך הטורניר. אנגלייה פותחת קבוצה L מול קרואטיה ב-AT&T Stadium בדאלאס ב-17 ביוני, כשכבר חסרים קול פאלמר, פיל פודן וטרנט אלכסנדר-ארנולד. האפשרות היצירתית הרחבה ביותר שלהם מגיעה לטורניר במצב מנוהל. לטוכל יש תוכנית. השאלה היא האם היא תוכל לשרוד בסיבובי הנוק-אאוט אם חלקי המפתח לעולם לא יגיעו לכשירות מלאה.",
+      "en": "England manager Thomas Tuchel said on June 10 that Bukayo Saka is still managing an Achilles problem carried since March and that it is very unlikely the Arsenal winger will both start and finish every match at the World Cup. Saka withdrew from England's Uruguay and Japan friendlies in March, has not featured for the national side since November, and played through the pain during Arsenal's Premier League title run and their Champions League final rather than rest. He is expected to remain England's first-choice right winger but with his minutes carefully managed throughout the tournament. England open Group L against Croatia at AT&T Stadium in Dallas on June 17, already without Cole Palmer, Phil Foden and Trent Alexander-Arnold. Their most creative wide option arrives at the tournament in managed condition. Tuchel has a blueprint. The question is whether it can survive the knockout rounds if key pieces are never fully fit.",
+      "team": "ENG",
       "sources": [
         {
-          "name": "FIFA (inside.fifa.com)",
-          "url": "https://inside.fifa.com/media-releases/canada-welcome-opening-ceremony-world-cup-2026-tm"
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/49011304/thomas-tuchel-england-world-cup-take-care-bukayo-saka-arsenal-fitness"
         },
         {
-          "name": "NBC Los Angeles",
-          "url": "https://www.nbclosangeles.com/world-cup/world-cup-2026-opening-ceremonies-date-time-performers/3900269/"
+          "name": "Fox Sports",
+          "url": "https://www.foxsports.com/stories/soccer/is-bukayo-saka-world-cup-ready-for-england-thomas-tuchel-delivers-take-care-update-on-arsenal-wingers-fitness"
         },
         {
-          "name": "Today.com",
-          "url": "https://www.today.com/popculture/music/world-cup-opening-ceremony-performers-guide-rcna345808"
+          "name": "Sports Mole",
+          "url": "https://www.sportsmole.co.uk/football/england/world-cup-2026/news/tuchels-pain-saka-injury-update-as-england-boss-faces-backup-dilemma_598900.html"
         }
       ],
-      "expires_at": "2026-06-15T00:00:00Z"
+      "expires_at": "2026-06-25T23:59:59Z"
     },
     {
       "id": "esp-yamal-barcelona-conditions-wc2026-2026-06-10",
@@ -99,56 +141,6 @@
       "expires_at": "2026-07-02T23:59:59Z"
     },
     {
-      "id": "ger-karl-ouedraogo-squad-wc2026-2026-06-06",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "כאשר אסאן אואדראוגו של RB Leipzig קיבל את השיחה להצטרף לסגל המונדיאל של גרמניה, היו לו 48 שעות הודעה. לנרט קרל, בן ה-18 מ-Bayern Munich, קרע שריר באימון בשיקגו ב-6 ביוני, ימים ספורים לפני פתיחת גרמניה בקבוצה E מול קוראסאו בהיוסטון ב-14 ביוני. לקרל היו 17 תרומות שערים לבייארן העונה והוא היה אחד השחקנים הצעירים ביותר מבין 48 הסגלים. אואדראוגו, בן 20, נכנס עם גיבוי ישיר של המאמן יוליאן נאגלסמן, שאמר שהוא עשה התחלה מצוינת בהופעותיו הראשונות לגרמניה ואמר לו לשחק עם אומץ וביטחון. עומק הסגל של גרמניה ספג את המכה ללא משבר. עבור אואדראוגו, זו היתה השיחה שכל שחקן צעיר מדמיין לעצמו. השאלה היא האם הוא יוכל לספק כשהטורניר מתחיל באמת.",
-      "en": "When RB Leipzig's Assan Ouedraogo got the call to join Germany's World Cup squad, he had 48 hours notice. Bayern Munich midfielder Lennart Karl, 18, suffered a torn muscle in training in Chicago on June 6, just days before Germany open Group E against Curacao in Houston on June 14. Karl had delivered 17 goal contributions for Bayern this season and was among the youngest players in any of the 48 squads. Ouedraogo, 20, steps in with coach Julian Nagelsmann's direct backing: Nagelsmann said he made an excellent start in his early Germany appearances and told him to play with courage and confidence. Germany's squad depth absorbed the blow without a crisis. For Ouedraogo, it was the phone call every young player imagines. The question is whether he can deliver when the tournament actually starts.",
-      "team": "GER",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48977173/lennart-karl-injured-germany-training-miss-world-cup"
-        },
-        {
-          "name": "Bundesliga.com",
-          "url": "https://www.bundesliga.com/en/bundesliga/news/lennart-karl-world-cup-injury-bayern-munich-germany-37718"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/confirmed-assan-ou-draogo-replaces-220200348.html"
-        }
-      ],
-      "expires_at": "2026-07-05T23:59:59Z"
-    },
-    {
-      "id": "can-flores-nelson-squad-wc2026-2026-06-09",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "קנדה ספגה מכה בסגל לקראת פתיחת המונדיאל שלה כאשר קשר הקדמה מרצלו פלורס עבר ניתוח ב-5 ביוני על קרע ב-ACL שנגרם בגמר גביע האלופות של קונקאקאף, ומנוע מהשתתפות בטורניר כולו. קנדה אישרה ב-9 ביוני שג'יידן נלסון, בן 23, קצה של אוסטין FC ממברמפטון אונטריו, מונה כממלא מקומו. לנלסון שלושה שערים ב-14 הופעות עבור נבחרת קנדה הבכירה, כולל שער בדקות הנוספות בניצחון 2:0 על אוזבקיסטן בשבוע שעבר, ושני שערים ב-MLS העונה. קנדה מעולם לא ניצחה במשחק מונדיאל בשתי הופעותיה הקודמות, כשהפסידה את כל שישה משחקיה ב-1986 ובקטאר 2022. הם פותחים קבוצה B מול בוסניה-הרצגובינה בפני קהל מלא ב-Toronto Stadium ב-12 ביוני, תשעים דקות אחרי טקס הפתיחה. נבחרת מארחת, אצטדיון מלא, היסטוריה ללא ניצחון. האם משהו סוף-סוף ישתנה?",
-      "en": "Canada suffered a significant blow ahead of their World Cup opener when attacking midfielder Marcelo Flores underwent surgery on June 5 for a torn ACL sustained in the Concacaf Champions Cup final, ruling him out of the entire tournament. Canada confirmed on June 9 that Austin FC winger Jayden Nelson, 23, from Brampton, Ontario, has been named as his replacement. Nelson has scored three goals in 14 appearances for Canada's senior side, including a stoppage-time goal in a 2-0 warm-up win over Uzbekistan last week, and has two MLS goals for Austin FC this season. Canada have never won a World Cup match across two previous appearances, losing all six games in 1986 and at Qatar 2022. They open Group B against Bosnia and Herzegovina in front of a sold-out home crowd at Toronto Stadium on June 12, ninety minutes after the opening ceremony. A host nation, a full stadium, a history with no wins. Does something finally give?",
-      "team": "CAN",
-      "sources": [
-        {
-          "name": "CBC Sports",
-          "url": "https://www.cbc.ca/sports/soccer/worldcup/jayden-nelson-injury-replacement-canada-world-cup-marcelo-flores-9.7228625"
-        },
-        {
-          "name": "TSN",
-          "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/nelson-replaces-flores-on-canada-roster/"
-        },
-        {
-          "name": "beIN Sports",
-          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/canada-replaces-marcelo-flores-with-jayden-nelson-for-world-cup-2026-06-09"
-        },
-        {
-          "name": "Globe and Mail",
-          "url": "https://www.theglobeandmail.com/sports/soccer/article/fifa-world-cup-nelson-flores-replacement/"
-        }
-      ],
-      "expires_at": "2026-06-30T00:00:00Z"
-    },
-    {
       "id": "jpn-elite-scalps-form-wc2026-2026-06-10",
       "type": "news",
       "confidence": "confirmed",
@@ -170,6 +162,29 @@
         }
       ],
       "expires_at": "2026-06-30T00:00:00Z"
+    },
+    {
+      "id": "fra-mbappe-fontaine-record-wc2026-2026-06-10",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "קיליאן מבאפה מגיע למונדיאל 2026 עם 12 שערים בסה\"כ בטורניר, וזקוק לשער אחד נוסף כדי להשוות לז'וסט פונטן כמבקיע הצרפתי הרב ביותר בהיסטוריית גביע העולם. פונטן הבקיע את כל 13 שעריו בקמפיין יחיד ויוצא דופן, בטורניר 1958 בשוודיה, שמהווה גם שיא כל הזמנים של שערים בגביע עולם אחד. מבאפה פיזר את 12 שעריו: ארבעה ברוסיה 2018 ושמונה בקטאר 2022, כולל האטריק בגמר. המאמן דידייה דשאן, שהוביל את הלה-בלה לתואר 2018 ולגמר 2022, אישר כי מונדיאל זה הוא אחרונו עם הנבחרת הלאומית. צרפת פותחת את קבוצה I מול סנגל. רודף שיאים וארכיטקט שעוזב, באותו סגל באותו זמן.",
+      "en": "Kylian Mbappe arrives at the 2026 World Cup with 12 career goals in the tournament, needing just one more to match Just Fontaine as the leading French scorer in World Cup history. Fontaine scored all 13 of his World Cup goals in a single extraordinary campaign at the 1958 tournament in Sweden, a total that also stands as the all-time record for most goals in one World Cup. Mbappe spread his 12 across four in Russia in 2018 and eight in Qatar in 2022, the latter including a hat-trick in the final. Coach Didier Deschamps, who led Les Bleus to the 2018 title and the 2022 final, has confirmed this World Cup is his last with the national side. France open Group I against Senegal. A record-chaser and a departing architect, in the same squad at the same time.",
+      "team": "FRA",
+      "sources": [
+        {
+          "name": "UEFA",
+          "url": "https://www.uefa.com/european-qualifiers/news/02a6-20d159288012-ce02189d2504-1000--france-at-the-world-cup-2026-squad-fixtures-group-and-hi/"
+        },
+        {
+          "name": "Olympics.com",
+          "url": "https://www.olympics.com/en/news/kylian-mbappe-fifa-world-cup-records-goals-stats"
+        },
+        {
+          "name": "ESPN",
+          "url": "https://www.espn.com/soccer/story/_/id/48979217/kylian-mbappe-fifa-world-cup-history-results-stats"
+        }
+      ],
+      "expires_at": "2026-07-19T23:59:59Z"
     },
     {
       "id": "wc26-sofi-stadium-los-angeles-2026-06-10",
@@ -218,29 +233,6 @@
       "expires_at": "2026-06-26T23:59:59Z"
     },
     {
-      "id": "fra-mbappe-fontaine-record-wc2026-2026-06-10",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "קיליאן מבאפה מגיע למונדיאל 2026 עם 12 שערים בסה\"כ בטורניר, וזקוק לשער אחד נוסף כדי להשוות לז'וסט פונטן כמבקיע הצרפתי הרב ביותר בהיסטוריית גביע העולם. פונטן הבקיע את כל 13 שעריו בקמפיין יחיד ויוצא דופן, בטורניר 1958 בשוודיה, שמהווה גם שיא כל הזמנים של שערים בגביע עולם אחד. מבאפה פיזר את 12 שעריו: ארבעה ברוסיה 2018 ושמונה בקטאר 2022, כולל האטריק בגמר. המאמן דידייה דשאן, שהוביל את הלה-בלה לתואר 2018 ולגמר 2022, אישר כי מונדיאל זה הוא אחרונו עם הנבחרת הלאומית. צרפת פותחת את קבוצה I מול סנגל. רודף שיאים וארכיטקט שעוזב, באותו סגל באותו זמן.",
-      "en": "Kylian Mbappe arrives at the 2026 World Cup with 12 career goals in the tournament, needing just one more to match Just Fontaine as the leading French scorer in World Cup history. Fontaine scored all 13 of his World Cup goals in a single extraordinary campaign at the 1958 tournament in Sweden, a total that also stands as the all-time record for most goals in one World Cup. Mbappe spread his 12 across four in Russia in 2018 and eight in Qatar in 2022, the latter including a hat-trick in the final. Coach Didier Deschamps, who led Les Bleus to the 2018 title and the 2022 final, has confirmed this World Cup is his last with the national side. France open Group I against Senegal. A record-chaser and a departing architect, in the same squad at the same time.",
-      "team": "FRA",
-      "sources": [
-        {
-          "name": "UEFA",
-          "url": "https://www.uefa.com/european-qualifiers/news/02a6-20d159288012-ce02189d2504-1000--france-at-the-world-cup-2026-squad-fixtures-group-and-hi/"
-        },
-        {
-          "name": "Olympics.com",
-          "url": "https://www.olympics.com/en/news/kylian-mbappe-fifa-world-cup-records-goals-stats"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48979217/kylian-mbappe-fifa-world-cup-history-results-stats"
-        }
-      ],
-      "expires_at": "2026-07-19T23:59:59Z"
-    },
-    {
       "id": "wc26-new-rules-gk-timeout-red-cards-2026-06-10",
       "type": "news",
       "confidence": "confirmed",
@@ -264,27 +256,27 @@
       "expires_at": "2026-07-19T00:00:00Z"
     },
     {
-      "id": "bra-neymar-mri-progress-wc2026-2026-06-09",
+      "id": "artan-somalia-referee-denied-usa-wc2026-2026-06-08",
       "type": "news",
       "confidence": "confirmed",
-      "he": "הצוות הרפואי הברזילאי פרסם עדכון מעודד ב-9 ביוני לאחר שבדיקת MRI חדשה הראתה שמתח הדרגה השנייה בשריר השוק הימני של ניימאר מחלים בפרמטרים הצפויים, לפי ה-CBF. הפורווארד בן ה-34, שנפצע בסנטוס באמצע מאי, עדיין לא צפוי להופיע בפתיחת קבוצה C של ברזיל מול מרוקו בניו ג'רזי ב-13 ביוני. המאמן קרלו אנצ'לוטי מכוון למשחק הקבוצתי השני מול האיטי כחלון החזרה הריאלי ביותר, ומדגיש שלא יפעיל כלל ההחלפה הדחופה. עומק הרזרבות הוכח מול מצרים כשאנדריק בן ה-18 הבקיע בניצחון 2:1, אך ברזיל גם איבדה את מגן הגב וסלי לקרע בשריר המקרב של הירך השמאלית באותו משחק, ואדרסון מאטלנטה נוסף כמחליף. ויניסיוס ג'וניור מחזיר לניימאר את חולצת מספר 10 עם חזרתו. התקדמות טובה אינה אישור כשירות מלאה. האם ברזיל תשמור על עצמה בשלב הבתים עד שמבקיע כל הזמנים שלה יגיע?",
-      "en": "Brazil's medical team issued an encouraging update on June 9 after a new MRI scan showed Neymar's Grade 2 right calf strain healing within expected parameters, per the CBF. The 34-year-old, injured at Santos in mid-May, is still not expected to feature in Brazil's Group C opener against Morocco in New Jersey on June 13. Coach Carlo Ancelotti is targeting the second group match against Haiti as the most realistic return window and insists he will not use the emergency replacement rule on Neymar. Brazil's backup depth was on show against Egypt when 18-year-old Endrick scored in a 2-1 warm-up win, but the Selecao also lost right-back Wesley to a left-thigh adductor tear in that same match, with Atalanta midfielder Ederson called in as cover. Vinicius Jr is handing back the No. 10 shirt to Neymar once he returns. Good progress is not a clean bill of health. Can Brazil hold shape in the group stage until their record goalscorer arrives?",
-      "team": "BRA",
+      "he": "עומר ארטאן מסומליה, השופט הסומלי הראשון שמונה אי-פעם למונדיאל, נדחה ממנגנון הכניסה לארצות הברית ב-7 ביוני ושוגר חזרה לאיסטנבול, שלושה ימים בלבד לפני תחילת הטורניר. שירות המכס וההגנה על הגבולות האמריקני אישר שארטאן הגיע לנמל התעופה הבינלאומי של מיאמי מאיסטנבול ונמצא שאינו קביל לכניסה בשל חששות ביטחוניים לאחר בדיקה נוספת. סומליה היא בין המדינות ברשימת הגבלות הנסיעה של הנשיא טראמפ. כדי לנסות להתגבר על קשיי הויזה, ארטאן השיג דרכון דיפלומטי בסיוע שגרירות סומליה בניירובי, אך ללא הועיל. הוא נבחר לשופט האפריקאי הטוב ביותר של CAF לשנת 2025 והיה אמור להיות אחד מ-52 פקידים שינהלו 104 משחקים. פיפ\"א לא אישרה מחליף פומבי. שורת הסכסוכים סביב ויזות ואמיגרציה בטורניר זה נפתחה עם משלחת איראן וכעת תובעת את שופטו הראשון.",
+      "en": "Somalia's Omar Artan, the first Somali referee ever appointed to a World Cup, was denied entry to the United States on June 7 and put on a flight back to Istanbul, just three days before the tournament starts. U.S. Customs and Border Protection confirmed Artan arrived at Miami International Airport from Istanbul and was determined to be inadmissible due to vetting concerns after additional inspection. Somalia is among the countries on President Trump's travel restriction list. To try to overcome the visa difficulties, Artan had acquired a diplomatic passport with support from the Somali embassy in Nairobi, but it made no difference. He was named CAF Best African Referee of 2025 and was set to join 52 officials presiding over 104 matches. FIFA has not publicly confirmed a replacement. The visa and immigration row around this tournament began with Iran's delegation and has now claimed its first referee.",
+      "team": null,
       "sources": [
         {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/49002184/brazil-mri-neymar-good-progress-injury"
+          "name": "US News (AP)",
+          "url": "https://www.usnews.com/news/sports/articles/2026-06-08/somali-referee-for-world-cup-is-denied-entry-into-the-united-states"
         },
         {
-          "name": "Arab News",
-          "url": "https://www.arabnews.com/node/2646471/sport"
+          "name": "France 24 (AFP)",
+          "url": "https://www.france24.com/en/live-news/20260608-somali-referee-denied-entry-to-us-for-world-cup-official"
         },
         {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/brazil-right-back-wesley-is-out-of-the-world-cup-with-a-thigh-injury-and-ederson-is-replacing-him"
+          "name": "NBC Washington",
+          "url": "https://www.nbcwashington.com/world-cup/somali-referee-2026-world-cup-denied-entry-united-states/4114000/"
         }
       ],
-      "expires_at": "2026-06-21T23:59:59Z"
+      "expires_at": "2026-07-19T00:00:00Z"
     }
   ]
 }
