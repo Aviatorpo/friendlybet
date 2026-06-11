@@ -279,7 +279,13 @@ async function verifyFinalResults(opts = {}) {
   if (apply && !HAS_SERVICE_KEY) throw new Error('Refusing --apply without SUPABASE_SECRET_KEY');
 
   const now = opts.now || new Date();
-  const stuck = await loadStuckMatches(now);
+  let stuck = [];
+  try {
+    stuck = await loadStuckMatches(now);
+  } catch (e) {
+    console.warn(`Could not load stuck match candidates: ${e.message}`);
+    return { checked: 0, updated: 0, skipped: 0, unavailable: true };
+  }
   console.log(`Found ${stuck.length} stuck match candidate(s). apply=${apply ? 'true' : 'false'}`);
   if (!stuck.length) return { checked: 0, updated: 0, skipped: 0 };
 
