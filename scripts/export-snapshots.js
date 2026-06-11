@@ -36,12 +36,24 @@ const SAFE_USER_COLS = [
   'predictions_submitted_at', 'joined_at', 'last_score_calc'
 ].join(',');
 
-async function sb(table, query = '') {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
-  });
-  if (!res.ok) throw new Error(`Supabase GET ${table} ${res.status}: ${await res.text()}`);
-  return res.json();
+const REST_PAGE_SIZE = 1000;
+async function sbAll(table, query = '', pageSize = REST_PAGE_SIZE) {
+  const all = [];
+  for (let from = 0, guard = 0; guard < 100; guard++, from += pageSize) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        Range: `${from}-${from + pageSize - 1}`
+      }
+    });
+    if (!res.ok) throw new Error(`Supabase GET ${table} ${res.status}: ${await res.text()}`);
+    const page = await res.json();
+    if (!Array.isArray(page)) throw new Error(`Supabase GET ${table}: expected array page`);
+    all.push(...page);
+    if (page.length < pageSize) break;
+  }
+  return all;
 }
 
 function readJson(file) {
@@ -67,7 +79,7 @@ const LIVE_STATUSES = new Set(['IN_PLAY', 'PAUSED', 'LIVE']);
 async function exportMatches() {
   let matches;
   try {
-    matches = await sb('matches', '?select=*&order=match_date.asc,id.asc');
+    matches = await sbAll('matches', '?select=*&order=match_date.asc,id.asc');
   } catch (e) {
     console.error('matches fetch failed, keeping last-good snapshot:', e.message);
     return 0;
@@ -100,8 +112,8 @@ async function exportMatches() {
 async function exportLeaderboards() {
   let pools, users;
   try {
-    pools = await sb('pools', '?select=id');
-    users = await sb('users', `?select=${SAFE_USER_COLS}&order=total_score.desc.nullslast`);
+    pools = await sbAll('pools', '?select=id');
+    users = await sbAll('users', `?select=${SAFE_USER_COLS}&order=total_score.desc.nullslast`);
   } catch (e) {
     console.error('leaderboard fetch failed, keeping last-good snapshots:', e.message);
     return 0;

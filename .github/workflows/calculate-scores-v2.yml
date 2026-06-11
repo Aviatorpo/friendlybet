@@ -46,7 +46,7 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-        run: node scripts/export-snapshots.js all
+        run: node scripts/export-snapshots.js leaderboards
 
       - name: Encrypted critical-data backup after finished matches
         env:

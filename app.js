@@ -1224,12 +1224,14 @@ async function goToDashboard() {
   // Separate "tournament is live" from "points exist". In the first few World
   // Cup days several matches can be finished while every pool still has 0 pts,
   // because group-position scoring waits for a full group to finish all 6 games.
-  const { data: allUsers } = await supabaseClient
-    .from('users')
-    .select('id, total_score')
-    .eq('pool_id', state.currentPool.id)
-    .order('total_score', { ascending: false });
-  const totalAcrossPool = (allUsers || []).reduce((s, u) => s + (u.total_score || 0), 0);
+  let allUsers = [];
+  try {
+    allUsers = await _fetchAllPoolRows('users', 'id,total_score,joined_at', state.currentPool.id);
+    allUsers = _sortLeaderboardUsers(allUsers);
+  } catch (e) {
+    console.warn('Dashboard score summary load failed:', e);
+  }
+  const totalAcrossPool = allUsers.reduce((s, u) => s + (u.total_score || 0), 0);
   const hasScores = totalAcrossPool > 0;
   const tournamentStarted = await _dashboardTournamentStarted(hasScores);
 
@@ -1241,11 +1243,13 @@ async function goToDashboard() {
     if (hasScores) {
       statsEl.style.display = '';
       const pointsEl = document.getElementById('user-points');
-      if (pointsEl) pointsEl.textContent = state.currentUser.total_score || 0;
-      if (allUsers) {
+      const freshMe = allUsers.find(u => u.id === state.currentUser.id);
+      if (freshMe && state.currentUser) state.currentUser.total_score = freshMe.total_score || 0;
+      if (pointsEl) pointsEl.textContent = freshMe ? (freshMe.total_score || 0) : (state.currentUser.total_score || 0);
+      if (allUsers.length) {
         const rank = allUsers.findIndex(u => u.id === state.currentUser.id) + 1;
         const rankEl = document.getElementById('user-rank');
-        if (rankEl) rankEl.textContent = rank;
+        if (rankEl) rankEl.textContent = rank > 0 ? rank : '-';
       }
     } else {
       statsEl.style.display = 'none';
@@ -7183,6 +7187,25 @@ async function updateKnockoutStatusOnDashboard() {
   }
 }
 
+function _sortLeaderboardUsers(users) {
+  return (users || []).slice().sort((a, b) =>
+    ((b.total_score || 0) - (a.total_score || 0)) ||
+    (Date.parse(a.joined_at || 0) - Date.parse(b.joined_at || 0)) ||
+    String(a.id || '').localeCompare(String(b.id || '')));
+}
+
+async function _fetchLeaderboardSnapshot(poolId) {
+  try {
+    const res = await fetch(`/public-data/leaderboard/${poolId}.json`, { cache: 'no-store' });
+    if (!res.ok) return null;
+    const j = await res.json();
+    if (!j || !Array.isArray(j.standings)) return null;
+    return j.standings;
+  } catch (_) {
+    return null;
+  }
+}
+
 async function showLeaderboard() {
   closeMenu();
 
@@ -7196,16 +7219,17 @@ async function showLeaderboard() {
   // Update pool info
   document.getElementById('lb-pool-name').textContent = state.currentPool.name;
 
-  // Load all users sorted by score
-  const { data: users, error } = await supabaseClient
-    .from('users')
-    .select(USER_PUBLIC_COLS)
-    .eq('pool_id', state.currentPool.id)
-    .order('total_score', { ascending: false })
-    .order('joined_at', { ascending: true });
+  let users = null;
+  try {
+    users = await _fetchAllPoolRows('users', USER_PUBLIC_COLS, state.currentPool.id);
+    users = _sortLeaderboardUsers(users);
+  } catch (error) {
+    console.error('Leaderboard live load error:', error);
+    users = await _fetchLeaderboardSnapshot(state.currentPool.id);
+    if (users) users = _sortLeaderboardUsers(users);
+  }
 
-  if (error || !users) {
-    console.error('Leaderboard load error:', error);
+  if (!users) {
     showToast(t('leaderboard.loadError'), 'error');
     return;
   }

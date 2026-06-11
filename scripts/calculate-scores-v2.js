@@ -127,6 +127,23 @@ async function sb(method, table, options = {}) {
   return text ? JSON.parse(text) : null;
 }
 
+const REST_PAGE_SIZE = 1000;
+async function sbAll(table, query = '', pageSize = REST_PAGE_SIZE) {
+  const all = [];
+  for (let from = 0, guard = 0; guard < 100; guard++, from += pageSize) {
+    const page = await sb('GET', table, {
+      query,
+      headers: { Range: `${from}-${from + pageSize - 1}` }
+    });
+    if (!Array.isArray(page)) {
+      throw new Error(`Supabase GET ${table}: expected array page`);
+    }
+    all.push(...page);
+    if (page.length < pageSize) break;
+  }
+  return all;
+}
+
 // ---- Compute actual group standings from finished group_stage matches ----
 function computeGroupStandings(matches, groupTeams) {
   // Build per-team stats
@@ -250,11 +267,11 @@ async function main() {
   const startedAt = Date.now();
 
   // 1. Load pools
-  const pools = await sb('GET', 'pools', { query: '?select=*' });
+  const pools = await sbAll('pools', '?select=*');
   if (!pools || !pools.length) { console.log('No pools'); return; }
 
   // 2. Load matches (for groups + knockout outcomes)
-  const matches = await sb('GET', 'matches', { query: '?select=*' });
+  const matches = await sbAll('matches', '?select=*');
   // Only TRULY-final matches count. A live (IN_PLAY/PAUSED) match has a current
   // score, so keying off "has a score" scored matches mid-play and made knockout
   // points appear/flip as the scoreline changed. Require a terminal status.
@@ -268,7 +285,7 @@ async function main() {
   // was never awarded.
   let realTopScorer = null;
   try {
-    const settings = await sb('GET', 'app_settings', { query: '?key=eq.top_scorer&select=value' });
+    const settings = await sbAll('app_settings', '?key=eq.top_scorer&select=value');
     if (settings && settings[0] && settings[0].value) realTopScorer = settings[0].value;
   } catch (e) { /* ignore */ }
 
@@ -283,12 +300,11 @@ async function main() {
 
       console.log(`\nPool ${pool.code} - ${pool.name} (${mode})`);
 
-      const users = await sb('GET', 'users', { query: `?pool_id=eq.${pool.id}&select=*` });
+      const users = await sbAll('users', `?pool_id=eq.${pool.id}&select=*`);
       if (!users || !users.length) { console.log('  no users'); continue; }
 
       // Get all top_scorer_picks for users in this pool
-      const tsPicks = await sb('GET', 'top_scorer_picks',
-        { query: `?pool_id=eq.${pool.id}&select=*` });
+      const tsPicks = await sbAll('top_scorer_picks', `?pool_id=eq.${pool.id}&select=*`);
       const tsMap = new Map((tsPicks || []).map(t => [t.user_id, t]));
 
       if (mode === 'single_phase') {
@@ -312,8 +328,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
   const standings = {}; // letter -> [team codes in order 1st..4th] or null if group not complete
   const groupCodes = {}; // letter -> [team codes in this group]
   const allGroupMatches = finishedMatches.filter(m => m.stage === 'GROUP_STAGE');
-  const allGroupMatchesAny = (await sb('GET', 'matches',
-    { query: '?stage=eq.GROUP_STAGE&select=*' })) || [];
+  const allGroupMatchesAny = (await sbAll('matches', '?stage=eq.GROUP_STAGE&select=*')) || [];
 
   // Build group->teams from any group match
   allGroupMatchesAny.forEach(m => {
@@ -372,8 +387,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     const resolveMult = poolMultResolver(pool, rules);
 
     // Group position picks
-    const gpp = await sb('GET', 'group_position_picks',
-      { query: `?user_id=eq.${user.id}&select=*` });
+    const gpp = await sbAll('group_position_picks', `?user_id=eq.${user.id}&select=*`);
     (gpp || []).forEach(p => {
       const real = standings[p.group_letter];
       if (!real) return; // group not done
@@ -388,8 +402,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     });
 
     // Hypothetical bracket picks
-    const kp = await sb('GET', 'knockout_picks',
-      { query: `?user_id=eq.${user.id}&bracket_position=not.is.null&select=*` });
+    const kp = await sbAll('knockout_picks', `?user_id=eq.${user.id}&bracket_position=not.is.null&select=*`);
     (kp || []).forEach(p => {
       const ruleKey = bracketPosRuleKey(p.bracket_position);
       if (!ruleKey) return;
@@ -427,8 +440,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     // that group is actually one of the real best-8 third places. Team-based,
     // flat bonus (not multiplied). Only once all 12 groups are complete.
     if (realBest8Thirds && (rules.third_place_advance || 0) > 0) {
-      const tpp = await sb('GET', 'sp_third_place_picks',
-        { query: `?user_id=eq.${user.id}&select=group_letter` });
+      const tpp = await sbAll('sp_third_place_picks', `?user_id=eq.${user.id}&select=group_letter`);
       (tpp || []).forEach(row => {
         const pick = (gpp || []).find(p => p.group_letter === row.group_letter && p.position === 3);
         if (pick && realBest8Thirds.has(pick.team_code)) {
@@ -490,7 +502,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
 // 8 best third-placed teams once all 12 groups are complete. Used by two-phase
 // group scoring so the awarded points match the "advanced" checkmark in the UI.
 async function computeAdvancedTeams(finishedMatches) {
-  const allGroupMatchesAny = (await sb('GET', 'matches', { query: '?stage=eq.GROUP_STAGE&select=*' })) || [];
+  const allGroupMatchesAny = (await sbAll('matches', '?stage=eq.GROUP_STAGE&select=*')) || [];
   const groupCodes = {};
   allGroupMatchesAny.forEach(m => {
     const letter = m.group_letter || m.group; if (!letter) return;
@@ -540,8 +552,7 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     // membership, no dupes) scores — an under-complete (24/31) or over-complete
     // (36, which unfairly covers more teams) set earns 0 group points until it's
     // corrected. The RPC enforces this on new writes; historical rows still exist.
-    const gpRaw = await sb('GET', 'group_picks',
-      { query: `?user_id=eq.${user.id}&select=*` });
+    const gpRaw = await sbAll('group_picks', `?user_id=eq.${user.id}&select=*`);
     const gpValid = validateTwoPhaseGroupPickSet(gpRaw);
     if (!gpValid.ok) {
       if ((gpRaw || []).length > 0) {
@@ -556,8 +567,7 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     }
 
     // Knockout picks - per-match
-    const kp = await sb('GET', 'knockout_picks',
-      { query: `?user_id=eq.${user.id}&select=*` });
+    const kp = await sbAll('knockout_picks', `?user_id=eq.${user.id}&select=*`);
     finishedMatches.forEach(m => {
       if (!m.stage || m.stage === 'GROUP_STAGE' || m.stage === 'THIRD_PLACE') return;
       const winner = knockoutWinner(m);
@@ -627,6 +637,7 @@ if (require.main === module) {
     bracketPosRuleKey, stageRuleKey, poolMultResolver,
     validateTwoPhaseGroupPickSet, WC2026_GROUPS, TEAM_TO_GROUP,
     DEFAULT_RULES_SINGLE, DEFAULT_RULES_TWO, DEFAULT_CAT_MULT, FIFA_RANK,
+    sbAll,
     // allow tests to inject a fake Supabase transport
     __setFetch: (fn) => { globalThis.fetch = fn; },
   };

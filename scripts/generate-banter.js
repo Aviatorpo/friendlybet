@@ -46,12 +46,24 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const NEWLY_WINDOW_MS = 2 * DAY_MS; // only treat matches finished in the last 2 days as "fresh drama"
 const TERMINAL = new Set(['FINISHED', 'AWARDED']);
 
-async function sb(table, query = '') {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
-    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
-  });
-  if (!res.ok) throw new Error(`Supabase GET ${table} ${res.status}: ${await res.text()}`);
-  return res.json();
+const REST_PAGE_SIZE = 1000;
+async function sbAll(table, query = '', pageSize = REST_PAGE_SIZE) {
+  const all = [];
+  for (let from = 0, guard = 0; guard < 100; guard++, from += pageSize) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query}`, {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        Range: `${from}-${from + pageSize - 1}`
+      }
+    });
+    if (!res.ok) throw new Error(`Supabase GET ${table} ${res.status}: ${await res.text()}`);
+    const page = await res.json();
+    if (!Array.isArray(page)) throw new Error(`Supabase GET ${table}: expected array page`);
+    all.push(...page);
+    if (page.length < pageSize) break;
+  }
+  return all;
 }
 
 function readJson(file, fallback) {
@@ -265,11 +277,11 @@ async function main() {
   const nowIso = new Date().toISOString();
   const now = Date.now();
 
-  const pools = await sb('pools', '?select=id,name');
-  const users = await sb('users', '?select=id,pool_id,nickname,total_score,joined_at&order=total_score.desc.nullslast');
-  const matches = await sb('matches', '?select=*');
+  const pools = await sbAll('pools', '?select=id,name');
+  const users = await sbAll('users', '?select=id,pool_id,nickname,total_score,joined_at&order=total_score.desc.nullslast');
+  const matches = await sbAll('matches', '?select=*');
   let champRows = [];
-  try { champRows = await sb('tournament_winner_picks', '?select=pool_id,user_id,team_code'); } catch (_) { champRows = []; }
+  try { champRows = await sbAll('tournament_winner_picks', '?select=pool_id,user_id,team_code'); } catch (_) { champRows = []; }
 
   const state = readJson(STATE_FILE, { pools: {}, seenFinishedIds: [] });
   const globalSeen = new Set(state.seenFinishedIds || []);

@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.20** - Scoring and leaderboard data-path hardening. The scheduled score calculator, CDN leaderboard exporter, and leaderboard banter generator now page through Supabase REST results instead of silently stopping at the first 1,000 rows, which is critical now that production has crossed that size. The score workflow now exports leaderboards only, leaving `matches.json` to the dedicated sync workflows so a long scoring run is far less likely to collide with live match snapshot commits. The dashboard refreshes the current user's displayed score/rank from the latest paginated pool read, and the leaderboard paginates live reads with a static snapshot fallback if Supabase is temporarily unavailable. Version/cache bumped to v2.10.20.
+
 **v2.10.19** - Late-entry messaging QA polish. The app now explains the late-entry rules at the exact user touchpoints: joining an old pre-kickoff pool after kickoff says registration closed when the World Cup started; late-entry pools show their registration/prediction cutoff on the pool-found screen, dashboard live card, dashboard invite CTA, and shared invite text; and post-cutoff creation/join messages include the concrete cutoff time in the viewer's locale. No DB rule changes. Version/cache bumped to v2.10.19.
 
 **v2.10.18** - Aligned the client-side late-entry lock mirror with the server cutoff. The UI now uses the same explicit `2026-06-11T19:00:00Z` kickoff cutoff as the Supabase functions and lock job when deciding whether old pools are closed and late-entry pools are open. This avoids a short client/server mismatch window while keeping server-side enforcement unchanged. Version/cache bumped to v2.10.18.
