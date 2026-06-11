@@ -8042,6 +8042,7 @@ function createMatchCard(match) {
   
   // Score display
   let scoreHtml;
+  let pendingScoreNote = '';
   if (isFinished || isLive) {
     const hasScore = match.home_score != null && match.away_score != null;
     scoreHtml = hasScore ? `
@@ -8050,7 +8051,8 @@ function createMatchCard(match) {
         <span>-</span>
         <span>${match.away_score}</span>
       </div>
-    ` : `<div class="match-score no-score match-score-pending">${t('matchesEx.scoreAfterFinal')}</div>`;
+    ` : `<div class="match-score no-score">VS</div>`;
+    if (!hasScore) pendingScoreNote = `<div class="match-score-pending-note">${t('matchesEx.scoreAfterFinal')}</div>`;
   } else {
     const time = match.match_date ? new Date(match.match_date) : null;
     const tmLang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
@@ -8074,6 +8076,7 @@ function createMatchCard(match) {
         <span class="match-team-name ${awayClass}">${awayName}</span>
       </div>
     </div>
+    ${pendingScoreNote}
     ${match.match_date ? `<div class="match-info">${match.venue ? `<span>${match.venue}</span>` : ''}<span>${formatMatchDate(match.match_date)}</span></div>` : ''}
   `;
   
