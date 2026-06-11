@@ -1,6 +1,46 @@
 {
-  "updatedAt": "2026-06-11T14:00:00.000Z",
+  "updatedAt": "2026-06-11T18:00:00.000Z",
   "items": [
+    {
+      "id": "mex-rsa-double-wc-opener-2026-06-11",
+      "confidence": "confirmed",
+      "en": "Mexico and South Africa opened the 2026 World Cup at Estadio Azteca on June 11, exactly 16 years to the day since the same two sides played the opening match of the 2010 tournament. South Africa hosted Mexico in Johannesburg on June 11, 2010, a match that produced one of the great World Cup moments when Siphiwe Tshabalala swept in a rising left-foot shot in the 55th minute to put the host nation in front, before Rafael Marquez equalised for El Tri in the 79th minute to share the points 1-1. It is the only time in World Cup history that the same two nations have faced each other in two separate opening matches. Sixteen years on, the underdog-versus-co-host dynamic is reversed, the altitude shifts from sea level in Johannesburg to 2,200 metres at the Azteca, and the crowd is all in red, white and green. Will history repeat itself?",
+      "he": "מקסיקו ודרום אפריקה פתחו את מונדיאל 2026 באסטדיו אצטקה ב-11 ביוני, בדיוק 16 שנה ליום מאז שאותן שתי נבחרות שיחקו את משחק הפתיחה של טורניר 2010. דרום אפריקה אירחה את מקסיקו ביוהנסבורג ב-11 ביוני 2010, משחק שהפיק אחד מהרגעים הגדולים של גביע העולם כאשר סיפיווה ישאבאלה הבקיע בבעיטת שמאל עולה בדקה ה-55 כדי להעמיד את המארחת בהובלה, לפני שרפאל מארקז השווה למקסיקו בדקה ה-79 לסיום 1:1. זה הפעם היחידה בהיסטוריית גביע העולם שאותן שתי נבחרות נפגשות בשני משחקי פתיחה שונים. שש עשרה שנה לאחר מכן, הדינמיקה בין המועמד להפתעה לבין המארחת המשותפת מתהפכת, הגובה עובר מפני הים ביוהנסבורג ל-2,200 מטר באצטקה, והקהל כולו לבוש אדום, לבן וירוק. האם ההיסטוריה תחזור על עצמה?",
+      "sources": [
+        { "name": "Wikipedia", "url": "https://en.wikipedia.org/wiki/2010_FIFA_World_Cup_Group_A" },
+        { "name": "Goal.com", "url": "https://www.goal.com/en-gb/news/world-cup-2010-south-africa-1-1-mexico-siphiwe-tshabalala/bltc22d5907a77375ad" },
+        { "name": "CNN", "url": "https://www.cnn.com/2010/SPORT/football/06/11/south.africa.mexico.opening.match/index.html" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/world-cup-match-day-1-mexico-south-africa-south-korea-czechia" }
+      ],
+      "expires_at": "2026-06-15T23:59:59Z"
+    },
+    {
+      "id": "ned-timber-deligt-simons-missing-wc2026-2026-06-11",
+      "confidence": "confirmed",
+      "team": "NED",
+      "en": "The Netherlands arrive at the 2026 World Cup having lost three of their most influential players before a ball was kicked. Jurrien Timber, 24, was ruled out with a groin injury that did not clear in time despite a brief substitute appearance in Arsenal's Champions League final, with Sunderland's Lutsharel Geertruida called up as his replacement per the official FIFA announcement. Matthijs de Ligt, 26, is absent after a long-standing back problem required additional surgery, with Manchester United not expecting him back until pre-season. Xavi Simons, 23, ruptured his ACL playing for Tottenham against Wolves in April and underwent surgery. Coach Ronald Koeman still commands Virgil van Dijk, Frenkie de Jong, Cody Gakpo and Memphis Depay. The Dutch face Japan in Dallas on June 14, a Japan side that has beaten Germany, Spain, Brazil and England in the same four-year cycle. Three injured starters gone and still among the pre-tournament favourites. Koeman has some rebuilding to do.",
+      "he": "הולנד מגיעה למונדיאל 2026 לאחר שאיבדה שלושה משחקנים מהמשפיעים ביותר שלה לפני שנבעטה כדור. יוריין טימבר, בן 24, ננעל בגלל פציעת מפשעה שלא החלימה בזמן למרות הופעה קצרה כמחליף בגמר ליגת האלופות של ארסנל, כאשר לוצ'ארל חרטרואידה מסאנדרלנד הוזמן כממלא מקומו בהתאם להודעה הרשמית של פיפ\"א. מטיס דה ליכט, בן 26, נעדר לאחר שבעיית גב ממושכת חייבה ניתוח נוסף. זאבי סימונס, בן 23, קרע את ה-ACL שלו בזמן שמשחק עבור טוטנהאם מול וולבס באפריל ועבר ניתוח. המאמן רונאלד קומן עדיין מחזיק בווירג'יל ואן דייק, פרנקי דה יונג, קודי גאקפו ומנפיס דפאי. ההולנדים מתמודדים מול יפן בדאלאס ב-14 ביוני, נבחרת יפנית שניצחה את גרמניה, ספרד, ברזיל ואנגליה במחזור של ארבע שנים. שלושה שחקנים פותחים שנפצעו ועדיין בין המועמדות. לקומן יש שיקום לבצע.",
+      "sources": [
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/netherlands-call-up-geertruida-jurrien-timber" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/other/netherlands-rules-out-jurrien-timber-for-the-world-cup-lutsharel-geertruida-called-up" },
+        { "name": "Sky Sports", "url": "https://www.skysports.com/football/news/11675/13537026/xavi-simons-injury-tottenham-playmaker-to-miss-rest-of-season-and-world-cup-with-netherlands-after-being-stretchered-off-at-wolves" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48606948/tottenham-xavi-simons-ruled-rest-season-miss-world-cup" }
+      ],
+      "expires_at": "2026-06-25T23:59:59Z"
+    },
+    {
+      "id": "wc26-prize-money-record-50m-2026-06-11",
+      "confidence": "confirmed",
+      "en": "The 2026 World Cup carries the largest prize pool in football history. FIFA confirmed a total of $655 million to be distributed among the 48 participating nations, a rise of nearly 50 percent from the $440 million paid out at Qatar 2022. The winning team collects $50 million, up from $42 million four years ago. The runner-up takes $33 million, third place $29 million, fourth $27 million. Every team eliminated in the group stage still walks away with at least $9 million, plus a $1.5 million preparation allowance paid before the tournament. For smaller footballing nations competing here for the first time, a first-round exit still represents life-changing money for their federation. For the giants hunting the trophy, the winner's purse has effectively doubled in eight years. Fifty million reasons to win the final at MetLife Stadium on July 19.",
+      "he": "מונדיאל 2026 נושא את קרן הפרסים הגדולה ביותר בהיסטוריית הכדורגל. פיפ\"א אישרה חלוקת 655 מיליון דולר בסך הכל בין 48 הנבחרות המשתתפות, עלייה של כמעט 50 אחוז ביחס ל-440 מיליון דולר שחולקו בקטאר 2022. הקבוצה הזוכה תקבל 50 מיליון דולר, עלייה מ-42 מיליון לפני ארבע שנים. הסיום שני מזכה ב-33 מיליון, מקום שלישי 29 מיליון, ורביעי 27 מיליון. כל נבחרת שנופלת בשלב הבתים עדיין עוזבת עם לפחות 9 מיליון דולר, בנוסף ל-1.5 מיליון דולר דמי הכנה ששולמו לפני הטורניר. עבור מדינות כדורגל קטנות המתחרות כאן לראשונה, יציאה בסיבוב הראשון עדיין מייצגת כסף שמשנה חיים עבור ההתאחדות שלהן. לענקיות שרודפות אחרי הגביע, קרן הפרס של הזוכה הוכפלה למעשה בשמונה שנים. חמישים מיליון סיבות לזכות בגמר ב-MetLife Stadium ב-19 ביולי.",
+      "sources": [
+        { "name": "FIFA (inside.fifa.com)", "url": "https://inside.fifa.com/media-releases/council-approves-record-breaking-world-cup-2026-financial-contribution" },
+        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2025/12/17/fifa-world-cup-2026-winners-prize-money-doubles-to-50m" },
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/how-much-money-does-each-team-earn-for-playing-in-the-2026-fifa-world-cup-2026-05-13" },
+        { "name": "Bleacher Report", "url": "https://bleacherreport.com/articles/25435805-world-cup-2026-prize-money-complete-purse-and-earnings-info-fifa-tournament" }
+      ],
+      "expires_at": "2026-07-19T23:59:59Z"
+    },
     {
       "id": "can-davies-hamstring-opener-2026-06-11",
       "confidence": "confirmed",
