@@ -1436,7 +1436,8 @@ async function updateTwoPhaseIncidentBanner() {
 // matches.json snapshot the rest of the app uses (earliest match_date), so it
 // stays accurate to the minute even if FIFA shifts the schedule; falls back to
 // a constant if the snapshot is unavailable.
-const FIRST_MATCH_FALLBACK_ISO = '2026-06-11T16:00:00-06:00'; // opening match, CDMX time
+const FIRST_MATCH_FALLBACK_ISO = '2026-06-11T16:00:00-06:00'; // countdown display fallback
+const POOL_LOCK_KICKOFF_ISO = '2026-06-11T19:00:00.000Z'; // server lock cutoff
 const LATE_ENTRY_CUTOFF_ISO = '2026-06-18T16:00:00.000Z'; // first team second group match
 let _countdownTimer = null;
 let _countdownKickoffMs = null;
@@ -1465,7 +1466,7 @@ function _poolCreatedAtMs(pool) {
 
 function _poolEffectiveLockPassed(pool) {
   const now = Date.now();
-  const kickoff = Date.parse(FIRST_MATCH_FALLBACK_ISO);
+  const kickoff = Date.parse(POOL_LOCK_KICKOFF_ISO);
   const lateCutoff = Date.parse(LATE_ENTRY_CUTOFF_ISO);
   if (!Number.isFinite(kickoff) || !Number.isFinite(lateCutoff) || now < kickoff) return false;
   const createdAt = _poolCreatedAtMs(pool);

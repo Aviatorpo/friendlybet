@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.18** - Aligned the client-side late-entry lock mirror with the server cutoff. The UI now uses the same explicit `2026-06-11T19:00:00Z` kickoff cutoff as the Supabase functions and lock job when deciding whether old pools are closed and late-entry pools are open. This avoids a short client/server mismatch window while keeping server-side enforcement unchanged. Version/cache bumped to v2.10.18.
+
 **v2.10.17** - Late-entry pools until the first second group match. Pools created before kickoff still lock at kickoff and cannot accept new members. Pools created from kickoff until the late cutoff (`2026-06-18T16:00:00Z`, Czechia v South Africa) can use the existing single-phase/two-phase flows, accept joins, and save picks until that cutoff; after it, normal betting and new pool creation close. Updated the client lock checks, invite visibility, scheduled lock job, and added a production SQL migration for `join_pool`, `_auth_writer`, `autolock_pool_if_started`, and `create_pool` so server-side writes match the UI rule. Version/cache bumped to v2.10.17.
 
 **v2.10.16** - Blocked joining existing pools after World Cup kickoff. The join-code preflight and final registration step now reject joins once the global kickoff time has passed, even if an individual pool has not yet been autolocked. Added a production SQL migration for the `join_pool` RPC with the same global cutoff so direct/API joins are blocked server-side too. This does not block creating new pools and does not change prediction writes, recovery windows, or admin approval flows. Version/cache bumped to v2.10.16.
