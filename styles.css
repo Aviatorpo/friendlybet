@@ -4075,6 +4075,17 @@ body.ltr #next-group-btn svg {
   padding-top: 9px;
   border-top: 1px solid rgba(232, 168, 90, 0.28);
 }
+.admin-ko-nudge-banner .akn-exp {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 12.5px;
+  line-height: 1.45;
+  font-weight: 700;
+  margin-top: 9px;
+  padding: 8px 10px;
+  border: 1px solid rgba(232, 168, 90, 0.3);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
 .admin-ko-nudge-banner .akn-actions {
   display: grid;
   grid-template-columns: 1fr;

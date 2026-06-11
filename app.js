@@ -2864,6 +2864,7 @@ function renderAdminMembers() {
   const annexCount = adminState.members.filter(m => _adminMemberProgress(m).annexReview).length;
   const annexHardCount = adminState.members.filter(m => _adminMemberProgress(m).annexHardAffected).length;
   const annexReminderCount = adminState.members.filter(m => !m.isAdmin && _adminMemberProgress(m).annexReview).length;
+  const annexReviewExpiry = _adminAnnexReviewExpiry(adminState.members);
   const adminMember = adminState.members.find(m => state.currentUser && m.id === state.currentUser.id);
   const adminProgress = adminMember ? _adminMemberProgress(adminMember) : {};
   const adminAnnexStatus = adminProgress.annexHardAffected
@@ -2918,6 +2919,7 @@ function renderAdminMembers() {
         '<div class="akn-head"><span class="akn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18.1A2 2 0 0 0 3.5 21h17a2 2 0 0 0 1.7-2.9L13.7 3.9a2 2 0 0 0-3.4 0Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span><div>' +
           '<div class="akn-title">' + t('adminMembersEx.annexCReviewTitle') + '</div>' +
           '<div class="akn-text">' + t('adminMembersEx.annexCReviewGlitch', { n: annexCount, hard: annexHardCount, remind: annexReminderCount }) + '</div>' +
+          (annexReviewExpiry ? '<div class="akn-exp">' + t('adminMembersEx.annexReviewExpires', { time: annexReviewExpiry }) + '</div>' : '') +
           '<div class="akn-you">' + adminAnnexStatus + '</div>' +
         '</div></div>' +
         '<div class="akn-actions">' +
@@ -3089,6 +3091,20 @@ function renderAdminMembers() {
       if (cp) cp.addEventListener('click', (ev) => { ev.stopPropagation(); _adminCopyReopenMsg(member.nickname); });
     }
   });
+}
+
+function _adminAnnexReviewExpiry(members) {
+  try {
+    const expiries = (members || [])
+      .map(m => m && m.reopenGrant)
+      .filter(g => g && g.incident_key === 'annex_c_2026' && g.grant_active && g.expires_at)
+      .map(g => Date.parse(g.expires_at))
+      .filter(ms => Number.isFinite(ms));
+    if (!expiries.length) return '';
+    return _fmtReopenExpiry(new Date(Math.min(...expiries)).toISOString());
+  } catch (_) {
+    return '';
+  }
 }
 
 // v2.10: admin approves a member's knockout re-entry (server validates admin-of-pool
@@ -13861,7 +13877,13 @@ function _fmtReopenExpiry(iso) {
   try {
     const d = new Date(iso);
     const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
-    return d.toLocaleString(lang === 'he' ? 'he-IL' : 'en-US', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleString(lang === 'he' ? 'he-IL' : 'en-US', {
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short'
+    });
   } catch (_) { return ''; }
 }
 
@@ -13904,7 +13926,9 @@ async function _updateReopenBanner(active, opts = {}) {
     }
     if (ctaEl) {
       ctaEl.style.display = canEdit ? '' : 'none';
-      ctaEl.textContent = t(afterKickoff ? 'reopen.user.cta' : 'reopen.user.preKickoffCta');
+      ctaEl.textContent = t(afterKickoff
+        ? (hardAffected ? 'reopen.user.cta' : 'reopen.user.ctaPool')
+        : 'reopen.user.preKickoffCta');
       ctaEl.onclick = () => (st && st.can_reenter) ? spReopenKnockout() : spReenterKnockout();
     }
     if (expEl) expEl.textContent = st.expires_at ? t('reopen.user.expires', { time: _fmtReopenExpiry(st.expires_at) }) : '';
