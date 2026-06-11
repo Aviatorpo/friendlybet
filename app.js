@@ -2557,7 +2557,7 @@ function createMemberCard(member, picksCount, koPicksCount, isV2) {
   } else if (allDone) {
     statusClass = 'completed';
     statusText = t('membersList.allDone');
-  } else if (isV2 && groupComplete && !koComplete) {
+  } else if (groupComplete && !koComplete) {
     // groups in, knockout bracket missing/incomplete — the nudge state
     statusClass = 'partial';
     statusText = t('membersList.needsKnockout');
@@ -2673,20 +2673,29 @@ async function loadAdminMembers() {
       supabaseClient
         .from(groupTable)
         .select('user_id')
+        .eq('pool_id', state.currentPool.id)
         .in('user_id', userIds),
       supabaseClient
         .from('knockout_picks')
         .select('user_id')
+        .eq('pool_id', state.currentPool.id)
         .in('user_id', userIds),
       supabaseClient
         .from('tournament_winner_picks')
         .select('user_id')
+        .eq('pool_id', state.currentPool.id)
         .in('user_id', userIds),
       supabaseClient
         .from('top_scorer_picks')
         .select('user_id')
+        .eq('pool_id', state.currentPool.id)
         .in('user_id', userIds)
     ]);
+
+    if (groupPicksRes.error) throw groupPicksRes.error;
+    if (knockoutPicksRes.error) throw knockoutPicksRes.error;
+    if (winnerPicksRes.error) throw winnerPicksRes.error;
+    if (topScorerPicksRes.error) throw topScorerPicksRes.error;
 
     const groupPicksByUser = {};
     (groupPicksRes.data || []).forEach(p => {
@@ -2762,7 +2771,7 @@ function _adminMemberProgress(member) {
   // (re-)fill the knockout. Surfaced so the admin can see exactly who to nudge.
   const grant = member.reopenGrant || {};
   const annexReview = isV2 && grant.incident_key === 'annex_c_2026' && grant.grant_active;
-  const needsKnockout = isV2 && ((groupsFull && !bracketFull) || annexReview);
+  const needsKnockout = (groupsFull && !bracketFull) || (isV2 && annexReview);
 
   return { started, finished, needsKnockout, annexReview, annexHardAffected: annexReview && grant.impact_kind === 'hard_invalid_r32' };
 }
@@ -5522,7 +5531,7 @@ function _fbSetDashboardProgressCard(rawState) {
 }
 
 async function updateBettingStatusOnDashboard() {
-  if (!state.currentUser || !supabaseClient) return;
+  if (!state.currentUser || !state.currentPool || !supabaseClient) return;
 
   const ctaEl = document.getElementById('bet-status-groups');
   if (!ctaEl) return;
@@ -5634,14 +5643,29 @@ async function updateBettingStatusOnDashboard() {
   }
 
   // Two-phase (legacy) - use group_picks AND knockout_picks for full state
-  const { data: picks } = await supabaseClient
+  const pid = state.currentPool && state.currentPool.id;
+  const { data: picks, error: picksError } = await supabaseClient
     .from('group_picks').select('id', { count: 'exact' })
-    .eq('user_id', state.currentUser.id);
-  const picksCount = picks ? picks.length : 0;
-  const { data: koPicks } = await supabaseClient
+    .eq('user_id', state.currentUser.id)
+    .eq('pool_id', pid);
+  if (picksError) {
+    console.warn('updateBettingStatusOnDashboard: group_picks read failed', picksError);
+    return;
+  }
+  let picksCount = picks ? picks.length : 0;
+  const { data: koPicks, error: koError } = await supabaseClient
     .from('knockout_picks').select('id', { count: 'exact' })
-    .eq('user_id', state.currentUser.id);
+    .eq('user_id', state.currentUser.id)
+    .eq('pool_id', pid);
+  if (koError) {
+    console.warn('updateBettingStatusOnDashboard: knockout_picks read failed', koError);
+    return;
+  }
   const koCount = koPicks ? koPicks.length : 0;
+  if (picksCount < 32 && typeof _tpRestoreFullGroupBackupIfLiveShort === 'function') {
+    const restoredCount = await _tpRestoreFullGroupBackupIfLiveShort(picksCount);
+    if (restoredCount > picksCount) picksCount = restoredCount;
+  }
   // v2.5.36: "all set" in two_phase requires groups (32) + knockout (16)
   const twoPhaseAllSet = picksCount >= 32 && koCount >= 16;
 
@@ -11580,6 +11604,51 @@ async function _tpBackupToServer(snapshot) {
 function _tpCacheLoad() {
   const k = _tpCacheKey(); if (!k) return null;
   try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (_) { return null; }
+}
+function _tpFullBackupInfo(groups) {
+  if (!groups || typeof groups !== 'object') return null;
+  const letters = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+  const seen = new Set();
+  const picks = [];
+  let total = 0;
+  for (const letter of letters) {
+    const arr = Array.isArray(groups[letter]) ? groups[letter].filter(Boolean) : [];
+    if (arr.length < 2 || arr.length > 3) return null;
+    total += arr.length;
+    for (const teamCode of arr) {
+      const key = letter + ':' + teamCode;
+      if (seen.has(key)) return null;
+      seen.add(key);
+      picks.push({ group_letter: letter, team_code: teamCode });
+    }
+  }
+  return total === 32 ? { count: total, picks } : null;
+}
+async function _tpRestoreFullGroupBackupIfLiveShort(liveCount) {
+  try {
+    if (liveCount >= 32 || !supabaseClient) return 0;
+    let best = null;
+    const consider = (groups) => {
+      const info = _tpFullBackupInfo(groups);
+      if (info && (!best || info.count > best.count)) best = info;
+    };
+    const local = _tpCacheLoad();
+    if (local && local.groupPositions) consider(local.groupPositions);
+    const code = _currentRecoveryCode();
+    if (code) {
+      try {
+        const { data } = await supabaseClient.rpc('get_pick_backup', { p_code: code });
+        if (data && data.groupPositions) consider(data.groupPositions);
+      } catch (_) {}
+    }
+    if (!best || !code) return 0;
+    const res = await _rpcWrite('save_group_picks_2p', { p_code: code, p_picks: best.picks }, { retries: 3, baseDelayMs: 600 });
+    if (!res || !res.ok) return 0;
+    console.log('[_tpRestoreFullGroupBackupIfLiveShort] restored full group backup from dashboard');
+    return best.count;
+  } catch (_) {
+    return 0;
+  }
 }
 // v2.10.8: restore missing two-phase group picks from the most complete backup
 // (local cache or durable server backup). Per-group fill only — never clobbers a
