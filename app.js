@@ -1208,21 +1208,24 @@ async function goToDashboard() {
   document.getElementById('dashboard-pool-name').textContent = state.currentPool.name;
   document.getElementById('dashboard-user-name').textContent = state.currentUser.nickname;
 
-  // Decide pre/post-tournament state by whether any scoring has happened in this pool.
+  // Separate "tournament is live" from "points exist". In the first few World
+  // Cup days several matches can be finished while every pool still has 0 pts,
+  // because group-position scoring waits for a full group to finish all 6 games.
   const { data: allUsers } = await supabaseClient
     .from('users')
     .select('id, total_score')
     .eq('pool_id', state.currentPool.id)
     .order('total_score', { ascending: false });
   const totalAcrossPool = (allUsers || []).reduce((s, u) => s + (u.total_score || 0), 0);
-  const tournamentStarted = totalAcrossPool > 0;
+  const hasScores = totalAcrossPool > 0;
+  const tournamentStarted = await _dashboardTournamentStarted(hasScores);
 
   // v2.6.74: the pre-tournament progress card was removed (it duplicated the
   // betting CTA). Only the stats card toggles now: shown once the tournament
-  // starts, hidden before then.
+  // has real scores; the live/no-points state gets its own explainer card.
   const statsEl = document.getElementById('dashboard-stats');
   if (statsEl) {
-    if (tournamentStarted) {
+    if (hasScores) {
       statsEl.style.display = '';
       const pointsEl = document.getElementById('user-points');
       if (pointsEl) pointsEl.textContent = state.currentUser.total_score || 0;
@@ -1235,6 +1238,7 @@ async function goToDashboard() {
       statsEl.style.display = 'none';
     }
   }
+  const refreshLiveStatus = () => _renderDashboardLiveStatus(tournamentStarted, hasScores);
   
   // v2.5.38: only admins see the "invite friends" CTA on the dashboard.
   // Regular members joined via a link or pool code - they don't need to
@@ -1256,6 +1260,7 @@ async function goToDashboard() {
   // v2.10: await so state._userNeedsKnockoutRecovery is set before the admin nudge
   // reads it (an affected admin must never briefly see both banners).
   try { await updateKnockoutStatusOnDashboard(); } catch (_) {}
+  refreshLiveStatus();
 
   // v2.9.22: admin-only nudge about members who lost their knockout bracket.
   updateAdminNudgeOnDashboard();
@@ -1479,6 +1484,68 @@ async function initDashboardCountdown(tournamentStarted) {
   banner.style.display = '';
   tick();
   _countdownTimer = setInterval(tick, 1000);
+}
+
+function _dashboardGroupProgress() {
+  const finishedMatches = (state.results && Array.isArray(state.results.finishedMatches)) ? state.results.finishedMatches : [];
+  const groupMatches = finishedMatches.filter(m => String(m.stage || '').toLowerCase().includes('group'));
+  const finished = groupMatches.length;
+  const byGroup = {};
+  groupMatches.forEach(m => {
+    const g = m.group_letter || m.group || m.group_name || m.groupName || '';
+    const key = String(g).replace(/^Group\s+/i, '').trim().charAt(0).toUpperCase();
+    if (!key) return;
+    if (!byGroup[key]) byGroup[key] = { total: 0, done: 0 };
+    byGroup[key].total += 1;
+    byGroup[key].done += 1;
+  });
+  const completeGroups = Object.values(byGroup).filter(g => g.total >= 6 && g.done >= 6).length;
+  return {
+    finished,
+    total: 72,
+    completeGroups,
+    totalGroups: 12
+  };
+}
+
+async function _dashboardTournamentStarted(hasScores) {
+  if (hasScores || (state.results.finishedMatches || []).length > 0) return true;
+  try {
+    const kickoff = await _resolveFirstKickoffMs();
+    return Date.now() >= kickoff;
+  } catch (_) {
+    return !!(state.currentPool && state.currentPool.locked_at);
+  }
+}
+
+function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
+  const el = document.getElementById('dashboard-live-status');
+  if (!el) return;
+  if (!tournamentStarted || hasScores) {
+    el.style.display = 'none';
+    el.innerHTML = '';
+    return;
+  }
+
+  const gp = _dashboardGroupProgress();
+  const pct = gp.total ? Math.min(100, Math.round((gp.finished / gp.total) * 100)) : 0;
+  const textKey = state._dashboardKnockoutReviewOpen ? 'dashboard.liveStatus.reviewText' : 'dashboard.liveStatus.text';
+  el.innerHTML = `
+    <div class="dls-head">
+      <span class="dls-live"><span class="dls-dot"></span>${t('dashboard.liveStatus.kicker')}</span>
+      <span class="dls-zero">${t('dashboard.liveStatus.zeroPoints')}</span>
+    </div>
+    <div class="dls-title">${t('dashboard.liveStatus.title')}</div>
+    <div class="dls-text">${t(textKey)}</div>
+    <div class="dls-progress" aria-hidden="true">
+      <div class="dls-progress-fill" style="width:${pct}%"></div>
+    </div>
+    <div class="dls-metrics">
+      <span>${t('dashboard.liveStatus.progress', { done: gp.finished, total: gp.total })}</span>
+      <span>${t('dashboard.liveStatus.groups', { done: gp.completeGroups, total: gp.totalGroups })}</span>
+    </div>
+  `;
+  el.style.display = '';
 }
 
 // ============================================================
@@ -2848,7 +2915,7 @@ function renderAdminMembers() {
     nudge.className = 'admin-ko-nudge-banner';
     if (annexCount > 0) {
       nudge.innerHTML =
-        '<div class="akn-head"><span class="akn-icon"><i class="ti ti-alert-triangle"></i></span><div>' +
+        '<div class="akn-head"><span class="akn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18.1A2 2 0 0 0 3.5 21h17a2 2 0 0 0 1.7-2.9L13.7 3.9a2 2 0 0 0-3.4 0Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span><div>' +
           '<div class="akn-title">' + t('adminMembersEx.annexCReviewTitle') + '</div>' +
           '<div class="akn-text">' + t('adminMembersEx.annexCReviewGlitch', { n: annexCount, hard: annexHardCount, remind: annexReminderCount }) + '</div>' +
           '<div class="akn-you">' + adminAnnexStatus + '</div>' +
@@ -13809,7 +13876,7 @@ function _annexCopyAfterKickoff(locked) {
 async function _updateReopenBanner(active, opts = {}) {
   const el = document.getElementById('knockout-reopen-banner');
   if (!el) return;
-  const hide = () => { el.style.display = 'none'; };
+  const hide = () => { state._dashboardKnockoutReviewOpen = false; el.style.display = 'none'; };
   if (!active) return hide();
   const st = await _spFetchReopenStatus();
   const titleEl = document.getElementById('kr-title');
@@ -13820,6 +13887,7 @@ async function _updateReopenBanner(active, opts = {}) {
   const approved = !!(st && st.approved);
   const canEdit = !!(st && st.can_reenter) || (!opts.locked && approved);
   const hardAffected = !!(st && st.impact_kind === 'hard_invalid_r32');
+  state._dashboardKnockoutReviewOpen = approved && canEdit;
   if (approved) {
     el.className = 'knockout-reopen-banner pending';
     if (titleEl) {
@@ -13841,6 +13909,7 @@ async function _updateReopenBanner(active, opts = {}) {
     }
     if (expEl) expEl.textContent = st.expires_at ? t('reopen.user.expires', { time: _fmtReopenExpiry(st.expires_at) }) : '';
   } else {
+    state._dashboardKnockoutReviewOpen = false;
     el.className = 'knockout-reopen-banner pending';
     if (titleEl) titleEl.textContent = t(afterKickoff ? 'reopen.user.pendingTitle' : 'reopen.user.preKickoffPendingTitle');
     if (subEl) subEl.textContent = t(afterKickoff ? 'reopen.user.pendingSub' : 'reopen.user.preKickoffPendingSub');
