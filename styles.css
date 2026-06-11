@@ -3748,6 +3748,14 @@ body.ltr #next-group-btn svg {
   font-weight: 500;
 }
 
+.match-score-pending {
+  font-family: inherit;
+  min-width: 108px;
+  max-width: 148px;
+  line-height: 1.2;
+  white-space: normal;
+}
+
 .match-info {
   display: flex;
   justify-content: space-between;

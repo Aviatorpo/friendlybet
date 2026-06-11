@@ -8006,9 +8006,9 @@ function createMatchCard(match) {
   const stageLabel = getStageLabel(match.stage, match.group_letter);
   
   // Status text
-  // v2.5.37: live matches show the computed minute ("47'") instead of just
-  // "Live". Halftime + extra-time accounted for. Client computes from
-  // match_date so the label ticks every refresh without an API call.
+  // Do not show a computed minute from scheduled kickoff. The official feed can
+  // leave a live match as TIMED, and real kickoff can drift a few minutes, so a
+  // local minute label would look precise while being wrong.
   let statusText;
   let statusClass;
   if (status === 'PAUSED') {
@@ -8017,7 +8017,7 @@ function createMatchCard(match) {
     statusText = t('matchesEx.halftime');
     statusClass = 'halftime';
   } else if (isLive) {
-    statusText = _liveMinuteLabel(match) || t('matchesEx.live');
+    statusText = t('matchesEx.live');
     statusClass = 'live';
   } else if (isFinished) {
     statusText = t('matchesEx.finished');
@@ -8043,13 +8043,14 @@ function createMatchCard(match) {
   // Score display
   let scoreHtml;
   if (isFinished || isLive) {
-    scoreHtml = `
+    const hasScore = match.home_score != null && match.away_score != null;
+    scoreHtml = hasScore ? `
       <div class="match-score">
-        <span>${match.home_score ?? '?'}</span>
+        <span>${match.home_score}</span>
         <span>-</span>
-        <span>${match.away_score ?? '?'}</span>
+        <span>${match.away_score}</span>
       </div>
-    `;
+    ` : `<div class="match-score no-score match-score-pending">${t('matchesEx.scoreAfterFinal')}</div>`;
   } else {
     const time = match.match_date ? new Date(match.match_date) : null;
     const tmLang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
