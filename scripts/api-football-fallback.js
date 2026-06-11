@@ -1,8 +1,11 @@
 // ============================================================
-// FriendlyBet - API-Football final-result fallback
+// FriendlyBet - external final-result fallback
 // ============================================================
-// Conservative second-source recovery for matches that should be over but are
-// still missing a final result from football-data.org.
+// Conservative multi-source recovery for matches that should be over but are
+// still missing a final result from football-data.org. It can read API-Football
+// and ESPN's public scoreboard JSON. In emergency fallback mode, one final ESPN
+// result is enough when the API sources are empty/stuck, but any equally strong
+// conflicting source blocks the update.
 //
 // Default mode is DRY RUN. It only writes to Supabase when called with --apply.
 // Required for live use:
@@ -24,6 +27,7 @@ const API_FOOTBALL_KEY = process.env.API_FOOTBALL_KEY;
 const API_FOOTBALL_BASE = process.env.API_FOOTBALL_BASE || 'https://v3.football.api-sports.io';
 const API_FOOTBALL_LEAGUE_ID = process.env.API_FOOTBALL_LEAGUE_ID || '1';
 const API_FOOTBALL_SEASON = process.env.API_FOOTBALL_SEASON || '2026';
+const ESPN_SCOREBOARD_BASE = process.env.ESPN_SCOREBOARD_BASE || 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
 
 const TERMINAL = new Set(['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED']);
 const API_FINAL = new Set(['FT', 'AET', 'PEN', 'AWD', 'WO']);
@@ -31,6 +35,7 @@ const API_FINAL = new Set(['FT', 'AET', 'PEN', 'AWD', 'WO']);
 const MIN_AGE_MINUTES = parseInt(process.env.RESULT_FALLBACK_MIN_AGE_MINUTES || '', 10) || 115;
 const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 48;
 const MAX_KICKOFF_DELTA_MS = (parseInt(process.env.RESULT_FALLBACK_MAX_KICKOFF_DELTA_HOURS || '', 10) || 12) * 60 * 60 * 1000;
+const MIN_SOURCES = parseInt(process.env.RESULT_FALLBACK_MIN_SOURCES || '', 10) || 1;
 
 function isoDate(d) {
   return new Date(d).toISOString().slice(0, 10);
@@ -83,6 +88,17 @@ async function callApiFootball(endpoint) {
   return json;
 }
 
+async function callEspnScoreboard(dateYmd) {
+  const res = await fetch(`${ESPN_SCOREBOARD_BASE}?dates=${encodeURIComponent(dateYmd)}`, {
+    headers: { 'User-Agent': 'FriendlyBet result verifier (+https://friendlybet.live)' }
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`ESPN scoreboard failed: ${res.status} - ${text.slice(0, 180)}`);
+  }
+  return await res.json();
+}
+
 function transformApiFootballFixture(fx) {
   const homeCode = getTeamCode(fx && fx.teams && fx.teams.home && fx.teams.home.name);
   const awayCode = getTeamCode(fx && fx.teams && fx.teams.away && fx.teams.away.name);
@@ -113,6 +129,44 @@ function transformApiFootballFixture(fx) {
   };
 }
 
+function transformEspnEvent(event) {
+  const comp = event && event.competitions && event.competitions[0];
+  const competitors = (comp && comp.competitors) || [];
+  const home = competitors.find(c => c.homeAway === 'home');
+  const away = competitors.find(c => c.homeAway === 'away');
+  const homeCode = getTeamCode(home && home.team && (home.team.displayName || home.team.name || home.team.abbreviation));
+  const awayCode = getTeamCode(away && away.team && (away.team.displayName || away.team.name || away.team.abbreviation));
+  const status = (comp && comp.status) || (event && event.status) || {};
+  const type = status.type || {};
+  const completed = type.completed === true || String(type.state || '').toLowerCase() === 'post';
+  const statusShort = completed ? 'FT' : String(type.name || '').toUpperCase();
+  const fixtureDate = (comp && (comp.startDate || comp.date)) || (event && event.date);
+  const homeScore = home && home.score != null && home.score !== '' ? parseInt(home.score, 10) : null;
+  const awayScore = away && away.score != null && away.score !== '' ? parseInt(away.score, 10) : null;
+
+  let winnerCode = null;
+  if (home && home.winner === true) winnerCode = homeCode;
+  else if (away && away.winner === true) winnerCode = awayCode;
+  else if (Number.isFinite(homeScore) && Number.isFinite(awayScore)) {
+    if (homeScore > awayScore) winnerCode = homeCode;
+    else if (awayScore > homeScore) winnerCode = awayCode;
+  }
+
+  return {
+    source: 'espn',
+    api_id: event && event.id,
+    homeCode,
+    awayCode,
+    statusShort,
+    fixtureDate,
+    homeScore: Number.isFinite(homeScore) ? homeScore : null,
+    awayScore: Number.isFinite(awayScore) ? awayScore : null,
+    winnerCode,
+    rawHome: home && home.team ? (home.team.displayName || home.team.name) : null,
+    rawAway: away && away.team ? (away.team.displayName || away.team.name) : null
+  };
+}
+
 function fixtureMatchesDbMatch(dbMatch, apiMatch) {
   if (!dbMatch || !apiMatch) return false;
   if (dbMatch.home_team_code !== apiMatch.homeCode) return false;
@@ -123,15 +177,15 @@ function fixtureMatchesDbMatch(dbMatch, apiMatch) {
   return Math.abs(a - b) <= MAX_KICKOFF_DELTA_MS;
 }
 
-function findMatchingFixture(dbMatch, apiFixtures) {
-  const matches = (apiFixtures || [])
-    .map(transformApiFootballFixture)
+function findMatchingFixture(dbMatch, sourceMatches, transform = x => x) {
+  const matches = (sourceMatches || [])
+    .map(transform)
     .filter(fx => fixtureMatchesDbMatch(dbMatch, fx));
   if (matches.length !== 1) return { match: null, reason: matches.length === 0 ? 'no exact fixture match' : 'multiple fixture matches' };
   return { match: matches[0], reason: null };
 }
 
-function buildUpdateFromApiFixture(apiMatch, nowIso = new Date().toISOString()) {
+function buildUpdateFromVerifiedFixture(apiMatch, nowIso = new Date().toISOString()) {
   if (!apiMatch) return { update: null, reason: 'missing api match' };
   if (!API_FINAL.has(apiMatch.statusShort)) return { update: null, reason: `not final (${apiMatch.statusShort || 'unknown'})` };
   if (apiMatch.homeScore == null || apiMatch.awayScore == null) return { update: null, reason: 'final status without numeric score' };
@@ -146,6 +200,8 @@ function buildUpdateFromApiFixture(apiMatch, nowIso = new Date().toISOString()) 
     reason: null
   };
 }
+
+const buildUpdateFromApiFixture = buildUpdateFromVerifiedFixture;
 
 async function loadStuckMatches(now = new Date()) {
   const end = new Date(now.getTime() - MIN_AGE_MINUTES * 60 * 1000);
@@ -165,40 +221,109 @@ async function loadApiFootballFixturesFor(matches) {
   return Array.isArray(json.response) ? json.response : [];
 }
 
+async function loadEspnEventsFor(matches) {
+  if (!matches.length) return [];
+  const dates = [...new Set(matches
+    .map(m => Date.parse(m.match_date))
+    .filter(t => !isNaN(t))
+    .map(t => {
+      const d = new Date(t);
+      return `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}`;
+    }))];
+  const all = [];
+  for (const ymd of dates) {
+    const json = await callEspnScoreboard(ymd);
+    if (Array.isArray(json.events)) all.push(...json.events);
+  }
+  return all;
+}
+
+function resultKey(update) {
+  return `${update.status}|${update.home_score}|${update.away_score}|${update.winner_code || ''}`;
+}
+
+function consensusUpdate(sourceUpdates, minSources = MIN_SOURCES) {
+  const groups = new Map();
+  for (const su of sourceUpdates || []) {
+    if (!su || !su.update || !su.source) continue;
+    const key = resultKey(su.update);
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(su);
+  }
+  const winners = [...groups.entries()]
+    .map(([key, sources]) => ({ key, sources }))
+    .sort((a, b) => b.sources.length - a.sources.length);
+  const best = winners[0];
+  if (!best || best.sources.length < minSources) {
+    return { update: null, reason: `${sourceUpdates.length} final source(s), ${minSources} required` };
+  }
+  if (winners[1] && winners[1].sources.length === best.sources.length) {
+    return { update: null, reason: 'conflicting source consensus' };
+  }
+  return { update: best.sources[0].update, sources: best.sources };
+}
+
 async function verifyFinalResults(opts = {}) {
   const apply = !!opts.apply;
   if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY or PROD_ANON_KEY');
   if (apply && !HAS_SERVICE_KEY) throw new Error('Refusing --apply without SUPABASE_SECRET_KEY');
-  if (!API_FOOTBALL_KEY) throw new Error('Missing API_FOOTBALL_KEY');
 
   const now = opts.now || new Date();
   const stuck = await loadStuckMatches(now);
   console.log(`Found ${stuck.length} stuck match candidate(s). apply=${apply ? 'true' : 'false'}`);
   if (!stuck.length) return { checked: 0, updated: 0, skipped: 0 };
 
-  const fixtures = await loadApiFootballFixturesFor(stuck);
-  console.log(`Loaded ${fixtures.length} API-Football fixture(s). league=${API_FOOTBALL_LEAGUE_ID} season=${API_FOOTBALL_SEASON}`);
+  let apiFixtures = [];
+  let espnEvents = [];
+  if (API_FOOTBALL_KEY) {
+    apiFixtures = await loadApiFootballFixturesFor(stuck);
+    console.log(`Loaded ${apiFixtures.length} API-Football fixture(s). league=${API_FOOTBALL_LEAGUE_ID} season=${API_FOOTBALL_SEASON}`);
+  } else {
+    console.log('API_FOOTBALL_KEY missing - skipping API-Football source');
+  }
+  espnEvents = await loadEspnEventsFor(stuck);
+  console.log(`Loaded ${espnEvents.length} ESPN event(s)`);
 
   let updated = 0;
   let skipped = 0;
   for (const dbMatch of stuck) {
     const label = `${dbMatch.home_team_code} vs ${dbMatch.away_team_code} (${dbMatch.external_id})`;
-    const found = findMatchingFixture(dbMatch, fixtures);
-    if (!found.match) {
-      skipped++;
-      console.log(`SKIP ${label}: ${found.reason}`);
-      continue;
+    const sourceUpdates = [];
+
+    if (apiFixtures.length) {
+      const found = findMatchingFixture(dbMatch, apiFixtures, transformApiFootballFixture);
+      if (found.match) {
+        const built = buildUpdateFromVerifiedFixture(found.match);
+        if (built.update) sourceUpdates.push({ source: 'api-football', update: built.update, sourceId: found.match.api_id });
+        else console.log(`OBSERVE ${label}: api-football ${built.reason}`);
+      } else {
+        console.log(`OBSERVE ${label}: api-football ${found.reason}`);
+      }
     }
-    const built = buildUpdateFromApiFixture(found.match);
-    if (!built.update) {
+
+    if (espnEvents.length) {
+      const found = findMatchingFixture(dbMatch, espnEvents, transformEspnEvent);
+      if (found.match) {
+        const built = buildUpdateFromVerifiedFixture(found.match);
+        if (built.update) sourceUpdates.push({ source: 'espn', update: built.update, sourceId: found.match.api_id });
+        else console.log(`OBSERVE ${label}: espn ${built.reason}`);
+      } else {
+        console.log(`OBSERVE ${label}: espn ${found.reason}`);
+      }
+    }
+
+    const agreed = consensusUpdate(sourceUpdates);
+    if (!agreed.update) {
       skipped++;
-      console.log(`SKIP ${label}: ${built.reason}`);
+      const sources = sourceUpdates.map(s => `${s.source}:${s.update.home_score}-${s.update.away_score}`).join(', ') || 'none';
+      console.log(`SKIP ${label}: ${agreed.reason}; sources=${sources}`);
       continue;
     }
 
-    console.log(`${apply ? 'APPLY' : 'DRY'} ${label}: ${built.update.home_score}-${built.update.away_score}, status=${built.update.status}, source=api-football fixture=${found.match.api_id}`);
+    const sourceNames = agreed.sources.map(s => `${s.source}#${s.sourceId || '?'}`).join(', ');
+    console.log(`${apply ? 'APPLY' : 'DRY'} ${label}: ${agreed.update.home_score}-${agreed.update.away_score}, status=${agreed.update.status}, sources=${sourceNames}`);
     if (apply) {
-      await callSupabase('PATCH', 'matches', built.update, `?external_id=eq.${encodeURIComponent(dbMatch.external_id)}`);
+      await callSupabase('PATCH', 'matches', agreed.update, `?external_id=eq.${encodeURIComponent(dbMatch.external_id)}`);
       updated++;
     }
   }
@@ -220,8 +345,11 @@ if (require.main === module) {
   module.exports = {
     isStuckCandidate,
     transformApiFootballFixture,
+    transformEspnEvent,
     findMatchingFixture,
     buildUpdateFromApiFixture,
+    buildUpdateFromVerifiedFixture,
+    consensusUpdate,
     verifyFinalResults,
     __setFetch: (fn) => { globalThis.fetch = fn; }
   };

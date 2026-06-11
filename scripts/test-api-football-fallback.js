@@ -1,4 +1,5 @@
-// Test: API-Football fallback transforms only exact, final fixtures.
+// Test: external result fallback transforms only exact, final fixtures and
+// requires consensus before updating.
 // Run: node scripts/test-api-football-fallback.js
 
 process.env.FOOTBALL_DATA_TOKEN = 'test';
@@ -56,6 +57,27 @@ const wrongFixture = {
   }
 };
 
+const espnFinal = {
+  id: '760415',
+  date: '2026-06-11T19:00Z',
+  competitions: [{
+    startDate: '2026-06-11T19:00Z',
+    status: { type: { name: 'STATUS_FINAL', state: 'post', completed: true } },
+    competitors: [
+      { homeAway: 'home', score: '1', winner: false, team: { displayName: 'Mexico', abbreviation: 'MEX' } },
+      { homeAway: 'away', score: '1', winner: false, team: { displayName: 'South Africa', abbreviation: 'RSA' } }
+    ]
+  }]
+};
+
+const espnLive = {
+  ...espnFinal,
+  competitions: [{
+    ...espnFinal.competitions[0],
+    status: { type: { name: 'STATUS_SECOND_HALF', state: 'in', completed: false } }
+  }]
+};
+
 ok('stuck candidate after age threshold', F.isStuckCandidate(db, Date.parse('2026-06-11T21:10:00Z')));
 ok('not stuck before age threshold', !F.isStuckCandidate(db, Date.parse('2026-06-11T20:00:00Z')));
 
@@ -76,8 +98,8 @@ eq('transform final fixture', {
   winnerCode: null
 });
 
-ok('finds exact fixture', !!F.findMatchingFixture(db, [wrongFixture, finalFixture]).match);
-ok('rejects non-matching fixture', !F.findMatchingFixture(db, [wrongFixture]).match);
+ok('finds exact fixture', !!F.findMatchingFixture(db, [wrongFixture, finalFixture], F.transformApiFootballFixture).match);
+ok('rejects non-matching fixture', !F.findMatchingFixture(db, [wrongFixture], F.transformApiFootballFixture).match);
 
 eq('builds final update', F.buildUpdateFromApiFixture(transformed, '2026-06-11T21:00:00Z').update, {
   home_score: 1,
@@ -90,4 +112,36 @@ eq('builds final update', F.buildUpdateFromApiFixture(transformed, '2026-06-11T2
 ok('does not build update from live fixture',
   !F.buildUpdateFromApiFixture(F.transformApiFootballFixture(liveFixture)).update);
 
-console.log('\nAPI-Football fallback tests passed');
+const espnTransformed = F.transformEspnEvent(espnFinal);
+eq('transform ESPN final event', {
+  homeCode: espnTransformed.homeCode,
+  awayCode: espnTransformed.awayCode,
+  statusShort: espnTransformed.statusShort,
+  homeScore: espnTransformed.homeScore,
+  awayScore: espnTransformed.awayScore,
+  winnerCode: espnTransformed.winnerCode
+}, {
+  homeCode: 'MEX',
+  awayCode: 'RSA',
+  statusShort: 'FT',
+  homeScore: 1,
+  awayScore: 1,
+  winnerCode: null
+});
+
+ok('does not build update from ESPN live event',
+  !F.buildUpdateFromVerifiedFixture(F.transformEspnEvent(espnLive)).update);
+
+const apiUpdate = F.buildUpdateFromApiFixture(transformed, '2026-06-11T21:00:00Z').update;
+const espnUpdate = F.buildUpdateFromVerifiedFixture(espnTransformed, '2026-06-11T21:00:00Z').update;
+ok('ESPN alone is enough in emergency fallback mode', !!F.consensusUpdate([{ source: 'espn', update: espnUpdate }]).update);
+ok('two agreeing sources produce consensus', !!F.consensusUpdate([
+  { source: 'api-football', update: apiUpdate },
+  { source: 'espn', update: espnUpdate }
+], 2).update);
+ok('conflicting sources do not produce consensus', !F.consensusUpdate([
+  { source: 'api-football', update: apiUpdate },
+  { source: 'espn', update: { ...espnUpdate, away_score: 2 } }
+], 2).update);
+
+console.log('\nExternal result fallback tests passed');
