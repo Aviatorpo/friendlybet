@@ -601,7 +601,7 @@ async function checkPoolCode() {
     // not just the manual is_locked flag - so a tournament-locked pool fails
     // this preflight early instead of only at the final join_pool RPC. The
     // server RPC remains the source of truth and rejects both.
-    if (isPoolWriteLocked(data) || await isGlobalJoinClosed()) {
+    if (isPoolWriteLocked(data)) {
       showError('join-error', t('errors.poolLockedNoJoin'));
       return;
     }
@@ -798,7 +798,7 @@ async function completeRegistration() {
   }
 
   try {
-    if (isPoolWriteLocked(state.currentPool) || await isGlobalJoinClosed()) {
+    if (isPoolWriteLocked(state.currentPool)) {
       showToast(t('errors.poolLockedNoJoin'), 'error');
       showScreen('join-pool-screen');
       return;
@@ -967,6 +967,11 @@ async function createPool() {
   }
 
   try {
+    if (isLateEntryCreationClosed()) {
+      showToast(t('errors.lateEntryClosed'), 'error');
+      return;
+    }
+
     // v2.5.29: removed "Creating pool..." info toast - the recovery
     // code screen that follows is the success confirmation.
 
@@ -1256,7 +1261,7 @@ async function goToDashboard() {
   // fallback in case locked_at hasn't been written yet for this pool.
   const inviteBtn = document.querySelector('#user-dashboard-screen .invite-friends-btn');
   if (inviteBtn) {
-    const poolLocked = isPoolJoinClosed() || tournamentStarted;
+    const poolLocked = isPoolJoinClosed();
     const showInvite = state.currentUser && state.currentUser.is_admin && !poolLocked;
     inviteBtn.style.display = showInvite ? '' : 'none';
   }
@@ -1353,7 +1358,8 @@ function _poolGraceActive(pool) {
 function isPoolWriteLocked(pool = state.currentPool) {
   if (!pool) return false;
   if (_poolGraceActive(pool)) return false;
-  return !!(pool.locked_at || pool.is_locked);
+  if (pool.locked_at || pool.is_locked) return true;
+  return _poolEffectiveLockPassed(pool);
 }
 
 async function updateTwoPhaseIncidentBanner() {
@@ -1431,6 +1437,7 @@ async function updateTwoPhaseIncidentBanner() {
 // stays accurate to the minute even if FIFA shifts the schedule; falls back to
 // a constant if the snapshot is unavailable.
 const FIRST_MATCH_FALLBACK_ISO = '2026-06-11T16:00:00-06:00'; // opening match, CDMX time
+const LATE_ENTRY_CUTOFF_ISO = '2026-06-18T16:00:00.000Z'; // first team second group match
 let _countdownTimer = null;
 let _countdownKickoffMs = null;
 
@@ -1451,9 +1458,23 @@ async function _resolveFirstKickoffMs() {
   return ms;
 }
 
-async function isGlobalJoinClosed() {
-  const kickoff = await _resolveFirstKickoffMs();
-  return Date.now() >= kickoff;
+function _poolCreatedAtMs(pool) {
+  const t = pool && pool.created_at ? Date.parse(pool.created_at) : NaN;
+  return Number.isFinite(t) ? t : 0;
+}
+
+function _poolEffectiveLockPassed(pool) {
+  const now = Date.now();
+  const kickoff = Date.parse(FIRST_MATCH_FALLBACK_ISO);
+  const lateCutoff = Date.parse(LATE_ENTRY_CUTOFF_ISO);
+  if (!Number.isFinite(kickoff) || !Number.isFinite(lateCutoff) || now < kickoff) return false;
+  const createdAt = _poolCreatedAtMs(pool);
+  if (createdAt >= kickoff && createdAt < lateCutoff) return now >= lateCutoff;
+  return true;
+}
+
+function isLateEntryCreationClosed() {
+  return Date.now() >= Date.parse(LATE_ENTRY_CUTOFF_ISO);
 }
 
 async function initDashboardCountdown(tournamentStarted) {
@@ -10106,6 +10127,11 @@ async function wizardCreatePool() {
   const finalRules = getFinalScoringRules();
 
   try {
+    if (isLateEntryCreationClosed()) {
+      showToast(t('errors.lateEntryClosed'), 'error');
+      return;
+    }
+
     showToast(t('errors.creatingPool'), 'info');
 
     // Generate unique pool code

@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.17** - Late-entry pools until the first second group match. Pools created before kickoff still lock at kickoff and cannot accept new members. Pools created from kickoff until the late cutoff (`2026-06-18T16:00:00Z`, Czechia v South Africa) can use the existing single-phase/two-phase flows, accept joins, and save picks until that cutoff; after it, normal betting and new pool creation close. Updated the client lock checks, invite visibility, scheduled lock job, and added a production SQL migration for `join_pool`, `_auth_writer`, `autolock_pool_if_started`, and `create_pool` so server-side writes match the UI rule. Version/cache bumped to v2.10.17.
+
 **v2.10.16** - Blocked joining existing pools after World Cup kickoff. The join-code preflight and final registration step now reject joins once the global kickoff time has passed, even if an individual pool has not yet been autolocked. Added a production SQL migration for the `join_pool` RPC with the same global cutoff so direct/API joins are blocked server-side too. This does not block creating new pools and does not change prediction writes, recovery windows, or admin approval flows. Version/cache bumped to v2.10.16.
 
 **v2.10.15** - Tightened dashboard warning priority for affected admins. If an admin has their own knockout recovery/correction banner visible, the lower-priority members nudge is suppressed, including pre-lock missing-bracket recovery and Annex C review windows. This keeps dashboard recovery messaging to one top-priority banner at a time while preserving the detailed admin-member warning inside the members screen. Version/cache bumped to v2.10.15.

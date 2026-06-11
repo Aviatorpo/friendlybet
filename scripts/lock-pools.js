@@ -7,11 +7,12 @@
 // once locked_at/is_locked is set — that part is verified).
 //
 // Locks a pool when:
-//   - the first scheduled match has kicked off (earliest matches.match_date <= now), AND
 //   - the pool isn't already locked (locked_at IS NULL), AND
-//   - the pool's effective deadline has passed: lock_at_override IS NULL (normal
-//     pool → lock at kickoff) OR lock_at_override <= now (extended pool → lock at
-//     its later deadline).
+//   - its deadline has passed:
+//       * pre-kickoff pools lock at kickoff
+//       * pools created from kickoff until the first second group match lock at
+//         the late-entry cutoff
+//       * lock_at_override can still extend incident-recovery pools
 //
 // The lock_at_override column is dormant today (NULL everywhere → everyone locks
 // at kickoff). It exists so the future "extra-time" extension for incident-
@@ -32,6 +33,7 @@ const DRY_RUN = process.argv.includes('--dry-run') || process.env.LOCK_DRY_RUN =
 // Explicit kickoff trigger (NOT min(matches.match_date)) so a stale/test/misdated
 // DB row can't lock every pool early. Override via env if FIFA shifts the opener.
 const CONFIGURED_KICKOFF_ISO = process.env.LOCK_KICKOFF_ISO || '2026-06-11T19:00:00.000Z';
+const LATE_ENTRY_CUTOFF_ISO = process.env.LATE_ENTRY_CUTOFF_ISO || '2026-06-18T16:00:00.000Z';
 
 const H = {
   apikey: SUPABASE_KEY,
@@ -71,14 +73,19 @@ async function main() {
       console.warn(`[lock-pools] note: DB earliest match ${dbKickoff.toISOString()} is ${diffMin} min AFTER configured kickoff.`);
     }
   }
+  const lateEntryCutoff = new Date(LATE_ENTRY_CUTOFF_ISO);
   const reached = now >= configuredKickoff;
+  const reachedLateCutoff = now >= lateEntryCutoff;
 
   // Pools eligible to lock now: not yet locked, effective deadline passed.
   const nowParam = encodeURIComponent(nowIso);
-  const filter = `betting_mode=in.(single_phase,two_phase)&locked_at=is.null&or=(lock_at_override.is.null,lock_at_override.lte.${nowParam})`;
+  const baseFilter = `betting_mode=in.(single_phase,two_phase)&locked_at=is.null&or=(lock_at_override.is.null,lock_at_override.lte.${nowParam})`;
+  const filter = reachedLateCutoff
+    ? baseFilter
+    : `${baseFilter}&created_at=lt.${encodeURIComponent(CONFIGURED_KICKOFF_ISO)}`;
   const before = await dueCount(filter);
 
-  console.log(`[lock-pools] now=${nowIso} | configured kickoff=${CONFIGURED_KICKOFF_ISO} | db earliest=${dbKickoff ? dbKickoff.toISOString() : 'none'} | reached=${reached} | pools due-to-lock=${before}`);
+  console.log(`[lock-pools] now=${nowIso} | kickoff=${CONFIGURED_KICKOFF_ISO} | late cutoff=${LATE_ENTRY_CUTOFF_ISO} | db earliest=${dbKickoff ? dbKickoff.toISOString() : 'none'} | kickoff reached=${reached} | late reached=${reachedLateCutoff} | pools due-to-lock=${before}`);
 
   if (!reached) { console.log('[lock-pools] kickoff not reached → no-op'); return; }
   if (DRY_RUN) { console.log('[lock-pools] DRY RUN → would lock the pools above, but not writing'); return; }
@@ -96,9 +103,9 @@ async function main() {
   const after = await dueCount(filter);
   console.log(`[lock-pools] PATCH ok | due before=${before} after=${after}`);
   if (after >= before) {
-    throw new Error(`[lock-pools] lock made NO progress: ${after} single-phase pools still due (was ${before}) — possible permission/filter failure`);
+    throw new Error(`[lock-pools] lock made NO progress: ${after} pools still due (was ${before}) — possible permission/filter failure`);
   }
-  console.log(`[lock-pools] ✓ locked ${before - after} single-phase pool(s) at ${nowIso}`);
+  console.log(`[lock-pools] ✓ locked ${before - after} pool(s) at ${nowIso}`);
 }
 
 main().catch(e => { console.error('[lock-pools] ERROR:', e.message); process.exit(1); });
