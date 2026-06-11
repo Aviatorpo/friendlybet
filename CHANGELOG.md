@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.16** - Blocked joining existing pools after World Cup kickoff. The join-code preflight and final registration step now reject joins once the global kickoff time has passed, even if an individual pool has not yet been autolocked. Added a production SQL migration for the `join_pool` RPC with the same global cutoff so direct/API joins are blocked server-side too. This does not block creating new pools and does not change prediction writes, recovery windows, or admin approval flows. Version/cache bumped to v2.10.16.
+
 **v2.10.15** - Tightened dashboard warning priority for affected admins. If an admin has their own knockout recovery/correction banner visible, the lower-priority members nudge is suppressed, including pre-lock missing-bracket recovery and Annex C review windows. This keeps dashboard recovery messaging to one top-priority banner at a time while preserving the detailed admin-member warning inside the members screen. Version/cache bumped to v2.10.15.
 
 **v2.10.14** - Fixed a two-phase pool status false alarm. The "missing knockout" warning now only appears for single-phase pools, where knockout picks are expected before kickoff or during the Annex C review window. Two-phase pools deliberately collect only group picks first, so members with complete groups and no knockout picks are no longer flagged in the member list or admin nudge. Version/cache bumped to v2.10.14.

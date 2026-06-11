@@ -601,7 +601,7 @@ async function checkPoolCode() {
     // not just the manual is_locked flag - so a tournament-locked pool fails
     // this preflight early instead of only at the final join_pool RPC. The
     // server RPC remains the source of truth and rejects both.
-    if (isPoolWriteLocked(data)) {
+    if (isPoolWriteLocked(data) || await isGlobalJoinClosed()) {
       showError('join-error', t('errors.poolLockedNoJoin'));
       return;
     }
@@ -798,6 +798,12 @@ async function completeRegistration() {
   }
 
   try {
+    if (isPoolWriteLocked(state.currentPool) || await isGlobalJoinClosed()) {
+      showToast(t('errors.poolLockedNoJoin'), 'error');
+      showScreen('join-pool-screen');
+      return;
+    }
+
     // v2.5.29: removed "Creating user..." info toast - dashboard
     // transition follows shortly.
 
@@ -1443,6 +1449,11 @@ async function _resolveFirstKickoffMs() {
   } catch (_) { /* keep fallback */ }
   _countdownKickoffMs = ms;
   return ms;
+}
+
+async function isGlobalJoinClosed() {
+  const kickoff = await _resolveFirstKickoffMs();
+  return Date.now() >= kickoff;
 }
 
 async function initDashboardCountdown(tournamentStarted) {
