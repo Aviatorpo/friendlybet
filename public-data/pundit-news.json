@@ -1,18 +1,44 @@
 {
-  "updatedAt": "2026-06-11T03:30:00.000Z",
+  "updatedAt": "2026-06-11T09:30:00.000Z",
   "items": [
     {
-      "id": "civ-beat-france-wc2026-warmup-2026-06-04",
+      "id": "wc26-azteca-three-world-cups-2026-06-11",
       "confidence": "confirmed",
-      "team": "CIV",
-      "en": "Ivory Coast made history on June 4, beating France 2-1 in Nantes in a World Cup warm-up to record their first-ever victory against France in any match. Rayan Cherki gave Les Bleus the lead but Guela Doue and then Amad Diallo, the Manchester United winger, turned the result around in the second half as Ivory Coast outpressed a rotated French squad. Deschamps made ten substitutions in the second half and called it a useful reminder rather than a crisis, and five days later France beat Northern Ireland 3-1. The result matters more because of what comes next: Ivory Coast and Germany share Group E, opening on June 14 against Ecuador in Philadelphia and Curacao in Houston respectively. A team that beat one of the tournament co-favourites in a warm-up has already served notice on the group. If they can unsettle France off a standing start, can they do it again over 90 real minutes?",
-      "he": "קוט דיבואר עשתה היסטוריה ב-4 ביוני, כשניצחה את צרפת 2:1 בנאנט בחימום לפני המונדיאל, בניצחון הראשון שלה אי-פעם על צרפת בכל משחק שהוא. ריאן שרקי פתח לצרפת, אך גואלה דואה ואמאד דיאלו, הקצה של מנצ'סטר יונייטד, הפכו את התוצאה במחצית השנייה כשהאיבוארים לחצו על קבוצה צרפתית מסובבת. דשאן ביצע עשרה חילופים במחצית השנייה וכינה זאת תזכורת שימושית ולא משבר, ולאחר חמישה ימים צרפת ניצחה את אירלנד הצפונית 3:1. התוצאה חשובה עוד יותר לנוכח מה שעומד בפניה: קוט דיבואר וגרמניה חולקות קבוצה E, ופותחות ב-14 ביוני מול אקוואדור בפילדלפיה ומול קוראסאו בהיוסטון בהתאמה. קבוצה שניצחה אחת ממועדפות הטורניר בחימום כבר שלחה אזהרה לכל קבוצה אחרת בקבוצה. אם הן יכולות להרעיש את צרפת בנקודת פתיחה, האם הן יוכלו לעשות זאת שוב על פני 90 דקות אמיתיות?",
+      "en": "The 2026 World Cup began today at the most decorated stadium in the history of the game. Estadio Azteca in Mexico City hosted its third World Cup opening match, the only venue ever to do so - it staged the tournament's first game in both 1970 and 1986, and both those editions also ended with the final at the same ground, Brazil lifting the trophy in 1970 and Argentina in 1986. By the close of the 2026 tournament, the Azteca will have hosted 24 World Cup matches in total, more than any other stadium on earth. The ground sits at 2,200 metres above sea level, where the thinner air shortens passes, tires legs faster, and has historically given Mexican sides an edge over unacclimatised opponents. This is also the ground where Maradona scored both the Hand of God and the Goal of the Century against England in the 1986 quarter-final, and where Italy and West Germany played the Game of the Century in the 1970 semi-final. Forty years on from Maradona, the Azteca opens another World Cup. Mexico face South Africa in Group A - can a stadium this loaded with history produce another iconic chapter?",
+      "he": "מונדיאל 2026 נפתח היום באצטדיון המעוטר ביותר בהיסטוריית המשחק. אסטדיו אצטקה במקסיקו סיטי ארח את משחק הפתיחה השלישי שלו במונדיאל, הבלעדי שעשה זאת אי-פעם. הוא ארח את המשחק הראשון בטורניר ב-1970 וב-1986 גם יחד, ושני הגרסאות הללו הסתיימו אף הן עם הגמר באותו מגרש, ברזיל מרימה את הגביע ב-1970 וארגנטינה ב-1986. עם סיום טורניר 2026 יהיו לאצטקה 24 משחקי מונדיאל בסך הכל, יותר מכל אצטדיון אחר בעולם. המגרש שוכן בגובה 2,200 מטר מעל פני הים, שם האוויר הדליל מקצר מסירות, מעייף את הרגליים מהר יותר, והיסטורית נתן יתרון לנבחרות מקסיקו מול יריבות שלא הסתגלו לגובה. זהו גם המגרש שבו מראדונה הבקיע הן את 'יד האל' והן את 'שער המאה' מול אנגליה ברבע גמר 1986, ושבו איטליה ומערב גרמניה שיחקו את 'משחק המאה' בחצי גמר 1970. ארבעים שנה אחרי מראדונה, האצטקה פותח מונדיאל נוסף. מקסיקו מתמודדת מול דרום אפריקה בקבוצה A - האם אצטדיון כה עמוס בהיסטוריה יוכל לייצר פרק אייקוני נוסף?",
       "sources": [
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/4/ivory-coast-beat-france-in-world-cup-warning-to-one-of-the-favourites" },
-        { "name": "France 24", "url": "https://www.france24.com/en/sport/20260604-france-stunned-by-ivory-coast-in-world-cup-warm-up-defeat" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/report/_/gameId/401864934" }
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026" },
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/estadio-azteca-makes-history-with-three-fifa-world-cup-opening-matches-2026-05-28" },
+        { "name": "Buenos Aires Herald", "url": "https://buenosairesherald.com/sports/football/2026-world-cup/how-the-estadio-azteca-became-the-world-cups-greatest-home" }
       ],
-      "expires_at": "2026-06-21T23:59:59Z"
+      "expires_at": "2026-06-26T00:00:00Z"
+    },
+    {
+      "id": "bra-rodrygo-acl-wc2026-2026-03-02",
+      "confidence": "confirmed",
+      "team": "BRA",
+      "en": "Brazil lost two projected starters before the tournament began. Rodrygo suffered a torn ACL and lateral meniscus playing for Real Madrid against Getafe on March 2 and will miss the 2026 World Cup entirely. The 25-year-old called it one of the worst days of his life, though he later vowed to return stronger. Estevao, Chelsea's incoming 18-year-old, was also ruled out after a hamstring injury in April and was left off the final squad. Coach Carlo Ancelotti has turned to Raphinha and Matheus Cunha on the wings, with 18-year-old Endrick up front. Neymar, 34, is in the squad as cover but is not expected to feature in Brazil's Group C opener against Morocco on June 13. Vinicius Jr will need to carry the attack for large parts of the tournament if the backup plan is to hold. A Selecao depleted on the wings, opening against a Morocco side that reached the last four in Qatar. Can depth replace class when it matters most?",
+      "he": "ברזיל איבדה שני שחקנים מתוכננים בהרכב הפותח עוד לפני שהתחרות החלה. רודריגו ספג קרע ב-ACL ובמניסקוס הלטרלי כשמשחק עבור ריאל מדריד מול חטאפה ב-2 במרץ ויפסיד את מונדיאל 2026 כולו. בן ה-25 כינה זאת 'אחד הימים הגרועים בחיי', אם כי מאוחר יותר נשבע לחזור חזק יותר. אסטבאו, בן ה-18 של צ'לסי, פוסל גם הוא לאחר פציעת שריר ירך באפריל והושמט מהסגל הסופי. המאמן קרלו אנצ'לוטי פנה לראפיניה ומתאוס קונייה בכנפות, עם אנדריק בן ה-18 כחלוץ. ניימאר, בן 34, נמצא בסגל כמחליף פוטנציאלי אך לא צפוי להיכלל בפתיחת קבוצה C של ברזיל מול מרוקו ב-13 ביוני. ויניסיוס ג'וניור יצטרך לשאת את ההתקפה בחלקים גדולים מהטורניר אם תוכנית הגיבוי תחזיק מעמד. סלסאו מדוללת בכנפות, פותחת מול מרוקו שהגיעה לארבע האחרונות בקטאר. האם עומק יוכל להחליף איכות ברגעים הקריטיים?",
+      "sources": [
+        { "name": "FIFA", "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/rodrygo-brazil-injured" },
+        { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/48089822/real-madrid-rodrygo-torn-acl-season-miss-world-cup" },
+        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/life-has-been-cruel-rodrygo-opens-up-on-heartbreak-as-real-madrid-star-accepts-world-cup-dream-is-over-with-massive-injury-blow" },
+        { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/la-liga/articles/rodrygo-ruled-out-of-2026-world-cup-with-acl-injury-2026-03-03" }
+      ],
+      "expires_at": "2026-07-05T23:59:59Z"
+    },
+    {
+      "id": "wc26-toronto-opening-ceremony-2026-06-12",
+      "confidence": "confirmed",
+      "team": "CAN",
+      "en": "The 2026 World Cup is the first in history to hold opening ceremonies in all three host nations. Mexico's opening match at Azteca came first today, and on June 12 at 13:30 local time Canada stages its ceremony at Toronto Stadium, 90 minutes before the host nation's Group B opener against Bosnia and Herzegovina. The Canada ceremony features Alanis Morissette singing O Canada, alongside Alessia Cara, Michael Buble, Jessie Reyez, Nora Fatehi and Elyanna among the performers, with actor Will Arnett serving as FIFA's World Cup 2026 Ambassador. A third ceremony will take place when the United States play their first match. FIFA is asking fans to arrive early, with gates opening four hours before kick-off and the ceremony beginning 90 minutes before it. Canada have never won a World Cup match in two previous tournaments, in 1986 and Qatar 2022. Tomorrow at home, in front of a capacity crowd, they get the stage first and the football second. What the ceremony builds, 90 minutes of Group B will test.",
+      "he": "מונדיאל 2026 הוא הראשון בהיסטוריה שמקיים טקסי פתיחה בשלושת מדינות המארחות. משחק הפתיחה של מקסיקו באצטקה קדם היום, וב-12 ביוני בשעה 13:30 שעון מקומי קנדה מארחת את הטקס שלה ב-Toronto Stadium, 90 דקות לפני פתיחת קבוצה B של המארחת מול בוסניה-הרצגובינה. טקס קנדה כולל את אלאניס מוריסט שמבצעת את O Canada, לצד אלסיה קארה, מייקל בובלה, ג'סי רייז, נורה פאתהי ואלייאנה בין המבצעים, כשהשחקן ויל ארנט משמש כשגריר פיפ\"א לגביע העולם 2026. טקס שלישי יתקיים כשארצות הברית תשחק את משחקה הראשון. פיפ\"א מבקשת מהאוהדים להגיע מוקדם, עם פתיחת השערים ארבע שעות לפני הבעיטה וטקס שמתחיל 90 דקות לפניה. לקנדה אין ניצחון במונדיאל בשתי ההשתתפויות הקודמות שלה, ב-1986 ובקטאר 2022. מחר בבית, בפני קהל מלא, הם מקבלים קודם את הבמה ואחר כך את הכדורגל. מה שהטקס בונה, 90 דקות בקבוצה B יבחנו.",
+      "sources": [
+        { "name": "FIFA (inside.fifa.com)", "url": "https://inside.fifa.com/media-releases/canada-welcome-opening-ceremony-world-cup-2026-tm" },
+        { "name": "NBC Los Angeles", "url": "https://www.nbclosangeles.com/world-cup/world-cup-2026-opening-ceremonies-date-time-performers/3900269/" },
+        { "name": "Today.com", "url": "https://www.today.com/popculture/music/world-cup-opening-ceremony-performers-guide-rcna345808" }
+      ],
+      "expires_at": "2026-06-15T00:00:00Z"
     },
     {
       "id": "esp-yamal-barcelona-conditions-wc2026-2026-06-10",
@@ -41,20 +67,6 @@
       "expires_at": "2026-07-05T23:59:59Z"
     },
     {
-      "id": "fra-olise-hattrick-warmup-wc2026-2026-06-09",
-      "confidence": "confirmed",
-      "team": "FRA",
-      "en": "France served the most emphatic possible notice on June 9: Michael Olise scored a hat-trick as Les Bleus beat Northern Ireland 3-1 in Lille in their final pre-tournament warm-up, making him the first France player to net a treble in a friendly since Olivier Giroud against Paraguay in 2017. Olise struck in the 43rd, 49th and 75th minutes, his third a curling right-wing effort from 20 metres that left the goalkeeper helpless. The hat-trick brought him to seven goals in his first 17 France appearances, a mark no French player has reached this quickly since Youri Djorkaeff in June 1996. Coach Didier Deschamps, who steps down after this World Cup after 14 years in charge, said Olise can shine at the highest level. The match was also Deschamps' final game on home soil as national manager. France open Group I against Senegal on June 22, with Mbappe chasing Fontaine's all-time French record. If Olise arrives in this form, the question for every rival is not whether he will hurt them, but when.",
-      "he": "צרפת שלחה את ההודעה החדה ביותר האפשרית ב-9 ביוני: מייקל אוליז הבקיע שלישיית שערים כשלה-בלה ניצחה את אירלנד הצפונית 3:1 בליל בידידות ההכנה האחרונה שלהם לפני הטורניר, והפך לשחקן הצרפתי הראשון שמבקיע שלישייה בידידות מאז אוליבייה ז'ירו מול פרגוואי ב-2017. אוליז הבקיע בדקה 43, 49 ו-75, האחרון שוט מסולסל מהכנף הימנית מ-20 מטר שהשאיר את השוער חסר אונים. השלישייה הביאה אותו לשבעה שערים ב-17 ההופעות הראשונות שלו לצרפת, קצב שאף שחקן צרפתי לא הגיע אליו כל-כך מהר מאז יורי ז'ורקאף ביוני 1996. המאמן דידייה דשאן, שמסיים לאחר מונדיאל זה אחרי 14 שנים בתפקיד, אמר שאוליז יכול לזרוח ברמה הגבוהה ביותר. המשחק היה גם המשחק האחרון של דשאן על אדמת הבית כמנהל לאומי. צרפת פותחת קבוצה I מול סנגל ב-22 ביוני, כשמבאפה רודף את שיאו של פונטן. אם אוליז מגיע בכושר הזה, השאלה עבור כל יריב אינה האם הוא יפגע בה, אלא מתי.",
-      "sources": [
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/9/deschamps-backs-hat-trick-hero-olise-to-shine-for-france-at-world-cup" },
-        { "name": "France 24", "url": "https://www.france24.com/en/sport/20260609-michael-olise-hat-trick-rounds-off-france-world-cup-preparations-sends-ominous-warning" },
-        { "name": "Fox Sports", "url": "https://www.foxsports.com/stories/soccer/olise-scores-3-as-france-beats-northern-ireland-in-world-cup-warmup" },
-        { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/france-ease-past-northern-ireland-224000732.html" }
-      ],
-      "expires_at": "2026-06-23T00:00:00Z"
-    },
-    {
       "id": "can-flores-nelson-squad-wc2026-2026-06-09",
       "confidence": "confirmed",
       "team": "CAN",
@@ -64,7 +76,7 @@
         { "name": "CBC Sports", "url": "https://www.cbc.ca/sports/soccer/worldcup/jayden-nelson-injury-replacement-canada-world-cup-marcelo-flores-9.7228625" },
         { "name": "TSN", "url": "https://www.tsn.ca/soccer/fifa-world-cup/article/nelson-replaces-flores-on-canada-roster/" },
         { "name": "beIN Sports", "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/canada-replaces-marcelo-flores-with-jayden-nelson-for-world-cup-2026-06-09" },
-        { "name": "Globe and Mail", "url": "https://www.theglobeandmail.com/sports/soccer/article-fifa-world-cup-nelson-flores-replacement/" }
+        { "name": "Globe and Mail", "url": "https://www.theglobeandmail.com/sports/soccer/article/fifa-world-cup-nelson-flores-replacement/" }
       ],
       "expires_at": "2026-06-30T00:00:00Z"
     },
@@ -92,20 +104,6 @@
         { "name": "Yahoo Sports", "url": "https://sports.yahoo.com/articles/sofi-stadium-gets-dramatic-fifa-203711439.html" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "arg-messi-3-0-iceland-wc26-2026-06-09",
-      "confidence": "confirmed",
-      "team": "ARG",
-      "en": "Messi answered every question about his fitness in the best way possible. The Argentina captain came on as a substitute in the final warm-up against Iceland on June 9 and scored from the penalty spot within minutes of entering the pitch, then set up Rodrigo De Paul for the move that led to Thiago Almada's third. Valentin Barco had already put Argentina ahead in the eighth minute with a long-range strike. Argentina win 3-0 and head to the World Cup, where they open their Group D title defence against Algeria in Kansas City on June 16, with their captain fit, sharp, and scoring. The only question left is whether the trophy follows.",
-      "he": "מסי ענה על כל שאלה לגבי כשירותו בצורה שאין עליה עוררין. קפטן ארגנטינה נכנס כמחליף בידידות האחרונה מול איסלנד ב-9 ביוני, הבקיע מנקודת האחד-עשר דקות ספורות לאחר כניסתו, ואז שלח אסיסט לדה-פאול שהוביל לשלישי של אלמאדה. ולנטין בארקו פתח בשמינייה עם שוט ארוך מחוץ לקופסה. ארגנטינה ניצחה 3:0 ופותחת את ההגנה על התואר בקבוצה D מול אלג'יריה בקנזס סיטי ב-16 ביוני, עם קפטן כשיר, חד ומבקיע. השאלה היחידה שנותרת היא האם הגביע יבוא בעקבות.",
-      "sources": [
-        { "name": "World Soccer Talk", "url": "https://worldsoccertalk.com/world-cup/argentina-vs-iceland-live-updates-minute-by-minute-coverage-of-2026-international-friendly/" },
-        { "name": "ESPN", "url": "https://www.espn.com/soccer/match/_/gameId/401867950/iceland-argentina" },
-        { "name": "Bolavip US", "url": "https://bolavip.com/en/soccer/iceland-vs-argentina-live-lionel-messis-last-friendly-before-2026-world-cup" },
-        { "name": "VAVEL USA", "url": "https://www.vavel.com/en-us/soccer/2026/06/10/1263020-argentina-vs-iceland-live-score-friendly.html" }
-      ],
-      "expires_at": "2026-06-20T23:59:59Z"
     },
     {
       "id": "irn-tickets-revoked-wc2026-2026-06-09",
@@ -149,8 +147,8 @@
       "id": "bra-neymar-mri-progress-wc2026-2026-06-09",
       "confidence": "confirmed",
       "team": "BRA",
-      "en": "Brazil's medical team issued an encouraging update on June 9 after a new MRI scan showed Neymar's Grade 2 right calf strain healing within expected parameters, per the CBF. The 34-year-old, injured at Santos in mid-May, is still not expected to feature in Brazil's Group G opener against Morocco in New Jersey on June 13. Coach Carlo Ancelotti is targeting the second group match against Haiti as the most realistic return window and insists he will not use the emergency replacement rule on Neymar. Brazil's backup depth was on show against Egypt when 18-year-old Endrick scored in a 2-1 warm-up win, but the Selecao also lost right-back Wesley to a left-thigh adductor tear in that same match, with Atalanta midfielder Ederson called in as cover. Vinicius Jr is handing back the No. 10 shirt to Neymar once he returns. Good progress is not a clean bill of health. Can Brazil hold shape in the group stage until their record goalscorer arrives?",
-      "he": "הצוות הרפואי הברזילאי פרסם עדכון מעודד ב-9 ביוני לאחר שבדיקת MRI חדשה הראתה שמתח הדרגה השנייה בשריר השוק הימני של ניימאר מחלים בפרמטרים הצפויים, לפי ה-CBF. הפורווארד בן ה-34, שנפצע בסנטוס באמצע מאי, עדיין לא צפוי להופיע בפתיחת קבוצה G של ברזיל מול מרוקו בניו ג'רזי ב-13 ביוני. המאמן קרלו אנצ'לוטי מכוון למשחק הקבוצתי השני מול האיטי כחלון החזרה הריאלי ביותר, ומדגיש שלא יפעיל כלל ההחלפה הדחופה. עומק הרזרבות הוכח מול מצרים כשאנדריק בן ה-18 הבקיע בניצחון 2:1, אך ברזיל גם איבדה את מגן הגב וסלי לקרע בשריר המקרב של הירך השמאלית באותו משחק, ואדרסון מאטלנטה נוסף כמחליף. ויניסיוס ג'וניור מחזיר לניימאר את חולצת מספר 10 עם חזרתו. התקדמות טובה אינה אישור כשירות מלאה. האם ברזיל תשמור על עצמה בשלב הבתים עד שמבקיע כל הזמנים שלה יגיע?",
+      "en": "Brazil's medical team issued an encouraging update on June 9 after a new MRI scan showed Neymar's Grade 2 right calf strain healing within expected parameters, per the CBF. The 34-year-old, injured at Santos in mid-May, is still not expected to feature in Brazil's Group C opener against Morocco in New Jersey on June 13. Coach Carlo Ancelotti is targeting the second group match against Haiti as the most realistic return window and insists he will not use the emergency replacement rule on Neymar. Brazil's backup depth was on show against Egypt when 18-year-old Endrick scored in a 2-1 warm-up win, but the Selecao also lost right-back Wesley to a left-thigh adductor tear in that same match, with Atalanta midfielder Ederson called in as cover. Vinicius Jr is handing back the No. 10 shirt to Neymar once he returns. Good progress is not a clean bill of health. Can Brazil hold shape in the group stage until their record goalscorer arrives?",
+      "he": "הצוות הרפואי הברזילאי פרסם עדכון מעודד ב-9 ביוני לאחר שבדיקת MRI חדשה הראתה שמתח הדרגה השנייה בשריר השוק הימני של ניימאר מחלים בפרמטרים הצפויים, לפי ה-CBF. הפורווארד בן ה-34, שנפצע בסנטוס באמצע מאי, עדיין לא צפוי להופיע בפתיחת קבוצה C של ברזיל מול מרוקו בניו ג'רזי ב-13 ביוני. המאמן קרלו אנצ'לוטי מכוון למשחק הקבוצתי השני מול האיטי כחלון החזרה הריאלי ביותר, ומדגיש שלא יפעיל כלל ההחלפה הדחופה. עומק הרזרבות הוכח מול מצרים כשאנדריק בן ה-18 הבקיע בניצחון 2:1, אך ברזיל גם איבדה את מגן הגב וסלי לקרע בשריר המקרב של הירך השמאלית באותו משחק, ואדרסון מאטלנטה נוסף כמחליף. ויניסיוס ג'וניור מחזיר לניימאר את חולצת מספר 10 עם חזרתו. התקדמות טובה אינה אישור כשירות מלאה. האם ברזיל תשמור על עצמה בשלב הבתים עד שמבקיע כל הזמנים שלה יגיע?",
       "sources": [
         { "name": "ESPN", "url": "https://www.espn.com/soccer/story/_/id/49002184/brazil-mri-neymar-good-progress-injury" },
         { "name": "Arab News", "url": "https://www.arabnews.com/node/2646471/sport" },
@@ -167,18 +165,6 @@
         { "name": "US News (AP)", "url": "https://www.usnews.com/news/sports/articles/2026-06-08/somali-referee-for-world-cup-is-denied-entry-into-the-united-states" },
         { "name": "France 24 (AFP)", "url": "https://www.france24.com/en/live-news/20260608-somali-referee-denied-entry-to-us-for-world-cup-official" },
         { "name": "NBC Washington", "url": "https://www.nbcwashington.com/world-cup/somali-referee-2026-world-cup-denied-entry-united-states/4114000/" }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
-    },
-    {
-      "id": "wc26-cooling-breaks-heat-2026",
-      "confidence": "confirmed",
-      "en": "For the first time at a World Cup, FIFA has made mandatory three-minute hydration breaks compulsory in each half of every match, regardless of weather conditions, a direct response to the heat and humidity risks across North American host cities. The rule is most critical at Estadio BBVA in Monterrey, where June afternoon temperatures routinely reach 38 to 40 degrees Celsius in an open-air stadium with no cooling infrastructure, and where experts warn that even with the breaks, afternoon kick-offs still carry meaningful heat-stress risk for players. FIFA has also required cooled dugout benches at all outdoor venues. Forty-eight teams are running their summer tournament on a continent where parts of the schedule carry genuine medical risk. Three minutes twice a match will not remove the danger. They will just tell you how hot things really are.",
-      "he": "לראשונה במונדיאל, פיפ\"א הנהיגה הפסקות שתייה חובה בנות שלוש דקות בכל מחצית בכל משחק, ללא תלות בתנאי מזג האוויר, בתגובה ישירה לסיכוני חום ולחות בערי המארח בצפון אמריקה. הכלל קריטי ביותר באסטדיו BBVA במונטריי, שם הטמפרטורות בצהרי יוני מגיעות שגרתית ל-38 עד 40 מעלות צלזיוס, באצטדיון פתוח ללא תשתית קירור, ומומחים מזהירים כי גם עם ההפסקות, משחקי אחה\"צ עדיין טומנים סיכון ממשי לפגיעת חום בשחקנים. פיפ\"א גם חייבה ספסלי בקמה מקוררים בכל האצטדיונים הפתוחים. 48 נבחרות מנהלות את טורניר הקיץ שלהן ביבשת שבחלקים ממנה לוח הזמנים של המשחקים נושא סיכון רפואי ממשי. שלוש דקות פעמיים למשחק לא יסלקו את הסכנה. הן פשוט יגידו לך כמה חם באמת.",
-      "sources": [
-        { "name": "Al Jazeera", "url": "https://www.aljazeera.com/sports/2026/6/8/how-extreme-weather-and-heat-could-affect-players-at-world-cup-2026" },
-        { "name": "The Conversation", "url": "https://theconversation.com/extreme-heat-at-the-world-cup-are-fifas-safeguards-enough-282489" },
-        { "name": "Bloomberg", "url": "https://www.bloomberg.com/graphics/2026-fifa-world-cup-games-weather/" }
       ],
       "expires_at": "2026-07-19T00:00:00Z"
     },
