@@ -602,7 +602,7 @@ async function checkPoolCode() {
     // this preflight early instead of only at the final join_pool RPC. The
     // server RPC remains the source of truth and rejects both.
     if (isPoolWriteLocked(data)) {
-      showError('join-error', t('errors.poolLockedNoJoin'));
+      showError('join-error', _poolClosedMessage(data));
       return;
     }
     
@@ -626,7 +626,9 @@ async function checkPoolCode() {
       'knockout_active': t('poolFound.statusKnockout'),
       'finished': t('poolFound.statusFinished')
     };
-    document.getElementById('found-pool-status').textContent = statusMap[data.status] || data.status;
+    document.getElementById('found-pool-status').textContent = _poolLateEntryOpen(data)
+      ? t('poolFound.statusLateOpen', { time: _lateEntryCutoffLabel() })
+      : (statusMap[data.status] || data.status);
 
     showScreen('pool-found-screen');
 
@@ -799,7 +801,7 @@ async function completeRegistration() {
 
   try {
     if (isPoolWriteLocked(state.currentPool)) {
-      showToast(t('errors.poolLockedNoJoin'), 'error');
+      showToast(_poolClosedMessage(state.currentPool), 'error');
       showScreen('join-pool-screen');
       return;
     }
@@ -968,7 +970,7 @@ async function createPool() {
 
   try {
     if (isLateEntryCreationClosed()) {
-      showToast(t('errors.lateEntryClosed'), 'error');
+      showToast(t('errors.lateEntryClosed', { time: _lateEntryCutoffLabel() }), 'error');
       return;
     }
 
@@ -1264,6 +1266,15 @@ async function goToDashboard() {
     const poolLocked = isPoolJoinClosed();
     const showInvite = state.currentUser && state.currentUser.is_admin && !poolLocked;
     inviteBtn.style.display = showInvite ? '' : 'none';
+    const titleEl = inviteBtn.querySelector('.invite-friends-title');
+    const subEl = inviteBtn.querySelector('.invite-friends-subtitle');
+    const lateOpen = _poolLateEntryOpen();
+    if (titleEl) titleEl.textContent = t(lateOpen ? 'dashboard.invite.lateTitle' : 'dashboard.invite.title');
+    if (subEl) {
+      subEl.textContent = t(lateOpen ? 'dashboard.invite.lateSubtitle' : 'dashboard.invite.subtitle', {
+        time: _lateEntryCutoffLabel()
+      });
+    }
   }
 
   // Update betting status based on actual picks
@@ -1478,6 +1489,54 @@ function isLateEntryCreationClosed() {
   return Date.now() >= Date.parse(LATE_ENTRY_CUTOFF_ISO);
 }
 
+function _lateEntryCutoffLabel() {
+  try {
+    const d = new Date(LATE_ENTRY_CUTOFF_ISO);
+    const lang = (typeof currentLanguage !== 'undefined' && currentLanguage === 'he') ? 'he-IL' : 'en-US';
+    return d.toLocaleString(lang, {
+      day: 'numeric',
+      month: 'long',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short'
+    });
+  } catch (_) {
+    return '18 June, 16:00 UTC';
+  }
+}
+
+function _poolIsLateEntry(pool = state.currentPool) {
+  const createdAt = _poolCreatedAtMs(pool);
+  const kickoff = Date.parse(POOL_LOCK_KICKOFF_ISO);
+  const lateCutoff = Date.parse(LATE_ENTRY_CUTOFF_ISO);
+  return Number.isFinite(createdAt) && Number.isFinite(kickoff) && Number.isFinite(lateCutoff) &&
+    createdAt >= kickoff && createdAt < lateCutoff;
+}
+
+function _poolLateEntryOpen(pool = state.currentPool) {
+  return !!pool && _poolIsLateEntry(pool) && !_poolGraceActive(pool) &&
+    !pool.locked_at && !pool.is_locked && Date.now() < Date.parse(LATE_ENTRY_CUTOFF_ISO);
+}
+
+function _poolClosedMessageKey(pool = state.currentPool) {
+  if (!pool) return 'errors.poolLockedNoJoin';
+  const now = Date.now();
+  const createdAt = _poolCreatedAtMs(pool);
+  const kickoff = Date.parse(POOL_LOCK_KICKOFF_ISO);
+  const lateCutoff = Date.parse(LATE_ENTRY_CUTOFF_ISO);
+  if (pool.is_locked) return 'errors.poolLockedNoJoin';
+  if (Number.isFinite(kickoff) && createdAt < kickoff && now >= kickoff) return 'errors.poolClosedKickoff';
+  if (Number.isFinite(kickoff) && Number.isFinite(lateCutoff) &&
+      createdAt >= kickoff && createdAt < lateCutoff && now >= lateCutoff) {
+    return 'errors.poolClosedLate';
+  }
+  return 'errors.poolLockedNoJoin';
+}
+
+function _poolClosedMessage(pool = state.currentPool) {
+  return t(_poolClosedMessageKey(pool), { time: _lateEntryCutoffLabel() });
+}
+
 async function initDashboardCountdown(tournamentStarted) {
   const banner = document.getElementById('dashboard-countdown');
   if (!banner) return;
@@ -1563,14 +1622,21 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
 
   const gp = _dashboardGroupProgress();
   const pct = gp.total ? Math.min(100, Math.round((gp.finished / gp.total) * 100)) : 0;
-  const textKey = state._dashboardKnockoutReviewOpen ? 'dashboard.liveStatus.reviewText' : 'dashboard.liveStatus.text';
+  const lateOpen = _poolLateEntryOpen();
+  const textKey = lateOpen
+    ? 'dashboard.liveStatus.lateText'
+    : (state._dashboardKnockoutReviewOpen ? 'dashboard.liveStatus.reviewText' : 'dashboard.liveStatus.text');
+  const titleKey = lateOpen ? 'dashboard.liveStatus.lateTitle' : 'dashboard.liveStatus.title';
+  const kickerKey = lateOpen ? 'dashboard.liveStatus.lateKicker' : 'dashboard.liveStatus.kicker';
+  const zeroKey = lateOpen ? 'dashboard.liveStatus.lateDeadline' : 'dashboard.liveStatus.zeroPoints';
+  const deadline = _lateEntryCutoffLabel();
   el.innerHTML = `
     <div class="dls-head">
-      <span class="dls-live"><span class="dls-dot"></span>${t('dashboard.liveStatus.kicker')}</span>
-      <span class="dls-zero">${t('dashboard.liveStatus.zeroPoints')}</span>
+      <span class="dls-live"><span class="dls-dot"></span>${t(kickerKey)}</span>
+      <span class="dls-zero">${t(zeroKey, { time: deadline })}</span>
     </div>
-    <div class="dls-title">${t('dashboard.liveStatus.title')}</div>
-    <div class="dls-text">${t(textKey)}</div>
+    <div class="dls-title">${t(titleKey)}</div>
+    <div class="dls-text">${t(textKey, { time: deadline })}</div>
     <div class="dls-progress" aria-hidden="true">
       <div class="dls-progress-fill" style="width:${pct}%"></div>
     </div>
@@ -8480,7 +8546,7 @@ function isPoolJoinClosed() {
 // direct JS call to a share helper can't leak a locked-pool join link.
 function _inviteShareBlocked() {
   if (!isPoolJoinClosed()) return false;
-  showToast(t('errors.poolLockedNoJoin'), 'error');
+  showToast(_poolClosedMessage(), 'error');
   return true;
 }
 
@@ -8493,7 +8559,7 @@ function showShareModal() {
   // Once the pool locks, joining is impossible - don't open the invite modal
   // (reachable from the menu even after the dashboard banner is hidden).
   if (isPoolJoinClosed()) {
-    showToast(t('errors.poolLockedNoJoin'), 'error');
+    showToast(_poolClosedMessage(), 'error');
     closeMenu();
     return;
   }
@@ -8550,7 +8616,8 @@ function getShareMessage(source = 'copy') {
   const code = state.currentPool.code;
   const url = getInviteUrl(source);
 
-  return t('sharePool.shareText', { poolName, code, url });
+  const key = _poolLateEntryOpen() ? 'sharePool.shareTextLate' : 'sharePool.shareText';
+  return t(key, { poolName, code, url, time: _lateEntryCutoffLabel() });
 }
 
 // The per-app share helpers below serve two contexts. `mode='invite'` (default)
@@ -10129,7 +10196,7 @@ async function wizardCreatePool() {
 
   try {
     if (isLateEntryCreationClosed()) {
-      showToast(t('errors.lateEntryClosed'), 'error');
+      showToast(t('errors.lateEntryClosed', { time: _lateEntryCutoffLabel() }), 'error');
       return;
     }
 
