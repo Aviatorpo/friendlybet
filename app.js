@@ -2388,6 +2388,7 @@ const _WC_STORIES_FALLBACK = {
         team_he: 'דרום אפריקה',
         team_en: 'South Africa',
         position: 1,
+        he_name: '{names} הלך על {team} במקום הראשון בבית וקיבל שיעור ראשון בענווה 😅',
         he_names: '{names} הלכו על {team} במקום הראשון בבית וקיבלו שיעור ראשון בענווה 😅',
         he_count: '{count} משתתפים הימרו על {team} במקום הראשון בבית וקיבלו שיעור ראשון בענווה 😅',
         en_names: '{names} picked {team} to finish first in the group and got an early reality check 😅',
@@ -2412,6 +2413,7 @@ const _WC_STORIES_FALLBACK = {
         team_he: 'צ׳כיה',
         team_en: 'Czech Republic',
         position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. התוכנית כרגע נראית קצת פחות מבריקה 🙃',
         he_names: '{names} שמו את {team} ראשונה בבית. התוכנית כרגע נראית קצת פחות מבריקה 🙃',
         he_count: '{count} משתתפים שמו את {team} ראשונה בבית. התוכנית כרגע נראית קצת פחות מבריקה 🙃',
         en_names: '{names} had {team} first in the group. The masterplan is wobbling 🙃',
@@ -2500,9 +2502,9 @@ async function _wcStoryPoolCaption(story, baseCopy) {
     const names = pickedMembers.map(m => m.nickname).filter(Boolean).slice(0, 3);
     const team = lang === 'he' ? (focus.team_he || focus.team_en || focus.team_code) : (focus.team_en || focus.team_he || focus.team_code);
     const count = pickedIds.size;
-    const templateKey = count > 3 ? `${lang}_count` : `${lang}_names`;
-    const fallbackKey = `${lang}_count`;
-    const template = focus[templateKey] || focus[fallbackKey];
+    const templateKey = count > 3 ? `${lang}_count` : (count === 1 ? `${lang}_name` : `${lang}_names`);
+    const fallbackKey = count === 1 ? `${lang}_names` : `${lang}_count`;
+    const template = focus[templateKey] || focus[fallbackKey] || focus[`${lang}_count`];
     const caption = _wcFillTemplate(template, {
       names: _wcFormatNames(names),
       count,
