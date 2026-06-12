@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.30** - Dashboard prediction CTA copy fix after kickoff. The completed-predictions CTA no longer tells users they can edit "until the World Cup starts" after the tournament has already begun. It now switches between pre-kickoff edit copy, late-entry cutoff copy, correction review-window copy, and locked/read-only copy; the all-set progress card was also made timeless. Version/cache bumped to v2.10.30.
+
 **v2.10.29** - Story Hebrew grammar hotfix. Pool-aware Story of the World Cup captions now use singular Hebrew wording for one named member (`הלך` / `שם`) and plural wording only for multiple names, while count-based lines stay plural. Version/cache bumped to v2.10.29.
 
 **v2.10.28** - Story of the World Cup dashboard carousel. Added a mobile-first viral story module below the Pundit with up to five shareable image cards, starting with Mexico 2-0 South Africa and South Korea 2-1 Czech Republic. Story captions are pool-aware: small groups can name the members who backed the losing side, while larger pools use counts such as members who picked that team first in the group. Added dark text backing for readability and a `Share image` action that exports the story card. Version/cache bumped to v2.10.28.

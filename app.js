@@ -6144,6 +6144,13 @@ function _fbSetDashboardProgressCard(rawState) {
   }
 }
 
+function _dashboardViewCtaSubtitle(isLocked, hasCorrectionGrant) {
+  if (hasCorrectionGrant) return t('dashboard.viewCta.reviewSubtitle');
+  if (isLocked) return t('dashboard.viewCta.lockedSubtitle');
+  if (_poolLateEntryOpen()) return t('dashboard.viewCta.lateSubtitle', { time: _lateEntryCutoffLabel() });
+  return t('dashboard.viewCta.subtitle');
+}
+
 async function updateBettingStatusOnDashboard() {
   if (!state.currentUser || !state.currentPool || !supabaseClient) return;
 
@@ -6219,7 +6226,7 @@ async function updateBettingStatusOnDashboard() {
 
     if (allComplete) {
       titleEl.textContent = t('dashboard.viewCta.title');
-      subtitleEl.textContent = t('dashboard.viewCta.subtitle');
+      subtitleEl.textContent = _dashboardViewCtaSubtitle(locked, hasCorrectionGrant);
       ctaEl.classList.add('done');
       const row = document.getElementById('bet-cta-progress-row');
       if (row) row.style.display = 'none';

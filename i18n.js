@@ -1252,10 +1252,10 @@ const TRANSLATIONS = {
     'dashboard.progress.adminInviteFirst.subtitle': 'קודם כל הזמן חברים, ואחר כך תתחיל להמר בעצמך — לוקח רק כמה דקות',
     'dashboard.progress.partial.title': 'אתה בעיצומו של ההימור💪',
     'dashboard.progress.partial.subtitle': 'עוד כמה בחירות וסיימת',
-    // v2.5.38: predictions aren\'t actually locked at submit time - they\'re
-    // editable until the tournament kicks off. Text reflects that.
+    // Completed picks: keep the progress card timeless; the CTA subtitle below
+    // switches between pre-kickoff, late-entry, review-window, and locked copy.
     'dashboard.progress.allSet.title': 'סגרת הכל! 🎉',
-    'dashboard.progress.allSet.subtitle': 'ההימור שלך בפנים. עוד אפשר לערוך עד שריקת הפתיחה של המונדיאל',
+    'dashboard.progress.allSet.subtitle': 'ההימור שלך נשמר. אפשר לחזור ולצפות בו בכל רגע',
     'dashboard.startCta.title': 'התחל להמר על המונדיאל',
     'dashboard.startCta.subtitle': 'בחר את הקבוצות שלך לכל בית',
     'dashboard.continueCta.title': 'המשך את ההימור',
@@ -1266,6 +1266,9 @@ const TRANSLATIONS = {
     'dashboard.editCta.title': 'ערוך את ההימור שלך',
     'dashboard.viewCta.title': 'צפה בניחושים שלך',
     'dashboard.viewCta.subtitle': 'עדכן או ערוך עד שהמונדיאל מתחיל',
+    'dashboard.viewCta.lockedSubtitle': 'ההימורים נעולים עכשיו. אפשר לצפות במה ששמרת',
+    'dashboard.viewCta.lateSubtitle': 'אפשר לעדכן עד {time}',
+    'dashboard.viewCta.reviewSubtitle': 'חלון הבדיקה פתוח — אפשר לבדוק ולעדכן את הנוקאאוט',
 
     // === v2.1.0 - Recovery code screen ===
     'recovery.poolCreated.title': 'ההימור נוצר!',
@@ -2607,10 +2610,10 @@ const TRANSLATIONS = {
     'dashboard.progress.adminInviteFirst.subtitle': 'First invite your friends, then make your own picks — takes just a few minutes',
     'dashboard.progress.partial.title': 'You\'re cooking 💪',
     'dashboard.progress.partial.subtitle': 'A few more picks and you\'re done',
-    // v2.5.38: picks aren\'t actually locked at submit time - they\'re
-    // editable until the tournament kicks off. Text reflects that.
+    // Completed picks: keep the progress card timeless; the CTA subtitle below
+    // switches between pre-kickoff, late-entry, review-window, and locked copy.
     'dashboard.progress.allSet.title': 'ALL SET! 🎉',
-    'dashboard.progress.allSet.subtitle': 'Your picks are in. Still tweakable right up to the opening whistle',
+    'dashboard.progress.allSet.subtitle': 'Your picks are saved. You can come back and review them any time',
     'dashboard.startCta.title': 'Start predicting the World Cup',
     'dashboard.startCta.subtitle': 'Pick your teams for each group',
     'dashboard.continueCta.title': 'Continue your predictions',
@@ -2621,6 +2624,9 @@ const TRANSLATIONS = {
     'dashboard.editCta.title': 'Edit your predictions',
     'dashboard.viewCta.title': 'View your predictions',
     'dashboard.viewCta.subtitle': 'Update or edit until the tournament starts',
+    'dashboard.viewCta.lockedSubtitle': 'Predictions are locked now. You can review what you saved',
+    'dashboard.viewCta.lateSubtitle': 'You can update until {time}',
+    'dashboard.viewCta.reviewSubtitle': 'The review window is open — check or update your knockout bracket',
 
     // === v2.1.0 - Recovery code screen ===
     'recovery.poolCreated.title': 'Pool Created!',
