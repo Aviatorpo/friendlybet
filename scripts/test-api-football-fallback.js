@@ -169,8 +169,11 @@ eq('transform FIFA final match', {
 const apiUpdate = F.buildUpdateFromApiFixture(transformed, '2026-06-11T21:00:00Z').update;
 const espnUpdate = F.buildUpdateFromVerifiedFixture(espnTransformed, '2026-06-11T21:00:00Z').update;
 const fifaUpdate = F.buildUpdateFromVerifiedFixture(fifaTransformed, '2026-06-11T21:00:00Z').update;
-ok('ESPN alone is enough in emergency fallback mode', !!F.consensusUpdate([{ source: 'espn', update: espnUpdate }]).update);
-ok('ESPN + FIFA agreeing produce stronger consensus', !!F.consensusUpdate([
+ok('ESPN alone is not enough by default', !F.consensusUpdate([{ source: 'espn', update: espnUpdate }]).update);
+ok('ESPN alone is enough only with explicit emergency override', !!F.consensusUpdate([
+  { source: 'espn', update: espnUpdate }
+], { minSources: 1, requiredSources: [] }).update);
+ok('ESPN + FIFA agreeing produce the default consensus', !!F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
   { source: 'fifa', update: fifaUpdate }
 ]).update);

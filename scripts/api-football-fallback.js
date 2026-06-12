@@ -3,9 +3,9 @@
 // ============================================================
 // Conservative multi-source recovery for matches that should be over but are
 // still missing a final result from football-data.org. It can read API-Football
-// and ESPN's public scoreboard JSON. In emergency fallback mode, one final ESPN
-// result is enough when the API sources are empty/stuck, but any equally strong
-// conflicting source blocks the update.
+// ESPN's public scoreboard JSON, and FIFA's official calendar API. By default,
+// a final write requires ESPN + FIFA to agree; API-Football is kept as an
+// observational backup, not as the source of truth.
 //
 // Default mode is DRY RUN. It only writes to Supabase when called with --apply.
 // Required for live use:
@@ -39,6 +39,10 @@ const MIN_AGE_MINUTES = parseInt(process.env.RESULT_FALLBACK_MIN_AGE_MINUTES || 
 const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 48;
 const MAX_KICKOFF_DELTA_MS = (parseInt(process.env.RESULT_FALLBACK_MAX_KICKOFF_DELTA_HOURS || '', 10) || 12) * 60 * 60 * 1000;
 const MIN_SOURCES = parseInt(process.env.RESULT_FALLBACK_MIN_SOURCES || '', 10) || 1;
+const REQUIRED_SOURCES = String(process.env.RESULT_FALLBACK_REQUIRED_SOURCES || 'espn,fifa')
+  .split(',')
+  .map(s => s.trim().toLowerCase())
+  .filter(Boolean);
 
 function isoDate(d) {
   return new Date(d).toISOString().slice(0, 10);
@@ -346,7 +350,13 @@ function resultKey(update) {
   return `${update.status}|${update.home_score}|${update.away_score}|${update.winner_code || ''}`;
 }
 
-function consensusUpdate(sourceUpdates, minSources = MIN_SOURCES) {
+function consensusUpdate(sourceUpdates, opts = {}) {
+  const options = typeof opts === 'number' ? { minSources: opts, requiredSources: [] } : (opts || {});
+  const requiredSources = Array.isArray(options.requiredSources) ? options.requiredSources : REQUIRED_SOURCES;
+  const minSources = Math.max(
+    options.minSources == null ? MIN_SOURCES : options.minSources,
+    requiredSources.length || 0
+  );
   const groups = new Map();
   for (const su of sourceUpdates || []) {
     if (!su || !su.update || !su.source) continue;
@@ -357,11 +367,15 @@ function consensusUpdate(sourceUpdates, minSources = MIN_SOURCES) {
   const winners = [...groups.entries()]
     .map(([key, sources]) => ({ key, sources }))
     .sort((a, b) => b.sources.length - a.sources.length);
-  const best = winners[0];
+  const best = winners.find(group => {
+    const names = new Set(group.sources.map(s => String(s.source || '').toLowerCase()));
+    return requiredSources.every(source => names.has(source));
+  }) || (requiredSources.length ? null : winners[0]);
   if (!best || best.sources.length < minSources) {
-    return { update: null, reason: `${sourceUpdates.length} final source(s), ${minSources} required` };
+    const req = requiredSources.length ? `; requires agreeing ${requiredSources.join('+')}` : '';
+    return { update: null, reason: `${sourceUpdates.length} final source(s), ${minSources} required${req}` };
   }
-  if (winners[1] && winners[1].sources.length === best.sources.length) {
+  if (!requiredSources.length && winners[1] && winners[1].sources.length === best.sources.length) {
     return { update: null, reason: 'conflicting source consensus' };
   }
   return { update: best.sources[0].update, sources: best.sources };

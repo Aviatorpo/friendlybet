@@ -2454,6 +2454,19 @@ function _matchLiveClockLabel(m, now = Date.now()) {
   if (!clock || !_matchSourceFresh(m, now)) return null;
   return clock;
 }
+function _matchHasNumericScore(m) {
+  return m && m.home_score != null && m.away_score != null;
+}
+function _matchHasFreshEspnSource(m, now = Date.now()) {
+  return String((m && m.live_source) || '').toLowerCase() === 'espn' && _matchSourceFresh(m, now);
+}
+function _matchLiveScoreTrusted(m, now = Date.now()) {
+  if (!_matchIsLiveish(m, now) || !_matchHasNumericScore(m)) return false;
+  if (!_matchHasFreshEspnSource(m, now)) return false;
+  const status = _matchStatus(m);
+  if (status === 'PAUSED') return true;
+  return !!_matchLiveClockLabel(m, now);
+}
 function _matchIsFinishedStatus(m) {
   return _FINISHED_MATCH_STATUSES.includes(_matchStatus(m));
 }
@@ -8009,6 +8022,7 @@ function createMatchCard(match) {
   const isLive = _matchIsLiveish(match);
   const isFinished = _matchIsFinishedStatus(match);
   const isScheduled = !isLive && !isFinished;
+  const liveScoreTrusted = !isStaleLive && isLive && _matchLiveScoreTrusted(match);
   
   card.className = 'match-card';
   if (isStaleLive) card.classList.add('verifying');
@@ -8041,7 +8055,7 @@ function createMatchCard(match) {
     statusClass = 'halftime';
   } else if (isLive) {
     const liveClock = _matchLiveClockLabel(match);
-    statusText = liveClock ? `${t('matchesEx.live')} · ${liveClock}` : t('matchesEx.liveUpdating');
+    statusText = liveScoreTrusted && liveClock ? `${t('matchesEx.live')} · ${liveClock}` : t('matchesEx.live');
     statusClass = 'live';
   } else if (isFinished) {
     statusText = t('matchesEx.finished');
@@ -8071,7 +8085,7 @@ function createMatchCard(match) {
     scoreHtml = `<div class="match-score no-score">VS</div>`;
     pendingScoreNote = `<div class="match-score-pending-note">${t('matchesEx.resultBeingVerified')}</div>`;
   } else if (isFinished || isLive) {
-    const hasScore = match.home_score != null && match.away_score != null;
+    const hasScore = isFinished ? _matchHasNumericScore(match) : liveScoreTrusted;
     scoreHtml = hasScore ? `
       <div class="match-score">
         <span>${match.home_score}</span>
@@ -8079,7 +8093,9 @@ function createMatchCard(match) {
         <span>${match.away_score}</span>
       </div>
     ` : `<div class="match-score no-score">VS</div>`;
-    if (!hasScore) pendingScoreNote = `<div class="match-score-pending-note">${t('matchesEx.scoreAfterFinal')}</div>`;
+    if (!hasScore) {
+      pendingScoreNote = `<div class="match-score-pending-note">${isLive ? t('matchesEx.liveResultAfterFinal') : t('matchesEx.scoreAfterFinal')}</div>`;
+    }
   } else {
     const time = match.match_date ? new Date(match.match_date) : null;
     const tmLang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
