@@ -5,7 +5,7 @@ on:
     # Emergency final-result recovery. The script itself only considers matches
     # at least RESULT_FALLBACK_MIN_AGE_MINUTES after kickoff and still missing a
     # terminal result, so most runs exit after one cheap Supabase read.
-    - cron: '*/30 * * * *'
+    - cron: '*/10 * * * *'
   workflow_dispatch:
     inputs:
       apply:

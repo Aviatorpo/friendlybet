@@ -2437,6 +2437,14 @@ function _matchStatus(m) {
 function _matchIsLiveStatus(m) {
   return _LIVE_MATCH_STATUSES.includes(_matchStatus(m));
 }
+function _matchElapsedMs(m, now = Date.now()) {
+  const ko = Date.parse(m && m.match_date);
+  return isNaN(ko) ? null : now - ko;
+}
+function _matchIsStaleLive(m, now = Date.now()) {
+  const elapsed = _matchElapsedMs(m, now);
+  return _matchIsLiveStatus(m) && elapsed != null && elapsed >= _MAX_MATCH_MS;
+}
 function _matchIsFinishedStatus(m) {
   return _FINISHED_MATCH_STATUSES.includes(_matchStatus(m));
 }
@@ -2445,6 +2453,7 @@ function _matchIsTerminalStatus(m) {
 }
 function _matchIsLiveish(m, now = Date.now()) {
   if (!m) return false;
+  if (_matchIsStaleLive(m, now)) return false;
   if (_matchIsLiveStatus(m)) return true;
   const ko = Date.parse(m.match_date);
   return !isNaN(ko) && ko <= now && (now - ko) < _MAX_MATCH_MS && !_matchIsTerminalStatus(m);
@@ -7987,12 +7996,14 @@ function createMatchCard(match) {
   // PAUSED (halftime / breaks) counts as live too - otherwise the score would
   // vanish and the match would show as "upcoming" for ~15 min every half-time.
   const status = _matchStatus(match);
+  const isStaleLive = _matchIsStaleLive(match);
   const isLive = _matchIsLiveish(match);
   const isFinished = _matchIsFinishedStatus(match);
   const isScheduled = !isLive && !isFinished;
   
   card.className = 'match-card';
-  if (status === 'PAUSED') card.classList.add('halftime'); // calm break look, not pulsing-live
+  if (isStaleLive) card.classList.add('verifying');
+  else if (status === 'PAUSED') card.classList.add('halftime'); // calm break look, not pulsing-live
   else if (isLive) card.classList.add('live');
   if (isFinished) card.classList.add('finished');
   
@@ -8011,7 +8022,10 @@ function createMatchCard(match) {
   // local minute label would look precise while being wrong.
   let statusText;
   let statusClass;
-  if (status === 'PAUSED') {
+  if (isStaleLive) {
+    statusText = t('matchesEx.verifyingResult');
+    statusClass = 'verifying';
+  } else if (status === 'PAUSED') {
     // Half-time (or any break): show the score with an explicit half-time badge,
     // driven by the real API status - not the elapsed-time guess.
     statusText = t('matchesEx.halftime');
@@ -8043,7 +8057,10 @@ function createMatchCard(match) {
   // Score display
   let scoreHtml;
   let pendingScoreNote = '';
-  if (isFinished || isLive) {
+  if (isStaleLive) {
+    scoreHtml = `<div class="match-score no-score">VS</div>`;
+    pendingScoreNote = `<div class="match-score-pending-note">${t('matchesEx.resultBeingVerified')}</div>`;
+  } else if (isFinished || isLive) {
     const hasScore = match.home_score != null && match.away_score != null;
     scoreHtml = hasScore ? `
       <div class="match-score">

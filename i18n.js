@@ -850,6 +850,8 @@ const TRANSLATIONS = {
     'matchesEx.live': 'משחק חי',
     'matchesEx.finished': 'הסתיים',
     'matchesEx.scoreAfterFinal': 'התוצאה תתעדכן בסיום המשחק',
+    'matchesEx.verifyingResult': 'מאמתים תוצאה',
+    'matchesEx.resultBeingVerified': 'התוצאה הסופית מתעדכנת עכשיו',
     // v2.5.37: live minute labels (client-computed from match_date)
     'matchesEx.minute': "דקה {n}'",
     'matchesEx.halftime': 'הפסקת מחצית',
@@ -2196,6 +2198,8 @@ const TRANSLATIONS = {
     'matchesEx.live': 'Live',
     'matchesEx.finished': 'Final',
     'matchesEx.scoreAfterFinal': 'Score updates after full time',
+    'matchesEx.verifyingResult': 'Verifying result',
+    'matchesEx.resultBeingVerified': 'Final score is being verified now',
     // v2.5.37: live minute labels (client-computed from match_date)
     'matchesEx.minute': "{n}'",
     'matchesEx.halftime': 'Half-time',

@@ -31,6 +31,7 @@ const ESPN_SCOREBOARD_BASE = process.env.ESPN_SCOREBOARD_BASE || 'https://site.a
 
 const TERMINAL = new Set(['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED']);
 const API_FINAL = new Set(['FT', 'AET', 'PEN', 'AWD', 'WO']);
+const TEAM_CODE_RE = /^[A-Z]{3}$/;
 
 const MIN_AGE_MINUTES = parseInt(process.env.RESULT_FALLBACK_MIN_AGE_MINUTES || '', 10) || 115;
 const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 48;
@@ -110,8 +111,8 @@ async function callEspnScoreboard(dateYmd) {
 }
 
 function transformApiFootballFixture(fx) {
-  const homeCode = getTeamCode(fx && fx.teams && fx.teams.home && fx.teams.home.name);
-  const awayCode = getTeamCode(fx && fx.teams && fx.teams.away && fx.teams.away.name);
+  const homeCode = normalizeTeamCode(fx && fx.teams && fx.teams.home && fx.teams.home.name);
+  const awayCode = normalizeTeamCode(fx && fx.teams && fx.teams.away && fx.teams.away.name);
   const statusShort = String((fx && fx.fixture && fx.fixture.status && fx.fixture.status.short) || '').toUpperCase();
   const fixtureDate = fx && fx.fixture && fx.fixture.date;
   const homeGoals = fx && fx.goals ? fx.goals.home : null;
@@ -144,8 +145,8 @@ function transformEspnEvent(event) {
   const competitors = (comp && comp.competitors) || [];
   const home = competitors.find(c => c.homeAway === 'home');
   const away = competitors.find(c => c.homeAway === 'away');
-  const homeCode = getTeamCode(home && home.team && (home.team.displayName || home.team.name || home.team.abbreviation));
-  const awayCode = getTeamCode(away && away.team && (away.team.displayName || away.team.name || away.team.abbreviation));
+  const homeCode = normalizeTeamCode(home && home.team && (home.team.displayName || home.team.name || home.team.abbreviation), home && home.team && home.team.abbreviation);
+  const awayCode = normalizeTeamCode(away && away.team && (away.team.displayName || away.team.name || away.team.abbreviation), away && away.team && away.team.abbreviation);
   const status = (comp && comp.status) || (event && event.status) || {};
   const type = status.type || {};
   const completed = type.completed === true || String(type.state || '').toLowerCase() === 'post';
@@ -175,6 +176,13 @@ function transformEspnEvent(event) {
     rawHome: home && home.team ? (home.team.displayName || home.team.name) : null,
     rawAway: away && away.team ? (away.team.displayName || away.team.name) : null
   };
+}
+
+function normalizeTeamCode(name, fallbackCode) {
+  const mapped = getTeamCode(name);
+  if (mapped) return mapped;
+  const raw = String(fallbackCode || name || '').trim().toUpperCase();
+  return TEAM_CODE_RE.test(raw) ? raw : null;
 }
 
 function fixtureMatchesDbMatch(dbMatch, apiMatch) {
@@ -384,6 +392,7 @@ if (require.main === module) {
     isStuckCandidate,
     transformApiFootballFixture,
     transformEspnEvent,
+    normalizeTeamCode,
     espnScoreboardDatesFor,
     findMatchingFixture,
     buildUpdateFromApiFixture,

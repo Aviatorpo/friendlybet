@@ -3622,6 +3622,23 @@ body.ltr #next-group-btn svg {
   background: #fbbf24;
 }
 
+.match-card.verifying {
+  background: linear-gradient(135deg, rgba(217, 180, 106, 0.09) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border-color: rgba(217, 180, 106, 0.28);
+  position: relative;
+  overflow: hidden;
+}
+
+.match-card.verifying::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  height: 100%;
+  background: #d9b46a;
+}
+
 .match-card.finished {
   background: rgba(74, 222, 128, 0.04);
   border-color: rgba(74, 222, 128, 0.15);
@@ -3683,6 +3700,18 @@ body.ltr #next-group-btn svg {
   width: 6px;
   height: 6px;
   background: #fbbf24;
+  border-radius: 50%;
+}
+
+.match-status-badge.verifying {
+  color: #d9b46a;
+}
+
+.match-status-badge.verifying::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: #d9b46a;
   border-radius: 50%;
 }
 
