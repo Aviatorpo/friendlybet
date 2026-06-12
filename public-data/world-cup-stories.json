@@ -1,0 +1,57 @@
+{
+  "updated_at": "2026-06-12T00:00:00Z",
+  "items": [
+    {
+      "id": "mex-rsa-2026-06-11",
+      "match_id": "955b83f1-0298-4bdc-88b7-03527bf314ac",
+      "image": "story-assets/mexico-wins-south-africa.png",
+      "teams": ["MEX", "RSA"],
+      "result": "MEX 2-0 RSA",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "RSA",
+        "team_he": "דרום אפריקה",
+        "team_en": "South Africa",
+        "position": 1,
+        "he_names": "{names} הלכו על {team} במקום הראשון בבית וקיבלו שיעור ראשון בענווה 😅",
+        "he_count": "{count} משתתפים הימרו על {team} במקום הראשון בבית וקיבלו שיעור ראשון בענווה 😅",
+        "en_names": "{names} picked {team} to finish first in the group and got an early reality check 😅",
+        "en_count": "{count} members picked {team} to finish first in the group and got an early reality check 😅"
+      },
+      "he": {
+        "headline": "מקסיקו פתחה חזק",
+        "caption": "הבחירה בדרום אפריקה במקום הראשון בבית קיבלה שיעור ראשון בענווה 😅"
+      },
+      "en": {
+        "headline": "Mexico started loud",
+        "caption": "Picking South Africa to finish first just got an early reality check 😅"
+      }
+    },
+    {
+      "id": "kor-cze-2026-06-12",
+      "match_id": "a3f33d1c-f931-4a0e-91e3-86efaa5ce733",
+      "image": "story-assets/south-korea-wins-czech-republic.png",
+      "teams": ["KOR", "CZE"],
+      "result": "KOR 2-1 CZE",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "CZE",
+        "team_he": "צ׳כיה",
+        "team_en": "Czech Republic",
+        "position": 1,
+        "he_names": "{names} שמו את {team} ראשונה בבית. התוכנית כרגע נראית קצת פחות מבריקה 🙃",
+        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. התוכנית כרגע נראית קצת פחות מבריקה 🙃",
+        "en_names": "{names} had {team} first in the group. The masterplan is wobbling 🙃",
+        "en_count": "{count} members had {team} first in the group. The masterplan is wobbling 🙃"
+      },
+      "he": {
+        "headline": "קוריאה הדרומית עשתה את שלה",
+        "caption": "הבחירה בצ׳כיה במקום הראשון בבית נראית עכשיו קצת פחות רגועה 🙃"
+      },
+      "en": {
+        "headline": "South Korea did the job",
+        "caption": "Picking Czech Republic first in the group is already feeling spicy 🙃"
+      }
+    }
+  ]
+}

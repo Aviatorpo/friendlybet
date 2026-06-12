@@ -1366,6 +1366,7 @@ async function goToDashboard() {
 
   // The Pundit - live rotating commentary (fire-and-forget, never blocks the dashboard)
   renderPundit();
+  renderWorldCupStories();
 
   // Countdown to the first match (pre-tournament only). Fire-and-forget: it
   // resolves the real kickoff from matches.json then ticks every second.
@@ -2373,6 +2374,316 @@ function _punditRestartTimer() {
   if (_punditState.timer) clearInterval(_punditState.timer);
   if (_punditState.items.length > 1) _punditState.timer = setInterval(_punditNext, 9000);
 }
+
+// ===== Story of the World Cup - dashboard carousel =========================
+const _WC_STORIES_FALLBACK = {
+  items: [
+    {
+      id: 'mex-rsa-2026-06-11',
+      image: 'story-assets/mexico-wins-south-africa.png',
+      result: 'MEX 2-0 RSA',
+      pool_focus: {
+        table: 'group_position_picks',
+        team_code: 'RSA',
+        team_he: 'דרום אפריקה',
+        team_en: 'South Africa',
+        position: 1,
+        he_names: '{names} הלכו על {team} במקום הראשון בבית וקיבלו שיעור ראשון בענווה 😅',
+        he_count: '{count} משתתפים הימרו על {team} במקום הראשון בבית וקיבלו שיעור ראשון בענווה 😅',
+        en_names: '{names} picked {team} to finish first in the group and got an early reality check 😅',
+        en_count: '{count} members picked {team} to finish first in the group and got an early reality check 😅'
+      },
+      he: {
+        headline: 'מקסיקו פתחה חזק',
+        caption: 'הבחירה בדרום אפריקה במקום הראשון בבית קיבלה שיעור ראשון בענווה 😅'
+      },
+      en: {
+        headline: 'Mexico started loud',
+        caption: 'Picking South Africa to finish first just got an early reality check 😅'
+      }
+    },
+    {
+      id: 'kor-cze-2026-06-12',
+      image: 'story-assets/south-korea-wins-czech-republic.png',
+      result: 'KOR 2-1 CZE',
+      pool_focus: {
+        table: 'group_position_picks',
+        team_code: 'CZE',
+        team_he: 'צ׳כיה',
+        team_en: 'Czech Republic',
+        position: 1,
+        he_names: '{names} שמו את {team} ראשונה בבית. התוכנית כרגע נראית קצת פחות מבריקה 🙃',
+        he_count: '{count} משתתפים שמו את {team} ראשונה בבית. התוכנית כרגע נראית קצת פחות מבריקה 🙃',
+        en_names: '{names} had {team} first in the group. The masterplan is wobbling 🙃',
+        en_count: '{count} members had {team} first in the group. The masterplan is wobbling 🙃'
+      },
+      he: {
+        headline: 'קוריאה הדרומית עשתה את שלה',
+        caption: 'הבחירה בצ׳כיה במקום הראשון בבית נראית עכשיו קצת פחות רגועה 🙃'
+      },
+      en: {
+        headline: 'South Korea did the job',
+        caption: 'Picking Czech Republic first in the group is already feeling spicy 🙃'
+      }
+    }
+  ]
+};
+let _wcStoriesState = { items: [], idx: 0, loadedAt: 0 };
+const _wcStoriesPoolCopyCache = {};
+
+function _wcStoryLang() {
+  return (typeof currentLanguage !== 'undefined' && currentLanguage === 'en') ? 'en' : 'he';
+}
+
+async function loadWorldCupStories() {
+  if (_wcStoriesState.items.length && (Date.now() - _wcStoriesState.loadedAt) < 5 * 60 * 1000) {
+    return _wcStoriesState.items;
+  }
+  let payload = null;
+  try {
+    const res = await fetch('public-data/world-cup-stories.json', { cache: 'no-store' });
+    if (res.ok) payload = await res.json();
+  } catch (_) {}
+  const items = (payload && Array.isArray(payload.items) && payload.items.length)
+    ? payload.items
+    : _WC_STORIES_FALLBACK.items;
+  _wcStoriesState.items = items.slice(0, 5);
+  _wcStoriesState.loadedAt = Date.now();
+  if (_wcStoriesState.idx >= _wcStoriesState.items.length) _wcStoriesState.idx = 0;
+  return _wcStoriesState.items;
+}
+
+function _wcStoryCopy(story) {
+  const lang = _wcStoryLang();
+  return story[lang] || story.he || story.en || { headline: '', caption: '' };
+}
+
+function _wcFillTemplate(template, vars) {
+  return String(template || '').replace(/\{(\w+)\}/g, (_, key) => vars[key] == null ? '' : String(vars[key]));
+}
+
+function _wcFormatNames(names) {
+  const clean = (names || []).map(n => String(n || '').trim()).filter(Boolean);
+  const lang = _wcStoryLang();
+  if (!clean.length) return '';
+  if (clean.length === 1) return clean[0];
+  const joiner = lang === 'he' ? ' ו' : ' and ';
+  if (clean.length === 2) return clean[0] + joiner + clean[1];
+  return clean.slice(0, -1).join(', ') + joiner + clean[clean.length - 1];
+}
+
+async function _wcStoryPoolCaption(story, baseCopy) {
+  const focus = story && story.pool_focus;
+  const pool = state.currentPool;
+  if (!focus || !pool || !pool.id || typeof supabaseClient === 'undefined' || !supabaseClient) {
+    return baseCopy.caption || '';
+  }
+  const lang = _wcStoryLang();
+  const cacheKey = [pool.id, story.id || story.match_id || story.image, lang, focus.team_code, focus.position || ''].join('|');
+  if (_wcStoriesPoolCopyCache[cacheKey]) return _wcStoriesPoolCopyCache[cacheKey];
+
+  try {
+    const [members, picksRes] = await Promise.all([
+      _loadPoolMembers(),
+      supabaseClient
+        .from('group_position_picks')
+        .select('user_id')
+        .eq('pool_id', pool.id)
+        .eq('team_code', focus.team_code)
+        .eq('position', focus.position || 1)
+        .range(0, 9999)
+    ]);
+    const picks = (picksRes && !picksRes.error && Array.isArray(picksRes.data)) ? picksRes.data : [];
+    if (!picks.length || !Array.isArray(members)) return baseCopy.caption || '';
+    const pickedIds = new Set(picks.map(p => p.user_id));
+    const pickedMembers = members.filter(m => pickedIds.has(m.id));
+    const names = pickedMembers.map(m => m.nickname).filter(Boolean).slice(0, 3);
+    const team = lang === 'he' ? (focus.team_he || focus.team_en || focus.team_code) : (focus.team_en || focus.team_he || focus.team_code);
+    const count = pickedIds.size;
+    const templateKey = count > 3 ? `${lang}_count` : `${lang}_names`;
+    const fallbackKey = `${lang}_count`;
+    const template = focus[templateKey] || focus[fallbackKey];
+    const caption = _wcFillTemplate(template, {
+      names: _wcFormatNames(names),
+      count,
+      team
+    }) || baseCopy.caption || '';
+    _wcStoriesPoolCopyCache[cacheKey] = caption;
+    return caption;
+  } catch (e) {
+    console.warn('world cup story pool caption failed', e);
+    return baseCopy.caption || '';
+  }
+}
+
+function _wcStoryImageUrl(path) {
+  if (!path) return '';
+  if (/^(https?:|data:|blob:)/i.test(path)) return path;
+  return path.replace(/^\/+/, '');
+}
+
+function _wcEsc(s) {
+  return String(s || '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[ch]));
+}
+
+async function renderWorldCupStories() {
+  const card = document.getElementById('world-cup-stories-card');
+  const rail = document.getElementById('world-cup-stories-rail');
+  const dots = document.getElementById('world-cup-stories-dots');
+  const count = document.getElementById('world-cup-stories-count');
+  if (!card || !rail || !dots) return;
+  const items = await loadWorldCupStories();
+  if (!items.length) {
+    card.style.display = 'none';
+    return;
+  }
+  const rendered = await Promise.all(items.map(async (story, idx) => {
+    const copy = _wcStoryCopy(story);
+    const caption = await _wcStoryPoolCaption(story, copy);
+    const img = _wcStoryImageUrl(story.image);
+    return `
+      <article class="wc-story" data-story-idx="${idx}">
+        <img class="wc-story-img" src="${_wcEsc(img)}" alt="${_wcEsc(copy.headline || '')}" loading="lazy">
+        <div class="wc-story-copy">
+          <h3 class="wc-story-headline">${_wcEsc(copy.headline || '')}</h3>
+          <div class="wc-story-caption">${_wcEsc(caption || '')}</div>
+        </div>
+        <div class="wc-story-meta">
+          <button class="wc-story-share" type="button" onclick="shareWorldCupStory(${idx})">
+            <i class="ti ti-share-3"></i><span>${_wcEsc(t('worldCupStories.share'))}</span>
+          </button>
+        </div>
+       </article>`;
+  }));
+  rail.innerHTML = rendered.join('');
+  dots.innerHTML = items.map((_, i) => `<span class="${i === _wcStoriesState.idx ? 'active' : ''}"></span>`).join('');
+  if (count) count.textContent = `${items.length}/5`;
+  card.style.display = '';
+  if (!rail._wcStoriesWired) {
+    rail._wcStoriesWired = true;
+    rail.addEventListener('scroll', () => {
+      const cards = Array.from(rail.querySelectorAll('.wc-story'));
+      if (!cards.length) return;
+      const mid = rail.scrollLeft + rail.clientWidth / 2;
+      let best = 0, bestDist = Infinity;
+      cards.forEach((el, i) => {
+        const c = el.offsetLeft + el.offsetWidth / 2;
+        const d = Math.abs(c - mid);
+        if (d < bestDist) { bestDist = d; best = i; }
+      });
+      _wcStoriesState.idx = best;
+      Array.from(dots.children).forEach((dot, i) => dot.classList.toggle('active', i === best));
+    }, { passive: true });
+  }
+}
+
+function _wcLoadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+function _wcWrapText(ctx, text, maxWidth) {
+  const words = String(text || '').split(/\s+/).filter(Boolean);
+  const lines = [];
+  let line = '';
+  words.forEach(word => {
+    const next = line ? line + ' ' + word : word;
+    if (!line || ctx.measureText(next).width <= maxWidth) line = next;
+    else { lines.push(line); line = word; }
+  });
+  if (line) lines.push(line);
+  return lines;
+}
+
+function _wcDrawCenteredText(ctx, text, y, maxWidth, maxSize, minSize, fill, stroke, maxLines = 3) {
+  let size = maxSize, lines = [];
+  do {
+    ctx.font = `900 ${size}px Impact, "Arial Black", Heebo, sans-serif`;
+    lines = _wcWrapText(ctx, text, maxWidth);
+    const widest = Math.max(0, ...lines.map(l => ctx.measureText(l).width));
+    if (lines.length <= maxLines && widest <= maxWidth) break;
+    size -= 4;
+  } while (size >= minSize);
+  lines = lines.slice(0, maxLines);
+  const lh = size * 1.08;
+  const top = y - ((lines.length - 1) * lh) / 2;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = stroke;
+  ctx.fillStyle = fill;
+  ctx.lineWidth = Math.max(7, size * 0.12);
+  lines.forEach((line, i) => {
+    const yy = top + i * lh;
+    ctx.strokeText(line, ctx.canvas.width / 2, yy);
+    ctx.fillText(line, ctx.canvas.width / 2, yy);
+  });
+}
+
+async function _worldCupStoryBlob(story) {
+  const W = 1080, H = 1920;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const img = await _wcLoadImage(_wcStoryImageUrl(story.image));
+  const s = Math.max(W / img.naturalWidth, H / img.naturalHeight);
+  const dw = img.naturalWidth * s, dh = img.naturalHeight * s;
+  ctx.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, 'rgba(0,0,0,0.70)');
+  g.addColorStop(0.24, 'rgba(0,0,0,0.05)');
+  g.addColorStop(0.68, 'rgba(0,0,0,0.08)');
+  g.addColorStop(1, 'rgba(0,0,0,0.72)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+  const copy = _wcStoryCopy(story);
+  const caption = await _wcStoryPoolCaption(story, copy);
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.68)';
+  if (typeof ctx.roundRect === 'function') {
+    ctx.beginPath();
+    ctx.roundRect(56, H - 445, W - 112, 260, 34);
+    ctx.fill();
+  } else {
+    ctx.fillRect(56, H - 445, W - 112, 260);
+  }
+  ctx.restore();
+  _wcDrawCenteredText(ctx, copy.headline, H - 360, W - 120, 48, 28, '#f3dca0', '#050505', 2);
+  _wcDrawCenteredText(ctx, caption, H - 245, W - 120, 54, 28, '#fff', '#050505', 4);
+  return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+}
+
+async function shareWorldCupStory(idx) {
+  const story = _wcStoriesState.items[idx];
+  if (!story) return;
+  let blob = null;
+  try { blob = await _worldCupStoryBlob(story); }
+  catch (e) { console.error('world cup story render failed', e); }
+  if (!blob) return;
+  const file = new File([blob], `friendlybet-story-${story.id || idx}.png`, { type: 'image/png' });
+  const caption = t('worldCupStories.caption');
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], text: caption }); return; }
+    catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = file.name;
+  a.click();
+  try { await navigator.clipboard.writeText(caption); } catch (_) {}
+  showToast(t('worldCupStories.downloaded'), 'success');
+}
+window.shareWorldCupStory = shareWorldCupStory;
 
 // ============================================================
 // REAL RESULTS DATA - For showing "got it right" indicators
@@ -8371,6 +8682,7 @@ window.fbViewMyPicks = fbViewMyPicks;
 // Keep the landing language in sync with the app's toggle.
 window.addEventListener('languageChanged', () => {
   if (document.body.classList.contains('on-landing')) _fbLandingApplyLang();
+  if (state.currentScreen === 'user-dashboard-screen') renderWorldCupStories();
 });
 
 // v2.6.16: capture where the user came from on first visit. Result is cached in

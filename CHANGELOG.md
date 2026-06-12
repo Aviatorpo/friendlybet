@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.28** - Story of the World Cup dashboard carousel. Added a mobile-first viral story module below the Pundit with up to five shareable image cards, starting with Mexico 2-0 South Africa and South Korea 2-1 Czech Republic. Story captions are pool-aware: small groups can name the members who backed the losing side, while larger pools use counts such as members who picked that team first in the group. Added dark text backing for readability and a `Share image` action that exports the story card. Version/cache bumped to v2.10.28.
+
 **v2.10.27** - Conservative live-match result display. During live play the match card now shows a score/minute only when the data is fresh from ESPN and includes the expected live clock; otherwise it simply says the match is live and that the result will update after full-time, avoiding fake precision or stale partial scores. The final-result fallback now defaults to requiring ESPN + FIFA to agree before writing a finished result, with API-Football retained as an observational backup. Version/cache bumped to v2.10.27.
 
 **v2.10.21** - Recovery QR login picker fix. The "Log in with my QR" flow now uses a real hidden file input in the login screen, shows an explicit "Reading QR..." state after image selection, and routes every decode/login failure to visible feedback instead of feeling inert. The QR decoder now tries the full image plus recovery-card/screenshot crops, uses inverted-code attempts, and pre-fills the manual recovery-code input with the decoded code before logging in. Version/cache bumped to v2.10.21.
