@@ -2,8 +2,8 @@ name: Notify New Feedback
 
 on:
   schedule:
-    # Every 2 hours
-    - cron: '0 */2 * * *'
+    # Daily digest while Supabase Disk IO is throttled.
+    - cron: '5 7 * * *'
 
   workflow_dispatch:
 
@@ -25,7 +25,12 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-        run: node scripts/notify-feedback.js fetch
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            node scripts/notify-feedback.js fetch || { echo "::warning::feedback digest skipped after transient Supabase failure"; exit 0; }
+          else
+            node scripts/notify-feedback.js fetch
+          fi
 
       - name: Email the digest to Eyal
         if: steps.collect.outputs.has_new == 'true'

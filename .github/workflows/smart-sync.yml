@@ -2,7 +2,9 @@ name: Smart Match Sync
 
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    # Throttled while Supabase free-tier Disk IO is depleted. Manual run remains
+    # available for urgent result refreshes.
+    - cron: '8 * * * *'
   workflow_dispatch:
     inputs:
       force_backup:
@@ -37,7 +39,12 @@ jobs:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
-        run: node scripts/smart-sync.js
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            node scripts/smart-sync.js || { echo "::warning::smart-sync skipped after transient Supabase/API failure"; exit 0; }
+          else
+            node scripts/smart-sync.js
+          fi
 
       # Pillar 1: refresh the CDN match snapshot so clients read it from the edge
       # instead of hitting Postgres on every 60s poll during live matches.
@@ -49,7 +56,12 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-        run: node scripts/export-snapshots.js matches
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            node scripts/export-snapshots.js matches || { echo "::warning::match snapshot export skipped after transient Supabase failure"; exit 0; }
+          else
+            node scripts/export-snapshots.js matches
+          fi
 
       - name: Encrypted critical-data backup after finished matches
         env:
@@ -57,7 +69,12 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
           BACKUP_FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force_backup && '1' || '' }}
-        run: node scripts/backup-critical-data.js
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            node scripts/backup-critical-data.js || { echo "::warning::critical-data backup skipped after transient Supabase failure"; exit 0; }
+          else
+            node scripts/backup-critical-data.js
+          fi
 
       - name: Commit snapshot if changed
         run: |

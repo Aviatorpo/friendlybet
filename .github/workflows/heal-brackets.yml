@@ -6,7 +6,9 @@ name: Heal Brackets From Backup
 # there's nothing to heal. Runs every 10 minutes pre-tournament.
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    # Post-kickoff this is a safety sweep, not an interactive path. Keep it
+    # sparse while Supabase Disk IO is throttled.
+    - cron: '17 */6 * * *'
   workflow_dispatch:
 
 permissions:
@@ -32,4 +34,9 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-        run: node scripts/heal-brackets.js
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            node scripts/heal-brackets.js || { echo "::warning::heal-brackets skipped after transient Supabase failure"; exit 0; }
+          else
+            node scripts/heal-brackets.js
+          fi

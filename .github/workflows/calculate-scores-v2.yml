@@ -10,7 +10,9 @@ name: Calculate User Scores (v2)
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    # Hourly while Supabase free-tier Disk IO is depleted. Scoring is idempotent,
+    # and early group-stage points do not settle until groups are complete.
+    - cron: '28 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -38,7 +40,12 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-        run: node scripts/calculate-scores-v2.js
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            node scripts/calculate-scores-v2.js || { echo "::warning::score calculation skipped after transient Supabase failure"; exit 0; }
+          else
+            node scripts/calculate-scores-v2.js
+          fi
 
       # Pillar 1: refresh CDN snapshots (matches + per-pool leaderboards) after scoring,
       # so clients read standings from the edge instead of full-table reads of `users`.
@@ -46,14 +53,24 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-        run: node scripts/export-snapshots.js leaderboards
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            node scripts/export-snapshots.js leaderboards || { echo "::warning::leaderboard snapshot export skipped after transient Supabase failure"; exit 0; }
+          else
+            node scripts/export-snapshots.js leaderboards
+          fi
 
       - name: Encrypted critical-data backup after finished matches
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
-        run: node scripts/backup-critical-data.js
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            node scripts/backup-critical-data.js || { echo "::warning::critical-data backup skipped after transient Supabase failure"; exit 0; }
+          else
+            node scripts/backup-critical-data.js
+          fi
 
       # "Pool Pundit" leaderboard banter: diff standings vs the stored snapshot and
       # turn the moves into witty per-pool commentary (public-data/banter/*.json).

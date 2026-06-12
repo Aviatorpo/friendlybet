@@ -6,7 +6,9 @@ name: Live Match Poller
 # immediately. The client reads live scores straight from the DB during play.
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    # Reduced while Supabase Disk IO is throttled. The app should stay usable
+    # before we spend IO on near-real-time live polling.
+    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 # Don't let two live-poller runs overlap (a slow run + the next cron launch).
@@ -30,4 +32,9 @@ jobs:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
-        run: node scripts/live-poller.js
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            node scripts/live-poller.js || { echo "::warning::live-poller skipped after transient Supabase/API failure"; exit 0; }
+          else
+            node scripts/live-poller.js
+          fi

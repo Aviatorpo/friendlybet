@@ -5,7 +5,7 @@ on:
     # Emergency final-result recovery. The script itself only considers matches
     # at least RESULT_FALLBACK_MIN_AGE_MINUTES after kickoff and still missing a
     # terminal result, so most runs exit after one cheap Supabase read.
-    - cron: '*/10 * * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
     inputs:
       apply:
@@ -43,7 +43,9 @@ jobs:
           API_FOOTBALL_LEAGUE_ID: ${{ vars.API_FOOTBALL_LEAGUE_ID || '1' }}
           API_FOOTBALL_SEASON: ${{ vars.API_FOOTBALL_SEASON || '2026' }}
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.apply }}" = "true" ]; then
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            node scripts/api-football-fallback.js --apply || { echo "::warning::final-result fallback skipped after transient Supabase/API failure"; exit 0; }
+          elif [ "${{ inputs.apply }}" = "true" ]; then
             node scripts/api-football-fallback.js --apply
           else
             node scripts/api-football-fallback.js

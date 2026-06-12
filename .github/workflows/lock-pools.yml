@@ -7,7 +7,9 @@ name: Lock Pools At Kickoff
 # deadline; normal pools lock at kickoff.
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    # Free-tier Supabase can exhaust Disk IO during match windows. This job is a
+    # safety net, not a live feature, so hourly is enough and avoids API pressure.
+    - cron: '12 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -33,4 +35,9 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-        run: node scripts/lock-pools.js
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            node scripts/lock-pools.js || { echo "::warning::lock-pools skipped after transient Supabase failure"; exit 0; }
+          else
+            node scripts/lock-pools.js
+          fi
