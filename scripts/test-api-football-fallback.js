@@ -78,6 +78,15 @@ const espnLive = {
   }]
 };
 
+const fifaFinal = {
+  IdMatch: '400021443',
+  Date: '2026-06-11T19:00:00Z',
+  MatchStatus: 0,
+  Home: { IdCountry: 'MEX', IdTeam: '43911', Score: 1, TeamName: [{ Locale: 'en-GB', Description: 'Mexico' }] },
+  Away: { IdCountry: 'RSA', IdTeam: '111', Score: 1, TeamName: [{ Locale: 'en-GB', Description: 'South Africa' }] },
+  Winner: null
+};
+
 ok('stuck candidate after age threshold', F.isStuckCandidate(db, Date.parse('2026-06-11T21:10:00Z')));
 ok('not stuck before age threshold', !F.isStuckCandidate(db, Date.parse('2026-06-11T20:00:00Z')));
 
@@ -140,9 +149,31 @@ eq('accepts ESPN abbreviation fallback when display name is missing',
   F.normalizeTeamCode(null, 'KOR'),
   'KOR');
 
+const fifaTransformed = F.transformFifaMatch(fifaFinal);
+eq('transform FIFA final match', {
+  homeCode: fifaTransformed.homeCode,
+  awayCode: fifaTransformed.awayCode,
+  statusShort: fifaTransformed.statusShort,
+  homeScore: fifaTransformed.homeScore,
+  awayScore: fifaTransformed.awayScore,
+  winnerCode: fifaTransformed.winnerCode
+}, {
+  homeCode: 'MEX',
+  awayCode: 'RSA',
+  statusShort: 'FT',
+  homeScore: 1,
+  awayScore: 1,
+  winnerCode: null
+});
+
 const apiUpdate = F.buildUpdateFromApiFixture(transformed, '2026-06-11T21:00:00Z').update;
 const espnUpdate = F.buildUpdateFromVerifiedFixture(espnTransformed, '2026-06-11T21:00:00Z').update;
+const fifaUpdate = F.buildUpdateFromVerifiedFixture(fifaTransformed, '2026-06-11T21:00:00Z').update;
 ok('ESPN alone is enough in emergency fallback mode', !!F.consensusUpdate([{ source: 'espn', update: espnUpdate }]).update);
+ok('ESPN + FIFA agreeing produce stronger consensus', !!F.consensusUpdate([
+  { source: 'espn', update: espnUpdate },
+  { source: 'fifa', update: fifaUpdate }
+]).update);
 ok('two agreeing sources produce consensus', !!F.consensusUpdate([
   { source: 'api-football', update: apiUpdate },
   { source: 'espn', update: espnUpdate }

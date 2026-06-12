@@ -2445,6 +2445,15 @@ function _matchIsStaleLive(m, now = Date.now()) {
   const elapsed = _matchElapsedMs(m, now);
   return _matchIsLiveStatus(m) && elapsed != null && elapsed >= _MAX_MATCH_MS;
 }
+function _matchSourceFresh(m, now = Date.now(), maxAgeMs = 3 * 60 * 1000) {
+  const ts = Date.parse((m && (m.source_updated_at || m.last_updated)) || '');
+  return !isNaN(ts) && (now - ts) <= maxAgeMs;
+}
+function _matchLiveClockLabel(m, now = Date.now()) {
+  const clock = String((m && m.live_clock) || '').trim();
+  if (!clock || !_matchSourceFresh(m, now)) return null;
+  return clock;
+}
 function _matchIsFinishedStatus(m) {
   return _FINISHED_MATCH_STATUSES.includes(_matchStatus(m));
 }
@@ -8031,7 +8040,8 @@ function createMatchCard(match) {
     statusText = t('matchesEx.halftime');
     statusClass = 'halftime';
   } else if (isLive) {
-    statusText = t('matchesEx.live');
+    const liveClock = _matchLiveClockLabel(match);
+    statusText = liveClock ? `${t('matchesEx.live')} · ${liveClock}` : t('matchesEx.liveUpdating');
     statusClass = 'live';
   } else if (isFinished) {
     statusText = t('matchesEx.finished');

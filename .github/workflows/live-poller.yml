@@ -6,9 +6,9 @@ name: Live Match Poller
 # immediately. The client reads live scores straight from the DB during play.
 on:
   schedule:
-    # Reduced while Supabase Disk IO is throttled. The app should stay usable
-    # before we spend IO on near-real-time live polling.
-    - cron: '*/15 * * * *'
+    # Near-continuous coverage: each run polls for ~4.5 min, then the next
+    # scheduled launch takes over. ESPN is primary; football-data is backup.
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 # Don't let two live-poller runs overlap (a slow run + the next cron launch).

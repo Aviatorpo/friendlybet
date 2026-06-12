@@ -28,6 +28,8 @@ const API_FOOTBALL_BASE = process.env.API_FOOTBALL_BASE || 'https://v3.football.
 const API_FOOTBALL_LEAGUE_ID = process.env.API_FOOTBALL_LEAGUE_ID || '1';
 const API_FOOTBALL_SEASON = process.env.API_FOOTBALL_SEASON || '2026';
 const ESPN_SCOREBOARD_BASE = process.env.ESPN_SCOREBOARD_BASE || 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
+const FIFA_CALENDAR_BASE = process.env.FIFA_CALENDAR_BASE || 'https://api.fifa.com/api/v3/calendar/matches';
+const FIFA_COMPETITION_ID = process.env.FIFA_COMPETITION_ID || '17';
 
 const TERMINAL = new Set(['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED']);
 const API_FINAL = new Set(['FT', 'AET', 'PEN', 'AWD', 'WO']);
@@ -110,6 +112,24 @@ async function callEspnScoreboard(dateYmd) {
   return await res.json();
 }
 
+async function callFifaCalendar(fromYmd, toYmd) {
+  const qs = new URLSearchParams({
+    language: 'en',
+    count: '100',
+    idCompetition: FIFA_COMPETITION_ID,
+    from: fromYmd,
+    to: toYmd
+  });
+  const res = await fetchWithTimeout(`${FIFA_CALENDAR_BASE}?${qs.toString()}`, {
+    headers: { 'User-Agent': 'FriendlyBet result verifier (+https://friendlybet.live)' }
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`FIFA calendar failed: ${res.status} - ${text.slice(0, 180)}`);
+  }
+  return await res.json();
+}
+
 function transformApiFootballFixture(fx) {
   const homeCode = normalizeTeamCode(fx && fx.teams && fx.teams.home && fx.teams.home.name);
   const awayCode = normalizeTeamCode(fx && fx.teams && fx.teams.away && fx.teams.away.name);
@@ -178,6 +198,43 @@ function transformEspnEvent(event) {
   };
 }
 
+function localizedName(arr) {
+  const items = Array.isArray(arr) ? arr : [];
+  return (items.find(x => /^en/i.test(String(x.Locale || ''))) || items[0] || {}).Description || null;
+}
+
+function transformFifaMatch(match) {
+  const home = match && match.Home;
+  const away = match && match.Away;
+  const homeCode = normalizeTeamCode(localizedName(home && home.TeamName), home && home.IdCountry);
+  const awayCode = normalizeTeamCode(localizedName(away && away.TeamName), away && away.IdCountry);
+  const homeScore = home && typeof home.Score === 'number' ? home.Score : null;
+  const awayScore = away && typeof away.Score === 'number' ? away.Score : null;
+  const isFinal = Number(match && match.MatchStatus) === 0 && homeScore != null && awayScore != null;
+
+  let winnerCode = null;
+  if (isFinal && match && match.Winner && home && match.Winner === home.IdTeam) winnerCode = homeCode;
+  else if (isFinal && match && match.Winner && away && match.Winner === away.IdTeam) winnerCode = awayCode;
+  else if (isFinal) {
+    if (homeScore > awayScore) winnerCode = homeCode;
+    else if (awayScore > homeScore) winnerCode = awayCode;
+  }
+
+  return {
+    source: 'fifa',
+    api_id: match && match.IdMatch,
+    homeCode,
+    awayCode,
+    statusShort: isFinal ? 'FT' : 'SCHEDULED',
+    fixtureDate: match && match.Date,
+    homeScore,
+    awayScore,
+    winnerCode,
+    rawHome: localizedName(home && home.TeamName) || (home && home.IdCountry),
+    rawAway: localizedName(away && away.TeamName) || (away && away.IdCountry)
+  };
+}
+
 function normalizeTeamCode(name, fallbackCode) {
   const mapped = getTeamCode(name);
   if (mapped) return mapped;
@@ -243,11 +300,26 @@ async function loadEspnEventsFor(matches) {
   if (!matches.length) return [];
   const dates = espnScoreboardDatesFor(matches);
   const all = [];
+  const seen = new Set();
   for (const ymd of dates) {
     const json = await callEspnScoreboard(ymd);
-    if (Array.isArray(json.events)) all.push(...json.events);
+    for (const event of (Array.isArray(json.events) ? json.events : [])) {
+      const key = String((event && event.id) || JSON.stringify(event && { name: event.name, date: event.date }));
+      if (seen.has(key)) continue;
+      seen.add(key);
+      all.push(event);
+    }
   }
   return all;
+}
+
+async function loadFifaMatchesFor(matches) {
+  if (!matches.length) return [];
+  const dates = matches.map(m => Date.parse(m.match_date)).filter(t => !isNaN(t)).sort((a, b) => a - b);
+  const from = isoDate(dates[0] - 24 * 60 * 60 * 1000);
+  const to = isoDate(dates[dates.length - 1] + 24 * 60 * 60 * 1000);
+  const json = await callFifaCalendar(from, to);
+  return Array.isArray(json.Results) ? json.Results : [];
 }
 
 function ymdUtc(ms) {
@@ -313,6 +385,7 @@ async function verifyFinalResults(opts = {}) {
 
   let apiFixtures = [];
   let espnEvents = [];
+  let fifaMatches = [];
   if (API_FOOTBALL_KEY) {
     try {
       apiFixtures = await loadApiFootballFixturesFor(stuck);
@@ -328,6 +401,12 @@ async function verifyFinalResults(opts = {}) {
     console.log(`Loaded ${espnEvents.length} ESPN event(s)`);
   } catch (e) {
     console.warn(`ESPN source unavailable: ${e.message}`);
+  }
+  try {
+    fifaMatches = await loadFifaMatchesFor(stuck);
+    console.log(`Loaded ${fifaMatches.length} FIFA match(es)`);
+  } catch (e) {
+    console.warn(`FIFA source unavailable: ${e.message}`);
   }
 
   let updated = 0;
@@ -355,6 +434,17 @@ async function verifyFinalResults(opts = {}) {
         else console.log(`OBSERVE ${label}: espn ${built.reason}`);
       } else {
         console.log(`OBSERVE ${label}: espn ${found.reason}`);
+      }
+    }
+
+    if (fifaMatches.length) {
+      const found = findMatchingFixture(dbMatch, fifaMatches, transformFifaMatch);
+      if (found.match) {
+        const built = buildUpdateFromVerifiedFixture(found.match);
+        if (built.update) sourceUpdates.push({ source: 'fifa', update: built.update, sourceId: found.match.api_id });
+        else console.log(`OBSERVE ${label}: fifa ${built.reason}`);
+      } else {
+        console.log(`OBSERVE ${label}: fifa ${found.reason}`);
       }
     }
 
@@ -392,6 +482,7 @@ if (require.main === module) {
     isStuckCandidate,
     transformApiFootballFixture,
     transformEspnEvent,
+    transformFifaMatch,
     normalizeTeamCode,
     espnScoreboardDatesFor,
     findMatchingFixture,

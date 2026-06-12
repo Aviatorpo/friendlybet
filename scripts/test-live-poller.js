@@ -21,37 +21,60 @@ const PAYLOAD = { matches: [
     homeTeam: { name: 'Mexico' }, awayTeam: { name: 'South Korea' },
     score: { winner: null, duration: 'REGULAR', fullTime: { home: 1, away: 0 } } },
 ] };
+const ESPN_PAYLOAD = { events: [{
+  id: '760201',
+  date: '2026-06-11T16:00Z',
+  competitions: [{
+    startDate: '2026-06-11T16:00Z',
+    status: { displayClock: "21'", period: 1, type: { name: 'STATUS_FIRST_HALF', state: 'in', completed: false, shortDetail: "21'" } },
+    competitors: [
+      { homeAway: 'home', score: '1', winner: false, team: { displayName: 'Mexico', abbreviation: 'MEX' } },
+      { homeAway: 'away', score: '0', winner: false, team: { displayName: 'South Korea', abbreviation: 'KOR' } }
+    ]
+  }]
+}] };
 
 let LIVE = true;
 let upserts = 0;
+let patches = 0;
+const okJson = (data) => ({
+  ok: true,
+  headers: HEADERS,
+  json: async () => data,
+  text: async () => JSON.stringify(data)
+});
 sync.__setFetch(async (url, opts) => {
   const method = (opts && opts.method) || 'GET';
-  if (url.includes('api.football-data.org')) return { ok: true, headers: HEADERS, json: async () => PAYLOAD };
-  if (url.includes('/rest/v1/matches') && url.includes('select=winner_code')) return { ok: true, headers: HEADERS, json: async () => [] };
+  if (url.includes('site.api.espn.com')) return okJson(ESPN_PAYLOAD);
+  if (url.includes('api.football-data.org')) return okJson(PAYLOAD);
+  if (url.includes('/rest/v1/matches') && url.includes('select=winner_code')) return okJson([]);
+  if (url.includes('/rest/v1/matches') && url.includes('select=live_clock')) return okJson([]);
   if (url.includes('/rest/v1/matches') && url.includes('match_date=gte')) {
     // shouldSync's window probe: a live match is present iff LIVE
-    return { ok: true, headers: HEADERS, json: async () => (LIVE ? [{ external_id: '201', status: 'IN_PLAY', match_date: '2026-06-11T16:00:00Z', home_team_code: 'MEX', away_team_code: 'KOR' }] : []) };
+    return okJson(LIVE ? [{ external_id: '201', status: 'IN_PLAY', match_date: '2026-06-11T16:00:00Z', home_team_code: 'MEX', away_team_code: 'KOR' }] : []);
   }
-  if (url.includes('/rest/v1/matches') && method === 'POST') { upserts += JSON.parse(opts.body).length; return { ok: true, headers: HEADERS, json: async () => [] }; }
-  return { ok: true, headers: HEADERS, json: async () => [] };
+  if (url.includes('/rest/v1/matches') && method === 'PATCH') { patches++; return okJson([]); }
+  if (url.includes('/rest/v1/matches') && method === 'POST') { upserts += JSON.parse(opts.body).length; return okJson([]); }
+  return okJson([]);
 });
 
 (async () => {
   console.log('\n== live-poller ==');
   // Live: should loop several times in ~18ms at a 5ms cadence.
-  LIVE = true; upserts = 0;
+  LIVE = true; upserts = 0; patches = 0;
   const polls = await runLivePoller({ intervalMs: 5, runMs: 18, sleep: (ms) => new Promise(r => setTimeout(r, ms)) });
   ok('polls performSync repeatedly while live (>=2)', polls >= 2);
-  ok('each poll upserts the live match to the DB', upserts >= polls);
+  ok('ESPN patches the live match on each poll', patches >= polls);
+  ok('football-data backup not used when ESPN matches', upserts === 0);
 
   // Not live: exits immediately, no work.
-  LIVE = false; upserts = 0;
+  LIVE = false; upserts = 0; patches = 0;
   const polls2 = await runLivePoller({ intervalMs: 5, runMs: 18 });
   ok('exits immediately when nothing is live (0 polls)', polls2 === 0);
-  ok('no DB writes when nothing is live', upserts === 0);
+  ok('no DB writes when nothing is live', upserts === 0 && patches === 0);
 
   // Live ends mid-run: stops early on the next check.
-  LIVE = true; upserts = 0;
+  LIVE = true; upserts = 0; patches = 0;
   let n = 0;
   const polls3 = await runLivePoller({ intervalMs: 2, runMs: 10000, sleep: async () => { if (++n >= 2) LIVE = false; } });
   ok('stops early once matches finish', polls3 >= 1 && polls3 <= 4);

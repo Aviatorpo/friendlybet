@@ -11,10 +11,12 @@
 // DB during live play (see app.js loadMatches), so 60s DB freshness == ~60s
 // on-screen freshness, with no deploy-per-update and no Vercel-plan pressure.
 //
-// Reuses the already-tested shouldSync()/performSync() from smart-sync.js.
+// ESPN is primary because it exposes a real provider clock/displayClock.
+// football-data remains the backup writer if ESPN is unavailable.
 // ============================================================
 
 const sync = require('./smart-sync.js');
+const espn = require('./espn-live-sync.js');
 
 async function runLivePoller(opts = {}) {
   const intervalMs = opts.intervalMs || 60000;          // poll cadence during live
@@ -23,7 +25,7 @@ async function runLivePoller(opts = {}) {
   const sleep      = opts.sleep || ((ms) => new Promise(r => setTimeout(r, ms)));
 
   if (!(await sync.shouldSync())) {
-    console.log('💤 No active match right now - live-poller exiting.');
+    console.log('No active match right now - live-poller exiting.');
     return 0;
   }
 
@@ -31,20 +33,30 @@ async function runLivePoller(opts = {}) {
   let polls = 0;
   while (true) {
     try {
-      await sync.performSync();   // fetch football-data -> upsert DB (no snapshot/commit)
+      const result = await espn.syncEspnLive(); // ESPN -> DB (score + provider clock)
+      if (!result || result.updated === 0) {
+        console.warn('ESPN live sync updated no matches - falling back to football-data.');
+        await sync.performSync();
+      }
       polls++;
     } catch (e) {
-      console.error('⚠️  live poll failed (will retry next tick):', e.message);
+      console.error('ESPN live poll failed, trying football-data backup:', e.message);
+      try {
+        await sync.performSync();   // football-data -> DB backup (no snapshot/commit)
+        polls++;
+      } catch (backupErr) {
+        console.error('Live poll backup failed (will retry next tick):', backupErr.message);
+      }
     }
     if (now() + intervalMs >= end) break;
     await sleep(intervalMs);
     // Stop early the moment nothing is live anymore (saves API calls / minutes).
     if (!(await sync.shouldSync())) {
-      console.log('🏁 No active match anymore - live-poller exiting.');
+      console.log('No active match anymore - live-poller exiting.');
       break;
     }
   }
-  console.log(`✅ live-poller done: ${polls} poll(s) this run.`);
+  console.log(`live-poller done: ${polls} poll(s) this run.`);
   return polls;
 }
 
@@ -52,7 +64,7 @@ if (require.main === module) {
   runLivePoller({
     intervalMs: parseInt(process.env.LIVE_POLL_INTERVAL_MS || '', 10) || 60000,
     runMs:      parseInt(process.env.LIVE_POLL_RUN_MS || '', 10) || 270000,
-  }).then(() => process.exit(0)).catch(e => { console.error('💥 fatal:', e); process.exit(1); });
+  }).then(() => process.exit(0)).catch(e => { console.error('fatal:', e); process.exit(1); });
 } else {
   module.exports = { runLivePoller };
 }
