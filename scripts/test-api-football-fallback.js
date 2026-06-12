@@ -132,6 +132,10 @@ eq('transform ESPN final event', {
 ok('does not build update from ESPN live event',
   !F.buildUpdateFromVerifiedFixture(F.transformEspnEvent(espnLive)).update);
 
+eq('fetches adjacent ESPN scoreboard dates for late UTC kickoff',
+  F.espnScoreboardDatesFor([{ match_date: '2026-06-12T02:00:00.000Z' }]),
+  ['20260611', '20260612', '20260613']);
+
 const apiUpdate = F.buildUpdateFromApiFixture(transformed, '2026-06-11T21:00:00Z').update;
 const espnUpdate = F.buildUpdateFromVerifiedFixture(espnTransformed, '2026-06-11T21:00:00Z').update;
 ok('ESPN alone is enough in emergency fallback mode', !!F.consensusUpdate([{ source: 'espn', update: espnUpdate }]).update);

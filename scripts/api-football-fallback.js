@@ -233,19 +233,33 @@ async function loadApiFootballFixturesFor(matches) {
 
 async function loadEspnEventsFor(matches) {
   if (!matches.length) return [];
-  const dates = [...new Set(matches
-    .map(m => Date.parse(m.match_date))
-    .filter(t => !isNaN(t))
-    .map(t => {
-      const d = new Date(t);
-      return `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}`;
-    }))];
+  const dates = espnScoreboardDatesFor(matches);
   const all = [];
   for (const ymd of dates) {
     const json = await callEspnScoreboard(ymd);
     if (Array.isArray(json.events)) all.push(...json.events);
   }
   return all;
+}
+
+function ymdUtc(ms) {
+  const d = new Date(ms);
+  return `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}`;
+}
+
+function espnScoreboardDatesFor(matches) {
+  const dates = new Set();
+  for (const m of matches || []) {
+    const t = Date.parse(m && m.match_date);
+    if (isNaN(t)) continue;
+    // ESPN's soccer scoreboard date is not always the UTC calendar date. Late
+    // UTC kickoffs can appear under the previous US-local scoreboard day, so
+    // fetch the neighboring days but keep strict fixture matching afterward.
+    dates.add(ymdUtc(t - 24 * 60 * 60 * 1000));
+    dates.add(ymdUtc(t));
+    dates.add(ymdUtc(t + 24 * 60 * 60 * 1000));
+  }
+  return [...dates].sort();
 }
 
 function resultKey(update) {
@@ -370,6 +384,7 @@ if (require.main === module) {
     isStuckCandidate,
     transformApiFootballFixture,
     transformEspnEvent,
+    espnScoreboardDatesFor,
     findMatchingFixture,
     buildUpdateFromApiFixture,
     buildUpdateFromVerifiedFixture,
