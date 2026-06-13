@@ -3133,9 +3133,6 @@ async function _memberPredictionAccessState(isV2) {
   if (!isPoolWriteLocked()) {
     return { mode: 'prelock', message: t('membersList.picksAfterLock') };
   }
-  if (!isV2) {
-    return { mode: 'unsupported', message: t('membersList.picksTwoPhaseSoon') };
-  }
   try {
     const st = await _spFetchReopenStatus();
     const reviewActive = !!(st && st.incident_key === 'annex_c_2026' && st.approved &&
@@ -3229,7 +3226,8 @@ function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAcce
 
   const safeNickname = member.nickname || t('membersList.fallbackUser');
   const safeInitial = safeNickname.charAt(0).toUpperCase();
-  const canViewPicks = predictionAccess.mode === 'open' && allDone && member.approval_status !== 'pending';
+  const hasVisiblePicks = isV2 ? allDone : (picksCount > 0);
+  const canViewPicks = predictionAccess.mode === 'open' && hasVisiblePicks && member.approval_status !== 'pending';
   const picksActionHtml = predictionAccess.mode === 'open'
     ? (canViewPicks
       ? `<button type="button" class="member-picks-btn" data-member-id="${member.id}"><i class="ti ti-eye"></i><span>${t('membersList.viewPicks')}</span></button>`

@@ -141,6 +141,20 @@
   .grp .row img,.grp .row span.fb-flag-none{width:24px;height:16px;border-radius:3px;object-fit:cover;flex:none}
   .grp .row.first .nm{font-weight:600}
   .grp .row .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .grp.two-phase .gh{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .grp.two-phase .gc{font-family:'Heebo',sans-serif;font-size:11px;font-weight:700;color:var(--muted)}
+  .grp.two-phase .row{border-radius:9px;padding:5px 7px;margin:1px -4px}
+  .grp.two-phase .row:not(.advancing){opacity:.42}
+  .grp.two-phase .row.advancing{background:rgba(217,180,106,.11);box-shadow:inset 0 0 0 1px rgba(217,180,106,.16)}
+  .grp.two-phase .row.advancing .pos{color:var(--gold)}
+  .grp.two-phase .row.advancing .nm{font-weight:700}
+
+  .locked-panel{display:flex;gap:14px;align-items:flex-start;background:linear-gradient(160deg,#1c1913,#12100b);
+    border:1px solid var(--line);border-radius:18px;padding:18px 18px;box-shadow:inset 0 1px 0 rgba(217,180,106,.08)}
+  .locked-panel .lock-icon{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;flex:none;
+    color:var(--ink);font-weight:900;background:linear-gradient(140deg,var(--gold),#a9853c)}
+  .locked-panel h2{font-family:'Sora',sans-serif;font-size:16px;line-height:1.25;margin-bottom:5px}
+  .locked-panel p{color:var(--muted);font-size:13px;line-height:1.55}
 
   /* CTA */
   .cta{margin-top:38px;text-align:center;background:linear-gradient(160deg,#211a0f,#14110b);
@@ -175,6 +189,27 @@ const I18N = {
     ctaBtn:'Build my predictions', made:'Made with', finalWord:'Final', rounds:{R32:'Round of 32',R16:'Round of 16',QF:'Quarter-final',SF:'Semi-final'} }
 };
 
+Object.assign(I18N.he, {
+  twoPhaseSub:'\u05d6\u05d4 \u05e4\u05d5\u05dc \u05d3\u05d5-\u05e9\u05dc\u05d1\u05d9. \u05db\u05e8\u05d2\u05e2 \u05de\u05d5\u05e6\u05d2\u05d5\u05ea \u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05e9\u05dc\u05d1 \u05d4\u05d1\u05ea\u05d9\u05dd; \u05d4\u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8 \u05d9\u05d5\u05e4\u05d9\u05e2 \u05d1\u05d4\u05de\u05e9\u05da.',
+  advancersLabel:'\u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05d4\u05e2\u05d5\u05dc\u05d5\u05ea',
+  knockoutLabel:'\u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8',
+  knockoutLockedTitle:'\u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05d4\u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8 \u05e2\u05d3\u05d9\u05d9\u05df \u05dc\u05d0 \u05d6\u05de\u05d9\u05e0\u05d5\u05ea',
+  knockoutLockedBody:'\u05e0\u05d9\u05ea\u05df \u05d9\u05d4\u05d9\u05d4 \u05dc\u05e6\u05e4\u05d5\u05ea \u05d1\u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05d4\u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8 \u05d0\u05d7\u05e8\u05d9 \u05e9\u05d7\u05dc\u05d5\u05df \u05d4\u05d4\u05d9\u05de\u05d5\u05e8\u05d9\u05dd \u05dc\u05e9\u05dc\u05d1 \u05d4\u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8 \u05d9\u05d9\u05e1\u05d2\u05e8.',
+  pickedAdvancers:'{n} \u05d1\u05d7\u05d9\u05e8\u05d5\u05ea',
+  noGroupPicks:'\u05d0\u05d9\u05df \u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05e9\u05de\u05d5\u05e8\u05d5\u05ea',
+  groupWord:'\u05d1\u05d9\u05ea'
+});
+Object.assign(I18N.en, {
+  twoPhaseSub:'This is a two-phase pool. Group-stage advancing picks are visible now; knockout picks will appear later.',
+  advancersLabel:'Advancing picks',
+  knockoutLabel:'Knockout',
+  knockoutLockedTitle:'Knockout picks are not available yet',
+  knockoutLockedBody:'Knockout picks will be available after the knockout prediction window closes.',
+  pickedAdvancers:'{n} picks',
+  noGroupPicks:'No saved picks',
+  groupWord:'Group'
+});
+
 function param(k){ return new URLSearchParams(location.search).get(k); }
 
 function render(picks){
@@ -198,13 +233,14 @@ function render(picks){
   const tn = (c) => esc(S.teamName(c, lang));
   const fl = (c, st) => S.flagImg(c, { style: st || '' });
 
-  const bracket = S.resolveBracket(picks);
-  const champ = picks.tournamentWinner || (picks.bracketPicks||{})[31];
-  const fin = bracket.final;
-  const finalist = (fin.home === champ) ? fin.away : fin.home;
-  const champRoad = S.teamRoad(picks, champ, bracket);
-  const finRoad = S.teamRoad(picks, finalist, bracket);
-  const hasRoads = !!(champ && finalist);
+  const isTwoPhase = picks.mode === 'two_phase';
+  const bracket = isTwoPhase ? null : S.resolveBracket(picks);
+  const champ = isTwoPhase ? null : (picks.tournamentWinner || (picks.bracketPicks||{})[31]);
+  const fin = bracket ? bracket.final : {};
+  const finalist = (!isTwoPhase && fin.home === champ) ? fin.away : fin.home;
+  const champRoad = isTwoPhase ? [] : S.teamRoad(picks, champ, bracket);
+  const finRoad = isTwoPhase ? [] : S.teamRoad(picks, finalist, bracket);
+  const hasRoads = !isTwoPhase && !!(champ && finalist);
   const ts = picks.topScorer;
 
   // Two self-contained lanes (one per finalist) + a central round axis. Each
@@ -248,20 +284,36 @@ function render(picks){
     return `<div class="grp"><div class="gh">${lang==='he'?'בית':'Group'} ${letter}</div>${rows}</div>`;
   }).join('');
 
+  const twoPhaseGroupsHtml = S.WC2026_GROUP_LETTERS.map(letter => {
+    const selected = new Set((picks.groupAdvancers || {})[letter] || []);
+    const teams = S.WC2026_GROUPS[letter] || [];
+    const rows = teams.map(c => {
+      const adv = selected.has(c);
+      return `<div class="row ${adv ? 'advancing' : ''}">
+        <span class="pos">${adv ? '&#10003;' : ''}</span>${fl(c)}
+        <span class="nm">${tn(c)}</span></div>`;
+    }).join('');
+    const count = selected.size
+      ? (L.pickedAdvancers || '{n} picks').replace('{n}', selected.size)
+      : L.noGroupPicks;
+    return `<div class="grp two-phase"><div class="gh"><span>${L.groupWord || 'Group'} ${letter}</span><span class="gc">${esc(count)}</span></div>${rows}</div>`;
+  }).join('');
+  const phaseGroupsHtml = isTwoPhase ? twoPhaseGroupsHtml : groupsHtml;
+
   document.getElementById('root').innerHTML = `
     <div class="brandbar">
       <div class="logo">⚽</div><b>FriendlyBet</b><span>· ${L.tournament}</span>
     </div>
     <h1 class="title"><span class="who">${esc(picks.nickname)}</span> · ${L.title}</h1>
-    <div class="subtitle">${L.sub}</div>
+    <div class="subtitle">${isTwoPhase ? L.twoPhaseSub : L.sub}</div>
 
-    <div class="section-label">${L.champLabel}</div>
+    ${!isTwoPhase ? `<div class="section-label">${L.champLabel}</div>
     <div class="champ">
       <div class="crown">🏆</div>
       <div class="kicker">${L.champLabel}</div>
       ${fl(champ,'').replace('class="fb-flag"','class="flag-xl"')}
       <div class="name">${champ?tn(champ):'—'}</div>
-    </div>
+    </div>` : ''}
 
     ${hasRoads?`<div class="section-label">${L.finalLabel}</div>
     <div class="finalbox">
@@ -285,8 +337,18 @@ function render(picks){
       <div class="tm">${fl(ts.team_code)} ${tn(ts.team_code)}</div></div>
     </div>`:''}
 
-    <div class="section-label">${L.groupsLabel}</div>
-    <div class="groups">${groupsHtml}</div>
+    <div class="section-label">${isTwoPhase ? L.advancersLabel : L.groupsLabel}</div>
+    <div class="groups">${phaseGroupsHtml}</div>
+
+    ${isTwoPhase ? `
+    <div class="section-label">${L.knockoutLabel}</div>
+    <div class="locked-panel">
+      <div class="lock-icon">!</div>
+      <div>
+        <h2>${L.knockoutLockedTitle}</h2>
+        <p>${L.knockoutLockedBody}</p>
+      </div>
+    </div>` : ''}
 
     <div class="cta">
       <h2>${L.ctaH}</h2>
@@ -303,12 +365,59 @@ function render(picks){
   const u = param('u'), p = param('p');
   if (u && p){
     try {
-      const picks = await fetchRealPicks(u, p, lang);
+      const picks = await fetchRealPicksPhaseAware(u, p, lang);
       return render(picks);
     } catch(e){ console.warn('real fetch failed, demo fallback', e); }
   }
   render(window.FBShare.buildDemoPicks(lang));
 })();
+
+async function fetchRealPicksPhaseAware(userId, poolId, lang){
+  const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+  const sb = createClient(
+    'https://kovhuahdoluxyqqwqohw.supabase.co',
+    'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU'
+  );
+  const [usr, gp, g2p, kp, tw, ts, tp] = await Promise.all([
+    sb.from('users').select('nickname').eq('id', userId).maybeSingle(),
+    sb.from('group_position_picks').select('group_letter,position,team_code').eq('pool_id',poolId).eq('user_id',userId),
+    sb.from('group_picks').select('group_letter,team_code').eq('pool_id',poolId).eq('user_id',userId),
+    sb.rpc('get_public_bracket', { p_user_id: userId, p_pool_id: poolId }),
+    sb.from('tournament_winner_picks').select('team_code').eq('pool_id',poolId).eq('user_id',userId).maybeSingle(),
+    sb.from('top_scorer_picks').select('player_name,team_code').eq('pool_id',poolId).eq('user_id',userId).maybeSingle(),
+    sb.from('sp_third_place_picks').select('group_letter').eq('pool_id',poolId).eq('user_id',userId)
+  ]);
+  const nickname = (usr.data && usr.data.nickname) || (lang==='he' ? '\u05e9\u05d7\u05e7\u05df' : 'Player');
+  const singleRows = gp.data || [];
+  const twoPhaseRows = g2p.data || [];
+
+  if (twoPhaseRows.length && !singleRows.length) {
+    const groupAdvancers = {};
+    twoPhaseRows.forEach(r => {
+      if (!r || !r.group_letter || !r.team_code) return;
+      const arr = (groupAdvancers[r.group_letter] = groupAdvancers[r.group_letter] || []);
+      if (!arr.includes(r.team_code)) arr.push(r.team_code);
+    });
+    Object.keys(groupAdvancers).forEach(letter => {
+      const order = window.FBShare.WC2026_GROUPS[letter] || [];
+      groupAdvancers[letter].sort((a,b) => order.indexOf(a) - order.indexOf(b));
+    });
+    return { nickname, lang, mode:'two_phase', groupAdvancers };
+  }
+
+  const groupPositions = {};
+  singleRows.forEach(r => {
+    (groupPositions[r.group_letter] = groupPositions[r.group_letter] || [])[r.position-1] = r.team_code;
+  });
+  const bracketPicks = {};
+  (kp.data||[]).forEach(r => { bracketPicks[r.bracket_position] = r.predicted_winner; });
+  return {
+    nickname, lang, mode:'single_phase', groupPositions, bracketPicks,
+    thirdPlaceAdvancers: (tp.data||[]).map(r => r.group_letter),
+    tournamentWinner: (tw.data && tw.data.team_code) || bracketPicks[31],
+    topScorer: ts.data || null
+  };
+}
 
 // Fetch a real user's single-phase picks from Supabase. Group/winner/scorer
 // rows are read directly (anon SELECT allowed); the knockout bracket goes
@@ -342,6 +451,7 @@ async function fetchRealPicks(userId, poolId, lang){
     tournamentWinner: (tw.data && tw.data.team_code) || bracketPicks[31],
     topScorer: ts.data || null
   };
+
 }
 </script>
 </body>

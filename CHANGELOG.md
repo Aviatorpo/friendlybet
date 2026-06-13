@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.36** - Two-phase participant-picks viewing. The members list now allows read-only `View picks` for two-phase members once the pool is past the lock/review gate and they have saved group-stage picks, without requiring knockout picks that do not exist yet. The `/share?u=&p=` page is now phase-aware: single-phase pools keep the full champion/final/road page, while two-phase pools render the selected group-stage advancing teams in the same branded share layout and show a deliberate locked knockout section explaining that knockout picks will be available after the knockout prediction window closes. Version/cache bumped to v2.10.36.
+
 **v2.10.35** - Read-only participant picks entry point. The members list now gives pool participants a simple way to open another completed member's read-only prediction page after predictions are locked, reusing the existing `/share?u=&p=` view. Before lock it explains that everyone’s picks will be available after predictions lock; during an Annex C review window it clearly says picks will be visible only after the review window closes, with the local deadline. Incomplete members show as not submitted rather than opening an empty page. Version/cache bumped to v2.10.35.
 
 **v2.10.34** - Story Hebrew RTL/bidi fix. The Story of the World Cup card now sets explicit RTL/LTR direction on rendered story text and uses bidi isolation for headline/caption text, so Hebrew sentences with numbers and punctuation display in the correct order on-screen and in exported story images. Version/cache bumped to v2.10.34.
