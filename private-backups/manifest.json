@@ -4,6 +4,7 @@
     "537327",
     "537328",
     "537333",
+    "537334",
     "537345"
   ],
   "backups": [
@@ -101,7 +102,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-13T22:03:05.112Z",
+      "file": "private-backups/2026-06-13T22-03-05-112Z__537334-QAT-SUI.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537334"
+      ],
+      "tableCounts": {
+        "pools": 1794,
+        "users": 5925,
+        "group_picks": 20897,
+        "knockout_picks": 90127,
+        "group_position_picks": 166309,
+        "tournament_winner_picks": 3209,
+        "top_scorer_picks": 2810,
+        "sp_third_place_picks": 27745,
+        "pick_backups": 44060,
+        "knockout_reopen_grants": 1678,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-13T04:45:00.654Z"
+  "updatedAt": "2026-06-13T22:03:05.112Z"
 }
