@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-06-13T08:28:17.235Z",
-  "freshUntil": "2026-06-13T14:28:17.235Z",
-  "count": 6,
+  "updatedAt": "2026-06-13T11:22:12.998Z",
+  "freshUntil": "2026-06-13T17:22:12.998Z",
+  "count": 7,
   "items": [
     {
       "id": "result-b25de4f9-de9a-44a2-9bb8-c006602de455",
@@ -56,6 +56,15 @@
       "en": "Australia vs Turkey, tomorrow 07:00.",
       "sources": [],
       "expires_at": "2026-06-14T04:00:00.000Z"
+    },
+    {
+      "id": "fixture-32c4991c-ac27-46cc-955e-dc326093a145",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "גרמניה נגד קוראסאו, מחר 20:00.",
+      "en": "Germany vs Curaçao, tomorrow 20:00.",
+      "sources": [],
+      "expires_at": "2026-06-14T17:00:00.000Z"
     }
   ]
 }
