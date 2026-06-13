@@ -3,7 +3,8 @@
   "completedMatchIds": [
     "537327",
     "537328",
-    "537333"
+    "537333",
+    "537345"
   ],
   "backups": [
     {
@@ -76,7 +77,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-13T04:45:00.654Z",
+      "file": "private-backups/2026-06-13T04-45-00-654Z__537345-USA-PAR.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537345"
+      ],
+      "tableCounts": {
+        "pools": 1741,
+        "users": 5832,
+        "group_picks": 20161,
+        "knockout_picks": 88745,
+        "group_position_picks": 163997,
+        "tournament_winner_picks": 3168,
+        "top_scorer_picks": 2779,
+        "sp_third_place_picks": 27376,
+        "pick_backups": 43205,
+        "knockout_reopen_grants": 1675,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-12T21:58:46.975Z"
+  "updatedAt": "2026-06-13T04:45:00.654Z"
 }
