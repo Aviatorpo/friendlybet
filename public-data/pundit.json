@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-06-13T20:21:44.602Z",
-  "freshUntil": "2026-06-14T02:21:44.602Z",
+  "updatedAt": "2026-06-13T22:13:22.150Z",
+  "freshUntil": "2026-06-14T04:13:22.150Z",
   "count": 8,
   "items": [
     {
-      "id": "live-4efafba8-c6a0-41ef-8957-c2cbb3aa19a1",
+      "id": "live-af81fe37-fc83-4696-b013-7a780fe10477",
       "type": "live",
       "confidence": "confirmed",
-      "he": "קטאר נגד שווייץ משוחק עכשיו. התוצאה הרשמית תתעדכן בסיום המשחק.",
-      "en": "Qatar vs Switzerland is live now. The official score will update after full-time.",
+      "he": "ברזיל נגד מרוקו משוחק עכשיו. התוצאה הרשמית תתעדכן בסיום המשחק.",
+      "en": "Brazil vs Morocco is live now. The official score will update after full-time.",
       "sources": [],
-      "expires_at": "2026-06-13T23:21:44.602Z"
+      "expires_at": "2026-06-14T01:13:22.150Z"
     },
     {
       "id": "result-b25de4f9-de9a-44a2-9bb8-c006602de455",
@@ -31,20 +31,11 @@
       "expires_at": "2026-06-14T01:00:00.000Z"
     },
     {
-      "id": "fixture-af81fe37-fc83-4696-b013-7a780fe10477",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "ברזיל נגד מרוקו, מחר 01:00.",
-      "en": "Brazil vs Morocco, tomorrow 01:00.",
-      "sources": [],
-      "expires_at": "2026-06-13T22:00:00.000Z"
-    },
-    {
       "id": "fixture-b7aa07bc-c126-421e-b0d3-e0c5b96420bc",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "האיטי נגד סקוטלנד, מחר 04:00.",
-      "en": "Haiti vs Scotland, tomorrow 04:00.",
+      "he": "האיטי נגד סקוטלנד, היום 04:00.",
+      "en": "Haiti vs Scotland, today 04:00.",
       "sources": [],
       "expires_at": "2026-06-14T01:00:00.000Z"
     },
@@ -52,8 +43,8 @@
       "id": "fixture-57df958d-3c1b-40cc-be35-281c9a3e61f4",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "אוסטרליה נגד טורקיה, מחר 07:00.",
-      "en": "Australia vs Turkey, tomorrow 07:00.",
+      "he": "אוסטרליה נגד טורקיה, היום 07:00.",
+      "en": "Australia vs Turkey, today 07:00.",
       "sources": [],
       "expires_at": "2026-06-14T04:00:00.000Z"
     },
@@ -61,8 +52,8 @@
       "id": "fixture-32c4991c-ac27-46cc-955e-dc326093a145",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "גרמניה נגד קוראסאו, מחר 20:00.",
-      "en": "Germany vs Curaçao, tomorrow 20:00.",
+      "he": "גרמניה נגד קוראסאו, היום 20:00.",
+      "en": "Germany vs Curaçao, today 20:00.",
       "sources": [],
       "expires_at": "2026-06-14T17:00:00.000Z"
     },
@@ -70,10 +61,19 @@
       "id": "fixture-1df38ad2-68c6-4a4a-849b-57df76d4d502",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "הולנד נגד יפן, מחר 23:00.",
-      "en": "Netherlands vs Japan, tomorrow 23:00.",
+      "he": "הולנד נגד יפן, היום 23:00.",
+      "en": "Netherlands vs Japan, today 23:00.",
       "sources": [],
       "expires_at": "2026-06-14T20:00:00.000Z"
+    },
+    {
+      "id": "fixture-a3f06b97-9c08-4c69-9628-c788d8e85747",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "חוף השנהב נגד אקוודור, מחר 02:00.",
+      "en": "Ivory Coast vs Ecuador, tomorrow 02:00.",
+      "sources": [],
+      "expires_at": "2026-06-14T23:00:00.000Z"
     }
   ]
 }
