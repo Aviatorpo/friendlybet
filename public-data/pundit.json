@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-06-13T07:37:17.973Z",
-  "freshUntil": "2026-06-13T13:37:17.973Z",
-  "count": 7,
+  "updatedAt": "2026-06-13T08:28:17.235Z",
+  "freshUntil": "2026-06-13T14:28:17.235Z",
+  "count": 6,
   "items": [
     {
       "id": "result-b25de4f9-de9a-44a2-9bb8-c006602de455",
@@ -20,15 +20,6 @@
       "en": "Canada 1-1 Bosnia-Herzegovina.",
       "sources": [],
       "expires_at": "2026-06-14T01:00:00.000Z"
-    },
-    {
-      "id": "result-a3f33d1c-f931-4a0e-91e3-86efaa5ce733",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "דרום קוריאה 2:1 צ'כיה.",
-      "en": "South Korea 2-1 Czechia.",
-      "sources": [],
-      "expires_at": "2026-06-13T08:00:00.000Z"
     },
     {
       "id": "fixture-4efafba8-c6a0-41ef-8957-c2cbb3aa19a1",
