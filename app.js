@@ -1775,9 +1775,16 @@ async function loadPundit() {
     let globalItems = [];
     if (res.ok) {
       const j = await res.json();
-      globalItems = (j && Array.isArray(j.items) ? j.items : [])
-        .filter(it => it && (it.he || it.en))
-        .filter(it => !it.expires_at || Date.parse(it.expires_at) > now);
+      const updatedAt = Date.parse((j && j.updatedAt) || '');
+      const freshUntil = Date.parse((j && j.freshUntil) || '');
+      const feedFresh = Number.isFinite(freshUntil)
+        ? freshUntil > now
+        : (Number.isFinite(updatedAt) && now - updatedAt < 6 * 60 * 60 * 1000);
+      if (feedFresh) {
+        globalItems = (j && Array.isArray(j.items) ? j.items : [])
+          .filter(it => it && (it.he || it.en))
+          .filter(it => !it.expires_at || Date.parse(it.expires_at) > now);
+      }
     }
 
     // v2.6.79: merge in pool-specific "pool pulse" commentary computed live on
@@ -1787,17 +1794,9 @@ async function loadPundit() {
     const newsItems = globalItems.filter(it => it.type === 'news');
     const nonNews = globalItems.filter(it => it.type !== 'news');
 
-    // v2.6.84: GUARANTEED hourly-fresh feed.
-    // Before, all news items led the feed, so when the verified-news file was
-    // stable (the normal case pre-tournament - it only changes when the news
-    // agent runs, often once a day) the card showed the SAME news for hours/days
-    // and the hourly evergreen rotation never kicked in (it only padded a
-    // shortfall, but a full slate of news left no room). Fix, two parts:
-    //   (a) rotate the news WINDOW by the hour so the leading news advances
-    //       every hour (full cycle over all news across the day), and
-    //   (b) ALWAYS reserve at least one slot for an evergreen line that rotates
-    //       by the hour - so the card visibly changes every single hour even
-    //       when news AND pool are completely static.
+    // Tournament mode: use only fresh generated facts/news. Old evergreen filler
+    // is intentionally excluded here so the card never feels like today's update
+    // when the feed generator is stale or quiet.
     const PUNDIT_TARGET = 5;
     const POOL_SLOTS = 2; // owner layout: first 2 = this pool, next 3 = news
     const H = Math.floor(now / (60 * 60 * 1000)); // global clock-hour index
@@ -1808,9 +1807,9 @@ async function loadPundit() {
     // pick the LEAST-recently-shown candidates, then record them; the pick is
     // frozen for the clock hour so the 10-min refetch can't churn it mid-hour and
     // it advances only on the hour. News candidates = live verified news + live
-    // computed data (results/fixtures/countdown) which lead, then the evergreen
-    // deck; pool candidates = live pool facts + pool evergreens.
-    const newsCands = _ppDedup([...newsItems, ...nonNews, ..._punditDeck()]);
+    // computed data (live/results/fixtures/countdown); pool candidates = live
+    // pool facts + pool evergreens.
+    const newsCands = _ppDedup([...newsItems, ...nonNews]);
     const poolCands = _ppDedup(poolItems);
     const POOL_N = Math.min(POOL_SLOTS, poolCands.length);
     const NEWS_N = PUNDIT_TARGET - POOL_N; // 3 normally; 4-5 if the user has no pool buzz
@@ -2191,7 +2190,7 @@ function _ppLeastRecent(cands, count, seen, H) {
     // leader / your-still-pending) so the real buzz leads the pool slots.
     if (typeof it.id === 'string' && it.id.indexOf('pool-ev-') === 0) return 1;
     const ty = it.type;
-    if (ty === 'news' || ty === 'result' || ty === 'fixture' || ty === 'stat' || ty === 'pool') return 0;
+    if (ty === 'live' || ty === 'news' || ty === 'result' || ty === 'fixture' || ty === 'stat' || ty === 'pool') return 0;
     return 1; // countdown + evergreen deck filler
   };
   return (cands || [])

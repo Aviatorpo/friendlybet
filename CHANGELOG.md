@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.32** - Pundit live-tournament freshness hardening. The dashboard Pundit no longer banks old editorial/news items for days during the live tournament. The generator now prioritizes current live/result/fixture facts from `public-data/matches.json`, filters news to short-lived same-day items only, refreshes `public-data/pundit.json` at least every few hours even when facts are quiet, and publishes `freshUntil` so the client can suppress stale feeds instead of presenting them as current. Cleared the stale banked `pundit-news.json` source file and tightened its validator to reject old/long-lived stories going forward. Version/cache bumped to v2.10.32.
+
 **v2.10.31** - Added two more Story of the World Cup cards for finished matches. The dashboard story carousel now includes Canada 1-1 Bosnia and Herzegovina plus USA 4-1 Paraguay, using the pre-generated FriendlyBet story images and pool-aware captions tied to members who picked Canada or Paraguay first in their group. Version/cache bumped to v2.10.31.
 
 **v2.10.30** - Dashboard prediction CTA copy fix after kickoff. The completed-predictions CTA no longer tells users they can edit "until the World Cup starts" after the tournament has already begun. It now switches between pre-kickoff edit copy, late-entry cutoff copy, correction review-window copy, and locked/read-only copy; the all-set progress card was also made timeless. Version/cache bumped to v2.10.30.

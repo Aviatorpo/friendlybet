@@ -1,294 +1,70 @@
 {
-  "updatedAt": "2026-06-11T06:31:16.158Z",
-  "count": 12,
+  "updatedAt": "2026-06-13T07:37:17.973Z",
+  "freshUntil": "2026-06-13T13:37:17.973Z",
+  "count": 7,
   "items": [
     {
-      "id": "mex-rsa-double-wc-opener-2026-06-11",
-      "type": "news",
+      "id": "result-b25de4f9-de9a-44a2-9bb8-c006602de455",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "מקסיקו ודרום אפריקה פתחו את מונדיאל 2026 באסטדיו אצטקה ב-11 ביוני, בדיוק 16 שנה ליום מאז שאותן שתי נבחרות שיחקו את משחק הפתיחה של טורניר 2010. דרום אפריקה אירחה את מקסיקו ביוהנסבורג ב-11 ביוני 2010, משחק שהפיק אחד מהרגעים הגדולים של גביע העולם כאשר סיפיווה ישאבאלה הבקיע בבעיטת שמאל עולה בדקה ה-55 כדי להעמיד את המארחת בהובלה, לפני שרפאל מארקז השווה למקסיקו בדקה ה-79 לסיום 1:1. זה הפעם היחידה בהיסטוריית גביע העולם שאותן שתי נבחרות נפגשות בשני משחקי פתיחה שונים. שש עשרה שנה לאחר מכן, הדינמיקה בין המועמד להפתעה לבין המארחת המשותפת מתהפכת, הגובה עובר מפני הים ביוהנסבורג ל-2,200 מטר באצטקה, והקהל כולו לבוש אדום, לבן וירוק. האם ההיסטוריה תחזור על עצמה?",
-      "en": "Mexico and South Africa opened the 2026 World Cup at Estadio Azteca on June 11, exactly 16 years to the day since the same two sides played the opening match of the 2010 tournament. South Africa hosted Mexico in Johannesburg on June 11, 2010, a match that produced one of the great World Cup moments when Siphiwe Tshabalala swept in a rising left-foot shot in the 55th minute to put the host nation in front, before Rafael Marquez equalised for El Tri in the 79th minute to share the points 1-1. It is the only time in World Cup history that the same two nations have faced each other in two separate opening matches. Sixteen years on, the underdog-versus-co-host dynamic is reversed, the altitude shifts from sea level in Johannesburg to 2,200 metres at the Azteca, and the crowd is all in red, white and green. Will history repeat itself?",
-      "team": null,
-      "sources": [
-        {
-          "name": "Wikipedia",
-          "url": "https://en.wikipedia.org/wiki/2010_FIFA_World_Cup_Group_A"
-        },
-        {
-          "name": "Goal.com",
-          "url": "https://www.goal.com/en-gb/news/world-cup-2010-south-africa-1-1-mexico-siphiwe-tshabalala/bltc22d5907a77375ad"
-        },
-        {
-          "name": "CNN",
-          "url": "https://www.cnn.com/2010/SPORT/football/06/11/south.africa.mexico.opening.match/index.html"
-        },
-        {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/world-cup-match-day-1-mexico-south-africa-south-korea-czechia"
-        }
-      ],
-      "expires_at": "2026-06-15T23:59:59Z"
+      "he": "ארה\"ב 4:1 פרגוואי.",
+      "en": "United States 4-1 Paraguay.",
+      "sources": [],
+      "expires_at": "2026-06-14T07:00:00.000Z"
     },
     {
-      "id": "ned-timber-deligt-simons-missing-wc2026-2026-06-11",
-      "type": "news",
+      "id": "result-ab678833-83a0-4391-8d6b-bb60af5c37dd",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "הולנד מגיעה למונדיאל 2026 לאחר שאיבדה שלושה משחקנים מהמשפיעים ביותר שלה לפני שנבעטה כדור. יוריין טימבר, בן 24, ננעל בגלל פציעת מפשעה שלא החלימה בזמן למרות הופעה קצרה כמחליף בגמר ליגת האלופות של ארסנל, כאשר לוצ'ארל חרטרואידה מסאנדרלנד הוזמן כממלא מקומו בהתאם להודעה הרשמית של פיפ\"א. מטיס דה ליכט, בן 26, נעדר לאחר שבעיית גב ממושכת חייבה ניתוח נוסף. זאבי סימונס, בן 23, קרע את ה-ACL שלו בזמן שמשחק עבור טוטנהאם מול וולבס באפריל ועבר ניתוח. המאמן רונאלד קומן עדיין מחזיק בווירג'יל ואן דייק, פרנקי דה יונג, קודי גאקפו ומנפיס דפאי. ההולנדים מתמודדים מול יפן בדאלאס ב-14 ביוני, נבחרת יפנית שניצחה את גרמניה, ספרד, ברזיל ואנגליה במחזור של ארבע שנים. שלושה שחקנים פותחים שנפצעו ועדיין בין המועמדות. לקומן יש שיקום לבצע.",
-      "en": "The Netherlands arrive at the 2026 World Cup having lost three of their most influential players before a ball was kicked. Jurrien Timber, 24, was ruled out with a groin injury that did not clear in time despite a brief substitute appearance in Arsenal's Champions League final, with Sunderland's Lutsharel Geertruida called up as his replacement per the official FIFA announcement. Matthijs de Ligt, 26, is absent after a long-standing back problem required additional surgery, with Manchester United not expecting him back until pre-season. Xavi Simons, 23, ruptured his ACL playing for Tottenham against Wolves in April and underwent surgery. Coach Ronald Koeman still commands Virgil van Dijk, Frenkie de Jong, Cody Gakpo and Memphis Depay. The Dutch face Japan in Dallas on June 14, a Japan side that has beaten Germany, Spain, Brazil and England in the same four-year cycle. Three injured starters gone and still among the pre-tournament favourites. Koeman has some rebuilding to do.",
-      "team": "NED",
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/netherlands-call-up-geertruida-jurrien-timber"
-        },
-        {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/other/netherlands-rules-out-jurrien-timber-for-the-world-cup-lutsharel-geertruida-called-up"
-        },
-        {
-          "name": "Sky Sports",
-          "url": "https://www.skysports.com/football/news/11675/13537026/xavi-simons-injury-tottenham-playmaker-to-miss-rest-of-season-and-world-cup-with-netherlands-after-being-stretchered-off-at-wolves"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48606948/tottenham-xavi-simons-ruled-rest-season-miss-world-cup"
-        }
-      ],
-      "expires_at": "2026-06-25T23:59:59Z"
+      "he": "קנדה 1:1 בוסניה-הרצגובינה.",
+      "en": "Canada 1-1 Bosnia-Herzegovina.",
+      "sources": [],
+      "expires_at": "2026-06-14T01:00:00.000Z"
     },
     {
-      "id": "wc26-prize-money-record-50m-2026-06-11",
-      "type": "news",
+      "id": "result-a3f33d1c-f931-4a0e-91e3-86efaa5ce733",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "מונדיאל 2026 נושא את קרן הפרסים הגדולה ביותר בהיסטוריית הכדורגל. פיפ\"א אישרה חלוקת 655 מיליון דולר בסך הכל בין 48 הנבחרות המשתתפות, עלייה של כמעט 50 אחוז ביחס ל-440 מיליון דולר שחולקו בקטאר 2022. הקבוצה הזוכה תקבל 50 מיליון דולר, עלייה מ-42 מיליון לפני ארבע שנים. הסיום שני מזכה ב-33 מיליון, מקום שלישי 29 מיליון, ורביעי 27 מיליון. כל נבחרת שנופלת בשלב הבתים עדיין עוזבת עם לפחות 9 מיליון דולר, בנוסף ל-1.5 מיליון דולר דמי הכנה ששולמו לפני הטורניר. עבור מדינות כדורגל קטנות המתחרות כאן לראשונה, יציאה בסיבוב הראשון עדיין מייצגת כסף שמשנה חיים עבור ההתאחדות שלהן. לענקיות שרודפות אחרי הגביע, קרן הפרס של הזוכה הוכפלה למעשה בשמונה שנים. חמישים מיליון סיבות לזכות בגמר ב-MetLife Stadium ב-19 ביולי.",
-      "en": "The 2026 World Cup carries the largest prize pool in football history. FIFA confirmed a total of $655 million to be distributed among the 48 participating nations, a rise of nearly 50 percent from the $440 million paid out at Qatar 2022. The winning team collects $50 million, up from $42 million four years ago. The runner-up takes $33 million, third place $29 million, fourth $27 million. Every team eliminated in the group stage still walks away with at least $9 million, plus a $1.5 million preparation allowance paid before the tournament. For smaller footballing nations competing here for the first time, a first-round exit still represents life-changing money for their federation. For the giants hunting the trophy, the winner's purse has effectively doubled in eight years. Fifty million reasons to win the final at MetLife Stadium on July 19.",
-      "team": null,
-      "sources": [
-        {
-          "name": "FIFA (inside.fifa.com)",
-          "url": "https://inside.fifa.com/media-releases/council-approves-record-breaking-world-cup-2026-financial-contribution"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2025/12/17/fifa-world-cup-2026-winners-prize-money-doubles-to-50m"
-        },
-        {
-          "name": "beIN Sports",
-          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/how-much-money-does-each-team-earn-for-playing-in-the-2026-fifa-world-cup-2026-05-13"
-        },
-        {
-          "name": "Bleacher Report",
-          "url": "https://bleacherreport.com/articles/25435805-world-cup-2026-prize-money-complete-purse-and-earnings-info-fifa-tournament"
-        }
-      ],
-      "expires_at": "2026-07-19T23:59:59Z"
+      "he": "דרום קוריאה 2:1 צ'כיה.",
+      "en": "South Korea 2-1 Czechia.",
+      "sources": [],
+      "expires_at": "2026-06-13T08:00:00.000Z"
     },
     {
-      "id": "can-davies-hamstring-opener-2026-06-11",
-      "type": "news",
+      "id": "fixture-4efafba8-c6a0-41ef-8957-c2cbb3aa19a1",
+      "type": "fixture",
       "confidence": "confirmed",
-      "he": "קפטן קנדה אלפונסו דייוויס יפסיד את פתיחת מונדיאל הנבחרת המארחת מול בוסניה-הרצגובינה בטורונטו ב-12 ביוני, כך אישר המאמן ג'סי מארש. מגן הגב של בייארן מינכן עדיין מתאושש מקרע בשריר הירך שנגרם בחצי גמר ליגת האלופות מול פריז סן-ז'רמן ב-6 במאי. מארש מדגיש שדייוויס ישחק בטורניר ומכוון למשחק הקבוצתי השלישי מול קטאר בוונקובר ב-18 ביוני כחלון חזרה ריאלי. קנדה כבר איבדה את קשר הקדמה מרצלו פלורס ל-ACL לפני הטורניר, ומעולם לא ניצחה במשחק מונדיאל בשתי הופעותיה הקודמות. מחר הם מארחים את המשחק הגדול ביותר בהיסטוריית הכדורגל הקנדי, בפני קהל מלא, ועושים זאת ללא הקפטן שלהם. האם שאר הסגל יקום לגובה?",
-      "en": "Canada captain Alphonso Davies will miss the host nation's World Cup opener against Bosnia and Herzegovina in Toronto on June 12, confirmed coach Jesse Marsch, as the Bayern Munich left back continues recovering from a hamstring tear suffered in the Champions League semi-final against Paris Saint-Germain on May 6. Marsch insists Davies will play in the tournament and is targeting the third group match against Qatar in Vancouver on June 18 as the realistic return window. Canada already lost attacking midfielder Marcelo Flores to an ACL injury before the tournament and have never won a World Cup match across two previous appearances. Tomorrow they host the biggest game in Canadian football history, in front of a sold-out home crowd, and they will do it without their captain. Does the rest of the squad step up?",
-      "team": "CAN",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48944438/alphonso-davies-joins-canada-world-cup-prep-unclear-play"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/why-alphonso-davies-missing-2026-213721175.html"
-        },
-        {
-          "name": "The Score",
-          "url": "https://www.thescore.com/worldcup/news/3550369"
-        }
-      ],
-      "expires_at": "2026-06-18T23:59:59Z"
+      "he": "קטאר נגד שווייץ, היום 22:00.",
+      "en": "Qatar vs Switzerland, today 22:00.",
+      "sources": [],
+      "expires_at": "2026-06-13T19:00:00.000Z"
     },
     {
-      "id": "arg-messi-bench-goal-iceland-wc2026-2026-06-10",
-      "type": "news",
+      "id": "fixture-af81fe37-fc83-4696-b013-7a780fe10477",
+      "type": "fixture",
       "confidence": "confirmed",
-      "he": "ליונל מסי יצא כמחליף והבקיע מנקודת האחד-עשר בניצחון ארגנטינה 3:0 על איסלנד ב-10 ביוני, המשחק האחרון לפני מונדיאל 2026. בן ה-38 ישב על הספסל בידידות הקודמת מול הונדורס בשל עייפות בשריר הירך, והחזרה שלו עם שער פיזרה את שאלות הכשירות האחרונות. המאמן סקלוני אישר שמסי מוכן לפתיחת קבוצה J של ארגנטינה מול אלג'יריה בדאלאס ב-16 ביוני. אלוף העולם המגן מגיע למונדיאל שישי עם שער כבר השבוע. השאלה בכל מאגר תחזיות היא לא האם הוא ישחק. אלא עד כמה עמוק ביולי הוא עדיין ישחק.",
-      "en": "Lionel Messi came off the bench to score from the penalty spot in Argentina's 3-0 victory over Iceland on June 10, their final warm-up before the 2026 World Cup. The 38-year-old had sat out the previous friendly against Honduras with hamstring fatigue, and his return with a goal cleared any remaining doubts about his fitness. Coach Scaloni confirmed Messi is ready for Argentina's Group J opener against Algeria in Dallas on June 16. The reigning world champion arrives at a sixth World Cup with a goal on the board this week. The question for every prediction pool is not whether he will play. It is how deep into July he will still be playing.",
-      "team": "ARG",
-      "sources": [
-        {
-          "name": "beIN Sports",
-          "url": "https://www.beinsports.com/en-us/soccer/friendlies/articles/argentina-3-0-iceland-messi-returns-with-goal-off-the-bench-in-final-world-cup-warm-up-2026-06-10"
-        },
-        {
-          "name": "Al Jazeera",
-          "url": "https://www.aljazeera.com/sports/2026/6/10/messi-comes-off-the-bench-to-score-in-argentinas-final-world-cup-warm-up"
-        },
-        {
-          "name": "World Soccer Talk",
-          "url": "https://worldsoccertalk.com/world-cup/argentina-vs-iceland-live-updates-minute-by-minute-coverage-of-2026-international-friendly/"
-        }
-      ],
-      "expires_at": "2026-07-05T23:59:59Z"
+      "he": "ברזיל נגד מרוקו, מחר 01:00.",
+      "en": "Brazil vs Morocco, tomorrow 01:00.",
+      "sources": [],
+      "expires_at": "2026-06-13T22:00:00.000Z"
     },
     {
-      "id": "wc26-azteca-three-world-cups-2026-06-11",
-      "type": "news",
+      "id": "fixture-b7aa07bc-c126-421e-b0d3-e0c5b96420bc",
+      "type": "fixture",
       "confidence": "confirmed",
-      "he": "מונדיאל 2026 נפתח היום באצטדיון המעוטר ביותר בהיסטוריית המשחק. אסטדיו אצטקה במקסיקו סיטי ארח את משחק הפתיחה השלישי שלו במונדיאל, הבלעדי שעשה זאת אי-פעם. הוא ארח את המשחק הראשון בטורניר ב-1970 וב-1986 גם יחד, ושני הגרסאות הללו הסתיימו אף הן עם הגמר באותו מגרש, ברזיל מרימה את הגביע ב-1970 וארגנטינה ב-1986. עם סיום טורניר 2026 יהיו לאצטקה 24 משחקי מונדיאל בסך הכל, יותר מכל אצטדיון אחר בעולם. המגרש שוכן בגובה 2,200 מטר מעל פני הים, שם האוויר הדליל מקצר מסירות, מעייף את הרגליים מהר יותר, והיסטורית נתן יתרון לנבחרות מקסיקו מול יריבות שלא הסתגלו לגובה. זהו גם המגרש שבו מראדונה הבקיע הן את יד האל והן את שער המאה מול אנגליה ברבע גמר 1986, ושבו איטליה ומערב גרמניה שיחקו את משחק המאה בחצי גמר 1970. ארבעים שנה אחרי מראדונה, האצטקה פותח מונדיאל נוסף. מקסיקו מתמודדת מול דרום אפריקה בקבוצה A - האם אצטדיון כה עמוס בהיסטוריה יוכל לייצר פרק אייקוני נוסף?",
-      "en": "The 2026 World Cup began today at the most decorated stadium in the history of the game. Estadio Azteca in Mexico City hosted its third World Cup opening match, the only venue ever to do so - it staged the tournament's first game in both 1970 and 1986, and both those editions also ended with the final at the same ground, Brazil lifting the trophy in 1970 and Argentina in 1986. By the close of the 2026 tournament, the Azteca will have hosted 24 World Cup matches in total, more than any other stadium on earth. The ground sits at 2,200 metres above sea level, where the thinner air shortens passes, tires legs faster, and has historically given Mexican sides an edge over unacclimatised opponents. This is also the ground where Maradona scored both the Hand of God and the Goal of the Century against England in the 1986 quarter-final, and where Italy and West Germany played the Game of the Century in the 1970 semi-final. Forty years on from Maradona, the Azteca opens another World Cup. Mexico face South Africa in Group A - can a stadium this loaded with history produce another iconic chapter?",
-      "team": null,
-      "sources": [
-        {
-          "name": "FIFA",
-          "url": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/articles/estadio-azteca-mexico-city-host-opening-match-world-cup-2026"
-        },
-        {
-          "name": "beIN Sports",
-          "url": "https://www.beinsports.com/en-us/soccer/fifa-world-cup-2026/articles/estadio-azteca-makes-history-with-three-fifa-world-cup-opening-matches-2026-05-28"
-        },
-        {
-          "name": "Buenos Aires Herald",
-          "url": "https://buenosairesherald.com/sports/football/2026-world-cup/how-the-estadio-azteca-became-the-world-cups-greatest-home"
-        }
-      ],
-      "expires_at": "2026-06-26T00:00:00Z"
+      "he": "האיטי נגד סקוטלנד, מחר 04:00.",
+      "en": "Haiti vs Scotland, tomorrow 04:00.",
+      "sources": [],
+      "expires_at": "2026-06-14T01:00:00.000Z"
     },
     {
-      "id": "bra-neymar-mri-progress-wc2026-2026-06-09",
-      "type": "news",
+      "id": "fixture-57df958d-3c1b-40cc-be35-281c9a3e61f4",
+      "type": "fixture",
       "confidence": "confirmed",
-      "he": "הצוות הרפואי הברזילאי פרסם עדכון מעודד ב-9 ביוני לאחר שבדיקת MRI חדשה הראתה שמתח הדרגה השנייה בשריר השוק הימני של ניימאר מחלים בפרמטרים הצפויים, לפי ה-CBF. הפורווארד בן ה-34, שנפצע בסנטוס באמצע מאי, עדיין לא צפוי להופיע בפתיחת קבוצה C של ברזיל מול מרוקו בניו ג'רזי ב-13 ביוני. המאמן קרלו אנצ'לוטי מכוון למשחק הקבוצתי השני מול האיטי כחלון החזרה הריאלי ביותר, ומדגיש שלא יפעיל כלל ההחלפה הדחופה. עומק הרזרבות הוכח מול מצרים כשאנדריק בן ה-18 הבקיע בניצחון 2:1, אך ברזיל גם איבדה את מגן הגב וסלי לקרע בשריר המקרב של הירך השמאלית באותו משחק, ואדרסון מאטלנטה נוסף כמחליף. ויניסיוס ג'וניור מחזיר לניימאר את חולצת מספר 10 עם חזרתו. התקדמות טובה אינה אישור כשירות מלאה. האם ברזיל תשמור על עצמה בשלב הבתים עד שמבקיע כל הזמנים שלה יגיע?",
-      "en": "Brazil's medical team issued an encouraging update on June 9 after a new MRI scan showed Neymar's Grade 2 right calf strain healing within expected parameters, per the CBF. The 34-year-old, injured at Santos in mid-May, is still not expected to feature in Brazil's Group C opener against Morocco in New Jersey on June 13. Coach Carlo Ancelotti is targeting the second group match against Haiti as the most realistic return window and insists he will not use the emergency replacement rule on Neymar. Brazil's backup depth was on show against Egypt when 18-year-old Endrick scored in a 2-1 warm-up win, but the Selecao also lost right-back Wesley to a left-thigh adductor tear in that same match, with Atalanta midfielder Ederson called in as cover. Vinicius Jr is handing back the No. 10 shirt to Neymar once he returns. Good progress is not a clean bill of health. Can Brazil hold shape in the group stage until their record goalscorer arrives?",
-      "team": "BRA",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/49002184/brazil-mri-neymar-good-progress-injury"
-        },
-        {
-          "name": "Arab News",
-          "url": "https://www.arabnews.com/node/2646471/sport"
-        },
-        {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/brazil-right-back-wesley-is-out-of-the-world-cup-with-a-thigh-injury-and-ederson-is-replacing-him"
-        }
-      ],
-      "expires_at": "2026-06-21T23:59:59Z"
-    },
-    {
-      "id": "eng-saka-achilles-wc2026-2026-06-10",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "המאמן תומאס טוכל אמר ב-10 ביוני שבוקאיו סאקה עדיין מנהל בעיית אכילס שנגררת ממרץ, ושסביר מאוד שהמגינה של ארסנל לא יפתח וגם לא יסיים כל משחק במונדיאל. סאקה פרש מידידות אנגלייה מול אורוגוואי ויפן במרץ, לא הופיע עבור הנבחרת מנובמבר, ושיחק תחת הכאב בריצת תואר הפרמייר ליג של ארסנל ובגמר ליגת האלופות במקום לנוח. הוא צפוי להישאר הקצה הימני הראשי של אנגלייה, אך הדקות שלו ינוהלו בקפידה לאורך הטורניר. אנגלייה פותחת קבוצה L מול קרואטיה ב-AT&T Stadium בדאלאס ב-17 ביוני, כשכבר חסרים קול פאלמר, פיל פודן וטרנט אלכסנדר-ארנולד. האפשרות היצירתית הרחבה ביותר שלהם מגיעה לטורניר במצב מנוהל. לטוכל יש תוכנית. השאלה היא האם היא תוכל לשרוד בסיבובי הנוק-אאוט אם חלקי המפתח לעולם לא יגיעו לכשירות מלאה.",
-      "en": "England manager Thomas Tuchel said on June 10 that Bukayo Saka is still managing an Achilles problem carried since March and that it is very unlikely the Arsenal winger will both start and finish every match at the World Cup. Saka withdrew from England's Uruguay and Japan friendlies in March, has not featured for the national side since November, and played through the pain during Arsenal's Premier League title run and their Champions League final rather than rest. He is expected to remain England's first-choice right winger but with his minutes carefully managed throughout the tournament. England open Group L against Croatia at AT&T Stadium in Dallas on June 17, already without Cole Palmer, Phil Foden and Trent Alexander-Arnold. Their most creative wide option arrives at the tournament in managed condition. Tuchel has a blueprint. The question is whether it can survive the knockout rounds if key pieces are never fully fit.",
-      "team": "ENG",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/49011304/thomas-tuchel-england-world-cup-take-care-bukayo-saka-arsenal-fitness"
-        },
-        {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/is-bukayo-saka-world-cup-ready-for-england-thomas-tuchel-delivers-take-care-update-on-arsenal-wingers-fitness"
-        },
-        {
-          "name": "Sports Mole",
-          "url": "https://www.sportsmole.co.uk/football/england/world-cup-2026/news/tuchels-pain-saka-injury-update-as-england-boss-faces-backup-dilemma_598900.html"
-        }
-      ],
-      "expires_at": "2026-06-25T23:59:59Z"
-    },
-    {
-      "id": "esp-yamal-barcelona-conditions-wc2026-2026-06-10",
-      "type": "news",
-      "confidence": "reported",
-      "he": "לפי הדיווחים, ברצלונה מסרה לספרד תוכנית שיקום מדורגת עבור לאמין יאמאל, שמחוץ מאז ה-22 באפריל עם קרע בשריר הירך השמאלי. לוח הזמנים המועדף: לא יותר מ-15 דקות מול קאבו ורדה בפתיחה ב-15 ביוני, כ-45 עד 60 דקות מול ערב הסעודית, ורק פתיחה מלאה במשחק הקבוצה האחרון מול אורוגוואי. המאמן דה לה פואנטה אישר ב-8 ביוני שיאמאל ושני חלוצים פצועים נוספים בתהליך אם לא יהיו תקלות, וההחלטה הסופית בידי הצוות המאמן שלו, לא של המועדון. אבל הפיזיותרפיסט של ברצלונה משובץ בצוות הרפואי של ספרד ועוקב אחרי ההתאוששות של יאמאל מדי יום. בן 18 במונדיאל הראשון שלו, כשהמועדון שלו כותב את התסריט לכמה דקות הוא ישחק בכל משחק: זה סיפור מסוג חדש. התקווה הטובה ביותר של ספרד לעשור הבא מגיעה לצפון אמריקה עם שעון ספירה לאחור.",
-      "en": "Reports say Barcelona have handed Spain a staged recovery plan for Lamine Yamal, sidelined since April 22 with a left hamstring tear. The preferred schedule: no more than 15 minutes against Cape Verde in the June 15 opener, around 45 to 60 minutes against Saudi Arabia, and only a full start in the final group match against Uruguay. Spain coach De la Fuente confirmed on June 8 that Yamal and two other injured forwards are on track if there are no setbacks, and the final call rests with his coaching staff, not the club. But Barcelona's physiotherapist is embedded in Spain's medical team and monitors Yamal's recovery daily. An 18-year-old at his first World Cup with his club writing the script for how many minutes he plays in each game: that is a genuinely new kind of story. Spain's best hope for the next decade arrives in North America on a countdown clock.",
-      "team": "ESP",
-      "sources": [
-        {
-          "name": "Fox Sports",
-          "url": "https://www.foxsports.com/stories/soccer/why-barcelona-are-worried-about-lamine-yamal-as-teenage-wonderkid-prepares-for-a-shot-at-world-cup-glory-with-spain"
-        },
-        {
-          "name": "World Soccer Talk",
-          "url": "https://worldsoccertalk.com/world-cup/barcelona-reportedly-sets-conditions-for-lamine-yamals-participation-with-spain-at-the-2026-world-cup/"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/spain-world-cup-favorite-one-193020572.html"
-        }
-      ],
-      "expires_at": "2026-07-02T23:59:59Z"
-    },
-    {
-      "id": "jpn-elite-scalps-form-wc2026-2026-06-10",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "יפן מגיעה למונדיאל 2026 עם שיא מול יריבות עילית שקשה להאמין בו עבור נבחרת המדורגת ב-18 בעולם. מאז קטאר 2022 ניצחו את גרמניה פעמיים (1:2 בשלב הבתים, ואז 4:1 בידידות בספטמבר 2023), את ספרד (2:1 כשהיו מאחור במונדיאל 2022), את ברזיל (3:2 לאחר שהיו מאחור בשניים באוקטובר 2025 בטוקיו), ואת אנגליה (0:1 בוומבלי במרץ 2026, כאשר מיטומה סיים בשקט למרות ששליטת הכדור היתה 70-30 לטובת אנגליה). המאמן מוריאסו בנה קבוצה קומפקטית ומדויקת טכנית שסופגת לחץ ותוקפת בנגד-גול. יפן פותחת קבוצה F מול הולנד ב-14 ביוני, נבחרת הולנדית שכבר איבדה ארבעה שחקנים מפתח לפציעות. כל נבחרת שניצחה את גרמניה, ספרד, ברזיל ואנגליה באותו מחזור של ארבע שנים יודעת בדיוק מה עולה להלם את העולם. השאלה ב-2026 היא האם הם יכולים לעשות זאת פעמיים תוך שלושה שבועות.",
-      "en": "Japan arrive at the 2026 World Cup with a record against elite opponents that is genuinely hard to believe for an 18th-ranked nation. Since Qatar 2022 they have beaten Germany twice (1-2 in the group stage, then 4-1 in a September 2023 friendly), Spain (2-1 from behind at the 2022 World Cup), Brazil (3-2 after trailing by two goals in October 2025 in Tokyo), and England (1-0 at Wembley in March 2026, Kaoru Mitoma finishing calmly after the hosts controlled possession 70-30). Coach Hajime Moriyasu has built a compact, technically precise team that absorbs pressure and punishes on the counter-attack. Japan open Group F against the Netherlands on June 14, a Dutch side already missing four key players to injury. Any team that has beaten Germany, Spain, Brazil, and England in the same four-year cycle knows exactly what it costs to shock the world. The question for 2026 is whether they can do it twice in three weeks.",
-      "team": "JPN",
-      "sources": [
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/report/_/gameId/762554"
-        },
-        {
-          "name": "Sky Sports",
-          "url": "https://www.skysports.com/football/news/11095/12757077/world-cup-2022-japan-2-1-spain-ao-tanakas-controversial-goal-stuns-luis-enriques-side-but-both-sides-advance"
-        },
-        {
-          "name": "Outlook India",
-          "url": "https://www.outlookindia.com/sports/football/japan-vs-brazil-live-score-international-friendly-2025-jpn-v-bra-updates"
-        }
-      ],
-      "expires_at": "2026-06-30T00:00:00Z"
-    },
-    {
-      "id": "fra-mbappe-fontaine-record-wc2026-2026-06-10",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "קיליאן מבאפה מגיע למונדיאל 2026 עם 12 שערים בסה\"כ בטורניר, וזקוק לשער אחד נוסף כדי להשוות לז'וסט פונטן כמבקיע הצרפתי הרב ביותר בהיסטוריית גביע העולם. פונטן הבקיע את כל 13 שעריו בקמפיין יחיד ויוצא דופן, בטורניר 1958 בשוודיה, שמהווה גם שיא כל הזמנים של שערים בגביע עולם אחד. מבאפה פיזר את 12 שעריו: ארבעה ברוסיה 2018 ושמונה בקטאר 2022, כולל האטריק בגמר. המאמן דידייה דשאן, שהוביל את הלה-בלה לתואר 2018 ולגמר 2022, אישר כי מונדיאל זה הוא אחרונו עם הנבחרת הלאומית. צרפת פותחת את קבוצה I מול סנגל. רודף שיאים וארכיטקט שעוזב, באותו סגל באותו זמן.",
-      "en": "Kylian Mbappe arrives at the 2026 World Cup with 12 career goals in the tournament, needing just one more to match Just Fontaine as the leading French scorer in World Cup history. Fontaine scored all 13 of his World Cup goals in a single extraordinary campaign at the 1958 tournament in Sweden, a total that also stands as the all-time record for most goals in one World Cup. Mbappe spread his 12 across four in Russia in 2018 and eight in Qatar in 2022, the latter including a hat-trick in the final. Coach Didier Deschamps, who led Les Bleus to the 2018 title and the 2022 final, has confirmed this World Cup is his last with the national side. France open Group I against Senegal. A record-chaser and a departing architect, in the same squad at the same time.",
-      "team": "FRA",
-      "sources": [
-        {
-          "name": "UEFA",
-          "url": "https://www.uefa.com/european-qualifiers/news/02a6-20d159288012-ce02189d2504-1000--france-at-the-world-cup-2026-squad-fixtures-group-and-hi/"
-        },
-        {
-          "name": "Olympics.com",
-          "url": "https://www.olympics.com/en/news/kylian-mbappe-fifa-world-cup-records-goals-stats"
-        },
-        {
-          "name": "ESPN",
-          "url": "https://www.espn.com/soccer/story/_/id/48979217/kylian-mbappe-fifa-world-cup-history-results-stats"
-        }
-      ],
-      "expires_at": "2026-07-19T23:59:59Z"
-    },
-    {
-      "id": "wc26-sofi-stadium-los-angeles-2026-06-10",
-      "type": "news",
-      "confidence": "confirmed",
-      "he": "אצטדיון SoFi באינגלווד ייקרא Los Angeles Stadium לאורך מונדיאל 2026, לפי כללי פיפ\"א האוסרים על נותני חסות מתחרים. ההסבה מאצטדיון NFL למגרש כדורגל דרשה הרבה יותר משינוי שם: הדשא המלאכותי פורק והוחלף בדשא טבעי שגודל במדינת וושינגטון ונשלח במשאיות מקוררות ביותר מ-1,600 מייל דרומה. כדי לעמוד בדרישת פיפ\"א לרוחב מגרש מינימלי של 74 יארדים, רחב יותר מהסטנדרט של 54 יארדים ב-NFL, הוצאו פיזית יותר מ-400 מושבים בפינות האצטדיון. נורות LED לגידול צמחים פועלות כ-18 שעות ביום לשמירת הדשא בתוך האצטדיון המקורה. האצטדיון יאחסן שמונה משחקי מונדיאל, כולל פתיחת קבוצה D של ארצות הברית מול פרגוואי ב-12 ביוני. הדשא פנימה, המושבים החוצה, ואחד האצטדיונים היקרים ביותר שנבנו אי-פעם מוכן לסוג שונה של כדורגל.",
-      "en": "SoFi Stadium in Inglewood will be known as Los Angeles Stadium during the 2026 World Cup, per FIFA rules barring competing sponsors. The transformation from NFL to soccer venue required far more than a name change: the stadium's artificial turf was ripped out and replaced by natural grass grown in Washington State and delivered in refrigerated trucks more than 1,600 miles south. To meet FIFA's minimum pitch width of 74 yards, wider than the NFL standard of 54 yards, engineers physically removed more than 400 corner seats. LED grow lights now run roughly 18 hours a day to sustain the grass inside the covered stadium. Los Angeles Stadium will host eight World Cup matches, including the United States' Group D opener against Paraguay on June 12. The grass is in, the seats are gone, and one of the most expensive stadiums ever built is ready for a different kind of football.",
-      "team": null,
-      "sources": [
-        {
-          "name": "NBC Los Angeles",
-          "url": "https://www.nbclosangeles.com/video/world-cup/sofi-stadium-world-cup-transformation-2026/3902095/"
-        },
-        {
-          "name": "CBS Los Angeles",
-          "url": "https://www.cbsnews.com/losangeles/news/sofi-stadium-2026-fifa-world-cup-30-days-away-transformation-soccer-pitch/"
-        },
-        {
-          "name": "Yahoo Sports",
-          "url": "https://sports.yahoo.com/articles/sofi-stadium-gets-dramatic-fifa-203711439.html"
-        }
-      ],
-      "expires_at": "2026-07-19T00:00:00Z"
+      "he": "אוסטרליה נגד טורקיה, מחר 07:00.",
+      "en": "Australia vs Turkey, tomorrow 07:00.",
+      "sources": [],
+      "expires_at": "2026-06-14T04:00:00.000Z"
     }
   ]
 }

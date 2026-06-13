@@ -3,8 +3,8 @@ name: Generate Pundit Feed
 # Rebuilds public-data/pundit.json from the committed match snapshot + the
 # verified news file. Pure data, no network, no secrets - safe to run often.
 # Covers both phases: pre-tournament the countdown/fixtures shift daily, during
-# the tournament results/fixtures shift hourly. The script only commits when the
-# feed content actually changes, so most runs are no-ops.
+# the tournament results/fixtures shift hourly. The script also refreshes the
+# feed timestamp every few hours so the client can detect a stuck/stale feed.
 
 on:
   schedule:

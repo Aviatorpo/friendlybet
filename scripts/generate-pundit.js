@@ -33,14 +33,70 @@ const OUT_FILE = path.join(DATA_DIR, 'pundit.json');
 // First WC2026 match (UTC). Used as the countdown anchor; overridden by the
 // earliest match in the snapshot when available so we never drift from reality.
 const DEFAULT_KICKOFF = '2026-06-11T19:00:00+00:00';
-const MAX_ITEMS = 12;  // supply up to 12 real items (news prioritized). The client shows 5 (2 pool + 3 news) and rotates the news window by the hour, so a deeper news pool = the trailing 3 lines cycle through more stories across the day. Critically, a deep pool is also the RELIABILITY guarantee: the hourly news agent is best-effort (the scheduler can silently skip runs), so the more verified items banked here, the more hours of fresh, varied news the client can rotate through between agent runs. Pads any shortfall with evergreen lines.
-const DAY_MS = 24 * 60 * 60 * 1000;
+const MAX_ITEMS = 12;
+const HOUR_MS = 60 * 60 * 1000;
+const DAY_MS = 24 * HOUR_MS;
+const RESULT_WINDOW_MS = 30 * HOUR_MS;
+const FIXTURE_WINDOW_MS = 30 * HOUR_MS;
+const NEWS_MAX_AGE_MS = 30 * HOUR_MS;
+const NEWS_MAX_FUTURE_EXPIRY_MS = 30 * HOUR_MS;
+const FEED_FRESH_MS = 6 * HOUR_MS;
+const REFRESH_COMMIT_MS = 3 * HOUR_MS;
+const LIVE_STATUSES = new Set(['IN_PLAY', 'LIVE', 'PAUSED']);
 
 // Top FIFA-ranked sides -> used only to flag a fixture as a "big match".
 const FAVORITES = new Set(['ARG', 'FRA', 'ESP', 'ENG', 'BRA', 'POR', 'NED', 'GER', 'BEL', 'URU', 'CRO', 'COL']);
 
 function readJson(file, fallback) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { return fallback; }
+}
+
+function parseTime(value) {
+  if (!value) return NaN;
+  const ms = Date.parse(value);
+  return Number.isFinite(ms) ? ms : NaN;
+}
+
+function iso(ms) {
+  return new Date(ms).toISOString();
+}
+
+function buildNow() {
+  const forced = process.env.PUNDIT_NOW ? new Date(process.env.PUNDIT_NOW) : null;
+  return forced && !Number.isNaN(forced.getTime()) ? forced : new Date();
+}
+
+function newsAnchorMs(item, feedUpdatedAt) {
+  const candidates = [
+    item && item.topic_date,
+    item && item.source_checked_at,
+    item && item.created_at,
+    feedUpdatedAt,
+  ];
+  for (const candidate of candidates) {
+    const ms = parseTime(candidate);
+    if (Number.isFinite(ms)) return ms;
+  }
+  return NaN;
+}
+
+function isCurrentNews(item, feedUpdatedAt, now) {
+  const nowMs = now.getTime();
+  const anchor = newsAnchorMs(item, feedUpdatedAt);
+  const expires = parseTime(item && item.expires_at);
+  if (!Number.isFinite(anchor) || !Number.isFinite(expires)) return false;
+  if (expires <= nowMs) return false;
+  if (anchor - nowMs > HOUR_MS) return false;
+  if (nowMs - anchor > NEWS_MAX_AGE_MS) return false;
+  if (expires - nowMs > NEWS_MAX_FUTURE_EXPIRY_MS) return false;
+  return true;
+}
+
+function shouldTreatAsLive(match, now) {
+  const status = String(match.status || '').toUpperCase();
+  if (LIVE_STATUSES.has(status)) return true;
+  const start = parseTime(match.match_date);
+  return Number.isFinite(start) && now.getTime() >= start && now.getTime() - start <= 3 * HOUR_MS && status !== 'FINISHED';
 }
 
 // Format a UTC ISO time into Israel-local {ymd, hm} (the audience is Israeli).
@@ -92,43 +148,61 @@ function build(now) {
       he = `המונדיאל מתחיל עכשיו! 🎉`;
       en = `The World Cup is kicking off now! 🎉`;
     }
-    items.push({ id: `countdown-${ilParts(now.toISOString()).ymd}`, type: 'countdown', confidence: 'confirmed', he, en, sources: [] });
+    items.push({ id: `countdown-${ilParts(now.toISOString()).ymd}`, type: 'countdown', confidence: 'confirmed', he, en, sources: [], expires_at: iso(Date.parse(kickoff)) });
   }
 
-  // ---- 2. Latest results (last 48h) -----------------------------------------
+  // ---- 2. Live matches -------------------------------------------------------
+  const live = matches
+    .filter(m => shouldTreatAsLive(m, now))
+    .sort((x, y) => Date.parse(x.match_date) - Date.parse(y.match_date))
+    .slice(0, 3);
+  for (const m of live) {
+    items.push({
+      id: `live-${m.id}`,
+      type: 'live',
+      confidence: 'confirmed',
+      he: `${teamName(m.home_team_code, 'he')} נגד ${teamName(m.away_team_code, 'he')} משוחק עכשיו. התוצאה הרשמית תתעדכן בסיום המשחק.`,
+      en: `${teamName(m.home_team_code, 'en')} vs ${teamName(m.away_team_code, 'en')} is live now. The official score will update after full-time.`,
+      sources: [],
+      expires_at: iso(now.getTime() + 3 * HOUR_MS),
+    });
+  }
+
+  // ---- 3. Latest results (last 30h) -----------------------------------------
   const finished = matches
     .filter(m => m.status === 'FINISHED' && m.home_score != null && m.away_score != null)
-    .filter(m => now.getTime() - Date.parse(m.match_date) < 2 * DAY_MS)
+    .filter(m => now.getTime() - Date.parse(m.match_date) < RESULT_WINDOW_MS)
     .sort((x, y) => Date.parse(y.match_date) - Date.parse(x.match_date))
-    .slice(0, 3);
+    .slice(0, 5);
   for (const m of finished) {
     const hs = m.home_score, as = m.away_score;
     const upset = (hs > as && FAVORITES.has(m.away_team_code) && !FAVORITES.has(m.home_team_code)) ||
                   (as > hs && FAVORITES.has(m.home_team_code) && !FAVORITES.has(m.away_team_code));
     const he = `${upset ? 'הפתעה! ' : ''}${teamName(m.home_team_code, 'he')} ${hs}:${as} ${teamName(m.away_team_code, 'he')}.`;
     const en = `${upset ? 'Upset! ' : ''}${teamName(m.home_team_code, 'en')} ${hs}-${as} ${teamName(m.away_team_code, 'en')}.`;
-    items.push({ id: `result-${m.id}`, type: 'result', confidence: 'confirmed', he, en, sources: [] });
+    items.push({ id: `result-${m.id}`, type: 'result', confidence: 'confirmed', he, en, sources: [], expires_at: iso(Date.parse(m.match_date) + RESULT_WINDOW_MS) });
   }
 
-  // ---- 3. Upcoming fixtures (next 48h) --------------------------------------
+  // ---- 4. Upcoming fixtures (next 30h) --------------------------------------
   const upcoming = matches
     .filter(m => (m.status === 'TIMED' || m.status === 'SCHEDULED') && Date.parse(m.match_date) > now.getTime())
     .sort((x, y) => Date.parse(x.match_date) - Date.parse(y.match_date))
-    .filter(m => Date.parse(m.match_date) - now.getTime() < 2 * DAY_MS)
-    .slice(0, 3);
+    .filter(m => Date.parse(m.match_date) - now.getTime() < FIXTURE_WINDOW_MS)
+    .slice(0, 5);
   for (const m of upcoming) {
     const w = whenLabel(m.match_date, now);
     const big = FAVORITES.has(m.home_team_code) && FAVORITES.has(m.away_team_code);
     const he = `${big ? 'משחק ענק! ' : ''}${teamName(m.home_team_code, 'he')} נגד ${teamName(m.away_team_code, 'he')}, ${w.he}.`;
     const en = `${big ? 'Big match: ' : ''}${teamName(m.home_team_code, 'en')} vs ${teamName(m.away_team_code, 'en')}, ${w.en}.`;
-    items.push({ id: `fixture-${m.id}`, type: 'fixture', confidence: 'confirmed', he, en, sources: [] });
+    items.push({ id: `fixture-${m.id}`, type: 'fixture', confidence: 'confirmed', he, en, sources: [], expires_at: iso(Date.parse(m.match_date)) });
   }
 
-  // ---- 4. Verified news (from the news agent) -------------------------------
+  // ---- 5. Verified same-day news (from the news agent) ----------------------
   const news = readJson(NEWS_FILE, { items: [] });
+  const newsUpdatedAt = news && news.updatedAt;
   const freshNews = (Array.isArray(news.items) ? news.items : [])
     .filter(n => n && n.he && n.en)
-    .filter(n => !n.expires_at || Date.parse(n.expires_at) > now.getTime())
+    .filter(n => isCurrentNews(n, newsUpdatedAt, now))
     .map(n => ({
       id: n.id || `news-${Math.abs(hash(n.he))}`,
       type: 'news',
@@ -137,20 +211,22 @@ function build(now) {
       team: typeof n.team === 'string' ? n.team.toUpperCase() : null,  // single-nation flag, optional
       sources: Array.isArray(n.sources) ? n.sources.filter(s => s && s.url) : [],
       expires_at: n.expires_at || null,
+      topic_date: n.topic_date || null,
+      source_checked_at: n.source_checked_at || null,
     }))
     // Defense in depth: never render a news claim that fails the source gate,
     // even if a malformed pundit-news.json slipped past the validator.
     // 'reported' => >=2 independent sources, 'confirmed' => >=1 official source.
     .filter(it => it.sources.length >= (it.confidence === 'confirmed' ? 1 : 2));
 
-  // Order: news first (most engaging), then results, fixtures, countdown.
-  const priority = { news: 0, result: 1, fixture: 2, stat: 3, countdown: 4 };
-  const merged = [...freshNews, ...items]
+  // During the tournament, facts from the match snapshot outrank editorial news.
+  const priority = { live: 0, result: 1, fixture: 2, news: 3, stat: 4, countdown: 5 };
+  const merged = [...items, ...freshNews]
     .sort((a, b) => (priority[a.type] ?? 9) - (priority[b.type] ?? 9))
     .slice(0, MAX_ITEMS);
 
-  // Fallback so the card is never empty.
-  if (merged.length === 0) {
+  // Disabled in live tournament mode: better to show nothing than stale filler.
+  if (false && merged.length === 0) {
     merged.push({
       id: 'welcome', type: 'countdown', confidence: 'confirmed', sources: [],
       he: 'ברוכים הבאים למונדיאל 2026! עקבו אחרי הפרשן לעדכונים חמים.',
@@ -167,21 +243,27 @@ function hash(s) {
 }
 
 function main() {
-  const now = new Date();
+  const now = buildNow();
   const items = build(now);
 
-  // Only-if-changed: ignore updatedAt when comparing so the CI commit (and the
-  // Vercel redeploy) only fires when the actual feed content moves.
+  // Refresh at least every few hours, even when the facts are unchanged, so the
+  // client can distinguish a current quiet feed from a stale stuck feed.
   const prev = readJson(OUT_FILE, null);
   const sig = JSON.stringify(items);
-  if (prev && JSON.stringify(prev.items || []) === sig) {
+  const prevUpdatedAt = parseTime(prev && prev.updatedAt);
+  const refreshDue = !Number.isFinite(prevUpdatedAt) || now.getTime() - prevUpdatedAt >= REFRESH_COMMIT_MS;
+  if (prev && JSON.stringify(prev.items || []) === sig && !refreshDue) {
     console.log('pundit: no change, keeping existing feed');
     return;
   }
 
-  const out = { updatedAt: now.toISOString(), count: items.length, items };
+  const out = { updatedAt: now.toISOString(), freshUntil: iso(now.getTime() + FEED_FRESH_MS), count: items.length, items };
   fs.writeFileSync(OUT_FILE, JSON.stringify(out, null, 2) + '\n');
   console.log(`pundit: wrote ${items.length} item(s) -> ${path.relative(ROOT, OUT_FILE)}`);
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = { build, isCurrentNews };

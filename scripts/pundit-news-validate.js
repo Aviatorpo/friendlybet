@@ -12,6 +12,8 @@
 //       - reported  => >= 2 INDEPENDENT sources (distinct hostnames).
 //       - confirmed => >= 1 source.
 //   * expires_at present and a valid future-ish ISO date.
+//   * topic_date/source_checked_at is recent enough for a live tournament feed.
+//   * expires_at is short-lived, so old news cannot be banked for days/weeks.
 //   * no em dash (-) anywhere in the copy (house style).
 //
 // Run:  node scripts/pundit-news-validate.js
@@ -20,6 +22,15 @@ const fs = require('fs');
 const path = require('path');
 
 const FILE = path.join(__dirname, '..', 'public-data', 'pundit-news.json');
+const HOUR_MS = 60 * 60 * 1000;
+const MAX_NEWS_AGE_MS = 30 * HOUR_MS;
+const MAX_NEWS_TTL_MS = 30 * HOUR_MS;
+
+function parseTime(value) {
+  if (!value) return NaN;
+  const ms = Date.parse(value);
+  return Number.isFinite(ms) ? ms : NaN;
+}
 
 function hostname(url) {
   try { return new URL(url).hostname.replace(/^www\./, '').toLowerCase(); } catch (_) { return null; }
@@ -35,6 +46,8 @@ function validate() {
 
   const errors = [];
   const seenIds = new Set();
+  const now = Date.now();
+  const feedUpdatedAt = parseTime(raw.updatedAt);
 
   items.forEach((it, i) => {
     const at = `item[${i}]${it && it.id ? ` (${it.id})` : ''}`;
@@ -67,6 +80,16 @@ function validate() {
 
     if (!it.expires_at || isNaN(Date.parse(it.expires_at))) {
       errors.push(`${at}: missing/invalid expires_at (ISO date)`);
+    } else {
+      const expiresAt = parseTime(it.expires_at);
+      const anchor = parseTime(it.topic_date) || parseTime(it.source_checked_at) || feedUpdatedAt;
+      if (!Number.isFinite(anchor)) {
+        errors.push(`${at}: missing topic_date/source_checked_at (or file updatedAt)`);
+      } else {
+        if (anchor - now > HOUR_MS) errors.push(`${at}: topic/source timestamp is in the future`);
+        if (now - anchor > MAX_NEWS_AGE_MS) errors.push(`${at}: topic/source timestamp is too old for the live feed`);
+        if (expiresAt - anchor > MAX_NEWS_TTL_MS) errors.push(`${at}: expires_at is too far from topic/source timestamp`);
+      }
     }
 
     // Optional: team flag. If present it must be a 3-letter WC2026 team code.
