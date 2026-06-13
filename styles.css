@@ -8077,6 +8077,7 @@ body:not(.ltr) .home-lang-toggle {
     linear-gradient(180deg, rgba(0,0,0,0.78), rgba(0,0,0,0.62));
   box-shadow: 0 12px 30px rgba(0,0,0,0.34);
   text-align: center;
+  unicode-bidi: isolate;
 }
 .wc-story-headline {
   margin: 0;
@@ -8085,6 +8086,7 @@ body:not(.ltr) .home-lang-toggle {
   font-weight: 900;
   color: #f3dca0;
   text-shadow: 0 3px 10px rgba(0,0,0,0.85);
+  unicode-bidi: plaintext;
 }
 .wc-story-caption {
   margin: 7px auto 0;
@@ -8098,6 +8100,7 @@ body:not(.ltr) .home-lang-toggle {
     2px 0 0 #050505,
     -2px 0 0 #050505,
     0 5px 14px rgba(0,0,0,0.8);
+  unicode-bidi: plaintext;
 }
 .wc-story-meta {
   position: absolute;

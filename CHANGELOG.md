@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.34** - Story Hebrew RTL/bidi fix. The Story of the World Cup card now sets explicit RTL/LTR direction on rendered story text and uses bidi isolation for headline/caption text, so Hebrew sentences with numbers and punctuation display in the correct order on-screen and in exported story images. Version/cache bumped to v2.10.34.
+
 **v2.10.33** - Story score wording fix. The USA-Paraguay story no longer uses compact RTL-sensitive `USA 4-1 Paraguay` wording that could be read as the wrong side winning; it now says clearly that USA won 4-1 in both Hebrew and English. Version/cache bumped to v2.10.33.
 
 **v2.10.32** - Pundit live-tournament freshness hardening. The dashboard Pundit no longer banks old editorial/news items for days during the live tournament. The generator now prioritizes current live/result/fixture facts from `public-data/matches.json`, filters news to short-lived same-day items only, refreshes `public-data/pundit.json` at least every few hours even when facts are quiet, and publishes `freshUntil` so the client can suppress stale feeds instead of presenting them as current. Cleared the stale banked `pundit-news.json` source file and tightened its validator to reject old/long-lived stories going forward. Version/cache bumped to v2.10.32.

@@ -2548,10 +2548,11 @@ async function renderWorldCupStories() {
     const copy = _wcStoryCopy(story);
     const caption = await _wcStoryPoolCaption(story, copy);
     const img = _wcStoryImageUrl(story.image);
+    const dir = _wcStoryLang() === 'he' ? 'rtl' : 'ltr';
     return `
-      <article class="wc-story" data-story-idx="${idx}">
+      <article class="wc-story" data-story-idx="${idx}" dir="${dir}">
         <img class="wc-story-img" src="${_wcEsc(img)}" alt="${_wcEsc(copy.headline || '')}" loading="lazy">
-        <div class="wc-story-copy">
+        <div class="wc-story-copy" dir="${dir}">
           <h3 class="wc-story-headline">${_wcEsc(copy.headline || '')}</h3>
           <div class="wc-story-caption">${_wcEsc(caption || '')}</div>
         </div>
@@ -2606,7 +2607,7 @@ function _wcWrapText(ctx, text, maxWidth) {
   return lines;
 }
 
-function _wcDrawCenteredText(ctx, text, y, maxWidth, maxSize, minSize, fill, stroke, maxLines = 3) {
+function _wcDrawCenteredText(ctx, text, y, maxWidth, maxSize, minSize, fill, stroke, maxLines = 3, dir = 'ltr') {
   let size = maxSize, lines = [];
   do {
     ctx.font = `900 ${size}px Impact, "Arial Black", Heebo, sans-serif`;
@@ -2619,6 +2620,7 @@ function _wcDrawCenteredText(ctx, text, y, maxWidth, maxSize, minSize, fill, str
   const lh = size * 1.08;
   const top = y - ((lines.length - 1) * lh) / 2;
   ctx.textAlign = 'center';
+  ctx.direction = dir;
   ctx.textBaseline = 'middle';
   ctx.lineJoin = 'round';
   ctx.strokeStyle = stroke;
@@ -2649,6 +2651,7 @@ async function _worldCupStoryBlob(story) {
   ctx.fillRect(0, 0, W, H);
   const copy = _wcStoryCopy(story);
   const caption = await _wcStoryPoolCaption(story, copy);
+  const dir = _wcStoryLang() === 'he' ? 'rtl' : 'ltr';
   ctx.save();
   ctx.fillStyle = 'rgba(0,0,0,0.68)';
   if (typeof ctx.roundRect === 'function') {
@@ -2659,8 +2662,8 @@ async function _worldCupStoryBlob(story) {
     ctx.fillRect(56, H - 445, W - 112, 260);
   }
   ctx.restore();
-  _wcDrawCenteredText(ctx, copy.headline, H - 360, W - 120, 48, 28, '#f3dca0', '#050505', 2);
-  _wcDrawCenteredText(ctx, caption, H - 245, W - 120, 54, 28, '#fff', '#050505', 4);
+  _wcDrawCenteredText(ctx, copy.headline, H - 360, W - 120, 48, 28, '#f3dca0', '#050505', 2, dir);
+  _wcDrawCenteredText(ctx, caption, H - 245, W - 120, 54, 28, '#fff', '#050505', 4, dir);
   return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
 }
 
