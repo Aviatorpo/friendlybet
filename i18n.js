@@ -1037,6 +1037,12 @@ const TRANSLATIONS = {
     'membersList.joinedDaysAgo': 'הצטרף לפני {n} ימים',
     'membersList.joinedOn': 'הצטרף ב-{date}',
     'membersList.loadError': 'שגיאה בטעינת המשתתפים',
+    'membersList.viewPicks': 'צפה בבחירות',
+    'membersList.picksNoticeTitle': 'בחירות המשתתפים',
+    'membersList.picksAfterLock': 'ניתן יהיה לצפות בבחירות של כל המשתתפים אחרי שההימורים יינעלו.',
+    'membersList.picksAfterReview': 'ניתן יהיה לצפות בבחירות של כל המשתתפים אחרי שחלון הבדיקה ייסגר: {time}.',
+    'membersList.picksTwoPhaseSoon': 'בפול דו-שלבי ניתן יהיה לצפות בבחירות כשבחירות הנוקאאוט יהיו קיימות.',
+    'membersList.picksNotSubmitted': 'לא הוגש',
 
     // === Recovery display ===
     'recoveryDisplay.title': 'קוד השחזור שלך',
@@ -2395,6 +2401,12 @@ const TRANSLATIONS = {
     'membersList.joinedDaysAgo': 'Joined {n} days ago',
     'membersList.joinedOn': 'Joined {date}',
     'membersList.loadError': 'Failed to load members',
+    'membersList.viewPicks': 'View picks',
+    'membersList.picksNoticeTitle': 'Participant picks',
+    'membersList.picksAfterLock': 'Everyone\'s picks will be available here after predictions lock.',
+    'membersList.picksAfterReview': 'Everyone\'s picks will be available after the review window closes: {time}.',
+    'membersList.picksTwoPhaseSoon': 'In two-phase pools, participant picks will be available when knockout picks exist.',
+    'membersList.picksNotSubmitted': 'Not submitted',
 
     // === Recovery display ===
     'recoveryDisplay.title': 'Your recovery code',

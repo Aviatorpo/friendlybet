@@ -3072,6 +3072,7 @@ async function showMembers() {
   // v2.5.37: also fetch knockout picks so the per-member status can reflect
   // "groups done but knockout not done" vs. "everything done".
   const isV2 = state.currentPool.betting_mode === 'single_phase';
+  const predictionAccess = await _memberPredictionAccessState(isV2);
   const picksTable = isV2 ? 'group_position_picks' : 'group_picks';
   // v2.9.24: PostgREST caps a query at 1000 rows (verified on prod — .range does
   // NOT lift it), so a big pool (e.g. 200 members ≈ 10k group-pick rows) was
@@ -3118,16 +3119,63 @@ async function showMembers() {
   // Render list
   const list = document.getElementById('members-list');
   list.innerHTML = '';
+  _renderMembersPredictionNotice(list, predictionAccess);
 
   members.forEach(member => {
     const picks = picksPerUser[member.id] || 0;
     const koPicks = koPerUser[member.id] || 0;
-    const card = createMemberCard(member, picks, koPicks, isV2);
+    const card = createMemberCard(member, picks, koPicks, isV2, predictionAccess);
     list.appendChild(card);
   });
 }
 
-function createMemberCard(member, picksCount, koPicksCount, isV2) {
+async function _memberPredictionAccessState(isV2) {
+  if (!isPoolWriteLocked()) {
+    return { mode: 'prelock', message: t('membersList.picksAfterLock') };
+  }
+  if (!isV2) {
+    return { mode: 'unsupported', message: t('membersList.picksTwoPhaseSoon') };
+  }
+  try {
+    const st = await _spFetchReopenStatus();
+    const reviewActive = !!(st && st.incident_key === 'annex_c_2026' && st.approved &&
+      st.expires_at && Date.parse(st.expires_at) > Date.now());
+    if (reviewActive) {
+      return { mode: 'review', message: t('membersList.picksAfterReview', { time: _fmtReopenExpiry(st.expires_at) }) };
+    }
+  } catch (_) {}
+  return { mode: 'open', message: '' };
+}
+
+function _renderMembersPredictionNotice(list, access) {
+  if (!list || !access || access.mode === 'open') return;
+  const notice = document.createElement('div');
+  notice.className = `members-picks-notice ${access.mode}`;
+  notice.innerHTML = `
+    <div class="members-picks-notice-icon"><i class="ti ti-eye-lock"></i></div>
+    <div>
+      <div class="members-picks-notice-title">${t('membersList.picksNoticeTitle')}</div>
+      <div class="members-picks-notice-text">${escapeHtml(access.message || '')}</div>
+    </div>
+  `;
+  list.appendChild(notice);
+}
+
+function _memberPredictionShareUrl(userId) {
+  const origin = window.location.origin || 'https://friendlybet.live';
+  const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'he');
+  const pid = state.currentPool && state.currentPool.id;
+  return `${origin}/share?u=${encodeURIComponent(userId)}&p=${encodeURIComponent(pid)}&lang=${encodeURIComponent(lang)}&utm_source=pool_members&utm_medium=app&utm_campaign=view_predictions`;
+}
+
+function _openMemberPredictionShare(userId) {
+  if (!userId || !state.currentPool || !state.currentPool.id) return;
+  const url = _memberPredictionShareUrl(userId);
+  const opened = window.open(url, '_blank', 'noopener');
+  if (!opened) window.location.href = url;
+}
+
+function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAccess = { mode: 'prelock' }) {
   const card = document.createElement('div');
   card.className = 'member-card';
 
@@ -3181,6 +3229,12 @@ function createMemberCard(member, picksCount, koPicksCount, isV2) {
 
   const safeNickname = member.nickname || t('membersList.fallbackUser');
   const safeInitial = safeNickname.charAt(0).toUpperCase();
+  const canViewPicks = predictionAccess.mode === 'open' && allDone && member.approval_status !== 'pending';
+  const picksActionHtml = predictionAccess.mode === 'open'
+    ? (canViewPicks
+      ? `<button type="button" class="member-picks-btn" data-member-id="${member.id}"><i class="ti ti-eye"></i><span>${t('membersList.viewPicks')}</span></button>`
+      : `<div class="member-picks-note">${t('membersList.picksNotSubmitted')}</div>`)
+    : '';
 
   card.innerHTML = `
     <div class="lb-avatar-small">${safeInitial}</div>
@@ -3195,8 +3249,16 @@ function createMemberCard(member, picksCount, koPicksCount, isV2) {
         <span>${statusText}</span>
       </div>
     </div>
-    <div class="member-joined">${joinedText}</div>
+    <div class="member-meta">
+      <div class="member-joined">${joinedText}</div>
+      ${picksActionHtml}
+    </div>
   `;
+  const viewBtn = card.querySelector('.member-picks-btn');
+  if (viewBtn) viewBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    _openMemberPredictionShare(member.id);
+  });
   
   return card;
 }

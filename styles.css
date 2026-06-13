@@ -3437,6 +3437,78 @@ body.ltr #next-group-btn svg {
   letter-spacing: 0.5px;
 }
 
+.member-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex: none;
+  max-width: 154px;
+}
+
+.member-picks-btn {
+  border: 1px solid rgba(217, 180, 106, 0.34);
+  background: rgba(217, 180, 106, 0.12);
+  color: #ecd49a;
+  border-radius: 8px;
+  padding: 7px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.member-picks-btn:hover {
+  background: rgba(217, 180, 106, 0.2);
+  border-color: rgba(217, 180, 106, 0.52);
+}
+
+.member-picks-note {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-align: end;
+}
+
+.members-picks-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(217, 180, 106, 0.12), rgba(255, 255, 255, 0.035));
+  border: 1px solid rgba(217, 180, 106, 0.24);
+}
+
+.members-picks-notice-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: #ecd49a;
+  background: rgba(217, 180, 106, 0.14);
+}
+
+.members-picks-notice-title {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 2px;
+}
+
+.members-picks-notice-text {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 /* ============================================================ */
 /* Recovery Display Screen                                      */
 /* ============================================================ */
