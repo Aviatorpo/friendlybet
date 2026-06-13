@@ -1,31 +1,58 @@
 {
-  "updated_at": "2026-06-12T00:00:00Z",
+  "updated_at": "2026-06-13T04:45:00Z",
   "items": [
     {
-      "id": "mex-rsa-2026-06-11",
-      "match_id": "955b83f1-0298-4bdc-88b7-03527bf314ac",
-      "image": "story-assets/mexico-wins-south-africa.png",
-      "teams": ["MEX", "RSA"],
-      "result": "MEX 2-0 RSA",
+      "id": "usa-par-2026-06-13",
+      "match_id": "b25de4f9-de9a-44a2-9bb8-c006602de455",
+      "image": "story-assets/usa-wins-paraguay.png",
+      "teams": ["USA", "PAR"],
+      "result": "USA 4-1 PAR",
       "pool_focus": {
         "table": "group_position_picks",
-        "team_code": "RSA",
-        "team_he": "דרום אפריקה",
-        "team_en": "South Africa",
+        "team_code": "PAR",
+        "team_he": "פרגוואי",
+        "team_en": "Paraguay",
         "position": 1,
-        "he_name": "{names} הלך על {team} במקום הראשון בבית וקיבל שיעור ראשון בענווה 😅",
-        "he_names": "{names} הלכו על {team} במקום הראשון בבית וקיבלו שיעור ראשון בענווה 😅",
-        "he_count": "{count} משתתפים הימרו על {team} במקום הראשון בבית וקיבלו שיעור ראשון בענווה 😅",
-        "en_names": "{names} picked {team} to finish first in the group and got an early reality check 😅",
-        "en_count": "{count} members picked {team} to finish first in the group and got an early reality check 😅"
+        "he_name": "{names} שם את {team} ראשונה בבית. ארה״ב הרגע שאלה אם זה סופי 😬",
+        "he_names": "{names} שמו את {team} ראשונה בבית. ארה״ב הרגע שאלה אם זה סופי 😬",
+        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. ארה״ב הרגע שאלה אם זה סופי 😬",
+        "en_names": "{names} had {team} first in the group. USA just made that pick feel very brave 😬",
+        "en_count": "{count} members had {team} first in the group. USA just made that pick feel very brave 😬"
       },
       "he": {
-        "headline": "מקסיקו פתחה חזק",
-        "caption": "הבחירה בדרום אפריקה במקום הראשון בבית קיבלה שיעור ראשון בענווה 😅"
+        "headline": "ארה״ב 4-1 פרגוואי",
+        "caption": "מי שבנה על פתיחה רגועה של פרגוואי קיבל 4 סיבות לחשוב שוב 😬"
       },
       "en": {
-        "headline": "Mexico started loud",
-        "caption": "Picking South Africa to finish first just got an early reality check 😅"
+        "headline": "USA 4-1 Paraguay",
+        "caption": "Anyone backing Paraguay just got four reasons to rethink the plan 😬"
+      }
+    },
+    {
+      "id": "can-bih-2026-06-12",
+      "match_id": "ab678833-83a0-4391-8d6b-bb60af5c37dd",
+      "image": "story-assets/canada-bosnia-draw.png",
+      "teams": ["CAN", "BIH"],
+      "result": "CAN 1-1 BIH",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "CAN",
+        "team_he": "קנדה",
+        "team_en": "Canada",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. תיקו בפתיחה זה לא בדיוק מצעד ניצחון 🙂",
+        "he_names": "{names} שמו את {team} ראשונה בבית. תיקו בפתיחה זה לא בדיוק מצעד ניצחון 🙂",
+        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. תיקו בפתיחה זה לא בדיוק מצעד ניצחון 🙂",
+        "en_names": "{names} had {team} first in the group. A draw is not exactly a victory parade 🙂",
+        "en_count": "{count} members had {team} first in the group. A draw is not exactly a victory parade 🙂"
+      },
+      "he": {
+        "headline": "קנדה 1-1 בוסניה",
+        "caption": "תיקו ראשון, ביטחון קצת פחות ראשון 🙂"
+      },
+      "en": {
+        "headline": "Canada 1-1 Bosnia",
+        "caption": "First draw, slightly less confidence 🙂"
       }
     },
     {
@@ -53,6 +80,33 @@
       "en": {
         "headline": "South Korea did the job",
         "caption": "Picking Czech Republic first in the group is already feeling spicy 🙃"
+      }
+    },
+    {
+      "id": "mex-rsa-2026-06-11",
+      "match_id": "955b83f1-0298-4bdc-88b7-03527bf314ac",
+      "image": "story-assets/mexico-wins-south-africa.png",
+      "teams": ["MEX", "RSA"],
+      "result": "MEX 2-0 RSA",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "RSA",
+        "team_he": "דרום אפריקה",
+        "team_en": "South Africa",
+        "position": 1,
+        "he_name": "{names} הלך על {team} במקום הראשון בבית וקיבל שיעור ראשון בענווה 😅",
+        "he_names": "{names} הלכו על {team} במקום הראשון בבית וקיבלו שיעור ראשון בענווה 😅",
+        "he_count": "{count} משתתפים הימרו על {team} במקום הראשון בבית וקיבלו שיעור ראשון בענווה 😅",
+        "en_names": "{names} picked {team} to finish first in the group and got an early reality check 😅",
+        "en_count": "{count} members picked {team} to finish first in the group and got an early reality check 😅"
+      },
+      "he": {
+        "headline": "מקסיקו פתחה חזק",
+        "caption": "הבחירה בדרום אפריקה במקום הראשון בבית קיבלה שיעור ראשון בענווה 😅"
+      },
+      "en": {
+        "headline": "Mexico started loud",
+        "caption": "Picking South Africa to finish first just got an early reality check 😅"
       }
     }
   ]
