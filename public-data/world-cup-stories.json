@@ -6,7 +6,7 @@
       "match_id": "b25de4f9-de9a-44a2-9bb8-c006602de455",
       "image": "story-assets/usa-wins-paraguay.png",
       "teams": ["USA", "PAR"],
-      "result": "USA 4-1 PAR",
+      "result": "USA won 4-1",
       "pool_focus": {
         "table": "group_position_picks",
         "team_code": "PAR",
@@ -20,11 +20,11 @@
         "en_count": "{count} members had {team} first in the group. USA just made that pick feel very brave 😬"
       },
       "he": {
-        "headline": "ארה״ב 4-1 פרגוואי",
+        "headline": "ארה״ב ניצחה 4:1",
         "caption": "מי שבנה על פתיחה רגועה של פרגוואי קיבל 4 סיבות לחשוב שוב 😬"
       },
       "en": {
-        "headline": "USA 4-1 Paraguay",
+        "headline": "USA won 4-1",
         "caption": "Anyone backing Paraguay just got four reasons to rethink the plan 😬"
       }
     },

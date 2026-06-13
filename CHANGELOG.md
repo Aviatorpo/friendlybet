@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.33** - Story score wording fix. The USA-Paraguay story no longer uses compact RTL-sensitive `USA 4-1 Paraguay` wording that could be read as the wrong side winning; it now says clearly that USA won 4-1 in both Hebrew and English. Version/cache bumped to v2.10.33.
+
 **v2.10.32** - Pundit live-tournament freshness hardening. The dashboard Pundit no longer banks old editorial/news items for days during the live tournament. The generator now prioritizes current live/result/fixture facts from `public-data/matches.json`, filters news to short-lived same-day items only, refreshes `public-data/pundit.json` at least every few hours even when facts are quiet, and publishes `freshUntil` so the client can suppress stale feeds instead of presenting them as current. Cleared the stale banked `pundit-news.json` source file and tightened its validator to reject old/long-lived stories going forward. Version/cache bumped to v2.10.32.
 
 **v2.10.31** - Added two more Story of the World Cup cards for finished matches. The dashboard story carousel now includes Canada 1-1 Bosnia and Herzegovina plus USA 4-1 Paraguay, using the pre-generated FriendlyBet story images and pool-aware captions tied to members who picked Canada or Paraguay first in their group. Version/cache bumped to v2.10.31.
