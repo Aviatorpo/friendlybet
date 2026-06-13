@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-06-13T16:22:02.763Z",
-  "freshUntil": "2026-06-13T22:22:02.763Z",
-  "count": 7,
+  "updatedAt": "2026-06-13T20:21:44.602Z",
+  "freshUntil": "2026-06-14T02:21:44.602Z",
+  "count": 8,
   "items": [
+    {
+      "id": "live-4efafba8-c6a0-41ef-8957-c2cbb3aa19a1",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "קטאר נגד שווייץ משוחק עכשיו. התוצאה הרשמית תתעדכן בסיום המשחק.",
+      "en": "Qatar vs Switzerland is live now. The official score will update after full-time.",
+      "sources": [],
+      "expires_at": "2026-06-13T23:21:44.602Z"
+    },
     {
       "id": "result-b25de4f9-de9a-44a2-9bb8-c006602de455",
       "type": "result",
@@ -20,15 +29,6 @@
       "en": "Canada 1-1 Bosnia-Herzegovina.",
       "sources": [],
       "expires_at": "2026-06-14T01:00:00.000Z"
-    },
-    {
-      "id": "fixture-4efafba8-c6a0-41ef-8957-c2cbb3aa19a1",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "קטאר נגד שווייץ, היום 22:00.",
-      "en": "Qatar vs Switzerland, today 22:00.",
-      "sources": [],
-      "expires_at": "2026-06-13T19:00:00.000Z"
     },
     {
       "id": "fixture-af81fe37-fc83-4696-b013-7a780fe10477",
@@ -65,6 +65,15 @@
       "en": "Germany vs Curaçao, tomorrow 20:00.",
       "sources": [],
       "expires_at": "2026-06-14T17:00:00.000Z"
+    },
+    {
+      "id": "fixture-1df38ad2-68c6-4a4a-849b-57df76d4d502",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "הולנד נגד יפן, מחר 23:00.",
+      "en": "Netherlands vs Japan, tomorrow 23:00.",
+      "sources": [],
+      "expires_at": "2026-06-14T20:00:00.000Z"
     }
   ]
 }
