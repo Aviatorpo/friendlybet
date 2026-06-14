@@ -5,6 +5,7 @@
     "537328",
     "537333",
     "537334",
+    "537339",
     "537345"
   ],
   "backups": [
@@ -126,7 +127,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-14T00:18:48.538Z",
+      "file": "private-backups/2026-06-14T00-18-48-538Z__537339-BRA-MAR.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537339"
+      ],
+      "tableCounts": {
+        "pools": 1797,
+        "users": 5933,
+        "group_picks": 20950,
+        "knockout_picks": 90252,
+        "group_position_picks": 166557,
+        "tournament_winner_picks": 3213,
+        "top_scorer_picks": 2813,
+        "sp_third_place_picks": 27785,
+        "pick_backups": 44139,
+        "knockout_reopen_grants": 1678,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-13T22:03:05.112Z"
+  "updatedAt": "2026-06-14T00:18:48.538Z"
 }
