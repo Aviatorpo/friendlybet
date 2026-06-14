@@ -9,7 +9,8 @@
     "537340",
     "537345",
     "537346",
-    "537351"
+    "537351",
+    "537357"
   ],
   "backups": [
     {
@@ -226,7 +227,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-14T23:23:12.994Z",
+      "file": "private-backups/2026-06-14T23-23-12-994Z__537357-NED-JPN.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537357"
+      ],
+      "tableCounts": {
+        "pools": 1845,
+        "users": 6013,
+        "group_picks": 21556,
+        "knockout_picks": 91467,
+        "group_position_picks": 168641,
+        "tournament_winner_picks": 3247,
+        "top_scorer_picks": 2839,
+        "sp_third_place_picks": 28119,
+        "pick_backups": 44884,
+        "knockout_reopen_grants": 1678,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-14T19:53:48.320Z"
+  "updatedAt": "2026-06-14T23:23:12.994Z"
 }
