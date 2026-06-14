@@ -8142,8 +8142,9 @@ body:not(.ltr) .home-lang-toggle {
   position: absolute;
   z-index: 2;
   inset-inline: 13px;
-  bottom: 70px;
-  padding: 11px 10px 12px;
+  top: 53.5%;
+  bottom: auto;
+  padding: 10px 10px 11px;
   border-radius: 13px;
   background:
     linear-gradient(180deg, rgba(0,0,0,0.78), rgba(0,0,0,0.62));
@@ -8153,7 +8154,7 @@ body:not(.ltr) .home-lang-toggle {
 }
 .wc-story-headline {
   margin: 0;
-  font-size: clamp(15px, 4.4vw, 20px);
+  font-size: clamp(13px, 3.7vw, 18px);
   line-height: 1.02;
   font-weight: 900;
   color: #f3dca0;
@@ -8161,10 +8162,10 @@ body:not(.ltr) .home-lang-toggle {
   unicode-bidi: plaintext;
 }
 .wc-story-caption {
-  margin: 7px auto 0;
+  margin: 6px auto 0;
   padding: 0;
   color: #fff;
-  font-size: 12.5px;
+  font-size: 12px;
   line-height: 1.25;
   font-weight: 800;
   text-shadow:

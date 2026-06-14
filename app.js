@@ -2633,6 +2633,19 @@ function _wcDrawCenteredText(ctx, text, y, maxWidth, maxSize, minSize, fill, str
   });
 }
 
+function _wcDrawPanel(ctx, x, y, w, h, r, fill) {
+  ctx.save();
+  ctx.fillStyle = fill;
+  if (typeof ctx.roundRect === 'function') {
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, r);
+    ctx.fill();
+  } else {
+    ctx.fillRect(x, y, w, h);
+  }
+  ctx.restore();
+}
+
 async function _worldCupStoryBlob(story) {
   const W = 1080, H = 1920;
   const canvas = document.createElement('canvas');
@@ -2652,18 +2665,12 @@ async function _worldCupStoryBlob(story) {
   const copy = _wcStoryCopy(story);
   const caption = await _wcStoryPoolCaption(story, copy);
   const dir = _wcStoryLang() === 'he' ? 'rtl' : 'ltr';
-  ctx.save();
-  ctx.fillStyle = 'rgba(0,0,0,0.68)';
-  if (typeof ctx.roundRect === 'function') {
-    ctx.beginPath();
-    ctx.roundRect(56, H - 445, W - 112, 260, 34);
-    ctx.fill();
-  } else {
-    ctx.fillRect(56, H - 445, W - 112, 260);
-  }
-  ctx.restore();
-  _wcDrawCenteredText(ctx, copy.headline, H - 360, W - 120, 48, 28, '#f3dca0', '#050505', 2, dir);
-  _wcDrawCenteredText(ctx, caption, H - 245, W - 120, 54, 28, '#fff', '#050505', 4, dir);
+  // WhatsApp previews crop the bottom of portrait images aggressively. Keep both
+  // the result title and the pool banter in a middle-safe zone, away from faces.
+  _wcDrawPanel(ctx, 108, H * 0.238, W - 216, 90, 24, 'rgba(0,0,0,0.76)');
+  _wcDrawCenteredText(ctx, copy.headline, H * 0.238 + 45, W - 260, 46, 26, '#f3dca0', '#050505', 2, dir);
+  _wcDrawPanel(ctx, 70, H * 0.535, W - 140, 245, 34, 'rgba(0,0,0,0.72)');
+  _wcDrawCenteredText(ctx, caption, H * 0.535 + 122, W - 190, 52, 28, '#fff', '#050505', 4, dir);
   return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
 }
 

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-14T09:33:56.696Z",
+  "updated_at": "2026-06-14T09:53:45.537Z",
   "items": [
     {
       "id": "qat-sui-2026-06-13",
@@ -19,7 +19,7 @@
         "position": 1,
         "he_name": "{names} שם את {team} ראשונה בבית. קטר עצרה אותה ב-1-1, וההימור הזה כבר מזיע 😅🍿",
         "he_names": "{names} שמו את {team} ראשונה בבית. קטר עצרה אותה ב-1-1, וההימור הזה כבר מזיע 😅🍿",
-        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. אחרי ה-1-1 מול קטר, החבורה התחילה להתחמם מוקדם 👀🔥",
+        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. אחרי ה-1-1 מול קטר, ההימורים כבר התחילו להזיע 👀🔥",
         "en_name": "{names} picked {team} to top the group. Qatar held them to 1-1, and that pick is already sweating 😅🍿",
         "en_names": "{names} picked {team} to top the group. Qatar held them to 1-1, and that pick is already sweating 😅🍿",
         "en_count": "{count} members picked {team} to top the group. After the 1-1 with Qatar, the table got spicy early 👀🔥"
