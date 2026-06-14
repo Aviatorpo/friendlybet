@@ -6,7 +6,9 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
-**v2.10.42** - Fixed Story of the World Cup text composition: removed the redundant yellow result headline when the baked white artwork already carries the score, aligned RTL story captions to the right in both dashboard cards and exported share images, and moved the remaining caption panel below the player-head safe zone with regression checks to prevent future overlays on faces. Version/cache bumped to v2.10.42.
+**v2.10.43** - Raised the Story of the World Cup caption panel into a WhatsApp-preview-safe lower-middle band while keeping it below player faces, and added a repo-local `friendlybet-world-cup-story-images` Codex skill documenting the reusable story-art concept, real shirt-number rules, RTL/LTR overlay rules, and visual validation checklist. Version/cache bumped to v2.10.43.
+
+**v2.10.42** - Fixed Story of the World Cup text composition: removed the redundant yellow result headline when the baked white artwork already carries the score, aligned RTL story captions to the right in both dashboard cards and exported share images, and moved the remaining caption panel into a WhatsApp-safe lower-middle band below the player-head safe zone with regression checks to prevent future overlays on faces. Version/cache bumped to v2.10.42.
 
 **v2.10.41** - Rebuilt the latest Story of the World Cup assets in the approved premium meme-card style: compact baked white titles, higher player composition, and real shirt numbers printed into the kits for the visible players. Removed the duplicate runtime top-title overlay from dashboard and exported story images so Hebrew/English result and caption panels remain the only app-rendered story text. Version/cache bumped to v2.10.41.
 

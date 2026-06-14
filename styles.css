@@ -8149,7 +8149,7 @@ body:not(.ltr) .home-lang-toggle {
 }
 .wc-story-caption-panel {
   inset-inline: 13px;
-  top: 69.5%;
+  top: 62%;
   min-height: 14.5%;
   display: flex;
   align-items: center;

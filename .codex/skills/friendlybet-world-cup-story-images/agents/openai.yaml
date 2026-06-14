@@ -1,0 +1,4 @@
+interface:
+  display_name: "FriendlyBet WC Story Images"
+  short_description: "Create FriendlyBet World Cup story art with safe text, RTL/LTR overlays, and real shirt numbers."
+  default_prompt: "Create or refresh FriendlyBet Story of the World Cup images using the approved meme-card concept, verified shirt numbers, and safe caption overlays."

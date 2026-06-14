@@ -2460,7 +2460,7 @@ function _wcStoryCopy(story) {
 }
 
 const _WC_STORY_LAYOUT = {
-  captionY: 0.695
+  captionY: 0.62
 };
 
 function _wcFillTemplate(template, vars) {

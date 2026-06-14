@@ -56,7 +56,7 @@ for (const story of stories) {
 const visualChecks = [
   [appJs.includes('const _WC_STORY_LAYOUT'), 'app.js must define shared story layout constants'],
   [!appJs.includes('headlineY:'), 'share renderer must not add a duplicate result headline panel'],
-  [appJs.includes('captionY: 0.695'), 'share renderer caption must stay below the player-head safe zone'],
+  [appJs.includes('captionY: 0.62'), 'share renderer caption must stay in the WhatsApp-safe lower-middle band'],
   [appJs.includes('class="wc-story-caption-text"'), 'dashboard story must wrap caption text for reliable alignment'],
   [!appJs.includes('class="wc-story-headline-panel"'), 'dashboard story must not render a duplicate result headline panel'],
   [appJs.includes('class="wc-story-caption-panel"'), 'dashboard story must render a separate caption panel'],
@@ -68,7 +68,7 @@ const visualChecks = [
   [!stylesCss.includes('.wc-story-headline-panel'), 'CSS must not style a duplicate result headline panel'],
   [!stylesCss.includes('.wc-story-copy') && !stylesCss.includes('.wc-story-headline'), 'CSS must not keep old mid-face story copy classes'],
   [stylesCss.includes('.wc-story-caption-panel'), 'CSS must style the separate caption panel'],
-  [stylesCss.includes('top: 69.5%'), 'dashboard caption panel must stay below the player-head safe zone'],
+  [stylesCss.includes('top: 62%'), 'dashboard caption panel must stay in the WhatsApp-safe lower-middle band'],
   [!stylesCss.includes('.wc-story-top-label'), 'CSS must not add a duplicate top meme label'],
   [stylesCss.includes('.wc-story-caption-panel[dir="rtl"]') && stylesCss.includes('text-align: right'), 'Hebrew dashboard text must align right'],
   [stylesCss.includes('.wc-story-caption-panel[dir="ltr"]') && stylesCss.includes('text-align: left'), 'English dashboard text must align left'],
