@@ -82,13 +82,21 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/generate-banter.js
 
+      - name: Generate World Cup stories
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_IMAGE_MODEL: ${{ vars.OPENAI_IMAGE_MODEL || 'gpt-image-1' }}
+          OPENAI_IMAGE_SIZE: ${{ vars.OPENAI_IMAGE_SIZE || '1024x1536' }}
+        run: node scripts/generate-world-cup-stories.js
+
       - name: Commit snapshots if changed
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
-          if [ -n "$(git status --porcelain public-data private-backups)" ]; then
-            git add public-data private-backups
-            git commit -q -m "data: refresh CDN snapshots / critical backup"
+          if [ -n "$(git status --porcelain public-data private-backups story-assets)" ]; then
+            git add public-data private-backups story-assets
+            git commit -q -m "data: refresh CDN snapshots / stories / critical backup"
             pushed=0
             for a in 1 2 3; do
               if git pull --rebase --autostash && git push; then pushed=1; break; fi

@@ -1,6 +1,102 @@
 {
-  "updated_at": "2026-06-14T09:53:45.537Z",
+  "updated_at": "2026-06-14T10:44:49.847Z",
   "items": [
+    {
+      "id": "aus-tur-2026-06-14",
+      "match_id": "57df958d-3c1b-40cc-be35-281c9a3e61f4",
+      "image": "story-assets/australia-wins-turkey.png",
+      "teams": [
+        "AUS",
+        "TUR"
+      ],
+      "outcome": "AUS",
+      "result": "AUS 2-0 TUR",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "TUR",
+        "team_he": "טורקיה",
+        "team_en": "Turkey",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 2-0, ההימור הזה כבר מבקש VAR 😅🔥",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 2-0, ההימור הזה כבר מבקש VAR 😅🔥",
+        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. אחרי 2-0, ההימור הזה כבר מבקש VAR 😅🔥",
+        "en_name": "{names} picked {team} to top the group. After 2-0, that pick is already asking for VAR 😅🔥",
+        "en_names": "{names} picked {team} to top the group. After 2-0, that pick is already asking for VAR 😅🔥",
+        "en_count": "{count} members picked {team} to top the group. After 2-0, that pick is already asking for VAR 😅🔥"
+      },
+      "he": {
+        "headline": "אוסטרליה-טורקיה 2-0: הצהרה!",
+        "caption": "אוסטרליה עושה רעש עם 2-0. מי שבנה על טורקיה קיבל תזכורת קטנה שהטבלה לא עושה הנחות 😅🔥"
+      },
+      "en": {
+        "headline": "Australia-Turkey 2-0: Statement made!",
+        "caption": "Australia makes noise with 2-0. Anyone banking on Turkey just got a small reminder that the table has no mercy 😅🔥"
+      }
+    },
+    {
+      "id": "hai-sco-2026-06-14",
+      "match_id": "b7aa07bc-c126-421e-b0d3-e0c5b96420bc",
+      "image": "story-assets/scotland-wins-haiti.png",
+      "teams": [
+        "HAI",
+        "SCO"
+      ],
+      "outcome": "SCO",
+      "result": "HAI 0-1 SCO",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "HAI",
+        "team_he": "האיטי",
+        "team_en": "Haiti",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 0-1, ההימור הזה כבר מבקש VAR 😅🔥",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 0-1, ההימור הזה כבר מבקש VAR 😅🔥",
+        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. אחרי 0-1, ההימור הזה כבר מבקש VAR 😅🔥",
+        "en_name": "{names} picked {team} to top the group. After 0-1, that pick is already asking for VAR 😅🔥",
+        "en_names": "{names} picked {team} to top the group. After 0-1, that pick is already asking for VAR 😅🔥",
+        "en_count": "{count} members picked {team} to top the group. After 0-1, that pick is already asking for VAR 😅🔥"
+      },
+      "he": {
+        "headline": "סקוטלנד-האיטי 0-1: הצהרה!",
+        "caption": "סקוטלנד עושה רעש עם 0-1. מי שבנה על האיטי קיבל תזכורת קטנה שהטבלה לא עושה הנחות 😅🔥"
+      },
+      "en": {
+        "headline": "Scotland-Haiti 0-1: Statement made!",
+        "caption": "Scotland makes noise with 0-1. Anyone banking on Haiti just got a small reminder that the table has no mercy 😅🔥"
+      }
+    },
+    {
+      "id": "bra-mar-2026-06-13",
+      "match_id": "af81fe37-fc83-4696-b013-7a780fe10477",
+      "image": "story-assets/brazil-morocco-draw.png",
+      "teams": [
+        "BRA",
+        "MAR"
+      ],
+      "outcome": "DRAW",
+      "result": "BRA 1-1 MAR",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "BRA",
+        "team_he": "ברזיל",
+        "team_en": "Brazil",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 1-1, זה כבר פחות טיול ויותר רכבת הרים 🎢😅",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 1-1, זה כבר פחות טיול ויותר רכבת הרים 🎢😅",
+        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. אחרי 1-1, זה כבר פחות טיול ויותר רכבת הרים 🎢😅",
+        "en_name": "{names} picked {team} to top the group. After 1-1, this is less a stroll and more a rollercoaster 🎢😅",
+        "en_names": "{names} picked {team} to top the group. After 1-1, this is less a stroll and more a rollercoaster 🎢😅",
+        "en_count": "{count} members picked {team} to top the group. After 1-1, this is less a stroll and more a rollercoaster 🎢😅"
+      },
+      "he": {
+        "headline": "ברזיל-מרוקו 1-1: דרמה בלי הכרעה",
+        "caption": "ברזיל ומרוקו משאירות את הבית פתוח. מי שבנה על ברזיל לטיול קל כבר מרגיש את הדופק עולה 👀🎢"
+      },
+      "en": {
+        "headline": "Brazil-Morocco 1-1: No winner, all drama",
+        "caption": "Brazil and Morocco leave the group wide open. Anyone banking on Brazil just felt the pulse jump 👀🎢"
+      }
+    },
     {
       "id": "qat-sui-2026-06-13",
       "match_id": "4efafba8-c6a0-41ef-8957-c2cbb3aa19a1",
@@ -17,20 +113,20 @@
         "team_he": "שווייץ",
         "team_en": "Switzerland",
         "position": 1,
-        "he_name": "{names} שם את {team} ראשונה בבית. קטר עצרה אותה ב-1-1, וההימור הזה כבר מזיע 😅🍿",
-        "he_names": "{names} שמו את {team} ראשונה בבית. קטר עצרה אותה ב-1-1, וההימור הזה כבר מזיע 😅🍿",
-        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. אחרי ה-1-1 מול קטר, ההימורים כבר התחילו להזיע 👀🔥",
-        "en_name": "{names} picked {team} to top the group. Qatar held them to 1-1, and that pick is already sweating 😅🍿",
-        "en_names": "{names} picked {team} to top the group. Qatar held them to 1-1, and that pick is already sweating 😅🍿",
-        "en_count": "{count} members picked {team} to top the group. After the 1-1 with Qatar, the table got spicy early 👀🔥"
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 1-1, זה כבר פחות טיול ויותר רכבת הרים 🎢😅",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 1-1, זה כבר פחות טיול ויותר רכבת הרים 🎢😅",
+        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. אחרי 1-1, זה כבר פחות טיול ויותר רכבת הרים 🎢😅",
+        "en_name": "{names} picked {team} to top the group. After 1-1, this is less a stroll and more a rollercoaster 🎢😅",
+        "en_names": "{names} picked {team} to top the group. After 1-1, this is less a stroll and more a rollercoaster 🎢😅",
+        "en_count": "{count} members picked {team} to top the group. After 1-1, this is less a stroll and more a rollercoaster 🎢😅"
       },
       "he": {
-        "headline": "קטר ושווייץ נפרדות ב-1-1",
-        "caption": "קטר ושווייץ משאירות את הבית פתוח. מי שבנה על שווייץ בטיול קל כבר קיבל תזכורת קטנה 😅🍿"
+        "headline": "קטאר-שווייץ 1-1: דרמה בלי הכרעה",
+        "caption": "קטאר ושווייץ משאירות את הבית פתוח. מי שבנה על שווייץ לטיול קל כבר מרגיש את הדופק עולה 👀🎢"
       },
       "en": {
-        "headline": "Qatar and Switzerland draw 1-1",
-        "caption": "Qatar and Switzerland leave the group wide open. Anyone expecting a Swiss stroll just got a reminder 😅🍿"
+        "headline": "Qatar-Switzerland 1-1: No winner, all drama",
+        "caption": "Qatar and Switzerland leave the group wide open. Anyone banking on Switzerland just felt the pulse jump 👀🎢"
       }
     },
     {
@@ -41,116 +137,28 @@
         "USA",
         "PAR"
       ],
-      "result": "USA won 4-1",
+      "outcome": "USA",
+      "result": "USA 4-1 PAR",
       "pool_focus": {
         "table": "group_position_picks",
         "team_code": "PAR",
         "team_he": "פרגוואי",
         "team_en": "Paraguay",
         "position": 1,
-        "he_name": "{names} שם את {team} ראשונה בבית. ארה״ב הרגע שאלה אם זה סופי 😬",
-        "he_names": "{names} שמו את {team} ראשונה בבית. ארה״ב הרגע שאלה אם זה סופי 😬",
-        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. ארה״ב הרגע שאלה אם זה סופי 😬",
-        "en_names": "{names} had {team} first in the group. USA just made that pick feel very brave 😬",
-        "en_count": "{count} members had {team} first in the group. USA just made that pick feel very brave 😬"
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 4-1, ההימור הזה כבר מבקש VAR 😅🔥",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 4-1, ההימור הזה כבר מבקש VAR 😅🔥",
+        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. אחרי 4-1, ההימור הזה כבר מבקש VAR 😅🔥",
+        "en_name": "{names} picked {team} to top the group. After 4-1, that pick is already asking for VAR 😅🔥",
+        "en_names": "{names} picked {team} to top the group. After 4-1, that pick is already asking for VAR 😅🔥",
+        "en_count": "{count} members picked {team} to top the group. After 4-1, that pick is already asking for VAR 😅🔥"
       },
       "he": {
-        "headline": "ארה״ב ניצחה 4:1",
-        "caption": "מי שבנה על פתיחה רגועה של פרגוואי קיבל 4 סיבות לחשוב שוב 😬"
+        "headline": "ארה\"ב-פרגוואי 4-1: הצהרה!",
+        "caption": "ארה\"ב עושה רעש עם 4-1. מי שבנה על פרגוואי קיבל תזכורת קטנה שהטבלה לא עושה הנחות 😅🔥"
       },
       "en": {
-        "headline": "USA won 4-1",
-        "caption": "Anyone backing Paraguay just got four reasons to rethink the plan 😬"
-      }
-    },
-    {
-      "id": "can-bih-2026-06-12",
-      "match_id": "ab678833-83a0-4391-8d6b-bb60af5c37dd",
-      "image": "story-assets/canada-bosnia-draw.png",
-      "teams": [
-        "CAN",
-        "BIH"
-      ],
-      "result": "CAN 1-1 BIH",
-      "pool_focus": {
-        "table": "group_position_picks",
-        "team_code": "CAN",
-        "team_he": "קנדה",
-        "team_en": "Canada",
-        "position": 1,
-        "he_name": "{names} שם את {team} ראשונה בבית. תיקו בפתיחה זה לא בדיוק מצעד ניצחון 🙂",
-        "he_names": "{names} שמו את {team} ראשונה בבית. תיקו בפתיחה זה לא בדיוק מצעד ניצחון 🙂",
-        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. תיקו בפתיחה זה לא בדיוק מצעד ניצחון 🙂",
-        "en_names": "{names} had {team} first in the group. A draw is not exactly a victory parade 🙂",
-        "en_count": "{count} members had {team} first in the group. A draw is not exactly a victory parade 🙂"
-      },
-      "he": {
-        "headline": "קנדה 1-1 בוסניה",
-        "caption": "תיקו ראשון, ביטחון קצת פחות ראשון 🙂"
-      },
-      "en": {
-        "headline": "Canada 1-1 Bosnia",
-        "caption": "First draw, slightly less confidence 🙂"
-      }
-    },
-    {
-      "id": "kor-cze-2026-06-12",
-      "match_id": "a3f33d1c-f931-4a0e-91e3-86efaa5ce733",
-      "image": "story-assets/south-korea-wins-czech-republic.png",
-      "teams": [
-        "KOR",
-        "CZE"
-      ],
-      "result": "KOR 2-1 CZE",
-      "pool_focus": {
-        "table": "group_position_picks",
-        "team_code": "CZE",
-        "team_he": "צ׳כיה",
-        "team_en": "Czech Republic",
-        "position": 1,
-        "he_name": "{names} שם את {team} ראשונה בבית. התוכנית כרגע נראית קצת פחות מבריקה 🙃",
-        "he_names": "{names} שמו את {team} ראשונה בבית. התוכנית כרגע נראית קצת פחות מבריקה 🙃",
-        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. התוכנית כרגע נראית קצת פחות מבריקה 🙃",
-        "en_names": "{names} had {team} first in the group. The masterplan is wobbling 🙃",
-        "en_count": "{count} members had {team} first in the group. The masterplan is wobbling 🙃"
-      },
-      "he": {
-        "headline": "קוריאה הדרומית עשתה את שלה",
-        "caption": "הבחירה בצ׳כיה במקום הראשון בבית נראית עכשיו קצת פחות רגועה 🙃"
-      },
-      "en": {
-        "headline": "South Korea did the job",
-        "caption": "Picking Czech Republic first in the group is already feeling spicy 🙃"
-      }
-    },
-    {
-      "id": "mex-rsa-2026-06-11",
-      "match_id": "955b83f1-0298-4bdc-88b7-03527bf314ac",
-      "image": "story-assets/mexico-wins-south-africa.png",
-      "teams": [
-        "MEX",
-        "RSA"
-      ],
-      "result": "MEX 2-0 RSA",
-      "pool_focus": {
-        "table": "group_position_picks",
-        "team_code": "RSA",
-        "team_he": "דרום אפריקה",
-        "team_en": "South Africa",
-        "position": 1,
-        "he_name": "{names} הלך על {team} במקום הראשון בבית וקיבל שיעור ראשון בענווה 😅",
-        "he_names": "{names} הלכו על {team} במקום הראשון בבית וקיבלו שיעור ראשון בענווה 😅",
-        "he_count": "{count} משתתפים הימרו על {team} במקום הראשון בבית וקיבלו שיעור ראשון בענווה 😅",
-        "en_names": "{names} picked {team} to finish first in the group and got an early reality check 😅",
-        "en_count": "{count} members picked {team} to finish first in the group and got an early reality check 😅"
-      },
-      "he": {
-        "headline": "מקסיקו פתחה חזק",
-        "caption": "הבחירה בדרום אפריקה במקום הראשון בבית קיבלה שיעור ראשון בענווה 😅"
-      },
-      "en": {
-        "headline": "Mexico started loud",
-        "caption": "Picking South Africa to finish first just got an early reality check 😅"
+        "headline": "USA-Paraguay 4-1: Statement made!",
+        "caption": "USA makes noise with 4-1. Anyone banking on Paraguay just got a small reminder that the table has no mercy 😅🔥"
       }
     }
   ]
