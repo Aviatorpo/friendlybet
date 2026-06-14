@@ -1,11 +1,46 @@
 {
-  "updated_at": "2026-06-13T04:45:00Z",
+  "updated_at": "2026-06-14T09:33:56.696Z",
   "items": [
+    {
+      "id": "qat-sui-2026-06-13",
+      "match_id": "4efafba8-c6a0-41ef-8957-c2cbb3aa19a1",
+      "image": "story-assets/qatar-switzerland-draw-base.png",
+      "teams": [
+        "QAT",
+        "SUI"
+      ],
+      "outcome": "DRAW",
+      "result": "QAT 1-1 SUI",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "SUI",
+        "team_he": "שווייץ",
+        "team_en": "Switzerland",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. קטר עצרה אותה ב-1-1, וההימור הזה כבר מזיע 😅🍿",
+        "he_names": "{names} שמו את {team} ראשונה בבית. קטר עצרה אותה ב-1-1, וההימור הזה כבר מזיע 😅🍿",
+        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. אחרי ה-1-1 מול קטר, החבורה התחילה להתחמם מוקדם 👀🔥",
+        "en_name": "{names} picked {team} to top the group. Qatar held them to 1-1, and that pick is already sweating 😅🍿",
+        "en_names": "{names} picked {team} to top the group. Qatar held them to 1-1, and that pick is already sweating 😅🍿",
+        "en_count": "{count} members picked {team} to top the group. After the 1-1 with Qatar, the table got spicy early 👀🔥"
+      },
+      "he": {
+        "headline": "קטר ושווייץ נפרדות ב-1-1",
+        "caption": "קטר ושווייץ משאירות את הבית פתוח. מי שבנה על שווייץ בטיול קל כבר קיבל תזכורת קטנה 😅🍿"
+      },
+      "en": {
+        "headline": "Qatar and Switzerland draw 1-1",
+        "caption": "Qatar and Switzerland leave the group wide open. Anyone expecting a Swiss stroll just got a reminder 😅🍿"
+      }
+    },
     {
       "id": "usa-par-2026-06-13",
       "match_id": "b25de4f9-de9a-44a2-9bb8-c006602de455",
       "image": "story-assets/usa-wins-paraguay.png",
-      "teams": ["USA", "PAR"],
+      "teams": [
+        "USA",
+        "PAR"
+      ],
       "result": "USA won 4-1",
       "pool_focus": {
         "table": "group_position_picks",
@@ -32,7 +67,10 @@
       "id": "can-bih-2026-06-12",
       "match_id": "ab678833-83a0-4391-8d6b-bb60af5c37dd",
       "image": "story-assets/canada-bosnia-draw.png",
-      "teams": ["CAN", "BIH"],
+      "teams": [
+        "CAN",
+        "BIH"
+      ],
       "result": "CAN 1-1 BIH",
       "pool_focus": {
         "table": "group_position_picks",
@@ -59,7 +97,10 @@
       "id": "kor-cze-2026-06-12",
       "match_id": "a3f33d1c-f931-4a0e-91e3-86efaa5ce733",
       "image": "story-assets/south-korea-wins-czech-republic.png",
-      "teams": ["KOR", "CZE"],
+      "teams": [
+        "KOR",
+        "CZE"
+      ],
       "result": "KOR 2-1 CZE",
       "pool_focus": {
         "table": "group_position_picks",
@@ -86,7 +127,10 @@
       "id": "mex-rsa-2026-06-11",
       "match_id": "955b83f1-0298-4bdc-88b7-03527bf314ac",
       "image": "story-assets/mexico-wins-south-africa.png",
-      "teams": ["MEX", "RSA"],
+      "teams": [
+        "MEX",
+        "RSA"
+      ],
       "result": "MEX 2-0 RSA",
       "pool_focus": {
         "table": "group_position_picks",
