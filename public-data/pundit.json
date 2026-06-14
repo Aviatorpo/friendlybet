@@ -1,8 +1,26 @@
 {
-  "updatedAt": "2026-06-14T09:49:52.782Z",
-  "freshUntil": "2026-06-14T15:49:52.782Z",
-  "count": 6,
+  "updatedAt": "2026-06-14T12:05:00.208Z",
+  "freshUntil": "2026-06-14T18:05:00.208Z",
+  "count": 9,
   "items": [
+    {
+      "id": "result-57df958d-3c1b-40cc-be35-281c9a3e61f4",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "אוסטרליה 2:0 טורקיה.",
+      "en": "Australia 2-0 Turkey.",
+      "sources": [],
+      "expires_at": "2026-06-15T10:00:00.000Z"
+    },
+    {
+      "id": "result-b7aa07bc-c126-421e-b0d3-e0c5b96420bc",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "האיטי 0:1 סקוטלנד.",
+      "en": "Haiti 0-1 Scotland.",
+      "sources": [],
+      "expires_at": "2026-06-15T07:00:00.000Z"
+    },
     {
       "id": "result-af81fe37-fc83-4696-b013-7a780fe10477",
       "type": "result",
@@ -56,6 +74,15 @@
       "en": "Sweden vs Tunisia, tomorrow 05:00.",
       "sources": [],
       "expires_at": "2026-06-15T02:00:00.000Z"
+    },
+    {
+      "id": "fixture-ca4ce07e-2afd-4f64-a6ec-1a83c5083ccb",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "ספרד נגד כף ורדה, מחר 19:00.",
+      "en": "Spain vs Cape Verde, tomorrow 19:00.",
+      "sources": [],
+      "expires_at": "2026-06-15T16:00:00.000Z"
     }
   ]
 }
