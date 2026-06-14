@@ -55,19 +55,24 @@ for (const story of stories) {
 
 const visualChecks = [
   [appJs.includes('const _WC_STORY_LAYOUT'), 'app.js must define shared story layout constants'],
-  [appJs.includes('headlineY: 0.238'), 'share renderer headline Y must match dashboard CSS'],
-  [appJs.includes('captionY: 0.535'), 'share renderer caption Y must match dashboard CSS'],
-  [appJs.includes('class="wc-story-headline-panel"'), 'dashboard story must render a separate headline panel'],
+  [!appJs.includes('headlineY:'), 'share renderer must not add a duplicate result headline panel'],
+  [appJs.includes('captionY: 0.695'), 'share renderer caption must stay below the player-head safe zone'],
+  [appJs.includes('class="wc-story-caption-text"'), 'dashboard story must wrap caption text for reliable alignment'],
+  [!appJs.includes('class="wc-story-headline-panel"'), 'dashboard story must not render a duplicate result headline panel'],
   [appJs.includes('class="wc-story-caption-panel"'), 'dashboard story must render a separate caption panel'],
   [!appJs.includes('class="wc-story-top-label"'), 'top meme label must stay baked into the artwork only'],
-  [appJs.includes("const textAlign = dir === 'he' ? 'right' : 'left'"), 'share image must align Hebrew right and English left'],
-  [stylesCss.includes('.wc-story-headline-panel'), 'CSS must style the separate headline panel'],
+  [!appJs.includes('class="wc-story-copy"'), 'dashboard story must not render the old mid-face copy panel'],
+  [!appJs.includes('_wcDrawCenteredText(ctx, copy.headline'), 'share image must not draw a duplicate yellow result headline'],
+  [appJs.includes("const isRtl = dir === 'rtl'"), 'share image must detect RTL using the rendered dir value'],
+  [appJs.includes("const textAlign = isRtl ? 'right' : 'left'"), 'share image must align RTL right and LTR left'],
+  [!stylesCss.includes('.wc-story-headline-panel'), 'CSS must not style a duplicate result headline panel'],
+  [!stylesCss.includes('.wc-story-copy') && !stylesCss.includes('.wc-story-headline'), 'CSS must not keep old mid-face story copy classes'],
   [stylesCss.includes('.wc-story-caption-panel'), 'CSS must style the separate caption panel'],
-  [stylesCss.includes('top: 23.8%'), 'dashboard headline panel must use the shared 23.8% safe zone'],
-  [stylesCss.includes('top: 53.5%'), 'dashboard caption panel must use the shared 53.5% safe zone'],
+  [stylesCss.includes('top: 69.5%'), 'dashboard caption panel must stay below the player-head safe zone'],
   [!stylesCss.includes('.wc-story-top-label'), 'CSS must not add a duplicate top meme label'],
-  [stylesCss.includes('.wc-story-headline-panel[dir="he"]') && stylesCss.includes('text-align: right'), 'Hebrew dashboard text must align right'],
-  [stylesCss.includes('.wc-story-headline-panel[dir="ltr"]') && stylesCss.includes('text-align: left'), 'English dashboard text must align left'],
+  [stylesCss.includes('.wc-story-caption-panel[dir="rtl"]') && stylesCss.includes('text-align: right'), 'Hebrew dashboard text must align right'],
+  [stylesCss.includes('.wc-story-caption-panel[dir="ltr"]') && stylesCss.includes('text-align: left'), 'English dashboard text must align left'],
+  [!stylesCss.includes('[dir="he"]'), 'story CSS must target rtl/ltr dir values, not language codes'],
 ];
 visualChecks.forEach(([ok, message]) => { if (!ok) fail(message); });
 

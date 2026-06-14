@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.42** - Fixed Story of the World Cup text composition: removed the redundant yellow result headline when the baked white artwork already carries the score, aligned RTL story captions to the right in both dashboard cards and exported share images, and moved the remaining caption panel below the player-head safe zone with regression checks to prevent future overlays on faces. Version/cache bumped to v2.10.42.
+
 **v2.10.41** - Rebuilt the latest Story of the World Cup assets in the approved premium meme-card style: compact baked white titles, higher player composition, and real shirt numbers printed into the kits for the visible players. Removed the duplicate runtime top-title overlay from dashboard and exported story images so Hebrew/English result and caption panels remain the only app-rendered story text. Version/cache bumped to v2.10.41.
 
 **v2.10.37** - Stale match-board snapshot hardening. The dashboard/matches UI now bypasses the CDN `matches.json` snapshot whenever that snapshot still shows an old past-kickoff match as non-terminal, so final scores already written to Supabase appear even if the deploy-throttled snapshot is frozen during a busy live window. Final-result sync writers now clear `live_clock`, `live_period`, `status_detail`, and `live_source` when a match becomes final, preventing stale live minutes such as `82'` or `52'` from surviving on finished rows. Added regression coverage for final-result live-field cleanup. Version/cache bumped to v2.10.37.

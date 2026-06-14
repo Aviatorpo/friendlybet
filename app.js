@@ -2460,8 +2460,7 @@ function _wcStoryCopy(story) {
 }
 
 const _WC_STORY_LAYOUT = {
-  headlineY: 0.238,
-  captionY: 0.535
+  captionY: 0.695
 };
 
 function _wcFillTemplate(template, vars) {
@@ -2557,9 +2556,8 @@ async function renderWorldCupStories() {
     return `
       <article class="wc-story" data-story-idx="${idx}" dir="${dir}">
         <img class="wc-story-img" src="${_wcEsc(img)}" alt="${_wcEsc(copy.headline || '')}" loading="lazy">
-        <h3 class="wc-story-headline-panel" dir="${dir}">${_wcEsc(copy.headline || '')}</h3>
         <div class="wc-story-caption-panel" dir="${dir}">
-          ${_wcEsc(caption || '')}
+          <span class="wc-story-caption-text">${_wcEsc(caption || '')}</span>
         </div>
         <div class="wc-story-meta">
           <button class="wc-story-share" type="button" onclick="shareWorldCupStory(${idx})">
@@ -2671,16 +2669,11 @@ async function _worldCupStoryBlob(story) {
   const copy = _wcStoryCopy(story);
   const caption = await _wcStoryPoolCaption(story, copy);
   const dir = _wcStoryLang() === 'he' ? 'rtl' : 'ltr';
-  const textAlign = dir === 'he' ? 'right' : 'left';
-  const headlineX = dir === 'he' ? W - 130 : 130;
-  const captionX = dir === 'he' ? W - 95 : 95;
-  // WhatsApp previews crop the bottom of portrait images aggressively. Keep both
-  // the result title and the pool banter in a middle-safe zone, away from faces.
-  _wcDrawPanel(ctx, 108, H * _WC_STORY_LAYOUT.headlineY, W - 216, 90, 24, 'rgba(0,0,0,0.76)');
-  _wcDrawCenteredText(ctx, copy.headline, H * _WC_STORY_LAYOUT.headlineY + 45, W - 260, 46, 26, '#f3dca0', '#050505', 2, dir, {
-    align: textAlign,
-    x: headlineX
-  });
+  const isRtl = dir === 'rtl';
+  const textAlign = isRtl ? 'right' : 'left';
+  const captionX = isRtl ? W - 95 : 95;
+  // WhatsApp previews crop the bottom of portrait images aggressively. Keep the
+  // pool banter in a middle-safe zone, away from faces and baked result titles.
   _wcDrawPanel(ctx, 70, H * _WC_STORY_LAYOUT.captionY, W - 140, 245, 34, 'rgba(0,0,0,0.72)');
   _wcDrawCenteredText(ctx, caption, H * _WC_STORY_LAYOUT.captionY + 122, W - 190, 52, 28, '#fff', '#050505', 4, dir, {
     align: textAlign,
