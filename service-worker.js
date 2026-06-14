@@ -5,7 +5,7 @@
 // Strategy: Cache-first for assets, Network-first for API
 // ============================================================
 
-const CACHE_VERSION = 'friendlybet-v2.10.38';
+const CACHE_VERSION = 'friendlybet-v2.10.39';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 

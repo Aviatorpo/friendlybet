@@ -8138,6 +8138,27 @@ body:not(.ltr) .home-lang-toggle {
   background:
     linear-gradient(180deg, rgba(0,0,0,0.66) 0%, rgba(0,0,0,0.05) 34%, rgba(0,0,0,0.08) 62%, rgba(0,0,0,0.72) 100%);
 }
+.wc-story-top-label {
+  position: absolute;
+  z-index: 2;
+  top: 5.6%;
+  left: 8px;
+  right: 8px;
+  color: #fff;
+  font-family: Impact, "Arial Black", Heebo, sans-serif;
+  font-size: clamp(34px, 12vw, 50px);
+  line-height: 0.88;
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  text-shadow:
+    0 4px 0 #050505,
+    3px 0 0 #050505,
+    -3px 0 0 #050505,
+    0 8px 22px rgba(0,0,0,0.85);
+  pointer-events: none;
+}
 .wc-story-copy {
   position: absolute;
   z-index: 2;

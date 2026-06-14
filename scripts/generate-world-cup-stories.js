@@ -144,7 +144,19 @@ function scoreDash(match) {
   return `${Number(match.home_score)}-${Number(match.away_score)}`;
 }
 
+function scoreForOutcome(match, outcome) {
+  if (outcome === 'DRAW') return scoreDash(match);
+  const winnerScore = outcome === match.home_team_code ? Number(match.home_score) : Number(match.away_score);
+  const loserScore = outcome === match.home_team_code ? Number(match.away_score) : Number(match.home_score);
+  return `${winnerScore}-${loserScore}`;
+}
+
 function resultText(match) {
+  const outcome = outcomeFor(match);
+  if (outcome && outcome !== 'DRAW') {
+    const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
+    return `${outcome} ${scoreForOutcome(match, outcome)} ${loser}`;
+  }
   return `${match.home_team_code} ${scoreDash(match)} ${match.away_team_code}`;
 }
 
@@ -179,30 +191,35 @@ function focusTeam(match, outcome) {
 }
 
 function titleCopy(match, outcome) {
-  const score = scoreDash(match);
+  const score = scoreForOutcome(match, outcome);
   const homeHe = teamName(match.home_team_code, 'he');
   const awayHe = teamName(match.away_team_code, 'he');
   const homeEn = teamName(match.home_team_code, 'en');
   const awayEn = teamName(match.away_team_code, 'en');
   if (outcome === 'DRAW') {
     return {
-      he: `${homeHe}-${awayHe} ${score}: דרמה בלי הכרעה`,
-      en: `${homeEn}-${awayEn} ${score}: No winner, all drama`,
+      he: `${homeHe} ו${awayHe} נפרדו ב-${score}: דרמה בלי הכרעה`,
+      en: `${homeEn} and ${awayEn} draw ${score}: No winner, all drama`,
     };
   }
   const winner = outcome;
   const loser = winner === match.home_team_code ? match.away_team_code : match.home_team_code;
   return {
-    he: `${teamName(winner, 'he')}-${teamName(loser, 'he')} ${score}: הצהרה!`,
-    en: `${teamName(winner, 'en')}-${teamName(loser, 'en')} ${score}: Statement made!`,
+    he: `${teamName(winner, 'he')} ניצחה את ${teamName(loser, 'he')} ${score}: הצהרה!`,
+    en: `${teamName(winner, 'en')} beat ${teamName(loser, 'en')} ${score}: Statement made!`,
   };
+}
+
+function topLabel(match, outcome) {
+  if (outcome === 'DRAW') return 'DRAW!';
+  return `${teamName(outcome, 'en').toUpperCase()} WINS!`;
 }
 
 function poolFocus(match, outcome) {
   const focus = focusTeam(match, outcome);
   const teamHe = teamName(focus, 'he');
   const teamEn = teamName(focus, 'en');
-  const score = scoreDash(match);
+  const score = scoreForOutcome(match, outcome);
   if (outcome === 'DRAW') {
     return {
       table: 'group_position_picks',
@@ -235,7 +252,7 @@ function poolFocus(match, outcome) {
 
 function captionCopy(match, outcome) {
   const focus = focusTeam(match, outcome);
-  const score = scoreDash(match);
+  const score = scoreForOutcome(match, outcome);
   if (outcome === 'DRAW') {
     return {
       he: `${teamName(match.home_team_code, 'he')} ו${teamName(match.away_team_code, 'he')} משאירות את הבית פתוח. מי שבנה על ${teamName(focus, 'he')} לטיול קל כבר מרגיש את הדופק עולה 👀🎢`,
@@ -259,10 +276,53 @@ function buildStory(match, image, outcome) {
     teams: [match.home_team_code, match.away_team_code],
     outcome,
     result: resultText(match),
+    top_label: topLabel(match, outcome),
     pool_focus: poolFocus(match, outcome),
     he: { headline: titles.he, caption: captions.he },
     en: { headline: titles.en, caption: captions.en },
   };
+}
+
+function validateStory(story, match) {
+  const outcome = outcomeFor(match);
+  const expectedResult = resultText(match);
+  const expectedTop = topLabel(match, outcome);
+  const expectedScore = scoreForOutcome(match, outcome);
+  const errors = [];
+  if (story.result !== expectedResult) {
+    errors.push(`result must be "${expectedResult}", got "${story.result}"`);
+  }
+  if (story.outcome !== outcome) {
+    errors.push(`outcome must be "${outcome}", got "${story.outcome}"`);
+  }
+  if (story.top_label !== expectedTop) {
+    errors.push(`top_label must be "${expectedTop}", got "${story.top_label}"`);
+  }
+  if (!story.he || !String(story.he.headline || '').includes(expectedScore)) {
+    errors.push(`Hebrew headline must include winner-first score "${expectedScore}"`);
+  }
+  if (!story.en || !String(story.en.headline || '').includes(expectedScore)) {
+    errors.push(`English headline must include winner-first score "${expectedScore}"`);
+  }
+  if (outcome !== 'DRAW') {
+    const winnerHe = teamName(outcome, 'he');
+    const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
+    const loserHe = teamName(loser, 'he');
+    const heHeadline = String(story.he && story.he.headline || '');
+    const enHeadline = String(story.en && story.en.headline || '');
+    if (!heHeadline.includes('ניצחה את')) {
+      errors.push('Hebrew win headline must use an explicit verb phrase');
+    }
+    if (heHeadline.includes(`${winnerHe}-${loserHe}`) || heHeadline.includes(`${loserHe}-${winnerHe}`)) {
+      errors.push('Hebrew win headline must not use ambiguous hyphenated team order');
+    }
+    if (!enHeadline.toLowerCase().includes(' beat ')) {
+      errors.push('English win headline must say who beat whom');
+    }
+  }
+  if (errors.length) {
+    throw new Error(`Invalid story ${story.id || story.match_id}: ${errors.join('; ')}`);
+  }
 }
 
 function normalizeExistingStory(story, matchById) {
@@ -380,18 +440,23 @@ async function main() {
     existingByMatch.add(match.id);
   }
 
-  if (!additions.length) {
-    console.log('No new world cup stories to add.');
-    return;
-  }
-
   const items = additions.reverse().concat(existing).slice(0, MAX_STORIES);
+  items.forEach(story => {
+    const match = matchById.get(story.match_id);
+    if (match) validateStory(story, match);
+  });
   const next = {
-    updated_at: new Date().toISOString(),
+    updated_at: additions.length ? new Date().toISOString() : (storiesPayload.updated_at || new Date().toISOString()),
     items,
   };
-  writeJsonIfChanged(STORIES_PATH, next);
-  console.log(`Added ${additions.length} world cup stories. Feed now has ${items.length}/${MAX_STORIES}.`);
+  const changed = writeJsonIfChanged(STORIES_PATH, next);
+  if (additions.length) {
+    console.log(`Added ${additions.length} world cup stories. Feed now has ${items.length}/${MAX_STORIES}.`);
+  } else if (changed) {
+    console.log(`Normalized ${items.length} world cup stories.`);
+  } else {
+    console.log('No new world cup stories to add.');
+  }
 }
 
 main().catch(err => {

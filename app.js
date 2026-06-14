@@ -2459,6 +2459,13 @@ function _wcStoryCopy(story) {
   return story[lang] || story.he || story.en || { headline: '', caption: '' };
 }
 
+function _wcStoryTopLabel(story) {
+  if (story && story.top_label) return String(story.top_label);
+  if (story && story.outcome === 'DRAW') return 'DRAW!';
+  if (story && story.outcome) return `${String(story.outcome).toUpperCase()} WINS!`;
+  return '';
+}
+
 function _wcFillTemplate(template, vars) {
   return String(template || '').replace(/\{(\w+)\}/g, (_, key) => vars[key] == null ? '' : String(vars[key]));
 }
@@ -2549,9 +2556,11 @@ async function renderWorldCupStories() {
     const caption = await _wcStoryPoolCaption(story, copy);
     const img = _wcStoryImageUrl(story.image);
     const dir = _wcStoryLang() === 'he' ? 'rtl' : 'ltr';
+    const topLabel = _wcStoryTopLabel(story);
     return `
       <article class="wc-story" data-story-idx="${idx}" dir="${dir}">
         <img class="wc-story-img" src="${_wcEsc(img)}" alt="${_wcEsc(copy.headline || '')}" loading="lazy">
+        ${topLabel ? `<div class="wc-story-top-label">${_wcEsc(topLabel)}</div>` : ''}
         <div class="wc-story-copy" dir="${dir}">
           <h3 class="wc-story-headline">${_wcEsc(copy.headline || '')}</h3>
           <div class="wc-story-caption">${_wcEsc(caption || '')}</div>
@@ -2665,6 +2674,10 @@ async function _worldCupStoryBlob(story) {
   const copy = _wcStoryCopy(story);
   const caption = await _wcStoryPoolCaption(story, copy);
   const dir = _wcStoryLang() === 'he' ? 'rtl' : 'ltr';
+  const topLabel = _wcStoryTopLabel(story);
+  if (topLabel) {
+    _wcDrawCenteredText(ctx, topLabel, H * 0.105, W - 110, 92, 50, '#fff', '#050505', 2, 'ltr');
+  }
   // WhatsApp previews crop the bottom of portrait images aggressively. Keep both
   // the result title and the pool banter in a middle-safe zone, away from faces.
   _wcDrawPanel(ctx, 108, H * 0.238, W - 216, 90, 24, 'rgba(0,0,0,0.76)');

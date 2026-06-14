@@ -90,6 +90,9 @@ jobs:
           OPENAI_IMAGE_SIZE: ${{ vars.OPENAI_IMAGE_SIZE || '1024x1536' }}
         run: node scripts/generate-world-cup-stories.js
 
+      - name: Validate World Cup stories
+        run: node scripts/test-world-cup-stories.js
+
       - name: Commit snapshots if changed
         run: |
           git config user.name "Aviatorpo"
