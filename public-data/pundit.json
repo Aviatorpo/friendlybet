@@ -1,17 +1,8 @@
 {
-  "updatedAt": "2026-06-14T05:58:28.172Z",
-  "freshUntil": "2026-06-14T11:58:28.172Z",
-  "count": 8,
+  "updatedAt": "2026-06-14T09:49:52.782Z",
+  "freshUntil": "2026-06-14T15:49:52.782Z",
+  "count": 6,
   "items": [
-    {
-      "id": "live-57df958d-3c1b-40cc-be35-281c9a3e61f4",
-      "type": "live",
-      "confidence": "confirmed",
-      "he": "אוסטרליה נגד טורקיה משוחק עכשיו. התוצאה הרשמית תתעדכן בסיום המשחק.",
-      "en": "Australia vs Turkey is live now. The official score will update after full-time.",
-      "sources": [],
-      "expires_at": "2026-06-14T08:58:28.172Z"
-    },
     {
       "id": "result-af81fe37-fc83-4696-b013-7a780fe10477",
       "type": "result",
@@ -29,15 +20,6 @@
       "en": "Qatar 1-1 Switzerland.",
       "sources": [],
       "expires_at": "2026-06-15T01:00:00.000Z"
-    },
-    {
-      "id": "result-b25de4f9-de9a-44a2-9bb8-c006602de455",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "ארה\"ב 4:1 פרגוואי.",
-      "en": "United States 4-1 Paraguay.",
-      "sources": [],
-      "expires_at": "2026-06-14T07:00:00.000Z"
     },
     {
       "id": "fixture-32c4991c-ac27-46cc-955e-dc326093a145",
