@@ -195,10 +195,11 @@ function buildPatch(espnMatch, opts = {}) {
     patch.winner_code = espnMatch.winnerCode;
   }
   if (opts.includeLiveColumns) {
-    patch.live_clock = espnMatch.liveClock;
-    patch.live_period = espnMatch.period;
-    patch.status_detail = espnMatch.statusDetail;
-    patch.live_source = 'espn';
+    const terminal = espnMatch.status === 'FINISHED' || espnMatch.status === 'AWARDED';
+    patch.live_clock = terminal ? null : espnMatch.liveClock;
+    patch.live_period = terminal ? null : espnMatch.period;
+    patch.status_detail = terminal ? null : espnMatch.statusDetail;
+    patch.live_source = terminal ? null : 'espn';
     patch.source_updated_at = nowIso;
   }
   return patch;

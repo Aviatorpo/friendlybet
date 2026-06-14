@@ -2795,11 +2795,21 @@ function _matchIsLiveish(m, now = Date.now()) {
   const ko = Date.parse(m.match_date);
   return !isNaN(ko) && ko <= now && (now - ko) < _MAX_MATCH_MS && !_matchIsTerminalStatus(m);
 }
+function _snapshotHasPastNonTerminal(matches, now = Date.now()) {
+  return (matches || []).some(m => {
+    const elapsed = _matchElapsedMs(m, now);
+    return elapsed != null && elapsed >= _MAX_MATCH_MS && !_matchIsTerminalStatus(m);
+  });
+}
 function _snapshotStaleDuringLive(matches, maxAgeMs = 60000) {
   if (!matches || !_matchesSnapCache.updatedAt) return false;
   const now = Date.now();
   const liveish = matches.some(m => _matchIsLiveish(m, now));
   return liveish && (now - _matchesSnapCache.updatedAt) > maxAgeMs;
+}
+function _snapshotShouldReadDb(matches, maxAgeMs = 60000) {
+  if (!matches) return true;
+  return _snapshotStaleDuringLive(matches, maxAgeMs) || _snapshotHasPastNonTerminal(matches);
 }
 
 async function loadResultsData() {
@@ -8304,10 +8314,11 @@ async function loadMatches(silent = false) {
   try {
     // Pillar 1: prefer the CDN snapshot (edge) over a live DB read during spikes.
     let matches = await fetchMatchesFromCDN();
-    // ...but if the snapshot is lagging while a match is live, read live from DB
-    // so a stale CDN copy can never freeze live scores on screen.
-    if (matches && _snapshotStaleDuringLive(matches)) {
-      console.warn('match snapshot stale during live play - reading live from DB');
+    // ...but if the snapshot is lagging while a match is live OR still shows an
+    // old past-kickoff match as non-terminal, read from DB. Final-result fallback
+    // can update Postgres while the deploy-throttled CDN snapshot remains frozen.
+    if (matches && _snapshotShouldReadDb(matches)) {
+      console.warn('match snapshot stale for live/past match - reading live from DB');
       matches = null;
     }
     if (!matches) {

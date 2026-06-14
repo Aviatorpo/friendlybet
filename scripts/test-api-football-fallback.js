@@ -115,6 +115,11 @@ eq('builds final update', F.buildUpdateFromApiFixture(transformed, '2026-06-11T2
   away_score: 1,
   status: 'FINISHED',
   winner_code: null,
+  live_clock: null,
+  live_period: null,
+  status_detail: null,
+  live_source: null,
+  source_updated_at: '2026-06-11T21:00:00Z',
   last_updated: '2026-06-11T21:00:00Z'
 });
 

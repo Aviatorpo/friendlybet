@@ -79,6 +79,39 @@ eq('build patch includes live display fields', E.buildPatch(transformed, {
   source_updated_at: '2026-06-12T19:21:00.000Z'
 });
 
+const finalEvent = {
+  ...liveEvent,
+  competitions: [{
+    ...liveEvent.competitions[0],
+    status: {
+      clock: 5400,
+      displayClock: 'FT',
+      period: 2,
+      type: { name: 'STATUS_FINAL', state: 'post', completed: true, shortDetail: 'FT' }
+    },
+    competitors: [
+      { homeAway: 'home', score: '1', winner: true, team: { displayName: 'Canada', abbreviation: 'CAN' } },
+      { homeAway: 'away', score: '0', winner: false, team: { displayName: 'Bosnia-Herzegovina', abbreviation: 'BIH' } }
+    ]
+  }]
+};
+
+eq('build final patch clears live display fields', E.buildPatch(E.transformEspnEvent(finalEvent), {
+  nowIso: '2026-06-12T21:00:00.000Z',
+  includeLiveColumns: true
+}), {
+  status: 'FINISHED',
+  last_updated: '2026-06-12T21:00:00.000Z',
+  home_score: 1,
+  away_score: 0,
+  winner_code: 'CAN',
+  live_clock: null,
+  live_period: null,
+  status_detail: null,
+  live_source: null,
+  source_updated_at: '2026-06-12T21:00:00.000Z'
+});
+
 eq('fetches adjacent ESPN scoreboard dates',
   E.espnScoreboardDatesFor([{ match_date: '2026-06-13T01:00:00.000Z' }]),
   ['20260612', '20260613', '20260614']);

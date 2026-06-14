@@ -274,6 +274,11 @@ function buildUpdateFromVerifiedFixture(apiMatch, nowIso = new Date().toISOStrin
       away_score: apiMatch.awayScore,
       status: (apiMatch.statusShort === 'AWD' || apiMatch.statusShort === 'WO') ? 'AWARDED' : 'FINISHED',
       winner_code: apiMatch.winnerCode,
+      live_clock: null,
+      live_period: null,
+      status_detail: null,
+      live_source: null,
+      source_updated_at: nowIso,
       last_updated: nowIso
     },
     reason: null
