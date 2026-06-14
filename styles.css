@@ -8141,23 +8141,95 @@ body:not(.ltr) .home-lang-toggle {
 .wc-story-top-label {
   position: absolute;
   z-index: 2;
-  top: 5.6%;
-  left: 8px;
-  right: 8px;
+  top: 5.8%;
+  left: 5px;
+  right: 5px;
   color: #fff;
   font-family: Impact, "Arial Black", Heebo, sans-serif;
-  font-size: clamp(34px, 12vw, 50px);
+  font-size: clamp(35px, 12.8vw, 55px);
   line-height: 0.88;
   font-weight: 900;
+  font-style: italic;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0;
+  direction: ltr;
+  unicode-bidi: isolate;
+  transform: rotate(-4deg) skewX(-5deg);
+  transform-origin: center;
   text-shadow:
-    0 4px 0 #050505,
-    3px 0 0 #050505,
-    -3px 0 0 #050505,
+    0 5px 0 #050505,
+    4px 0 0 #050505,
+    -4px 0 0 #050505,
+    0 -3px 0 #050505,
     0 8px 22px rgba(0,0,0,0.85);
   pointer-events: none;
+}
+.wc-story-headline-panel,
+.wc-story-caption-panel {
+  position: absolute;
+  z-index: 2;
+  bottom: auto;
+  margin: 0;
+  background: rgba(0,0,0,0.74);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.34);
+  unicode-bidi: isolate;
+}
+.wc-story-headline-panel {
+  inset-inline: 25px;
+  top: 23.8%;
+  min-height: 11.4%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 10px;
+  color: #f3dca0;
+  font-size: clamp(14px, 4vw, 19px);
+  line-height: 1.08;
+  font-weight: 900;
+  text-align: center;
+  text-shadow:
+    0 2px 0 #050505,
+    0 5px 14px rgba(0,0,0,0.85);
+  unicode-bidi: plaintext;
+}
+.wc-story-headline-panel[dir="he"] {
+  text-align: right;
+  justify-content: flex-end;
+}
+.wc-story-headline-panel[dir="ltr"] {
+  text-align: left;
+  justify-content: flex-start;
+}
+.wc-story-caption-panel {
+  inset-inline: 13px;
+  top: 53.5%;
+  min-height: 14.5%;
+  display: flex;
+  align-items: center;
+  padding: 10px 10px 11px;
+  border-radius: 13px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.78), rgba(0,0,0,0.62));
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 800;
+  text-align: center;
+  text-shadow:
+    0 2px 0 #050505,
+    2px 0 0 #050505,
+    -2px 0 0 #050505,
+    0 5px 14px rgba(0,0,0,0.8);
+  unicode-bidi: plaintext;
+}
+.wc-story-caption-panel[dir="he"] {
+  text-align: right;
+  justify-content: flex-end;
+}
+.wc-story-caption-panel[dir="ltr"] {
+  text-align: left;
+  justify-content: flex-start;
 }
 .wc-story-copy {
   position: absolute;

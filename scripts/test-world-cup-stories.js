@@ -6,6 +6,8 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const stories = JSON.parse(fs.readFileSync(path.join(root, 'public-data', 'world-cup-stories.json'), 'utf8')).items || [];
 const matches = JSON.parse(fs.readFileSync(path.join(root, 'public-data', 'matches.json'), 'utf8')).matches || [];
+const appJs = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+const stylesCss = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 const byId = new Map(matches.map(match => [match.id, match]));
 
 function fail(message) {
@@ -50,6 +52,25 @@ for (const story of stories) {
     }
   }
 }
+
+const visualChecks = [
+  [appJs.includes('const _WC_STORY_LAYOUT'), 'app.js must define shared story layout constants'],
+  [appJs.includes('topLabelY: 0.108'), 'share renderer top label Y must match dashboard CSS'],
+  [appJs.includes('headlineY: 0.238'), 'share renderer headline Y must match dashboard CSS'],
+  [appJs.includes('captionY: 0.535'), 'share renderer caption Y must match dashboard CSS'],
+  [appJs.includes('class="wc-story-headline-panel"'), 'dashboard story must render a separate headline panel'],
+  [appJs.includes('class="wc-story-caption-panel"'), 'dashboard story must render a separate caption panel'],
+  [appJs.includes('class="wc-story-top-label" dir="ltr"'), 'top meme label must force LTR punctuation'],
+  [appJs.includes("const textAlign = dir === 'he' ? 'right' : 'left'"), 'share image must align Hebrew right and English left'],
+  [stylesCss.includes('.wc-story-headline-panel'), 'CSS must style the separate headline panel'],
+  [stylesCss.includes('.wc-story-caption-panel'), 'CSS must style the separate caption panel'],
+  [stylesCss.includes('top: 23.8%'), 'dashboard headline panel must use the shared 23.8% safe zone'],
+  [stylesCss.includes('top: 53.5%'), 'dashboard caption panel must use the shared 53.5% safe zone'],
+  [stylesCss.includes('transform: rotate(-4deg) skewX(-5deg)'), 'top meme label must keep the slanted meme style'],
+  [stylesCss.includes('.wc-story-headline-panel[dir="he"]') && stylesCss.includes('text-align: right'), 'Hebrew dashboard text must align right'],
+  [stylesCss.includes('.wc-story-headline-panel[dir="ltr"]') && stylesCss.includes('text-align: left'), 'English dashboard text must align left'],
+];
+visualChecks.forEach(([ok, message]) => { if (!ok) fail(message); });
 
 if (process.exitCode) process.exit(process.exitCode);
 console.log(`world cup stories validated: ${stories.length}`);

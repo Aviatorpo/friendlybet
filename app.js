@@ -2466,6 +2466,12 @@ function _wcStoryTopLabel(story) {
   return '';
 }
 
+const _WC_STORY_LAYOUT = {
+  topLabelY: 0.108,
+  headlineY: 0.238,
+  captionY: 0.535
+};
+
 function _wcFillTemplate(template, vars) {
   return String(template || '').replace(/\{(\w+)\}/g, (_, key) => vars[key] == null ? '' : String(vars[key]));
 }
@@ -2560,10 +2566,10 @@ async function renderWorldCupStories() {
     return `
       <article class="wc-story" data-story-idx="${idx}" dir="${dir}">
         <img class="wc-story-img" src="${_wcEsc(img)}" alt="${_wcEsc(copy.headline || '')}" loading="lazy">
-        ${topLabel ? `<div class="wc-story-top-label">${_wcEsc(topLabel)}</div>` : ''}
-        <div class="wc-story-copy" dir="${dir}">
-          <h3 class="wc-story-headline">${_wcEsc(copy.headline || '')}</h3>
-          <div class="wc-story-caption">${_wcEsc(caption || '')}</div>
+        ${topLabel ? `<div class="wc-story-top-label" dir="ltr">${_wcEsc(topLabel)}</div>` : ''}
+        <h3 class="wc-story-headline-panel" dir="${dir}">${_wcEsc(copy.headline || '')}</h3>
+        <div class="wc-story-caption-panel" dir="${dir}">
+          ${_wcEsc(caption || '')}
         </div>
         <div class="wc-story-meta">
           <button class="wc-story-share" type="button" onclick="shareWorldCupStory(${idx})">
@@ -2616,10 +2622,10 @@ function _wcWrapText(ctx, text, maxWidth) {
   return lines;
 }
 
-function _wcDrawCenteredText(ctx, text, y, maxWidth, maxSize, minSize, fill, stroke, maxLines = 3, dir = 'ltr') {
+function _wcDrawCenteredText(ctx, text, y, maxWidth, maxSize, minSize, fill, stroke, maxLines = 3, dir = 'ltr', opts = {}) {
   let size = maxSize, lines = [];
   do {
-    ctx.font = `900 ${size}px Impact, "Arial Black", Heebo, sans-serif`;
+    ctx.font = `${opts.italic ? 'italic ' : ''}900 ${size}px Impact, "Arial Black", Heebo, sans-serif`;
     lines = _wcWrapText(ctx, text, maxWidth);
     const widest = Math.max(0, ...lines.map(l => ctx.measureText(l).width));
     if (lines.length <= maxLines && widest <= maxWidth) break;
@@ -2628,17 +2634,18 @@ function _wcDrawCenteredText(ctx, text, y, maxWidth, maxSize, minSize, fill, str
   lines = lines.slice(0, maxLines);
   const lh = size * 1.08;
   const top = y - ((lines.length - 1) * lh) / 2;
-  ctx.textAlign = 'center';
+  ctx.textAlign = opts.align || 'center';
   ctx.direction = dir;
   ctx.textBaseline = 'middle';
   ctx.lineJoin = 'round';
   ctx.strokeStyle = stroke;
   ctx.fillStyle = fill;
-  ctx.lineWidth = Math.max(7, size * 0.12);
+  ctx.lineWidth = opts.lineWidth || Math.max(7, size * 0.12);
+  const x = opts.x == null ? ctx.canvas.width / 2 : opts.x;
   lines.forEach((line, i) => {
     const yy = top + i * lh;
-    ctx.strokeText(line, ctx.canvas.width / 2, yy);
-    ctx.fillText(line, ctx.canvas.width / 2, yy);
+    ctx.strokeText(line, x, yy);
+    ctx.fillText(line, x, yy);
   });
 }
 
@@ -2676,14 +2683,30 @@ async function _worldCupStoryBlob(story) {
   const dir = _wcStoryLang() === 'he' ? 'rtl' : 'ltr';
   const topLabel = _wcStoryTopLabel(story);
   if (topLabel) {
-    _wcDrawCenteredText(ctx, topLabel, H * 0.105, W - 110, 92, 50, '#fff', '#050505', 2, 'ltr');
+    ctx.save();
+    ctx.translate(W / 2, H * _WC_STORY_LAYOUT.topLabelY);
+    ctx.rotate(-4 * Math.PI / 180);
+    _wcDrawCenteredText(ctx, topLabel, 0, W - 90, 102, 54, '#fff', '#050505', 2, 'ltr', {
+      italic: true,
+      lineWidth: 14
+    });
+    ctx.restore();
   }
+  const textAlign = dir === 'he' ? 'right' : 'left';
+  const headlineX = dir === 'he' ? W - 130 : 130;
+  const captionX = dir === 'he' ? W - 95 : 95;
   // WhatsApp previews crop the bottom of portrait images aggressively. Keep both
   // the result title and the pool banter in a middle-safe zone, away from faces.
-  _wcDrawPanel(ctx, 108, H * 0.238, W - 216, 90, 24, 'rgba(0,0,0,0.76)');
-  _wcDrawCenteredText(ctx, copy.headline, H * 0.238 + 45, W - 260, 46, 26, '#f3dca0', '#050505', 2, dir);
-  _wcDrawPanel(ctx, 70, H * 0.535, W - 140, 245, 34, 'rgba(0,0,0,0.72)');
-  _wcDrawCenteredText(ctx, caption, H * 0.535 + 122, W - 190, 52, 28, '#fff', '#050505', 4, dir);
+  _wcDrawPanel(ctx, 108, H * _WC_STORY_LAYOUT.headlineY, W - 216, 90, 24, 'rgba(0,0,0,0.76)');
+  _wcDrawCenteredText(ctx, copy.headline, H * _WC_STORY_LAYOUT.headlineY + 45, W - 260, 46, 26, '#f3dca0', '#050505', 2, dir, {
+    align: textAlign,
+    x: headlineX
+  });
+  _wcDrawPanel(ctx, 70, H * _WC_STORY_LAYOUT.captionY, W - 140, 245, 34, 'rgba(0,0,0,0.72)');
+  _wcDrawCenteredText(ctx, caption, H * _WC_STORY_LAYOUT.captionY + 122, W - 190, 52, 28, '#fff', '#050505', 4, dir, {
+    align: textAlign,
+    x: captionX
+  });
   return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
 }
 
