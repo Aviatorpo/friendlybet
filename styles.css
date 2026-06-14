@@ -8138,33 +8138,6 @@ body:not(.ltr) .home-lang-toggle {
   background:
     linear-gradient(180deg, rgba(0,0,0,0.66) 0%, rgba(0,0,0,0.05) 34%, rgba(0,0,0,0.08) 62%, rgba(0,0,0,0.72) 100%);
 }
-.wc-story-top-label {
-  position: absolute;
-  z-index: 2;
-  top: 5.8%;
-  left: 5px;
-  right: 5px;
-  color: #fff;
-  font-family: Impact, "Arial Black", Heebo, sans-serif;
-  font-size: clamp(35px, 12.8vw, 55px);
-  line-height: 0.88;
-  font-weight: 900;
-  font-style: italic;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0;
-  direction: ltr;
-  unicode-bidi: isolate;
-  transform: rotate(-4deg) skewX(-5deg);
-  transform-origin: center;
-  text-shadow:
-    0 5px 0 #050505,
-    4px 0 0 #050505,
-    -4px 0 0 #050505,
-    0 -3px 0 #050505,
-    0 8px 22px rgba(0,0,0,0.85);
-  pointer-events: none;
-}
 .wc-story-headline-panel,
 .wc-story-caption-panel {
   position: absolute;

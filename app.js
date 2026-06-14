@@ -2459,15 +2459,7 @@ function _wcStoryCopy(story) {
   return story[lang] || story.he || story.en || { headline: '', caption: '' };
 }
 
-function _wcStoryTopLabel(story) {
-  if (story && story.top_label) return String(story.top_label);
-  if (story && story.outcome === 'DRAW') return 'DRAW!';
-  if (story && story.outcome) return `${String(story.outcome).toUpperCase()} WINS!`;
-  return '';
-}
-
 const _WC_STORY_LAYOUT = {
-  topLabelY: 0.108,
   headlineY: 0.238,
   captionY: 0.535
 };
@@ -2562,11 +2554,9 @@ async function renderWorldCupStories() {
     const caption = await _wcStoryPoolCaption(story, copy);
     const img = _wcStoryImageUrl(story.image);
     const dir = _wcStoryLang() === 'he' ? 'rtl' : 'ltr';
-    const topLabel = _wcStoryTopLabel(story);
     return `
       <article class="wc-story" data-story-idx="${idx}" dir="${dir}">
         <img class="wc-story-img" src="${_wcEsc(img)}" alt="${_wcEsc(copy.headline || '')}" loading="lazy">
-        ${topLabel ? `<div class="wc-story-top-label" dir="ltr">${_wcEsc(topLabel)}</div>` : ''}
         <h3 class="wc-story-headline-panel" dir="${dir}">${_wcEsc(copy.headline || '')}</h3>
         <div class="wc-story-caption-panel" dir="${dir}">
           ${_wcEsc(caption || '')}
@@ -2681,17 +2671,6 @@ async function _worldCupStoryBlob(story) {
   const copy = _wcStoryCopy(story);
   const caption = await _wcStoryPoolCaption(story, copy);
   const dir = _wcStoryLang() === 'he' ? 'rtl' : 'ltr';
-  const topLabel = _wcStoryTopLabel(story);
-  if (topLabel) {
-    ctx.save();
-    ctx.translate(W / 2, H * _WC_STORY_LAYOUT.topLabelY);
-    ctx.rotate(-4 * Math.PI / 180);
-    _wcDrawCenteredText(ctx, topLabel, 0, W - 90, 102, 54, '#fff', '#050505', 2, 'ltr', {
-      italic: true,
-      lineWidth: 14
-    });
-    ctx.restore();
-  }
   const textAlign = dir === 'he' ? 'right' : 'left';
   const headlineX = dir === 'he' ? W - 130 : 130;
   const captionX = dir === 'he' ? W - 95 : 95;
