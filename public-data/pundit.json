@@ -1,16 +1,25 @@
 {
-  "updatedAt": "2026-06-14T18:18:30.972Z",
-  "freshUntil": "2026-06-15T00:18:30.972Z",
-  "count": 10,
+  "updatedAt": "2026-06-14T20:22:37.047Z",
+  "freshUntil": "2026-06-15T02:22:37.047Z",
+  "count": 11,
   "items": [
     {
-      "id": "live-32c4991c-ac27-46cc-955e-dc326093a145",
+      "id": "live-1df38ad2-68c6-4a4a-849b-57df76d4d502",
       "type": "live",
       "confidence": "confirmed",
-      "he": "גרמניה נגד קוראסאו משוחק עכשיו. התוצאה הרשמית תתעדכן בסיום המשחק.",
-      "en": "Germany vs Curaçao is live now. The official score will update after full-time.",
+      "he": "הולנד נגד יפן משוחק עכשיו. התוצאה הרשמית תתעדכן בסיום המשחק.",
+      "en": "Netherlands vs Japan is live now. The official score will update after full-time.",
       "sources": [],
-      "expires_at": "2026-06-14T21:18:30.972Z"
+      "expires_at": "2026-06-14T23:22:37.047Z"
+    },
+    {
+      "id": "result-32c4991c-ac27-46cc-955e-dc326093a145",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "גרמניה 7:1 קוראסאו.",
+      "en": "Germany 7-1 Curaçao.",
+      "sources": [],
+      "expires_at": "2026-06-15T23:00:00.000Z"
     },
     {
       "id": "result-57df958d-3c1b-40cc-be35-281c9a3e61f4",
@@ -49,15 +58,6 @@
       "expires_at": "2026-06-15T01:00:00.000Z"
     },
     {
-      "id": "fixture-1df38ad2-68c6-4a4a-849b-57df76d4d502",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "הולנד נגד יפן, היום 23:00.",
-      "en": "Netherlands vs Japan, today 23:00.",
-      "sources": [],
-      "expires_at": "2026-06-14T20:00:00.000Z"
-    },
-    {
       "id": "fixture-a3f06b97-9c08-4c69-9628-c788d8e85747",
       "type": "fixture",
       "confidence": "confirmed",
@@ -92,6 +92,15 @@
       "en": "Belgium vs Egypt, tomorrow 22:00.",
       "sources": [],
       "expires_at": "2026-06-15T19:00:00.000Z"
+    },
+    {
+      "id": "fixture-13081dbc-3b64-4694-a70d-05021f4bce96",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "ערב הסעודית נגד אורוגוואי, 16/06 01:00.",
+      "en": "Saudi Arabia vs Uruguay, 16/06 01:00.",
+      "sources": [],
+      "expires_at": "2026-06-15T22:00:00.000Z"
     }
   ]
 }
