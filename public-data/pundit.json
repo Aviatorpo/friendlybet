@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-06-15T13:23:00.713Z",
-  "freshUntil": "2026-06-15T19:23:00.713Z",
-  "count": 9,
+  "updatedAt": "2026-06-15T18:44:58.318Z",
+  "freshUntil": "2026-06-16T00:44:58.318Z",
+  "count": 10,
   "items": [
+    {
+      "id": "live-ca4ce07e-2afd-4f64-a6ec-1a83c5083ccb",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "ספרד נגד כף ורדה משוחק עכשיו. התוצאה הרשמית תתעדכן בסיום המשחק.",
+      "en": "Spain vs Cape Verde is live now. The official score will update after full-time.",
+      "sources": [],
+      "expires_at": "2026-06-15T21:44:58.318Z"
+    },
     {
       "id": "result-e261116f-e7d0-46b1-a8c2-7a55748b84b2",
       "type": "result",
@@ -40,15 +49,6 @@
       "expires_at": "2026-06-15T23:00:00.000Z"
     },
     {
-      "id": "fixture-ca4ce07e-2afd-4f64-a6ec-1a83c5083ccb",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "ספרד נגד כף ורדה, היום 19:00.",
-      "en": "Spain vs Cape Verde, today 19:00.",
-      "sources": [],
-      "expires_at": "2026-06-15T16:00:00.000Z"
-    },
-    {
       "id": "fixture-e6a4624d-c1dc-437f-98e4-42926b6db1d7",
       "type": "fixture",
       "confidence": "confirmed",
@@ -83,6 +83,15 @@
       "en": "France vs Senegal, tomorrow 22:00.",
       "sources": [],
       "expires_at": "2026-06-16T19:00:00.000Z"
+    },
+    {
+      "id": "fixture-16a1741b-cf85-4a96-8edc-38b6971dd736",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "עיראק נגד נורווגיה, 17/06 01:00.",
+      "en": "Iraq vs Norway, 17/06 01:00.",
+      "sources": [],
+      "expires_at": "2026-06-16T22:00:00.000Z"
     }
   ]
 }
