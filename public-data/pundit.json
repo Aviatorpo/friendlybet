@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-15T06:32:36.427Z",
-  "freshUntil": "2026-06-15T12:32:36.427Z",
+  "updatedAt": "2026-06-15T13:23:00.713Z",
+  "freshUntil": "2026-06-15T19:23:00.713Z",
   "count": 9,
   "items": [
     {
@@ -40,15 +40,6 @@
       "expires_at": "2026-06-15T23:00:00.000Z"
     },
     {
-      "id": "result-57df958d-3c1b-40cc-be35-281c9a3e61f4",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "אוסטרליה 2:0 טורקיה.",
-      "en": "Australia 2-0 Turkey.",
-      "sources": [],
-      "expires_at": "2026-06-15T10:00:00.000Z"
-    },
-    {
       "id": "fixture-ca4ce07e-2afd-4f64-a6ec-1a83c5083ccb",
       "type": "fixture",
       "confidence": "confirmed",
@@ -83,6 +74,15 @@
       "en": "Iran vs New Zealand, tomorrow 04:00.",
       "sources": [],
       "expires_at": "2026-06-16T01:00:00.000Z"
+    },
+    {
+      "id": "fixture-6e189faf-b4fa-4dba-8d8a-1834ebae205c",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "צרפת נגד סנגל, מחר 22:00.",
+      "en": "France vs Senegal, tomorrow 22:00.",
+      "sources": [],
+      "expires_at": "2026-06-16T19:00:00.000Z"
     }
   ]
 }
