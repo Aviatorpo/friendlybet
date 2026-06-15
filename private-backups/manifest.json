@@ -12,7 +12,8 @@
     "537351",
     "537352",
     "537357",
-    "537358"
+    "537358",
+    "537369"
   ],
   "backups": [
     {
@@ -278,7 +279,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-15T20:59:04.284Z",
+      "file": "private-backups/2026-06-15T20-59-04-284Z__537369-ESP-CPV.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537369"
+      ],
+      "tableCounts": {
+        "pools": 1885,
+        "users": 6115,
+        "group_picks": 21826,
+        "knockout_picks": 92971,
+        "group_position_picks": 171173,
+        "tournament_winner_picks": 3292,
+        "top_scorer_picks": 2865,
+        "sp_third_place_picks": 28512,
+        "pick_backups": 45676,
+        "knockout_reopen_grants": 1679,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-15T05:23:33.336Z"
+  "updatedAt": "2026-06-15T20:59:04.284Z"
 }
