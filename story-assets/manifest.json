@@ -3,58 +3,122 @@
   "items": [
     {
       "match_id": "955b83f1-0298-4bdc-88b7-03527bf314ac",
-      "teams": ["MEX", "RSA"],
+      "teams": [
+        "MEX",
+        "RSA"
+      ],
       "outcomes": {
         "MEX": "story-assets/mexico-wins-south-africa.png"
       }
     },
     {
       "match_id": "a3f33d1c-f931-4a0e-91e3-86efaa5ce733",
-      "teams": ["KOR", "CZE"],
+      "teams": [
+        "KOR",
+        "CZE"
+      ],
       "outcomes": {
         "KOR": "story-assets/south-korea-wins-czech-republic.png"
       }
     },
     {
       "match_id": "ab678833-83a0-4391-8d6b-bb60af5c37dd",
-      "teams": ["CAN", "BIH"],
+      "teams": [
+        "CAN",
+        "BIH"
+      ],
       "outcomes": {
         "DRAW": "story-assets/canada-bosnia-draw.png"
       }
     },
     {
       "match_id": "b25de4f9-de9a-44a2-9bb8-c006602de455",
-      "teams": ["USA", "PAR"],
+      "teams": [
+        "USA",
+        "PAR"
+      ],
       "outcomes": {
         "USA": "story-assets/usa-wins-paraguay.png"
       }
     },
     {
       "match_id": "4efafba8-c6a0-41ef-8957-c2cbb3aa19a1",
-      "teams": ["QAT", "SUI"],
+      "teams": [
+        "QAT",
+        "SUI"
+      ],
       "outcomes": {
         "DRAW": "story-assets/qatar-switzerland-draw-base.png"
       }
     },
     {
       "match_id": "af81fe37-fc83-4696-b013-7a780fe10477",
-      "teams": ["BRA", "MAR"],
+      "teams": [
+        "BRA",
+        "MAR"
+      ],
       "outcomes": {
         "DRAW": "story-assets/brazil-morocco-draw.png"
       }
     },
     {
       "match_id": "b7aa07bc-c126-421e-b0d3-e0c5b96420bc",
-      "teams": ["HAI", "SCO"],
+      "teams": [
+        "HAI",
+        "SCO"
+      ],
       "outcomes": {
         "SCO": "story-assets/scotland-wins-haiti.png"
       }
     },
     {
       "match_id": "57df958d-3c1b-40cc-be35-281c9a3e61f4",
-      "teams": ["AUS", "TUR"],
+      "teams": [
+        "AUS",
+        "TUR"
+      ],
       "outcomes": {
         "AUS": "story-assets/australia-wins-turkey.png"
+      }
+    },
+    {
+      "match_id": "32c4991c-ac27-46cc-955e-dc326093a145",
+      "teams": [
+        "GER",
+        "CUR"
+      ],
+      "outcomes": {
+        "GER": "story-assets/germany-wins-curacao.png"
+      }
+    },
+    {
+      "match_id": "1df38ad2-68c6-4a4a-849b-57df76d4d502",
+      "teams": [
+        "NED",
+        "JPN"
+      ],
+      "outcomes": {
+        "DRAW": "story-assets/netherlands-japan-draw.png"
+      }
+    },
+    {
+      "match_id": "a3f06b97-9c08-4c69-9628-c788d8e85747",
+      "teams": [
+        "CIV",
+        "ECU"
+      ],
+      "outcomes": {
+        "CIV": "story-assets/ivory-coast-wins-ecuador.png"
+      }
+    },
+    {
+      "match_id": "e261116f-e7d0-46b1-a8c2-7a55748b84b2",
+      "teams": [
+        "SWE",
+        "TUN"
+      ],
+      "outcomes": {
+        "SWE": "story-assets/sweden-wins-tunisia.png"
       }
     }
   ]

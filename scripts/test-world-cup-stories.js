@@ -8,6 +8,7 @@ const stories = JSON.parse(fs.readFileSync(path.join(root, 'public-data', 'world
 const matches = JSON.parse(fs.readFileSync(path.join(root, 'public-data', 'matches.json'), 'utf8')).matches || [];
 const appJs = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
 const stylesCss = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
+const generatorJs = fs.readFileSync(path.join(root, 'scripts', 'generate-world-cup-stories.js'), 'utf8');
 const byId = new Map(matches.map(match => [match.id, match]));
 
 function fail(message) {
@@ -20,6 +21,9 @@ for (const story of stories) {
   if (!match) {
     fail(`${story.id}: missing source match`);
     continue;
+  }
+  if (!story.image || !fs.existsSync(path.join(root, story.image))) {
+    fail(`${story.id}: missing story image asset ${story.image || ''}`);
   }
   if (match.status !== 'FINISHED') continue;
   const draw = Number(match.home_score) === Number(match.away_score);
@@ -73,6 +77,10 @@ const visualChecks = [
   [stylesCss.includes('.wc-story-caption-panel[dir="rtl"]') && stylesCss.includes('text-align: right'), 'Hebrew dashboard text must align right'],
   [stylesCss.includes('.wc-story-caption-panel[dir="ltr"]') && stylesCss.includes('text-align: left'), 'English dashboard text must align left'],
   [!stylesCss.includes('[dir="he"]'), 'story CSS must target rtl/ltr dir values, not language codes'],
+  [generatorJs.includes('shirt number #') && generatorJs.includes('printed naturally into the jersey fabric'), 'story generator prompt must require real shirt numbers integrated into kits'],
+  [generatorJs.includes('60%-77%'), 'story generator prompt must preserve the current caption safe band'],
+  [!generatorJs.includes('yellow result overlay'), 'story generator prompt must not reserve a yellow result overlay'],
+  [!generatorJs.includes('50%-64%'), 'story generator prompt must not use the old face-level caption band'],
 ];
 visualChecks.forEach(([ok, message]) => { if (!ok) fail(message); });
 

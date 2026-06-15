@@ -79,9 +79,12 @@ const STAR_PROFILES = {
   ENG: { player: 'Harry Kane', number: 9 },
   ESP: { player: 'Alvaro Morata', number: 7 },
   FRA: { player: 'Kylian Mbappe', number: 10 },
-  GER: { player: 'Jamal Musiala', number: 10 },
+  CUR: { player: 'Leandro Bacuna', number: 10 },
+  CIV: { player: 'Franck Kessie', number: 8 },
+  ECU: { player: 'Enner Valencia', number: 13 },
+  GER: { player: 'Joshua Kimmich', number: 6 },
   HAI: { player: 'Duckens Nazon', number: 9 },
-  JPN: { player: 'Takefusa Kubo', number: 20 },
+  JPN: { player: 'Wataru Endo', number: 6 },
   KOR: { player: 'Son Heung-min', number: 7 },
   MAR: { player: 'Achraf Hakimi', number: 2 },
   MEX: { player: 'Raul Jimenez', number: 9 },
@@ -94,7 +97,8 @@ const STAR_PROFILES = {
   SCO: { player: 'Andy Robertson', number: 3 },
   SEN: { player: 'Sadio Mane', number: 10 },
   SUI: { player: 'Granit Xhaka', number: 10 },
-  SWE: { player: 'Alexander Isak', number: 9 },
+  SWE: { player: 'Victor Nilsson Lindelof', number: 3 },
+  TUN: { player: 'Ellyes Skhiri', number: 17 },
   TUR: { player: 'Hakan Calhanoglu', number: 10 },
   URU: { player: 'Federico Valverde', number: 15 },
   USA: { player: 'Christian Pulisic', number: 10 },
@@ -103,7 +107,67 @@ const STAR_PROFILES = {
 const DRAW_FOCUS = {
   'BRA-MAR': 'BRA',
   'CAN-BIH': 'CAN',
+  'NED-JPN': 'NED',
   'QAT-SUI': 'SUI',
+};
+
+const STORY_COPY_OVERRIDES = {
+  'GER-CUR': {
+    caption: {
+      he: 'גרמניה פתחה מבערים עם 7-1. מי שהימר על קוראסאו במקום הראשון כבר מחפש מחשבון וקצת אוויר.',
+      en: 'Germany turned the volume all the way up. Anyone who had Curacao first now needs a calculator and a little air.',
+    },
+    pool: {
+      he_name: '{names} הימר על {team} במקום הראשון. אחרי 7-1, זה כבר נראה כמו טופס שצריך טיפול נמרץ.',
+      he_names: '{names} הימרו על {team} במקום הראשון. אחרי 7-1, זה כבר נראה כמו טופס שצריך טיפול נמרץ.',
+      he_count: '{count} משתתפים הימרו על {team} במקום הראשון. אחרי 7-1, זה כבר נראה כמו טופס שצריך טיפול נמרץ.',
+      en_name: '{names} had {team} first. After 7-1, that pick needs a medic and a calculator.',
+      en_names: '{names} had {team} first. After 7-1, those picks need a medic and a calculator.',
+      en_count: '{count} members had {team} first. After 7-1, those picks need a medic and a calculator.',
+    },
+  },
+  'NED-JPN': {
+    caption: {
+      he: 'הולנד ויפן השאירו את הבית פתוח ואת הטבלאות על ספיד. מי שהימר על הולנד לטיול קל קיבל שיעורי בית.',
+      en: 'Netherlands and Japan left the group wide open. Dutch first-place picks just got homework.',
+    },
+    pool: {
+      he_name: '{names} הימר על {team} במקום הראשון. אחרי 2-2, הדרך לשם כבר נראית כמו שאלת בונוס.',
+      he_names: '{names} הימרו על {team} במקום הראשון. אחרי 2-2, הדרך לשם כבר נראית כמו שאלת בונוס.',
+      he_count: '{count} משתתפים הימרו על {team} במקום הראשון. אחרי 2-2, הדרך לשם כבר נראית כמו שאלת בונוס.',
+      en_name: '{names} had {team} first. After 2-2, that route now looks like a bonus question.',
+      en_names: '{names} had {team} first. After 2-2, that route now looks like a bonus question.',
+      en_count: '{count} members had {team} first. After 2-2, that route now looks like a bonus question.',
+    },
+  },
+  'CIV-ECU': {
+    caption: {
+      he: 'חוף השנהב לקחה 1-0 קטן עם אופי גדול. מי שהימר על אקוודור כבר חי מהתראה להתראה.',
+      en: 'Ivory Coast took a small 1-0 with a big attitude. Ecuador picks are living notification to notification now.',
+    },
+    pool: {
+      he_name: '{names} הימר על {team} במקום הראשון. 1-0 כזה קטן, והטופס כבר מזיע.',
+      he_names: '{names} הימרו על {team} במקום הראשון. 1-0 כזה קטן, והטפסים כבר מזיעים.',
+      he_count: '{count} משתתפים הימרו על {team} במקום הראשון. 1-0 כזה קטן, והטפסים כבר מזיעים.',
+      en_name: '{names} had {team} first. A tiny 1-0, and that ticket is already sweating.',
+      en_names: '{names} had {team} first. A tiny 1-0, and those tickets are already sweating.',
+      en_count: '{count} members had {team} first. A tiny 1-0, and those tickets are already sweating.',
+    },
+  },
+  'SWE-TUN': {
+    caption: {
+      he: 'שוודיה לא השאירה מקום לפרשנות עם 5-1. מי שהימר על תוניסיה צריך עכשיו סיפור כיסוי טוב.',
+      en: 'Sweden left no room for interpretation with 5-1. Tunisia picks need a very good cover story.',
+    },
+    pool: {
+      he_name: '{names} הימר על {team} במקום הראשון. אחרי 5-1, צריך פה לא רק אמונה אלא מצגת.',
+      he_names: '{names} הימרו על {team} במקום הראשון. אחרי 5-1, צריך פה לא רק אמונה אלא מצגת.',
+      he_count: '{count} משתתפים הימרו על {team} במקום הראשון. אחרי 5-1, צריך פה לא רק אמונה אלא מצגת.',
+      en_name: '{names} had {team} first. After 5-1, that pick needs more than belief; it needs slides.',
+      en_names: '{names} had {team} first. After 5-1, those picks need more than belief; they need slides.',
+      en_count: '{count} members had {team} first. After 5-1, those picks need more than belief; they need slides.',
+    },
+  },
 };
 
 function readJson(file, fallback) {
@@ -128,6 +192,10 @@ function teamName(code, lang = 'en') {
 
 function matchKey(match) {
   return `${match.home_team_code}-${match.away_team_code}`;
+}
+
+function storyOverride(match) {
+  return STORY_COPY_OVERRIDES[matchKey(match)] || null;
 }
 
 function storyId(match) {
@@ -220,6 +288,17 @@ function poolFocus(match, outcome) {
   const teamHe = teamName(focus, 'he');
   const teamEn = teamName(focus, 'en');
   const score = scoreForOutcome(match, outcome);
+  const override = storyOverride(match);
+  if (override && override.pool) {
+    return {
+      table: 'group_position_picks',
+      team_code: focus,
+      team_he: teamHe,
+      team_en: teamEn,
+      position: 1,
+      ...override.pool,
+    };
+  }
   if (outcome === 'DRAW') {
     return {
       table: 'group_position_picks',
@@ -251,6 +330,8 @@ function poolFocus(match, outcome) {
 }
 
 function captionCopy(match, outcome) {
+  const override = storyOverride(match);
+  if (override && override.caption) return override.caption;
   const focus = focusTeam(match, outcome);
   const score = scoreForOutcome(match, outcome);
   if (outcome === 'DRAW') {
@@ -349,16 +430,16 @@ function imagePrompt(match, outcome) {
   const leftMood = outcome === 'DRAW' ? 'disappointed but proud after a draw' : 'celebrating the win in a fresh dynamic pose';
   const rightMood = outcome === 'DRAW' ? 'frustrated but composed after a draw' : 'sad after the loss, head down or hands on face';
   return [
-    'Create a polished cartoonized vertical 9:16 football meme-story base image for FriendlyBet.',
+    'Create a vertical 9:16 premium sports meme-card image for FriendlyBet.',
     `Match result context: ${teamName(home)} ${scoreDash(match)} ${teamName(away)} at FIFA World Cup 2026.`,
     'Show exactly two football stars, no other players anywhere.',
-    `Left/foreground: ${left.player}, cartoon likeness, ${teamName(winner || home)} national-color kit, shirt number ${left.number}, ${leftMood}, face clearly visible.`,
-    `Right/midground: ${right.player}, cartoon likeness, ${teamName(loser || away)} national-color kit, shirt number ${right.number}, ${rightMood}, face clearly visible.`,
+    `Left/foreground: ${left.player}, ${teamName(winner || home)} national-color kit, shirt number #${left.number} printed naturally into the jersey fabric, ${leftMood}, face clearly visible.`,
+    `Right/midground: ${right.player}, ${teamName(loser || away)} national-color kit, shirt number #${right.number} printed naturally into the jersey fabric, ${rightMood}, face clearly visible.`,
     `Crowd: fans and flags of ${teamName(home)} and ${teamName(away)} only; no unrelated flags.`,
-    'Composition: vertical portrait, dramatic stadium lights, two-player poster, realistic proportions but cartoonized.',
-    'Leave a darker empty safe band around 22%-32% from the top for a yellow result overlay, and another darker empty safe band around 50%-64% from the top for white banter text. Do not place faces in those bands.',
-    `Text: big top meme headline "${topText}" only. Bottom-left brand: FriendlyBet football icon followed by FriendlyBet wordmark in gold/beige on a dark pill.`,
-    'Avoid: official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, text over faces.',
+    'Composition: vertical portrait, dramatic stadium lights, two-player premium sports poster. Players heads high in frame but clearly below the top title.',
+    'Leave the lower-middle band around 60%-77% visually clean enough for a black caption panel. Do not place faces in that band.',
+    `Text: big baked white condensed uppercase top headline "${topText}". Add a small white score subtitle directly below it: "${teamName(home)} ${scoreDash(match)} ${teamName(away)}".`,
+    'Avoid: yellow result headline, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces.',
   ].join('\n');
 }
 
