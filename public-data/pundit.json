@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-06-16T17:13:01.256Z",
-  "freshUntil": "2026-06-16T23:13:01.256Z",
-  "count": 9,
+  "updatedAt": "2026-06-16T21:13:37.632Z",
+  "freshUntil": "2026-06-17T03:13:37.632Z",
+  "count": 10,
   "items": [
+    {
+      "id": "live-6e189faf-b4fa-4dba-8d8a-1834ebae205c",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "צרפת נגד סנגל עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
+      "en": "France vs Senegal is live now. Every minute can turn a genius pick into group-chat material.",
+      "sources": [],
+      "expires_at": "2026-06-17T00:13:37.632Z"
+    },
     {
       "id": "result-ad42617c-4294-4f50-bade-2a7ec9659bf3",
       "type": "result",
@@ -40,20 +49,11 @@
       "expires_at": "2026-06-16T22:00:00.000Z"
     },
     {
-      "id": "fixture-6e189faf-b4fa-4dba-8d8a-1834ebae205c",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "צרפת נגד סנגל, היום 22:00. צרפת מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
-      "en": "France vs Senegal, today 22:00. France comes in as favorite, which is exactly where predictions start sweating.",
-      "sources": [],
-      "expires_at": "2026-06-16T19:00:00.000Z"
-    },
-    {
       "id": "fixture-16a1741b-cf85-4a96-8edc-38b6971dd736",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "עיראק נגד נורווגיה, מחר 01:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
-      "en": "Iraq vs Norway, tomorrow 01:00. Quiet on paper, which is usually where pool chaos begins.",
+      "he": "עיראק נגד נורווגיה, היום 01:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
+      "en": "Iraq vs Norway, today 01:00. Not the shiniest match, but these are the ones that move places without asking.",
       "sources": [],
       "expires_at": "2026-06-16T22:00:00.000Z"
     },
@@ -61,8 +61,8 @@
       "id": "fixture-a087e1bd-93ee-4b49-9f70-6df49532ce09",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "ארגנטינה נגד אלג'יריה, מחר 04:00. על הנייר ארגנטינה אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
-      "en": "Argentina vs Algeria, tomorrow 04:00. On paper Argentina should control it, but paper does not score pool points.",
+      "he": "ארגנטינה נגד אלג'יריה, היום 04:00. ארגנטינה מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
+      "en": "Argentina vs Algeria, today 04:00. Argentina comes in as favorite, which is exactly where predictions start sweating.",
       "sources": [],
       "expires_at": "2026-06-17T01:00:00.000Z"
     },
@@ -70,8 +70,8 @@
       "id": "fixture-22e56c30-7d43-4b78-b1f3-0e26d76dbab6",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "אוסטריה נגד ירדן, מחר 07:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
-      "en": "Austria vs Jordan, tomorrow 07:00. Not the shiniest match, but these are the ones that move places without asking.",
+      "he": "אוסטריה נגד ירדן, היום 07:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
+      "en": "Austria vs Jordan, today 07:00. Quiet on paper, which is usually where pool chaos begins.",
       "sources": [],
       "expires_at": "2026-06-17T04:00:00.000Z"
     },
@@ -79,10 +79,19 @@
       "id": "fixture-35e0d352-c243-43c0-8e50-3a52f3642801",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "פורטוגל נגד קונגו הדמוקרטית, מחר 20:00. פורטוגל מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
-      "en": "Portugal vs Congo DR, tomorrow 20:00. Portugal comes in as favorite, which is exactly where predictions start sweating.",
+      "he": "פורטוגל נגד קונגו הדמוקרטית, היום 20:00. על הנייר פורטוגל אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
+      "en": "Portugal vs Congo DR, today 20:00. On paper Portugal should control it, but paper does not score pool points.",
       "sources": [],
       "expires_at": "2026-06-17T17:00:00.000Z"
+    },
+    {
+      "id": "fixture-af167117-8add-43b5-9930-dae9e6a42d1f",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "משחק ענק: אנגליה נגד קרואטיה, היום 23:00. זה מסוג המשחקים שמזיזים גם טבלאות וגם אגו.",
+      "en": "Heavyweight alert: England vs Croatia, today 23:00. The kind of match that moves tables and egos.",
+      "sources": [],
+      "expires_at": "2026-06-17T20:00:00.000Z"
     }
   ]
 }
