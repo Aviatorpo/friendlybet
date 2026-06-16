@@ -2486,44 +2486,76 @@ function _wcFormatNames(names, totalCount) {
   return clean.slice(0, -1).join(', ') + joiner + clean[clean.length - 1];
 }
 
+function _wcStoryFocuses(story) {
+  if (story && Array.isArray(story.pool_focuses) && story.pool_focuses.length) return story.pool_focuses;
+  return story && story.pool_focus ? [story.pool_focus] : [];
+}
+
+function _wcStoryFocusCacheKey(focus) {
+  if (!focus) return '';
+  return [
+    focus.table || 'group_position_picks',
+    focus.team_code || '',
+    focus.position || '',
+    focus.bracket_position || ''
+  ].join(':');
+}
+
+function _wcStoryFocusQuery(poolId, focus) {
+  const table = focus && focus.table ? focus.table : 'group_position_picks';
+  let query = supabaseClient
+    .from(table)
+    .select('user_id')
+    .eq('pool_id', poolId);
+  if (focus && focus.team_code) {
+    const teamColumn = table === 'knockout_picks' ? 'predicted_winner' : 'team_code';
+    query = query.eq(teamColumn, focus.team_code);
+  }
+  if (table === 'group_position_picks') query = query.eq('position', focus.position || 1);
+  if (table === 'knockout_picks' && focus.bracket_position != null) query = query.eq('bracket_position', focus.bracket_position);
+  return query.range(0, 9999);
+}
+
 async function _wcStoryPoolCaption(story, baseCopy) {
-  const focus = story && story.pool_focus;
+  const focuses = _wcStoryFocuses(story);
   const pool = state.currentPool;
-  if (!focus || !pool || !pool.id || typeof supabaseClient === 'undefined' || !supabaseClient) {
+  if (!focuses.length || !pool || !pool.id || typeof supabaseClient === 'undefined' || !supabaseClient) {
     return baseCopy.caption || '';
   }
   const lang = _wcStoryLang();
-  const cacheKey = [pool.id, story.id || story.match_id || story.image, lang, focus.team_code, focus.position || ''].join('|');
+  const cacheKey = [pool.id, story.id || story.match_id || story.image, lang, focuses.map(_wcStoryFocusCacheKey).join(';')].join('|');
   if (_wcStoriesPoolCopyCache[cacheKey]) return _wcStoriesPoolCopyCache[cacheKey];
 
   try {
-    const [members, picksRes] = await Promise.all([
+    const [members, ...pickResults] = await Promise.all([
       _loadPoolMembers(),
-      supabaseClient
-        .from('group_position_picks')
-        .select('user_id')
-        .eq('pool_id', pool.id)
-        .eq('team_code', focus.team_code)
-        .eq('position', focus.position || 1)
-        .range(0, 9999)
+      ...focuses.map(focus => _wcStoryFocusQuery(pool.id, focus))
     ]);
-    const picks = (picksRes && !picksRes.error && Array.isArray(picksRes.data)) ? picksRes.data : [];
-    if (!picks.length || !Array.isArray(members)) return baseCopy.caption || '';
-    const pickedIds = new Set(picks.map(p => p.user_id));
-    const pickedMembers = members.filter(m => pickedIds.has(m.id));
-    const names = pickedMembers.map(m => m.nickname).filter(Boolean).slice(0, 3);
-    const team = lang === 'he' ? (focus.team_he || focus.team_en || focus.team_code) : (focus.team_en || focus.team_he || focus.team_code);
-    const count = pickedIds.size;
-    const templateKey = count > 3 ? `${lang}_count` : (count === 1 ? `${lang}_name` : `${lang}_names`);
-    const fallbackKey = count === 1 ? `${lang}_names` : `${lang}_count`;
-    const template = focus[templateKey] || focus[fallbackKey] || focus[`${lang}_count`];
-    const caption = _wcFillTemplate(template, {
-      names: _wcFormatNames(names, count),
-      count,
-      team
-    }) || baseCopy.caption || '';
-    _wcStoriesPoolCopyCache[cacheKey] = caption;
-    return caption;
+    if (!Array.isArray(members)) return baseCopy.caption || '';
+    for (let i = 0; i < focuses.length; i++) {
+      const focus = focuses[i];
+      const picksRes = pickResults[i];
+      const picks = (picksRes && !picksRes.error && Array.isArray(picksRes.data)) ? picksRes.data : [];
+      if (!picks.length) continue;
+      const pickedIds = new Set(picks.map(p => p.user_id));
+      const pickedMembers = members.filter(m => pickedIds.has(m.id));
+      const names = pickedMembers.map(m => m.nickname).filter(Boolean).slice(0, 3);
+      const team = lang === 'he' ? (focus.team_he || focus.team_en || focus.team_code) : (focus.team_en || focus.team_he || focus.team_code);
+      const count = pickedIds.size;
+      const templateKey = count > 3 ? `${lang}_count` : (count === 1 ? `${lang}_name` : `${lang}_names`);
+      const fallbackKey = count === 1 ? `${lang}_names` : `${lang}_count`;
+      const template = focus[templateKey] || focus[fallbackKey] || focus[`${lang}_count`];
+      const caption = _wcFillTemplate(template, {
+        names: _wcFormatNames(names, count),
+        count,
+        team
+      }) || '';
+      if (caption) {
+        _wcStoriesPoolCopyCache[cacheKey] = caption;
+        return caption;
+      }
+    }
+    return baseCopy.caption || '';
   } catch (e) {
     console.warn('world cup story pool caption failed', e);
     return baseCopy.caption || '';

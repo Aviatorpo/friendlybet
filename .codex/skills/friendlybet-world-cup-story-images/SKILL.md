@@ -71,6 +71,8 @@ Dashboard cards and exported share images must match:
 
 - Use a personal, dramatic, shareable tone. Be less clever/abstract and more direct about the people in the pool.
 - Prefer lines that name participants and make the prediction feel like their personal moment.
+- Be specific about the pick type: say `picked Spain to win the World Cup`, `picked Spain to top Group H`, or `picked Tunisia to top the group`; do not blur everything into generic "believed in the team" wording.
+- Prefer the most viral concrete angle first when several pick tables are available: tournament-winner picks, then exact group-position picks, then other available specific picks.
 - For 4+ matching pickers, keep as many names as the caption can reasonably hold, then add the remainder: `Yossi, Haim, Moshe and 3 others` / `יוסי, חיים, משה ועוד 3 משתתפים`.
 - Write count templates with `{names}`, not only `{count}`, so large pools still feel personal.
 - Approved tone examples:
@@ -83,7 +85,8 @@ Dashboard cards and exported share images must match:
   - `אוי הבושה. {names} שמו את {team} ראשונה בבית וכבר מכינים נאום הגנה 🎤😬`
   - `זה היה מביך... {names} בחרו את {team}. אחרי היכולת הזאת, אפשר לקרוע את הטופס 🧾`
 - Emojis are allowed when they sharpen the emotion, usually 1-2 per caption. Do not let emojis replace the joke.
-- Avoid vague team-only banter like `the group got loud` unless no pool names are available. The best story captions are participant-first.
+- Avoid vague team-only banter like `anyone who picked them` or `the group got loud` when pool-specific data can be queried. If no matching pickers exist in the pool, use a match-only fallback with no fake personalization.
+- Current story data may include `pool_focuses` ordered from most-specific to fallback. The client should try each focus until it finds real pickers, then render the first matching named caption.
 
 ## Validation Checklist
 

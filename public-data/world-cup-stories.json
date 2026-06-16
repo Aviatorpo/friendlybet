@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-16T09:30:00.000Z",
+  "updated_at": "2026-06-16T07:49:02.603Z",
   "items": [
     {
       "id": "irn-nzl-2026-06-16",
@@ -18,20 +18,35 @@
         "team_he": "איראן",
         "team_en": "Iran",
         "position": 1,
-        "he_name": "{names} שם את {team} ראשונה בבית. גאון? אחרי 2-2 והבית הפתוח הזה, יש מצב 🔥",
-        "he_names": "{names} שמו את {team} ראשונה בבית. גאונים? אחרי 2-2 והבית הפתוח הזה, יש מצב 🔥",
-        "he_count": "{names} שמו את {team} ראשונה בבית. גאונים? אחרי 2-2 והבית הפתוח הזה, יש מצב 🔥",
-        "en_name": "{names} picked {team} to top the group. Genius? After this 2-2 and an open group, maybe 🔥",
-        "en_names": "{names} picked {team} to top the group. Geniuses? After this 2-2 and an open group, maybe 🔥",
-        "en_count": "{names} picked {team} to top the group. Geniuses? After this 2-2 and an open group, maybe 🔥"
+        "he_name": "כולם לעמוד ולמחוא כפיים. {names} שם את {team} ראשונה בבית, ואחרי 2-2 מול ניו זילנד זה כבר לא נשמע הזוי 👏🔥",
+        "he_names": "כולם לעמוד ולמחוא כפיים. {names} שמו את {team} ראשונה בבית, ואחרי 2-2 מול ניו זילנד זה כבר לא נשמע הזוי 👏🔥",
+        "he_count": "כולם לעמוד ולמחוא כפיים. {names} שמו את {team} ראשונה בבית, ואחרי 2-2 מול ניו זילנד זה כבר לא נשמע הזוי 👏🔥",
+        "en_name": "Everybody stand up and clap. {names} picked {team} to top the group, and after 2-2 with New Zealand it no longer sounds crazy 👏🔥",
+        "en_names": "Everybody stand up and clap. {names} picked {team} to top the group, and after 2-2 with New Zealand it no longer sounds crazy 👏🔥",
+        "en_count": "Everybody stand up and clap. {names} picked {team} to top the group, and after 2-2 with New Zealand it no longer sounds crazy 👏🔥"
       },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "IRN",
+          "team_he": "איראן",
+          "team_en": "Iran",
+          "position": 1,
+          "he_name": "כולם לעמוד ולמחוא כפיים. {names} שם את {team} ראשונה בבית, ואחרי 2-2 מול ניו זילנד זה כבר לא נשמע הזוי 👏🔥",
+          "he_names": "כולם לעמוד ולמחוא כפיים. {names} שמו את {team} ראשונה בבית, ואחרי 2-2 מול ניו זילנד זה כבר לא נשמע הזוי 👏🔥",
+          "he_count": "כולם לעמוד ולמחוא כפיים. {names} שמו את {team} ראשונה בבית, ואחרי 2-2 מול ניו זילנד זה כבר לא נשמע הזוי 👏🔥",
+          "en_name": "Everybody stand up and clap. {names} picked {team} to top the group, and after 2-2 with New Zealand it no longer sounds crazy 👏🔥",
+          "en_names": "Everybody stand up and clap. {names} picked {team} to top the group, and after 2-2 with New Zealand it no longer sounds crazy 👏🔥",
+          "en_count": "Everybody stand up and clap. {names} picked {team} to top the group, and after 2-2 with New Zealand it no longer sounds crazy 👏🔥"
+        }
+      ],
       "he": {
         "headline": "איראן וניו זילנד נפרדו ב-2-2: דרמה בלי הכרעה",
-        "caption": "איראן וניו זילנד עשו 2-2, והבית הזה הפך לתיק פתוח. מי שהלך על איראן פתאום נראה הרבה פחות מוזר 🔥"
+        "caption": "איראן וניו זילנד נתנו 2-2 קצבי, ובית G נשאר פתוח בדיוק בשביל ההימורים האמיצים 🔥"
       },
       "en": {
         "headline": "Iran and New Zealand draw 2-2: No winner, all drama",
-        "caption": "Iran and New Zealand made it 2-2, and this group is suddenly wide open. Iran believers look a lot less strange now 🔥"
+        "caption": "Iran and New Zealand gave us a lively 2-2, and Group G stayed wide open for the brave picks 🔥"
       }
     },
     {
@@ -46,25 +61,51 @@
       "result": "SAU 1-1 URU",
       "top_label": "DRAW!",
       "pool_focus": {
-        "table": "group_position_picks",
+        "table": "tournament_winner_picks",
         "team_code": "URU",
         "team_he": "אורוגוואי",
         "team_en": "Uruguay",
-        "position": 1,
-        "he_name": "אוי הבושה. {names} שם את {team} ראשונה בבית, ואחרי 1-1 מול ערב הסעודית הוא כבר מכין נאום הגנה 🎤😬",
-        "he_names": "אוי הבושה. {names} שמו את {team} ראשונה בבית. אחרי 1-1 מול ערב הסעודית, הם כבר מכינים נאום הגנה 🎤😬",
-        "he_count": "אוי הבושה. {names} שמו את {team} ראשונה בבית. אחרי 1-1 מול ערב הסעודית, הם כבר מכינים נאום הגנה 🎤😬",
-        "en_name": "Oh, the shame. {names} picked {team} first, and after 1-1 with Saudi Arabia he is already preparing the defense speech 🎤😬",
-        "en_names": "Oh, the shame. {names} picked {team} first. After 1-1 with Saudi Arabia, they are already preparing the defense speech 🎤😬",
-        "en_count": "Oh, the shame. {names} picked {team} first. After 1-1 with Saudi Arabia, they are already preparing the defense speech 🎤😬"
+        "he_name": "אוי הבושה. {names} בחר את {team} כמנצחת המונדיאל, ואז הגיע 1-1 מול ערב הסעודית. נאום ההגנה מתחיל עכשיו 🎤😬",
+        "he_names": "אוי הבושה. {names} בחרו את {team} כמנצחת המונדיאל, ואז הגיע 1-1 מול ערב הסעודית. נאום ההגנה מתחיל עכשיו 🎤😬",
+        "he_count": "אוי הבושה. {names} בחרו את {team} כמנצחת המונדיאל, ואז הגיע 1-1 מול ערב הסעודית. נאום ההגנה מתחיל עכשיו 🎤😬",
+        "en_name": "Oh, the shame. {names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. The defense speech starts now 🎤😬",
+        "en_names": "Oh, the shame. {names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. The defense speech starts now 🎤😬",
+        "en_count": "Oh, the shame. {names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. The defense speech starts now 🎤😬"
       },
+      "pool_focuses": [
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "URU",
+          "team_he": "אורוגוואי",
+          "team_en": "Uruguay",
+          "he_name": "אוי הבושה. {names} בחר את {team} כמנצחת המונדיאל, ואז הגיע 1-1 מול ערב הסעודית. נאום ההגנה מתחיל עכשיו 🎤😬",
+          "he_names": "אוי הבושה. {names} בחרו את {team} כמנצחת המונדיאל, ואז הגיע 1-1 מול ערב הסעודית. נאום ההגנה מתחיל עכשיו 🎤😬",
+          "he_count": "אוי הבושה. {names} בחרו את {team} כמנצחת המונדיאל, ואז הגיע 1-1 מול ערב הסעודית. נאום ההגנה מתחיל עכשיו 🎤😬",
+          "en_name": "Oh, the shame. {names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. The defense speech starts now 🎤😬",
+          "en_names": "Oh, the shame. {names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. The defense speech starts now 🎤😬",
+          "en_count": "Oh, the shame. {names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. The defense speech starts now 🎤😬"
+        },
+        {
+          "table": "group_position_picks",
+          "team_code": "URU",
+          "team_he": "אורוגוואי",
+          "team_en": "Uruguay",
+          "position": 1,
+          "he_name": "אוי הבושה. {names} שם את {team} ראשונה בבית, ואחרי 1-1 מול ערב הסעודית הוא כבר בשלב התירוצים 🎤😬",
+          "he_names": "אוי הבושה. {names} שמו את {team} ראשונה בבית, ואחרי 1-1 מול ערב הסעודית הם כבר בשלב התירוצים 🎤😬",
+          "he_count": "אוי הבושה. {names} שמו את {team} ראשונה בבית, ואחרי 1-1 מול ערב הסעודית הם כבר בשלב התירוצים 🎤😬",
+          "en_name": "Oh, the shame. {names} picked {team} first in the group, and after 1-1 with Saudi Arabia he is already in excuse mode 🎤😬",
+          "en_names": "Oh, the shame. {names} picked {team} first in the group, and after 1-1 with Saudi Arabia they are already in excuse mode 🎤😬",
+          "en_count": "Oh, the shame. {names} picked {team} first in the group, and after 1-1 with Saudi Arabia they are already in excuse mode 🎤😬"
+        }
+      ],
       "he": {
         "headline": "ערב הסעודית ואורוגוואי נפרדו ב-1-1: דרמה בלי הכרעה",
-        "caption": "אורוגוואי נתקעה ב-1-1 מול ערב הסעודית. מי שהלך איתה בראש הבית כבר בשלב \"חכו, זה עוד יסתדר\" 😬"
+        "caption": "ערב הסעודית הוציאה 1-1 מאורוגוואי, ופתאום בית H קיבל סיפור הרבה יותר רציני 🎤😬"
       },
       "en": {
         "headline": "Saudi Arabia and Uruguay draw 1-1: No winner, all drama",
-        "caption": "Uruguay got stuck at 1-1 with Saudi Arabia. Anyone who put them first is already in \"wait, it will be fine\" mode 😬"
+        "caption": "Saudi Arabia pulled a 1-1 out of Uruguay, and suddenly Group H has a much bigger story 🎤😬"
       }
     },
     {
@@ -79,25 +120,51 @@
       "result": "BEL 1-1 EGY",
       "top_label": "DRAW!",
       "pool_focus": {
-        "table": "group_position_picks",
+        "table": "tournament_winner_picks",
         "team_code": "BEL",
         "team_he": "בלגיה",
         "team_en": "Belgium",
-        "position": 1,
-        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 1-1 מול מצרים, הביטחון ביקש חילוף 😬",
-        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול מצרים, הביטחון הקבוצתי כבר ביקש חילוף 😬",
-        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול מצרים, הביטחון הקבוצתי כבר ביקש חילוף 😬",
-        "en_name": "{names} picked {team} first. After 1-1 with Egypt, that confidence officially requested a substitution 😬",
-        "en_names": "{names} picked {team} first. After 1-1 with Egypt, the group confidence officially requested a substitution 😬",
-        "en_count": "{names} picked {team} first. After 1-1 with Egypt, the group confidence officially requested a substitution 😬"
+        "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 1-1 מול מצרים, הביטחון הזה כבר ביקש חילוף 😬",
+        "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-1 מול מצרים, הביטחון הקבוצתי כבר ביקש חילוף 😬",
+        "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-1 מול מצרים, הביטחון הקבוצתי כבר ביקש חילוף 😬",
+        "en_name": "{names} picked {team} to win the World Cup. After 1-1 with Egypt, that confidence officially requested a substitution 😬",
+        "en_names": "{names} picked {team} to win the World Cup. After 1-1 with Egypt, the group confidence officially requested a substitution 😬",
+        "en_count": "{names} picked {team} to win the World Cup. After 1-1 with Egypt, the group confidence officially requested a substitution 😬"
       },
+      "pool_focuses": [
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "BEL",
+          "team_he": "בלגיה",
+          "team_en": "Belgium",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 1-1 מול מצרים, הביטחון הזה כבר ביקש חילוף 😬",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-1 מול מצרים, הביטחון הקבוצתי כבר ביקש חילוף 😬",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-1 מול מצרים, הביטחון הקבוצתי כבר ביקש חילוף 😬",
+          "en_name": "{names} picked {team} to win the World Cup. After 1-1 with Egypt, that confidence officially requested a substitution 😬",
+          "en_names": "{names} picked {team} to win the World Cup. After 1-1 with Egypt, the group confidence officially requested a substitution 😬",
+          "en_count": "{names} picked {team} to win the World Cup. After 1-1 with Egypt, the group confidence officially requested a substitution 😬"
+        },
+        {
+          "table": "group_position_picks",
+          "team_code": "BEL",
+          "team_he": "בלגיה",
+          "team_en": "Belgium",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 1-1 מול מצרים, זה עדיין חי, אבל הדופק כבר לא רגוע 😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול מצרים, זה עדיין חי, אבל הדופק כבר לא רגוע 😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול מצרים, זה עדיין חי, אבל הדופק כבר לא רגוע 😬",
+          "en_name": "{names} picked {team} first in the group. After 1-1 with Egypt, it is alive, but the pulse is not calm 😬",
+          "en_names": "{names} picked {team} first in the group. After 1-1 with Egypt, it is alive, but the pulse is not calm 😬",
+          "en_count": "{names} picked {team} first in the group. After 1-1 with Egypt, it is alive, but the pulse is not calm 😬"
+        }
+      ],
       "he": {
         "headline": "בלגיה ומצרים נפרדו ב-1-1: דרמה בלי הכרעה",
-        "caption": "בלגיה ומצרים נפרדו ב-1-1, וכל מי שבנה על בלגיה לטיול קל קיבל דרמה אישית מוקדם מהצפוי 😬"
+        "caption": "בלגיה הובילה, מצרים לא נבהלה, וזה נגמר 1-1 שהשאיר את בית G פתוח ומאוד לא רגוע 😬"
       },
       "en": {
         "headline": "Belgium and Egypt draw 1-1: No winner, all drama",
-        "caption": "Belgium and Egypt finished 1-1, and everyone who expected an easy Belgium ride got personal drama early 😬"
+        "caption": "Belgium led, Egypt refused to blink, and the 1-1 left Group G open and very uncomfortable 😬"
       }
     },
     {
@@ -112,25 +179,51 @@
       "result": "ESP 0-0 CPV",
       "top_label": "DRAW!",
       "pool_focus": {
-        "table": "group_position_picks",
+        "table": "tournament_winner_picks",
         "team_code": "ESP",
         "team_he": "ספרד",
         "team_en": "Spain",
-        "position": 1,
-        "he_name": "אוי הבושה. {names} שם את {team} ראשונה בבית, ואחרי 0-0 מול כף ורדה הוא כבר מחפש תירוצים 🫣",
-        "he_names": "אוי הבושה. {names} שמו את {team} ראשונה בבית. אחרי 0-0 מול כף ורדה, הטופס שלהם נראה הרבה פחות בטוח 🫣",
-        "he_count": "אוי הבושה. {names} שמו את {team} ראשונה בבית. אחרי 0-0 מול כף ורדה, הטופס שלהם נראה הרבה פחות בטוח 🫣",
-        "en_name": "Oh, the shame. {names} picked {team} to top the group, and after 0-0 with Cape Verde he is already looking for excuses 🫣",
-        "en_names": "Oh, the shame. {names} picked {team} to top the group. After 0-0 with Cape Verde, their form looks much less safe 🫣",
-        "en_count": "Oh, the shame. {names} picked {team} to top the group. After 0-0 with Cape Verde, their form looks much less safe 🫣"
+        "he_name": "זה היה מביך... {names} בחר את {team} כמנצחת המונדיאל. אחרי 0-0 מול כף ורדה, הטופס שלו כבר מבקש עורך דין 🧾🫣",
+        "he_names": "זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 0-0 מול כף ורדה, הטפסים שלהם כבר מבקשים עורך דין 🧾🫣",
+        "he_count": "זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 0-0 מול כף ורדה, הטפסים שלהם כבר מבקשים עורך דין 🧾🫣",
+        "en_name": "That was awkward... {names} picked {team} to win the World Cup. After 0-0 with Cape Verde, his form already needs a lawyer 🧾🫣",
+        "en_names": "That was awkward... {names} picked {team} to win the World Cup. After 0-0 with Cape Verde, their forms already need a lawyer 🧾🫣",
+        "en_count": "That was awkward... {names} picked {team} to win the World Cup. After 0-0 with Cape Verde, their forms already need a lawyer 🧾🫣"
       },
+      "pool_focuses": [
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ESP",
+          "team_he": "ספרד",
+          "team_en": "Spain",
+          "he_name": "זה היה מביך... {names} בחר את {team} כמנצחת המונדיאל. אחרי 0-0 מול כף ורדה, הטופס שלו כבר מבקש עורך דין 🧾🫣",
+          "he_names": "זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 0-0 מול כף ורדה, הטפסים שלהם כבר מבקשים עורך דין 🧾🫣",
+          "he_count": "זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 0-0 מול כף ורדה, הטפסים שלהם כבר מבקשים עורך דין 🧾🫣",
+          "en_name": "That was awkward... {names} picked {team} to win the World Cup. After 0-0 with Cape Verde, his form already needs a lawyer 🧾🫣",
+          "en_names": "That was awkward... {names} picked {team} to win the World Cup. After 0-0 with Cape Verde, their forms already need a lawyer 🧾🫣",
+          "en_count": "That was awkward... {names} picked {team} to win the World Cup. After 0-0 with Cape Verde, their forms already need a lawyer 🧾🫣"
+        },
+        {
+          "table": "group_position_picks",
+          "team_code": "ESP",
+          "team_he": "ספרד",
+          "team_en": "Spain",
+          "position": 1,
+          "he_name": "אוי הבושה. {names} שם את {team} ראשונה בבית, ואז הגיע 0-0 מול כף ורדה. נאום ה\"זה רק משחק ראשון\" כבר מוכן 🎤",
+          "he_names": "אוי הבושה. {names} שמו את {team} ראשונה בבית, ואז הגיע 0-0 מול כף ורדה. נאום ה\"זה רק משחק ראשון\" כבר מוכן 🎤",
+          "he_count": "אוי הבושה. {names} שמו את {team} ראשונה בבית, ואז הגיע 0-0 מול כף ורדה. נאום ה\"זה רק משחק ראשון\" כבר מוכן 🎤",
+          "en_name": "Oh, the shame. {names} picked {team} to top the group, then Cape Verde made it 0-0. The \"it is only one game\" speech is ready 🎤",
+          "en_names": "Oh, the shame. {names} picked {team} to top the group, then Cape Verde made it 0-0. The \"it is only one game\" speech is ready 🎤",
+          "en_count": "Oh, the shame. {names} picked {team} to top the group, then Cape Verde made it 0-0. The \"it is only one game\" speech is ready 🎤"
+        }
+      ],
       "he": {
         "headline": "ספרד וכף ורדה נפרדו ב-0-0: דרמה בלי הכרעה",
-        "caption": "ספרד וכף ורדה סגרו 0-0, וזה היה מביך בשביל כל מי שסימן את ספרד על אוטומט. הטופס עדיין חי, אבל הרבה פחות זוהר 🫣"
+        "caption": "ספרד בעטה בלי למצוא שער, כף ורדה החזיקה 0-0, והמשחק הזה הפך את בית H להרבה פחות צפוי 🫣"
       },
       "en": {
         "headline": "Spain and Cape Verde draw 0-0: No winner, all drama",
-        "caption": "Spain and Cape Verde closed it at 0-0, and anyone who auto-picked Spain just had a very uncomfortable evening 🫣"
+        "caption": "Spain kept knocking without scoring, Cape Verde held the 0-0, and Group H suddenly looks much less predictable 🫣"
       }
     },
     {
@@ -145,25 +238,51 @@
       "result": "SWE 5-1 TUN",
       "top_label": "SWEDEN WINS!",
       "pool_focus": {
-        "table": "group_position_picks",
+        "table": "tournament_winner_picks",
         "team_code": "TUN",
         "team_he": "תוניסיה",
         "team_en": "Tunisia",
-        "position": 1,
-        "he_name": "זה היה מביך... {names} שם את {team} ראשונה בבית. אחרי 5-1, אפשר לקרוע את הטופס או למסגר אותו כמזכרת 🧾",
-        "he_names": "זה היה מביך... {names} שמו את {team} ראשונה בבית. אחרי 5-1, אפשר לקרוע את הטפסים או למסגר אותם כמזכרת 🧾",
-        "he_count": "זה היה מביך... {names} שמו את {team} ראשונה בבית. אחרי 5-1, אפשר לקרוע את הטפסים או למסגר אותם כמזכרת 🧾",
-        "en_name": "That was awkward... {names} picked {team} to top the group. After 5-1, the form can be torn up or framed as a souvenir 🧾",
-        "en_names": "That was awkward... {names} picked {team} to top the group. After 5-1, the forms can be torn up or framed as souvenirs 🧾",
-        "en_count": "That was awkward... {names} picked {team} to top the group. After 5-1, the forms can be torn up or framed as souvenirs 🧾"
+        "he_name": "זה היה מביך... {names} בחר את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטופס הזה נכנס למוזיאון ההחלטות האמיצות 🧾",
+        "he_names": "זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטפסים האלה נכנסים למוזיאון ההחלטות האמיצות 🧾",
+        "he_count": "זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטפסים האלה נכנסים למוזיאון ההחלטות האמיצות 🧾",
+        "en_name": "That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, that form belongs in the brave-decisions museum 🧾",
+        "en_names": "That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, those forms belong in the brave-decisions museum 🧾",
+        "en_count": "That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, those forms belong in the brave-decisions museum 🧾"
       },
+      "pool_focuses": [
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "TUN",
+          "team_he": "תוניסיה",
+          "team_en": "Tunisia",
+          "he_name": "זה היה מביך... {names} בחר את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטופס הזה נכנס למוזיאון ההחלטות האמיצות 🧾",
+          "he_names": "זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטפסים האלה נכנסים למוזיאון ההחלטות האמיצות 🧾",
+          "he_count": "זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטפסים האלה נכנסים למוזיאון ההחלטות האמיצות 🧾",
+          "en_name": "That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, that form belongs in the brave-decisions museum 🧾",
+          "en_names": "That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, those forms belong in the brave-decisions museum 🧾",
+          "en_count": "That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, those forms belong in the brave-decisions museum 🧾"
+        },
+        {
+          "table": "group_position_picks",
+          "team_code": "TUN",
+          "team_he": "תוניסיה",
+          "team_en": "Tunisia",
+          "position": 1,
+          "he_name": "זה היה מביך... {names} שם את {team} ראשונה בבית. אחרי 5-1 משוודיה, אפשר לקרוע את הטופס או למסגר אותו כמזכרת 🧾",
+          "he_names": "זה היה מביך... {names} שמו את {team} ראשונה בבית. אחרי 5-1 משוודיה, אפשר לקרוע את הטפסים או למסגר אותם כמזכרת 🧾",
+          "he_count": "זה היה מביך... {names} שמו את {team} ראשונה בבית. אחרי 5-1 משוודיה, אפשר לקרוע את הטפסים או למסגר אותם כמזכרת 🧾",
+          "en_name": "That was awkward... {names} picked {team} to top the group. After Sweden made it 5-1, the form can be torn up or framed as a souvenir 🧾",
+          "en_names": "That was awkward... {names} picked {team} to top the group. After Sweden made it 5-1, the forms can be torn up or framed as souvenirs 🧾",
+          "en_count": "That was awkward... {names} picked {team} to top the group. After Sweden made it 5-1, the forms can be torn up or framed as souvenirs 🧾"
+        }
+      ],
       "he": {
         "headline": "שוודיה ניצחה את תוניסיה 5-1: הצהרה!",
-        "caption": "שוודיה פירקה 5-1, וכל טופס עם תוניסיה למעלה ביקש רגע לבד 😬"
+        "caption": "שוודיה פירקה את תוניסיה 5-1, משחק אחד שהפך כל הימור נגד שוודיה למסמך בעייתי 🧾"
       },
       "en": {
         "headline": "Sweden beat Tunisia 5-1: Statement made!",
-        "caption": "Sweden smashed it 5-1, and every form with Tunisia on top asked for a moment alone 😬"
+        "caption": "Sweden smashed Tunisia 5-1, one match that turned every anti-Sweden form into a problematic document 🧾"
       }
     }
   ]

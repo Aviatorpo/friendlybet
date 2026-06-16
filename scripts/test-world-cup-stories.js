@@ -46,6 +46,22 @@ for (const story of stories) {
   if (!String(story.en && story.en.headline || '').includes(score)) {
     fail(`${story.id}: English headline missing score ${score}`);
   }
+  const copyText = [
+    story.he && story.he.caption,
+    story.en && story.en.caption
+  ].join(' ');
+  if (/מי ש|Anyone who|anyone who/i.test(copyText)) {
+    fail(`${story.id}: fallback caption must be match-specific, not generic pick banter`);
+  }
+  const focuses = Array.isArray(story.pool_focuses) && story.pool_focuses.length ? story.pool_focuses : (story.pool_focus ? [story.pool_focus] : []);
+  if (!focuses.length) fail(`${story.id}: missing pool focus data`);
+  focuses.forEach((focus, idx) => {
+    ['he_count', 'en_count'].forEach(key => {
+      if (focus && focus[key] && !String(focus[key]).includes('{names}')) {
+        fail(`${story.id}: pool_focuses[${idx}].${key} must preserve participant names`);
+      }
+    });
+  });
   if (outcome !== 'DRAW') {
     const heHeadline = String(story.he && story.he.headline || '');
     if (!heHeadline.includes('ניצחה את')) fail(`${story.id}: Hebrew win headline must use "ניצחה את"`);
@@ -81,6 +97,8 @@ const visualChecks = [
   [generatorJs.includes('60%-77%'), 'story generator prompt must preserve the current caption safe band'],
   [!generatorJs.includes('yellow result overlay'), 'story generator prompt must not reserve a yellow result overlay'],
   [!generatorJs.includes('50%-64%'), 'story generator prompt must not use the old face-level caption band'],
+  [appJs.includes('function _wcStoryFocuses') && appJs.includes('pool_focuses'), 'client must support ordered pool-specific story focus choices'],
+  [appJs.includes("table === 'knockout_picks' ? 'predicted_winner' : 'team_code'"), 'client must query specific pick tables by their actual team column'],
 ];
 visualChecks.forEach(([ok, message]) => { if (!ok) fail(message); });
 

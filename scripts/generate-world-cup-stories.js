@@ -123,115 +123,205 @@ const DRAW_FOCUS = {
 const STORY_COPY_OVERRIDES = {
   'ESP-CPV': {
     caption: {
-      he: 'ספרד וכף ורדה סגרו 0-0, וזה היה מביך בשביל כל מי שסימן את ספרד על אוטומט. הטופס עדיין חי, אבל הרבה פחות זוהר 🫣',
-      en: 'Spain and Cape Verde closed it at 0-0, and anyone who auto-picked Spain just had a very uncomfortable evening 🫣',
+      he: 'ספרד בעטה בלי למצוא שער, כף ורדה החזיקה 0-0, והמשחק הזה הפך את בית H להרבה פחות צפוי 🫣',
+      en: 'Spain kept knocking without scoring, Cape Verde held the 0-0, and Group H suddenly looks much less predictable 🫣',
     },
-    pool: {
-      he_name: 'אוי הבושה. {names} שם את {team} ראשונה בבית, ואחרי 0-0 מול כף ורדה הוא כבר מחפש תירוצים 🫣',
-      he_names: 'אוי הבושה. {names} שמו את {team} ראשונה בבית. אחרי 0-0 מול כף ורדה, הטופס שלהם נראה הרבה פחות בטוח 🫣',
-      he_count: 'אוי הבושה. {names} שמו את {team} ראשונה בבית. אחרי 0-0 מול כף ורדה, הטופס שלהם נראה הרבה פחות בטוח 🫣',
-      en_name: 'Oh, the shame. {names} picked {team} to top the group, and after 0-0 with Cape Verde he is already looking for excuses 🫣',
-      en_names: 'Oh, the shame. {names} picked {team} to top the group. After 0-0 with Cape Verde, their form looks much less safe 🫣',
-      en_count: 'Oh, the shame. {names} picked {team} to top the group. After 0-0 with Cape Verde, their form looks much less safe 🫣',
-    },
+    pool_focuses: [
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'ESP',
+        he_name: 'זה היה מביך... {names} בחר את {team} כמנצחת המונדיאל. אחרי 0-0 מול כף ורדה, הטופס שלו כבר מבקש עורך דין 🧾🫣',
+        he_names: 'זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 0-0 מול כף ורדה, הטפסים שלהם כבר מבקשים עורך דין 🧾🫣',
+        he_count: 'זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 0-0 מול כף ורדה, הטפסים שלהם כבר מבקשים עורך דין 🧾🫣',
+        en_name: 'That was awkward... {names} picked {team} to win the World Cup. After 0-0 with Cape Verde, his form already needs a lawyer 🧾🫣',
+        en_names: 'That was awkward... {names} picked {team} to win the World Cup. After 0-0 with Cape Verde, their forms already need a lawyer 🧾🫣',
+        en_count: 'That was awkward... {names} picked {team} to win the World Cup. After 0-0 with Cape Verde, their forms already need a lawyer 🧾🫣',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'ESP',
+        position: 1,
+        he_name: 'אוי הבושה. {names} שם את {team} ראשונה בבית, ואז הגיע 0-0 מול כף ורדה. נאום ה"זה רק משחק ראשון" כבר מוכן 🎤',
+        he_names: 'אוי הבושה. {names} שמו את {team} ראשונה בבית, ואז הגיע 0-0 מול כף ורדה. נאום ה"זה רק משחק ראשון" כבר מוכן 🎤',
+        he_count: 'אוי הבושה. {names} שמו את {team} ראשונה בבית, ואז הגיע 0-0 מול כף ורדה. נאום ה"זה רק משחק ראשון" כבר מוכן 🎤',
+        en_name: 'Oh, the shame. {names} picked {team} to top the group, then Cape Verde made it 0-0. The "it is only one game" speech is ready 🎤',
+        en_names: 'Oh, the shame. {names} picked {team} to top the group, then Cape Verde made it 0-0. The "it is only one game" speech is ready 🎤',
+        en_count: 'Oh, the shame. {names} picked {team} to top the group, then Cape Verde made it 0-0. The "it is only one game" speech is ready 🎤',
+      },
+    ],
   },
   'BEL-EGY': {
     caption: {
-      he: 'בלגיה ומצרים נפרדו ב-1-1, וכל מי שבנה על בלגיה לטיול קל קיבל דרמה אישית מוקדם מהצפוי 😬',
-      en: 'Belgium and Egypt finished 1-1, and everyone who expected an easy Belgium ride got personal drama early 😬',
+      he: 'בלגיה הובילה, מצרים לא נבהלה, וזה נגמר 1-1 שהשאיר את בית G פתוח ומאוד לא רגוע 😬',
+      en: 'Belgium led, Egypt refused to blink, and the 1-1 left Group G open and very uncomfortable 😬',
     },
-    pool: {
-      he_name: '{names} שם את {team} ראשונה בבית. אחרי 1-1 מול מצרים, הביטחון ביקש חילוף 😬',
-      he_names: '{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול מצרים, הביטחון הקבוצתי כבר ביקש חילוף 😬',
-      he_count: '{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול מצרים, הביטחון הקבוצתי כבר ביקש חילוף 😬',
-      en_name: '{names} picked {team} first. After 1-1 with Egypt, that confidence officially requested a substitution 😬',
-      en_names: '{names} picked {team} first. After 1-1 with Egypt, the group confidence officially requested a substitution 😬',
-      en_count: '{names} picked {team} first. After 1-1 with Egypt, the group confidence officially requested a substitution 😬',
-    },
+    pool_focuses: [
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'BEL',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי 1-1 מול מצרים, הביטחון הזה כבר ביקש חילוף 😬',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-1 מול מצרים, הביטחון הקבוצתי כבר ביקש חילוף 😬',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-1 מול מצרים, הביטחון הקבוצתי כבר ביקש חילוף 😬',
+        en_name: '{names} picked {team} to win the World Cup. After 1-1 with Egypt, that confidence officially requested a substitution 😬',
+        en_names: '{names} picked {team} to win the World Cup. After 1-1 with Egypt, the group confidence officially requested a substitution 😬',
+        en_count: '{names} picked {team} to win the World Cup. After 1-1 with Egypt, the group confidence officially requested a substitution 😬',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'BEL',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 1-1 מול מצרים, זה עדיין חי, אבל הדופק כבר לא רגוע 😬',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול מצרים, זה עדיין חי, אבל הדופק כבר לא רגוע 😬',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול מצרים, זה עדיין חי, אבל הדופק כבר לא רגוע 😬',
+        en_name: '{names} picked {team} first in the group. After 1-1 with Egypt, it is alive, but the pulse is not calm 😬',
+        en_names: '{names} picked {team} first in the group. After 1-1 with Egypt, it is alive, but the pulse is not calm 😬',
+        en_count: '{names} picked {team} first in the group. After 1-1 with Egypt, it is alive, but the pulse is not calm 😬',
+      },
+    ],
   },
   'SAU-URU': {
     caption: {
-      he: 'אורוגוואי נתקעה ב-1-1 מול ערב הסעודית. מי שהלך איתה בראש הבית כבר בשלב "חכו, זה עוד יסתדר" 😬',
-      en: 'Uruguay got stuck at 1-1 with Saudi Arabia. Anyone who put them first is already in "wait, it will be fine" mode 😬',
+      he: 'ערב הסעודית הוציאה 1-1 מאורוגוואי, ופתאום בית H קיבל סיפור הרבה יותר רציני 🎤😬',
+      en: 'Saudi Arabia pulled a 1-1 out of Uruguay, and suddenly Group H has a much bigger story 🎤😬',
     },
-    pool: {
-      he_name: 'אוי הבושה. {names} שם את {team} ראשונה בבית, ואחרי 1-1 מול ערב הסעודית הוא כבר מכין נאום הגנה 🎤😬',
-      he_names: 'אוי הבושה. {names} שמו את {team} ראשונה בבית. אחרי 1-1 מול ערב הסעודית, הם כבר מכינים נאום הגנה 🎤😬',
-      he_count: 'אוי הבושה. {names} שמו את {team} ראשונה בבית. אחרי 1-1 מול ערב הסעודית, הם כבר מכינים נאום הגנה 🎤😬',
-      en_name: 'Oh, the shame. {names} picked {team} first, and after 1-1 with Saudi Arabia he is already preparing the defense speech 🎤😬',
-      en_names: 'Oh, the shame. {names} picked {team} first. After 1-1 with Saudi Arabia, they are already preparing the defense speech 🎤😬',
-      en_count: 'Oh, the shame. {names} picked {team} first. After 1-1 with Saudi Arabia, they are already preparing the defense speech 🎤😬',
-    },
+    pool_focuses: [
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'URU',
+        he_name: 'אוי הבושה. {names} בחר את {team} כמנצחת המונדיאל, ואז הגיע 1-1 מול ערב הסעודית. נאום ההגנה מתחיל עכשיו 🎤😬',
+        he_names: 'אוי הבושה. {names} בחרו את {team} כמנצחת המונדיאל, ואז הגיע 1-1 מול ערב הסעודית. נאום ההגנה מתחיל עכשיו 🎤😬',
+        he_count: 'אוי הבושה. {names} בחרו את {team} כמנצחת המונדיאל, ואז הגיע 1-1 מול ערב הסעודית. נאום ההגנה מתחיל עכשיו 🎤😬',
+        en_name: 'Oh, the shame. {names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. The defense speech starts now 🎤😬',
+        en_names: 'Oh, the shame. {names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. The defense speech starts now 🎤😬',
+        en_count: 'Oh, the shame. {names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. The defense speech starts now 🎤😬',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'URU',
+        position: 1,
+        he_name: 'אוי הבושה. {names} שם את {team} ראשונה בבית, ואחרי 1-1 מול ערב הסעודית הוא כבר בשלב התירוצים 🎤😬',
+        he_names: 'אוי הבושה. {names} שמו את {team} ראשונה בבית, ואחרי 1-1 מול ערב הסעודית הם כבר בשלב התירוצים 🎤😬',
+        he_count: 'אוי הבושה. {names} שמו את {team} ראשונה בבית, ואחרי 1-1 מול ערב הסעודית הם כבר בשלב התירוצים 🎤😬',
+        en_name: 'Oh, the shame. {names} picked {team} first in the group, and after 1-1 with Saudi Arabia he is already in excuse mode 🎤😬',
+        en_names: 'Oh, the shame. {names} picked {team} first in the group, and after 1-1 with Saudi Arabia they are already in excuse mode 🎤😬',
+        en_count: 'Oh, the shame. {names} picked {team} first in the group, and after 1-1 with Saudi Arabia they are already in excuse mode 🎤😬',
+      },
+    ],
   },
   'IRN-NZL': {
     caption: {
-      he: 'איראן וניו זילנד עשו 2-2, והבית הזה הפך לתיק פתוח. מי שהלך על איראן פתאום נראה הרבה פחות מוזר 🔥',
-      en: 'Iran and New Zealand made it 2-2, and this group is suddenly wide open. Iran believers look a lot less strange now 🔥',
+      he: 'איראן וניו זילנד נתנו 2-2 קצבי, ובית G נשאר פתוח בדיוק בשביל ההימורים האמיצים 🔥',
+      en: 'Iran and New Zealand gave us a lively 2-2, and Group G stayed wide open for the brave picks 🔥',
     },
-    pool: {
-      he_name: '{names} שם את {team} ראשונה בבית. גאון? אחרי 2-2 והבית הפתוח הזה, יש מצב 🔥',
-      he_names: '{names} שמו את {team} ראשונה בבית. גאונים? אחרי 2-2 והבית הפתוח הזה, יש מצב 🔥',
-      he_count: '{names} שמו את {team} ראשונה בבית. גאונים? אחרי 2-2 והבית הפתוח הזה, יש מצב 🔥',
-      en_name: '{names} picked {team} to top the group. Genius? After this 2-2 and an open group, maybe 🔥',
-      en_names: '{names} picked {team} to top the group. Geniuses? After this 2-2 and an open group, maybe 🔥',
-      en_count: '{names} picked {team} to top the group. Geniuses? After this 2-2 and an open group, maybe 🔥',
-    },
+    pool_focuses: [
+      {
+        table: 'group_position_picks',
+        team_code: 'IRN',
+        position: 1,
+        he_name: 'כולם לעמוד ולמחוא כפיים. {names} שם את {team} ראשונה בבית, ואחרי 2-2 מול ניו זילנד זה כבר לא נשמע הזוי 👏🔥',
+        he_names: 'כולם לעמוד ולמחוא כפיים. {names} שמו את {team} ראשונה בבית, ואחרי 2-2 מול ניו זילנד זה כבר לא נשמע הזוי 👏🔥',
+        he_count: 'כולם לעמוד ולמחוא כפיים. {names} שמו את {team} ראשונה בבית, ואחרי 2-2 מול ניו זילנד זה כבר לא נשמע הזוי 👏🔥',
+        en_name: 'Everybody stand up and clap. {names} picked {team} to top the group, and after 2-2 with New Zealand it no longer sounds crazy 👏🔥',
+        en_names: 'Everybody stand up and clap. {names} picked {team} to top the group, and after 2-2 with New Zealand it no longer sounds crazy 👏🔥',
+        en_count: 'Everybody stand up and clap. {names} picked {team} to top the group, and after 2-2 with New Zealand it no longer sounds crazy 👏🔥',
+      },
+    ],
   },
   'GER-CUR': {
     caption: {
-      he: 'גרמניה פתחה מבערים עם 7-1. מי שהימר על קוראסאו במקום הראשון כבר מחפש מחשבון וקצת אוויר.',
-      en: 'Germany turned the volume all the way up. Anyone who had Curacao first now needs a calculator and a little air.',
+      he: 'גרמניה פתחה מבערים עם 7-1 מול קוראסאו. זה לא היה משחק, זה היה תיקון אגרסיבי לטבלה 🔥',
+      en: 'Germany turned the volume all the way up with 7-1 against Curacao. Not a match, a brutal table correction 🔥',
     },
-    pool: {
-      he_name: '{names} הימר על {team} במקום הראשון. אחרי 7-1, זה כבר נראה כמו טופס שצריך טיפול נמרץ.',
-      he_names: '{names} הימרו על {team} במקום הראשון. אחרי 7-1, זה כבר נראה כמו טופס שצריך טיפול נמרץ.',
-      he_count: '{count} משתתפים הימרו על {team} במקום הראשון. אחרי 7-1, זה כבר נראה כמו טופס שצריך טיפול נמרץ.',
-      en_name: '{names} had {team} first. After 7-1, that pick needs a medic and a calculator.',
-      en_names: '{names} had {team} first. After 7-1, those picks need a medic and a calculator.',
-      en_count: '{count} members had {team} first. After 7-1, those picks need a medic and a calculator.',
-    },
+    pool_focuses: [
+      {
+        table: 'group_position_picks',
+        team_code: 'CUR',
+        position: 1,
+        he_name: 'זה היה מביך... {names} שם את {team} ראשונה בבית. אחרי 7-1 מגרמניה, הטופס הזה צריך טיפול נמרץ 🧾',
+        he_names: 'זה היה מביך... {names} שמו את {team} ראשונה בבית. אחרי 7-1 מגרמניה, הטפסים האלה צריכים טיפול נמרץ 🧾',
+        he_count: 'זה היה מביך... {names} שמו את {team} ראשונה בבית. אחרי 7-1 מגרמניה, הטפסים האלה צריכים טיפול נמרץ 🧾',
+        en_name: 'That was awkward... {names} picked {team} to top the group. After Germany made it 7-1, that form needs intensive care 🧾',
+        en_names: 'That was awkward... {names} picked {team} to top the group. After Germany made it 7-1, those forms need intensive care 🧾',
+        en_count: 'That was awkward... {names} picked {team} to top the group. After Germany made it 7-1, those forms need intensive care 🧾',
+      },
+    ],
   },
   'NED-JPN': {
     caption: {
-      he: 'הולנד ויפן השאירו את הבית פתוח ואת הטבלאות על ספיד. מי שהימר על הולנד לטיול קל קיבל שיעורי בית.',
-      en: 'Netherlands and Japan left the group wide open. Dutch first-place picks just got homework.',
+      he: 'הולנד ויפן סיימו 2-2 והשאירו את בית F פתוח. משחק אחד, וכל הטבלה נראית פחות רגועה 🟠',
+      en: 'Netherlands and Japan finished 2-2 and left Group F open. One match, and the whole table looks less calm 🟠',
     },
-    pool: {
-      he_name: '{names} הימר על {team} במקום הראשון. אחרי 2-2, הדרך לשם כבר נראית כמו שאלת בונוס.',
-      he_names: '{names} הימרו על {team} במקום הראשון. אחרי 2-2, הדרך לשם כבר נראית כמו שאלת בונוס.',
-      he_count: '{count} משתתפים הימרו על {team} במקום הראשון. אחרי 2-2, הדרך לשם כבר נראית כמו שאלת בונוס.',
-      en_name: '{names} had {team} first. After 2-2, that route now looks like a bonus question.',
-      en_names: '{names} had {team} first. After 2-2, that route now looks like a bonus question.',
-      en_count: '{count} members had {team} first. After 2-2, that route now looks like a bonus question.',
-    },
+    pool_focuses: [
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'NED',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי 2-2 מול יפן, הבחירה הזאת נראית קצת פחות אפויה 🟠',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-2 מול יפן, הבחירה הזאת נראית קצת פחות אפויה 🟠',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-2 מול יפן, הבחירה הזאת נראית קצת פחות אפויה 🟠',
+        en_name: '{names} picked {team} to win the World Cup. After 2-2 with Japan, that choice looks a little undercooked 🟠',
+        en_names: '{names} picked {team} to win the World Cup. After 2-2 with Japan, those choices look a little undercooked 🟠',
+        en_count: '{names} picked {team} to win the World Cup. After 2-2 with Japan, those choices look a little undercooked 🟠',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'NED',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 2-2 מול יפן, הדרך לשם כבר נראית כמו שאלת בונוס 🟠',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 2-2 מול יפן, הדרך לשם כבר נראית כמו שאלת בונוס 🟠',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 2-2 מול יפן, הדרך לשם כבר נראית כמו שאלת בונוס 🟠',
+        en_name: '{names} picked {team} to top the group. After 2-2 with Japan, that route now looks like a bonus question 🟠',
+        en_names: '{names} picked {team} to top the group. After 2-2 with Japan, that route now looks like a bonus question 🟠',
+        en_count: '{names} picked {team} to top the group. After 2-2 with Japan, that route now looks like a bonus question 🟠',
+      },
+    ],
   },
   'CIV-ECU': {
     caption: {
-      he: 'חוף השנהב לקחה 1-0 קטן עם אופי גדול. מי שהימר על אקוודור כבר חי מהתראה להתראה.',
-      en: 'Ivory Coast took a small 1-0 with a big attitude. Ecuador picks are living notification to notification now.',
+      he: 'חוף השנהב לקחה 1-0 קטן מאקוודור, אבל בטבלה זה מרגיש הרבה יותר גדול 📈',
+      en: 'Ivory Coast took a small 1-0 from Ecuador, but in the table it feels much bigger 📈',
     },
-    pool: {
-      he_name: '{names} הימר על {team} במקום הראשון. 1-0 כזה קטן, והטופס כבר מזיע.',
-      he_names: '{names} הימרו על {team} במקום הראשון. 1-0 כזה קטן, והטפסים כבר מזיעים.',
-      he_count: '{count} משתתפים הימרו על {team} במקום הראשון. 1-0 כזה קטן, והטפסים כבר מזיעים.',
-      en_name: '{names} had {team} first. A tiny 1-0, and that ticket is already sweating.',
-      en_names: '{names} had {team} first. A tiny 1-0, and those tickets are already sweating.',
-      en_count: '{count} members had {team} first. A tiny 1-0, and those tickets are already sweating.',
-    },
+    pool_focuses: [
+      {
+        table: 'group_position_picks',
+        team_code: 'ECU',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. 1-0 קטן לחוף השנהב, והטופס שלו כבר מזיע 📉',
+        he_names: '{names} שמו את {team} ראשונה בבית. 1-0 קטן לחוף השנהב, והטפסים שלהם כבר מזיעים 📉',
+        he_count: '{names} שמו את {team} ראשונה בבית. 1-0 קטן לחוף השנהב, והטפסים שלהם כבר מזיעים 📉',
+        en_name: '{names} picked {team} to top the group. A tiny 1-0 for Ivory Coast, and his form is already sweating 📉',
+        en_names: '{names} picked {team} to top the group. A tiny 1-0 for Ivory Coast, and their forms are already sweating 📉',
+        en_count: '{names} picked {team} to top the group. A tiny 1-0 for Ivory Coast, and their forms are already sweating 📉',
+      },
+    ],
   },
   'SWE-TUN': {
     caption: {
-      he: 'שוודיה פירקה 5-1, וכל טופס עם תוניסיה למעלה ביקש רגע לבד 😬',
-      en: 'Sweden smashed it 5-1, and every form with Tunisia on top asked for a moment alone 😬',
+      he: 'שוודיה פירקה את תוניסיה 5-1, משחק אחד שהפך כל הימור נגד שוודיה למסמך בעייתי 🧾',
+      en: 'Sweden smashed Tunisia 5-1, one match that turned every anti-Sweden form into a problematic document 🧾',
     },
-    pool: {
-      he_name: 'זה היה מביך... {names} שם את {team} ראשונה בבית. אחרי 5-1, אפשר לקרוע את הטופס או למסגר אותו כמזכרת 🧾',
-      he_names: 'זה היה מביך... {names} שמו את {team} ראשונה בבית. אחרי 5-1, אפשר לקרוע את הטפסים או למסגר אותם כמזכרת 🧾',
-      he_count: 'זה היה מביך... {names} שמו את {team} ראשונה בבית. אחרי 5-1, אפשר לקרוע את הטפסים או למסגר אותם כמזכרת 🧾',
-      en_name: 'That was awkward... {names} picked {team} to top the group. After 5-1, the form can be torn up or framed as a souvenir 🧾',
-      en_names: 'That was awkward... {names} picked {team} to top the group. After 5-1, the forms can be torn up or framed as souvenirs 🧾',
-      en_count: 'That was awkward... {names} picked {team} to top the group. After 5-1, the forms can be torn up or framed as souvenirs 🧾',
-    },
+    pool_focuses: [
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'TUN',
+        he_name: 'זה היה מביך... {names} בחר את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטופס הזה נכנס למוזיאון ההחלטות האמיצות 🧾',
+        he_names: 'זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטפסים האלה נכנסים למוזיאון ההחלטות האמיצות 🧾',
+        he_count: 'זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטפסים האלה נכנסים למוזיאון ההחלטות האמיצות 🧾',
+        en_name: 'That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, that form belongs in the brave-decisions museum 🧾',
+        en_names: 'That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, those forms belong in the brave-decisions museum 🧾',
+        en_count: 'That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, those forms belong in the brave-decisions museum 🧾',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'TUN',
+        position: 1,
+        he_name: 'זה היה מביך... {names} שם את {team} ראשונה בבית. אחרי 5-1 משוודיה, אפשר לקרוע את הטופס או למסגר אותו כמזכרת 🧾',
+        he_names: 'זה היה מביך... {names} שמו את {team} ראשונה בבית. אחרי 5-1 משוודיה, אפשר לקרוע את הטפסים או למסגר אותם כמזכרת 🧾',
+        he_count: 'זה היה מביך... {names} שמו את {team} ראשונה בבית. אחרי 5-1 משוודיה, אפשר לקרוע את הטפסים או למסגר אותם כמזכרת 🧾',
+        en_name: 'That was awkward... {names} picked {team} to top the group. After Sweden made it 5-1, the form can be torn up or framed as a souvenir 🧾',
+        en_names: 'That was awkward... {names} picked {team} to top the group. After Sweden made it 5-1, the forms can be torn up or framed as souvenirs 🧾',
+        en_count: 'That was awkward... {names} picked {team} to top the group. After Sweden made it 5-1, the forms can be torn up or framed as souvenirs 🧾',
+      },
+    ],
   },
 };
 
@@ -348,24 +438,39 @@ function topLabel(match, outcome) {
   return `${teamName(outcome, 'en').toUpperCase()} WINS!`;
 }
 
-function poolFocus(match, outcome) {
+function hydratePoolFocus(focus, fallbackTeamCode) {
+  const teamCode = focus.team_code || fallbackTeamCode;
+  return {
+    table: focus.table || 'group_position_picks',
+    team_code: teamCode,
+    team_he: focus.team_he || teamName(teamCode, 'he'),
+    team_en: focus.team_en || teamName(teamCode, 'en'),
+    ...(focus.table === 'group_position_picks' || !focus.table ? { position: focus.position || 1 } : {}),
+    ...focus,
+  };
+}
+
+function poolFocuses(match, outcome) {
   const focus = focusTeam(match, outcome);
   const teamHe = teamName(focus, 'he');
   const teamEn = teamName(focus, 'en');
   const score = scoreForOutcome(match, outcome);
   const override = storyOverride(match);
+  if (override && Array.isArray(override.pool_focuses) && override.pool_focuses.length) {
+    return override.pool_focuses.map(item => hydratePoolFocus(item, focus));
+  }
   if (override && override.pool) {
-    return {
+    return [{
       table: 'group_position_picks',
       team_code: focus,
       team_he: teamHe,
       team_en: teamEn,
       position: 1,
       ...override.pool,
-    };
+    }];
   }
   if (outcome === 'DRAW') {
-    return {
+    return [{
       table: 'group_position_picks',
       team_code: focus,
       team_he: teamHe,
@@ -377,9 +482,9 @@ function poolFocus(match, outcome) {
       en_name: `{names} picked {team} to top the group. After ${score}, that choice suddenly looks much less calm 😬`,
       en_names: `{names} picked {team} to top the group. After ${score}, that choice suddenly looks much less calm 😬`,
       en_count: `{names} picked {team} to top the group. After ${score}, that choice suddenly looks much less calm 😬`,
-    };
+    }];
   }
-  return {
+  return [{
     table: 'group_position_picks',
     team_code: focus,
     team_he: teamHe,
@@ -391,7 +496,11 @@ function poolFocus(match, outcome) {
     en_name: `{names} picked {team} to top the group. After ${score}, that form already needs a defense speech 🎤😬`,
     en_names: `{names} picked {team} to top the group. After ${score}, those forms already need a defense speech 🎤😬`,
     en_count: `{names} picked {team} to top the group. After ${score}, those forms already need a defense speech 🎤😬`,
-  };
+  }];
+}
+
+function poolFocus(match, outcome) {
+  return poolFocuses(match, outcome)[0];
 }
 
 function captionCopy(match, outcome) {
@@ -401,20 +510,21 @@ function captionCopy(match, outcome) {
   const score = scoreForOutcome(match, outcome);
   if (outcome === 'DRAW') {
     return {
-      he: `${teamName(match.home_team_code, 'he')} ו${teamName(match.away_team_code, 'he')} משאירות את הבית פתוח. מי שבנה על ${teamName(focus, 'he')} לטיול קל כבר מרגיש את הדופק עולה 👀🎢`,
-      en: `${teamName(match.home_team_code)} and ${teamName(match.away_team_code)} leave the group wide open. Anyone banking on ${teamName(focus)} just felt the pulse jump 👀🎢`,
+      he: `${teamName(match.home_team_code, 'he')} ו${teamName(match.away_team_code, 'he')} משאירות את הבית פתוח אחרי ${score}. הדרמה בטבלה רק התחילה 👀`,
+      en: `${teamName(match.home_team_code)} and ${teamName(match.away_team_code)} leave the group open after ${score}. The table drama is just getting started 👀`,
     };
   }
   const loser = focus;
   return {
-    he: `${teamName(outcome, 'he')} עושה רעש עם ${score}. מי שבנה על ${teamName(loser, 'he')} קיבל תזכורת קטנה שהטבלה לא עושה הנחות 😅🔥`,
-    en: `${teamName(outcome)} makes noise with ${score}. Anyone banking on ${teamName(loser)} just got a small reminder that the table has no mercy 😅🔥`,
+    he: `${teamName(outcome, 'he')} עושה רעש עם ${score} מול ${teamName(loser, 'he')}. משחק אחד, והטבלה כבר נראית אחרת 🔥`,
+    en: `${teamName(outcome)} makes noise with ${score} against ${teamName(loser)}. One match, and the table already looks different 🔥`,
   };
 }
 
 function buildStory(match, image, outcome) {
   const titles = titleCopy(match, outcome);
   const captions = captionCopy(match, outcome);
+  const focuses = poolFocuses(match, outcome);
   return {
     id: storyId(match),
     match_id: match.id,
@@ -423,7 +533,8 @@ function buildStory(match, image, outcome) {
     outcome,
     result: resultText(match),
     top_label: topLabel(match, outcome),
-    pool_focus: poolFocus(match, outcome),
+    pool_focus: focuses[0],
+    pool_focuses: focuses,
     he: { headline: titles.he, caption: captions.he },
     en: { headline: titles.en, caption: captions.en },
   };
