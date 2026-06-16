@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-06-16T08:58:23.703Z",
-  "freshUntil": "2026-06-16T14:58:23.703Z",
-  "count": 8,
+  "updatedAt": "2026-06-16T11:28:09.642Z",
+  "freshUntil": "2026-06-16T17:28:09.642Z",
+  "count": 9,
   "items": [
     {
       "id": "result-ad42617c-4294-4f50-bade-2a7ec9659bf3",
@@ -74,6 +74,15 @@
       "en": "Austria vs Jordan, tomorrow 07:00. Not the shiniest match, but these are the ones that move places without asking.",
       "sources": [],
       "expires_at": "2026-06-17T04:00:00.000Z"
+    },
+    {
+      "id": "fixture-35e0d352-c243-43c0-8e50-3a52f3642801",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "פורטוגל נגד קונגו הדמוקרטית, מחר 20:00. פורטוגל מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
+      "en": "Portugal vs Congo DR, tomorrow 20:00. Portugal comes in as favorite, which is exactly where predictions start sweating.",
+      "sources": [],
+      "expires_at": "2026-06-17T17:00:00.000Z"
     }
   ]
 }
