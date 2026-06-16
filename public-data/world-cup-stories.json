@@ -1,6 +1,138 @@
 {
-  "updated_at": "2026-06-15T11:30:04.000Z",
+  "updated_at": "2026-06-16T06:02:04.793Z",
   "items": [
+    {
+      "id": "irn-nzl-2026-06-16",
+      "match_id": "ad42617c-4294-4f50-bade-2a7ec9659bf3",
+      "image": "story-assets/iran-new-zealand-draw.png",
+      "teams": [
+        "IRN",
+        "NZL"
+      ],
+      "outcome": "DRAW",
+      "result": "IRN 2-2 NZL",
+      "top_label": "DRAW!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "IRN",
+        "team_he": "איראן",
+        "team_en": "Iran",
+        "position": 1,
+        "he_name": "{names} הימר על {team} במקום הראשון. אחרי 2-2 מול ניו זילנד, צריך פה עצבים של קפטן.",
+        "he_names": "{names} הימרו על {team} במקום הראשון. אחרי 2-2 מול ניו זילנד, צריך פה עצבים של קפטן.",
+        "he_count": "{count} משתתפים הימרו על {team} במקום הראשון. אחרי 2-2 מול ניו זילנד, צריך פה עצבים של קפטן.",
+        "en_name": "{names} had {team} first. After 2-2 with New Zealand, that pick needs captain-level nerves.",
+        "en_names": "{names} had {team} first. After 2-2 with New Zealand, those picks need captain-level nerves.",
+        "en_count": "{count} members had {team} first. After 2-2 with New Zealand, those picks need captain-level nerves."
+      },
+      "he": {
+        "headline": "איראן וניו זילנד נפרדו ב-2-2: דרמה בלי הכרעה",
+        "caption": "איראן וניו זילנד סיימו 2-2 ופתחו את הבית כמו שער בדקה 90. מי שהימר על איראן בראש קיבל ערב לא רגוע."
+      },
+      "en": {
+        "headline": "Iran and New Zealand draw 2-2: No winner, all drama",
+        "caption": "Iran and New Zealand finished 2-2 and blew the group open. Iran-first picks just had a very loud evening."
+      }
+    },
+    {
+      "id": "sau-uru-2026-06-15",
+      "match_id": "13081dbc-3b64-4694-a70d-05021f4bce96",
+      "image": "story-assets/saudi-arabia-uruguay-draw.png",
+      "teams": [
+        "SAU",
+        "URU"
+      ],
+      "outcome": "DRAW",
+      "result": "SAU 1-1 URU",
+      "top_label": "DRAW!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "URU",
+        "team_he": "אורוגוואי",
+        "team_en": "Uruguay",
+        "position": 1,
+        "he_name": "{names} הימר על {team} במקום הראשון. אחרי 1-1 מול ערב הסעודית, זה כבר לא טיול, זה ניווט.",
+        "he_names": "{names} הימרו על {team} במקום הראשון. אחרי 1-1 מול ערב הסעודית, זה כבר לא טיול, זה ניווט.",
+        "he_count": "{count} משתתפים הימרו על {team} במקום הראשון. אחרי 1-1 מול ערב הסעודית, זה כבר לא טיול, זה ניווט.",
+        "en_name": "{names} had {team} first. After 1-1 with Saudi Arabia, this is no stroll; it is navigation.",
+        "en_names": "{names} had {team} first. After 1-1 with Saudi Arabia, this is no stroll; it is navigation.",
+        "en_count": "{count} members had {team} first. After 1-1 with Saudi Arabia, this is no stroll; it is navigation."
+      },
+      "he": {
+        "headline": "ערב הסעודית ואורוגוואי נפרדו ב-1-1: דרמה בלי הכרעה",
+        "caption": "אורוגוואי נעצרה בערב הסעודית על 1-1. מי שהימר על אורוגוואי לשליטה מלאה קיבל משחק עם סימן אזהרה."
+      },
+      "en": {
+        "headline": "Saudi Arabia and Uruguay draw 1-1: No winner, all drama",
+        "caption": "Uruguay got held by Saudi Arabia at 1-1. Uruguay-first picks just got a warning light on the dashboard."
+      }
+    },
+    {
+      "id": "bel-egy-2026-06-15",
+      "match_id": "e6a4624d-c1dc-437f-98e4-42926b6db1d7",
+      "image": "story-assets/belgium-egypt-draw.png",
+      "teams": [
+        "BEL",
+        "EGY"
+      ],
+      "outcome": "DRAW",
+      "result": "BEL 1-1 EGY",
+      "top_label": "DRAW!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "BEL",
+        "team_he": "בלגיה",
+        "team_en": "Belgium",
+        "position": 1,
+        "he_name": "{names} הימר על {team} במקום הראשון. אחרי 1-1 מול מצרים, התחזית עדיין חיה אבל הדופק עלה.",
+        "he_names": "{names} הימרו על {team} במקום הראשון. אחרי 1-1 מול מצרים, התחזית עדיין חיה אבל הדופק עלה.",
+        "he_count": "{count} משתתפים הימרו על {team} במקום הראשון. אחרי 1-1 מול מצרים, התחזית עדיין חיה אבל הדופק עלה.",
+        "en_name": "{names} had {team} first. After 1-1 with Egypt, the pick is alive but breathing harder.",
+        "en_names": "{names} had {team} first. After 1-1 with Egypt, those picks are alive but breathing harder.",
+        "en_count": "{count} members had {team} first. After 1-1 with Egypt, those picks are alive but breathing harder."
+      },
+      "he": {
+        "headline": "בלגיה ומצרים נפרדו ב-1-1: דרמה בלי הכרעה",
+        "caption": "בלגיה ומצרים חילקו נקודות, והבית קיבל עוד קצת דרמה. מי שבנה על בלגיה בראש הבית כבר מזיע בחליפה."
+      },
+      "en": {
+        "headline": "Belgium and Egypt draw 1-1: No winner, all drama",
+        "caption": "Belgium and Egypt split the points, and the group got louder. Belgium-first picks are sweating through the suit."
+      }
+    },
+    {
+      "id": "esp-cpv-2026-06-15",
+      "match_id": "ca4ce07e-2afd-4f64-a6ec-1a83c5083ccb",
+      "image": "story-assets/spain-cape-verde-draw.png",
+      "teams": [
+        "ESP",
+        "CPV"
+      ],
+      "outcome": "DRAW",
+      "result": "ESP 0-0 CPV",
+      "top_label": "DRAW!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "ESP",
+        "team_he": "ספרד",
+        "team_en": "Spain",
+        "position": 1,
+        "he_name": "{names} הימר על {team} במקום הראשון. אחרי 0-0 מול קייפ ורדה, זה כבר פחות מסלול VIP ויותר עמידה בתור.",
+        "he_names": "{names} הימרו על {team} במקום הראשון. אחרי 0-0 מול קייפ ורדה, זה כבר פחות מסלול VIP ויותר עמידה בתור.",
+        "he_count": "{count} משתתפים הימרו על {team} במקום הראשון. אחרי 0-0 מול קייפ ורדה, זה כבר פחות מסלול VIP ויותר עמידה בתור.",
+        "en_name": "{names} had {team} first. After 0-0 with Cape Verde, that VIP lane has traffic.",
+        "en_names": "{names} had {team} first. After 0-0 with Cape Verde, that VIP lane has traffic.",
+        "en_count": "{count} members had {team} first. After 0-0 with Cape Verde, that VIP lane has traffic."
+      },
+      "he": {
+        "headline": "ספרד וכף ורדה נפרדו ב-0-0: דרמה בלי הכרעה",
+        "caption": "ספרד וקייפ ורדה נתקעו על 0-0. מי שהימר על ספרד לטיול קל קיבל תזכורת שהמונדיאל לא מחלק הנחות."
+      },
+      "en": {
+        "headline": "Spain and Cape Verde draw 0-0: No winner, all drama",
+        "caption": "Spain and Cape Verde got stuck at 0-0. Spain-first picks just learned the World Cup does not hand out discounts."
+      }
+    },
     {
       "id": "swe-tun-2026-06-15",
       "match_id": "e261116f-e7d0-46b1-a8c2-7a55748b84b2",
@@ -32,138 +164,6 @@
       "en": {
         "headline": "Sweden beat Tunisia 5-1: Statement made!",
         "caption": "Sweden left no room for interpretation with 5-1. Tunisia picks need a very good cover story."
-      }
-    },
-    {
-      "id": "civ-ecu-2026-06-14",
-      "match_id": "a3f06b97-9c08-4c69-9628-c788d8e85747",
-      "image": "story-assets/ivory-coast-wins-ecuador.png",
-      "teams": [
-        "CIV",
-        "ECU"
-      ],
-      "outcome": "CIV",
-      "result": "CIV 1-0 ECU",
-      "top_label": "IVORY COAST WINS!",
-      "pool_focus": {
-        "table": "group_position_picks",
-        "team_code": "ECU",
-        "team_he": "אקוודור",
-        "team_en": "Ecuador",
-        "position": 1,
-        "he_name": "{names} הימר על {team} במקום הראשון. 1-0 כזה קטן, והטופס כבר מזיע.",
-        "he_names": "{names} הימרו על {team} במקום הראשון. 1-0 כזה קטן, והטפסים כבר מזיעים.",
-        "he_count": "{count} משתתפים הימרו על {team} במקום הראשון. 1-0 כזה קטן, והטפסים כבר מזיעים.",
-        "en_name": "{names} had {team} first. A tiny 1-0, and that ticket is already sweating.",
-        "en_names": "{names} had {team} first. A tiny 1-0, and those tickets are already sweating.",
-        "en_count": "{count} members had {team} first. A tiny 1-0, and those tickets are already sweating."
-      },
-      "he": {
-        "headline": "חוף השנהב ניצחה את אקוודור 1-0: הצהרה!",
-        "caption": "חוף השנהב לקחה 1-0 קטן עם אופי גדול. מי שהימר על אקוודור כבר חי מהתראה להתראה."
-      },
-      "en": {
-        "headline": "Ivory Coast beat Ecuador 1-0: Statement made!",
-        "caption": "Ivory Coast took a small 1-0 with a big attitude. Ecuador picks are living notification to notification now."
-      }
-    },
-    {
-      "id": "ned-jpn-2026-06-14",
-      "match_id": "1df38ad2-68c6-4a4a-849b-57df76d4d502",
-      "image": "story-assets/netherlands-japan-draw.png",
-      "teams": [
-        "NED",
-        "JPN"
-      ],
-      "outcome": "DRAW",
-      "result": "NED 2-2 JPN",
-      "top_label": "DRAW!",
-      "pool_focus": {
-        "table": "group_position_picks",
-        "team_code": "NED",
-        "team_he": "הולנד",
-        "team_en": "Netherlands",
-        "position": 1,
-        "he_name": "{names} הימר על {team} במקום הראשון. אחרי 2-2, הדרך לשם כבר נראית כמו שאלת בונוס.",
-        "he_names": "{names} הימרו על {team} במקום הראשון. אחרי 2-2, הדרך לשם כבר נראית כמו שאלת בונוס.",
-        "he_count": "{count} משתתפים הימרו על {team} במקום הראשון. אחרי 2-2, הדרך לשם כבר נראית כמו שאלת בונוס.",
-        "en_name": "{names} had {team} first. After 2-2, that route now looks like a bonus question.",
-        "en_names": "{names} had {team} first. After 2-2, that route now looks like a bonus question.",
-        "en_count": "{count} members had {team} first. After 2-2, that route now looks like a bonus question."
-      },
-      "he": {
-        "headline": "הולנד ויפן נפרדו ב-2-2: דרמה בלי הכרעה",
-        "caption": "הולנד ויפן השאירו את הבית פתוח ואת הטבלאות על ספיד. מי שהימר על הולנד לטיול קל קיבל שיעורי בית."
-      },
-      "en": {
-        "headline": "Netherlands and Japan draw 2-2: No winner, all drama",
-        "caption": "Netherlands and Japan left the group wide open. Dutch first-place picks just got homework."
-      }
-    },
-    {
-      "id": "ger-cur-2026-06-14",
-      "match_id": "32c4991c-ac27-46cc-955e-dc326093a145",
-      "image": "story-assets/germany-wins-curacao.png",
-      "teams": [
-        "GER",
-        "CUR"
-      ],
-      "outcome": "GER",
-      "result": "GER 7-1 CUR",
-      "top_label": "GERMANY WINS!",
-      "pool_focus": {
-        "table": "group_position_picks",
-        "team_code": "CUR",
-        "team_he": "קוראסאו",
-        "team_en": "Curacao",
-        "position": 1,
-        "he_name": "{names} הימר על {team} במקום הראשון. אחרי 7-1, זה כבר נראה כמו טופס שצריך טיפול נמרץ.",
-        "he_names": "{names} הימרו על {team} במקום הראשון. אחרי 7-1, זה כבר נראה כמו טופס שצריך טיפול נמרץ.",
-        "he_count": "{count} משתתפים הימרו על {team} במקום הראשון. אחרי 7-1, זה כבר נראה כמו טופס שצריך טיפול נמרץ.",
-        "en_name": "{names} had {team} first. After 7-1, that pick needs a medic and a calculator.",
-        "en_names": "{names} had {team} first. After 7-1, those picks need a medic and a calculator.",
-        "en_count": "{count} members had {team} first. After 7-1, those picks need a medic and a calculator."
-      },
-      "he": {
-        "headline": "גרמניה ניצחה את קוראסאו 7-1: הצהרה!",
-        "caption": "גרמניה פתחה מבערים עם 7-1. מי שהימר על קוראסאו במקום הראשון כבר מחפש מחשבון וקצת אוויר."
-      },
-      "en": {
-        "headline": "Germany beat Curacao 7-1: Statement made!",
-        "caption": "Germany turned the volume all the way up. Anyone who had Curacao first now needs a calculator and a little air."
-      }
-    },
-    {
-      "id": "aus-tur-2026-06-14",
-      "match_id": "57df958d-3c1b-40cc-be35-281c9a3e61f4",
-      "image": "story-assets/australia-wins-turkey.png",
-      "teams": [
-        "AUS",
-        "TUR"
-      ],
-      "outcome": "AUS",
-      "result": "AUS 2-0 TUR",
-      "top_label": "AUSTRALIA WINS!",
-      "pool_focus": {
-        "table": "group_position_picks",
-        "team_code": "TUR",
-        "team_he": "טורקיה",
-        "team_en": "Turkey",
-        "position": 1,
-        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 2-0, ההימור הזה כבר מבקש VAR 😅🔥",
-        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 2-0, ההימור הזה כבר מבקש VAR 😅🔥",
-        "he_count": "{count} משתתפים שמו את {team} ראשונה בבית. אחרי 2-0, ההימור הזה כבר מבקש VAR 😅🔥",
-        "en_name": "{names} picked {team} to top the group. After 2-0, that pick is already asking for VAR 😅🔥",
-        "en_names": "{names} picked {team} to top the group. After 2-0, that pick is already asking for VAR 😅🔥",
-        "en_count": "{count} members picked {team} to top the group. After 2-0, that pick is already asking for VAR 😅🔥"
-      },
-      "he": {
-        "headline": "אוסטרליה ניצחה את טורקיה 2-0: הצהרה!",
-        "caption": "אוסטרליה עושה רעש עם 2-0. מי שבנה על טורקיה קיבל תזכורת קטנה שהטבלה לא עושה הנחות 😅🔥"
-      },
-      "en": {
-        "headline": "Australia beat Turkey 2-0: Statement made!",
-        "caption": "Australia makes noise with 2-0. Anyone banking on Turkey just got a small reminder that the table has no mercy 😅🔥"
       }
     }
   ]

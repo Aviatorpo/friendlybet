@@ -120,6 +120,46 @@
       "outcomes": {
         "SWE": "story-assets/sweden-wins-tunisia.png"
       }
+    },
+    {
+      "match_id": "ca4ce07e-2afd-4f64-a6ec-1a83c5083ccb",
+      "teams": [
+        "ESP",
+        "CPV"
+      ],
+      "outcomes": {
+        "DRAW": "story-assets/spain-cape-verde-draw.png"
+      }
+    },
+    {
+      "match_id": "e6a4624d-c1dc-437f-98e4-42926b6db1d7",
+      "teams": [
+        "BEL",
+        "EGY"
+      ],
+      "outcomes": {
+        "DRAW": "story-assets/belgium-egypt-draw.png"
+      }
+    },
+    {
+      "match_id": "13081dbc-3b64-4694-a70d-05021f4bce96",
+      "teams": [
+        "SAU",
+        "URU"
+      ],
+      "outcomes": {
+        "DRAW": "story-assets/saudi-arabia-uruguay-draw.png"
+      }
+    },
+    {
+      "match_id": "ad42617c-4294-4f50-bade-2a7ec9659bf3",
+      "teams": [
+        "IRN",
+        "NZL"
+      ],
+      "outcomes": {
+        "DRAW": "story-assets/iran-new-zealand-draw.png"
+      }
     }
   ]
 }

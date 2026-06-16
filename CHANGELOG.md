@@ -6,6 +6,8 @@ everything older lives here. Newest first.
 
 ## Recent versions
 
+**v2.10.45** - Added four fresh Story of the World Cup cards for the newly finished Spain-Cape Verde, Belgium-Egypt, Saudi Arabia-Uruguay, and Iran-New Zealand draws. Each new story uses the repo story-image rules with baked white draw titles, real integrated shirt numbers, lower-middle caption space, and no face overlap. Pool-aware captions now target real group-position picks for the relevant favorite-first angle, naming members in small pools or counting them in larger pools with distinct friendly banter. Updated the story generator and manifest so future refreshes preserve the same player-number choices and non-repeated copy. Version/cache bumped to v2.10.45.
+
 **v2.10.44** - Added four fresh Story of the World Cup cards for the newly finished Germany-Curacao, Netherlands-Japan, Ivory Coast-Ecuador, and Sweden-Tunisia matches. The new assets follow the repo story-image skill rules: baked white result titles, real integrated shirt numbers, lower-middle WhatsApp-safe caption space, no face overlap, and distinct pool-aware jokes. Updated the story generator and manifest so future refreshes preserve the same player-number choices, prompt constraints, and non-repeated banter. Version/cache bumped to v2.10.44.
 
 **v2.10.43** - Raised the Story of the World Cup caption panel into a WhatsApp-preview-safe lower-middle band while keeping it below player faces, and added a repo-local `friendlybet-world-cup-story-images` Codex skill documenting the reusable story-art concept, real shirt-number rules, RTL/LTR overlay rules, and visual validation checklist. Version/cache bumped to v2.10.43.
