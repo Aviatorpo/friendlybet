@@ -175,6 +175,135 @@ function whenLabel(iso, now) {
   return { he: `${d}/${m} ${a.hm}`, en: `${d}/${m} ${a.hm}` };
 }
 
+function variantFor(match, variants, salt = '') {
+  const key = `${String((match && match.id) || (match && match.match_date) || '')}:${salt}`;
+  return variants[Math.abs(hash(key)) % variants.length];
+}
+
+function resultCommentary(match, salt = '') {
+  const hs = Number(match.home_score);
+  const as = Number(match.away_score);
+  const homeHe = teamName(match.home_team_code, 'he');
+  const awayHe = teamName(match.away_team_code, 'he');
+  const homeEn = teamName(match.home_team_code, 'en');
+  const awayEn = teamName(match.away_team_code, 'en');
+  const homeFav = FAVORITES.has(match.home_team_code);
+  const awayFav = FAVORITES.has(match.away_team_code);
+  const upset = (hs > as && awayFav && !homeFav) || (as > hs && homeFav && !awayFav);
+  const totalGoals = hs + as;
+
+  if (hs === as) {
+    if (hs === 0) {
+      return variantFor(match, [
+        {
+          he: `${homeHe} ו${awayHe} נפרדו ב-0:0. לא משחק לפוסטר, כן משחק שמבלגן תחזיות.`,
+          en: `${homeEn} and ${awayEn} finished 0-0. Not one for the poster, definitely one for messy predictions.`,
+        },
+        {
+          he: `${homeHe} ו${awayHe} סיימו 0:0. לפעמים גם תיקו בלי שערים יודע לעשות רעש בטבלה.`,
+          en: `${homeEn} and ${awayEn} ended 0-0. Sometimes a goalless draw still makes noise on the table.`,
+        },
+      ], salt);
+    }
+    return variantFor(match, [
+      {
+        he: `${homeHe} ו${awayHe} התחלקו ב-${hs}:${as}. אין מנצחת, יש מספיק נזק לטבלאות.`,
+        en: `${homeEn} and ${awayEn} split it ${hs}-${as}. No winner, plenty of damage to the tables.`,
+      },
+      {
+        he: `${homeHe} נגד ${awayHe} נגמר ${hs}:${as}. מי שחיפש הכרעה קיבל שיעור בענווה.`,
+        en: `${homeEn} vs ${awayEn} finished ${hs}-${as}. Anyone looking for certainty got a humility lesson.`,
+      },
+      {
+        he: `${homeHe} ו${awayHe} עם ${hs}:${as}. נקודה לכל צד, כאב ראש לכל מי שניסה לחזות את זה.`,
+        en: `${homeEn} and ${awayEn} with a ${hs}-${as}. A point each, a headache for anyone who tried to call it.`,
+      },
+    ], salt);
+  }
+
+  const winnerHe = hs > as ? homeHe : awayHe;
+  const loserHe = hs > as ? awayHe : homeHe;
+  const winnerEn = hs > as ? homeEn : awayEn;
+  const loserEn = hs > as ? awayEn : homeEn;
+  const scoreHe = hs > as ? `${hs}:${as}` : `${as}:${hs}`;
+  const scoreEn = hs > as ? `${hs}-${as}` : `${as}-${hs}`;
+
+  if (upset) {
+    return {
+      he: `הפתעה על השולחן: ${winnerHe} ניצחה את ${loserHe} ${scoreHe}. כל מי שסימן "בטוח" כבר מזיע.`,
+      en: `Upset on the board: ${winnerEn} beat ${loserEn} ${scoreEn}. Anyone who marked this as "safe" is sweating now.`,
+    };
+  }
+  if (totalGoals >= 5) {
+    return {
+      he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe} במשחק פתוח לגמרי. כיף לצופים, כאב ראש למהמרים.`,
+      en: `${winnerEn} beat ${loserEn} ${scoreEn} in a wide-open one. Great for viewers, brutal for predictors.`,
+    };
+  }
+  if (hs === 0 || as === 0) {
+    return {
+      he: `${winnerHe} עשתה את העבודה עם ${scoreHe} נקי על ${loserHe}. לא נוצץ, כן שימושי בטבלה.`,
+      en: `${winnerEn} handled business with a clean ${scoreEn} over ${loserEn}. Not flashy, very useful on the table.`,
+    };
+  }
+  return {
+    he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe}. עוד תוצאה שנראית פשוטה רק אחרי שהיא כבר קרתה.`,
+    en: `${winnerEn} beat ${loserEn} ${scoreEn}. Another result that looks obvious only after it happened.`,
+  };
+}
+
+function fixtureCommentary(match, now, salt = '') {
+  const w = whenLabel(match.match_date, now);
+  const homeHe = teamName(match.home_team_code, 'he');
+  const awayHe = teamName(match.away_team_code, 'he');
+  const homeEn = teamName(match.home_team_code, 'en');
+  const awayEn = teamName(match.away_team_code, 'en');
+  const homeFav = FAVORITES.has(match.home_team_code);
+  const awayFav = FAVORITES.has(match.away_team_code);
+
+  if (homeFav && awayFav) {
+    return {
+      he: `משחק ענק: ${homeHe} נגד ${awayHe}, ${w.he}. זה מסוג המשחקים שמזיזים גם טבלאות וגם אגו.`,
+      en: `Heavyweight alert: ${homeEn} vs ${awayEn}, ${w.en}. The kind of match that moves tables and egos.`,
+    };
+  }
+  if (homeFav || awayFav) {
+    const favHe = homeFav ? homeHe : awayHe;
+    const favEn = homeFav ? homeEn : awayEn;
+    return variantFor(match, [
+      {
+        he: `${homeHe} נגד ${awayHe}, ${w.he}. ${favHe} מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.`,
+        en: `${homeEn} vs ${awayEn}, ${w.en}. ${favEn} comes in as favorite, which is exactly where predictions start sweating.`,
+      },
+      {
+        he: `${homeHe} נגד ${awayHe}, ${w.he}. על הנייר ${favHe} אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.`,
+        en: `${homeEn} vs ${awayEn}, ${w.en}. On paper ${favEn} should control it, but paper does not score pool points.`,
+      },
+    ], salt);
+  }
+  return variantFor(match, [
+    {
+      he: `${homeHe} נגד ${awayHe}, ${w.he}. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.`,
+      en: `${homeEn} vs ${awayEn}, ${w.en}. Quiet on paper, which is usually where pool chaos begins.`,
+    },
+    {
+      he: `${homeHe} נגד ${awayHe}, ${w.he}. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.`,
+      en: `${homeEn} vs ${awayEn}, ${w.en}. Not the shiniest match, but these are the ones that move places without asking.`,
+    },
+  ], salt);
+}
+
+function liveCommentary(match) {
+  const homeHe = teamName(match.home_team_code, 'he');
+  const awayHe = teamName(match.away_team_code, 'he');
+  const homeEn = teamName(match.home_team_code, 'en');
+  const awayEn = teamName(match.away_team_code, 'en');
+  return {
+    he: `${homeHe} נגד ${awayHe} עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.`,
+    en: `${homeEn} vs ${awayEn} is live now. Every minute can turn a genius pick into group-chat material.`,
+  };
+}
+
 function build(now) {
   const snap = readJson(MATCHES_FILE, { matches: [] });
   const matches = Array.isArray(snap.matches) ? snap.matches : [];
@@ -211,12 +340,13 @@ function build(now) {
     .sort((x, y) => Date.parse(x.match_date) - Date.parse(y.match_date))
     .slice(0, 3);
   for (const m of live) {
+    const text = liveCommentary(m);
     items.push({
       id: `live-${m.id}`,
       type: 'live',
       confidence: 'confirmed',
-      he: `${teamName(m.home_team_code, 'he')} נגד ${teamName(m.away_team_code, 'he')} משוחק עכשיו. התוצאה הרשמית תתעדכן בסיום המשחק.`,
-      en: `${teamName(m.home_team_code, 'en')} vs ${teamName(m.away_team_code, 'en')} is live now. The official score will update after full-time.`,
+      he: text.he,
+      en: text.en,
       sources: [],
       expires_at: iso(now.getTime() + 3 * HOUR_MS),
     });
@@ -228,13 +358,9 @@ function build(now) {
     .filter(m => now.getTime() - Date.parse(m.match_date) < RESULT_WINDOW_MS)
     .sort((x, y) => Date.parse(y.match_date) - Date.parse(x.match_date))
     .slice(0, 5);
-  for (const m of finished) {
-    const hs = m.home_score, as = m.away_score;
-    const upset = (hs > as && FAVORITES.has(m.away_team_code) && !FAVORITES.has(m.home_team_code)) ||
-                  (as > hs && FAVORITES.has(m.home_team_code) && !FAVORITES.has(m.away_team_code));
-    const he = `${upset ? 'הפתעה! ' : ''}${teamName(m.home_team_code, 'he')} ${hs}:${as} ${teamName(m.away_team_code, 'he')}.`;
-    const en = `${upset ? 'Upset! ' : ''}${teamName(m.home_team_code, 'en')} ${hs}-${as} ${teamName(m.away_team_code, 'en')}.`;
-    items.push({ id: `result-${m.id}`, type: 'result', confidence: 'confirmed', he, en, sources: [], expires_at: iso(Date.parse(m.match_date) + RESULT_WINDOW_MS) });
+  for (const [idx, m] of finished.entries()) {
+    const text = resultCommentary(m, idx);
+    items.push({ id: `result-${m.id}`, type: 'result', confidence: 'confirmed', he: text.he, en: text.en, sources: [], expires_at: iso(Date.parse(m.match_date) + RESULT_WINDOW_MS) });
   }
 
   // ---- 4. Upcoming fixtures (next 30h) --------------------------------------
@@ -243,12 +369,9 @@ function build(now) {
     .sort((x, y) => Date.parse(x.match_date) - Date.parse(y.match_date))
     .filter(m => Date.parse(m.match_date) - now.getTime() < FIXTURE_WINDOW_MS)
     .slice(0, 5);
-  for (const m of upcoming) {
-    const w = whenLabel(m.match_date, now);
-    const big = FAVORITES.has(m.home_team_code) && FAVORITES.has(m.away_team_code);
-    const he = `${big ? 'משחק ענק! ' : ''}${teamName(m.home_team_code, 'he')} נגד ${teamName(m.away_team_code, 'he')}, ${w.he}.`;
-    const en = `${big ? 'Big match: ' : ''}${teamName(m.home_team_code, 'en')} vs ${teamName(m.away_team_code, 'en')}, ${w.en}.`;
-    items.push({ id: `fixture-${m.id}`, type: 'fixture', confidence: 'confirmed', he, en, sources: [], expires_at: iso(Date.parse(m.match_date)) });
+  for (const [idx, m] of upcoming.entries()) {
+    const text = fixtureCommentary(m, now, idx);
+    items.push({ id: `fixture-${m.id}`, type: 'fixture', confidence: 'confirmed', he: text.he, en: text.en, sources: [], expires_at: iso(Date.parse(m.match_date)) });
   }
 
   // ---- 5. Verified same-day news (from the news agent) ----------------------
