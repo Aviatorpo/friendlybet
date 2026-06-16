@@ -32,6 +32,9 @@ function showScreen(screenId) {
   if (state.currentScreen === 'matches-screen' && screenId !== 'matches-screen') {
     if (typeof _stopMatchesAutoRefresh === 'function') _stopMatchesAutoRefresh();
   }
+  if (state.currentScreen === 'sp-locked-screen' && screenId !== 'sp-locked-screen') {
+    if (typeof _stopSpLockedResultsRefresh === 'function') _stopSpLockedResultsRefresh();
+  }
   // v2.10: leaving the knockout walkthrough by ANY route clears the recovery flag
   // so it can't leak into a normal save. (Flag is declared just above, so no TDZ.)
   if (spReopenActive && screenId !== 'ko-single-screen') {
@@ -2792,6 +2795,7 @@ state.results = {
   myScores: {},        // match_id -> score earned
   groupAdvancers: {},  // group letter -> [team_codes that advanced]
   knockoutWinners: {}, // match_id -> winning_team_code
+  groupStandings: {},  // group letter -> ordered team stats
   lastLoaded: null
 };
 
@@ -2903,28 +2907,125 @@ function _snapshotShouldReadDb(matches, maxAgeMs = 60000) {
   return _snapshotStaleDuringLive(matches, maxAgeMs) || _snapshotHasPastNonTerminal(matches);
 }
 
-async function loadResultsData() {
+function computeCurrentGroupStandings(matches) {
+  const standings = {};
+  const groupMatches = (matches || []).filter(m => {
+    const stage = String(m.stage || '').toUpperCase();
+    return _matchIsFinishedStatus(m) && (stage === 'GROUP_STAGE' || !!(m.group_letter || m.group));
+  });
+
+  const letters = (typeof WC2026_GROUP_LETTERS !== 'undefined') ? WC2026_GROUP_LETTERS : [];
+  letters.forEach(letter => {
+    const teams = ((typeof WC2026_GROUPS !== 'undefined' && WC2026_GROUPS[letter]) || []).slice();
+    if (!teams.length) {
+      groupMatches.filter(m => (m.group_letter || m.group) === letter).forEach(m => {
+        if (m.home_team_code && !teams.includes(m.home_team_code)) teams.push(m.home_team_code);
+        if (m.away_team_code && !teams.includes(m.away_team_code)) teams.push(m.away_team_code);
+      });
+    }
+
+    const stats = {};
+    teams.forEach((code, seed) => {
+      stats[code] = { code, played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0, gd: 0, points: 0, seed };
+    });
+
+    const played = groupMatches.filter(m => (m.group_letter || m.group) === letter);
+    played.forEach(m => {
+      const home = stats[m.home_team_code];
+      const away = stats[m.away_team_code];
+      const hs = Number(m.home_score);
+      const as = Number(m.away_score);
+      if (!home || !away || !Number.isFinite(hs) || !Number.isFinite(as)) return;
+
+      home.played++; away.played++;
+      home.gf += hs; home.ga += as; home.gd = home.gf - home.ga;
+      away.gf += as; away.ga += hs; away.gd = away.gf - away.ga;
+      if (hs > as) { home.wins++; away.losses++; home.points += 3; }
+      else if (hs < as) { away.wins++; home.losses++; away.points += 3; }
+      else { home.draws++; away.draws++; home.points++; away.points++; }
+    });
+
+    const h2h = codes => {
+      const set = new Set(codes);
+      const table = {};
+      codes.forEach(code => { table[code] = { pts: 0, gd: 0, gf: 0 }; });
+      played.forEach(m => {
+        if (!set.has(m.home_team_code) || !set.has(m.away_team_code)) return;
+        const hs = Number(m.home_score);
+        const as = Number(m.away_score);
+        if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
+        const home = table[m.home_team_code];
+        const away = table[m.away_team_code];
+        home.gf += hs; home.gd += hs - as;
+        away.gf += as; away.gd += as - hs;
+        if (hs > as) home.pts += 3;
+        else if (hs < as) away.pts += 3;
+        else { home.pts++; away.pts++; }
+      });
+      return table;
+    };
+
+    const ordered = Object.values(stats).sort((a, b) =>
+      (b.points - a.points) ||
+      (b.gd - a.gd) ||
+      (b.gf - a.gf) ||
+      a.code.localeCompare(b.code)
+    );
+
+    const sameOverall = (a, b) => a.points === b.points && a.gd === b.gd && a.gf === b.gf;
+    const result = [];
+    for (let i = 0; i < ordered.length;) {
+      let j = i + 1;
+      while (j < ordered.length && sameOverall(ordered[i], ordered[j])) j++;
+      if (j - i === 1) { result.push(ordered[i]); i = j; continue; }
+      const tied = ordered.slice(i, j);
+      const ht = h2h(tied.map(s => s.code));
+      tied.sort((a, b) =>
+        (ht[b.code].pts - ht[a.code].pts) ||
+        (ht[b.code].gd - ht[a.code].gd) ||
+        (ht[b.code].gf - ht[a.code].gf) ||
+        a.code.localeCompare(b.code)
+      );
+      result.push(...tied);
+      i = j;
+    }
+
+    standings[letter] = result;
+  });
+
+  return standings;
+}
+
+async function loadResultsData(options = {}) {
   if (!supabaseClient || !state.currentUser) return;
+  const opts = (options === true) ? { force: true } : (options || {});
+  const force = !!opts.force;
+  const preferDb = !!opts.preferDb;
 
   // Cache for 60 seconds to avoid spam
-  if (state.results.lastLoaded && (Date.now() - state.results.lastLoaded) < 60000) {
+  if (!force && state.results.lastLoaded && (Date.now() - state.results.lastLoaded) < 60000) {
     return;
   }
 
   try {
     // Load finished matches — prefer the CDN snapshot, filter locally; fall back to the DB.
-    let matches = await fetchMatchesFromCDN();
-    if (matches) {
-      matches = matches.filter(m => m.status === 'FINISHED');
-    } else {
+    let matches = null;
+    if (!preferDb) {
+      const snapshot = await fetchMatchesFromCDN(force ? 0 : undefined);
+      if (snapshot && !_snapshotShouldReadDb(snapshot)) {
+        matches = snapshot.filter(_matchIsFinishedStatus);
+      }
+    }
+    if (!matches) {
       const { data } = await supabaseClient
         .from('matches')
         .select('*')
-        .eq('status', 'FINISHED');
+        .in('status', _FINISHED_MATCH_STATUSES);
       matches = data || [];
     }
 
     state.results.finishedMatches = matches || [];
+    state.results.groupStandings = computeCurrentGroupStandings(matches || []);
     
     // Build per-team match list
     state.results.matchesByTeam = {};
@@ -3031,6 +3132,151 @@ function wasKnockoutPickCorrect(matchId, pickedTeamCode) {
 function getMyMatchScore(matchId, pickType) {
   const key = `${matchId}_${pickType}`;
   return state.results.myScores[key];
+}
+
+function _spGroupPredictionPositionMap(positions) {
+  const byTeam = {};
+  (positions || []).forEach((code, idx) => {
+    if (code) byTeam[code] = idx + 1;
+  });
+  return byTeam;
+}
+
+function _spGroupSummaryRowsHtml(positions) {
+  return [0,1,2,3].map(i => {
+    const code = positions[i];
+    return `<div class="sp-summary-row">
+      <span class="sr-pos">${i + 1}.</span>
+      <span class="sr-flag">${code ? getCountryFlag(code) : '—'}</span>
+      <span class="sr-value">${code ? getTeamName(code) : t('betting.notPicked')}</span>
+    </div>`;
+  }).join('');
+}
+
+function _spSignedNumber(n) {
+  const value = Number(n) || 0;
+  return value > 0 ? `+${value}` : String(value);
+}
+
+function _spGroupStandingsTableHtml(letter, positions) {
+  const rows = (state.results && state.results.groupStandings && state.results.groupStandings[letter]) || [];
+  const hasPlayed = rows.some(row => row.played > 0);
+  if (!rows.length || !hasPlayed) {
+    return `<div class="sp-current-group-empty">${t('groups.current.noFinalResults')}</div>`;
+  }
+
+  const picked = _spGroupPredictionPositionMap(positions || []);
+  return `<div class="sp-current-group-table" role="table" aria-label="${escapeHtml(t('groups.current.aria', { letter }))}">
+    <div class="sp-current-group-head" role="row">
+      <span>${t('groups.current.actual')}</span>
+      <span>${t('groups.current.pick')}</span>
+      <span>${t('groups.current.pointsShort')}</span>
+      <span>${t('groups.current.playedShort')}</span>
+      <span>${t('groups.current.formShort')}</span>
+      <span>${t('groups.current.gdShort')}</span>
+    </div>
+    ${rows.map((row, idx) => {
+      const pickPos = picked[row.code];
+      return `<div class="sp-current-group-row" role="row">
+        <span class="sp-current-team">
+          <span class="sp-current-rank">${idx + 1}.</span>
+          <span class="sr-flag">${getCountryFlag(row.code)}</span>
+          <span>${getTeamName(row.code)}</span>
+        </span>
+        <span class="${pickPos === idx + 1 ? 'sp-current-pick-ok' : ''}">${pickPos ? `#${pickPos}` : '—'}</span>
+        <span>${row.points}</span>
+        <span>${row.played}</span>
+        <span>${row.wins}-${row.draws}-${row.losses}</span>
+        <span class="${row.gd > 0 ? 'sp-current-gd-plus' : row.gd < 0 ? 'sp-current-gd-minus' : ''}">${_spSignedNumber(row.gd)}</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function _spGroupWithCurrentHtml(letter, positions) {
+  const safeLetter = escapeHtml(letter);
+  return `<div class="sp-group-summary" data-group-letter="${safeLetter}">
+    <div class="sp-group-heading">${t('groups.group')} ${safeLetter}</div>
+    ${_spGroupSummaryRowsHtml(positions || [])}
+    <details class="sp-current-group-compare" data-group-letter="${safeLetter}" ontoggle="spCurrentGroupToggled(this)">
+      <summary>
+        <span>${t('groups.current.compare')}</span>
+        <i class="ti ti-chevron-down" aria-hidden="true"></i>
+      </summary>
+      <div class="sp-current-group-body" data-current-group-body="${safeLetter}">
+        ${_spGroupStandingsTableHtml(letter, positions || [])}
+      </div>
+    </details>
+  </div>`;
+}
+
+function _spRefreshCurrentGroupTables() {
+  document.querySelectorAll('[data-current-group-body]').forEach(body => {
+    const letter = body.getAttribute('data-current-group-body');
+    if (!letter) return;
+    const positions = (spState.groupPositions && spState.groupPositions[letter]) || [];
+    body.innerHTML = _spGroupStandingsTableHtml(letter, positions);
+  });
+}
+
+async function spCurrentGroupToggled(detailsEl) {
+  if (!detailsEl || !detailsEl.open) return;
+  await loadResultsData({ force: true, preferDb: true });
+  _spRefreshCurrentGroupTables();
+}
+
+let _spLockedResultsRefreshTimer = null;
+let _spLockedResultsRefreshPending = null;
+let _spLockedResultsChannel = null;
+
+async function _spRefreshLockedResultsNow() {
+  if (state.currentScreen !== 'sp-locked-screen') return;
+  await loadResultsData({ force: true, preferDb: true });
+  _spRefreshCurrentGroupTables();
+}
+
+function _spQueueLockedResultsRefresh() {
+  if (_spLockedResultsRefreshPending) return;
+  _spLockedResultsRefreshPending = setTimeout(async () => {
+    _spLockedResultsRefreshPending = null;
+    if (document.hidden) return;
+    await _spRefreshLockedResultsNow();
+  }, 500);
+}
+
+function _stopSpLockedResultsRefresh() {
+  if (_spLockedResultsRefreshTimer) {
+    clearInterval(_spLockedResultsRefreshTimer);
+    _spLockedResultsRefreshTimer = null;
+  }
+  if (_spLockedResultsRefreshPending) {
+    clearTimeout(_spLockedResultsRefreshPending);
+    _spLockedResultsRefreshPending = null;
+  }
+  if (_spLockedResultsChannel && supabaseClient && typeof supabaseClient.removeChannel === 'function') {
+    supabaseClient.removeChannel(_spLockedResultsChannel);
+  }
+  _spLockedResultsChannel = null;
+}
+function _startSpLockedResultsRefresh() {
+  _stopSpLockedResultsRefresh();
+  _spLockedResultsRefreshTimer = setInterval(async () => {
+    if (state.currentScreen !== 'sp-locked-screen' || document.hidden) return;
+    await _spRefreshLockedResultsNow();
+  }, 30000);
+
+  if (supabaseClient && typeof supabaseClient.channel === 'function') {
+    _spLockedResultsChannel = supabaseClient
+      .channel('sp-locked-group-results')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'matches' }, payload => {
+        const match = (payload && payload.new) || {};
+        const stage = String(match.stage || '').toUpperCase();
+        if (!_matchIsFinishedStatus(match)) return;
+        if (stage !== 'GROUP_STAGE' && !(match.group_letter || match.group)) return;
+        _spQueueLockedResultsRefresh();
+      })
+      .subscribe();
+  }
 }
 
 // ============================================================
@@ -13358,6 +13604,7 @@ async function spSubmitPredictions() {
 
 async function spShowLockedView() {
   await spLoadExistingPicks();
+  await loadResultsData({ force: true, preferDb: true });
   const el = document.getElementById('sp-locked-content');
   // Build a read-only render
   let html = '';
@@ -13366,17 +13613,7 @@ async function spShowLockedView() {
     <div class="sp-summary-section-title">${t('betting.summary.groups')}</div>`;
   WC2026_GROUP_LETTERS.forEach(letter => {
     const positions = spState.groupPositions[letter] || [];
-    html += `<div style="margin-bottom:8px;">
-      <div style="font-weight:600;color:#d9b46a;font-size:12px;">${t('groups.group')} ${letter}</div>
-      ${[0,1,2,3].map(i => {
-        const code = positions[i];
-        return `<div class="sp-summary-row">
-          <span class="sr-pos">${i+1}.</span>
-          <span class="sr-flag">${code ? getCountryFlag(code) : '—'}</span>
-          <span class="sr-value">${code ? getTeamName(code) : '—'}</span>
-        </div>`;
-      }).join('')}
-    </div>`;
+    html += _spGroupWithCurrentHtml(letter, positions);
   });
   html += '</div>';
 
@@ -13408,6 +13645,7 @@ async function spShowLockedView() {
   </div>`;
   el.innerHTML = html;
   showScreen('sp-locked-screen');
+  _startSpLockedResultsRefresh();
 }
 
 // ============================================================
