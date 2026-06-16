@@ -13395,10 +13395,16 @@ async function spRenderSummary() {
     await spMarkPredictionsSubmitted('summary-complete');
   }
 
+  const canEditSummary = !spIsLocked();
+  let reopenStatus = null;
+  if (!canEditSummary) {
+    try { reopenStatus = await _spFetchReopenStatus(); } catch (_) { reopenStatus = null; }
+  }
+  const knockoutReviewOpen = !!(reopenStatus && reopenStatus.can_reenter);
+
   const summaryWarning = document.querySelector('#sp-summary-screen .sp-summary-warning');
   if (summaryWarning) {
     const warningText = summaryWarning.querySelector('[data-i18n]');
-    const canEditSummary = !spIsLocked();
     const lateEntryOpen = canEditSummary && _poolLateEntryOpen();
     summaryWarning.style.display = canEditSummary ? '' : 'none';
     if (warningText && canEditSummary) {
@@ -13435,6 +13441,8 @@ async function spRenderSummary() {
   const summaryShareApps = document.getElementById('sp-summary-share-apps');
   const summaryShareDesktop = document.getElementById('sp-summary-share-desktop');
   const summarySaveBtn = document.getElementById('sp-submit-btn');
+  const summaryEditBtn = document.getElementById('sp-summary-edit-picks');
+  const summaryTopScorerEditBtn = document.getElementById('sp-summary-ts-edit');
   if (summaryShareBtn && summarySaveBtn) {
     const submitted = typeof spHasUserSubmitted === 'function' && spHasUserSubmitted();
     const hasChamp = !!(spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
@@ -13480,6 +13488,15 @@ async function spRenderSummary() {
         saveLabel.textContent = t('betting.summary.submit');
       }
     }
+  }
+  // Full-summary controls are valid only while the pool is writable. That includes
+  // pool-level grace windows via lock_at_override. Per-user Annex C grants are
+  // bracket-only after lock, so keep broad Save/Edit Groups/Top Scorer controls hidden.
+  if (summarySaveBtn) summarySaveBtn.style.display = canEditSummary ? '' : 'none';
+  if (summaryEditBtn) summaryEditBtn.style.display = canEditSummary ? '' : 'none';
+  if (summaryTopScorerEditBtn) summaryTopScorerEditBtn.style.display = canEditSummary ? '' : 'none';
+  if (knockoutReviewOpen) {
+    console.info('[spRenderSummary] knockout review is open; broad summary edit controls stay hidden');
   }
 
   // Groups summary
@@ -13545,6 +13562,10 @@ window.spSummaryBack = spSummaryBack;
 // summary screen. Routes the user back into the flow so they can fix
 // missing picks (the recovery path for the v2.4.5 wipe bug).
 function spSummaryEditPicks() {
+  if (spIsLocked()) {
+    spShowLockedView();
+    return;
+  }
   spState.currentGroupIdx = 0;
   spRenderGroups();
   showScreen('sp-groups-screen');
@@ -13552,6 +13573,10 @@ function spSummaryEditPicks() {
 window.spSummaryEditPicks = spSummaryEditPicks;
 
 function spEditTopScorer() {
+  if (spIsLocked()) {
+    spShowLockedView();
+    return;
+  }
   // v2.6.10: edit from summary now uses the in-flow top-scorer step so the
   // "Continue" button (→ back to summary) is present after picking. Previously
   // it opened the screen with no nav, leaving the user with no way forward.
@@ -13568,6 +13593,10 @@ async function spSubmitPredictions() {
   //     dashboard correctly stays on the "partial" state. The user lands
   //     on the dashboard either way. A soft info toast tells them what's
   //     still open. Auto-save has already persisted the partial picks.
+  if (spIsLocked()) {
+    await spShowLockedView();
+    return;
+  }
   let hasTopScorerPick = false;
   if (spTopScorerRequired()) {
     try {
