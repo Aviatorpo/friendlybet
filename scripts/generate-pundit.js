@@ -43,6 +43,31 @@ const NEWS_MAX_FUTURE_EXPIRY_MS = 30 * HOUR_MS;
 const FEED_FRESH_MS = 6 * HOUR_MS;
 const REFRESH_COMMIT_MS = 3 * HOUR_MS;
 const LIVE_STATUSES = new Set(['IN_PLAY', 'LIVE', 'PAUSED']);
+const MONTHS = {
+  january: 0, jan: 0,
+  february: 1, feb: 1,
+  march: 2, mar: 2,
+  april: 3, apr: 3,
+  may: 4,
+  june: 5, jun: 5,
+  july: 6, jul: 6,
+  august: 7, aug: 7,
+  september: 8, sep: 8, sept: 8,
+  october: 9, oct: 9,
+  november: 10, nov: 10,
+  december: 11, dec: 11,
+};
+const OFFICIAL_HOSTS = [
+  'fifa.com',
+  'inside.fifa.com',
+  'theifab.com',
+  'concacaf.com',
+  'uefa.com',
+  'cafonline.com',
+  'conmebol.com',
+  'the-afc.com',
+  'oceaniafootball.com',
+];
 
 // Top FIFA-ranked sides -> used only to flag a fixture as a "big match".
 const FAVORITES = new Set(['ARG', 'FRA', 'ESP', 'ENG', 'BRA', 'POR', 'NED', 'GER', 'BEL', 'URU', 'CRO', 'COL']);
@@ -90,6 +115,35 @@ function isCurrentNews(item, feedUpdatedAt, now) {
   if (nowMs - anchor > NEWS_MAX_AGE_MS) return false;
   if (expires - nowMs > NEWS_MAX_FUTURE_EXPIRY_MS) return false;
   return true;
+}
+
+function sourceHost(url) {
+  try { return new URL(url).hostname.replace(/^www\./, '').toLowerCase(); } catch (_) { return null; }
+}
+
+function isOfficialHost(host) {
+  return !!host && OFFICIAL_HOSTS.some(official => host === official || host.endsWith(`.${official}`));
+}
+
+function hasOfficialSource(sources) {
+  return (sources || []).some(s => isOfficialHost(sourceHost(s && s.url)));
+}
+
+function independentSourceCount(sources) {
+  return new Set((sources || []).map(s => sourceHost(s && s.url)).filter(Boolean)).size;
+}
+
+function isPastDatedPreview(item, now) {
+  const text = String((item && item.en) || '').toLowerCase();
+  if (!/\b(open|opener|opens|face|faces|against|kickoff|kick off|before|makes history|takes place|will)\b/.test(text)) return false;
+  const match = text.match(/\b(january|jan|february|feb|march|mar|april|apr|may|june|jun|july|jul|august|aug|september|sept|sep|october|oct|november|nov|december|dec)\s+(\d{1,2})\b/);
+  if (!match) return false;
+  const month = MONTHS[match[1]];
+  const day = Number(match[2]);
+  if (!Number.isInteger(month) || !Number.isInteger(day)) return false;
+  const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+  const previewDate = new Date(Date.UTC(now.getUTCFullYear(), month, day));
+  return previewDate.getTime() < today.getTime();
 }
 
 function shouldTreatAsLive(match, now) {
@@ -203,6 +257,7 @@ function build(now) {
   const freshNews = (Array.isArray(news.items) ? news.items : [])
     .filter(n => n && n.he && n.en)
     .filter(n => isCurrentNews(n, newsUpdatedAt, now))
+    .filter(n => !isPastDatedPreview(n, now))
     .map(n => ({
       id: n.id || `news-${Math.abs(hash(n.he))}`,
       type: 'news',
@@ -216,8 +271,11 @@ function build(now) {
     }))
     // Defense in depth: never render a news claim that fails the source gate,
     // even if a malformed pundit-news.json slipped past the validator.
-    // 'reported' => >=2 independent sources, 'confirmed' => >=1 official source.
-    .filter(it => it.sources.length >= (it.confidence === 'confirmed' ? 1 : 2));
+    // 'confirmed' => official/source-of-record or >=2 independent sources.
+    // 'reported' => >=2 independent sources.
+    .filter(it => it.confidence === 'confirmed'
+      ? (hasOfficialSource(it.sources) || independentSourceCount(it.sources) >= 2)
+      : independentSourceCount(it.sources) >= 2);
 
   // During the tournament, facts from the match snapshot outrank editorial news.
   const priority = { live: 0, result: 1, fixture: 2, news: 3, stat: 4, countdown: 5 };
@@ -266,4 +324,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { build, isCurrentNews };
+module.exports = { build, isCurrentNews, isPastDatedPreview };

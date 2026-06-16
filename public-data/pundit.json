@@ -1,8 +1,26 @@
 {
-  "updatedAt": "2026-06-16T05:20:39.115Z",
-  "freshUntil": "2026-06-16T11:20:39.115Z",
-  "count": 7,
+  "updatedAt": "2026-06-16T08:33:21.205Z",
+  "freshUntil": "2026-06-16T14:33:21.205Z",
+  "count": 8,
   "items": [
+    {
+      "id": "result-ad42617c-4294-4f50-bade-2a7ec9659bf3",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "איראן 2:2 ניו זילנד.",
+      "en": "Iran 2-2 New Zealand.",
+      "sources": [],
+      "expires_at": "2026-06-17T07:00:00.000Z"
+    },
+    {
+      "id": "result-13081dbc-3b64-4694-a70d-05021f4bce96",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "ערב הסעודית 1:1 אורוגוואי.",
+      "en": "Saudi Arabia 1-1 Uruguay.",
+      "sources": [],
+      "expires_at": "2026-06-17T04:00:00.000Z"
+    },
     {
       "id": "result-e6a4624d-c1dc-437f-98e4-42926b6db1d7",
       "type": "result",
@@ -20,15 +38,6 @@
       "en": "Spain 0-0 Cape Verde.",
       "sources": [],
       "expires_at": "2026-06-16T22:00:00.000Z"
-    },
-    {
-      "id": "result-e261116f-e7d0-46b1-a8c2-7a55748b84b2",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "שבדיה 5:1 תוניסיה.",
-      "en": "Sweden 5-1 Tunisia.",
-      "sources": [],
-      "expires_at": "2026-06-16T08:00:00.000Z"
     },
     {
       "id": "fixture-6e189faf-b4fa-4dba-8d8a-1834ebae205c",

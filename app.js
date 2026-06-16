@@ -1521,7 +1521,7 @@ async function updateTwoPhaseIncidentBanner() {
 // matches.json snapshot the rest of the app uses (earliest match_date), so it
 // stays accurate to the minute even if FIFA shifts the schedule; falls back to
 // a constant if the snapshot is unavailable.
-const FIRST_MATCH_FALLBACK_ISO = '2026-06-11T16:00:00-06:00'; // countdown display fallback
+const FIRST_MATCH_FALLBACK_ISO = '2026-06-11T19:00:00+00:00'; // countdown display fallback
 const POOL_LOCK_KICKOFF_ISO = '2026-06-11T19:00:00.000Z'; // server lock cutoff
 const LATE_ENTRY_CUTOFF_ISO = '2026-06-18T16:00:00.000Z'; // first team second group match
 let _countdownTimer = null;
@@ -1903,7 +1903,11 @@ async function buildPoolPundit() {
   const total = members.length;
   const submitted = members.filter(m => m.predictions_submitted_at).length;
   const pending = total - submitted;
-  const tournamentStarted = members.some(m => (m.total_score || 0) > 0);
+  const hasScores = members.some(m => (m.total_score || 0) > 0);
+  const poolLocked = isPoolWriteLocked(pool);
+  const tournamentStarted = hasScores || Date.now() >= Date.parse(POOL_LOCK_KICKOFF_ISO);
+  const lateEntryOpen = !poolLocked && _poolLateEntryOpen(pool);
+  const lateEntryCutoff = _lateEntryCutoffLabel();
   const me = members.find(m => m.id === viewer.id) || null;
   const iSubmitted = !!(me && me.predictions_submitted_at);
   const nameOf = (m) => (m && m.nickname) ? m.nickname : (lang === 'he' ? 'מישהו' : 'someone');
@@ -1927,7 +1931,25 @@ async function buildPoolPundit() {
     cand.push({ id, prio, he: v.he, en: v.en });
   };
 
-  if (total <= 1) {
+  if (poolLocked) {
+    push('pool-locked-live', 1, [
+      { he: 'ההימור נעול. עכשיו הבחירות שלכם פוגשות את המציאות, וכל משחק יכול להזיז את הטבלה.',
+        en: 'Predictions are locked. Now your picks meet reality, and every match can move the table.' },
+      { he: 'אין יותר עריכות, רק קבלות. הבראקט קפוא והדרמה של הפול חיה.',
+        en: 'No more edits, only receipts. The bracket is frozen and the pool drama is live.' },
+      { he: 'שתפו את הטבלה, לא לינק הצטרפות. ההימור סגור, הדרמה פתוחה.',
+        en: 'Share the table, not a join link. Predictions are closed, the drama is open.' },
+    ]);
+  } else if (lateEntryOpen) {
+    push('pool-late-entry-open', 1, [
+      { he: `ההימור עדיין פתוח למצטרפים מאוחרים עד ${lateEntryCutoff}. מי שנכנס עכשיו מהמר עם פחות זמן לחשוב.`,
+        en: `Late entry is still open until ${lateEntryCutoff}. Anyone joining now has less time to think.` },
+      { he: `אפשר עדיין לצרף חברים, אבל החלון נסגר ב-${lateEntryCutoff}.`,
+        en: `Friends can still join, but the window closes at ${lateEntryCutoff}.` },
+    ]);
+  }
+
+  if (!poolLocked && total <= 1) {
     push('pool-solo', 1, [{
       he: 'אתה הראשון בהימור! תזמין כמה חברים שיהיה מעניין 😎',
       en: "You're first in the pool! Invite a few friends to make it interesting 😎",
@@ -1951,7 +1973,7 @@ async function buildPoolPundit() {
     ]);
   }
 
-  if (recentSubmitter) {
+  if (!poolLocked && recentSubmitter) {
     const n = nameOf(recentSubmitter);
     push('pool-recent-submit', 2, [
       { he: `${n} בדיוק נעל את הבחירות — ויש שם כמה הפתעות 👀`,
@@ -1973,7 +1995,7 @@ async function buildPoolPundit() {
     ]);
   }
 
-  if (recentJoiner) {
+  if (!poolLocked && recentJoiner) {
     const n = nameOf(recentJoiner);
     push('pool-recent-join', 3, [
       { he: `${n} הצטרף להימור! התחרות מתחממת 🔥`,
@@ -1999,7 +2021,7 @@ async function buildPoolPundit() {
     }]);
   }
 
-  if (total >= 3) {
+  if (!poolLocked && total >= 3) {
     push('pool-growth', 5, [
       { he: `כבר ${total} חברים בהימור! איזה כיף 🎉`,
         en: `Already ${total} friends in the pool! 🎉` },
@@ -2008,14 +2030,27 @@ async function buildPoolPundit() {
     ]);
   }
 
+  if (poolLocked) {
+    if (!cand.length) return [];
+    cand.sort((a, b) => a.prio - b.prio);
+    const seenPool = new Set();
+    return cand
+      .filter(it => it && it.id && !seenPool.has(it.id) && (seenPool.add(it.id), true))
+      .map(it => ({
+        id: it.id, type: 'pool', confidence: 'confirmed', he: it.he, en: it.en, sources: [],
+      }));
+  }
+
   // Pool-flavored evergreen lines (always available, lower priority than the
   // live aggregate facts above). They DEEPEN the pool-candidate list so the 2
   // pool slots can PAGE to different lines every hour (v2.7.4) instead of being
   // stuck on the same 1-2 facts. Still about THIS pool / the viewer's own
   // predictions, never a fabricated member fact.
-  push('pool-ev-lock', 7, [{
-    he: 'הבחירות שלך בפול ננעלות עם שריקת הפתיחה. עבור עליהן שוב לפני שיהיה מאוחר ⏰',
-    en: 'Your pool picks lock at kickoff. Give them one more look before it is too late ⏰' }]);
+  if (!lateEntryOpen) {
+    push('pool-ev-lock', 7, [{
+      he: 'הבחירות שלך בפול ננעלות עם שריקת הפתיחה. עבור עליהן שוב לפני שיהיה מאוחר ⏰',
+      en: 'Your pool picks lock at kickoff. Give them one more look before it is too late ⏰' }]);
+  }
   push('pool-ev-ko', 8, [{
     he: 'בפול שלך כל ניחוש נכון בשלב הנוקאאוט שווה יותר נקודות. תכוון רחוק 🚀',
     en: 'In your pool every correct knockout pick is worth more points. Aim deep 🚀' }]);
@@ -7949,6 +7984,7 @@ function formatScoreDescription(user) {
 // lines). The client just picks the current language and renders; the share card
 // re-uses the headline + podium + a QR pointing to the FEATURED user's bracket.
 let _lbBanter = null; // last loaded { headline, items, ... } for the share card
+const LB_BANTER_MAX_AGE_MS = 36 * 60 * 60 * 1000;
 
 function _banterText(item) {
   if (!item) return '';
@@ -7972,6 +8008,8 @@ async function renderLeaderboardBanter(users) {
     const res = await fetch(`/public-data/banter/${state.currentPool.id}.json`, { cache: 'no-store' });
     if (!res.ok) return;
     const data = await res.json();
+    const updatedAt = Date.parse(data && data.updatedAt);
+    if (!updatedAt || (Date.now() - updatedAt) > LB_BANTER_MAX_AGE_MS) return;
     const items = Array.isArray(data.items) ? data.items.filter(it => it && (it.he || it.en)) : [];
     const headline = data.headline || items[0];
     if (!headline) return;
@@ -8189,7 +8227,7 @@ async function _leaderboardCardToBlob() {
     podiumLabel: t('leaderboard.banter.cardStandings'),
     pts: t('leaderboard.points'),
     scanLine: t('leaderboard.banter.cardScan'),
-    tagline: t('leaderboard.banter.cardTagline'),
+    tagline: isPoolJoinClosed() ? t('leaderboard.banter.cardTaglineLocked') : t('leaderboard.banter.cardTagline'),
   });
   return new Promise(resolve => cv.toBlob(resolve, 'image/png'));
 }

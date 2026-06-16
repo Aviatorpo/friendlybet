@@ -10,7 +10,7 @@
 //   * confidence is 'confirmed' or 'reported'.
 //   * sources: every entry needs a real http(s) url.
 //       - reported  => >= 2 INDEPENDENT sources (distinct hostnames).
-//       - confirmed => >= 1 source.
+//       - confirmed => official/source-of-record OR >= 2 independent sources.
 //   * expires_at present and a valid future-ish ISO date.
 //   * topic_date/source_checked_at is recent enough for a live tournament feed.
 //   * expires_at is short-lived, so old news cannot be banked for days/weeks.
@@ -25,6 +25,17 @@ const FILE = path.join(__dirname, '..', 'public-data', 'pundit-news.json');
 const HOUR_MS = 60 * 60 * 1000;
 const MAX_NEWS_AGE_MS = 30 * HOUR_MS;
 const MAX_NEWS_TTL_MS = 30 * HOUR_MS;
+const OFFICIAL_HOSTS = [
+  'fifa.com',
+  'inside.fifa.com',
+  'theifab.com',
+  'concacaf.com',
+  'uefa.com',
+  'cafonline.com',
+  'conmebol.com',
+  'the-afc.com',
+  'oceaniafootball.com',
+];
 
 function parseTime(value) {
   if (!value) return NaN;
@@ -34,6 +45,10 @@ function parseTime(value) {
 
 function hostname(url) {
   try { return new URL(url).hostname.replace(/^www\./, '').toLowerCase(); } catch (_) { return null; }
+}
+
+function isOfficialHost(host) {
+  return !!host && OFFICIAL_HOSTS.some(official => host === official || host.endsWith(`.${official}`));
 }
 
 function validate() {
@@ -73,9 +88,13 @@ function validate() {
     const validUrls = sources.filter(s => s && /^https?:\/\//i.test(s.url || ''));
     if (validUrls.length !== sources.length) errors.push(`${at}: every source needs an http(s) url`);
     const hosts = new Set(validUrls.map(s => hostname(s.url)).filter(Boolean));
-    const need = it.confidence === 'confirmed' ? 1 : 2;
-    if (hosts.size < need) {
-      errors.push(`${at}: '${it.confidence}' needs >=${need} independent source(s), got ${hosts.size}`);
+    const hasOfficial = [...hosts].some(isOfficialHost);
+    if (it.confidence === 'confirmed') {
+      if (!hasOfficial && hosts.size < 2) {
+        errors.push(`${at}: 'confirmed' needs an official/source-of-record source or >=2 independent sources, got ${hosts.size}`);
+      }
+    } else if (hosts.size < 2) {
+      errors.push(`${at}: 'reported' needs >=2 independent sources, got ${hosts.size}`);
     }
 
     if (!it.expires_at || isNaN(Date.parse(it.expires_at))) {

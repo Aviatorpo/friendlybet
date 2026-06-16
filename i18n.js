@@ -356,6 +356,7 @@ const TRANSLATIONS = {
     'leaderboard.banter.cardStandings': 'הצמרת',
     'leaderboard.banter.cardScan': 'סרקו לבראקט',
     'leaderboard.banter.cardTagline': 'חינם · בלי הרשמה · הצטרפו לפול',
+    'leaderboard.banter.cardTaglineLocked': 'ההימור נעול · עקבו אחרי הטבלה',
 
     // === Matches ===
     'matches.title': 'לוח משחקים',
@@ -1720,6 +1721,7 @@ const TRANSLATIONS = {
     'leaderboard.banter.cardStandings': 'Top of the table',
     'leaderboard.banter.cardScan': 'Scan for the bracket',
     'leaderboard.banter.cardTagline': 'Free · no signup · join the pool',
+    'leaderboard.banter.cardTaglineLocked': 'Predictions locked · follow the table',
 
     // === Matches ===
     'matches.title': 'Match Schedule',
