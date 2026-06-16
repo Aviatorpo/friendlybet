@@ -13341,6 +13341,19 @@ async function spRenderSummary() {
     await spMarkPredictionsSubmitted('summary-complete');
   }
 
+  const summaryWarning = document.querySelector('#sp-summary-screen .sp-summary-warning');
+  if (summaryWarning) {
+    const warningText = summaryWarning.querySelector('[data-i18n]');
+    const canEditSummary = !spIsLocked();
+    const lateEntryOpen = canEditSummary && _poolLateEntryOpen();
+    summaryWarning.style.display = canEditSummary ? '' : 'none';
+    if (warningText && canEditSummary) {
+      const key = lateEntryOpen ? 'betting.summary.warningLate' : 'betting.summary.warning';
+      warningText.setAttribute('data-i18n', key);
+      warningText.textContent = t(key, { time: _lateEntryCutoffLabel() });
+    }
+  }
+
   // v2.5.15: always reset the Save button to its clean state when entering
   // the summary screen. Previously the button was left in "Saving..." +
   // disabled after a successful submit (spSubmitPredictions transitioned
