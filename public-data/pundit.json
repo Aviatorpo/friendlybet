@@ -1,17 +1,8 @@
 {
-  "updatedAt": "2026-06-15T23:53:27.873Z",
-  "freshUntil": "2026-06-16T05:53:27.873Z",
-  "count": 11,
+  "updatedAt": "2026-06-16T05:20:39.115Z",
+  "freshUntil": "2026-06-16T11:20:39.115Z",
+  "count": 7,
   "items": [
-    {
-      "id": "live-13081dbc-3b64-4694-a70d-05021f4bce96",
-      "type": "live",
-      "confidence": "confirmed",
-      "he": "ערב הסעודית נגד אורוגוואי משוחק עכשיו. התוצאה הרשמית תתעדכן בסיום המשחק.",
-      "en": "Saudi Arabia vs Uruguay is live now. The official score will update after full-time.",
-      "sources": [],
-      "expires_at": "2026-06-16T02:53:27.873Z"
-    },
     {
       "id": "result-e6a4624d-c1dc-437f-98e4-42926b6db1d7",
       "type": "result",
@@ -38,33 +29,6 @@
       "en": "Sweden 5-1 Tunisia.",
       "sources": [],
       "expires_at": "2026-06-16T08:00:00.000Z"
-    },
-    {
-      "id": "result-a3f06b97-9c08-4c69-9628-c788d8e85747",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "חוף השנהב 1:0 אקוודור.",
-      "en": "Ivory Coast 1-0 Ecuador.",
-      "sources": [],
-      "expires_at": "2026-06-16T05:00:00.000Z"
-    },
-    {
-      "id": "result-1df38ad2-68c6-4a4a-849b-57df76d4d502",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "הולנד 2:2 יפן.",
-      "en": "Netherlands 2-2 Japan.",
-      "sources": [],
-      "expires_at": "2026-06-16T02:00:00.000Z"
-    },
-    {
-      "id": "fixture-ad42617c-4294-4f50-bade-2a7ec9659bf3",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "איראן נגד ניו זילנד, היום 04:00.",
-      "en": "Iran vs New Zealand, today 04:00.",
-      "sources": [],
-      "expires_at": "2026-06-16T01:00:00.000Z"
     },
     {
       "id": "fixture-6e189faf-b4fa-4dba-8d8a-1834ebae205c",
