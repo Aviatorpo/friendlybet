@@ -32,7 +32,8 @@ function showScreen(screenId) {
   if (state.currentScreen === 'matches-screen' && screenId !== 'matches-screen') {
     if (typeof _stopMatchesAutoRefresh === 'function') _stopMatchesAutoRefresh();
   }
-  if (state.currentScreen === 'sp-locked-screen' && screenId !== 'sp-locked-screen') {
+  if ((state.currentScreen === 'sp-locked-screen' || state.currentScreen === 'sp-summary-screen') &&
+      screenId !== 'sp-locked-screen' && screenId !== 'sp-summary-screen') {
     if (typeof _stopSpLockedResultsRefresh === 'function') _stopSpLockedResultsRefresh();
   }
   // v2.10: leaving the knockout walkthrough by ANY route clears the recovery flag
@@ -3153,11 +3154,6 @@ function _spGroupSummaryRowsHtml(positions) {
   }).join('');
 }
 
-function _spSignedNumber(n) {
-  const value = Number(n) || 0;
-  return value > 0 ? `+${value}` : String(value);
-}
-
 function _spGroupStandingsTableHtml(letter, positions) {
   const rows = (state.results && state.results.groupStandings && state.results.groupStandings[letter]) || [];
   const hasPlayed = rows.some(row => row.played > 0);
@@ -3169,25 +3165,20 @@ function _spGroupStandingsTableHtml(letter, positions) {
   return `<div class="sp-current-group-table" role="table" aria-label="${escapeHtml(t('groups.current.aria', { letter }))}">
     <div class="sp-current-group-head" role="row">
       <span>${t('groups.current.actual')}</span>
-      <span>${t('groups.current.pick')}</span>
       <span>${t('groups.current.pointsShort')}</span>
       <span>${t('groups.current.playedShort')}</span>
-      <span>${t('groups.current.formShort')}</span>
-      <span>${t('groups.current.gdShort')}</span>
     </div>
     ${rows.map((row, idx) => {
       const pickPos = picked[row.code];
-      return `<div class="sp-current-group-row" role="row">
+      const exact = pickPos === idx + 1;
+      return `<div class="sp-current-group-row ${exact ? 'sp-current-row-exact' : ''}" role="row">
         <span class="sp-current-team">
           <span class="sp-current-rank">${idx + 1}.</span>
           <span class="sr-flag">${getCountryFlag(row.code)}</span>
-          <span>${getTeamName(row.code)}</span>
+          <span class="sp-current-team-name">${getTeamName(row.code)}</span>
         </span>
-        <span class="${pickPos === idx + 1 ? 'sp-current-pick-ok' : ''}">${pickPos ? `#${pickPos}` : '—'}</span>
         <span>${row.points}</span>
         <span>${row.played}</span>
-        <span>${row.wins}-${row.draws}-${row.losses}</span>
-        <span class="${row.gd > 0 ? 'sp-current-gd-plus' : row.gd < 0 ? 'sp-current-gd-minus' : ''}">${_spSignedNumber(row.gd)}</span>
       </div>`;
     }).join('')}
   </div>`;
@@ -3201,7 +3192,7 @@ function _spGroupWithCurrentHtml(letter, positions) {
     <details class="sp-current-group-compare" data-group-letter="${safeLetter}" ontoggle="spCurrentGroupToggled(this)">
       <summary>
         <span>${t('groups.current.compare')}</span>
-        <i class="ti ti-chevron-down" aria-hidden="true"></i>
+        <span class="sp-current-group-cue" aria-hidden="true">›</span>
       </summary>
       <div class="sp-current-group-body" data-current-group-body="${safeLetter}">
         ${_spGroupStandingsTableHtml(letter, positions || [])}
@@ -3230,7 +3221,7 @@ let _spLockedResultsRefreshPending = null;
 let _spLockedResultsChannel = null;
 
 async function _spRefreshLockedResultsNow() {
-  if (state.currentScreen !== 'sp-locked-screen') return;
+  if (state.currentScreen !== 'sp-locked-screen' && state.currentScreen !== 'sp-summary-screen') return;
   await loadResultsData({ force: true, preferDb: true });
   _spRefreshCurrentGroupTables();
 }
@@ -3261,7 +3252,7 @@ function _stopSpLockedResultsRefresh() {
 function _startSpLockedResultsRefresh() {
   _stopSpLockedResultsRefresh();
   _spLockedResultsRefreshTimer = setInterval(async () => {
-    if (state.currentScreen !== 'sp-locked-screen' || document.hidden) return;
+    if ((state.currentScreen !== 'sp-locked-screen' && state.currentScreen !== 'sp-summary-screen') || document.hidden) return;
     await _spRefreshLockedResultsNow();
   }, 30000);
 
@@ -13314,6 +13305,7 @@ async function spShowSummary() {
     console.error('[spShowSummary] render failed:', e);
   }
   showScreen('sp-summary-screen');
+  _startSpLockedResultsRefresh();
 }
 window.spShowSummary = spShowSummary;
 
@@ -13330,6 +13322,7 @@ async function spRenderSummary() {
     (state.currentUser && state.currentUser.id) +
     ' | pool=' + (state.currentPool && state.currentPool.id));
   await spLoadExistingPicks();
+  await loadResultsData({ force: true, preferDb: true });
   const groupCount = Object.values(spState.groupPositions || {})
     .reduce((n, arr) => n + (arr || []).filter(Boolean).length, 0);
   console.log('[spRenderSummary] after load: groups=' + groupCount +
@@ -13426,23 +13419,7 @@ async function spRenderSummary() {
   const groupsEl = document.getElementById('sp-summary-groups');
   groupsEl.innerHTML = WC2026_GROUP_LETTERS.map(letter => {
     const positions = spState.groupPositions[letter] || [];
-    return `
-      <div style="margin-bottom:10px;">
-        <div style="font-weight:600;color:#d9b46a;font-size:12px;letter-spacing:.5px;margin-bottom:4px;">
-          ${t('groups.group')} ${letter}
-        </div>
-        ${[0,1,2,3].map(i => {
-          const code = positions[i];
-          return `
-            <div class="sp-summary-row">
-              <span class="sr-pos">${i + 1}.</span>
-              <span class="sr-flag">${code ? getCountryFlag(code) : '—'}</span>
-              <span class="sr-value">${code ? getTeamName(code) : t('betting.notPicked')}</span>
-            </div>
-          `;
-        }).join('')}
-      </div>
-    `;
+    return _spGroupWithCurrentHtml(letter, positions);
   }).join('');
 
   // v2.5.75: bracket summary is now the horizontal bracket tree (same widget

@@ -7735,10 +7735,11 @@ body:not(.ltr) .home-lang-toggle {
 
 .sp-current-group-compare {
   margin-top: 8px;
-  border: 1px solid rgba(217,180,106,0.28);
+  border: 1px solid rgba(217,180,106,0.42);
   border-radius: 10px;
-  background: rgba(217,180,106,0.07);
+  background: rgba(217,180,106,0.11);
   overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
 }
 
 .sp-current-group-compare summary {
@@ -7746,8 +7747,8 @@ body:not(.ltr) .home-lang-toggle {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  min-height: 42px;
-  padding: 0 12px;
+  min-height: 46px;
+  padding: 0 10px 0 13px;
   color: rgba(255,255,255,0.9);
   cursor: pointer;
   font-size: 13px;
@@ -7759,14 +7760,24 @@ body:not(.ltr) .home-lang-toggle {
   display: none;
 }
 
-.sp-current-group-compare summary i {
+.sp-current-group-cue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(217,180,106,0.18);
+  border: 1px solid rgba(217,180,106,0.32);
   color: #d9b46a;
-  font-size: 16px;
+  font-size: 22px;
+  line-height: 1;
   transition: transform .18s ease;
+  flex-shrink: 0;
 }
 
-.sp-current-group-compare[open] summary i {
-  transform: rotate(180deg);
+.sp-current-group-compare[open] .sp-current-group-cue {
+  transform: rotate(90deg);
 }
 
 .sp-current-group-body {
@@ -7790,10 +7801,10 @@ body:not(.ltr) .home-lang-toggle {
 .sp-current-group-head,
 .sp-current-group-row {
   display: grid;
-  grid-template-columns: minmax(0, 1.8fr) 58px 44px 40px 58px 44px;
+  grid-template-columns: minmax(0, 1fr) 44px 40px;
   align-items: center;
-  gap: 6px;
-  min-height: 34px;
+  gap: 8px;
+  min-height: 38px;
   padding: 0 8px;
 }
 
@@ -7807,6 +7818,10 @@ body:not(.ltr) .home-lang-toggle {
 .sp-current-group-row {
   background: rgba(255,255,255,0.045);
   color: rgba(255,255,255,0.84);
+}
+
+.sp-current-row-exact {
+  background: rgba(85,209,135,0.08);
 }
 
 .sp-current-group-row:first-of-type {
@@ -7825,7 +7840,7 @@ body:not(.ltr) .home-lang-toggle {
   font-weight: 700;
 }
 
-.sp-current-team span:last-child {
+.sp-current-team-name {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -7837,7 +7852,6 @@ body:not(.ltr) .home-lang-toggle {
   min-width: 18px;
 }
 
-.sp-current-pick-ok,
 .sp-current-gd-plus {
   color: #55d187;
   font-weight: 800;
