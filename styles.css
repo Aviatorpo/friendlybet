@@ -7875,6 +7875,10 @@ body:not(.ltr) .home-lang-toggle {
 }
 .sp-locked-banner i { font-size: 26px; }
 
+.sp-locked-dashboard-btn {
+  margin-top: 14px;
+}
+
 .lb-breakdown {
   display: flex;
   gap: 8px;
