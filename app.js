@@ -2467,10 +2467,19 @@ function _wcFillTemplate(template, vars) {
   return String(template || '').replace(/\{(\w+)\}/g, (_, key) => vars[key] == null ? '' : String(vars[key]));
 }
 
-function _wcFormatNames(names) {
+function _wcFormatNames(names, totalCount) {
   const clean = (names || []).map(n => String(n || '').trim()).filter(Boolean);
   const lang = _wcStoryLang();
-  if (!clean.length) return '';
+  const total = Math.max(Number(totalCount) || clean.length, clean.length);
+  const extra = Math.max(0, total - clean.length);
+  if (!clean.length) {
+    if (!total) return '';
+    return lang === 'he' ? `${total} ${total === 1 ? 'משתתף' : 'משתתפים'}` : `${total} ${total === 1 ? 'member' : 'members'}`;
+  }
+  if (extra) {
+    if (lang === 'he') return `${clean.join(', ')} ועוד ${extra} ${extra === 1 ? 'משתתף' : 'משתתפים'}`;
+    return `${clean.join(', ')} and ${extra} ${extra === 1 ? 'other' : 'others'}`;
+  }
   if (clean.length === 1) return clean[0];
   const joiner = lang === 'he' ? ' ו' : ' and ';
   if (clean.length === 2) return clean[0] + joiner + clean[1];
@@ -2509,7 +2518,7 @@ async function _wcStoryPoolCaption(story, baseCopy) {
     const fallbackKey = count === 1 ? `${lang}_names` : `${lang}_count`;
     const template = focus[templateKey] || focus[fallbackKey] || focus[`${lang}_count`];
     const caption = _wcFillTemplate(template, {
-      names: _wcFormatNames(names),
+      names: _wcFormatNames(names, count),
       count,
       team
     }) || baseCopy.caption || '';

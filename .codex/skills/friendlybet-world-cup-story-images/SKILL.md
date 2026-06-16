@@ -67,6 +67,24 @@ Dashboard cards and exported share images must match:
 - Dashboard HTML should wrap caption text in `.wc-story-caption-text` for reliable full-width alignment.
 - The image asset itself carries the white result title; app code only renders the caption/banter text.
 
+## Story Banter Voice
+
+- Use a personal, dramatic, shareable tone. Be less clever/abstract and more direct about the people in the pool.
+- Prefer lines that name participants and make the prediction feel like their personal moment.
+- For 4+ matching pickers, keep as many names as the caption can reasonably hold, then add the remainder: `Yossi, Haim, Moshe and 3 others` / `יוסי, חיים, משה ועוד 3 משתתפים`.
+- Write count templates with `{names}`, not only `{count}`, so large pools still feel personal.
+- Approved tone examples:
+  - `Everyone stand up and clap for {names}. {team} first in the group, and suddenly they look like geniuses 👏`
+  - `Oh, the shame. {names} picked {team} first, and after this result they are already preparing the defense speech 🎤😬`
+  - `That was awkward... {names} picked {team} to go far. After this performance, the form can be torn up or framed as a souvenir 🧾`
+  - `{names} went with {team}. Genius? After this result, maybe 🔥`
+- Hebrew should follow the same spirit:
+  - `כולם לעמוד ולמחוא כפיים ל{names}. {team} בראש הבית, ומסתבר שהם ראו את העתיד 👏`
+  - `אוי הבושה. {names} שמו את {team} ראשונה בבית וכבר מכינים נאום הגנה 🎤😬`
+  - `זה היה מביך... {names} בחרו את {team}. אחרי היכולת הזאת, אפשר לקרוע את הטופס 🧾`
+- Emojis are allowed when they sharpen the emotion, usually 1-2 per caption. Do not let emojis replace the joke.
+- Avoid vague team-only banter like `the group got loud` unless no pool names are available. The best story captions are participant-first.
+
 ## Validation Checklist
 
 Before shipping:
