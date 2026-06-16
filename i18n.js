@@ -348,14 +348,14 @@ const TRANSLATIONS = {
     'leaderboard.shareText': '🏆 לוח הדירוגים של {poolName}!\n\nהצטרף ל-FriendlyBet והתחרה איתנו על מונדיאל 2026:\n{url}',
 
     // Pool Pundit — live leaderboard banter
-    'leaderboard.banter.title': 'פרשן הפול',
+    'leaderboard.banter.title': 'פרשן ההימור',
     'leaderboard.banter.live': 'חי',
     'leaderboard.banter.share': 'שתף את הרגע',
-    'leaderboard.banter.caption': '🎙️ מה קורה ב{pool}? קבלו את הדרמה החיה מהפול שלנו ב-FriendlyBet:',
-    'leaderboard.banter.cardTitle': 'מה קורה בפול',
+    'leaderboard.banter.caption': '🎙️ מה קורה ב{pool}? קבלו את הדרמה החיה מהליגה הפרטית שלנו ב-FriendlyBet:',
+    'leaderboard.banter.cardTitle': 'מה קורה בהימור',
     'leaderboard.banter.cardStandings': 'הצמרת',
     'leaderboard.banter.cardScan': 'סרקו לבראקט',
-    'leaderboard.banter.cardTagline': 'חינם · בלי הרשמה · הצטרפו לפול',
+    'leaderboard.banter.cardTagline': 'חינם · בלי הרשמה · הצטרפו להימור',
     'leaderboard.banter.cardTaglineLocked': 'ההימור נעול · עקבו אחרי הטבלה',
 
     // === Matches ===

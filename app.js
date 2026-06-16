@@ -1838,7 +1838,17 @@ async function loadPundit() {
       _ppHourSave({ H, pool: poolPart.map(i => i.id), news: newsPart.map(i => i.id) });
     }
 
-    const items = [...poolPart, ...newsPart].slice(0, PUNDIT_TARGET);
+    let items = [...poolPart, ...newsPart].slice(0, PUNDIT_TARGET);
+
+    // Emergency fallback: if automation/CDN/feed freshness fails AND this user
+    // has no live pool pulse, keep The Pundit alive with timeless, clearly
+    // non-live commentary. Never use stale generated facts as if they were fresh.
+    if (!items.length) {
+      items = _ppLeastRecent(_punditEmergencyFallbackDeck(), PUNDIT_TARGET, seenMap, H);
+      items.forEach(it => { if (it && it.id) seenMap[it.id] = H; });
+      _ppSeenSave(seenMap);
+      _ppHourSave({ H, pool: [], news: items.map(i => i.id), fallback: true });
+    }
 
     if (!items.length) return [];
     _punditState.items = items;
@@ -1939,7 +1949,7 @@ async function buildPoolPundit() {
     push('pool-locked-live', 1, [
       { he: 'ההימור נעול. עכשיו הבחירות שלכם פוגשות את המציאות, וכל משחק יכול להזיז את הטבלה.',
         en: 'Predictions are locked. Now your picks meet reality, and every match can move the table.' },
-      { he: 'אין יותר עריכות, רק קבלות. הבראקט קפוא והדרמה של הפול חיה.',
+      { he: 'אין יותר עריכות, רק קבלות. הבראקט קפוא והדרמה של ההימור חיה.',
         en: 'No more edits, only receipts. The bracket is frozen and the pool drama is live.' },
       { he: 'שתפו את הטבלה, לא לינק הצטרפות. ההימור סגור, הדרמה פתוחה.',
         en: 'Share the table, not a join link. Predictions are closed, the drama is open.' },
@@ -1962,7 +1972,7 @@ async function buildPoolPundit() {
     push('pool-solo-ready', 2, [
       { he: 'בינתיים אתה לבד בהימור — השלם את כל הניחושים ותהיה מוכן לפני כולם 📋',
         en: "For now you're solo in the pool — complete all your picks and be ready before anyone else 📋" },
-      { he: 'הפול שלך מחכה ליריבים. נעל בחירות עכשיו ושלח לינק לחברים 🔗',
+      { he: 'הליגה הפרטית שלך מחכה ליריבים. נעל בחירות עכשיו ושלח לינק לחברים 🔗',
         en: 'Your pool is waiting for rivals. Lock in your picks now and send friends the link 🔗' },
     ]);
   }
@@ -2052,23 +2062,23 @@ async function buildPoolPundit() {
   // predictions, never a fabricated member fact.
   if (!lateEntryOpen) {
     push('pool-ev-lock', 7, [{
-      he: 'הבחירות שלך בפול ננעלות עם שריקת הפתיחה. עבור עליהן שוב לפני שיהיה מאוחר ⏰',
+      he: 'הבחירות שלך בהימור ננעלות עם שריקת הפתיחה. עבור עליהן שוב לפני שיהיה מאוחר ⏰',
       en: 'Your pool picks lock at kickoff. Give them one more look before it is too late ⏰' }]);
   }
   push('pool-ev-ko', 8, [{
-    he: 'בפול שלך כל ניחוש נכון בשלב הנוקאאוט שווה יותר נקודות. תכוון רחוק 🚀',
+    he: 'בהימור שלך כל ניחוש נכון בשלב הנוקאאוט שווה יותר נקודות. תכוון רחוק 🚀',
     en: 'In your pool every correct knockout pick is worth more points. Aim deep 🚀' }]);
   push('pool-ev-champion', 9, [{
-    he: 'מי האלוף שבחרת? בפול שלך כל אחד בטוח שהוא צדק 🏆',
+    he: 'מי האלוף שבחרת? בהימור שלך כל אחד בטוח שהוא צדק 🏆',
     en: 'Who is your champion pick? In your pool everyone is sure they are right 🏆' }]);
   push('pool-ev-topscorer', 10, [{
-    he: 'מלך השערים שתבחר יכול להכריע את הפול שלך ⚽',
+    he: 'מלך השערים שתבחר יכול להכריע את ההימור שלך ⚽',
     en: 'The top scorer you pick could decide your pool ⚽' }]);
   push('pool-ev-share', 11, [{
-    he: 'שתף את הלינק של הפול. ככל שיותר חברים מצטרפים, כיף יותר להוביל 🔗',
+    he: 'שתף את לינק ההצטרפות. ככל שיותר חברים מצטרפים, כיף יותר להוביל 🔗',
     en: 'Share your pool link. The more friends join, the more fun it is to lead 🔗' }]);
   push('pool-ev-compare', 12, [{
-    he: 'אחרי שלב הבתים, השווה את הבחירות שלך מול שאר הפול 📊',
+    he: 'אחרי שלב הבתים, השווה את הבחירות שלך מול שאר החברים בהימור 📊',
     en: 'After the group stage, compare your picks against the rest of your pool 📊' }]);
 
   if (!cand.length) return [];
@@ -2155,6 +2165,39 @@ const _PP_EVERGREEN = [
     en: 'Group K: Portugal against DR Congo, Uzbekistan and Colombia. Who is your pick? 🇵🇹' },
   { id: 'ev-grpL', he: 'בית L: אנגליה מול קרואטיה, גאנה ופנמה. תסחב את הבית? 🏴',
     en: 'Group L: England against Croatia, Ghana and Panama. Will they take it? 🏴' },
+];
+
+const _PP_EMERGENCY_FALLBACK = [
+  {
+    id: 'fb-fallback-quiet',
+    he: 'אין עדכון טרי מספיק כדי לצעוק עליו. הפרשן שומר אבק שריפה לרגע הבא, כי במונדיאל הזה שקט הוא מצב זמני.',
+    en: 'No update is fresh enough to shout about. The Pundit is saving the spice for the next turn, because quiet never lasts long here.',
+  },
+  {
+    id: 'fb-fallback-table',
+    he: 'גם כשאין שורה חדשה, הטבלה לא באמת נחה. משחק אחד קטן יכול להפוך ביטחון עצמי לשיחת התנצלות.',
+    en: 'Even without a fresh line, the table is not really resting. One small match can turn confidence into an apology tour.',
+  },
+  {
+    id: 'fb-fallback-48',
+    he: '48 נבחרות, 104 משחקים, ואפס סבלנות לתחזיות בטוחות מדי. הפרשן ממתין לעדכון הבא.',
+    en: '48 teams, 104 matches, and zero patience for overconfident predictions. The Pundit is waiting for the next clean update.',
+  },
+  {
+    id: 'fb-fallback-receipts',
+    he: 'כרגע אין נתון חדש מספיק אמין. בינתיים, הבחירות כבר רשומות והקבלות יגיעו עם השריקה הבאה.',
+    en: 'No new fact is reliable enough right now. Meanwhile, the picks are written down and the receipts arrive with the next whistle.',
+  },
+  {
+    id: 'fb-fallback-chaos',
+    he: 'הפרשן במצב שמרני: לא ממציא חדשות, רק מזכיר שהכאוס בדרך כלל מגיע בדיוק כשכולם נרגעים.',
+    en: 'The Pundit is in conservative mode: no invented news, just a reminder that chaos usually arrives right after everyone relaxes.',
+  },
+  {
+    id: 'fb-fallback-next',
+    he: 'העדכון הבא עוד רגע יגיע. עד אז, אל תתאהבו יותר מדי בתחזית שלכם. המונדיאל לא מחזיר אהבה בקלות.',
+    en: 'The next update will land soon. Until then, do not fall too deeply for your prediction. The World Cup rarely loves back.',
+  },
 ];
 
 // Rotates an array by `hourSeed` so the leading window advances every hour.
@@ -2245,6 +2288,17 @@ function _ppLeastRecent(cands, count, seen, H) {
 // through before anything shown before comes back.
 function _punditDeck() {
   return _PP_EVERGREEN.map(it => ({ id: it.id, type: 'evergreen', confidence: 'confirmed', he: it.he, en: it.en, sources: [] }));
+}
+
+function _punditEmergencyFallbackDeck() {
+  return _PP_EMERGENCY_FALLBACK.map(it => ({
+    id: it.id,
+    type: 'fallback',
+    confidence: 'confirmed',
+    he: it.he,
+    en: it.en,
+    sources: [],
+  }));
 }
 
 function _evergreenPundit(count, hourSeed, exclude) {
