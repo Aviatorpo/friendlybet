@@ -9809,7 +9809,7 @@ function _bracketShareVersion() {
   // The trailing CARD-LAYOUT version changes the URL once whenever the OG
   // card DESIGN changes, so WhatsApp/Facebook/edge re-scrape the corrected card
   // instead of serving the previously-cached (overlapping) one. Bump on redesign.
-  return (h >>> 0).toString(36) + 'c9';
+  return (h >>> 0).toString(36) + 'c10';
 }
 
 // Personalized public share URL for the current user's predictions. Friends
