@@ -7684,42 +7684,46 @@ body:not(.ltr) .home-lang-toggle {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  margin: 2px 0 18px;
+  gap: 14px;
+  margin: 4px 0 22px;
 }
 .sp-summary-share-card-preview {
-  width: clamp(220px, 72vw, 340px);
+  width: min(100%, 460px);
   max-width: 100%;
-  padding: 6px;
-  border-radius: 18px;
-  background: linear-gradient(145deg, rgba(217,180,106,0.24), rgba(255,255,255,0.055));
-  border: 1px solid rgba(217,180,106,0.24);
-  box-shadow: 0 18px 44px rgba(0,0,0,0.5);
+  padding: 0;
+  border-radius: 20px;
+  background: #090806;
+  border: 1px solid rgba(217,180,106,0.42);
+  box-shadow: 0 26px 72px rgba(0,0,0,0.58), 0 0 0 1px rgba(255,255,255,0.04);
+  overflow: hidden;
 }
 .sp-summary-share-card-preview canvas {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 14px;
   background: #0b0b08;
 }
 .sp-summary-share-stage {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: block;
 }
-.sp-summary-share-stage #sp-summary-share-btn {
-  margin-top: 0 !important;
-  width: min(100%, 360px);
-}
-.sp-summary-share-stage #sp-summary-share-apps {
-  width: min(100%, 360px);
-}
-.sp-summary-share-stage .bracket-share-desktop {
+.sp-summary-share-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
   width: min(100%, 520px);
-  margin-top: 2px;
-  margin-bottom: 0;
+  margin: 0 auto;
+}
+.sp-summary-share-actions > button {
+  margin-top: 0 !important;
+}
+.sp-summary-share-helper {
+  width: min(100%, 520px);
+  margin: 9px auto 0;
+  color: rgba(255,255,255,0.62);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: center;
 }
 .sp-summary-actions {
   display: flex;
@@ -7737,6 +7741,9 @@ body:not(.ltr) .home-lang-toggle {
   border-radius: 14px;
   padding: 14px;
   margin-bottom: 12px;
+}
+.sp-summary-secondary-card {
+  display: none;
 }
 .sp-summary-section-title {
   font-size: 13px;
@@ -9634,16 +9641,31 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
 #sp-summary-bracket-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  scrollbar-color: rgba(217,180,106,0.55) transparent;
+  padding: 6px 2px 10px;
+  direction: ltr;
 }
-#sp-summary-bracket-tree .sp-bv-col { min-height: 360px; }
+#sp-summary-bracket-tree {
+  min-width: 1100px;
+}
+#sp-summary-bracket-tree .sp-bv-col { min-height: 520px; }
+.sp-summary-bracket-card {
+  width: min(1180px, calc(100vw - 24px));
+  margin-left: calc((100% - min(1180px, calc(100vw - 24px))) / 2);
+  margin-right: calc((100% - min(1180px, calc(100vw - 24px))) / 2);
+  overflow: hidden;
+}
 
 @media (min-width: 768px) {
   .sp-summary-hero {
-    margin-top: 8px;
-    margin-bottom: 22px;
+    margin-top: 6px;
+    margin-bottom: 26px;
   }
   .sp-summary-share-card-preview {
-    width: 360px;
+    width: min(460px, calc((100vh - 220px) * 0.8));
+  }
+  .sp-summary-share-actions {
+    grid-template-columns: 1.2fr 1fr;
   }
   .sp-summary-actions {
     max-width: 420px;
@@ -9654,7 +9676,7 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
 
 @media (max-width: 360px) {
   .sp-summary-share-card-preview {
-    width: 218px;
+    width: 100%;
   }
   .sp-summary-hero {
     gap: 10px;

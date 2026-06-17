@@ -1461,7 +1461,7 @@ function loadTablerFallback() {
           <span class="brb-icon">⚠️</span>
           <span class="brb-title" id="brb-title" data-i18n="recoverBracket.title">שלב הנוקאאוט שלך לא נשמר</span>
         </div>
-        <div class="brb-sub" id="brb-sub" data-i18n="recoverBracket.sub">בחירות הבתים שלך נשמרו בהצלחה ✓ אך עקב תקלה טכנית, שלב הנוקאאוט (הבראקט) לא נשמר. אנא מלא אותו מחדש לפני תחילת המונדיאל — מצטערים על אי הנוחות!</div>
+        <div class="brb-sub" id="brb-sub" data-i18n="recoverBracket.sub">?????? ????? ??? ????? ?????? ? ?? ??? ???? ?????, ??? ???????? (??????) ?? ????. ??? ??? ???? ???? ???? ????? ???????? ? ??????? ?? ?? ??????!</div>
         <div class="brb-cta" id="brb-cta" data-i18n="recoverBracket.cta">מלא את הנוקאאוט</div>
       </div>
 
@@ -1483,7 +1483,7 @@ function loadTablerFallback() {
           <span class="anb-icon">⚠️</span>
           <span class="anb-title" id="admin-nudge-title"></span>
         </div>
-        <div class="anb-sub" id="admin-nudge-sub" data-i18n="dashboard.adminNudge.sub">חלק מחברי הפול השלימו בתים ואלופה, אך הבראקט שלהם לא נשמר עקב תקלה. תזכיר להם להשלים אותו לפני תחילת המונדיאל.</div>
+        <div class="anb-sub" id="admin-nudge-sub" data-i18n="dashboard.adminNudge.sub">??? ????? ???? ?????? ???? ??????, ?? ?????? ???? ?? ???? ??? ????. ????? ??? ?????? ???? ???? ????? ????????.</div>
         <div class="anb-actions">
           <button type="button" class="anb-copy" id="admin-nudge-copy">
             <i class="ti ti-copy"></i><span data-i18n="adminMembersEx.copyNudge">העתק הודעה לקבוצה</span>
@@ -3086,7 +3086,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.10.66</span>
+      <span class="menu-version">v2.10.68</span>
     </div>
   </div>
 
@@ -3287,10 +3287,22 @@ function loadTablerFallback() {
       <div class="sp-summary-share-card-preview" id="sp-summary-share-card-preview">
         <canvas id="sp-summary-share-card-canvas" width="1080" height="1350"></canvas>
       </div>
-      <div class="sp-summary-share-stage" id="sp-summary-share-stage"></div>
+      <div class="sp-summary-share-stage" id="sp-summary-share-stage">
+        <div class="sp-summary-share-actions">
+          <button class="btn-primary btn-large" type="button" id="sp-summary-share-image-btn" onclick="sharePredictionImageOnly()">
+            <i class="ti ti-photo-share"></i>
+            <span data-i18n="bracketShare.imageCta">שתפו את תמונת הניצחון</span>
+          </button>
+          <button class="btn-secondary btn-large" type="button" id="sp-summary-share-full-btn" onclick="shareFullPrediction()">
+            <i class="ti ti-share"></i>
+            <span data-i18n="bracketShare.fullPredictionCta">שתפו את ההימור המלא</span>
+          </button>
+        </div>
+        <div class="sp-summary-share-helper" data-i18n="bracketShare.summaryHelper">קודם כל משתפים את תמונת הניצחון. מי שרוצה יכול לשתף גם את ההימור המלא.</div>
+      </div>
     </div>
 
-    <div class="sp-summary-card">
+    <div class="sp-summary-card sp-summary-bracket-card">
       <div class="sp-summary-section-title sp-summary-title-row">
         <span data-i18n="betting.summary.bracket">ברקאט</span>
         <span class="sp-scroll-chip" data-i18n="bracketView.scrollChip">↔ גלול לצדדים</span>
@@ -3303,15 +3315,15 @@ function loadTablerFallback() {
       <div id="sp-summary-groups"></div>
     </div>
 
-    <div class="sp-summary-card">
+    <div class="sp-summary-card sp-summary-secondary-card">
       <div class="sp-summary-section-title" data-i18n="betting.summary.winner">מנצחת הטורניר</div>
       <div id="sp-summary-winner"></div>
     </div>
 
-    <div class="sp-summary-card">
+    <div class="sp-summary-card sp-summary-secondary-card">
       <div class="sp-summary-section-title" data-i18n="betting.summary.topScorer">מלך השערים</div>
       <div id="sp-summary-topscorer"></div>
-      <button class="btn-secondary btn-small" onclick="spEditTopScorer()" id="sp-summary-ts-edit">
+      <button class="btn-secondary btn-small" onclick="spEditTopScorer()" id="sp-summary-ts-edit-legacy">
         <i class="ti ti-edit"></i>
         <span data-i18n="betting.summary.editTopScorer">ערוך מלך שערים</span>
       </button>
@@ -3335,38 +3347,16 @@ function loadTablerFallback() {
         <span data-i18n="betting.summary.editPicks">ערוך קבוצות וברקאט</span>
       </button>
 
+      <button class="btn-secondary" onclick="spEditTopScorer()" id="sp-summary-ts-edit">
+        <i class="ti ti-user-star"></i>
+        <span data-i18n="betting.summary.editTopScorer">ערוך מלך שערים</span>
+      </button>
+
       <button class="btn-secondary btn-large" onclick="goToDashboard()" id="sp-summary-dashboard-btn">
         <i class="ti ti-home"></i>
         <span data-i18n="nav.dashboard">חזרה לדשבורד</span>
       </button>
     </div>
-
-    <button class="btn-secondary" type="button" id="sp-summary-share-btn" onclick="shareBracketCard()" data-share-native style="margin-top:10px;display:none;">
-      <i class="ti ti-share"></i>
-      <span data-i18n="bracketShare.cta">שתף את הבראקט שלי</span>
-    </button>
-
-    <!-- App-logos hint (toggled with the button above). Decorative cue that the
-         share button reaches all these apps; tapping it fires the same share.
-         MOBILE only — desktop uses #sp-summary-share-desktop (real link chips). -->
-    <div id="sp-summary-share-apps" data-share-native style="display:none;">
-      <div class="bracket-share-apps-hint" onclick="shareBracketCard()" role="button" tabindex="0" aria-label="WhatsApp, Instagram, X, Facebook, Telegram">
-        <span class="bsah-label" data-i18n="bracketShare.shareToApps">משתפים לכל אפליקציה</span>
-        <div class="bsah-logos" aria-hidden="true">
-          <svg class="bsah-logo wa" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          <svg class="bsah-logo ig" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          <svg class="bsah-logo x" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          <svg class="bsah-logo fb" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          <svg class="bsah-logo tg" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-          <svg class="bsah-logo rd" viewBox="0 0 24 24" fill="currentColor"><path d="M24 11.779c0-1.459-1.192-2.645-2.657-2.645-.715 0-1.363.286-1.84.746-1.81-1.191-4.259-1.949-6.971-2.046l1.483-4.669 4.016.941-.006.058c0 1.193.975 2.163 2.174 2.163 1.198 0 2.172-.97 2.172-2.163s-.975-2.164-2.172-2.164c-.92 0-1.704.574-2.021 1.379l-4.329-1.015c-.189-.046-.381.063-.44.249l-1.654 5.207c-2.838.034-5.409.798-7.3 2.025-.474-.438-1.103-.712-1.799-.712-1.465 0-2.656 1.187-2.656 2.646 0 .97.533 1.811 1.317 2.271-.052.282-.086.567-.086.857 0 3.911 4.808 7.093 10.719 7.093s10.72-3.182 10.72-7.093c0-.288-.033-.571-.084-.852.789-.46 1.325-1.301 1.325-2.276zm-17.954 1.835c0-.834.679-1.513 1.513-1.513.834 0 1.513.679 1.513 1.513 0 .834-.679 1.513-1.513 1.513-.834 0-1.513-.679-1.513-1.513zm9.062 4.992c-.815.815-2.387.876-2.846.876-.46 0-2.033-.061-2.847-.875-.119-.119-.119-.312 0-.431.119-.119.312-.119.431 0 .516.516 1.617.7 2.416.7.798 0 1.899-.184 2.416-.7.119-.119.312-.119.431 0 .117.119.117.312-.001.43zm-.211-3.479c-.834 0-1.513-.679-1.513-1.513 0-.834.679-1.513 1.513-1.513.834 0 1.513.679 1.513 1.513 0 .834-.679 1.513-1.513 1.513z"/></svg>
-          <span class="bsah-more">+</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- DESKTOP share flow (no native file share): real per-app link chips +
-         Copy link + Download image. Populated by _bracketShareControlsHtml(). -->
-    <div id="sp-summary-share-desktop" class="bracket-share-desktop" data-share-desktop style="display:none;"></div>
   </div>
 </div>
 
@@ -3384,8 +3374,8 @@ function loadTablerFallback() {
     <div class="sp-locked-banner">
       <i class="ti ti-lock-check gold"></i>
       <div>
-        <strong data-i18n="betting.locked.heading">הניחושים נשלחו ונעולים</strong>
-        <div data-i18n="betting.locked.message">לא ניתן לשנות יותר. צפה בניחושים שלך למטה.</div>
+        <strong data-i18n="betting.locked.heading">???????? ????? ???????</strong>
+        <div data-i18n="betting.locked.message">?? ???? ????? ????. ??? ???????? ??? ????.</div>
       </div>
     </div>
     <div id="sp-locked-content"></div>

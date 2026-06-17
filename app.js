@@ -9809,7 +9809,7 @@ function _bracketShareVersion() {
   // The trailing CARD-LAYOUT version changes the URL once whenever the OG
   // card DESIGN changes, so WhatsApp/Facebook/edge re-scrape the corrected card
   // instead of serving the previously-cached (overlapping) one. Bump on redesign.
-  return (h >>> 0).toString(36) + 'c10';
+  return (h >>> 0).toString(36) + 'c11';
 }
 
 // Personalized public share URL for the current user's predictions. Friends
@@ -10067,6 +10067,64 @@ async function shareBracketCard() {
   })();
 }
 window.shareBracketCard = shareBracketCard;
+
+async function sharePredictionImageOnly() {
+  const champ = spState && (spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
+  if (!champ) { showToast(t('bracketShare.notReady'), 'info'); return; }
+  let blob;
+  try { blob = await _bracketCardToBlob(); }
+  catch (e) { console.error('prediction image render failed', e); showToast(t('bracketShare.notReady'), 'info'); return; }
+  if (!blob) { showToast(t('bracketShare.notReady'), 'info'); return; }
+
+  const file = new File([blob], 'friendlybet-road-to-victory.png', { type: 'image/png' });
+  if (navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
+    _recordShare('prediction_image', 'click');
+    try {
+      await navigator.share({ files: [file], title: t('bracketShare.imageTitle') });
+      _recordShare('prediction_image', 'completed');
+      return;
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;
+      console.error('prediction image share failed', e);
+    }
+  }
+
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'friendlybet-road-to-victory.png';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1200);
+  showToast(t('bracketShare.imageOnlyDownloaded'), 'success');
+}
+window.sharePredictionImageOnly = sharePredictionImageOnly;
+
+async function shareFullPrediction() {
+  if (!_bracketShareReady()) { showToast(t('bracketShare.notReady'), 'info'); return; }
+  _prewarmBracketOg();
+  const url = _bracketShareUrl('summary_full_prediction');
+  const title = t('bracketShare.fullPredictionTitle');
+  if (navigator.share) {
+    try {
+      await navigator.share({ title, text: title, url });
+      _recordShare('prediction_full_link', 'completed');
+      return;
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;
+      console.error('full prediction share failed', e);
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+  } catch (_) {
+    const tmp = document.createElement('input');
+    tmp.value = url; document.body.appendChild(tmp); tmp.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(tmp);
+  }
+  _recordShare('prediction_full_link', 'click');
+  showToast(t('bracketShare.linkCopied'), 'success');
+}
+window.shareFullPrediction = shareFullPrediction;
 
 // ---- Desktop bracket-share experience (v2.7.0) ----------------------------
 // On desktop there is no native FILE share, so the old single button could only
@@ -13444,60 +13502,35 @@ async function spRenderSummary() {
     submitBtn.innerHTML = `<i class="ti ti-rocket"></i><span data-i18n="betting.summary.submit">${t('betting.summary.submit')}</span>`;
   }
 
-  // Context-aware CTA hierarchy (v2.6.99). Two distinct intents land on this
-  // screen, and the primary CTA must match each:
-  //   • First-time / pre-submit  → "Save my predictions" is the primary CTA
-  //     (the commit that sets predictions_submitted_at). Share is hidden — an
-  //     incomplete bracket would share an empty OG card (see _bracketShareReady).
-  //   • Returning (already submitted a FULL bracket, here via "View your
-  //     predictions") → "Share my bracket" becomes the primary CTA: this is the
-  //     viral moment. Save is DEMOTED to a secondary "Save changes" — picks
-  //     auto-save on every edit (spAutoSaveGroups / autoSaveKnockoutPicks) and
-  //     the submit flag is already set, so Save is reassurance, not the action.
-  //     Back-to-dashboard also appears in the lower action stack for a clear exit.
-  const summaryShareBtn = document.getElementById('sp-summary-share-btn');
-  const summaryShareApps = document.getElementById('sp-summary-share-apps');
-  const summaryShareDesktop = document.getElementById('sp-summary-share-desktop');
+  // Context-aware CTA hierarchy. The summary/review page has one viral primary:
+  // share the Road to Victory image. A second button shares the full public
+  // prediction page. Save/edit remain lower-page controls and only appear while
+  // broad editing is still allowed.
   const summaryShareStage = document.getElementById('sp-summary-share-stage');
+  const summaryShareImageBtn = document.getElementById('sp-summary-share-image-btn');
+  const summaryShareFullBtn = document.getElementById('sp-summary-share-full-btn');
   const summarySaveBtn = document.getElementById('sp-submit-btn');
   const summaryEditBtn = document.getElementById('sp-summary-edit-picks');
   const summaryTopScorerEditBtn = document.getElementById('sp-summary-ts-edit');
-  if (summaryShareBtn && summarySaveBtn) {
+  if (summarySaveBtn) {
     const submitted = typeof spHasUserSubmitted === 'function' && spHasUserSubmitted();
     const hasChamp = !!(spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
     const shareIsPrimary = (submitted && hasChamp);
-    if (summaryShareStage) {
-      [summaryShareBtn, summaryShareApps, summaryShareDesktop].forEach(el => {
-        if (el && el.parentNode !== summaryShareStage) summaryShareStage.appendChild(el);
-      });
-    }
-
     const saveLabel = summarySaveBtn.querySelector('span');
     const saveIcon = summarySaveBtn.querySelector('i');
     if (shareIsPrimary) {
-      // Promote Share, demote Save.
-      summaryShareBtn.className = 'btn-primary btn-large';
+      if (summaryShareStage) summaryShareStage.style.display = '';
+      if (summaryShareImageBtn) summaryShareImageBtn.style.display = '';
+      if (summaryShareFullBtn) summaryShareFullBtn.style.display = '';
       summarySaveBtn.className = 'btn-secondary';
       if (saveIcon) saveIcon.className = 'ti ti-device-floppy';
       if (saveLabel) {
         saveLabel.setAttribute('data-i18n', 'betting.summary.saveChanges');
         saveLabel.textContent = t('betting.summary.saveChanges');
       }
-      // Populate desktop link chips, then let _applyBracketShareMode pick the
-      // right affordance: mobile keeps the native-sheet button + logo hint;
-      // desktop swaps in real per-app link chips + copy + download (v2.7.0).
-      if (typeof _ensureBracketDesktopControls === 'function') _ensureBracketDesktopControls(summaryShareDesktop);
-      summaryShareBtn.style.display = '';
-      if (summaryShareApps) summaryShareApps.style.display = '';
-      if (summaryShareDesktop) summaryShareDesktop.style.display = '';
-      if (summaryShareStage && typeof _applyBracketShareMode === 'function') _applyBracketShareMode(summaryShareStage);
       if (typeof _prewarmBracketOg === 'function') _prewarmBracketOg(); // warm OG before any share click
     } else {
-      // First-time: Save is the large primary, all share controls hidden.
-      summaryShareBtn.style.display = 'none';
-      if (summaryShareApps) summaryShareApps.style.display = 'none';
-      if (summaryShareDesktop) summaryShareDesktop.style.display = 'none';
-      summaryShareBtn.className = 'btn-secondary';
+      if (summaryShareStage) summaryShareStage.style.display = 'none';
       summarySaveBtn.className = 'btn-primary btn-large';
       if (saveIcon) saveIcon.className = 'ti ti-rocket';
       if (saveLabel) {
@@ -13524,21 +13557,19 @@ async function spRenderSummary() {
     return _spGroupWithCurrentHtml(letter, positions);
   }).join('');
 
-  // v2.5.75: bracket summary is now the horizontal bracket tree (same widget
-  // as the bracket-view modal) instead of a flat per-round list. Reads far
-  // more naturally with 5 knockout rounds. Side-tabs (Full/Left/Right) let
-  // the user focus on one half on narrow screens.
+  // Full horizontal bracket tree, matching the public share page structure.
   const bracketEl = document.getElementById('sp-summary-bracket');
   bracketEl.innerHTML = `
-    <div class="sp-bv-side-tabs sp-summary-bv-tabs">
-      <button class="sp-bv-side-tab active" data-side="full" onclick="setSpSummaryBracketSide('full')" data-i18n="bracketView.full">${t('bracketView.full')}</button>
-      <button class="sp-bv-side-tab" data-side="left" onclick="setSpSummaryBracketSide('left')" data-i18n="bracketView.leftSide">${t('bracketView.leftSide')}</button>
-      <button class="sp-bv-side-tab" data-side="right" onclick="setSpSummaryBracketSide('right')" data-i18n="bracketView.rightSide">${t('bracketView.rightSide')}</button>
-    </div>
     <div class="sp-bracket-view-scroll" id="sp-summary-bracket-scroll">
       <div class="sp-bracket-tree" id="sp-summary-bracket-tree" data-side="full">${_spBuildBracketTreeHtml()}</div>
     </div>
   `;
+  requestAnimationFrame(() => {
+    const scroller = document.getElementById('sp-summary-bracket-scroll');
+    if (!scroller) return;
+    const max = scroller.scrollWidth - scroller.clientWidth;
+    if (max > 0) scroller.scrollLeft = Math.round(max / 2);
+  });
 
   // Winner
   const w = spState.tournamentWinner;
@@ -13694,49 +13725,7 @@ async function spSubmitPredictions() {
 }
 
 async function spShowLockedView() {
-  await spLoadExistingPicks();
-  await loadResultsData({ force: true, preferDb: true });
-  const el = document.getElementById('sp-locked-content');
-  // Build a read-only render
-  let html = '';
-  // Groups
-  html += `<div class="sp-summary-card">
-    <div class="sp-summary-section-title">${t('betting.summary.groups')}</div>`;
-  WC2026_GROUP_LETTERS.forEach(letter => {
-    const positions = spState.groupPositions[letter] || [];
-    html += _spGroupWithCurrentHtml(letter, positions);
-  });
-  html += '</div>';
-
-  // Bracket - v2.5.75: read-only horizontal tree (same widget as the summary
-  // + bracket-view modal) instead of a flat per-round list.
-  html += `<div class="sp-summary-card">
-    <div class="sp-summary-section-title sp-summary-title-row">
-      <span>${t('betting.summary.bracket')}</span>
-      <span class="sp-scroll-chip">${t('bracketView.scrollChip')}</span>
-    </div>
-    <div class="sp-bv-side-tabs sp-summary-bv-tabs">
-      <button class="sp-bv-side-tab active" data-side="full" onclick="setSpSummaryBracketSide('full')">${t('bracketView.full')}</button>
-      <button class="sp-bv-side-tab" data-side="left" onclick="setSpSummaryBracketSide('left')">${t('bracketView.leftSide')}</button>
-      <button class="sp-bv-side-tab" data-side="right" onclick="setSpSummaryBracketSide('right')">${t('bracketView.rightSide')}</button>
-    </div>
-    <div class="sp-bracket-view-scroll" id="sp-summary-bracket-scroll">
-      <div class="sp-bracket-tree" id="sp-summary-bracket-tree" data-side="full">${_spBuildBracketTreeHtml()}</div>
-    </div>
-  </div>`;
-
-  // Winner
-  const w = spState.tournamentWinner;
-  html += `<div class="sp-summary-card">
-    <div class="sp-summary-section-title">${t('betting.summary.winner')}</div>
-    <div class="sp-summary-row">
-      <span class="sr-flag" style="font-size:28px;">${w ? getCountryFlag(w) : '—'}</span>
-      <span class="sr-value" style="font-size:17px;">${w ? getTeamName(w) : '—'}</span>
-    </div>
-  </div>`;
-  el.innerHTML = html;
-  showScreen('sp-locked-screen');
-  _startSpLockedResultsRefresh();
+  await spShowSummary();
 }
 
 // ============================================================
