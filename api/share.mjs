@@ -38,6 +38,8 @@ export default function handler(req, res) {
     res.status(200).send(`<!DOCTYPE html><html lang="he"><head><meta charset="UTF-8">`
       + `<meta name="robots" content="noindex,follow">`
       + `<meta property="og:image" content="${ORIGIN}/og-image-he.png">`
+      + `<meta property="og:image:secure_url" content="${ORIGIN}/og-image-he.png">`
+      + `<meta property="og:image:type" content="image/png">`
       + `<meta property="og:title" content="FriendlyBet — World Cup 2026 predictions">`
       + `<title>FriendlyBet</title><script>location.replace('/')</script></head><body></body></html>`);
     return;
@@ -53,6 +55,7 @@ export default function handler(req, res) {
     if (v) ogImg += `&v=${encodeURIComponent(v)}`;
     html = html
       .replace(/(<meta property="og:image" content=")[^"]*(">)/, `$1${ogImg}$2`)
+      .replace(/(<meta property="og:image:secure_url" content=")[^"]*(">)/, `$1${ogImg}$2`)
       .replace(/(<meta name="twitter:image" content=")[^"]*(">)/, `$1${ogImg}$2`);
     // share.html has no explicit twitter:image; twitter falls back to og:image.
   }

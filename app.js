@@ -2524,6 +2524,7 @@ const _WC_STORIES_FALLBACK = {
 };
 let _wcStoriesState = { items: [], idx: 0, loadedAt: 0 };
 const _wcStoriesPoolCopyCache = {};
+const _WC_STORIES_CAROUSEL_LIMIT = 24;
 
 function _wcStoryLang() {
   return (typeof currentLanguage !== 'undefined' && currentLanguage === 'en') ? 'en' : 'he';
@@ -2541,7 +2542,7 @@ async function loadWorldCupStories() {
   const items = (payload && Array.isArray(payload.items) && payload.items.length)
     ? payload.items
     : _WC_STORIES_FALLBACK.items;
-  _wcStoriesState.items = items.slice(0, 5);
+  _wcStoriesState.items = items.slice(0, _WC_STORIES_CAROUSEL_LIMIT);
   _wcStoriesState.loadedAt = Date.now();
   if (_wcStoriesState.idx >= _wcStoriesState.items.length) _wcStoriesState.idx = 0;
   return _wcStoriesState.items;
@@ -2702,7 +2703,7 @@ async function renderWorldCupStories() {
   }));
   rail.innerHTML = rendered.join('');
   dots.innerHTML = items.map((_, i) => `<span class="${i === _wcStoriesState.idx ? 'active' : ''}"></span>`).join('');
-  if (count) count.textContent = `${items.length}/5`;
+  if (count) count.textContent = `${items.length}/${_WC_STORIES_CAROUSEL_LIMIT}`;
   card.style.display = '';
   if (!rail._wcStoriesWired) {
     rail._wcStoriesWired = true;
@@ -9805,10 +9806,10 @@ function _bracketShareVersion() {
   // (_prewarmBracketOg), so the friend's scraper hits a warm ~0.3s render and
   // sees the full card. The token still changes when the PICKS change (the hash
   // covers positions 25-31), so an edited bracket still busts the preview cache.
-  // The trailing CARD-LAYOUT version ('c2') changes the URL once whenever the OG
+  // The trailing CARD-LAYOUT version changes the URL once whenever the OG
   // card DESIGN changes, so WhatsApp/Facebook/edge re-scrape the corrected card
   // instead of serving the previously-cached (overlapping) one. Bump on redesign.
-  return (h >>> 0).toString(36) + 'c4';
+  return (h >>> 0).toString(36) + 'c5';
 }
 
 // Personalized public share URL for the current user's predictions. Friends

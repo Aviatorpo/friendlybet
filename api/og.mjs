@@ -66,12 +66,13 @@ export default async function handler(req, res) {
     // Pre-fetch the QR and the champion hero as base64 data URIs so Satori never
     // fetches a remote image at render time (a flaky host would otherwise throw
     // and break the whole card). On any failure we just drop that image.
-    const [qr, hero] = await Promise.all([
+    const [qr, pickedHero, defaultHero] = await Promise.all([
       qrDataUri('https://friendlybet.live/?utm_source=og_qr&utm_medium=share_card'),
       heroDataUri(data.champ),
+      heroDataUri('ARG'),
     ]);
     data.qr = qr;
-    data.hero = hero;
+    data.hero = pickedHero || defaultHero;
 
     const image = new ImageResponse(buildCardElement(data), { width: 1200, height: 630, fonts: FONTS });
     const buf = Buffer.from(await image.arrayBuffer());
