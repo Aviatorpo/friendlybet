@@ -76,6 +76,7 @@ CLAUDE.md
 
 # scratch OG render checks
 _og_*.png
+_story_review_created.json
 
 # scratch / preview artifacts (champion card work)
 _live_test/

@@ -82,23 +82,32 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/generate-banter.js
 
-      - name: Generate World Cup stories
+      - name: Install story review image tooling
+        run: python3 -m pip install --user pillow
+
+      - name: Generate World Cup story review drafts
         continue-on-error: true
         env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_IMAGE_MODEL: ${{ vars.OPENAI_IMAGE_MODEL || 'gpt-image-1' }}
           OPENAI_IMAGE_SIZE: ${{ vars.OPENAI_IMAGE_SIZE || '1024x1536' }}
-        run: node scripts/generate-world-cup-stories.js
+          WC_STORY_REVIEW_LIMIT: 1
+        run: node scripts/create-world-cup-story-review.js
 
       - name: Validate World Cup stories
         run: node scripts/test-world-cup-stories.js
+
+      - name: Validate World Cup story review drafts
+        run: node scripts/test-world-cup-story-review.js
 
       - name: Commit snapshots if changed
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
-          if [ -n "$(git status --porcelain public-data private-backups story-assets)" ]; then
-            git add public-data private-backups story-assets
+          if [ -n "$(git status --porcelain public-data private-backups story-review)" ]; then
+            git add public-data private-backups story-review
             git commit -q -m "data: refresh CDN snapshots / stories / critical backup"
             pushed=0
             for a in 1 2 3; do
@@ -111,4 +120,17 @@ jobs:
             fi
           else
             echo "no snapshot change"
+          fi
+
+      - name: Send story review package to Telegram
+        if: success()
+        continue-on-error: true
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_ADMIN_CHAT_ID: ${{ secrets.TELEGRAM_ADMIN_CHAT_ID }}
+        run: |
+          if [ -f _story_review_created.json ]; then
+            node scripts/send-world-cup-story-review.js _story_review_created.json
+          else
+            echo "no story review package to send"
           fi

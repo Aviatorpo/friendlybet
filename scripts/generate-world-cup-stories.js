@@ -744,8 +744,9 @@ function imagePrompt(match, outcome) {
   const leftMood = outcome === 'DRAW' ? 'disappointed but proud after a draw' : 'celebrating the win in a fresh dynamic pose';
   const rightMood = outcome === 'DRAW' ? 'frustrated but composed after a draw' : 'sad after the loss, head down or hands on face';
   return [
-    'Create a vertical 9:16 premium sports meme-card image for FriendlyBet.',
+    'Create a vertical 9:16 premium sports meme-card cartoon image for FriendlyBet.',
     `Match result context: ${teamName(home)} ${scoreDash(match)} ${teamName(away)} at FIFA World Cup 2026.`,
+    'Style: high-end illustrated sports caricature poster, expressive cartoon realism, not photorealistic, not a real photo, not a deepfake. Make the main stars recognizable as stylized cartoon likenesses, not exact photographic likenesses.',
     'Show exactly two football stars, no other players anywhere.',
     `Left/foreground: ${left.player}, ${teamName(winner || home)} national-color kit, shirt number #${left.number} printed naturally into the jersey fabric, ${leftMood}, face clearly visible.`,
     `Right/midground: ${right.player}, ${teamName(loser || away)} national-color kit, shirt number #${right.number} printed naturally into the jersey fabric, ${rightMood}, face clearly visible.`,
@@ -757,23 +758,15 @@ function imagePrompt(match, outcome) {
   ].join('\n');
 }
 
-async function generateImage(match, outcome) {
+async function requestImageBuffer(prompt, label = 'story image') {
   if (!process.env.OPENAI_API_KEY) {
-    console.warn(`No OPENAI_API_KEY; skipping image generation for ${matchKey(match)} ${outcome}`);
-    return '';
+    console.warn(`No OPENAI_API_KEY; skipping image generation for ${label}`);
+    return null;
   }
-  const fileName = assetSlug(match, outcome);
-  const relative = path.join('story-assets', fileName).replace(/\\/g, '/');
-  const output = path.join(ROOT, relative);
-  if (fs.existsSync(output)) return relative;
   const model = process.env.OPENAI_IMAGE_MODEL || 'gpt-image-1';
   const size = process.env.OPENAI_IMAGE_SIZE || '1024x1536';
-  const body = {
-    model,
-    prompt: imagePrompt(match, outcome),
-    size,
-  };
-  console.log(`Generating ${relative} with ${model} (${size})`);
+  const body = { model, prompt, size };
+  console.log(`Generating ${label} with ${model} (${size})`);
   const res = await fetch('https://api.openai.com/v1/images/generations', {
     method: 'POST',
     headers: {
@@ -784,14 +777,28 @@ async function generateImage(match, outcome) {
   });
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`OpenAI image generation failed for ${matchKey(match)} ${outcome}: ${res.status} ${text}`);
+    throw new Error(`OpenAI image generation failed for ${label}: ${res.status} ${text}`);
   }
   const json = await res.json();
   const first = json.data && json.data[0];
   const b64 = first && (first.b64_json || first.image_base64);
-  if (!b64) throw new Error(`OpenAI image generation returned no base64 image for ${matchKey(match)} ${outcome}`);
+  if (!b64) throw new Error(`OpenAI image generation returned no base64 image for ${label}`);
+  return Buffer.from(b64, 'base64');
+}
+
+async function generateImage(match, outcome) {
+  if (!process.env.OPENAI_API_KEY) {
+    console.warn(`No OPENAI_API_KEY; skipping image generation for ${matchKey(match)} ${outcome}`);
+    return '';
+  }
+  const fileName = assetSlug(match, outcome);
+  const relative = path.join('story-assets', fileName).replace(/\\/g, '/');
+  const output = path.join(ROOT, relative);
+  if (fs.existsSync(output)) return relative;
+  const buffer = await requestImageBuffer(imagePrompt(match, outcome), `${matchKey(match)} ${outcome}`);
+  if (!buffer) return '';
   fs.mkdirSync(path.dirname(output), { recursive: true });
-  fs.writeFileSync(output, Buffer.from(b64, 'base64'));
+  fs.writeFileSync(output, buffer);
   return relative;
 }
 
@@ -854,7 +861,36 @@ async function main() {
   }
 }
 
-main().catch(err => {
-  console.error(err);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch(err => {
+    console.error(err);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  ROOT,
+  MATCHES_PATH,
+  STORIES_PATH,
+  ASSET_DIR,
+  MANIFEST_PATH,
+  TEAM_NAMES,
+  STAR_PROFILES,
+  readJson,
+  writeJsonIfChanged,
+  loadMatchesPayload,
+  teamName,
+  matchKey,
+  storyId,
+  outcomeFor,
+  scoreForOutcome,
+  scoreDash,
+  resultText,
+  assetSlug,
+  knownOrGeneratedAsset,
+  buildStory,
+  validateStory,
+  imagePrompt,
+  requestImageBuffer,
+  main,
+};

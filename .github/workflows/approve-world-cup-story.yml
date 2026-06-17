@@ -1,0 +1,54 @@
+name: Approve World Cup Story
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: Pending story slug from the Telegram review message
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: approve-world-cup-story
+  cancel-in-progress: false
+
+jobs:
+  approve:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Apply reviewed story
+        run: node scripts/approve-world-cup-story.js "${{ inputs.slug }}"
+
+      - name: Validate story feed
+        run: node scripts/test-world-cup-stories.js
+
+      - name: Commit approved story
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data story-assets story-review)" ]; then
+            git add public-data story-assets story-review
+            git commit -q -m "story: approve ${{ inputs.slug }}"
+            pushed=0
+            for a in 1 2 3; do
+              if git pull --rebase --autostash && git push; then pushed=1; break; fi
+              echo "push retry $a"; sleep 4
+            done
+            if [ "$pushed" != "1" ]; then
+              echo "::error::failed to push approved story after 3 retries"
+              exit 1
+            fi
+          else
+            echo "no approved story changes"
+          fi
