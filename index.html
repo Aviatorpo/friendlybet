@@ -3086,7 +3086,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.10.55</span>
+      <span class="menu-version">v2.10.56</span>
     </div>
   </div>
 
@@ -3283,14 +3283,11 @@ function loadTablerFallback() {
   </div>
 
   <div class="container">
-    <div class="sp-summary-warning">
-      <i class="ti ti-alert-triangle"></i>
-      <span data-i18n="betting.summary.warning">תוכל לערוך את הניחושים כל עוד המונדיאל לא התחיל. ברגע שמשחק ראשון מתחיל - הניחושים יינעלו.</span>
-    </div>
-
-    <div class="sp-summary-card">
-      <div class="sp-summary-section-title" data-i18n="betting.summary.groups">תוצאות הבתים</div>
-      <div id="sp-summary-groups"></div>
+    <div class="sp-summary-hero">
+      <div class="sp-summary-share-card-preview" id="sp-summary-share-card-preview">
+        <canvas id="sp-summary-share-card-canvas" width="1080" height="1350"></canvas>
+      </div>
+      <div class="sp-summary-share-stage" id="sp-summary-share-stage"></div>
     </div>
 
     <div class="sp-summary-card">
@@ -3299,6 +3296,11 @@ function loadTablerFallback() {
         <span class="sp-scroll-chip" data-i18n="bracketView.scrollChip">↔ גלול לצדדים</span>
       </div>
       <div id="sp-summary-bracket"></div>
+    </div>
+
+    <div class="sp-summary-card">
+      <div class="sp-summary-section-title" data-i18n="betting.summary.groups">תוצאות הבתים</div>
+      <div id="sp-summary-groups"></div>
     </div>
 
     <div class="sp-summary-card">
@@ -3315,10 +3317,29 @@ function loadTablerFallback() {
       </button>
     </div>
 
-    <button class="btn-primary btn-large" onclick="spSubmitPredictions()" id="sp-submit-btn">
-      <i class="ti ti-rocket"></i>
-      <span data-i18n="betting.summary.submit">שמור את הניחושים שלי</span>
-    </button>
+    <div class="sp-summary-warning">
+      <i class="ti ti-alert-triangle"></i>
+      <span data-i18n="betting.summary.warning">תוכל לערוך את הניחושים כל עוד המונדיאל לא התחיל. ברגע שמשחק ראשון מתחיל - הניחושים יינעלו.</span>
+    </div>
+
+    <div class="sp-summary-actions">
+      <button class="btn-primary btn-large" onclick="spSubmitPredictions()" id="sp-submit-btn">
+        <i class="ti ti-rocket"></i>
+        <span data-i18n="betting.summary.submit">שמור את הניחושים שלי</span>
+      </button>
+
+      <!-- v2.4.6: explicit "Edit groups / bracket" link so a user landing on
+           summary with missing data has a clear path back into the flow. -->
+      <button class="btn-secondary" onclick="spSummaryEditPicks()" id="sp-summary-edit-picks">
+        <i class="ti ti-edit"></i>
+        <span data-i18n="betting.summary.editPicks">ערוך קבוצות וברקאט</span>
+      </button>
+
+      <button class="btn-secondary btn-large" onclick="goToDashboard()" id="sp-summary-dashboard-btn">
+        <i class="ti ti-home"></i>
+        <span data-i18n="nav.dashboard">חזרה לדשבורד</span>
+      </button>
+    </div>
 
     <button class="btn-secondary" type="button" id="sp-summary-share-btn" onclick="shareBracketCard()" data-share-native style="margin-top:10px;display:none;">
       <i class="ti ti-share"></i>
@@ -3346,13 +3367,6 @@ function loadTablerFallback() {
     <!-- DESKTOP share flow (no native file share): real per-app link chips +
          Copy link + Download image. Populated by _bracketShareControlsHtml(). -->
     <div id="sp-summary-share-desktop" class="bracket-share-desktop" data-share-desktop style="display:none;"></div>
-
-    <!-- v2.4.6: explicit "Edit groups / bracket" link so a user landing on
-         summary with missing data has a clear path back into the flow. -->
-    <button class="btn-secondary" onclick="spSummaryEditPicks()" id="sp-summary-edit-picks" style="margin-top: 10px;">
-      <i class="ti ti-edit"></i>
-      <span data-i18n="betting.summary.editPicks">ערוך קבוצות וברקאט</span>
-    </button>
   </div>
 </div>
 

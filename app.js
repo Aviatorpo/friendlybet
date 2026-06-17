@@ -13363,6 +13363,24 @@ async function spShowSummary() {
 }
 window.spShowSummary = spShowSummary;
 
+function spRenderSummarySharePreview() {
+  const cv = document.getElementById('sp-summary-share-card-canvas');
+  const wrap = document.getElementById('sp-summary-share-card-preview');
+  if (!cv) return;
+  const champ = spState && (spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
+  if (!champ) {
+    if (wrap) wrap.style.display = 'none';
+    return;
+  }
+  if (wrap) wrap.style.display = '';
+  try { _renderBracketCard(cv, null); } catch (e) { console.warn('summary share card first paint failed:', e); }
+  _prepareBracketAssets().then(qr => {
+    const currentChamp = spState && (spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
+    if (currentChamp !== champ) return;
+    try { _renderBracketCard(cv, qr); } catch (e) { console.error('summary share card render failed:', e); }
+  }).catch(e => console.warn('summary share card assets failed:', e));
+}
+
 async function spRenderSummary() {
   // v2.5.19: ALWAYS reload from DB at the top of summary render. The
   //          previous "trust in-memory state" approach kept showing
@@ -13435,11 +13453,11 @@ async function spRenderSummary() {
   //     viral moment. Save is DEMOTED to a secondary "Save changes" — picks
   //     auto-save on every edit (spAutoSaveGroups / autoSaveKnockoutPicks) and
   //     the submit flag is already set, so Save is reassurance, not the action.
-  //     Back-to-dashboard already lives in the topbar (home icon), so no extra
-  //     button is needed.
+  //     Back-to-dashboard also appears in the lower action stack for a clear exit.
   const summaryShareBtn = document.getElementById('sp-summary-share-btn');
   const summaryShareApps = document.getElementById('sp-summary-share-apps');
   const summaryShareDesktop = document.getElementById('sp-summary-share-desktop');
+  const summaryShareStage = document.getElementById('sp-summary-share-stage');
   const summarySaveBtn = document.getElementById('sp-submit-btn');
   const summaryEditBtn = document.getElementById('sp-summary-edit-picks');
   const summaryTopScorerEditBtn = document.getElementById('sp-summary-ts-edit');
@@ -13447,6 +13465,11 @@ async function spRenderSummary() {
     const submitted = typeof spHasUserSubmitted === 'function' && spHasUserSubmitted();
     const hasChamp = !!(spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
     const shareIsPrimary = (submitted && hasChamp);
+    if (summaryShareStage) {
+      [summaryShareBtn, summaryShareApps, summaryShareDesktop].forEach(el => {
+        if (el && el.parentNode !== summaryShareStage) summaryShareStage.appendChild(el);
+      });
+    }
 
     const saveLabel = summarySaveBtn.querySelector('span');
     const saveIcon = summarySaveBtn.querySelector('i');
@@ -13459,13 +13482,6 @@ async function spRenderSummary() {
         saveLabel.setAttribute('data-i18n', 'betting.summary.saveChanges');
         saveLabel.textContent = t('betting.summary.saveChanges');
       }
-      // Reorder so the share controls render above Save.
-      const parent = summarySaveBtn.parentNode;
-      if (parent) {
-        parent.insertBefore(summaryShareBtn, summarySaveBtn);
-        if (summaryShareApps) parent.insertBefore(summaryShareApps, summarySaveBtn);
-        if (summaryShareDesktop) parent.insertBefore(summaryShareDesktop, summarySaveBtn);
-      }
       // Populate desktop link chips, then let _applyBracketShareMode pick the
       // right affordance: mobile keeps the native-sheet button + logo hint;
       // desktop swaps in real per-app link chips + copy + download (v2.7.0).
@@ -13473,7 +13489,7 @@ async function spRenderSummary() {
       summaryShareBtn.style.display = '';
       if (summaryShareApps) summaryShareApps.style.display = '';
       if (summaryShareDesktop) summaryShareDesktop.style.display = '';
-      if (parent && typeof _applyBracketShareMode === 'function') _applyBracketShareMode(parent);
+      if (summaryShareStage && typeof _applyBracketShareMode === 'function') _applyBracketShareMode(summaryShareStage);
       if (typeof _prewarmBracketOg === 'function') _prewarmBracketOg(); // warm OG before any share click
     } else {
       // First-time: Save is the large primary, all share controls hidden.
@@ -13489,6 +13505,7 @@ async function spRenderSummary() {
       }
     }
   }
+  spRenderSummarySharePreview();
   // Full-summary controls are valid only while the pool is writable. That includes
   // pool-level grace windows via lock_at_override. Per-user Annex C grants are
   // bracket-only after lock, so keep broad Save/Edit Groups/Top Scorer controls hidden.
