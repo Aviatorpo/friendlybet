@@ -160,6 +160,16 @@
       "outcomes": {
         "DRAW": "story-assets/iran-new-zealand-draw.png"
       }
+    },
+    {
+      "match_id": "6e189faf-b4fa-4dba-8d8a-1834ebae205c",
+      "teams": [
+        "FRA",
+        "SEN"
+      ],
+      "outcomes": {
+        "FRA": "story-assets/france-wins-senegal.png"
+      }
     }
   ]
 }

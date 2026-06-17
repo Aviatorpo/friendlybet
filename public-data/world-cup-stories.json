@@ -1,6 +1,54 @@
 {
-  "updated_at": "2026-06-16T07:49:02.603Z",
+  "updated_at": "2026-06-17T04:54:01.805Z",
   "items": [
+    {
+      "id": "fra-sen-2026-06-16",
+      "match_id": "6e189faf-b4fa-4dba-8d8a-1834ebae205c",
+      "image": "story-assets/france-wins-senegal.png",
+      "teams": [
+        "FRA",
+        "SEN"
+      ],
+      "outcome": "FRA",
+      "result": "FRA 3-1 SEN",
+      "top_label": "FRANCE WINS!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "SEN",
+        "team_he": "סנגל",
+        "team_en": "Senegal",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 3-1, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 3-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 3-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "en_name": "{names} picked {team} to top the group. After 3-1, that form already needs a defense speech 🎤😬",
+        "en_names": "{names} picked {team} to top the group. After 3-1, those forms already need a defense speech 🎤😬",
+        "en_count": "{names} picked {team} to top the group. After 3-1, those forms already need a defense speech 🎤😬"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "SEN",
+          "team_he": "סנגל",
+          "team_en": "Senegal",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 3-1, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 3-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 3-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "en_name": "{names} picked {team} to top the group. After 3-1, that form already needs a defense speech 🎤😬",
+          "en_names": "{names} picked {team} to top the group. After 3-1, those forms already need a defense speech 🎤😬",
+          "en_count": "{names} picked {team} to top the group. After 3-1, those forms already need a defense speech 🎤😬"
+        }
+      ],
+      "he": {
+        "headline": "צרפת ניצחה את סנגל 3-1: הצהרה!",
+        "caption": "צרפת עושה רעש עם 3-1 מול סנגל. משחק אחד, והטבלה כבר נראית אחרת 🔥"
+      },
+      "en": {
+        "headline": "France beat Senegal 3-1: Statement made!",
+        "caption": "France makes noise with 3-1 against Senegal. One match, and the table already looks different 🔥"
+      }
+    },
     {
       "id": "irn-nzl-2026-06-16",
       "match_id": "ad42617c-4294-4f50-bade-2a7ec9659bf3",
@@ -224,65 +272,6 @@
       "en": {
         "headline": "Spain and Cape Verde draw 0-0: No winner, all drama",
         "caption": "Spain kept knocking without scoring, Cape Verde held the 0-0, and Group H suddenly looks much less predictable 🫣"
-      }
-    },
-    {
-      "id": "swe-tun-2026-06-15",
-      "match_id": "e261116f-e7d0-46b1-a8c2-7a55748b84b2",
-      "image": "story-assets/sweden-wins-tunisia.png",
-      "teams": [
-        "SWE",
-        "TUN"
-      ],
-      "outcome": "SWE",
-      "result": "SWE 5-1 TUN",
-      "top_label": "SWEDEN WINS!",
-      "pool_focus": {
-        "table": "tournament_winner_picks",
-        "team_code": "TUN",
-        "team_he": "תוניסיה",
-        "team_en": "Tunisia",
-        "he_name": "זה היה מביך... {names} בחר את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטופס הזה נכנס למוזיאון ההחלטות האמיצות 🧾",
-        "he_names": "זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטפסים האלה נכנסים למוזיאון ההחלטות האמיצות 🧾",
-        "he_count": "זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטפסים האלה נכנסים למוזיאון ההחלטות האמיצות 🧾",
-        "en_name": "That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, that form belongs in the brave-decisions museum 🧾",
-        "en_names": "That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, those forms belong in the brave-decisions museum 🧾",
-        "en_count": "That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, those forms belong in the brave-decisions museum 🧾"
-      },
-      "pool_focuses": [
-        {
-          "table": "tournament_winner_picks",
-          "team_code": "TUN",
-          "team_he": "תוניסיה",
-          "team_en": "Tunisia",
-          "he_name": "זה היה מביך... {names} בחר את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטופס הזה נכנס למוזיאון ההחלטות האמיצות 🧾",
-          "he_names": "זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטפסים האלה נכנסים למוזיאון ההחלטות האמיצות 🧾",
-          "he_count": "זה היה מביך... {names} בחרו את {team} כמנצחת המונדיאל. אחרי 5-1 משוודיה, הטפסים האלה נכנסים למוזיאון ההחלטות האמיצות 🧾",
-          "en_name": "That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, that form belongs in the brave-decisions museum 🧾",
-          "en_names": "That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, those forms belong in the brave-decisions museum 🧾",
-          "en_count": "That was awkward... {names} picked {team} to win the World Cup. After Sweden made it 5-1, those forms belong in the brave-decisions museum 🧾"
-        },
-        {
-          "table": "group_position_picks",
-          "team_code": "TUN",
-          "team_he": "תוניסיה",
-          "team_en": "Tunisia",
-          "position": 1,
-          "he_name": "זה היה מביך... {names} שם את {team} ראשונה בבית. אחרי 5-1 משוודיה, אפשר לקרוע את הטופס או למסגר אותו כמזכרת 🧾",
-          "he_names": "זה היה מביך... {names} שמו את {team} ראשונה בבית. אחרי 5-1 משוודיה, אפשר לקרוע את הטפסים או למסגר אותם כמזכרת 🧾",
-          "he_count": "זה היה מביך... {names} שמו את {team} ראשונה בבית. אחרי 5-1 משוודיה, אפשר לקרוע את הטפסים או למסגר אותם כמזכרת 🧾",
-          "en_name": "That was awkward... {names} picked {team} to top the group. After Sweden made it 5-1, the form can be torn up or framed as a souvenir 🧾",
-          "en_names": "That was awkward... {names} picked {team} to top the group. After Sweden made it 5-1, the forms can be torn up or framed as souvenirs 🧾",
-          "en_count": "That was awkward... {names} picked {team} to top the group. After Sweden made it 5-1, the forms can be torn up or framed as souvenirs 🧾"
-        }
-      ],
-      "he": {
-        "headline": "שוודיה ניצחה את תוניסיה 5-1: הצהרה!",
-        "caption": "שוודיה פירקה את תוניסיה 5-1, משחק אחד שהפך כל הימור נגד שוודיה למסמך בעייתי 🧾"
-      },
-      "en": {
-        "headline": "Sweden beat Tunisia 5-1: Statement made!",
-        "caption": "Sweden smashed Tunisia 5-1, one match that turned every anti-Sweden form into a problematic document 🧾"
       }
     }
   ]
