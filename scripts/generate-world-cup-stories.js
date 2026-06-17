@@ -15,9 +15,16 @@ const MATCHES_PATH = path.join(ROOT, 'public-data', 'matches.json');
 const STORIES_PATH = path.join(ROOT, 'public-data', 'world-cup-stories.json');
 const ASSET_DIR = path.join(ROOT, 'story-assets');
 const MANIFEST_PATH = path.join(ASSET_DIR, 'manifest.json');
-const MAX_STORIES = Number(process.env.WC_STORY_LIMIT || 5);
+const MAX_STORIES = Number(process.env.WC_STORY_LIMIT || 24);
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
+const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY
+  || process.env.SUPABASE_PUBLISHABLE_KEY
+  || process.env.SUPABASE_ANON_KEY
+  || 'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU';
+const MATCH_SOURCE = String(process.env.WC_STORY_MATCH_SOURCE || 'auto').toLowerCase();
 
 const TEAM_NAMES = {
+  ALG: { en: 'Algeria', he: "אלג'יריה" },
   ARG: { en: 'Argentina', he: 'ארגנטינה' },
   AUS: { en: 'Australia', he: 'אוסטרליה' },
   AUT: { en: 'Austria', he: 'אוסטריה' },
@@ -68,6 +75,7 @@ const TEAM_NAMES = {
 };
 
 const STAR_PROFILES = {
+  ALG: { player: 'Riyad Mahrez', number: 7 },
   ARG: { player: 'Lionel Messi', number: 10 },
   AUS: { player: 'Mathew Ryan', number: 1, role: 'captain goalkeeper' },
   BEL: { player: 'Youri Tielemans', number: 8 },
@@ -87,6 +95,7 @@ const STAR_PROFILES = {
   GER: { player: 'Joshua Kimmich', number: 6 },
   HAI: { player: 'Duckens Nazon', number: 9 },
   IRN: { player: 'Alireza Jahanbakhsh', number: 7 },
+  IRQ: { player: 'Ali Jasim', number: 17 },
   JPN: { player: 'Wataru Endo', number: 6 },
   KOR: { player: 'Son Heung-min', number: 7 },
   MAR: { player: 'Achraf Hakimi', number: 2 },
@@ -339,6 +348,48 @@ function writeJsonIfChanged(file, data) {
   if (current === next) return false;
   fs.writeFileSync(file, next, 'utf8');
   return true;
+}
+
+async function fetchMatchesFromSupabase() {
+  if (!SUPABASE_URL || !SUPABASE_KEY || typeof fetch !== 'function') return null;
+
+  const endpoint = `${SUPABASE_URL.replace(/\/+$/, '')}/rest/v1/matches?select=*&order=match_date.asc,id.asc`;
+  const res = await fetch(endpoint, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+    },
+  });
+
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    throw new Error(`Supabase matches fetch failed (${res.status}): ${body.slice(0, 240)}`);
+  }
+
+  const matches = await res.json();
+  if (!Array.isArray(matches) || matches.length === 0) return null;
+  return {
+    updatedAt: new Date().toISOString(),
+    count: matches.length,
+    matches,
+    source: 'supabase',
+  };
+}
+
+async function loadMatchesPayload() {
+  if (MATCH_SOURCE === 'snapshot') {
+    return { ...readJson(MATCHES_PATH, { matches: [] }), source: 'snapshot' };
+  }
+
+  try {
+    const live = await fetchMatchesFromSupabase();
+    if (live) return live;
+  } catch (err) {
+    if (MATCH_SOURCE === 'db') throw err;
+    console.warn(`Supabase match source unavailable; falling back to snapshot: ${err.message}`);
+  }
+
+  return { ...readJson(MATCHES_PATH, { matches: [] }), source: 'snapshot' };
 }
 
 function teamName(code, lang = 'en') {
@@ -658,7 +709,8 @@ async function generateImage(match, outcome) {
 }
 
 async function main() {
-  const matchesPayload = readJson(MATCHES_PATH, { matches: [] });
+  const matchesPayload = await loadMatchesPayload();
+  console.log(`Story match source: ${matchesPayload.source || 'snapshot'} (${(matchesPayload.matches || []).length} matches)`);
   const matchById = new Map((matchesPayload.matches || []).map(match => [match.id, match]));
   const manifest = readJson(MANIFEST_PATH, { version: 1, items: [] });
   const storiesPayload = readJson(STORIES_PATH, { items: [] });
@@ -668,10 +720,6 @@ async function main() {
   const existingMatchDates = new Map(
     (matchesPayload.matches || []).map(match => [match.id, new Date(match.match_date).getTime()])
   );
-  const newestExistingMatchTime = existing.reduce((latest, item) => {
-    const time = existingMatchDates.get(item && item.match_id);
-    return Number.isFinite(time) ? Math.max(latest, time) : latest;
-  }, 0);
   const finished = (matchesPayload.matches || [])
     .filter(match => match && match.status === 'FINISHED' && match.home_score != null && match.away_score != null)
     .sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
@@ -679,10 +727,6 @@ async function main() {
   const additions = [];
   for (const match of finished) {
     if (existingByMatch.has(match.id)) continue;
-    const matchTime = new Date(match.match_date).getTime();
-    if (newestExistingMatchTime && Number.isFinite(matchTime) && matchTime <= newestExistingMatchTime) {
-      continue;
-    }
     const outcome = outcomeFor(match);
     if (!outcome) continue;
     let image = knownOrGeneratedAsset(manifest, match, outcome);
@@ -697,7 +741,14 @@ async function main() {
     existingByMatch.add(match.id);
   }
 
-  const items = additions.reverse().concat(existing).slice(0, MAX_STORIES);
+  const items = additions
+    .concat(existing)
+    .sort((a, b) => {
+      const aTime = existingMatchDates.get(a && a.match_id) || 0;
+      const bTime = existingMatchDates.get(b && b.match_id) || 0;
+      return bTime - aTime;
+    })
+    .slice(0, MAX_STORIES);
   items.forEach(story => {
     const match = matchById.get(story.match_id);
     if (match) validateStory(story, match);

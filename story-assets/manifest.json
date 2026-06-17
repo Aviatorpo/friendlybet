@@ -170,6 +170,26 @@
       "outcomes": {
         "FRA": "story-assets/france-wins-senegal.png"
       }
+    },
+    {
+      "match_id": "16a1741b-cf85-4a96-8edc-38b6971dd736",
+      "teams": [
+        "IRQ",
+        "NOR"
+      ],
+      "outcomes": {
+        "NOR": "story-assets/norway-wins-iraq.png"
+      }
+    },
+    {
+      "match_id": "a087e1bd-93ee-4b49-9f70-6df49532ce09",
+      "teams": [
+        "ARG",
+        "ALG"
+      ],
+      "outcomes": {
+        "ARG": "story-assets/argentina-wins-algeria.png"
+      }
     }
   ]
 }
