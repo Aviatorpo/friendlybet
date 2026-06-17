@@ -40,10 +40,12 @@ async function qrDataUri(target) {
 // Fetch the champion hero illustration (JPEG — Satori can't decode WebP) and
 // return it as a base64 data URI so Satori never fetches a remote image at
 // render time. Null on any failure → the card falls back to a plain dark hero.
-function heroDataUri(code) {
+async function heroDataUri(code) {
   if (!code) return null;
   try {
-    const buf = readFileSync(join(process.cwd(), 'heroes', 'hero-' + code + '.jpg'));
+    const r = await fetch('https://friendlybet.live/heroes/hero-' + code + '.jpg');
+    if (!r.ok) return null;
+    const buf = Buffer.from(await r.arrayBuffer());
     return 'data:image/jpeg;base64,' + buf.toString('base64');
   } catch (_) { return null; }
 }
@@ -61,11 +63,10 @@ export default async function handler(req, res) {
     }
     if (!data) data = { nickname: 'FriendlyBet', pool: '', champ: null, road: [], lang };
 
-    // Pre-fetch the QR and the champion hero as base64 data URIs so Satori never
-    // fetches a remote image at render time (a flaky host would otherwise throw
-    // and break the whole card). On any failure we just drop that image.
+    // Keep the scrape path lean: one same-origin hero fetch, no QR service and
+    // no remote flag images while WhatsApp waits for the preview PNG.
     data.qr = null;
-    data.hero = heroDataUri(data.champ) || heroDataUri('ARG');
+    data.hero = await heroDataUri(data.champ || 'ARG');
 
     const image = new ImageResponse(buildCardElement(data), { width: 1200, height: 630, fonts: FONTS });
     const buf = Buffer.from(await image.arrayBuffer());
