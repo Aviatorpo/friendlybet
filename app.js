@@ -13491,65 +13491,45 @@ async function spRenderSummary() {
     }
   }
 
-  // v2.5.15: always reset the Save button to its clean state when entering
-  // the summary screen. Previously the button was left in "Saving..." +
-  // disabled after a successful submit (spSubmitPredictions transitioned
-  // to dashboard without restoring it), so returning here via "View your
-  // predictions" found a dead button.
-  const submitBtn = document.getElementById('sp-submit-btn');
-  if (submitBtn) {
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = `<i class="ti ti-rocket"></i><span data-i18n="betting.summary.submit">${t('betting.summary.submit')}</span>`;
-  }
-
   // Context-aware CTA hierarchy. The summary/review page has one viral primary:
   // share the Road to Victory image. A second button shares the full public
-  // prediction page. Save/edit remain lower-page controls and only appear while
-  // broad editing is still allowed.
+  // prediction page. The footer keeps only the actions that make sense for the
+  // current user state: edit while the pool is writable, and dashboard return.
   const summaryShareStage = document.getElementById('sp-summary-share-stage');
   const summaryShareImageBtn = document.getElementById('sp-summary-share-image-btn');
   const summaryShareFullBtn = document.getElementById('sp-summary-share-full-btn');
-  const summarySaveBtn = document.getElementById('sp-submit-btn');
   const summaryEditBtn = document.getElementById('sp-summary-edit-picks');
+  const summaryDashboardBtn = document.getElementById('sp-summary-dashboard-btn');
+  const summarySaveBtn = document.getElementById('sp-submit-btn');
   const summaryTopScorerEditBtn = document.getElementById('sp-summary-ts-edit');
-  if (summarySaveBtn) {
-    const submitted = typeof spHasUserSubmitted === 'function' && spHasUserSubmitted();
-    const hasChamp = !!(spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
-    const shareIsPrimary = (submitted && hasChamp);
-    const saveLabel = summarySaveBtn.querySelector('span');
-    const saveIcon = summarySaveBtn.querySelector('i');
-    if (shareIsPrimary) {
-      if (summaryShareStage) summaryShareStage.style.display = '';
-      if (summaryShareImageBtn) summaryShareImageBtn.style.display = '';
-      if (summaryShareFullBtn) summaryShareFullBtn.style.display = '';
-      summarySaveBtn.className = 'btn-secondary';
-      if (saveIcon) saveIcon.className = 'ti ti-device-floppy';
-      if (saveLabel) {
-        saveLabel.setAttribute('data-i18n', 'betting.summary.saveChanges');
-        saveLabel.textContent = t('betting.summary.saveChanges');
-      }
-      if (typeof _prewarmBracketOg === 'function') _prewarmBracketOg(); // warm OG before any share click
-    } else {
-      if (summaryShareStage) summaryShareStage.style.display = 'none';
-      summarySaveBtn.className = 'btn-primary btn-large';
-      if (saveIcon) saveIcon.className = 'ti ti-rocket';
-      if (saveLabel) {
-        saveLabel.setAttribute('data-i18n', 'betting.summary.submit');
-        saveLabel.textContent = t('betting.summary.submit');
-      }
+
+  const submitted = typeof spHasUserSubmitted === 'function' && spHasUserSubmitted();
+  const hasChamp = !!(spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
+  const shareIsAvailable = submitted && hasChamp;
+  if (summaryShareStage) summaryShareStage.style.display = shareIsAvailable ? '' : 'none';
+  if (summaryShareImageBtn) summaryShareImageBtn.style.display = shareIsAvailable ? '' : 'none';
+  if (summaryShareFullBtn) summaryShareFullBtn.style.display = shareIsAvailable ? '' : 'none';
+  if (shareIsAvailable && typeof _prewarmBracketOg === 'function') _prewarmBracketOg();
+
+  if (summarySaveBtn) summarySaveBtn.style.display = 'none';
+  if (summaryTopScorerEditBtn) summaryTopScorerEditBtn.style.display = 'none';
+  if (summaryEditBtn) {
+    summaryEditBtn.style.display = canEditSummary ? '' : 'none';
+    summaryEditBtn.className = 'btn-primary btn-large';
+    const editLabel = summaryEditBtn.querySelector('span');
+    if (editLabel) {
+      editLabel.setAttribute('data-i18n', 'betting.summary.editPrediction');
+      editLabel.textContent = t('betting.summary.editPrediction');
     }
   }
+  if (summaryDashboardBtn) summaryDashboardBtn.style.display = '';
   spRenderSummarySharePreview();
-  // Full-summary controls are valid only while the pool is writable. That includes
+  // Full-summary editing is valid only while the pool is writable. That includes
   // pool-level grace windows via lock_at_override. Per-user Annex C grants are
-  // bracket-only after lock, so keep broad Save/Edit Groups/Top Scorer controls hidden.
-  if (summarySaveBtn) summarySaveBtn.style.display = canEditSummary ? '' : 'none';
-  if (summaryEditBtn) summaryEditBtn.style.display = canEditSummary ? '' : 'none';
-  if (summaryTopScorerEditBtn) summaryTopScorerEditBtn.style.display = canEditSummary ? '' : 'none';
+  // bracket-only after lock, so keep the broad edit entry hidden.
   if (knockoutReviewOpen) {
-    console.info('[spRenderSummary] knockout review is open; broad summary edit controls stay hidden');
+    console.info('[spRenderSummary] knockout review is open; broad summary edit stays hidden');
   }
-
   // Groups summary
   const groupsEl = document.getElementById('sp-summary-groups');
   groupsEl.innerHTML = WC2026_GROUP_LETTERS.map(letter => {
@@ -13600,16 +13580,15 @@ async function spRenderSummary() {
 // v2.5.15: Back from the summary screen now goes to the dashboard. The
 // user most often arrives here via the "View your predictions" CTA, so the
 // natural back target is the dashboard, not the middle of the flow.
-// Users who want to edit picks have an explicit "Edit groups & bracket"
-// button below the Save button (spSummaryEditPicks).
+// Users who want to edit picks have a single explicit "Edit prediction"
+// button when the pool is still writable.
 function spSummaryBack() {
   goToDashboard();
 }
 window.spSummaryBack = spSummaryBack;
 
-// v2.4.6: explicit "edit my groups & bracket" entry point from the
-// summary screen. Routes the user back into the flow so they can fix
-// missing picks (the recovery path for the v2.4.5 wipe bug).
+// Single edit entry point from the summary screen. Routes the user back into
+// the complete flow, instead of exposing separate group/bracket/top-scorer edits.
 function spSummaryEditPicks() {
   if (spIsLocked()) {
     spShowLockedView();

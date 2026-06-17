@@ -3086,7 +3086,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.10.68</span>
+      <span class="menu-version">v2.10.69</span>
     </div>
   </div>
 
@@ -3335,21 +3335,9 @@ function loadTablerFallback() {
     </div>
 
     <div class="sp-summary-actions">
-      <button class="btn-primary btn-large" onclick="spSubmitPredictions()" id="sp-submit-btn">
-        <i class="ti ti-rocket"></i>
-        <span data-i18n="betting.summary.submit">שמור את הניחושים שלי</span>
-      </button>
-
-      <!-- v2.4.6: explicit "Edit groups / bracket" link so a user landing on
-           summary with missing data has a clear path back into the flow. -->
-      <button class="btn-secondary" onclick="spSummaryEditPicks()" id="sp-summary-edit-picks">
+      <button class="btn-primary btn-large" onclick="spSummaryEditPicks()" id="sp-summary-edit-picks">
         <i class="ti ti-edit"></i>
-        <span data-i18n="betting.summary.editPicks">ערוך קבוצות וברקאט</span>
-      </button>
-
-      <button class="btn-secondary" onclick="spEditTopScorer()" id="sp-summary-ts-edit">
-        <i class="ti ti-user-star"></i>
-        <span data-i18n="betting.summary.editTopScorer">ערוך מלך שערים</span>
+        <span data-i18n="betting.summary.editPrediction">ערוך את ההימור</span>
       </button>
 
       <button class="btn-secondary btn-large" onclick="goToDashboard()" id="sp-summary-dashboard-btn">
