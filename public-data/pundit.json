@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-06-16T23:41:41.647Z",
-  "freshUntil": "2026-06-17T05:41:41.647Z",
-  "count": 10,
+  "updatedAt": "2026-06-17T05:00:06.021Z",
+  "freshUntil": "2026-06-17T11:00:06.021Z",
+  "count": 7,
   "items": [
     {
-      "id": "live-16a1741b-cf85-4a96-8edc-38b6971dd736",
+      "id": "live-22e56c30-7d43-4b78-b1f3-0e26d76dbab6",
       "type": "live",
       "confidence": "confirmed",
-      "he": "עיראק נגד נורווגיה עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
-      "en": "Iraq vs Norway is live now. Every minute can turn a genius pick into group-chat material.",
+      "he": "אוסטריה נגד ירדן עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
+      "en": "Austria vs Jordan is live now. Every minute can turn a genius pick into group-chat material.",
       "sources": [],
-      "expires_at": "2026-06-17T02:41:41.647Z"
+      "expires_at": "2026-06-17T08:00:06.021Z"
     },
     {
       "id": "result-6e189faf-b4fa-4dba-8d8a-1834ebae205c",
@@ -29,42 +29,6 @@
       "en": "Iran and New Zealand with a 2-2. A point each, a headache for anyone who tried to call it.",
       "sources": [],
       "expires_at": "2026-06-17T07:00:00.000Z"
-    },
-    {
-      "id": "result-13081dbc-3b64-4694-a70d-05021f4bce96",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "ערב הסעודית ואורוגוואי התחלקו ב-1:1. אין מנצחת, יש מספיק נזק לטבלאות.",
-      "en": "Saudi Arabia and Uruguay split it 1-1. No winner, plenty of damage to the tables.",
-      "sources": [],
-      "expires_at": "2026-06-17T04:00:00.000Z"
-    },
-    {
-      "id": "result-e6a4624d-c1dc-437f-98e4-42926b6db1d7",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "בלגיה ומצרים התחלקו ב-1:1. אין מנצחת, יש מספיק נזק לטבלאות.",
-      "en": "Belgium and Egypt split it 1-1. No winner, plenty of damage to the tables.",
-      "sources": [],
-      "expires_at": "2026-06-17T01:00:00.000Z"
-    },
-    {
-      "id": "fixture-a087e1bd-93ee-4b49-9f70-6df49532ce09",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "ארגנטינה נגד אלג'יריה, היום 04:00. על הנייר ארגנטינה אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
-      "en": "Argentina vs Algeria, today 04:00. On paper Argentina should control it, but paper does not score pool points.",
-      "sources": [],
-      "expires_at": "2026-06-17T01:00:00.000Z"
-    },
-    {
-      "id": "fixture-22e56c30-7d43-4b78-b1f3-0e26d76dbab6",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "אוסטריה נגד ירדן, היום 07:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
-      "en": "Austria vs Jordan, today 07:00. Not the shiniest match, but these are the ones that move places without asking.",
-      "sources": [],
-      "expires_at": "2026-06-17T04:00:00.000Z"
     },
     {
       "id": "fixture-35e0d352-c243-43c0-8e50-3a52f3642801",
@@ -92,6 +56,15 @@
       "en": "Ghana vs Panama, tomorrow 02:00. Quiet on paper, which is usually where pool chaos begins.",
       "sources": [],
       "expires_at": "2026-06-17T23:00:00.000Z"
+    },
+    {
+      "id": "fixture-33f253ae-d708-45f8-bc0c-ac5dc5fd560b",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "אוזבקיסטן נגד קולומביה, מחר 05:00. על הנייר קולומביה אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
+      "en": "Uzbekistan vs Colombia, tomorrow 05:00. On paper Colombia should control it, but paper does not score pool points.",
+      "sources": [],
+      "expires_at": "2026-06-18T02:00:00.000Z"
     }
   ]
 }
