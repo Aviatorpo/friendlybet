@@ -17,7 +17,9 @@
     "537364",
     "537369",
     "537370",
-    "537391"
+    "537391",
+    "537392",
+    "537397"
   ],
   "backups": [
     {
@@ -403,7 +405,32 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-17T05:07:55.648Z",
+      "file": "private-backups/2026-06-17T05-07-55-648Z__537392-IRQ-NOR__537397-ARG-ALG.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537392",
+        "537397"
+      ],
+      "tableCounts": {
+        "pools": 1914,
+        "users": 6183,
+        "group_picks": 22311,
+        "knockout_picks": 94211,
+        "group_position_picks": 173197,
+        "tournament_winner_picks": 3330,
+        "top_scorer_picks": 2895,
+        "sp_third_place_picks": 28837,
+        "pick_backups": 46404,
+        "knockout_reopen_grants": 1680,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-16T21:20:07.863Z"
+  "updatedAt": "2026-06-17T05:07:55.648Z"
 }
