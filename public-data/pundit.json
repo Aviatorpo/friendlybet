@@ -1,17 +1,8 @@
 {
-  "updatedAt": "2026-06-17T05:00:06.021Z",
-  "freshUntil": "2026-06-17T11:00:06.021Z",
-  "count": 7,
+  "updatedAt": "2026-06-17T09:57:22.010Z",
+  "freshUntil": "2026-06-17T15:57:22.010Z",
+  "count": 5,
   "items": [
-    {
-      "id": "live-22e56c30-7d43-4b78-b1f3-0e26d76dbab6",
-      "type": "live",
-      "confidence": "confirmed",
-      "he": "אוסטריה נגד ירדן עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
-      "en": "Austria vs Jordan is live now. Every minute can turn a genius pick into group-chat material.",
-      "sources": [],
-      "expires_at": "2026-06-17T08:00:06.021Z"
-    },
     {
       "id": "result-6e189faf-b4fa-4dba-8d8a-1834ebae205c",
       "type": "result",
@@ -20,15 +11,6 @@
       "en": "France beat Senegal 3-1. Another result that looks obvious only after it happened.",
       "sources": [],
       "expires_at": "2026-06-18T01:00:00.000Z"
-    },
-    {
-      "id": "result-ad42617c-4294-4f50-bade-2a7ec9659bf3",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "איראן וניו זילנד עם 2:2. נקודה לכל צד, כאב ראש לכל מי שניסה לחזות את זה.",
-      "en": "Iran and New Zealand with a 2-2. A point each, a headache for anyone who tried to call it.",
-      "sources": [],
-      "expires_at": "2026-06-17T07:00:00.000Z"
     },
     {
       "id": "fixture-35e0d352-c243-43c0-8e50-3a52f3642801",
