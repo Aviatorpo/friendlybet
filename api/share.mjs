@@ -10,6 +10,21 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 const ORIGIN = 'https://friendlybet.live';
+const SUPABASE_URL = 'https://kovhuahdoluxyqqwqohw.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU';
+
+async function championCode(userId, poolId) {
+  try {
+    const qs = `pool_id=eq.${encodeURIComponent(poolId)}&user_id=eq.${encodeURIComponent(userId)}&select=team_code`;
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/tournament_winner_picks?${qs}`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY },
+    });
+    if (!r.ok) return null;
+    const rows = await r.json();
+    const code = rows && rows[0] && rows[0].team_code;
+    return /^[A-Z]{3}$/.test(code || '') ? code : null;
+  } catch (_) { return null; }
+}
 
 function loadTemplate() {
   // share-page.html (not share.html) so it has no clean-URL collision with the
@@ -26,7 +41,7 @@ function loadTemplate() {
 }
 const TEMPLATE = loadTemplate();
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   const url = new URL(req.url, ORIGIN);
 
   // If the template couldn't be read at cold-start (shouldn't happen with
@@ -51,11 +66,16 @@ export default function handler(req, res) {
 
   let html = TEMPLATE;
   if (u && p) {
-    let ogImg = `${ORIGIN}/api/og?u=${encodeURIComponent(u)}&p=${encodeURIComponent(p)}&lang=${lang}`;
-    if (v) ogImg += `&v=${encodeURIComponent(v)}`;
+    const champ = await championCode(u, p);
+    let ogImg = champ
+      ? `${ORIGIN}/og-heroes/hero-${champ}.jpg`
+      : `${ORIGIN}/api/og?u=${encodeURIComponent(u)}&p=${encodeURIComponent(p)}&lang=${lang}`;
+    if (!champ && v) ogImg += `&v=${encodeURIComponent(v)}`;
+    const ogType = champ ? 'image/jpeg' : 'image/png';
     html = html
       .replace(/(<meta property="og:image" content=")[^"]*(">)/, `$1${ogImg}$2`)
       .replace(/(<meta property="og:image:secure_url" content=")[^"]*(">)/, `$1${ogImg}$2`)
+      .replace(/(<meta property="og:image:type" content=")[^"]*(">)/, `$1${ogType}$2`)
       .replace(/(<meta name="twitter:image" content=")[^"]*(">)/, `$1${ogImg}$2`);
     // share.html has no explicit twitter:image; twitter falls back to og:image.
   }
