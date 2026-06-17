@@ -170,13 +170,13 @@
   .fb-flag-none{display:inline-grid;place-items:center;background:#2a2620;color:var(--muted);font-size:9px;font-weight:700}
 
   /* Viral share page: trophy image first, then a full horizontal bracket. */
-  .share-hero{position:relative;border-radius:22px;overflow:hidden;min-height:520px;background:#0b0a08;
+  .share-hero{position:relative;border-radius:22px;overflow:hidden;min-height:clamp(540px,calc(100vh - 190px),690px);background:#0b0a08;
     border:1px solid rgba(217,180,106,.45);box-shadow:0 24px 70px rgba(0,0,0,.56),0 0 0 1px rgba(255,255,255,.04)}
-  .share-hero-img{position:absolute;inset:0;width:100%;height:68%;object-fit:cover;object-position:50% 8%;
+  .share-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 42%;
     filter:saturate(1.04) contrast(1.03)}
   .share-hero::before{content:'';position:absolute;inset:0;background:
-    linear-gradient(to bottom,rgba(6,6,4,.3),rgba(6,6,4,0) 30%,rgba(6,6,4,.2) 55%,#0b0a08 72%,#0b0a08),
-    radial-gradient(520px 260px at 50% 38%,rgba(217,180,106,.18),transparent 68%);z-index:1}
+    linear-gradient(to bottom,rgba(6,6,4,.18),rgba(6,6,4,0) 24%,rgba(6,6,4,.16) 48%,rgba(6,6,4,.72) 70%,#0b0a08 92%),
+    radial-gradient(560px 320px at 50% 42%,rgba(217,180,106,.16),transparent 70%);z-index:1}
   .share-hero-body{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 18px 22px;text-align:center}
   .share-hero-kicker{font-family:'Sora',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;color:var(--gold);
     text-transform:uppercase;text-shadow:0 2px 12px #000}
@@ -193,32 +193,57 @@
   .victory-step img,.victory-step .fb-flag-none{width:30px;height:20px;border-radius:5px;object-fit:cover}
   .victory-step .nm{font-size:10.5px;font-weight:700;max-width:56px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-  .share-wide-label,.share-bracket-card{width:min(900px,calc(100vw - 32px));
-    margin-inline-start:calc((100% - min(900px,calc(100vw - 32px))) / 2);
-    margin-inline-end:calc((100% - min(900px,calc(100vw - 32px))) / 2)}
+  .share-actions{margin:18px 0 6px;padding:16px;border:1px solid rgba(217,180,106,.24);border-radius:18px;
+    background:linear-gradient(160deg,rgba(31,25,16,.92),rgba(13,12,9,.92));box-shadow:0 16px 42px rgba(0,0,0,.34)}
+  .share-actions-grid{display:grid;grid-template-columns:1fr;gap:10px}
+  .share-action-btn{width:100%;border:0;border-radius:14px;padding:14px 16px;font-family:'Heebo',sans-serif;
+    font-size:15px;font-weight:900;cursor:pointer;color:#0b0a08;background:linear-gradient(140deg,var(--gold),#f0d18a);
+    box-shadow:0 12px 30px rgba(217,180,106,.26)}
+  .share-action-btn.secondary{color:var(--text);background:rgba(255,255,255,.055);border:1px solid rgba(217,180,106,.3);
+    box-shadow:none}
+  .share-action-help{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.45;text-align:center}
+  .share-status{min-height:18px;margin-top:8px;color:var(--gold);font-size:12px;text-align:center}
+  @media(min-width:560px){
+    .share-actions-grid{grid-template-columns:1.2fr 1fr}
+  }
+
+  .share-wide-label,.share-bracket-card{width:min(1180px,calc(100vw - 32px));
+    margin-inline-start:calc((100% - min(1180px,calc(100vw - 32px))) / 2);
+    margin-inline-end:calc((100% - min(1180px,calc(100vw - 32px))) / 2)}
   .share-bracket-card{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:18px;
     padding:14px 12px 16px;overflow:hidden;box-shadow:0 20px 64px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.03)}
   .sp-scroll-chip{font-size:10.5px;font-weight:700;color:var(--gold);background:rgba(217,180,106,.11);
     border:1px solid rgba(217,180,106,.24);border-radius:999px;padding:4px 10px}
   .bracket-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-color:rgba(217,180,106,.55) transparent;
-    padding:4px 2px 8px;direction:ltr}
-  .bracket-tree{width:max-content;min-width:1030px;display:grid;grid-template-columns:repeat(9,108px);gap:8px;align-items:start;direction:ltr;margin:0 auto}
-  .br-col{display:flex;flex-direction:column;justify-content:flex-start;gap:8px}
-  .br-title{font-family:'Sora',sans-serif;font-weight:800;font-size:10px;letter-spacing:.6px;color:var(--gold);
-    text-align:center;text-transform:uppercase;margin-bottom:4px}
-  .br-stack{display:flex;flex-direction:column;justify-content:center;gap:8px}
-  .br-match{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:5px;
-    min-height:68px}
-  .br-team{display:flex;align-items:center;gap:5px;min-height:24px;border-radius:7px;padding:3px 5px;color:rgba(243,239,231,.72);direction:rtl}
-  .br-team.pick{background:rgba(13,148,86,.18);box-shadow:inset 0 0 0 1px rgba(34,197,94,.26);color:var(--text)}
-  .br-team img,.br-team .fb-flag-none{width:22px;height:15px;border-radius:3px;object-fit:cover;flex:none}
-  .br-team .nm{font-size:10.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:start}
-  .br-vs{text-align:center;color:rgba(255,255,255,.34);font-family:'Sora',sans-serif;font-size:8px;font-weight:800;line-height:1}
-  .br-final{display:flex;flex-direction:column;justify-content:flex-start;gap:10px}
-  .br-winner{border-radius:14px;border:1px solid rgba(217,180,106,.48);background:linear-gradient(160deg,#241d10,#14110b);
-    text-align:center;padding:14px 8px;box-shadow:inset 0 1px 0 rgba(217,180,106,.18)}
-  .br-winner .cup{font-size:24px}.br-winner .lbl{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.7px;text-transform:uppercase}
-  .br-winner .nm{font-family:'Sora',sans-serif;font-size:15px;font-weight:800;color:var(--gold);margin-top:5px}
+    padding:6px 2px 10px;direction:ltr}
+  .sp-bracket-tree{display:grid;grid-template-columns:repeat(4,minmax(110px,1fr)) minmax(140px,1.16fr) repeat(4,minmax(110px,1fr));
+    gap:7px;min-width:1100px;align-items:stretch;position:relative;direction:ltr}
+  .sp-bv-col{display:flex;flex-direction:column;justify-content:space-around;padding:4px 0;position:relative;min-height:520px}
+  .sp-bv-col-fin{justify-content:center;gap:12px}
+  .sp-bv-col-title{font-family:'Sora',sans-serif;font-size:10px;text-align:center;color:var(--gold);text-transform:uppercase;
+    letter-spacing:.08em;font-weight:800;padding:3px 0 7px;border-bottom:1px solid rgba(217,180,106,.15);margin-bottom:8px;flex-shrink:0}
+  .sp-bv-col-stack{display:flex;flex-direction:column;justify-content:space-around;flex:1;gap:6px}
+  .sp-bv-match{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:6px 7px;
+    display:flex;flex-direction:column;gap:4px;position:relative;font-size:11px;box-shadow:0 8px 20px rgba(0,0,0,.18)}
+  .sp-bv-team{display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:6px;color:rgba(255,255,255,.68);
+    background:rgba(0,0,0,.24);min-height:24px;line-height:1.15;direction:rtl}
+  .sp-bv-team.picked{background:rgba(16,185,129,.17);color:#fff;font-weight:700;border:1px solid rgba(16,185,129,.45)}
+  .sp-bv-team.tbd{color:rgba(255,255,255,.34);font-style:italic}
+  .sp-bv-team img,.sp-bv-team .fb-flag-none{width:22px;height:15px;border-radius:3px;object-fit:cover;flex:none}
+  .sp-bv-team-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px;text-align:start}
+  .sp-bv-team-check{width:12px;height:12px;color:#10b981;flex:none}.sp-bv-team:not(.picked) .sp-bv-team-check{display:none}
+  .sp-bv-match-vs{font-size:9px;color:rgba(255,255,255,.32);text-align:center;letter-spacing:.1em;padding:1px 0;text-transform:uppercase}
+  .sp-bv-champion{background:linear-gradient(135deg,rgba(217,180,106,.25),rgba(217,180,106,.06));border:1.5px solid rgba(217,180,106,.55);
+    border-radius:13px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:0 4px 18px rgba(217,180,106,.15)}
+  .sp-bv-champion-trophy{font-size:22px}.sp-bv-champion-label{font-size:9.5px;color:var(--gold);text-transform:uppercase;letter-spacing:.1em;font-weight:800}
+  .sp-bv-champion-name{font-size:13px;font-weight:800;color:#fff}.sp-bv-champion .fb-flag{width:34px;height:23px;border-radius:5px;object-fit:cover}
+  .sp-bv-col-r32l .sp-bv-match::after,.sp-bv-col-r16l .sp-bv-match::after,.sp-bv-col-qfl .sp-bv-match::after,.sp-bv-col-sfl .sp-bv-match::after{
+    content:'';position:absolute;inset-inline-end:-8px;top:50%;width:8px;height:1px;background:rgba(217,180,106,.46);pointer-events:none;z-index:1}
+  .sp-bv-col-r32r .sp-bv-match::before,.sp-bv-col-r16r .sp-bv-match::before,.sp-bv-col-qfr .sp-bv-match::before,.sp-bv-col-sfr .sp-bv-match::before{
+    content:'';position:absolute;inset-inline-start:-8px;top:50%;width:8px;height:1px;background:rgba(217,180,106,.46);pointer-events:none;z-index:1}
+  .sp-bv-pair-wrap{display:flex;flex-direction:column;flex:1;justify-content:space-around;position:relative;padding:0}
+  .sp-bv-pair-wrap.left::after{content:'';position:absolute;inset-inline-end:0;top:25%;bottom:25%;width:1px;background:rgba(217,180,106,.42);pointer-events:none}
+  .sp-bv-pair-wrap.right::before{content:'';position:absolute;inset-inline-start:0;top:25%;bottom:25%;width:1px;background:rgba(217,180,106,.42);pointer-events:none}
 
   .viewer-cta{margin-top:34px;text-align:center;background:linear-gradient(160deg,#211a0f,#14110b);
     border:1px solid var(--line);border-radius:20px;padding:26px 22px}
@@ -232,7 +257,7 @@
     .wrap{padding:14px 12px 46px}
     .brandbar{margin-bottom:14px}
     h1.title{font-size:20px}.subtitle{margin-bottom:16px}
-    .share-hero{min-height:500px;border-radius:18px}
+    .share-hero{min-height:620px;border-radius:18px}
     .share-hero-body{padding:0 12px 18px}
     .share-hero-name{font-size:30px}
     .section-label{margin-top:24px}
@@ -240,6 +265,12 @@
       margin-inline-start:calc((100% - (100vw - 20px)) / 2);
       margin-inline-end:calc((100% - (100vw - 20px)) / 2)}
     .share-bracket-card{padding:12px 8px 14px}
+  }
+  @media(max-height:780px) and (min-width:700px){
+    .wrap{padding-top:14px}
+    .brandbar{margin-bottom:12px}
+    .subtitle{margin-bottom:16px}
+    .share-actions{margin-top:14px;padding:12px}
   }
 </style>
 </head>
@@ -297,6 +328,15 @@ Object.assign(I18N.he, {
   ctaNewP:'בנה חינם את ההימור שלך למונדיאל 2026, שתף עם חברים ותראו מי באמת מבין בכדורגל.',
   ctaNewBtn:'צור את ההימור שלך ב-FriendlyBet'
 });
+Object.assign(I18N.he, {
+  shareImageBtn:'\u05e9\u05ea\u05e4\u05d5 \u05d0\u05ea \u05ea\u05de\u05d5\u05e0\u05ea \u05d4\u05e0\u05d9\u05e6\u05d7\u05d5\u05df',
+  shareBracketBtn:'\u05e9\u05ea\u05e4\u05d5 \u05d0\u05ea \u05d4\u05d1\u05e8\u05d0\u05e7\u05d8 \u05d4\u05de\u05dc\u05d0',
+  shareImageHelp:'\u05e7\u05d5\u05d3\u05dd \u05db\u05dc \u05de\u05e9\u05ea\u05e4\u05d9\u05dd \u05d0\u05ea \u05ea\u05de\u05d5\u05e0\u05ea \u05d4\u05e0\u05d9\u05e6\u05d7\u05d5\u05df \u05dc\u05d5\u05d5\u05d0\u05d8\u05e1\u05d0\u05e4, \u05d0\u05d9\u05e0\u05e1\u05d8\u05d2\u05e8\u05dd \u05d0\u05d5 \u05e4\u05d9\u05d9\u05e1\u05d1\u05d5\u05e7. \u05e9\u05d9\u05ea\u05d5\u05e3 \u05d4\u05d1\u05e8\u05d0\u05e7\u05d8 \u05d4\u05de\u05dc\u05d0 \u05de\u05d5\u05e4\u05d9\u05e2 \u05de\u05ea\u05d7\u05ea.',
+  shareCopied:'\u05d4\u05e7\u05d9\u05e9\u05d5\u05e8 \u05d4\u05d5\u05e2\u05ea\u05e7',
+  shareDownloaded:'\u05d4\u05ea\u05de\u05d5\u05e0\u05d4 \u05d9\u05e8\u05d3\u05d4 \u05dc\u05de\u05db\u05e9\u05d9\u05e8',
+  shareImageTitle:'My Road to Victory',
+  shareBracketTitle:'\u05d4\u05ea\u05d7\u05d6\u05d9\u05ea \u05e9\u05dc\u05d9 \u05dc\u05de\u05d5\u05e0\u05d3\u05d9\u05d0\u05dc 2026'
+});
 Object.assign(I18N.en, {
   heroKicker:'MY ROAD TO VICTORY',
   heroSub:"{name}'s path to the World Cup 2026 trophy",
@@ -308,8 +348,15 @@ Object.assign(I18N.en, {
   ctaDashboardBtn:'Back to dashboard',
   ctaNewH:'Got a better call?',
   ctaNewP:'Build your own free World Cup 2026 prediction pool, share it with friends, and see who really knows football.',
-  ctaNewBtn:'Create your FriendlyBet pool'
-});
+  ctaNewBtn:'Create your FriendlyBet pool',
+  shareImageBtn:'Share the victory image',
+  shareBracketBtn:'Share the full bracket',
+  shareImageHelp:'Start with the image-only share for WhatsApp, Instagram, or Facebook Stories. The full bracket share is below it.',
+  shareCopied:'Link copied',
+  shareDownloaded:'Image downloaded',
+  shareImageTitle:'My Road to Victory',
+  shareBracketTitle:'My World Cup 2026 prediction'
+  });
 
 function param(k){ return new URLSearchParams(location.search).get(k); }
 
@@ -413,24 +460,54 @@ function render(picks){
       <div class="nm">${tn(step.beat)}</div>
     </div>`;
 
-  const leftR32 = new Set([1,2,3,5,9,10,11,12]);
-  const rightR32 = new Set([4,6,7,8,13,14,15,16]);
-  const byPos = (arr, positions) => (arr || []).filter(m => positions.includes(m.pos));
-  const teamCell = (code, winner) => code
-    ? `<div class="br-team ${winner === code ? 'pick' : ''}">${fl(code)}<span class="nm">${tn(code)}</span></div>`
-    : `<div class="br-team"><span class="fb-flag-none">—</span><span class="nm">—</span></div>`;
-  const brMatch = (m) => `<div class="br-match">${teamCell(m.home, m.winner)}<div class="br-vs">VS</div>${teamCell(m.away, m.winner)}</div>`;
-  const brCol = (title, matches, cls = '') => `<div class="br-col ${cls}"><div class="br-title">${title}</div><div class="br-stack">${matches.map(brMatch).join('')}</div></div>`;
+  const BR_R16_DEF = { 17:[2,5], 18:[1,3], 19:[4,6], 20:[7,8], 21:[11,12], 22:[9,10], 23:[14,16], 24:[13,15] };
+  const BR_QF_DEF = { 25:[17,18], 26:[21,22], 27:[19,20], 28:[23,24] };
+  const BR_SF_DEF = { 29:[25,26], 30:[27,28] };
+  const BR_FINAL_DEF = { 31:[29,30] };
+  const BR_PARENTS = (() => {
+    const map = {};
+    [BR_R16_DEF, BR_QF_DEF, BR_SF_DEF, BR_FINAL_DEF].forEach(def => {
+      Object.entries(def).forEach(([dst, pair]) => { map[pair[0]] = +dst; map[pair[1]] = +dst; });
+    });
+    return map;
+  })();
+  const byPos = (arr, positions) => positions.map(pos => (arr || []).find(m => m.pos === pos)).filter(Boolean);
+  const leftR16 = [17, 18, 21, 22];
+  const rightR16 = [19, 20, 23, 24];
+  const leftR32 = [];
+  const rightR32 = [];
+  for (let pos = 1; pos <= 16; pos++) {
+    if (leftR16.includes(BR_PARENTS[pos])) leftR32.push(pos);
+    else if (rightR16.includes(BR_PARENTS[pos])) rightR32.push(pos);
+  }
+  const bvTeam = (code, winner) => code
+    ? `<div class="sp-bv-team ${winner === code ? 'picked' : ''}">${fl(code)}<span class="sp-bv-team-name">${tn(code)}</span><svg class="sp-bv-team-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></div>`
+    : `<div class="sp-bv-team tbd"><span class="fb-flag-none">-</span><span class="sp-bv-team-name">-</span></div>`;
+  const bvMatch = (match) => `<div class="sp-bv-match">${bvTeam(match && match.home, match && match.winner)}<div class="sp-bv-match-vs">vs</div>${bvTeam(match && match.away, match && match.winner)}</div>`;
+  const bvPairColumn = (matches, side, perPair = 2) => {
+    const out = [];
+    for (let i = 0; i < matches.length; i += perPair) {
+      out.push(`<div class="sp-bv-pair-wrap ${side}">${matches.slice(i, i + perPair).map(bvMatch).join('')}</div>`);
+    }
+    return out.join('');
+  };
+  const bvCol = (cls, title, inner) => `<div class="sp-bv-col ${cls}"><div class="sp-bv-col-title">${title}</div><div class="sp-bv-col-stack">${inner}</div></div>`;
+  const championHtml = `<div class="sp-bv-champion">
+    <div class="sp-bv-champion-trophy">&#127942;</div>
+    <div class="sp-bv-champion-label">${L.winnerLabel}</div>
+    ${champ ? fl(champ) : ''}
+    <div class="sp-bv-champion-name">${champ ? tn(champ) : '-'}</div>
+  </div>`;
   const bracketTree = bracket ? [
-    brCol('R32', (bracket.r32 || []).filter(m => leftR32.has(m.pos))),
-    brCol('R16', byPos(bracket.r16, [17,18,21,22])),
-    brCol('QF', byPos(bracket.qf, [25,26])),
-    brCol('SF', byPos(bracket.sf, [29])),
-    `<div class="br-final"><div class="br-title">FINAL</div>${brMatch(bracket.final)}<div class="br-winner"><div class="cup">🏆</div><div class="lbl">${L.winnerLabel}</div><div class="nm">${champ ? tn(champ) : '—'}</div></div></div>`,
-    brCol('SF', byPos(bracket.sf, [30])),
-    brCol('QF', byPos(bracket.qf, [27,28])),
-    brCol('R16', byPos(bracket.r16, [19,20,23,24])),
-    brCol('R32', (bracket.r32 || []).filter(m => rightR32.has(m.pos)))
+    bvCol('sp-bv-col-r32l', 'R32', bvPairColumn(byPos(bracket.r32, leftR32), 'left')),
+    bvCol('sp-bv-col-r16l', 'R16', bvPairColumn(byPos(bracket.r16, leftR16), 'left')),
+    bvCol('sp-bv-col-qfl', 'QF', bvPairColumn(byPos(bracket.qf, [25, 26]), 'left')),
+    bvCol('sp-bv-col-sfl', 'SF', byPos(bracket.sf, [29]).map(bvMatch).join('')),
+    `<div class="sp-bv-col sp-bv-col-fin"><div class="sp-bv-col-title">FINAL</div>${bvMatch(bracket.final)}${championHtml}</div>`,
+    bvCol('sp-bv-col-sfr', 'SF', byPos(bracket.sf, [30]).map(bvMatch).join('')),
+    bvCol('sp-bv-col-qfr', 'QF', bvPairColumn(byPos(bracket.qf, [27, 28]), 'right')),
+    bvCol('sp-bv-col-r16r', 'R16', bvPairColumn(byPos(bracket.r16, rightR16), 'right')),
+    bvCol('sp-bv-col-r32r', 'R32', bvPairColumn(byPos(bracket.r32, rightR32), 'right'))
   ].join('') : '';
   const hasLocalUser = (() => {
     try { return !!localStorage.getItem('fb_user_id'); } catch (_) { return false; }
@@ -438,6 +515,12 @@ function render(picks){
   const cta = hasLocalUser
     ? { h:L.ctaDashboardH, p:L.ctaDashboardP, btn:L.ctaDashboardBtn, href:'https://friendlybet.live' }
     : { h:L.ctaNewH, p:L.ctaNewP, btn:L.ctaNewBtn, href:'https://friendlybet.live' };
+  const heroShareSrc = champ ? `/og-heroes/hero-${encodeURIComponent(champ)}.jpg` : '/og-image.png';
+  window.FBSharePublic = {
+    imageUrl: new URL(heroShareSrc, location.origin).href,
+    pageUrl: location.href,
+    imageFileName: `friendlybet-${champ || 'prediction'}-road-to-victory.jpg`
+  };
 
   document.getElementById('root').innerHTML = `
     <div class="brandbar">
@@ -456,10 +539,19 @@ function render(picks){
       </div>
     </div>` : ''}
 
+    ${!isTwoPhase ? `<div class="share-actions">
+      <div class="share-actions-grid">
+        <button class="share-action-btn" type="button" onclick="shareVictoryImage()">${L.shareImageBtn}</button>
+        <button class="share-action-btn secondary" type="button" onclick="shareFullBracket()">${L.shareBracketBtn}</button>
+      </div>
+      <div class="share-action-help">${L.shareImageHelp}</div>
+      <div class="share-status" id="share-status" aria-live="polite"></div>
+    </div>` : ''}
+
     ${bracketTree ? `<div class="section-label share-wide-label">${L.bracketLabel}</div>
     <div class="share-bracket-card">
       <div class="sp-scroll-chip" style="display:inline-block;margin:0 4px 10px">${L.bracketHint}</div>
-      <div class="bracket-scroll" dir="ltr"><div class="bracket-tree">${bracketTree}</div></div>
+      <div class="bracket-scroll" dir="ltr"><div class="sp-bracket-tree share-bracket-tree">${bracketTree}</div></div>
     </div>` : ''}
 
     <div class="section-label">${isTwoPhase ? L.advancersLabel : L.groupsLabel}</div>
@@ -489,6 +581,68 @@ function render(picks){
     });
   });
 }
+
+function setShareStatus(message){
+  const el = document.getElementById('share-status');
+  if (el) el.textContent = message || '';
+}
+
+async function shareVictoryImage(){
+  const cfg = window.FBSharePublic || {};
+  const L = I18N[document.documentElement.lang] || I18N.he;
+  if (!cfg.imageUrl) return;
+  try {
+    const response = await fetch(cfg.imageUrl, { cache:'force-cache' });
+    if (!response.ok) throw new Error('image fetch failed');
+    const blob = await response.blob();
+    const file = new File([blob], cfg.imageFileName || 'friendlybet-road-to-victory.jpg', { type: blob.type || 'image/jpeg' });
+    if (navigator.canShare && navigator.canShare({ files:[file] }) && navigator.share) {
+      await navigator.share({ files:[file], title:L.shareImageTitle });
+      setShareStatus('');
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1200);
+    setShareStatus(L.shareDownloaded);
+  } catch (err) {
+    try {
+      await navigator.clipboard.writeText(cfg.imageUrl);
+      setShareStatus(L.shareCopied);
+    } catch (_) {
+      location.href = cfg.imageUrl;
+    }
+  }
+}
+
+async function shareFullBracket(){
+  const cfg = window.FBSharePublic || {};
+  const L = I18N[document.documentElement.lang] || I18N.he;
+  const url = cfg.pageUrl || location.href;
+  if (navigator.share) {
+    try {
+      await navigator.share({ title:L.shareBracketTitle, text:L.shareBracketTitle, url });
+      setShareStatus('');
+      return;
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+    }
+  }
+  try {
+    await navigator.clipboard.writeText(url);
+    setShareStatus(L.shareCopied);
+  } catch (_) {
+    location.href = url;
+  }
+}
+
+window.shareVictoryImage = shareVictoryImage;
+window.shareFullBracket = shareFullBracket;
 
 // Boot: demo by default; real picks if ?u & ?p given (fetched from Supabase).
 (async function(){
