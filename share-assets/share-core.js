@@ -88,43 +88,16 @@ const SP_QF_DEF  = { 25:[17,18],26:[21,22],27:[19,20],28:[23,24] };
 const SP_SF_DEF  = { 29:[25,26],30:[27,28] };
 const SP_FINAL_DEF = { 31:[29,30] };
 
-const SP_THIRD_PLACE_SLOTS = [2,5,7,8,9,10,13,15].map(pos => ({
-  pos, allowed: SP_R32_DEF[pos].find(f => f.type === 'third').allowed
-}));
-
-function _matchThirdPlace(chosenGroups){
-  const chosen = new Set(chosenGroups);
-  const slots = SP_THIRD_PLACE_SLOTS
-    .map(s => ({ pos:s.pos, opts:s.allowed.filter(g => chosen.has(g)) }))
-    .sort((a,b) => a.opts.length - b.opts.length);
-  const assignment = {}, used = new Set();
-  const bt = (i) => {
-    if (i === slots.length) return true;
-    for (const g of slots[i].opts){
-      if (used.has(g)) continue;
-      assignment[slots[i].pos] = g; used.add(g);
-      if (bt(i+1)) return true;
-      used.delete(g); delete assignment[slots[i].pos];
-    }
-    return false;
-  };
-  return bt(0) ? assignment : null;
-}
-function _greedyThirdPlace(){
-  const used = new Set(), assignment = {};
-  SP_THIRD_PLACE_SLOTS.forEach(({pos,allowed}) => {
-    const g = allowed.find(x => !used.has(x));
-    if (g){ assignment[pos] = g; used.add(g); }
-  });
-  return assignment;
-}
 function _resolveThirdSlots(picks){
   const chosen = (picks.thirdPlaceAdvancers || []).filter(Boolean);
   if (chosen.length === 8){
-    const m = _matchThirdPlace(chosen);
+    const helper = window.FB_FIFA_THIRD_PLACE;
+    const m = helper && typeof helper.assignment === 'function'
+      ? helper.assignment(chosen)
+      : null;
     if (m) return m;
   }
-  return _greedyThirdPlace();
+  return {};
 }
 function _resolveFeed(feed, thirdSlots, slotPos, groupPositions){
   if (feed.type === 'gp'){

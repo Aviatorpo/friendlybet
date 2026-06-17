@@ -16,11 +16,9 @@
      index only if/when these become aggregate, unique-value pages. -->
 <meta name="robots" content="noindex, follow">
 
-<!-- Open Graph / social card. When the link is SHARED via the app's native
-     share sheet, the user's real bracket image is attached directly, so the
-     recipient sees their actual picks. This static brand card is only the
-     fallback for a raw link paste — kept generic (no specific champion) so it
-     is never misleading. A per-user dynamic OG endpoint can replace it later. -->
+<!-- Open Graph / social card. /api/share injects a per-user /api/og image into
+     these tags before WhatsApp/Facebook/X scrape the page. The static value is
+     only a no-query fallback. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="FriendlyBet">
 <meta property="og:title" content="התחזית שלי למונדיאל 2026 ⚽ FriendlyBet">
@@ -29,6 +27,7 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://friendlybet.live/og-image-he.png">
 
 <link rel="icon" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -167,11 +166,79 @@
   footer{text-align:center;color:var(--muted);font-size:11px;margin-top:26px;opacity:.7}
   footer a{color:var(--gold);text-decoration:none}
   .fb-flag-none{display:inline-grid;place-items:center;background:#2a2620;color:var(--muted);font-size:9px;font-weight:700}
+
+  /* Viral share page: trophy image first, then a full horizontal bracket. */
+  .share-hero{position:relative;border-radius:22px;overflow:hidden;min-height:520px;background:#0b0a08;
+    border:1px solid rgba(217,180,106,.45);box-shadow:0 24px 70px rgba(0,0,0,.56),0 0 0 1px rgba(255,255,255,.04)}
+  .share-hero-img{position:absolute;inset:0;width:100%;height:68%;object-fit:cover;object-position:50% 8%;
+    filter:saturate(1.04) contrast(1.03)}
+  .share-hero::before{content:'';position:absolute;inset:0;background:
+    linear-gradient(to bottom,rgba(6,6,4,.3),rgba(6,6,4,0) 30%,rgba(6,6,4,.2) 55%,#0b0a08 72%,#0b0a08),
+    radial-gradient(520px 260px at 50% 38%,rgba(217,180,106,.18),transparent 68%);z-index:1}
+  .share-hero-body{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 18px 22px;text-align:center}
+  .share-hero-kicker{font-family:'Sora',sans-serif;font-weight:800;font-size:12px;letter-spacing:3px;color:var(--gold);
+    text-transform:uppercase;text-shadow:0 2px 12px #000}
+  .share-hero-name{font-family:'Sora',sans-serif;font-weight:800;font-size:34px;line-height:1.05;color:var(--gold);
+    margin-top:8px;text-shadow:0 8px 24px rgba(0,0,0,.72)}
+  .share-hero-sub{font-size:13px;color:rgba(243,239,231,.72);margin-top:8px}
+  .victory-road{display:flex;gap:5px;margin:18px 0 0}
+  .victory-road::-webkit-scrollbar{display:none}
+  .victory-step{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px;padding:8px 4px;
+    border-radius:12px;background:rgba(255,255,255,.055);border:1px solid rgba(217,180,106,.24)}
+  .victory-step.final{background:linear-gradient(150deg,rgba(217,180,106,.28),rgba(255,255,255,.07));
+    border-color:rgba(217,180,106,.58)}
+  .victory-step .rd{font-family:'Sora',sans-serif;font-size:10px;font-weight:800;color:var(--gold);letter-spacing:.5px}
+  .victory-step img,.victory-step .fb-flag-none{width:30px;height:20px;border-radius:5px;object-fit:cover}
+  .victory-step .nm{font-size:10.5px;font-weight:700;max-width:56px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .share-bracket-card{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:18px;
+    padding:12px 10px 14px;overflow:hidden}
+  .sp-scroll-chip{font-size:10.5px;font-weight:700;color:var(--gold);background:rgba(217,180,106,.11);
+    border:1px solid rgba(217,180,106,.24);border-radius:999px;padding:4px 10px}
+  .bracket-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-color:rgba(217,180,106,.55) transparent;
+    padding:4px 2px 8px}
+  .bracket-tree{width:max-content;min-width:980px;display:grid;grid-template-columns:repeat(9,106px);gap:7px;align-items:center}
+  .br-col{min-height:430px;display:flex;flex-direction:column;justify-content:center;gap:8px}
+  .br-title{font-family:'Sora',sans-serif;font-weight:800;font-size:10px;letter-spacing:.6px;color:var(--gold);
+    text-align:center;text-transform:uppercase;margin-bottom:4px}
+  .br-stack{display:flex;flex-direction:column;justify-content:center;gap:8px}
+  .br-match{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:5px;
+    min-height:68px}
+  .br-team{display:flex;align-items:center;gap:5px;min-height:24px;border-radius:7px;padding:3px 5px;color:rgba(243,239,231,.72)}
+  .br-team.pick{background:rgba(13,148,86,.18);box-shadow:inset 0 0 0 1px rgba(34,197,94,.26);color:var(--text)}
+  .br-team img,.br-team .fb-flag-none{width:22px;height:15px;border-radius:3px;object-fit:cover;flex:none}
+  .br-team .nm{font-size:10.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .br-vs{text-align:center;color:rgba(255,255,255,.34);font-family:'Sora',sans-serif;font-size:8px;font-weight:800;line-height:1}
+  .br-final{min-height:430px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+  .br-winner{border-radius:14px;border:1px solid rgba(217,180,106,.48);background:linear-gradient(160deg,#241d10,#14110b);
+    text-align:center;padding:14px 8px;box-shadow:inset 0 1px 0 rgba(217,180,106,.18)}
+  .br-winner .cup{font-size:24px}.br-winner .lbl{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.7px;text-transform:uppercase}
+  .br-winner .nm{font-family:'Sora',sans-serif;font-size:15px;font-weight:800;color:var(--gold);margin-top:5px}
+
+  .viewer-cta{margin-top:34px;text-align:center;background:linear-gradient(160deg,#211a0f,#14110b);
+    border:1px solid var(--line);border-radius:20px;padding:26px 22px}
+  .viewer-cta h2{font-family:'Sora',sans-serif;font-weight:800;font-size:20px;margin-bottom:7px}
+  .viewer-cta p{color:var(--muted);font-size:13px;margin-bottom:18px;line-height:1.5}
+  .viewer-cta a{display:inline-block;background:linear-gradient(140deg,var(--gold),#a9853c);color:var(--ink);
+    font-weight:800;font-size:15px;text-decoration:none;padding:13px 30px;border-radius:30px;
+    box-shadow:0 10px 28px rgba(217,180,106,.3)}
+
+  @media(max-width:430px){
+    .wrap{padding:14px 12px 46px}
+    .brandbar{margin-bottom:14px}
+    h1.title{font-size:20px}.subtitle{margin-bottom:16px}
+    .share-hero{min-height:500px;border-radius:18px}
+    .share-hero-body{padding:0 12px 18px}
+    .share-hero-name{font-size:30px}
+    .section-label{margin-top:24px}
+    .share-bracket-card{margin-left:-2px;margin-right:-2px}
+  }
 </style>
 </head>
 <body>
 <div class="wrap" id="root"></div>
 
+<script src="/share-assets/fifa-third-place-table.js"></script>
 <script src="/share-assets/share-core.js"></script>
 <script>
 const I18N = {
@@ -209,6 +276,32 @@ Object.assign(I18N.en, {
   noGroupPicks:'No saved picks',
   groupWord:'Group'
 });
+Object.assign(I18N.he, {
+  heroKicker:'MY ROAD TO VICTORY',
+  heroSub:'הדרך של {name} לגביע מונדיאל 2026',
+  bracketLabel:'הבראקט המלא',
+  bracketHint:'↔ גללו לצדדים כדי לראות את כל הדרך לגמר',
+  winnerLabel:'אלופה',
+  ctaDashboardH:'רוצה לחזור להימור שלך?',
+  ctaDashboardP:'החשבון שלך כבר שמור במכשיר הזה. חזור לדשבורד והמשך לעקוב אחרי ההימור.',
+  ctaDashboardBtn:'חזרה לדשבורד',
+  ctaNewH:'יש לך תחזית טובה יותר?',
+  ctaNewP:'בנה חינם את ההימור שלך למונדיאל 2026, שתף עם חברים ותראו מי באמת מבין בכדורגל.',
+  ctaNewBtn:'צור את ההימור שלך ב-FriendlyBet'
+});
+Object.assign(I18N.en, {
+  heroKicker:'MY ROAD TO VICTORY',
+  heroSub:"{name}'s path to the World Cup 2026 trophy",
+  bracketLabel:'Full bracket',
+  bracketHint:'↔ Scroll sideways to see the whole road to the final',
+  winnerLabel:'Champion',
+  ctaDashboardH:'Back to your pool?',
+  ctaDashboardP:'Your FriendlyBet account is already saved on this device. Jump back to the dashboard.',
+  ctaDashboardBtn:'Back to dashboard',
+  ctaNewH:'Got a better call?',
+  ctaNewP:'Build your own free World Cup 2026 prediction pool, share it with friends, and see who really knows football.',
+  ctaNewBtn:'Create your FriendlyBet pool'
+});
 
 function param(k){ return new URLSearchParams(location.search).get(k); }
 
@@ -230,8 +323,10 @@ function render(picks){
   // teamName returns the RAW code for an unknown code, and knockout_picks.predicted_winner
   // has NO teams FK -> a crafted bracket pick can carry HTML. Escape every team-name render
   // (tn is display-only, always going into innerHTML) so a malicious code can't inject.
+  const knownTeams = new Set(Object.values(S.WC2026_GROUPS || {}).flat());
+  const safeTeamCode = (c) => knownTeams.has(c) ? c : '';
   const tn = (c) => esc(S.teamName(c, lang));
-  const fl = (c, st) => S.flagImg(c, { style: st || '' });
+  const fl = (c, st) => S.flagImg(safeTeamCode(c), { style: st || '' });
 
   const isTwoPhase = picks.mode === 'two_phase';
   const bracket = isTwoPhase ? null : S.resolveBracket(picks);
@@ -299,6 +394,42 @@ function render(picks){
     return `<div class="grp two-phase"><div class="gh"><span>${L.groupWord || 'Group'} ${letter}</span><span class="gc">${esc(count)}</span></div>${rows}</div>`;
   }).join('');
   const phaseGroupsHtml = isTwoPhase ? twoPhaseGroupsHtml : groupsHtml;
+  const heroSrc = champ ? `/heroes/hero-${encodeURIComponent(champ)}.webp` : '/og-image.png';
+  const fullRoad = champ
+    ? [...champRoad, { round:'FINAL', beat: finalist }].filter(step => step && step.beat)
+    : [];
+  const roadStep = (step) => `
+    <div class="victory-step ${step.round === 'FINAL' ? 'final' : ''}">
+      <div class="rd">${step.round}</div>
+      ${fl(step.beat)}
+      <div class="nm">${tn(step.beat)}</div>
+    </div>`;
+
+  const leftR32 = new Set([1,2,3,5,9,10,11,12]);
+  const rightR32 = new Set([4,6,7,8,13,14,15,16]);
+  const byPos = (arr, positions) => (arr || []).filter(m => positions.includes(m.pos));
+  const teamCell = (code, winner) => code
+    ? `<div class="br-team ${winner === code ? 'pick' : ''}">${fl(code)}<span class="nm">${tn(code)}</span></div>`
+    : `<div class="br-team"><span class="fb-flag-none">—</span><span class="nm">—</span></div>`;
+  const brMatch = (m) => `<div class="br-match">${teamCell(m.home, m.winner)}<div class="br-vs">VS</div>${teamCell(m.away, m.winner)}</div>`;
+  const brCol = (title, matches, cls = '') => `<div class="br-col ${cls}"><div class="br-title">${title}</div><div class="br-stack">${matches.map(brMatch).join('')}</div></div>`;
+  const bracketTree = bracket ? [
+    brCol('R32', (bracket.r32 || []).filter(m => leftR32.has(m.pos))),
+    brCol('R16', byPos(bracket.r16, [17,18,21,22])),
+    brCol('QF', byPos(bracket.qf, [25,26])),
+    brCol('SF', byPos(bracket.sf, [29])),
+    `<div class="br-final"><div class="br-title">FINAL</div>${brMatch(bracket.final)}<div class="br-winner"><div class="cup">🏆</div><div class="lbl">${L.winnerLabel}</div><div class="nm">${champ ? tn(champ) : '—'}</div></div></div>`,
+    brCol('SF', byPos(bracket.sf, [30])),
+    brCol('QF', byPos(bracket.qf, [27,28])),
+    brCol('R16', byPos(bracket.r16, [19,20,23,24])),
+    brCol('R32', (bracket.r32 || []).filter(m => rightR32.has(m.pos)))
+  ].join('') : '';
+  const hasLocalUser = (() => {
+    try { return !!localStorage.getItem('fb_user_id'); } catch (_) { return false; }
+  })();
+  const cta = hasLocalUser
+    ? { h:L.ctaDashboardH, p:L.ctaDashboardP, btn:L.ctaDashboardBtn, href:'https://friendlybet.live' }
+    : { h:L.ctaNewH, p:L.ctaNewP, btn:L.ctaNewBtn, href:'https://friendlybet.live' };
 
   document.getElementById('root').innerHTML = `
     <div class="brandbar">
@@ -307,35 +438,21 @@ function render(picks){
     <h1 class="title"><span class="who">${esc(picks.nickname)}</span> · ${L.title}</h1>
     <div class="subtitle">${isTwoPhase ? L.twoPhaseSub : L.sub}</div>
 
-    ${!isTwoPhase ? `<div class="section-label">${L.champLabel}</div>
-    <div class="champ">
-      <div class="crown">🏆</div>
-      <div class="kicker">${L.champLabel}</div>
-      ${fl(champ,'').replace('class="fb-flag"','class="flag-xl"')}
-      <div class="name">${champ?tn(champ):'—'}</div>
+    ${!isTwoPhase ? `<div class="share-hero">
+      <img class="share-hero-img" src="${heroSrc}" alt="">
+      <div class="share-hero-body">
+        <div class="share-hero-kicker">${L.heroKicker}</div>
+        <div class="share-hero-name">${champ ? tn(champ) : '—'}</div>
+        <div class="share-hero-sub">${esc((L.heroSub || '').replace('{name}', picks.nickname || ''))}</div>
+        <div class="victory-road">${fullRoad.map(roadStep).join('')}</div>
+      </div>
     </div>` : ''}
 
-    ${hasRoads?`<div class="section-label">${L.finalLabel}</div>
-    <div class="finalbox">
-      ${finalSide(champ, true)}
-      <span class="fb-vs">VS</span>
-      ${finalSide(finalist, false)}
-    </div>
-
-    <div class="section-label">${L.roadLabel}</div>
-    <div class="roads">
-      ${lane(champ, champRoad, true)}
-      ${axisHtml}
-      ${lane(finalist, finRoad, false)}
-    </div>`:''}
-
-    ${ts&&ts.player_name?`
-    <div class="section-label">${L.scorerLabel}</div>
-    <div class="scorer">
-      <span class="boot">👟</span>
-      <div><div class="nm">${esc(ts.player_name)}</div>
-      <div class="tm">${fl(ts.team_code)} ${tn(ts.team_code)}</div></div>
-    </div>`:''}
+    ${bracketTree ? `<div class="section-label">${L.bracketLabel}</div>
+    <div class="share-bracket-card">
+      <div class="sp-scroll-chip" style="display:inline-block;margin:0 4px 10px">${L.bracketHint}</div>
+      <div class="bracket-scroll"><div class="bracket-tree">${bracketTree}</div></div>
+    </div>` : ''}
 
     <div class="section-label">${isTwoPhase ? L.advancersLabel : L.groupsLabel}</div>
     <div class="groups">${phaseGroupsHtml}</div>
@@ -350,10 +467,10 @@ function render(picks){
       </div>
     </div>` : ''}
 
-    <div class="cta">
-      <h2>${L.ctaH}</h2>
-      <p>${L.ctaP}</p>
-      <a href="https://friendlybet.live">${L.ctaBtn}</a>
+    <div class="viewer-cta">
+      <h2>${cta.h}</h2>
+      <p>${cta.p}</p>
+      <a href="${cta.href}">${cta.btn}</a>
     </div>
     <footer>${L.made} <a href="https://friendlybet.live">friendlybet.live</a> · ⚽ FriendlyBet</footer>
   `;
