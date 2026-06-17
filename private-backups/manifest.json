@@ -19,7 +19,8 @@
     "537370",
     "537391",
     "537392",
-    "537397"
+    "537397",
+    "537398"
   ],
   "backups": [
     {
@@ -430,7 +431,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-17T07:10:14.580Z",
+      "file": "private-backups/2026-06-17T07-10-14-580Z__537398-AUT-JOR.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537398"
+      ],
+      "tableCounts": {
+        "pools": 1921,
+        "users": 6194,
+        "group_picks": 22311,
+        "knockout_picks": 94335,
+        "group_position_picks": 173461,
+        "tournament_winner_picks": 3334,
+        "top_scorer_picks": 2899,
+        "sp_third_place_picks": 28877,
+        "pick_backups": 46461,
+        "knockout_reopen_grants": 1680,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-17T05:07:55.648Z"
+  "updatedAt": "2026-06-17T07:10:14.580Z"
 }
