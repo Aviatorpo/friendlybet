@@ -1,0 +1,91 @@
+name: Publish World Cup Stories Direct
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: Maximum number of missing finished-match stories to publish
+        required: false
+        default: '10'
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-world-cup-stories-direct
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Install story image tooling
+        run: python3 -m pip install --user pillow
+
+      - name: Generate reviewed story drafts
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_IMAGE_MODEL: ${{ vars.OPENAI_IMAGE_MODEL || 'gpt-image-1' }}
+          OPENAI_IMAGE_SIZE: ${{ vars.OPENAI_IMAGE_SIZE || '1024x1536' }}
+          WC_STORY_REVIEW_LIMIT: ${{ inputs.limit || '10' }}
+        run: node scripts/create-world-cup-story-review.js
+
+      - name: Validate story drafts
+        run: node scripts/test-world-cup-story-review.js
+
+      - name: Apply generated stories
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const { spawnSync } = require('child_process');
+          const payload = JSON.parse(fs.readFileSync('_story_review_created.json', 'utf8'));
+          if (payload.blocked && payload.blocked.length) {
+            console.error('Story generation blocked for unsafe matches:');
+            for (const item of payload.blocked) console.error(`- ${item.slug}: ${item.reason}`);
+            process.exit(1);
+          }
+          const created = payload.created || [];
+          if (!created.length) {
+            console.log('No new story drafts to apply.');
+            process.exit(0);
+          }
+          for (const item of created) {
+            console.log(`Approving ${item.slug}`);
+            const res = spawnSync('node', ['scripts/approve-world-cup-story.js', item.slug], { stdio: 'inherit' });
+            if (res.status !== 0) process.exit(res.status || 1);
+          }
+          NODE
+
+      - name: Validate story feed
+        run: node scripts/test-world-cup-stories.js
+
+      - name: Commit published stories
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data story-assets story-review)" ]; then
+            git add public-data story-assets story-review
+            git commit -q -m "story: publish latest World Cup stories"
+            pushed=0
+            for a in 1 2 3; do
+              if git pull --rebase --autostash && git push; then pushed=1; break; fi
+              echo "push retry $a"; sleep 4
+            done
+            if [ "$pushed" != "1" ]; then
+              echo "::error::failed to push published stories after 3 retries"
+              exit 1
+            fi
+          else
+            echo "no story changes"
+          fi
