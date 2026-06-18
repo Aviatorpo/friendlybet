@@ -1,0 +1,66 @@
+name: Manual Match Results
+
+on:
+  workflow_dispatch:
+    inputs:
+      results_json:
+        description: 'JSON array: [{"home":"ENG","away":"CRO","home_score":4,"away_score":2,"winner":"ENG"}]'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: calculate-scores-v2
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Apply manual match results
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          MANUAL_MATCH_RESULTS_JSON: ${{ inputs.results_json }}
+        run: node scripts/manual-match-results.js
+
+      - name: Calculate scores (v2)
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/calculate-scores-v2.js
+
+      - name: Export CDN snapshots
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/export-snapshots.js all
+
+      - name: Validate World Cup stories
+        run: node scripts/test-world-cup-stories.js
+
+      - name: Validate World Cup story review drafts
+        run: node scripts/test-world-cup-story-review.js
+
+      - name: Commit refreshed data if changed
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data)" ]; then
+            git add public-data
+            git commit -q -m "data: apply manual match results"
+            git pull --rebase --autostash
+            git push
+          else
+            echo "no public-data change"
+          fi
