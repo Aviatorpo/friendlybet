@@ -1,15 +1,24 @@
 name: Live Match Poller
 
-# Near-real-time live scores. Runs every 5 min (GitHub's minimum); when a match
-# is live it polls ESPN every ~60s for ~4.5 min, writing ONLY to the DB
-# (no snapshot commit -> ZERO Vercel deploys). When nothing is live it exits
-# immediately. The client reads live scores straight from the DB during play.
+# Near-real-time live scores. During scheduled match windows it runs every
+# 5 min (GitHub's minimum); when a match is live it polls ESPN every ~60s for
+# ~4.5 min, writing ONLY to the DB (no snapshot commit -> ZERO Vercel deploys).
+# The client reads live scores straight from the DB during play.
 on:
   schedule:
-    # Near-continuous coverage: each run polls for ~4.5 min, then the next
-    # scheduled launch takes over. Final-result verification is handled by the
-    # ESPN+FIFA verifier.
-    - cron: '*/5 * * * *'
+    # UTC windows generated from public-data/matches.json for known group-stage
+    # kickoffs. Each window covers roughly kickoff-15m through kickoff+3h.
+    - cron: '*/5 15-23 18 6 *'
+    - cron: '*/5 0-4,18-23 19 6 *'
+    - cron: '*/5 0-6,16-23 20 6 *'
+    - cron: '*/5 0-7,15-23 21 6 *'
+    - cron: '*/5 0-4,16-23 22 6 *'
+    - cron: '*/5 0-6,16-23 23 6 *'
+    - cron: '*/5 0-5,18-23 24 6 *'
+    - cron: '*/5 0-4,19-23 25 6 *'
+    - cron: '*/5 0-5,18-23 26 6 *'
+    - cron: '*/5 0-6,20-23 27 6 *'
+    - cron: '*/5 0-5 28 6 *'
   workflow_dispatch:
 
 # Don't let two live-poller runs overlap (a slow run + the next cron launch).

@@ -202,8 +202,8 @@ FriendlyBet is deliberately engineered to be **lean, transparent, and privacy-pr
         │                                       ▼
 ┌───────┴───────────────────────────────────────────────────────────────────┐
 │  GitHub Actions (scheduled, serialized)                                      │
-│  live-poller (5m): ESPN live scores → write DB during live matches           │
-│  final-result-verifier (5m): ESPN + FIFA agree → write DB + snapshot         │
+│  live-poller: ESPN live scores → DB during scheduled match windows           │
+│  final-result-verifier: ESPN + FIFA agree → DB + snapshot after FT           │
 │  calculate-scores-v2 (30m): recompute every score → export leaderboards      │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -217,7 +217,7 @@ FriendlyBet is deliberately engineered to be **lean, transparent, and privacy-pr
 - **Row-Level Security (RLS) is enforced on every table.** Access is gated by database policies, so the client can only ever read and write what it is explicitly permitted to. There is no bespoke server to compromise.
 
 ### Live data — resilient, asynchronous, never on the user's request
-- Scheduled **GitHub Actions** jobs handle match data asynchronously: `live-poller` writes ESPN live scores during matches, and `final-result-verifier` writes finished results only when ESPN and FIFA agree. User requests never trigger outbound provider calls, which keeps the app fast during peak traffic.
+- Scheduled **GitHub Actions** jobs handle match data asynchronously inside match windows: `live-poller` writes ESPN live scores during matches, and `final-result-verifier` writes finished results only when ESPN and FIFA agree. User requests never trigger outbound provider calls, which keeps the app fast during peak traffic and avoids all-day polling.
 - **Last-good-snapshot guard:** if ESPN or FIFA is temporarily unavailable, the pipeline keeps serving the last known-good data instead of blanking it out mid-tournament. The manual match-results workflow remains an emergency fallback, not the normal path.
 
 ### Scoring engine — deterministic, isolated, race-free

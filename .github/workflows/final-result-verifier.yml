@@ -2,10 +2,20 @@ name: Verify Final Results with ESPN and FIFA
 
 on:
   schedule:
-    # Automatic final-result recovery. The script itself only considers matches
-    # at least RESULT_FALLBACK_MIN_AGE_MINUTES after kickoff and still missing a
-    # terminal result, then writes only when ESPN and FIFA agree.
-    - cron: '*/5 * * * *'
+    # UTC windows generated from public-data/matches.json for known group-stage
+    # kickoffs. Each window covers roughly kickoff+105m through kickoff+5h; the
+    # script still writes only when ESPN and FIFA agree.
+    - cron: '*/5 17-23 18 6 *'
+    - cron: '*/5 0-6,20-23 19 6 *'
+    - cron: '*/5 0-8,18-23 20 6 *'
+    - cron: '*/5 0-9,17-23 21 6 *'
+    - cron: '*/5 0-6,18-23 22 6 *'
+    - cron: '*/5 0-8,18-23 23 6 *'
+    - cron: '*/5 0-7,20-23 24 6 *'
+    - cron: '*/5 0-6,21-23 25 6 *'
+    - cron: '*/5 0-7,20-23 26 6 *'
+    - cron: '*/5 0-8,22-23 27 6 *'
+    - cron: '*/5 0-7 28 6 *'
   workflow_dispatch:
     inputs:
       apply:
