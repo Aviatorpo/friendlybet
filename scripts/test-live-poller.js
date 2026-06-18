@@ -1,14 +1,13 @@
 // ============================================================
 // Test: live-poller runLivePoller()
 // ============================================================
-// Proves the poller loops performSync (DB writes) while a match is live and
+// Proves the poller loops ESPN live sync (DB writes) while a match is live and
 // exits immediately when nothing is live - and that it NEVER commits a snapshot
-// (no Vercel deploy). Mocks football-data + Supabase; tiny intervals.
+// (no Vercel deploy). Mocks ESPN + Supabase; tiny intervals.
 // Run: node scripts/test-live-poller.js   (no DB / no secrets)
 // ============================================================
 
 process.env.SUPABASE_SECRET_KEY = 'test';
-process.env.FOOTBALL_DATA_TOKEN = 'test';
 const sync = require('./smart-sync.js');
 const { runLivePoller } = require('./live-poller.js');
 
@@ -16,11 +15,6 @@ let pass = 0, fail = 0;
 const ok = (label, cond) => { console.log(`${cond ? '✓' : '✗ FAIL'}  ${label}`); cond ? pass++ : fail++; };
 
 const HEADERS = { get: (k) => (k === 'X-Requests-Available-Minute' ? '8' : null) };
-const PAYLOAD = { matches: [
-  { id: 201, stage: 'GROUP_STAGE', group: 'GROUP_A', utcDate: '2026-06-11T16:00:00Z', status: 'IN_PLAY',
-    homeTeam: { name: 'Mexico' }, awayTeam: { name: 'South Korea' },
-    score: { winner: null, duration: 'REGULAR', fullTime: { home: 1, away: 0 } } },
-] };
 const ESPN_PAYLOAD = { events: [{
   id: '760201',
   date: '2026-06-11T16:00Z',
@@ -46,7 +40,6 @@ const okJson = (data) => ({
 sync.__setFetch(async (url, opts) => {
   const method = (opts && opts.method) || 'GET';
   if (url.includes('site.api.espn.com')) return okJson(ESPN_PAYLOAD);
-  if (url.includes('api.football-data.org')) return okJson(PAYLOAD);
   if (url.includes('/rest/v1/matches') && url.includes('select=winner_code')) return okJson([]);
   if (url.includes('/rest/v1/matches') && url.includes('select=live_clock')) return okJson([]);
   if (url.includes('/rest/v1/matches') && url.includes('match_date=gte')) {
@@ -65,7 +58,7 @@ sync.__setFetch(async (url, opts) => {
   const polls = await runLivePoller({ intervalMs: 5, runMs: 18, sleep: (ms) => new Promise(r => setTimeout(r, ms)) });
   ok('polls performSync repeatedly while live (>=2)', polls >= 2);
   ok('ESPN patches the live match on each poll', patches >= polls);
-  ok('football-data backup not used when ESPN matches', upserts === 0);
+  ok('legacy sync upsert path is not used when ESPN matches', upserts === 0);
 
   // Not live: exits immediately, no work.
   LIVE = false; upserts = 0; patches = 0;

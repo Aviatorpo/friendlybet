@@ -1,13 +1,14 @@
 name: Live Match Poller
 
 # Near-real-time live scores. Runs every 5 min (GitHub's minimum); when a match
-# is live it polls football-data every ~60s for ~4.5 min, writing ONLY to the DB
+# is live it polls ESPN every ~60s for ~4.5 min, writing ONLY to the DB
 # (no snapshot commit -> ZERO Vercel deploys). When nothing is live it exits
 # immediately. The client reads live scores straight from the DB during play.
 on:
   schedule:
     # Near-continuous coverage: each run polls for ~4.5 min, then the next
-    # scheduled launch takes over. ESPN is primary; football-data is backup.
+    # scheduled launch takes over. Final-result verification is handled by the
+    # ESPN+FIFA verifier.
     - cron: '*/5 * * * *'
   workflow_dispatch:
 
@@ -31,10 +32,9 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            node scripts/live-poller.js || { echo "::warning::live-poller skipped after transient Supabase/API failure"; exit 0; }
+            node scripts/live-poller.js || { echo "::warning::live-poller skipped after transient Supabase/ESPN failure"; exit 0; }
           else
             node scripts/live-poller.js
           fi

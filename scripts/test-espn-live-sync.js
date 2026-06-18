@@ -2,7 +2,6 @@
 // Run: node scripts/test-espn-live-sync.js
 
 process.env.SUPABASE_SECRET_KEY = 'test';
-process.env.FOOTBALL_DATA_TOKEN = 'test';
 
 const E = require('./espn-live-sync.js');
 

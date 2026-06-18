@@ -11,8 +11,8 @@
 // DB during live play (see app.js loadMatches), so 60s DB freshness == ~60s
 // on-screen freshness, with no deploy-per-update and no Vercel-plan pressure.
 //
-// ESPN is primary because it exposes a real provider clock/displayClock.
-// football-data remains the backup writer if ESPN is unavailable.
+// ESPN is the only live provider. If it is unavailable, the final-result
+// verifier later confirms finished results with ESPN + FIFA before writing.
 // ============================================================
 
 const sync = require('./smart-sync.js');
@@ -35,18 +35,11 @@ async function runLivePoller(opts = {}) {
     try {
       const result = await espn.syncEspnLive(); // ESPN -> DB (score + provider clock)
       if (!result || result.updated === 0) {
-        console.warn('ESPN live sync updated no matches - falling back to football-data.');
-        await sync.performSync();
+        console.warn('ESPN live sync updated no matches - leaving result unchanged until the next ESPN/FIFA check.');
       }
       polls++;
     } catch (e) {
-      console.error('ESPN live poll failed, trying football-data backup:', e.message);
-      try {
-        await sync.performSync();   // football-data -> DB backup (no snapshot/commit)
-        polls++;
-      } catch (backupErr) {
-        console.error('Live poll backup failed (will retry next tick):', backupErr.message);
-      }
+      console.error('ESPN live poll failed (will retry next tick):', e.message);
     }
     if (now() + intervalMs >= end) break;
     await sleep(intervalMs);

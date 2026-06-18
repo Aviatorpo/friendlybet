@@ -202,9 +202,9 @@ FriendlyBet is deliberately engineered to be **lean, transparent, and privacy-pr
         │                                       ▼
 ┌───────┴───────────────────────────────────────────────────────────────────┐
 │  GitHub Actions (scheduled, serialized)                                      │
-│  smart-sync (10m): pull match results → write DB → export match snapshot     │
+│  live-poller (5m): ESPN live scores → write DB during live matches           │
+│  final-result-verifier (5m): ESPN + FIFA agree → write DB + snapshot         │
 │  calculate-scores-v2 (30m): recompute every score → export leaderboards      │
-│  export-snapshots: emit immutable JSON to /public-data for the CDN           │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -217,8 +217,8 @@ FriendlyBet is deliberately engineered to be **lean, transparent, and privacy-pr
 - **Row-Level Security (RLS) is enforced on every table.** Access is gated by database policies, so the client can only ever read and write what it is explicitly permitted to. There is no bespoke server to compromise.
 
 ### Live data — resilient, asynchronous, never on the user's request
-- A scheduled **GitHub Actions** job (`smart-sync`, every 10 minutes) is the *only* thing that calls the external sports-data API. User requests never trigger an outbound API call, which keeps the app fast and immune to third-party rate limits during peak traffic.
-- **Last-good-snapshot guard:** if the upstream feed rate-limits or errors, the pipeline keeps serving the last known-good data instead of blanking it out mid-tournament.
+- Scheduled **GitHub Actions** jobs handle match data asynchronously: `live-poller` writes ESPN live scores during matches, and `final-result-verifier` writes finished results only when ESPN and FIFA agree. User requests never trigger outbound provider calls, which keeps the app fast during peak traffic.
+- **Last-good-snapshot guard:** if ESPN or FIFA is temporarily unavailable, the pipeline keeps serving the last known-good data instead of blanking it out mid-tournament. The manual match-results workflow remains an emergency fallback, not the normal path.
 
 ### Scoring engine — deterministic, isolated, race-free
 - `calculate-scores-v2.js` runs every 30 minutes in CI. It performs a **full, idempotent recompute** from the source picks and real results, so it is deterministic and self-healing (a partial failure is corrected on the next run).
@@ -299,7 +299,7 @@ To point it at **your own** backend:
 
 > **About the Deploy button:** there is no build step, so Vercel environment variables are not injected into the static files at runtime. After deploying, set your keys in `config.js` (the one required change). The official instance ships with the public anon key of the live project; for your own pools, use your own Supabase project.
 
-The live data sync and scoring jobs (GitHub Actions) are **optional** for a fork and require their own API keys; a demo fork runs perfectly without them.
+The live data sync and scoring jobs (GitHub Actions) are **optional** for a fork and require their own Supabase service secret; a demo fork runs perfectly without them.
 
 ### 🐳 Run with Docker
 

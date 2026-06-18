@@ -13,8 +13,8 @@ on:
       - 'scripts/test-team-mapping.js'
       - 'scripts/live-poller.js'
       - 'scripts/test-live-poller.js'
-      - 'scripts/api-football-fallback.js'
-      - 'scripts/test-api-football-fallback.js'
+      - 'scripts/final-result-verifier.js'
+      - 'scripts/test-final-result-verifier.js'
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
       - '.github/workflows/test-scoring.yml'
@@ -28,8 +28,8 @@ on:
       - 'scripts/test-team-mapping.js'
       - 'scripts/live-poller.js'
       - 'scripts/test-live-poller.js'
-      - 'scripts/api-football-fallback.js'
-      - 'scripts/test-api-football-fallback.js'
+      - 'scripts/final-result-verifier.js'
+      - 'scripts/test-final-result-verifier.js'
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
   workflow_dispatch:
@@ -57,7 +57,7 @@ jobs:
       - name: Run live-poller tests
         run: node scripts/test-live-poller.js
 
-      - name: Run API-Football fallback tests
-        run: node scripts/test-api-football-fallback.js
+      - name: Run final-result verifier tests
+        run: node scripts/test-final-result-verifier.js
       - name: Run banter engine tests
         run: node scripts/test-banter.js

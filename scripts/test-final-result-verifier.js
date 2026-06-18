@@ -1,12 +1,10 @@
-// Test: external result fallback transforms only exact, final fixtures and
+// Test: ESPN/FIFA final-result verifier transforms only exact, final fixtures and
 // requires consensus before updating.
-// Run: node scripts/test-api-football-fallback.js
+// Run: node scripts/test-final-result-verifier.js
 
-process.env.FOOTBALL_DATA_TOKEN = 'test';
-process.env.API_FOOTBALL_KEY = 'test';
 process.env.PROD_ANON_KEY = 'test';
 
-const F = require('./api-football-fallback.js');
+const F = require('./final-result-verifier.js');
 
 function ok(name, cond) {
   if (!cond) {
@@ -32,29 +30,6 @@ const db = {
   away_team_code: 'RSA',
   status: 'TIMED',
   match_date: '2026-06-11T19:00:00Z'
-};
-
-const finalFixture = {
-  fixture: { id: 123, date: '2026-06-11T19:00:00+00:00', status: { short: 'FT' } },
-  teams: {
-    home: { name: 'Mexico', winner: false },
-    away: { name: 'South Africa', winner: false }
-  },
-  goals: { home: 1, away: 1 }
-};
-
-const liveFixture = {
-  ...finalFixture,
-  fixture: { id: 123, date: '2026-06-11T19:00:00+00:00', status: { short: '2H' } },
-  goals: { home: 1, away: 0 }
-};
-
-const wrongFixture = {
-  ...finalFixture,
-  teams: {
-    home: { name: 'Canada', winner: true },
-    away: { name: 'South Africa', winner: false }
-  }
 };
 
 const espnFinal = {
@@ -90,42 +65,6 @@ const fifaFinal = {
 ok('stuck candidate after age threshold', F.isStuckCandidate(db, Date.parse('2026-06-11T21:10:00Z')));
 ok('not stuck before age threshold', !F.isStuckCandidate(db, Date.parse('2026-06-11T20:00:00Z')));
 
-const transformed = F.transformApiFootballFixture(finalFixture);
-eq('transform final fixture', {
-  homeCode: transformed.homeCode,
-  awayCode: transformed.awayCode,
-  statusShort: transformed.statusShort,
-  homeScore: transformed.homeScore,
-  awayScore: transformed.awayScore,
-  winnerCode: transformed.winnerCode
-}, {
-  homeCode: 'MEX',
-  awayCode: 'RSA',
-  statusShort: 'FT',
-  homeScore: 1,
-  awayScore: 1,
-  winnerCode: null
-});
-
-ok('finds exact fixture', !!F.findMatchingFixture(db, [wrongFixture, finalFixture], F.transformApiFootballFixture).match);
-ok('rejects non-matching fixture', !F.findMatchingFixture(db, [wrongFixture], F.transformApiFootballFixture).match);
-
-eq('builds final update', F.buildUpdateFromApiFixture(transformed, '2026-06-11T21:00:00Z').update, {
-  home_score: 1,
-  away_score: 1,
-  status: 'FINISHED',
-  winner_code: null,
-  live_clock: null,
-  live_period: null,
-  status_detail: null,
-  live_source: null,
-  source_updated_at: '2026-06-11T21:00:00Z',
-  last_updated: '2026-06-11T21:00:00Z'
-});
-
-ok('does not build update from live fixture',
-  !F.buildUpdateFromApiFixture(F.transformApiFootballFixture(liveFixture)).update);
-
 const espnTransformed = F.transformEspnEvent(espnFinal);
 eq('transform ESPN final event', {
   homeCode: espnTransformed.homeCode,
@@ -141,6 +80,31 @@ eq('transform ESPN final event', {
   homeScore: 1,
   awayScore: 1,
   winnerCode: null
+});
+
+ok('finds exact ESPN fixture', !!F.findMatchingFixture(db, [espnFinal], F.transformEspnEvent).match);
+ok('rejects non-matching ESPN fixture', !F.findMatchingFixture(db, [{
+  ...espnFinal,
+  competitions: [{
+    ...espnFinal.competitions[0],
+    competitors: [
+      { homeAway: 'home', score: '1', winner: true, team: { displayName: 'Canada', abbreviation: 'CAN' } },
+      { homeAway: 'away', score: '1', winner: false, team: { displayName: 'South Africa', abbreviation: 'RSA' } }
+    ]
+  }]
+}], F.transformEspnEvent).match);
+
+eq('builds final update', F.buildUpdateFromVerifiedFixture(espnTransformed, '2026-06-11T21:00:00Z').update, {
+  home_score: 1,
+  away_score: 1,
+  status: 'FINISHED',
+  winner_code: null,
+  live_clock: null,
+  live_period: null,
+  status_detail: null,
+  live_source: null,
+  source_updated_at: '2026-06-11T21:00:00Z',
+  last_updated: '2026-06-11T21:00:00Z'
 });
 
 ok('does not build update from ESPN live event',
@@ -171,7 +135,6 @@ eq('transform FIFA final match', {
   winnerCode: null
 });
 
-const apiUpdate = F.buildUpdateFromApiFixture(transformed, '2026-06-11T21:00:00Z').update;
 const espnUpdate = F.buildUpdateFromVerifiedFixture(espnTransformed, '2026-06-11T21:00:00Z').update;
 const fifaUpdate = F.buildUpdateFromVerifiedFixture(fifaTransformed, '2026-06-11T21:00:00Z').update;
 ok('ESPN alone is not enough by default', !F.consensusUpdate([{ source: 'espn', update: espnUpdate }]).update);
@@ -182,13 +145,9 @@ ok('ESPN + FIFA agreeing produce the default consensus', !!F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
   { source: 'fifa', update: fifaUpdate }
 ]).update);
-ok('two agreeing sources produce consensus', !!F.consensusUpdate([
-  { source: 'api-football', update: apiUpdate },
-  { source: 'espn', update: espnUpdate }
-], 2).update);
 ok('conflicting sources do not produce consensus', !F.consensusUpdate([
-  { source: 'api-football', update: apiUpdate },
+  { source: 'fifa', update: fifaUpdate },
   { source: 'espn', update: { ...espnUpdate, away_score: 2 } }
 ], 2).update);
 
-console.log('\nExternal result fallback tests passed');
+console.log('\nFinal result verifier tests passed');

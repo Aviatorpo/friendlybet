@@ -1,9 +1,9 @@
 # Critical Backups
 
-FriendlyBet writes an encrypted critical-data backup whenever a match newly
-reaches a final status (`FINISHED` or `AWARDED`).
+FriendlyBet writes an encrypted critical-data backup after match results are
+finalized and the scoring workflow runs.
 
-The GitHub Actions `smart-sync` and `calculate-scores-v2` workflows run:
+The GitHub Actions `calculate-scores-v2` workflow runs:
 
 ```bash
 node scripts/backup-critical-data.js
@@ -30,7 +30,7 @@ node scripts/backup-critical-data.js --force
 
 Manual GitHub test before kickoff:
 
-1. Open `Actions` -> `Smart Match Sync`.
+1. Open `Actions` -> `Calculate User Scores (v2)`.
 2. Click `Run workflow`.
 3. Enable `force_backup`.
 4. Run it. This creates an encrypted `baseline` backup even if no match has
