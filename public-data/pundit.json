@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-06-18T06:03:06.796Z",
-  "freshUntil": "2026-06-18T12:03:06.796Z",
-  "count": 9,
+  "updatedAt": "2026-06-18T10:43:23.217Z",
+  "freshUntil": "2026-06-18T16:43:23.217Z",
+  "count": 8,
   "items": [
+    {
+      "id": "result-33f253ae-d708-45f8-bc0c-ac5dc5fd560b",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "קולומביה ניצחה את אוזבקיסטן 3:1. עוד תוצאה שנראית פשוטה רק אחרי שהיא כבר קרתה.",
+      "en": "Colombia beat Uzbekistan 3-1. Another result that looks obvious only after it happened.",
+      "sources": [],
+      "expires_at": "2026-06-19T08:00:00.000Z"
+    },
     {
       "id": "result-3b1ffcde-eeab-425a-b634-a914333deb70",
       "type": "result",
@@ -25,28 +34,10 @@
       "id": "result-35e0d352-c243-43c0-8e50-3a52f3642801",
       "type": "result",
       "confidence": "confirmed",
-      "he": "פורטוגל וקונגו הדמוקרטית התחלקו ב-1:1. אין מנצחת, יש מספיק נזק לטבלאות.",
-      "en": "Portugal and Congo DR split it 1-1. No winner, plenty of damage to the tables.",
+      "he": "פורטוגל וקונגו הדמוקרטית עם 1:1. נקודה לכל צד, כאב ראש לכל מי שניסה לחזות את זה.",
+      "en": "Portugal and Congo DR with a 1-1. A point each, a headache for anyone who tried to call it.",
       "sources": [],
       "expires_at": "2026-06-18T23:00:00.000Z"
-    },
-    {
-      "id": "result-22e56c30-7d43-4b78-b1f3-0e26d76dbab6",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "אוסטריה ניצחה את ירדן 3:1. עוד תוצאה שנראית פשוטה רק אחרי שהיא כבר קרתה.",
-      "en": "Austria beat Jordan 3-1. Another result that looks obvious only after it happened.",
-      "sources": [],
-      "expires_at": "2026-06-18T10:00:00.000Z"
-    },
-    {
-      "id": "result-a087e1bd-93ee-4b49-9f70-6df49532ce09",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "ארגנטינה עשתה את העבודה עם 3:0 נקי על אלג'יריה. לא נוצץ, כן שימושי בטבלה.",
-      "en": "Argentina handled business with a clean 3-0 over Algeria. Not flashy, very useful on the table.",
-      "sources": [],
-      "expires_at": "2026-06-18T07:00:00.000Z"
     },
     {
       "id": "fixture-a890fcea-97f3-4cf7-b53c-a371c72daf06",
