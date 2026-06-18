@@ -110,11 +110,12 @@ async function createDraft(match) {
     return { slug, draftDir, created: false };
   }
 
-  mkdirp(draftDir);
   const prompt = imagePrompt(match, outcome);
-  fs.writeFileSync(promptPath, prompt + '\n', 'utf8');
   const buffer = await requestImageBuffer(prompt, `${matchKey(match)} review`);
   if (!buffer) throw new Error(`Image generation unavailable for ${matchKey(match)}`);
+
+  mkdirp(draftDir);
+  fs.writeFileSync(promptPath, prompt + '\n', 'utf8');
   fs.writeFileSync(rawPath, buffer);
 
   runPython(['scripts/process-story-image.py', 'watermark', rawPath, imagePath]);
@@ -154,6 +155,12 @@ async function createDraft(match) {
 async function main() {
   const payload = await loadMatchesPayload();
   console.log(`Story review match source: ${payload.source || 'snapshot'} (${(payload.matches || []).length} matches)`);
+
+  if (!process.env.OPENAI_API_KEY) {
+    console.log('No OPENAI_API_KEY; skipping World Cup story review draft generation.');
+    return;
+  }
+
   const stories = readJson(STORIES_PATH, { items: [] });
   const storyMatches = new Set((stories.items || []).map(story => story && story.match_id).filter(Boolean));
   const pending = existingPendingSlugs();
