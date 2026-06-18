@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-06-18T10:43:23.217Z",
-  "freshUntil": "2026-06-18T16:43:23.217Z",
-  "count": 8,
+  "updatedAt": "2026-06-18T14:16:36.512Z",
+  "freshUntil": "2026-06-18T20:16:36.512Z",
+  "count": 9,
   "items": [
     {
       "id": "result-33f253ae-d708-45f8-bc0c-ac5dc5fd560b",
@@ -74,6 +74,15 @@
       "en": "Mexico vs South Korea, tomorrow 04:00. Not the shiniest match, but these are the ones that move places without asking.",
       "sources": [],
       "expires_at": "2026-06-19T01:00:00.000Z"
+    },
+    {
+      "id": "fixture-5aaf9fdb-ff0b-4bef-ab4f-ed962bf1798f",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "ארה\"ב נגד אוסטרליה, מחר 22:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
+      "en": "United States vs Australia, tomorrow 22:00. Not the shiniest match, but these are the ones that move places without asking.",
+      "sources": [],
+      "expires_at": "2026-06-19T19:00:00.000Z"
     }
   ]
 }
