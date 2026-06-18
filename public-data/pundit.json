@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-06-18T14:16:36.512Z",
-  "freshUntil": "2026-06-18T20:16:36.512Z",
-  "count": 9,
+  "updatedAt": "2026-06-18T18:09:41.967Z",
+  "freshUntil": "2026-06-19T00:09:41.967Z",
+  "count": 10,
   "items": [
+    {
+      "id": "live-a890fcea-97f3-4cf7-b53c-a371c72daf06",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "צ'כיה נגד דרום אפריקה עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
+      "en": "Czechia vs South Africa is live now. Every minute can turn a genius pick into group-chat material.",
+      "sources": [],
+      "expires_at": "2026-06-18T21:09:41.967Z"
+    },
     {
       "id": "result-33f253ae-d708-45f8-bc0c-ac5dc5fd560b",
       "type": "result",
@@ -40,20 +49,11 @@
       "expires_at": "2026-06-18T23:00:00.000Z"
     },
     {
-      "id": "fixture-a890fcea-97f3-4cf7-b53c-a371c72daf06",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "צ'כיה נגד דרום אפריקה, היום 19:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
-      "en": "Czechia vs South Africa, today 19:00. Quiet on paper, which is usually where pool chaos begins.",
-      "sources": [],
-      "expires_at": "2026-06-18T16:00:00.000Z"
-    },
-    {
       "id": "fixture-c6b739ae-aafa-44aa-af77-9723d08ae056",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שווייץ נגד בוסניה-הרצגובינה, היום 22:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
-      "en": "Switzerland vs Bosnia-Herzegovina, today 22:00. Not the shiniest match, but these are the ones that move places without asking.",
+      "he": "שווייץ נגד בוסניה-הרצגובינה, היום 22:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
+      "en": "Switzerland vs Bosnia-Herzegovina, today 22:00. Quiet on paper, which is usually where pool chaos begins.",
       "sources": [],
       "expires_at": "2026-06-18T19:00:00.000Z"
     },
@@ -61,8 +61,8 @@
       "id": "fixture-14fc2a09-2287-4f51-83b3-c107147aae2a",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "קנדה נגד קטאר, מחר 01:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
-      "en": "Canada vs Qatar, tomorrow 01:00. Quiet on paper, which is usually where pool chaos begins.",
+      "he": "קנדה נגד קטאר, מחר 01:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
+      "en": "Canada vs Qatar, tomorrow 01:00. Not the shiniest match, but these are the ones that move places without asking.",
       "sources": [],
       "expires_at": "2026-06-18T22:00:00.000Z"
     },
@@ -70,8 +70,8 @@
       "id": "fixture-9d57599d-ad49-4abb-b098-4d08de0f2ed8",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "מקסיקו נגד דרום קוריאה, מחר 04:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
-      "en": "Mexico vs South Korea, tomorrow 04:00. Not the shiniest match, but these are the ones that move places without asking.",
+      "he": "מקסיקו נגד דרום קוריאה, מחר 04:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
+      "en": "Mexico vs South Korea, tomorrow 04:00. Quiet on paper, which is usually where pool chaos begins.",
       "sources": [],
       "expires_at": "2026-06-19T01:00:00.000Z"
     },
@@ -79,10 +79,19 @@
       "id": "fixture-5aaf9fdb-ff0b-4bef-ab4f-ed962bf1798f",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "ארה\"ב נגד אוסטרליה, מחר 22:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
-      "en": "United States vs Australia, tomorrow 22:00. Not the shiniest match, but these are the ones that move places without asking.",
+      "he": "ארה\"ב נגד אוסטרליה, מחר 22:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
+      "en": "United States vs Australia, tomorrow 22:00. Quiet on paper, which is usually where pool chaos begins.",
       "sources": [],
       "expires_at": "2026-06-19T19:00:00.000Z"
+    },
+    {
+      "id": "fixture-73cb4631-6cdd-4f56-b3cc-9c0938e90e37",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "סקוטלנד נגד מרוקו, 20/06 01:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
+      "en": "Scotland vs Morocco, 20/06 01:00. Not the shiniest match, but these are the ones that move places without asking.",
+      "sources": [],
+      "expires_at": "2026-06-19T22:00:00.000Z"
     }
   ]
 }
