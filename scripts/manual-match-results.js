@@ -30,8 +30,15 @@ let results;
 try {
   results = JSON.parse(RAW);
 } catch (err) {
-  console.error('MANUAL_MATCH_RESULTS_JSON is not valid JSON:', err.message);
-  process.exit(1);
+  try {
+    const normalizedRaw = RAW
+      .replace(/([{,])\s*([A-Za-z_][A-Za-z0-9_]*)\s*:/g, '$1"$2":')
+      .replace(/:\s*([A-Z0-9]{2,4})(?=\s*[,}])/g, ':"$1"');
+    results = JSON.parse(normalizedRaw);
+  } catch (looseErr) {
+    console.error('MANUAL_MATCH_RESULTS_JSON is not valid JSON:', err.message);
+    process.exit(1);
+  }
 }
 
 if (!Array.isArray(results) || !results.length) {
