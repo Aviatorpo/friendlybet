@@ -1,16 +1,34 @@
 {
-  "updatedAt": "2026-06-17T22:49:03.616Z",
-  "freshUntil": "2026-06-18T04:49:03.616Z",
-  "count": 10,
+  "updatedAt": "2026-06-18T00:22:01.259Z",
+  "freshUntil": "2026-06-18T06:22:01.259Z",
+  "count": 11,
   "items": [
     {
-      "id": "live-af167117-8add-43b5-9930-dae9e6a42d1f",
+      "id": "live-3b1ffcde-eeab-425a-b634-a914333deb70",
       "type": "live",
       "confidence": "confirmed",
-      "he": "אנגליה נגד קרואטיה עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
-      "en": "England vs Croatia is live now. Every minute can turn a genius pick into group-chat material.",
+      "he": "גאנה נגד פנמה עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
+      "en": "Ghana vs Panama is live now. Every minute can turn a genius pick into group-chat material.",
       "sources": [],
-      "expires_at": "2026-06-18T01:49:03.616Z"
+      "expires_at": "2026-06-18T03:22:01.259Z"
+    },
+    {
+      "id": "result-af167117-8add-43b5-9930-dae9e6a42d1f",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "אנגליה ניצחה את קרואטיה 4:2 במשחק פתוח לגמרי. כיף לצופים, כאב ראש למהמרים.",
+      "en": "England beat Croatia 4-2 in a wide-open one. Great for viewers, brutal for predictors.",
+      "sources": [],
+      "expires_at": "2026-06-19T02:00:00.000Z"
+    },
+    {
+      "id": "result-35e0d352-c243-43c0-8e50-3a52f3642801",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "פורטוגל נגד קונגו הדמוקרטית נגמר 1:1. מי שחיפש הכרעה קיבל שיעור בענווה.",
+      "en": "Portugal vs Congo DR finished 1-1. Anyone looking for certainty got a humility lesson.",
+      "sources": [],
+      "expires_at": "2026-06-18T23:00:00.000Z"
     },
     {
       "id": "result-22e56c30-7d43-4b78-b1f3-0e26d76dbab6",
@@ -40,29 +58,11 @@
       "expires_at": "2026-06-18T04:00:00.000Z"
     },
     {
-      "id": "result-6e189faf-b4fa-4dba-8d8a-1834ebae205c",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "צרפת ניצחה את סנגל 3:1. עוד תוצאה שנראית פשוטה רק אחרי שהיא כבר קרתה.",
-      "en": "France beat Senegal 3-1. Another result that looks obvious only after it happened.",
-      "sources": [],
-      "expires_at": "2026-06-18T01:00:00.000Z"
-    },
-    {
-      "id": "fixture-3b1ffcde-eeab-425a-b634-a914333deb70",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "גאנה נגד פנמה, היום 02:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
-      "en": "Ghana vs Panama, today 02:00. Quiet on paper, which is usually where pool chaos begins.",
-      "sources": [],
-      "expires_at": "2026-06-17T23:00:00.000Z"
-    },
-    {
       "id": "fixture-33f253ae-d708-45f8-bc0c-ac5dc5fd560b",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "אוזבקיסטן נגד קולומביה, היום 05:00. על הנייר קולומביה אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
-      "en": "Uzbekistan vs Colombia, today 05:00. On paper Colombia should control it, but paper does not score pool points.",
+      "he": "אוזבקיסטן נגד קולומביה, היום 05:00. קולומביה מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
+      "en": "Uzbekistan vs Colombia, today 05:00. Colombia comes in as favorite, which is exactly where predictions start sweating.",
       "sources": [],
       "expires_at": "2026-06-18T02:00:00.000Z"
     },
@@ -70,8 +70,8 @@
       "id": "fixture-a890fcea-97f3-4cf7-b53c-a371c72daf06",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "צ'כיה נגד דרום אפריקה, היום 19:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
-      "en": "Czechia vs South Africa, today 19:00. Quiet on paper, which is usually where pool chaos begins.",
+      "he": "צ'כיה נגד דרום אפריקה, היום 19:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
+      "en": "Czechia vs South Africa, today 19:00. Not the shiniest match, but these are the ones that move places without asking.",
       "sources": [],
       "expires_at": "2026-06-18T16:00:00.000Z"
     },
@@ -79,8 +79,8 @@
       "id": "fixture-c6b739ae-aafa-44aa-af77-9723d08ae056",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שווייץ נגד בוסניה-הרצגובינה, היום 22:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
-      "en": "Switzerland vs Bosnia-Herzegovina, today 22:00. Not the shiniest match, but these are the ones that move places without asking.",
+      "he": "שווייץ נגד בוסניה-הרצגובינה, היום 22:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
+      "en": "Switzerland vs Bosnia-Herzegovina, today 22:00. Quiet on paper, which is usually where pool chaos begins.",
       "sources": [],
       "expires_at": "2026-06-18T19:00:00.000Z"
     },
@@ -88,10 +88,19 @@
       "id": "fixture-14fc2a09-2287-4f51-83b3-c107147aae2a",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "קנדה נגד קטאר, מחר 01:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
-      "en": "Canada vs Qatar, tomorrow 01:00. Quiet on paper, which is usually where pool chaos begins.",
+      "he": "קנדה נגד קטאר, מחר 01:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
+      "en": "Canada vs Qatar, tomorrow 01:00. Not the shiniest match, but these are the ones that move places without asking.",
       "sources": [],
       "expires_at": "2026-06-18T22:00:00.000Z"
+    },
+    {
+      "id": "fixture-9d57599d-ad49-4abb-b098-4d08de0f2ed8",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "מקסיקו נגד דרום קוריאה, מחר 04:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
+      "en": "Mexico vs South Korea, tomorrow 04:00. Quiet on paper, which is usually where pool chaos begins.",
+      "sources": [],
+      "expires_at": "2026-06-19T01:00:00.000Z"
     }
   ]
 }
