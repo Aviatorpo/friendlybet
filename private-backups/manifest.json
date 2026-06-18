@@ -22,7 +22,8 @@
     "537397",
     "537398",
     "537403",
-    "537409"
+    "537409",
+    "537410"
   ],
   "backups": [
     {
@@ -505,7 +506,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-18T01:37:11.163Z",
+      "file": "private-backups/2026-06-18T01-37-11-163Z__537410-GHA-PAN.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537410"
+      ],
+      "tableCounts": {
+        "pools": 1938,
+        "users": 6246,
+        "group_picks": 22620,
+        "knockout_picks": 95213,
+        "group_position_picks": 174893,
+        "tournament_winner_picks": 3362,
+        "top_scorer_picks": 2925,
+        "sp_third_place_picks": 29098,
+        "pick_backups": 46925,
+        "knockout_reopen_grants": 1680,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-17T22:51:29.717Z"
+  "updatedAt": "2026-06-18T01:37:11.163Z"
 }
