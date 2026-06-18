@@ -190,6 +190,56 @@
       "outcomes": {
         "ARG": "story-assets/argentina-wins-algeria.png"
       }
+    },
+    {
+      "match_id": "3b1ffcde-eeab-425a-b634-a914333deb70",
+      "teams": [
+        "GHA",
+        "PAN"
+      ],
+      "outcomes": {
+        "GHA": "story-assets/ghana-wins-panama.png"
+      }
+    },
+    {
+      "match_id": "af167117-8add-43b5-9930-dae9e6a42d1f",
+      "teams": [
+        "ENG",
+        "CRO"
+      ],
+      "outcomes": {
+        "ENG": "story-assets/england-wins-croatia.png"
+      }
+    },
+    {
+      "match_id": "35e0d352-c243-43c0-8e50-3a52f3642801",
+      "teams": [
+        "POR",
+        "COD"
+      ],
+      "outcomes": {
+        "DRAW": "story-assets/portugal-dr-congo-draw.png"
+      }
+    },
+    {
+      "match_id": "22e56c30-7d43-4b78-b1f3-0e26d76dbab6",
+      "teams": [
+        "AUT",
+        "JOR"
+      ],
+      "outcomes": {
+        "AUT": "story-assets/austria-wins-jordan.png"
+      }
+    },
+    {
+      "match_id": "33f253ae-d708-45f8-bc0c-ac5dc5fd560b",
+      "teams": [
+        "UZB",
+        "COL"
+      ],
+      "outcomes": {
+        "COL": "story-assets/colombia-wins-uzbekistan.png"
+      }
     }
   ]
 }

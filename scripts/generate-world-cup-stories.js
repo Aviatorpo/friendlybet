@@ -82,6 +82,7 @@ const STAR_PROFILES = {
   BIH: { player: 'Edin Dzeko', number: 11 },
   BRA: { player: 'Vinicius Jr', number: 7 },
   CAN: { player: 'Alphonso Davies', number: 19 },
+  COL: { player: 'Luis Diaz', number: 7 },
   CRO: { player: 'Luka Modric', number: 10 },
   CZE: { player: 'Patrik Schick', number: 10 },
   ENG: { player: 'Harry Kane', number: 9 },
@@ -121,6 +122,7 @@ const STAR_PROFILES = {
   TUR: { player: 'Hakan Calhanoglu', number: 10 },
   URU: { player: 'Federico Valverde', number: 8 },
   USA: { player: 'Christian Pulisic', number: 10 },
+  UZB: { player: 'Eldor Shomurodov', number: 14 },
 };
 
 const DRAW_FOCUS = {
@@ -135,6 +137,35 @@ const DRAW_FOCUS = {
 };
 
 const STORY_COPY_OVERRIDES = {
+  'UZB-COL': {
+    caption: {
+      he: 'קולומביה הפכה את זה ל-3-1 על אוזבקיסטן ופתחה את בית K עם חיוך גדול. דיאס כבר השאיר סימן על הטורניר 🔥',
+      en: 'Colombia turned it into 3-1 over Uzbekistan and opened Group K with a big smile. Diaz has already left a mark on the tournament 🔥',
+    },
+    pool_focuses: [
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'COL',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי 3-1 על אוזבקיסטן, זה כבר לא נשמע כמו חלום רחוק אלא כמו פתיחה עם חזה בחוץ 🔥',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-1 על אוזבקיסטן, זה כבר לא נשמע כמו חלום רחוק אלא כמו פתיחה עם חזה בחוץ 🔥',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-1 על אוזבקיסטן, זה כבר לא נשמע כמו חלום רחוק אלא כמו פתיחה עם חזה בחוץ 🔥',
+        en_name: '{names} picked {team} to win the World Cup. After 3-1 over Uzbekistan, that no longer sounds distant, it sounds like a loud opening statement 🔥',
+        en_names: '{names} picked {team} to win the World Cup. After 3-1 over Uzbekistan, that no longer sounds distant, it sounds like a loud opening statement 🔥',
+        en_count: '{names} picked {team} to win the World Cup. After 3-1 over Uzbekistan, that no longer sounds distant, it sounds like a loud opening statement 🔥',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'UZB',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 3-1 מקולומביה, ההימור הזה עדיין חי, אבל הוא כבר מחפש תחבושת 😬',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 3-1 מקולומביה, ההימור הזה עדיין חי, אבל הוא כבר מחפש תחבושת 😬',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 3-1 מקולומביה, ההימור הזה עדיין חי, אבל הוא כבר מחפש תחבושת 😬',
+        en_name: '{names} picked {team} to top the group. After 3-1 from Colombia, that pick is still alive, but it is already looking for a bandage 😬',
+        en_names: '{names} picked {team} to top the group. After 3-1 from Colombia, that pick is still alive, but it is already looking for a bandage 😬',
+        en_count: '{names} picked {team} to top the group. After 3-1 from Colombia, that pick is still alive, but it is already looking for a bandage 😬',
+      },
+    ],
+  },
   'GHA-PAN': {
     caption: {
       he: 'גאנה לקחה 1-0 קטן וקשוח מפנמה. לא תמיד צריך הצגה גדולה כדי להפוך בית שלם למודאג 🔥',
@@ -195,8 +226,8 @@ const STORY_COPY_OVERRIDES = {
   },
   'POR-COD': {
     caption: {
-      he: 'פורטוגל וקונגו נפרדו ב-1-1 שהרגיש כמו אזהרה. מי שבנה על טיול קל קיבל בית עם שיניים 😬',
-      en: 'Portugal and DR Congo split a 1-1 that felt like a warning. Anyone expecting a soft group just found teeth 😬',
+      he: 'פורטוגל וקונגו נפרדו ב-1-1 שהרגיש כמו אזהרה. בית K פתאום קיבל שיניים 😬',
+      en: 'Portugal and DR Congo split a 1-1 that felt like a warning. This group just showed teeth 😬',
     },
     pool_focuses: [
       {
@@ -662,7 +693,7 @@ function knownOrGeneratedAsset(manifest, match, outcome) {
   const known = manifestAsset(manifest, match, outcome);
   if (known) return known;
   const generated = path.join('story-assets', assetSlug(match, outcome));
-  return fs.existsSync(path.join(ROOT, generated)) ? generated : '';
+  return fs.existsSync(path.join(ROOT, generated)) ? generated.replace(/\\/g, '/') : '';
 }
 
 function focusTeam(match, outcome) {
