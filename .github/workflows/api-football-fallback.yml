@@ -5,7 +5,7 @@ on:
     # Emergency final-result recovery. The script itself only considers matches
     # at least RESULT_FALLBACK_MIN_AGE_MINUTES after kickoff and still missing a
     # terminal result, so most runs exit after one cheap Supabase read.
-    - cron: '*/10 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
       apply:
@@ -20,6 +20,9 @@ on:
 concurrency:
   group: api-football-fallback
   cancel-in-progress: false
+
+permissions:
+  contents: write
 
 jobs:
   verify:
@@ -42,6 +45,9 @@ jobs:
           API_FOOTBALL_KEY: ${{ secrets.API_FOOTBALL_KEY }}
           API_FOOTBALL_LEAGUE_ID: ${{ vars.API_FOOTBALL_LEAGUE_ID || '1' }}
           API_FOOTBALL_SEASON: ${{ vars.API_FOOTBALL_SEASON || '2026' }}
+          RESULT_FALLBACK_MIN_AGE_MINUTES: 105
+          RESULT_FALLBACK_MIN_SOURCES: 1
+          RESULT_FALLBACK_REQUIRED_SOURCES: ''
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
             node scripts/api-football-fallback.js --apply || { echo "::warning::final-result fallback skipped after transient Supabase/API failure"; exit 0; }
@@ -49,4 +55,35 @@ jobs:
             node scripts/api-football-fallback.js --apply
           else
             node scripts/api-football-fallback.js
+          fi
+
+      - name: Export match snapshot
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            node scripts/export-snapshots.js matches || { echo "::warning::match snapshot export skipped after transient Supabase failure"; exit 0; }
+          else
+            node scripts/export-snapshots.js matches
+          fi
+
+      - name: Commit match snapshot if changed
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data/matches.json)" ]; then
+            git add public-data/matches.json
+            git commit -q -m "data: refresh match results snapshot"
+            pushed=0
+            for a in 1 2 3; do
+              if git pull --rebase --autostash && git push; then pushed=1; break; fi
+              echo "push retry $a"; sleep 4
+            done
+            if [ "$pushed" != "1" ]; then
+              echo "::error::failed to push match snapshot after 3 retries"
+              exit 1
+            fi
+          else
+            echo "no match snapshot change"
           fi
