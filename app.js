@@ -9229,16 +9229,6 @@ function _drawProjectionPodiumCard(cv, qr, opts) {
     ctx.fillText(opts.pointsLabel || 'Projected', cx, floor - 28);
   });
 
-  ctx.save();
-  if (rtl && ctx.direction !== undefined) ctx.direction = 'rtl';
-  ctx.textAlign = 'center';
-  ctx.fillStyle = 'rgba(248,251,248,0.82)';
-  ctx.font = '700 27px Heebo,Sora,sans-serif';
-  wrapLines(opts.pundit || '', W - PAD * 2, 27, 2, '700').forEach((line, i) => {
-    ctx.fillText(line, W / 2, 1012 + i * 38);
-  });
-  ctx.restore();
-
   ctx.strokeStyle = 'rgba(92,214,177,0.28)';
   ctx.lineWidth = 2;
   ctx.beginPath();
@@ -9282,7 +9272,6 @@ async function _projectionPodiumCardToBlob() {
     kicker: t('leaderboard.projection.cardKicker'),
     title: t('leaderboard.projection.cardTitle'),
     note: t('leaderboard.projection.cardNote', { groups: _projectionShareState.activeGroups }),
-    pundit: _projectionShareState.pundit,
     disclaimer: t('leaderboard.projection.cardDisclaimer'),
     tagline: t('leaderboard.projection.cardTagline'),
     pointsLabel: t('leaderboard.projection.points'),
