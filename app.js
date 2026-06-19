@@ -1758,14 +1758,17 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
 
   const gp = _dashboardGroupProgress();
   const pct = gp.total ? Math.min(100, Math.round((gp.finished / gp.total) * 100)) : 0;
-  const lateOpen = _poolLateEntryOpen();
-  const textKey = lateOpen
+  const lateKo = _isLateKnockoutPool(state.currentPool);
+  const lateOpen = !lateKo && _poolLateEntryOpen();
+  const textKey = lateKo
+    ? 'dashboard.liveStatus.lateKnockoutText'
+    : lateOpen
     ? 'dashboard.liveStatus.lateText'
     : (state._dashboardKnockoutReviewOpen ? 'dashboard.liveStatus.reviewText' : 'dashboard.liveStatus.text');
-  const titleKey = lateOpen ? 'dashboard.liveStatus.lateTitle' : 'dashboard.liveStatus.title';
-  const kickerKey = lateOpen ? 'dashboard.liveStatus.lateKicker' : 'dashboard.liveStatus.kicker';
-  const zeroKey = lateOpen ? 'dashboard.liveStatus.lateDeadline' : 'dashboard.liveStatus.zeroPoints';
-  const deadline = _lateEntryCutoffLabel();
+  const titleKey = lateKo ? 'dashboard.liveStatus.lateKnockoutTitle' : (lateOpen ? 'dashboard.liveStatus.lateTitle' : 'dashboard.liveStatus.title');
+  const kickerKey = lateKo ? 'dashboard.liveStatus.lateKnockoutKicker' : (lateOpen ? 'dashboard.liveStatus.lateKicker' : 'dashboard.liveStatus.kicker');
+  const zeroKey = lateKo ? 'dashboard.liveStatus.lateKnockoutDeadline' : (lateOpen ? 'dashboard.liveStatus.lateDeadline' : 'dashboard.liveStatus.zeroPoints');
+  const deadline = lateKo ? _knockoutCutoffLabel() : _lateEntryCutoffLabel();
   el.innerHTML = `
     <div class="dls-head">
       <span class="dls-live"><span class="dls-dot"></span>${t(kickerKey)}</span>
