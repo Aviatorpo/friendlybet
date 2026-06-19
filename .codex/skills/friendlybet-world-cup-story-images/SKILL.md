@@ -12,7 +12,8 @@ Create premium share-story assets for FriendlyBet that look like the approved Wo
 ## Required Visual Concept
 
 - Format: vertical 9:16 PNG, current asset size `941x1672`, saved under `story-assets/`.
-- Style: premium sports meme card, stadium lights, crowd, confetti or match atmosphere, dramatic but clean.
+- Style: premium sports meme card, cartoon sports-poster illustration, stadium lights, crowd, confetti or match atmosphere, dramatic but clean.
+- Player likeness: each player should be recognizable as the real footballer through facial structure, hairstyle, build, pose, kit, and shirt number, but clearly rendered as a stylized cartoon/caricature illustration rather than a photorealistic or exact portrait.
 - Composition: two key players, full upper body or three-quarter body, heads high in frame but below the baked white title.
 - Title: baked into the image, big white condensed uppercase, slight dark stroke/shadow, top area only.
 - Subtitle: baked small white score line below the title, for example `USA 4-1 Paraguay`.
@@ -35,6 +36,7 @@ Create premium share-story assets for FriendlyBet that look like the approved Wo
 - Do not ship a story asset or share export without the `⚽ FriendlyBet` watermark.
 - Do not replace the homepage ball with a different icon, flat SVG, sticker, trophy, generic football, or custom illustrated ball. Use the same soccer-ball mark used beside `FriendlyBet` on the homepage.
 - Do not let the watermark enter the caption safe zone, cover faces, or sit low enough that WhatsApp previews crop it.
+- Do not request or accept photorealistic player portraits. The target is a clearly cartooned version of the real player: similar enough to identify, stylized enough to avoid looking like an exact photo.
 
 ## Required FriendlyBet Watermark
 
@@ -57,6 +59,15 @@ Every story asset/export must include the same FriendlyBet brand lockup used on 
 - Do not add numbers afterward as stickers, patches, floating labels, or flat overlays.
 - If an official World Cup number is not available, stop and flag the uncertainty instead of inventing a number.
 
+## Squad List PDF Source
+
+- Use `Codex\SquadLists-English.pdf` as the source of truth for World Cup shirt numbers when it exists.
+- Check this PDF before using `STAR_PROFILES`, memory, model assumptions, or web snippets.
+- The PDF text may extract with the `#` column separated from player rows. Preserve page order: row 1 maps to shirt `#1`, row 2 to `#2`, and so on.
+- Do not reject an asset only because the visible number differs from the current `STAR_PROFILES` player. First map the visible number back to the PDF and identify the player correctly.
+- If an image is accurate for the PDF-backed player-number pair, update the story profile/prompt to match the PDF instead of blocking the asset.
+- When a source-of-truth correction changes an assumption, remove any denylist/block based on the old assumption and rerun story validation.
+
 ## Prompt Pattern
 
 Use a prompt with explicit composition, title, score, players, and shirt numbers:
@@ -66,13 +77,14 @@ Create a vertical 9:16 premium sports meme-card image for FriendlyBet.
 Scene: [TEAM A] vs [TEAM B], [result].
 Top baked title in large white condensed uppercase: "[TITLE]".
 Small white subtitle under it: "[SCORE LINE]".
-Two football players in realistic national kits:
+Two football players as stylized cartoon likenesses of the real players, wearing accurate national kits:
 - [Player A], [team], shirt number #[number], number printed naturally into the jersey fabric.
 - [Player B], [team], shirt number #[number], number printed naturally into the jersey fabric.
 Players' heads high in frame but clearly below the top title.
 Leave the lower-middle band around 60-77% visually clean enough for a black caption panel.
 No Hebrew text, no yellow result headline, no stickers, no fake number patches, no text over faces.
-Premium stadium lights, crowd, confetti, sharp editorial sports poster look.
+Premium stadium lights, crowd, confetti, sharp cartoon editorial sports poster look.
+The players should look like recognizable cartoon versions of the real footballers, not photorealistic portraits or exact photo recreations.
 After generation, add the required homepage-matching `⚽ FriendlyBet` watermark near the lower edge using deterministic rendering.
 ```
 
@@ -126,6 +138,7 @@ Before shipping any new Story of the World Cup item:
 
 Before shipping:
 
+- Confirm every visible shirt number against `SquadLists-English.pdf` when that PDF is available, including cases where the image number identifies a different valid player than the default profile.
 - Create a contact sheet of all story images with the caption safe-zone rectangle overlaid.
 - Visually confirm no caption safe-zone rectangle crosses any player face.
 - Check the caption is not so low that WhatsApp preview crops it.
@@ -138,8 +151,7 @@ Before shipping:
 rg -n "wc-story-headline|wc-story-copy|_wcDrawCenteredText\(ctx, copy\.headline|headlineY|top: 53\.5%|\[dir=\"he\"\]" app.js styles.css scripts\test-world-cup-stories.js
 ```
 
-- Verify the release strings are bumped together in `config.js`, `service-worker.js`, and `index.html`.
-- Update `CHANGELOG.md` with the story-image and cache/version changes.
+- Bump `config.js`, `service-worker.js`, `index.html`, and `CHANGELOG.md` only when shipping app-code/cache changes. Do not require a version bump for data-only story feed or PNG asset updates.
 
 ## Approved Reference Traits
 
@@ -151,4 +163,4 @@ Use the existing approved assets as the local style reference when present:
 - `story-assets/qatar-switzerland-draw-base.png`
 - `story-assets/usa-wins-paraguay.png`
 
-The key traits to preserve are baked white top headline, compact score subtitle, dramatic sports realism, real integrated jersey numbers, high player heads, and clean lower-middle space for the app caption.
+The key traits to preserve are baked white top headline, compact score subtitle, dramatic cartoon sports-poster energy, recognizable but stylized real-player likenesses, real integrated jersey numbers, high player heads, and clean lower-middle space for the app caption.
