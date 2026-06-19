@@ -9218,6 +9218,21 @@ function showError(elementId, message) {
 function _fbForceHomeIfBlank(reason) {
   const anyActive = document.querySelector('.screen.active');
   // Only consider real screens; the loading splash counts as "still stuck".
+  if (!anyActive || anyActive.id === 'loading-screen') {
+    // If the slow-start fallback fires on an invite link, preserve the user's
+    // intent instead of dropping them on the generic home screen.
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const inviteCode = params.get('code') || params.get('join');
+      if (inviteCode) {
+        const codeInput = document.getElementById('pool-code-input');
+        if (codeInput) codeInput.value = inviteCode.toUpperCase();
+        showScreen('join-pool-screen');
+        if (supabaseClient) setTimeout(() => { try { checkPoolCode(); } catch (e) { console.error(e); } }, 100);
+        return;
+      }
+    } catch (_) {}
+  }
   if (anyActive && anyActive.id !== 'loading-screen') return;
   console.warn('Forcing home-screen — ' + (reason || 'no active screen'));
   // Clear stale local session: if the user was supposed to auto-login but
