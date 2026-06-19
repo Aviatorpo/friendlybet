@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-06-18T23:52:43.499Z",
-  "freshUntil": "2026-06-19T05:52:43.499Z",
-  "count": 11,
+  "updatedAt": "2026-06-19T05:10:40.890Z",
+  "freshUntil": "2026-06-19T11:10:40.890Z",
+  "count": 8,
   "items": [
     {
-      "id": "live-14fc2a09-2287-4f51-83b3-c107147aae2a",
-      "type": "live",
+      "id": "result-14fc2a09-2287-4f51-83b3-c107147aae2a",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "קנדה נגד קטאר עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
-      "en": "Canada vs Qatar is live now. Every minute can turn a genius pick into group-chat material.",
+      "he": "קנדה ניצחה את קטאר 6:0 במשחק פתוח לגמרי. כיף לצופים, כאב ראש למהמרים.",
+      "en": "Canada beat Qatar 6-0 in a wide-open one. Great for viewers, brutal for predictors.",
       "sources": [],
-      "expires_at": "2026-06-19T02:52:43.499Z"
+      "expires_at": "2026-06-20T04:00:00.000Z"
     },
     {
       "id": "result-c6b739ae-aafa-44aa-af77-9723d08ae056",
@@ -25,8 +25,8 @@
       "id": "result-a890fcea-97f3-4cf7-b53c-a371c72daf06",
       "type": "result",
       "confidence": "confirmed",
-      "he": "צ'כיה ודרום אפריקה עם 1:1. נקודה לכל צד, כאב ראש לכל מי שניסה לחזות את זה.",
-      "en": "Czechia and South Africa with a 1-1. A point each, a headache for anyone who tried to call it.",
+      "he": "צ'כיה ודרום אפריקה התחלקו ב-1:1. אין מנצחת, יש מספיק נזק לטבלאות.",
+      "en": "Czechia and South Africa split it 1-1. No winner, plenty of damage to the tables.",
       "sources": [],
       "expires_at": "2026-06-19T22:00:00.000Z"
     },
@@ -40,38 +40,11 @@
       "expires_at": "2026-06-19T08:00:00.000Z"
     },
     {
-      "id": "result-3b1ffcde-eeab-425a-b634-a914333deb70",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "גאנה עשתה את העבודה עם 1:0 נקי על פנמה. לא נוצץ, כן שימושי בטבלה.",
-      "en": "Ghana handled business with a clean 1-0 over Panama. Not flashy, very useful on the table.",
-      "sources": [],
-      "expires_at": "2026-06-19T05:00:00.000Z"
-    },
-    {
-      "id": "result-af167117-8add-43b5-9930-dae9e6a42d1f",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "אנגליה ניצחה את קרואטיה 4:2 במשחק פתוח לגמרי. כיף לצופים, כאב ראש למהמרים.",
-      "en": "England beat Croatia 4-2 in a wide-open one. Great for viewers, brutal for predictors.",
-      "sources": [],
-      "expires_at": "2026-06-19T02:00:00.000Z"
-    },
-    {
-      "id": "fixture-9d57599d-ad49-4abb-b098-4d08de0f2ed8",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "מקסיקו נגד דרום קוריאה, היום 04:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
-      "en": "Mexico vs South Korea, today 04:00. Quiet on paper, which is usually where pool chaos begins.",
-      "sources": [],
-      "expires_at": "2026-06-19T01:00:00.000Z"
-    },
-    {
       "id": "fixture-5aaf9fdb-ff0b-4bef-ab4f-ed962bf1798f",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "ארה\"ב נגד אוסטרליה, היום 22:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
-      "en": "United States vs Australia, today 22:00. Quiet on paper, which is usually where pool chaos begins.",
+      "he": "ארה\"ב נגד אוסטרליה, היום 22:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
+      "en": "United States vs Australia, today 22:00. Not the shiniest match, but these are the ones that move places without asking.",
       "sources": [],
       "expires_at": "2026-06-19T19:00:00.000Z"
     },
@@ -79,8 +52,8 @@
       "id": "fixture-73cb4631-6cdd-4f56-b3cc-9c0938e90e37",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "סקוטלנד נגד מרוקו, מחר 01:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
-      "en": "Scotland vs Morocco, tomorrow 01:00. Not the shiniest match, but these are the ones that move places without asking.",
+      "he": "סקוטלנד נגד מרוקו, מחר 01:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
+      "en": "Scotland vs Morocco, tomorrow 01:00. Quiet on paper, which is usually where pool chaos begins.",
       "sources": [],
       "expires_at": "2026-06-19T22:00:00.000Z"
     },
@@ -88,8 +61,8 @@
       "id": "fixture-13ad0015-2457-4e10-a087-9b24dec98c3c",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "ברזיל נגד האיטי, מחר 03:30. על הנייר ברזיל אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
-      "en": "Brazil vs Haiti, tomorrow 03:30. On paper Brazil should control it, but paper does not score pool points.",
+      "he": "ברזיל נגד האיטי, מחר 03:30. ברזיל מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
+      "en": "Brazil vs Haiti, tomorrow 03:30. Brazil comes in as favorite, which is exactly where predictions start sweating.",
       "sources": [],
       "expires_at": "2026-06-20T00:30:00.000Z"
     },
@@ -97,8 +70,8 @@
       "id": "fixture-e421b088-3154-4c02-8240-46f09b9c33f9",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "טורקיה נגד פרגוואי, מחר 06:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
-      "en": "Turkey vs Paraguay, tomorrow 06:00. Quiet on paper, which is usually where pool chaos begins.",
+      "he": "טורקיה נגד פרגוואי, מחר 06:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
+      "en": "Turkey vs Paraguay, tomorrow 06:00. Not the shiniest match, but these are the ones that move places without asking.",
       "sources": [],
       "expires_at": "2026-06-20T03:00:00.000Z"
     }
