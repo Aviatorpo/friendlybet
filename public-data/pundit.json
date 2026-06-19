@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-06-19T10:52:06.484Z",
-  "freshUntil": "2026-06-19T16:52:06.484Z",
-  "count": 8,
+  "updatedAt": "2026-06-19T14:17:35.806Z",
+  "freshUntil": "2026-06-19T20:17:35.806Z",
+  "count": 9,
   "items": [
     {
       "id": "result-9d57599d-ad49-4abb-b098-4d08de0f2ed8",
@@ -74,6 +74,15 @@
       "en": "Turkey vs Paraguay, tomorrow 06:00. Not the shiniest match, but these are the ones that move places without asking.",
       "sources": [],
       "expires_at": "2026-06-20T03:00:00.000Z"
+    },
+    {
+      "id": "fixture-becdc520-1c41-4a5f-99a5-4a22e0a5812c",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "הולנד נגד שבדיה, מחר 20:00. על הנייר הולנד אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
+      "en": "Netherlands vs Sweden, tomorrow 20:00. On paper Netherlands should control it, but paper does not score pool points.",
+      "sources": [],
+      "expires_at": "2026-06-20T17:00:00.000Z"
     }
   ]
 }
