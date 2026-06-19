@@ -28,6 +28,13 @@ def _font(path: str, size: int) -> ImageFont.FreeTypeFont:
 
 def watermark(src: Path, dest: Path) -> None:
     im = Image.open(src).convert("RGBA").resize(SIZE, Image.Resampling.LANCZOS)
+    im = add_watermark(im)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    im.convert("RGB").save(dest, "PNG", optimize=True)
+
+
+def add_watermark(im: Image.Image) -> Image.Image:
+    im = im.convert("RGBA").resize(SIZE, Image.Resampling.LANCZOS)
     overlay = Image.new("RGBA", im.size, (0, 0, 0, 0))
     glow = Image.new("RGBA", im.size, (0, 0, 0, 0))
     gd = ImageDraw.Draw(glow)
@@ -59,8 +66,42 @@ def watermark(src: Path, dest: Path) -> None:
     d.text((x, ball_y), ball, font=ball_font, fill=(247, 246, 242, 255))
     d.text((x + ball_w + gap, word_y), word, font=text_font, fill=(247, 246, 242, 255))
 
+    return Image.alpha_composite(im, overlay)
+
+
+def _fit_font(draw: ImageDraw.ImageDraw, text: str, font_path: str, max_width: int, start_size: int, min_size: int) -> ImageFont.ImageFont:
+    size = start_size
+    while size >= min_size:
+        font = _font(font_path, size)
+        box = draw.textbbox((0, 0), text, font=font, stroke_width=3)
+        if box[2] - box[0] <= max_width:
+            return font
+        size -= 2
+    return _font(font_path, min_size)
+
+
+def _centered_stroked(draw: ImageDraw.ImageDraw, y: int, text: str, font: ImageFont.ImageFont, fill=(247, 246, 242, 255), stroke=(20, 18, 15, 220), stroke_width: int = 3) -> None:
+    box = draw.textbbox((0, 0), text, font=font, stroke_width=stroke_width)
+    x = (SIZE[0] - (box[2] - box[0])) // 2
+    draw.text((x, y), text, font=font, fill=fill, stroke_fill=stroke, stroke_width=stroke_width)
+
+
+def result_card(src: Path, dest: Path, title: str, subtitle: str) -> None:
+    im = Image.open(src).convert("RGBA").resize(SIZE, Image.Resampling.LANCZOS)
+    d = ImageDraw.Draw(im)
+
+    title = title.strip().upper()
+    subtitle = subtitle.strip().upper()
+    title_font = _fit_font(d, title, "C:/Windows/Fonts/impact.ttf", 845, 96, 52)
+    subtitle_font = _fit_font(d, subtitle, "C:/Windows/Fonts/seguisb.ttf", 760, 42, 28)
+
+    # Keep all result text in the top band, away from faces and the caption panel.
+    _centered_stroked(d, 74, title, title_font, stroke_width=4)
+    _centered_stroked(d, 178, subtitle, subtitle_font, stroke_width=2)
+
+    im = add_watermark(im)
     dest.parent.mkdir(parents=True, exist_ok=True)
-    Image.alpha_composite(im, overlay).convert("RGB").save(dest, "PNG", optimize=True)
+    im.convert("RGB").save(dest, "PNG", optimize=True)
 
 
 def contact_sheet(images: list[Path], dest: Path) -> None:
@@ -93,6 +134,11 @@ def main() -> None:
     wm = sub.add_parser("watermark")
     wm.add_argument("src")
     wm.add_argument("dest")
+    rc = sub.add_parser("result-card")
+    rc.add_argument("src")
+    rc.add_argument("dest")
+    rc.add_argument("title")
+    rc.add_argument("subtitle")
     cs = sub.add_parser("contact-sheet")
     cs.add_argument("dest")
     cs.add_argument("images", nargs="+")
@@ -100,6 +146,8 @@ def main() -> None:
 
     if args.cmd == "watermark":
         watermark(Path(args.src), Path(args.dest))
+    elif args.cmd == "result-card":
+        result_card(Path(args.src), Path(args.dest), args.title, args.subtitle)
     elif args.cmd == "contact-sheet":
         contact_sheet([Path(p) for p in args.images], Path(args.dest))
 

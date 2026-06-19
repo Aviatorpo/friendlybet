@@ -24,11 +24,6 @@ const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY
   || process.env.SUPABASE_ANON_KEY
   || 'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU';
 const MATCH_SOURCE = String(process.env.WC_STORY_MATCH_SOURCE || 'auto').toLowerCase();
-const BLOCKED_OUTCOME_BASES = new Set([
-  // Canada #10 is visible, but the approved Canada profile requires Alphonso Davies #19.
-  'can-qat-can-wins-base.png',
-]);
-
 const TEAM_NAMES = {
   ALG: { en: 'Algeria', he: "אלג'יריה" },
   ARG: { en: 'Argentina', he: 'ארגנטינה' },
@@ -87,7 +82,7 @@ const STAR_PROFILES = {
   BEL: { player: 'Youri Tielemans', number: 8 },
   BIH: { player: 'Edin Dzeko', number: 11 },
   BRA: { player: 'Vinicius Jr', number: 7 },
-  CAN: { player: 'Alphonso Davies', number: 19 },
+  CAN: { player: 'Jonathan David', number: 10 },
   CRO: { player: 'Luka Modric', number: 10 },
   CZE: { player: 'Patrik Schick', number: 10 },
   ENG: { player: 'Harry Kane', number: 9 },
@@ -812,7 +807,6 @@ function outcomeBaseSlug(match, outcome) {
 
 function outcomeBaseAsset(match, outcome) {
   const relative = path.join('story-assets', 'outcome-bases', outcomeBaseSlug(match, outcome)).replace(/\\/g, '/');
-  if (BLOCKED_OUTCOME_BASES.has(path.basename(relative))) return '';
   return fs.existsSync(path.join(ROOT, relative)) ? relative : '';
 }
 

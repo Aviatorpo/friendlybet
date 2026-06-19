@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-19T10:36:06.434Z",
+  "updated_at": "2026-06-19T10:50:58.854Z",
   "items": [
     {
       "id": "mex-kor-2026-06-19",
@@ -60,6 +60,67 @@
       "en": {
         "headline": "Mexico beat South Korea 1-0: Statement made!",
         "caption": "Mexico slipped past South Korea with a sharp 1-0. Group A is no longer looking for noise, it is looking for whoever stayed calm enough to put Mexico first 🔥"
+      }
+    },
+    {
+      "id": "can-qat-2026-06-18",
+      "match_id": "14fc2a09-2287-4f51-83b3-c107147aae2a",
+      "image": "story-assets\\canada-wins-qatar.png",
+      "teams": [
+        "CAN",
+        "QAT"
+      ],
+      "outcome": "CAN",
+      "result": "CAN 6-0 QAT",
+      "top_label": "CANADA WINS!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "CAN",
+        "team_he": "קנדה",
+        "team_en": "Canada",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 6-0 על קטאר, הטופס הזה כבר לא לוחש - הוא עושה סיבוב ניצחון 🔥",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 6-0 על קטאר, הטפסים האלה כבר לא לוחשים - הם עושים סיבוב ניצחון 🔥",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 6-0 על קטאר, הטפסים האלה כבר לא לוחשים - הם עושים סיבוב ניצחון 🔥",
+        "en_name": "{names} picked {team} to top the group. After 6-0 over Qatar, that form is not whispering anymore - it is taking a victory lap 🔥",
+        "en_names": "{names} picked {team} to top the group. After 6-0 over Qatar, those forms are not whispering anymore - they are taking a victory lap 🔥",
+        "en_count": "{names} picked {team} to top the group. After 6-0 over Qatar, those forms are not whispering anymore - they are taking a victory lap 🔥"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "CAN",
+          "team_he": "קנדה",
+          "team_en": "Canada",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 6-0 על קטאר, הטופס הזה כבר לא לוחש - הוא עושה סיבוב ניצחון 🔥",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 6-0 על קטאר, הטפסים האלה כבר לא לוחשים - הם עושים סיבוב ניצחון 🔥",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 6-0 על קטאר, הטפסים האלה כבר לא לוחשים - הם עושים סיבוב ניצחון 🔥",
+          "en_name": "{names} picked {team} to top the group. After 6-0 over Qatar, that form is not whispering anymore - it is taking a victory lap 🔥",
+          "en_names": "{names} picked {team} to top the group. After 6-0 over Qatar, those forms are not whispering anymore - they are taking a victory lap 🔥",
+          "en_count": "{names} picked {team} to top the group. After 6-0 over Qatar, those forms are not whispering anymore - they are taking a victory lap 🔥"
+        },
+        {
+          "table": "group_position_picks",
+          "team_code": "QAT",
+          "team_he": "קטאר",
+          "team_en": "Qatar",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 6-0 מקנדה, נאום ההגנה כבר צריך פתיח, גוף, סיכום ונספח 😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 6-0 מקנדה, נאום ההגנה כבר צריך פתיח, גוף, סיכום ונספח 😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 6-0 מקנדה, נאום ההגנה כבר צריך פתיח, גוף, סיכום ונספח 😬",
+          "en_name": "{names} picked {team} to top the group. After 6-0 from Canada, the defense speech needs an intro, body, conclusion, and appendix 😬",
+          "en_names": "{names} picked {team} to top the group. After 6-0 from Canada, the defense speech needs an intro, body, conclusion, and appendix 😬",
+          "en_count": "{names} picked {team} to top the group. After 6-0 from Canada, the defense speech needs an intro, body, conclusion, and appendix 😬"
+        }
+      ],
+      "he": {
+        "headline": "קנדה ניצחה את קטאר 6-0: הצהרה!",
+        "caption": "קנדה דרסה 6-0 את קטאר ופתחה את בית B בלי רחמים. זה מסוג המשחקים שמוחקים עיפרון ומוציאים מרקר 🔥"
+      },
+      "en": {
+        "headline": "Canada beat Qatar 6-0: Statement made!",
+        "caption": "Canada crushed Qatar 6-0 and opened Group B without mercy. This is the kind of result that swaps pencil for permanent marker 🔥"
       }
     },
     {
