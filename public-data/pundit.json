@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-06-19T17:24:06.892Z",
-  "freshUntil": "2026-06-19T23:24:06.892Z",
-  "count": 9,
+  "updatedAt": "2026-06-19T19:59:00.114Z",
+  "freshUntil": "2026-06-20T01:59:00.114Z",
+  "count": 10,
   "items": [
+    {
+      "id": "live-5aaf9fdb-ff0b-4bef-ab4f-ed962bf1798f",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "ארה\"ב נגד אוסטרליה עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
+      "en": "United States vs Australia is live now. Every minute can turn a genius pick into group-chat material.",
+      "sources": [],
+      "expires_at": "2026-06-19T22:59:00.114Z"
+    },
     {
       "id": "result-9d57599d-ad49-4abb-b098-4d08de0f2ed8",
       "type": "result",
@@ -40,20 +49,11 @@
       "expires_at": "2026-06-19T22:00:00.000Z"
     },
     {
-      "id": "fixture-5aaf9fdb-ff0b-4bef-ab4f-ed962bf1798f",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "ארה\"ב נגד אוסטרליה, היום 22:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
-      "en": "United States vs Australia, today 22:00. Not the shiniest match, but these are the ones that move places without asking.",
-      "sources": [],
-      "expires_at": "2026-06-19T19:00:00.000Z"
-    },
-    {
       "id": "fixture-73cb4631-6cdd-4f56-b3cc-9c0938e90e37",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "סקוטלנד נגד מרוקו, מחר 01:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
-      "en": "Scotland vs Morocco, tomorrow 01:00. Quiet on paper, which is usually where pool chaos begins.",
+      "he": "סקוטלנד נגד מרוקו, מחר 01:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
+      "en": "Scotland vs Morocco, tomorrow 01:00. Not the shiniest match, but these are the ones that move places without asking.",
       "sources": [],
       "expires_at": "2026-06-19T22:00:00.000Z"
     },
@@ -61,8 +61,8 @@
       "id": "fixture-13ad0015-2457-4e10-a087-9b24dec98c3c",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "ברזיל נגד האיטי, מחר 03:30. ברזיל מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
-      "en": "Brazil vs Haiti, tomorrow 03:30. Brazil comes in as favorite, which is exactly where predictions start sweating.",
+      "he": "ברזיל נגד האיטי, מחר 03:30. על הנייר ברזיל אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
+      "en": "Brazil vs Haiti, tomorrow 03:30. On paper Brazil should control it, but paper does not score pool points.",
       "sources": [],
       "expires_at": "2026-06-20T00:30:00.000Z"
     },
@@ -70,8 +70,8 @@
       "id": "fixture-e421b088-3154-4c02-8240-46f09b9c33f9",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "טורקיה נגד פרגוואי, מחר 06:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
-      "en": "Turkey vs Paraguay, tomorrow 06:00. Not the shiniest match, but these are the ones that move places without asking.",
+      "he": "טורקיה נגד פרגוואי, מחר 06:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
+      "en": "Turkey vs Paraguay, tomorrow 06:00. Quiet on paper, which is usually where pool chaos begins.",
       "sources": [],
       "expires_at": "2026-06-20T03:00:00.000Z"
     },
@@ -79,10 +79,19 @@
       "id": "fixture-becdc520-1c41-4a5f-99a5-4a22e0a5812c",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "הולנד נגד שבדיה, מחר 20:00. על הנייר הולנד אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
-      "en": "Netherlands vs Sweden, tomorrow 20:00. On paper Netherlands should control it, but paper does not score pool points.",
+      "he": "הולנד נגד שבדיה, מחר 20:00. הולנד מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
+      "en": "Netherlands vs Sweden, tomorrow 20:00. Netherlands comes in as favorite, which is exactly where predictions start sweating.",
       "sources": [],
       "expires_at": "2026-06-20T17:00:00.000Z"
+    },
+    {
+      "id": "fixture-e2b5d1b4-d049-4112-b475-0069cff805cc",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "גרמניה נגד חוף השנהב, מחר 23:00. על הנייר גרמניה אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
+      "en": "Germany vs Ivory Coast, tomorrow 23:00. On paper Germany should control it, but paper does not score pool points.",
+      "sources": [],
+      "expires_at": "2026-06-20T20:00:00.000Z"
     }
   ]
 }
