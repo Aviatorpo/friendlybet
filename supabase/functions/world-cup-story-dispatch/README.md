@@ -10,7 +10,28 @@ Required Edge Function secrets:
 - `GITHUB_REPO`: `Aviatorpo/friendlybet`.
 - `GITHUB_DISPATCH_TOKEN`: GitHub token allowed to call repository dispatch.
 
-Database webhook:
+Automated setup:
+
+```powershell
+$env:GITHUB_DISPATCH_TOKEN = '<github token allowed to repository_dispatch>'
+node scripts\setup-world-cup-story-supabase.js
+```
+
+Optional environment variables:
+
+- `STORY_DISPATCH_SECRET`: reuse a specific shared secret instead of generating one.
+- `GITHUB_REPO`: defaults to `Aviatorpo/friendlybet`.
+- `SUPABASE_PROJECT_REF`: defaults to `supabase/.temp/project-ref`.
+
+The setup script:
+
+1. Deploys the Edge Function with JWT verification disabled; the function uses
+   `STORY_DISPATCH_SECRET` for auth instead.
+2. Sets the Edge Function secrets.
+3. Installs the `matches_world_cup_story_dispatch` database trigger.
+4. Verifies the trigger exists.
+
+Manual database webhook equivalent:
 
 - Table: `matches`
 - Events: `UPDATE`
