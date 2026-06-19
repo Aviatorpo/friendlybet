@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+/*
+ * Publishes stories only from approved static assets or prebuilt outcome bases.
+ * Production automation must not generate new images at final whistle.
+ */
+
+const { spawnSync } = require('child_process');
+const {
+  ROOT,
+  STORIES_PATH,
+  readJson,
+} = require('./generate-world-cup-stories');
+
+function run(args, options = {}) {
+  const res = spawnSync(args[0], args.slice(1), {
+    cwd: ROOT,
+    stdio: 'inherit',
+    env: { ...process.env, ...(options.env || {}) },
+  });
+  if (res.status !== 0) process.exit(res.status || 1);
+}
+
+function latestStorySummary(limit = 5) {
+  const payload = readJson(STORIES_PATH, { items: [] });
+  const items = (payload.items || []).slice(0, limit);
+  console.log(`Latest ${items.length} World Cup stories after auto-publish:`);
+  for (const story of items) {
+    const focuses = (story.pool_focuses || []).map(focus => focus.en_name || focus.en_names || focus.en_count || '').filter(Boolean);
+    console.log(`- ${story.id}:`);
+    console.log(`  EN fallback: ${story.en && story.en.caption || ''}`);
+    console.log(`  HE fallback: ${story.he && story.he.caption || ''}`);
+    console.log(`  First focus: ${focuses[0] || 'none'}`);
+  }
+}
+
+run(['node', 'scripts/generate-world-cup-stories.js'], {
+  env: { STORY_AUTOGEN_IMAGES: '0' },
+});
+run(['node', 'scripts/test-world-cup-stories.js']);
+latestStorySummary();

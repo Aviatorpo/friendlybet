@@ -1173,7 +1173,7 @@ async function main() {
     const outcome = outcomeFor(match);
     if (!outcome) continue;
     let image = ensureStoryAsset(manifest, match, outcome);
-    if (!image && process.env.STORY_AUTOGEN_IMAGES !== '0') {
+    if (!image && process.env.STORY_AUTOGEN_IMAGES === '1') {
       image = await generateImage(match, outcome);
     }
     if (!image) {

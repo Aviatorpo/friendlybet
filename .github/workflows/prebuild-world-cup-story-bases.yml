@@ -1,0 +1,55 @@
+name: Prebuild World Cup Story Bases
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Maximum new base prompts to index in this run (0 = all missing)'
+        type: string
+        default: '0'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prebuild-world-cup-story-bases
+  cancel-in-progress: false
+
+jobs:
+  prebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Prepare outcome-base prompt index
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          WC_STORY_PREBUILD_LIMIT: ${{ inputs.limit || '0' }}
+        run: node scripts/prebuild-world-cup-story-outcome-bases.js
+
+      - name: Commit outcome-base index if changed
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain story-assets/outcome-bases)" ]; then
+            git add story-assets/outcome-bases
+            git commit -q -m "story: refresh World Cup outcome base index"
+            pushed=0
+            for a in 1 2 3; do
+              if git pull --rebase --autostash && git push; then pushed=1; break; fi
+              echo "push retry $a"; sleep 4
+            done
+            if [ "$pushed" != "1" ]; then
+              echo "::error::failed to push World Cup story bases after 3 retries"
+              exit 1
+            fi
+          else
+            echo "no outcome base changes"
+          fi

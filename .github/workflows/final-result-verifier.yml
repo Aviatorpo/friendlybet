@@ -48,7 +48,18 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Check final-result window
+        id: result_preflight
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          RESULT_FALLBACK_MIN_AGE_MINUTES: 105
+          RESULT_FALLBACK_LOOKBACK_HOURS: 48
+        run: node scripts/final-result-verifier-needed.js
+
       - name: Verify stuck final results
+        id: verify_results
+        if: github.event_name != 'schedule' || steps.result_preflight.outputs.needed == 'true'
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
@@ -65,6 +76,7 @@ jobs:
           fi
 
       - name: Export match snapshot
+        if: steps.verify_results.outputs.changed == 'true'
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
@@ -76,6 +88,7 @@ jobs:
           fi
 
       - name: Commit match snapshot if changed
+        if: steps.verify_results.outputs.changed == 'true'
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
@@ -93,4 +106,44 @@ jobs:
             fi
           else
             echo "no match snapshot change"
+          fi
+
+      - name: Check for World Cup story work
+        id: story_work
+        if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/world-cup-story-auto-needed.js
+
+      - name: Install story image tooling
+        if: steps.story_work.outputs.publishable == 'true'
+        run: python3 -m pip install --user pillow
+
+      - name: Publish prepared World Cup stories
+        if: steps.story_work.outputs.publishable == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/publish-world-cup-stories-auto.js
+
+      - name: Commit World Cup stories if changed
+        if: steps.story_work.outputs.publishable == 'true'
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data/world-cup-stories.json story-assets)" ]; then
+            git add public-data/world-cup-stories.json story-assets
+            git commit -q -m "story: auto-publish World Cup story"
+            pushed=0
+            for a in 1 2 3; do
+              if git pull --rebase --autostash && git push; then pushed=1; break; fi
+              echo "push retry $a"; sleep 4
+            done
+            if [ "$pushed" != "1" ]; then
+              echo "::error::failed to push World Cup stories after 3 retries"
+              exit 1
+            fi
+          else
+            echo "no World Cup story change"
           fi

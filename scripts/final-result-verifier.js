@@ -33,6 +33,11 @@ const REQUIRED_SOURCES = String(process.env.RESULT_FALLBACK_REQUIRED_SOURCES || 
   .map(s => s.trim().toLowerCase())
   .filter(Boolean);
 
+function setGithubOutput(name, value) {
+  if (!process.env.GITHUB_OUTPUT) return;
+  require('fs').appendFileSync(process.env.GITHUB_OUTPUT, `${name}=${value}\n`, 'utf8');
+}
+
 function isoDate(d) {
   return new Date(d).toISOString().slice(0, 10);
 }
@@ -401,6 +406,10 @@ if (require.main === module) {
   verifyFinalResults({ apply })
     .then(r => {
       console.log(`Done. checked=${r.checked} updated=${r.updated} skipped=${r.skipped}`);
+      setGithubOutput('checked', String(r.checked || 0));
+      setGithubOutput('updated', String(r.updated || 0));
+      setGithubOutput('skipped', String(r.skipped || 0));
+      setGithubOutput('changed', r.updated > 0 ? 'true' : 'false');
     })
     .catch(err => {
       console.error('Fatal:', err.message);

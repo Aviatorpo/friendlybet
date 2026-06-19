@@ -1,0 +1,41 @@
+name: Check World Cup Story Bases
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: 'Number of upcoming matches to audit'
+        type: string
+        default: '10'
+      skip_covered:
+        description: 'Show only matches missing at least one base'
+        type: boolean
+        default: false
+      from:
+        description: 'Optional ISO timestamp to start from'
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Check prepared story base coverage
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          WC_STORY_BASE_AUDIT_LIMIT: ${{ inputs.limit || '10' }}
+          WC_STORY_BASE_AUDIT_SKIP_COVERED: ${{ inputs.skip_covered && '1' || '0' }}
+          WC_STORY_BASE_AUDIT_FROM: ${{ inputs.from || '' }}
+        run: node scripts/check-world-cup-story-base-coverage.js
