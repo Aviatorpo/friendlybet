@@ -3503,6 +3503,215 @@ function closeMenu() {
   document.body.style.overflow = '';
 }
 
+let nicknameEditCheckTimeout = null;
+let nicknameEditSaving = false;
+
+function openNicknameModal() {
+  if (typeof closeMenu === 'function') closeMenu();
+
+  const modal = document.getElementById('nickname-modal');
+  const input = document.getElementById('nickname-edit-input');
+  const status = document.getElementById('nickname-edit-status');
+  const submit = document.getElementById('nickname-edit-submit');
+  if (!modal || !input) return;
+
+  input.value = (state.currentUser && state.currentUser.nickname) || '';
+  if (status) {
+    status.textContent = '';
+    status.className = 'fb-nickname-status';
+  }
+  if (submit) {
+    submit.classList.remove('loading');
+    submit.disabled = false;
+  }
+
+  modal.style.display = 'flex';
+  setTimeout(() => {
+    input.focus();
+    input.select();
+  }, 40);
+}
+
+function closeNicknameModal() {
+  const modal = document.getElementById('nickname-modal');
+  if (modal) modal.style.display = 'none';
+  if (nicknameEditCheckTimeout) clearTimeout(nicknameEditCheckTimeout);
+  nicknameEditCheckTimeout = null;
+  nicknameEditSaving = false;
+}
+
+function _setNicknameEditStatus(message, kind = '') {
+  const status = document.getElementById('nickname-edit-status');
+  if (!status) return;
+  status.textContent = message || '';
+  status.className = `fb-nickname-status${kind ? ' ' + kind : ''}`;
+}
+
+function _validateNicknameEdit(nickname) {
+  if (!nickname) return t('nickname.errorRequired');
+  if (nickname.length < CONFIG.MIN_NICKNAME_LENGTH) {
+    return t('nickname.errorMin', { n: CONFIG.MIN_NICKNAME_LENGTH });
+  }
+  if (nickname.length > CONFIG.MAX_NICKNAME_LENGTH) {
+    return t('nickname.errorMax', { n: CONFIG.MAX_NICKNAME_LENGTH });
+  }
+  return '';
+}
+
+function handleNicknameEditInput() {
+  if (nicknameEditCheckTimeout) clearTimeout(nicknameEditCheckTimeout);
+
+  const input = document.getElementById('nickname-edit-input');
+  const nickname = (input && input.value || '').trim();
+  const current = ((state.currentUser && state.currentUser.nickname) || '').trim();
+  const validation = _validateNicknameEdit(nickname);
+
+  if (!nickname) {
+    _setNicknameEditStatus('', '');
+    return;
+  }
+  if (validation) {
+    _setNicknameEditStatus(validation, 'error');
+    return;
+  }
+  if (nickname === current) {
+    _setNicknameEditStatus(t('nicknameEdit.unchanged'), 'neutral');
+    return;
+  }
+
+  _setNicknameEditStatus(t('nickname.checking'), 'neutral');
+  nicknameEditCheckTimeout = setTimeout(() => checkNicknameEditAvailability(nickname), 450);
+}
+
+async function checkNicknameEditAvailability(nickname) {
+  if (!state.currentPool || !supabaseClient) {
+    _setNicknameEditStatus('', '');
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('users')
+      .select('id')
+      .eq('pool_id', state.currentPool.id)
+      .eq('nickname', nickname)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    const input = document.getElementById('nickname-edit-input');
+    const latest = (input && input.value || '').trim();
+    if (latest !== nickname) return;
+
+    if (data && (!state.currentUser || data.id !== state.currentUser.id)) {
+      _setNicknameEditStatus(t('nickname.taken'), 'taken');
+    } else {
+      _setNicknameEditStatus(t('nickname.available'), 'available');
+    }
+  } catch (err) {
+    console.warn('Nickname edit availability failed:', err);
+    _setNicknameEditStatus('', '');
+  }
+}
+
+function _nicknameEditErrorMessage(err) {
+  const msg = `${err && err.message || ''} ${err && err.details || ''} ${err && err.hint || ''}`;
+  if ((err && err.code) === '23505' || /nickname already taken|duplicate key|users_pool_nickname_unique/i.test(msg)) {
+    return t('nickname.errorTaken');
+  }
+  if (/too short/i.test(msg)) return t('nickname.errorMin', { n: CONFIG.MIN_NICKNAME_LENGTH });
+  if (/too long/i.test(msg)) return t('nickname.errorMax', { n: CONFIG.MAX_NICKNAME_LENGTH });
+  if (/missing nickname/i.test(msg)) return t('nickname.errorRequired');
+  if (/invalid recovery code/i.test(msg)) return t('nicknameEdit.relogin');
+  return t('nicknameEdit.saveError');
+}
+
+function _refreshNicknameSurfaces(updatedUser) {
+  const nickname = updatedUser && updatedUser.nickname;
+  if (!nickname) return;
+
+  const dashboardName = document.getElementById('dashboard-user-name');
+  if (dashboardName) dashboardName.textContent = nickname;
+
+  const menuName = document.getElementById('menu-user-name');
+  if (menuName) menuName.textContent = nickname;
+  const menuInitial = document.getElementById('menu-user-initial');
+  if (menuInitial) menuInitial.textContent = nickname.charAt(0).toUpperCase();
+
+  if (adminState && Array.isArray(adminState.members)) {
+    const adminMember = adminState.members.find(m => m.id === updatedUser.id);
+    if (adminMember) adminMember.nickname = nickname;
+  }
+}
+
+async function submitNicknameEdit() {
+  if (nicknameEditSaving) return;
+
+  const input = document.getElementById('nickname-edit-input');
+  const submit = document.getElementById('nickname-edit-submit');
+  const nickname = (input && input.value || '').trim();
+  const current = ((state.currentUser && state.currentUser.nickname) || '').trim();
+  const validation = _validateNicknameEdit(nickname);
+
+  if (validation) {
+    _setNicknameEditStatus(validation, 'error');
+    if (input) input.focus();
+    return;
+  }
+  if (nickname === current) {
+    closeNicknameModal();
+    return;
+  }
+
+  if (!supabaseClient) { initSupabase(); }
+  if (!supabaseClient) {
+    _setNicknameEditStatus(t('errors.serverConnecting'), 'error');
+    return;
+  }
+
+  const code = _currentRecoveryCode();
+  if (!code) {
+    _setNicknameEditStatus(t('nicknameEdit.relogin'), 'error');
+    return;
+  }
+
+  nicknameEditSaving = true;
+  if (submit) {
+    submit.classList.add('loading');
+    submit.disabled = true;
+  }
+  _setNicknameEditStatus(t('nicknameEdit.saving'), 'neutral');
+
+  try {
+    const res = await _rpcWrite('change_nickname', { p_code: code, p_nickname: nickname });
+    if (!res.ok) {
+      _setNicknameEditStatus(_nicknameEditErrorMessage(res.error), 'error');
+      return;
+    }
+
+    const updatedUser = res.data || { ...state.currentUser, nickname };
+    state.currentUser = { ...state.currentUser, ...updatedUser, nickname: updatedUser.nickname || nickname };
+    saveLocalUser(state.currentUser);
+    _refreshNicknameSurfaces(state.currentUser);
+
+    closeNicknameModal();
+    showToast(t('nicknameEdit.saved'), 'success');
+
+    if (state.currentScreen === 'leaderboard-screen') showLeaderboard();
+    else if (state.currentScreen === 'members-screen') showMembers();
+    else if (state.currentScreen === 'admin-members-screen') renderAdminMembers();
+  } catch (err) {
+    console.warn('submitNicknameEdit exception:', err);
+    _setNicknameEditStatus(_nicknameEditErrorMessage(err), 'error');
+  } finally {
+    nicknameEditSaving = false;
+    if (submit) {
+      submit.classList.remove('loading');
+      submit.disabled = false;
+    }
+  }
+}
+
 // ============================================================
 // Quick share from dashboard
 // ============================================================
@@ -15504,6 +15713,7 @@ function _fbHandleBack() {
     'exit-app-modal',
     'hypo-bracket-modal',
     'sp-bracket-view-modal',
+    'nickname-modal',
     'feedback-modal'
   ];
   for (const id of openModals) {

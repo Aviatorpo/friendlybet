@@ -9049,6 +9049,53 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
 .fb-feedback-submit:hover { filter: brightness(1.05); background: linear-gradient(135deg, #e1bd76, #cda14d); }
 .fb-feedback-submit.loading { opacity: 0.6; pointer-events: none; }
 
+.fb-nickname-content { width: min(94vw, 420px); padding-top: 30px; }
+.fb-nickname-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(212,168,83,0.24);
+  border-radius: 10px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 13px;
+  margin: 2px 0 8px;
+  text-align: start;
+}
+.fb-nickname-input:focus {
+  outline: none;
+  border-color: rgba(217,180,106,0.82);
+  background: rgba(255,255,255,0.06);
+}
+.fb-nickname-input::placeholder { color: rgba(255,255,255,0.4); }
+.fb-nickname-status {
+  min-height: 20px;
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.55);
+}
+.fb-nickname-status.available { color: #86efac; }
+.fb-nickname-status.taken,
+.fb-nickname-status.error { color: #fca5a5; }
+.fb-nickname-status.neutral { color: rgba(255,255,255,0.62); }
+.fb-nickname-actions { margin-top: 2px; }
+.fb-nickname-cancel {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.82);
+  border-radius: 11px;
+  padding: 12px 14px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+}
+.fb-nickname-cancel:hover { background: rgba(255,255,255,0.09); color: #fff; }
+.fb-nickname-save:disabled { cursor: default; }
+
 .fb-feedback-thanks { text-align: center; padding: 14px 4px 4px; }
 .fb-feedback-thanks-icon {
   width: 56px;

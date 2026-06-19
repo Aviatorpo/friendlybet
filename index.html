@@ -2946,6 +2946,16 @@ function loadTablerFallback() {
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
       </button>
+      <button class="menu-item" onclick="openNicknameModal()">
+        <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+        </svg>
+        <span data-i18n="nicknameEdit.menuItem">ערוך כינוי</span>
+        <svg class="menu-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
       <button class="menu-item" onclick="fbViewMyPicks()">
         <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="8" y="3" width="8" height="4" rx="1"></rect>
@@ -3086,7 +3096,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.10.74</span>
+      <span class="menu-version">v2.10.75</span>
     </div>
   </div>
 
@@ -3571,6 +3581,31 @@ function loadTablerFallback() {
       <div class="rc-modal-text rc-modal-text-center" data-i18n="feedback.thanksText">המשוב שלך התקבל ועוזר לנו לשפר.</div>
       <button class="rc-modal-continue fb-feedback-submit" onclick="closeFeedbackModal()">
         <span data-i18n="feedback.close">סגירה</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="nickname-modal" class="rc-modal" style="display:none;">
+  <div class="rc-modal-overlay" onclick="closeNicknameModal()"></div>
+  <div class="rc-modal-content fb-nickname-content">
+    <button class="fb-feedback-close" onclick="closeNicknameModal()" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <div class="rc-modal-title rc-modal-title-center" data-i18n="nicknameEdit.title">עריכת כינוי</div>
+    <div class="rc-modal-text rc-modal-text-center" data-i18n="nicknameEdit.subtitle">הכינוי יוצג בלוח הדירוגים וברשימת המשתתפים.</div>
+    <input type="text" id="nickname-edit-input" class="fb-nickname-input"
+      maxlength="30" autocomplete="nickname" data-i18n-placeholder="nickname.placeholder"
+      placeholder="לדוגמה: דני" oninput="handleNicknameEditInput()">
+    <div id="nickname-edit-status" class="fb-nickname-status" aria-live="polite"></div>
+    <div class="rc-modal-actions fb-nickname-actions">
+      <button type="button" class="fb-nickname-cancel" onclick="closeNicknameModal()" data-i18n="common.cancel">ביטול</button>
+      <button type="button" class="fb-feedback-submit fb-nickname-save" id="nickname-edit-submit" onclick="submitNicknameEdit()">
+        <span data-i18n="nicknameEdit.save">שמור כינוי</span>
       </button>
     </div>
   </div>

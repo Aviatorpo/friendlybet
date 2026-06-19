@@ -224,6 +224,7 @@ const TRANSLATIONS = {
     'dashboard.menu.invite': 'הזמן חברים להימור',
     'dashboard.menu.myInfo': 'המידע שלי',
     'dashboard.menu.showRecovery': 'הצג קוד שחזור',
+    'nicknameEdit.menuItem': 'ערוך כינוי',
     'dashboard.menu.members': 'רשימת משתתפים',
     'dashboard.menu.leaderboard': 'לוח דירוגים',
     'dashboard.menu.matches': 'לוח משחקים',
@@ -634,6 +635,16 @@ const TRANSLATIONS = {
     'adminNickname.perm5': 'אתה גם משתתף בהימור',
     'adminNickname.errorRequired': 'נא להזין את הכינוי שלך',
     'adminNickname.createBtn': 'צור הימור',
+
+    // === Edit nickname ===
+    'nicknameEdit.title': 'עריכת כינוי',
+    'nicknameEdit.subtitle': 'הכינוי יוצג בלוח הדירוגים וברשימת המשתתפים.',
+    'nicknameEdit.save': 'שמור כינוי',
+    'nicknameEdit.saving': 'שומר...',
+    'nicknameEdit.saved': 'הכינוי עודכן',
+    'nicknameEdit.saveError': 'לא הצלחנו לעדכן את הכינוי. נסה שוב.',
+    'nicknameEdit.relogin': 'צריך להתחבר מחדש עם קוד השחזור כדי לשנות כינוי.',
+    'nicknameEdit.unchanged': 'זה הכינוי הנוכחי שלך',
 
     // === Share pool ===
     'sharePool.created': 'ההימור נוצר!',
@@ -1626,6 +1637,7 @@ const TRANSLATIONS = {
     'dashboard.menu.invite': 'Invite friends to pool',
     'dashboard.menu.myInfo': 'My info',
     'dashboard.menu.showRecovery': 'Show recovery code',
+    'nicknameEdit.menuItem': 'Edit nickname',
     'dashboard.menu.members': 'Members list',
     'dashboard.menu.leaderboard': 'Leaderboard',
     'dashboard.menu.matches': 'Match schedule',
@@ -2036,6 +2048,16 @@ const TRANSLATIONS = {
     'adminNickname.perm5': 'You also participate in the pool',
     'adminNickname.errorRequired': 'Please enter your nickname',
     'adminNickname.createBtn': 'Create pool',
+
+    // === Edit nickname ===
+    'nicknameEdit.title': 'Edit nickname',
+    'nicknameEdit.subtitle': 'Your nickname appears on the leaderboard and members list.',
+    'nicknameEdit.save': 'Save nickname',
+    'nicknameEdit.saving': 'Saving...',
+    'nicknameEdit.saved': 'Nickname updated',
+    'nicknameEdit.saveError': 'Could not update your nickname. Try again.',
+    'nicknameEdit.relogin': 'Log in again with your recovery code to change nickname.',
+    'nicknameEdit.unchanged': 'This is your current nickname',
 
     // === Share pool ===
     'sharePool.created': 'Pool created!',
