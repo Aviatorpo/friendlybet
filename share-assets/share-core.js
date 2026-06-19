@@ -53,6 +53,7 @@ const WC2026_GROUPS = {
   J:['ARG','ALG','AUT','JOR'], K:['POR','COD','UZB','COL'], L:['ENG','CRO','GHA','PAN']
 };
 const WC2026_GROUP_LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+const FINISHED_MATCH_STATUSES = new Set(['FINISHED', 'AWARDED']);
 
 const FIFA_RANKINGS = {
   ARG:1, ESP:2, FRA:3, ENG:4, BRA:5, POR:6, NED:7, BEL:8,
@@ -63,6 +64,87 @@ const FIFA_RANKINGS = {
   NZL:55, SAU:57, COD:58, BIH:59, HAI:60, CPV:65, QAT:66, CUR:85
 };
 function fifaRankOf(code){ return FIFA_RANKINGS[code] ?? 999; }
+
+function computeGroupStandings(matches, groupTeams){
+  const stats = {};
+  groupTeams.forEach(code => {
+    stats[code] = { code, played:0, wins:0, draws:0, losses:0, gf:0, ga:0, gd:0, points:0 };
+  });
+  (matches || []).forEach(m => {
+    const h = stats[m.home_team_code];
+    const a = stats[m.away_team_code];
+    const hs = Number(m.home_score);
+    const as = Number(m.away_score);
+    if (!h || !a || !Number.isFinite(hs) || !Number.isFinite(as)) return;
+    h.played++; a.played++;
+    h.gf += hs; h.ga += as; h.gd = h.gf - h.ga;
+    a.gf += as; a.ga += hs; a.gd = a.gf - a.ga;
+    if (hs > as) { h.wins++; a.losses++; h.points += 3; }
+    else if (hs < as) { a.wins++; h.losses++; a.points += 3; }
+    else { h.draws++; a.draws++; h.points++; a.points++; }
+  });
+
+  const h2h = (codes) => {
+    const set = new Set(codes);
+    const table = {};
+    codes.forEach(code => { table[code] = { pts:0, gd:0, gf:0 }; });
+    (matches || []).forEach(m => {
+      if (!set.has(m.home_team_code) || !set.has(m.away_team_code)) return;
+      const hs = Number(m.home_score);
+      const as = Number(m.away_score);
+      if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
+      const h = table[m.home_team_code];
+      const a = table[m.away_team_code];
+      h.gf += hs; h.gd += hs - as;
+      a.gf += as; a.gd += as - hs;
+      if (hs > as) h.pts += 3;
+      else if (hs < as) a.pts += 3;
+      else { h.pts++; a.pts++; }
+    });
+    return table;
+  };
+
+  const ordered = Object.values(stats).sort((a,b) =>
+    (b.points - a.points) || (b.gd - a.gd) || (b.gf - a.gf) || a.code.localeCompare(b.code));
+  const sameOverall = (a,b) => a.points === b.points && a.gd === b.gd && a.gf === b.gf;
+  const result = [];
+  for (let i = 0; i < ordered.length;) {
+    let j = i + 1;
+    while (j < ordered.length && sameOverall(ordered[i], ordered[j])) j++;
+    if (j - i === 1) { result.push(ordered[i]); i = j; continue; }
+    const tied = ordered.slice(i, j);
+    const ht = h2h(tied.map(s => s.code));
+    tied.sort((a,b) =>
+      (ht[b.code].pts - ht[a.code].pts) ||
+      (ht[b.code].gd - ht[a.code].gd) ||
+      (ht[b.code].gf - ht[a.code].gf) ||
+      a.code.localeCompare(b.code));
+    result.push(...tied);
+    i = j;
+  }
+  return result;
+}
+
+function lateKnockoutSeedFromMatches(matches){
+  const groupPositions = {};
+  const thirds = [];
+  for (const letter of WC2026_GROUP_LETTERS) {
+    const groupMatches = (matches || []).filter(m => {
+      const stage = String((m && m.stage) || '').toUpperCase();
+      const status = String((m && m.status) || '').toUpperCase();
+      return FINISHED_MATCH_STATUSES.has(status) &&
+        (stage === 'GROUP_STAGE' || (m.group_letter || m.group) === letter) &&
+        (m.group_letter || m.group) === letter;
+    });
+    const ordered = computeGroupStandings(groupMatches, WC2026_GROUPS[letter] || []);
+    if (groupMatches.length < 6 || ordered.length < 4 || ordered.some(s => s.played < 3)) return null;
+    groupPositions[letter] = ordered.slice(0, 4).map(s => s.code);
+    thirds.push({ ...ordered[2], group: letter });
+  }
+  thirds.sort((a,b) =>
+    (b.points - a.points) || (b.gd - a.gd) || (b.gf - a.gf) || a.code.localeCompare(b.code));
+  return { groupPositions, thirdPlaceAdvancers: thirds.slice(0, 8).map(s => s.group) };
+}
 
 // --- Bracket definitions (mirror app.js) -------------------------------
 const SP_R32_DEF = {
@@ -226,5 +308,6 @@ function buildDemoPicks(lang){
 // expose
 window.FBShare = {
   TEAM_NAMES, FLAG_ISO, WC2026_GROUPS, WC2026_GROUP_LETTERS, FIFA_RANKINGS, fifaRankOf,
+  computeGroupStandings, lateKnockoutSeedFromMatches,
   resolveBracket, championRoad, teamRoad, teamName, flagUrl, flagImg, buildDemoPicks
 };

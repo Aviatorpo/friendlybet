@@ -34,6 +34,7 @@ const DRY_RUN = process.argv.includes('--dry-run') || process.env.LOCK_DRY_RUN =
 // DB row can't lock every pool early. Override via env if FIFA shifts the opener.
 const CONFIGURED_KICKOFF_ISO = process.env.LOCK_KICKOFF_ISO || '2026-06-11T19:00:00.000Z';
 const LATE_ENTRY_CUTOFF_ISO = process.env.LATE_ENTRY_CUTOFF_ISO || '2026-06-18T16:00:00.000Z';
+const KNOCKOUT_LOCK_ISO = process.env.KNOCKOUT_LOCK_ISO || '2026-06-28T19:00:00.000Z';
 
 const H = {
   apikey: SUPABASE_KEY,
@@ -74,18 +75,22 @@ async function main() {
     }
   }
   const lateEntryCutoff = new Date(LATE_ENTRY_CUTOFF_ISO);
+  const knockoutCutoff = new Date(KNOCKOUT_LOCK_ISO);
   const reached = now >= configuredKickoff;
   const reachedLateCutoff = now >= lateEntryCutoff;
+  const reachedKnockoutCutoff = now >= knockoutCutoff;
 
   // Pools eligible to lock now: not yet locked, effective deadline passed.
   const nowParam = encodeURIComponent(nowIso);
-  const baseFilter = `betting_mode=in.(single_phase,two_phase)&locked_at=is.null&or=(lock_at_override.is.null,lock_at_override.lte.${nowParam})`;
-  const filter = reachedLateCutoff
-    ? baseFilter
-    : `${baseFilter}&created_at=lt.${encodeURIComponent(CONFIGURED_KICKOFF_ISO)}`;
+  const baseFilter = `locked_at=is.null&or=(lock_at_override.is.null,lock_at_override.lte.${nowParam})`;
+  const filter = reachedKnockoutCutoff
+    ? `${baseFilter}&betting_mode=in.(single_phase,two_phase,late_knockout)`
+    : reachedLateCutoff
+      ? `${baseFilter}&betting_mode=in.(single_phase,two_phase)`
+      : `${baseFilter}&betting_mode=in.(single_phase,two_phase)&created_at=lt.${encodeURIComponent(CONFIGURED_KICKOFF_ISO)}`;
   const before = await dueCount(filter);
 
-  console.log(`[lock-pools] now=${nowIso} | kickoff=${CONFIGURED_KICKOFF_ISO} | late cutoff=${LATE_ENTRY_CUTOFF_ISO} | db earliest=${dbKickoff ? dbKickoff.toISOString() : 'none'} | kickoff reached=${reached} | late reached=${reachedLateCutoff} | pools due-to-lock=${before}`);
+  console.log(`[lock-pools] now=${nowIso} | kickoff=${CONFIGURED_KICKOFF_ISO} | late cutoff=${LATE_ENTRY_CUTOFF_ISO} | knockout cutoff=${KNOCKOUT_LOCK_ISO} | db earliest=${dbKickoff ? dbKickoff.toISOString() : 'none'} | kickoff reached=${reached} | late reached=${reachedLateCutoff} | knockout reached=${reachedKnockoutCutoff} | pools due-to-lock=${before}`);
 
   if (!reached) { console.log('[lock-pools] kickoff not reached → no-op'); return; }
   if (DRY_RUN) { console.log('[lock-pools] DRY RUN → would lock the pools above, but not writing'); return; }

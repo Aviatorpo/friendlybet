@@ -674,7 +674,7 @@ async function checkPoolCode() {
     // not just the manual is_locked flag - so a tournament-locked pool fails
     // this preflight early instead of only at the final join_pool RPC. The
     // server RPC remains the source of truth and rejects both.
-    if (isPoolWriteLocked(data)) {
+    if (isPoolJoinClosed(data)) {
       showError('join-error', _poolClosedMessage(data));
       return;
     }
@@ -699,7 +699,9 @@ async function checkPoolCode() {
       'knockout_active': t('poolFound.statusKnockout'),
       'finished': t('poolFound.statusFinished')
     };
-    document.getElementById('found-pool-status').textContent = _poolLateEntryOpen(data)
+    document.getElementById('found-pool-status').textContent = _poolLateKnockoutOpen(data)
+      ? t('poolFound.statusLateKnockoutOpen', { time: _knockoutCutoffLabel() })
+      : _poolLateEntryOpen(data)
       ? t('poolFound.statusLateOpen', { time: _lateEntryCutoffLabel() })
       : (statusMap[data.status] || data.status);
 
@@ -1043,7 +1045,7 @@ async function createPool() {
 
   try {
     if (isLateEntryCreationClosed()) {
-      showToast(t('errors.lateEntryClosed', { time: _lateEntryCutoffLabel() }), 'error');
+      showToast(t('errors.lateKnockoutCreationClosed', { time: _knockoutCutoffLabel() }), 'error');
       return;
     }
 
@@ -1346,10 +1348,12 @@ async function goToDashboard() {
     const titleEl = inviteBtn.querySelector('.invite-friends-title');
     const subEl = inviteBtn.querySelector('.invite-friends-subtitle');
     const lateOpen = _poolLateEntryOpen();
-    if (titleEl) titleEl.textContent = t(lateOpen ? 'dashboard.invite.lateTitle' : 'dashboard.invite.title');
+    const lateKoOpen = _poolLateKnockoutOpen();
+    if (titleEl) titleEl.textContent = t(lateKoOpen ? 'dashboard.invite.lateKnockoutTitle' : (lateOpen ? 'dashboard.invite.lateTitle' : 'dashboard.invite.title'));
     if (subEl) {
-      subEl.textContent = t(lateOpen ? 'dashboard.invite.lateSubtitle' : 'dashboard.invite.subtitle', {
-        time: _lateEntryCutoffLabel()
+      subEl.textContent = t(lateKoOpen ? 'dashboard.invite.lateKnockoutSubtitle' : (lateOpen ? 'dashboard.invite.lateSubtitle' : 'dashboard.invite.subtitle'), {
+        time: _lateEntryCutoffLabel(),
+        knockoutTime: _knockoutCutoffLabel()
       });
     }
   }
@@ -1528,6 +1532,7 @@ async function updateTwoPhaseIncidentBanner() {
 const FIRST_MATCH_FALLBACK_ISO = '2026-06-11T19:00:00+00:00'; // countdown display fallback
 const POOL_LOCK_KICKOFF_ISO = '2026-06-11T19:00:00.000Z'; // server lock cutoff
 const LATE_ENTRY_CUTOFF_ISO = '2026-06-18T16:00:00.000Z'; // first team second group match
+const KNOCKOUT_LOCK_FALLBACK_ISO = '2026-06-28T19:00:00.000Z'; // first R32 kickoff fallback
 let _countdownTimer = null;
 let _countdownKickoffMs = null;
 
@@ -1553,10 +1558,50 @@ function _poolCreatedAtMs(pool) {
   return Number.isFinite(t) ? t : 0;
 }
 
+function _isLateKnockoutPool(pool = state.currentPool) {
+  return !!pool && pool.betting_mode === 'late_knockout';
+}
+
+function _knockoutCutoffMs() {
+  const fallback = Date.parse(KNOCKOUT_LOCK_FALLBACK_ISO);
+  try {
+    const rows = (matchesState && Array.isArray(matchesState.allMatches) && matchesState.allMatches.length)
+      ? matchesState.allMatches
+      : (_matchesSnapCache && Array.isArray(_matchesSnapCache.data) ? _matchesSnapCache.data : []);
+    const first = rows
+      .filter(m => {
+        const stage = String((m && m.stage) || '').toUpperCase();
+        return stage && stage !== 'GROUP_STAGE' && stage !== 'THIRD_PLACE';
+      })
+      .map(m => Date.parse(m.match_date))
+      .filter(Number.isFinite)
+      .sort((a, b) => a - b)[0];
+    if (Number.isFinite(first)) return first;
+  } catch (_) {}
+  return fallback;
+}
+
+function _knockoutCutoffLabel() {
+  try {
+    const d = new Date(_knockoutCutoffMs());
+    const lang = (typeof currentLanguage !== 'undefined' && currentLanguage === 'he') ? 'he-IL' : 'en-US';
+    return d.toLocaleString(lang, {
+      day: 'numeric',
+      month: 'long',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short'
+    });
+  } catch (_) {
+    return '28 June, 19:00 UTC';
+  }
+}
+
 function _poolEffectiveLockPassed(pool) {
   const now = Date.now();
   const kickoff = Date.parse(POOL_LOCK_KICKOFF_ISO);
   const lateCutoff = Date.parse(LATE_ENTRY_CUTOFF_ISO);
+  if (_isLateKnockoutPool(pool)) return now >= _knockoutCutoffMs();
   if (!Number.isFinite(kickoff) || !Number.isFinite(lateCutoff) || now < kickoff) return false;
   const createdAt = _poolCreatedAtMs(pool);
   if (createdAt >= kickoff && createdAt < lateCutoff) return now >= lateCutoff;
@@ -1564,7 +1609,7 @@ function _poolEffectiveLockPassed(pool) {
 }
 
 function isLateEntryCreationClosed() {
-  return Date.now() >= Date.parse(LATE_ENTRY_CUTOFF_ISO);
+  return Date.now() >= _knockoutCutoffMs();
 }
 
 function _lateEntryCutoffLabel() {
@@ -1596,6 +1641,15 @@ function _poolLateEntryOpen(pool = state.currentPool) {
     !pool.locked_at && !pool.is_locked && Date.now() < Date.parse(LATE_ENTRY_CUTOFF_ISO);
 }
 
+function _lateKnockoutCreationActive() {
+  return Date.now() >= Date.parse(LATE_ENTRY_CUTOFF_ISO) && Date.now() < _knockoutCutoffMs();
+}
+
+function _poolLateKnockoutOpen(pool = state.currentPool) {
+  return !!pool && _isLateKnockoutPool(pool) && !_poolGraceActive(pool) &&
+    !pool.locked_at && !pool.is_locked && Date.now() < _knockoutCutoffMs();
+}
+
 function _poolClosedMessageKey(pool = state.currentPool) {
   if (!pool) return 'errors.poolLockedNoJoin';
   const now = Date.now();
@@ -1603,6 +1657,7 @@ function _poolClosedMessageKey(pool = state.currentPool) {
   const kickoff = Date.parse(POOL_LOCK_KICKOFF_ISO);
   const lateCutoff = Date.parse(LATE_ENTRY_CUTOFF_ISO);
   if (pool.is_locked) return 'errors.poolLockedNoJoin';
+  if (_isLateKnockoutPool(pool)) return now >= _knockoutCutoffMs() ? 'errors.poolClosedKnockout' : 'errors.poolLockedNoJoin';
   if (Number.isFinite(kickoff) && createdAt < kickoff && now >= kickoff) return 'errors.poolClosedKickoff';
   if (Number.isFinite(kickoff) && Number.isFinite(lateCutoff) &&
       createdAt >= kickoff && createdAt < lateCutoff && now >= lateCutoff) {
@@ -1612,7 +1667,10 @@ function _poolClosedMessageKey(pool = state.currentPool) {
 }
 
 function _poolClosedMessage(pool = state.currentPool) {
-  return t(_poolClosedMessageKey(pool), { time: _lateEntryCutoffLabel() });
+  return t(_poolClosedMessageKey(pool), {
+    time: _lateEntryCutoffLabel(),
+    knockoutTime: _knockoutCutoffLabel()
+  });
 }
 
 async function initDashboardCountdown(tournamentStarted) {
@@ -2524,7 +2582,7 @@ const _WC_STORIES_FALLBACK = {
 };
 let _wcStoriesState = { items: [], idx: 0, loadedAt: 0 };
 const _wcStoriesPoolCopyCache = {};
-const _WC_STORIES_CAROUSEL_LIMIT = 24;
+const _WC_STORIES_CAROUSEL_LIMIT = 5;
 
 function _wcStoryLang() {
   return (typeof currentLanguage !== 'undefined' && currentLanguage === 'en') ? 'en' : 'he';
@@ -2672,6 +2730,57 @@ function _wcEsc(s) {
   }[ch]));
 }
 
+function _wcStoriesActiveIndex(rail) {
+  const cards = Array.from((rail || document).querySelectorAll('.wc-story'));
+  if (!rail || !cards.length) return 0;
+  const railRect = rail.getBoundingClientRect();
+  const mid = railRect.left + railRect.width / 2;
+  let best = 0, bestDist = Infinity;
+  cards.forEach((el, i) => {
+    const rect = el.getBoundingClientRect();
+    const c = rect.left + rect.width / 2;
+    const d = Math.abs(c - mid);
+    if (d < bestDist) { bestDist = d; best = i; }
+  });
+  return best;
+}
+
+function _wcUpdateStoriesChrome() {
+  const rail = document.getElementById('world-cup-stories-rail');
+  const dots = document.getElementById('world-cup-stories-dots');
+  const count = document.getElementById('world-cup-stories-count');
+  const prev = document.getElementById('world-cup-stories-prev');
+  const next = document.getElementById('world-cup-stories-next');
+  const cards = rail ? Array.from(rail.querySelectorAll('.wc-story')) : [];
+  if (!rail || !cards.length) return;
+  const idx = _wcStoriesActiveIndex(rail);
+  _wcStoriesState.idx = idx;
+  if (dots) Array.from(dots.children).forEach((dot, i) => dot.classList.toggle('active', i === idx));
+  if (count) count.textContent = `${idx + 1}/${cards.length}`;
+  if (prev) {
+    prev.disabled = idx <= 0;
+    prev.setAttribute('aria-label', t('worldCupStories.previous'));
+    prev.title = t('worldCupStories.previous');
+  }
+  if (next) {
+    next.disabled = idx >= cards.length - 1;
+    next.setAttribute('aria-label', t('worldCupStories.next'));
+    next.title = t('worldCupStories.next');
+  }
+}
+
+function _wcScrollWorldCupStories(delta) {
+  const rail = document.getElementById('world-cup-stories-rail');
+  if (!rail) return;
+  const cards = Array.from(rail.querySelectorAll('.wc-story'));
+  if (!cards.length) return;
+  const idx = _wcStoriesActiveIndex(rail);
+  const nextIdx = Math.max(0, Math.min(cards.length - 1, idx + delta));
+  cards[nextIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  _wcStoriesState.idx = nextIdx;
+  window.setTimeout(_wcUpdateStoriesChrome, 120);
+}
+
 async function renderWorldCupStories() {
   const card = document.getElementById('world-cup-stories-card');
   const rail = document.getElementById('world-cup-stories-rail');
@@ -2703,24 +2812,23 @@ async function renderWorldCupStories() {
   }));
   rail.innerHTML = rendered.join('');
   dots.innerHTML = items.map((_, i) => `<span class="${i === _wcStoriesState.idx ? 'active' : ''}"></span>`).join('');
-  if (count) count.textContent = `${items.length}/${_WC_STORIES_CAROUSEL_LIMIT}`;
+  if (count) count.textContent = `1/${items.length}`;
   card.style.display = '';
+  const prev = document.getElementById('world-cup-stories-prev');
+  const next = document.getElementById('world-cup-stories-next');
+  if (prev && !prev._wcStoriesWired) {
+    prev._wcStoriesWired = true;
+    prev.addEventListener('click', () => _wcScrollWorldCupStories(-1));
+  }
+  if (next && !next._wcStoriesWired) {
+    next._wcStoriesWired = true;
+    next.addEventListener('click', () => _wcScrollWorldCupStories(1));
+  }
   if (!rail._wcStoriesWired) {
     rail._wcStoriesWired = true;
-    rail.addEventListener('scroll', () => {
-      const cards = Array.from(rail.querySelectorAll('.wc-story'));
-      if (!cards.length) return;
-      const mid = rail.scrollLeft + rail.clientWidth / 2;
-      let best = 0, bestDist = Infinity;
-      cards.forEach((el, i) => {
-        const c = el.offsetLeft + el.offsetWidth / 2;
-        const d = Math.abs(c - mid);
-        if (d < bestDist) { bestDist = d; best = i; }
-      });
-      _wcStoriesState.idx = best;
-      Array.from(dots.children).forEach((dot, i) => dot.classList.toggle('active', i === best));
-    }, { passive: true });
+    rail.addEventListener('scroll', _wcUpdateStoriesChrome, { passive: true });
   }
+  _wcUpdateStoriesChrome();
 }
 
 function _wcLoadImage(src) {
@@ -3464,9 +3572,10 @@ async function showMembers() {
   // picks in group_position_picks.
   // v2.5.37: also fetch knockout picks so the per-member status can reflect
   // "groups done but knockout not done" vs. "everything done".
-  const isV2 = state.currentPool.betting_mode === 'single_phase';
+  const isLateKo = _isLateKnockoutPool(state.currentPool);
+  const isV2 = state.currentPool.betting_mode === 'single_phase' || isLateKo;
   const predictionAccess = await _memberPredictionAccessState(isV2);
-  const picksTable = isV2 ? 'group_position_picks' : 'group_picks';
+  const picksTable = isLateKo ? 'knockout_picks' : (isV2 ? 'group_position_picks' : 'group_picks');
   // v2.9.24: PostgREST caps a query at 1000 rows (verified on prod — .range does
   // NOT lift it), so a big pool (e.g. 200 members ≈ 10k group-pick rows) was
   // truncated and most members showed a WRONG status. Page through all rows so
@@ -3474,10 +3583,15 @@ async function showMembers() {
   // agree with the dashboard nudge count.
   let groupData, koData;
   try {
-    [groupData, koData] = await Promise.all([
-      _fetchAllPoolRows(picksTable, 'user_id', state.currentPool.id),
-      _fetchAllPoolRows('knockout_picks', 'user_id', state.currentPool.id)
-    ]);
+    if (isLateKo) {
+      koData = await _fetchAllPoolRows('knockout_picks', 'user_id', state.currentPool.id);
+      groupData = [];
+    } else {
+      [groupData, koData] = await Promise.all([
+        _fetchAllPoolRows(picksTable, 'user_id', state.currentPool.id),
+        _fetchAllPoolRows('knockout_picks', 'user_id', state.currentPool.id)
+      ]);
+    }
   } catch (err) {
     console.error('Members pick pagination failed:', err);
     showToast(t('membersList.loadError'), 'error');
@@ -3500,7 +3614,7 @@ async function showMembers() {
   let notBetted = 0;
 
   members.forEach(m => {
-    const picks = picksPerUser[m.id] || 0;
+    const picks = isLateKo ? (koPerUser[m.id] || 0) : (picksPerUser[m.id] || 0);
     if (picks > 0) betted++;
     else notBetted++;
   });
@@ -3515,9 +3629,9 @@ async function showMembers() {
   _renderMembersPredictionNotice(list, predictionAccess);
 
   members.forEach(member => {
-    const picks = picksPerUser[member.id] || 0;
+    const picks = isLateKo ? 0 : (picksPerUser[member.id] || 0);
     const koPicks = koPerUser[member.id] || 0;
-    const card = createMemberCard(member, picks, koPicks, isV2, predictionAccess);
+    const card = createMemberCard(member, picks, koPicks, isV2, predictionAccess, isLateKo);
     list.appendChild(card);
   });
 }
@@ -3565,7 +3679,7 @@ function _openMemberPredictionShare(userId) {
   if (!opened) window.location.href = url;
 }
 
-function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAccess = { mode: 'prelock' }) {
+function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAccess = { mode: 'prelock' }, isLateKo = false) {
   const card = document.createElement('div');
   card.className = 'member-card';
 
@@ -3584,7 +3698,7 @@ function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAcce
   // members must show as needing their knockout, so the admin can nudge them.
   // v2.10.9: two-phase group stage is complete at EXACTLY 32 (not 24) — see
   // isTwoPhaseGroupComplete. single_phase keeps its 48-cell check.
-  const groupComplete = isV2 ? (picksCount >= 48) : isTwoPhaseGroupComplete(picksCount);
+  const groupComplete = isLateKo ? true : (isV2 ? (picksCount >= 48) : isTwoPhaseGroupComplete(picksCount));
   const koComplete = isV2 ? (koPicksCount >= 31) : (koPicksCount >= 16);
   const allDone = groupComplete && koComplete;
 
@@ -4222,6 +4336,8 @@ function updatePoolLockCard() {
   const btn = document.getElementById('pool-lock-btn');
   
   const isLocked = adminState.poolData?.is_locked === true;
+  const joinClosed = isPoolJoinClosed(adminState.poolData);
+  if (btn) btn.disabled = false;
   
   if (isLocked) {
     card.classList.add('locked');
@@ -4229,6 +4345,13 @@ function updatePoolLockCard() {
     title.textContent = t('adminMembersEx.lockedTitle');
     text.textContent = t('adminMembersEx.lockedText');
     btn.textContent = t('adminMembersEx.unlockBtn');
+  } else if (joinClosed) {
+    card.classList.add('locked');
+    icon.textContent = '🔒';
+    title.textContent = t('adminMembersEx.lockedTitle');
+    text.textContent = t('adminMembersEx.deadlineLockedText');
+    btn.textContent = t('adminMembersEx.closedBtn');
+    btn.disabled = true;
   } else {
     card.classList.remove('locked');
     icon.textContent = '🔓';
@@ -5362,7 +5485,7 @@ async function showPoolSettings() {
   _fbRenderPoolMultipliersDetail(pool);
 
   // v2.5.7: gate v2 vs legacy sections based on betting_mode
-  const isV2 = pool.betting_mode === 'single_phase';
+  const isV2 = pool.betting_mode === 'single_phase' || pool.betting_mode === 'late_knockout';
   const v2ModeSection = document.getElementById('settings-v2-mode-section');
   const v2ScoringSection = document.getElementById('settings-v2-scoring-section');
   const legacyFormat = document.getElementById('settings-legacy-format-section');
@@ -5377,7 +5500,7 @@ async function showPoolSettings() {
   if (isV2) {
     // Mode label
     const modeEl = document.getElementById('settings-betting-mode-value');
-    if (modeEl) modeEl.textContent = t('wizard.step1.singlePhase.title');
+    if (modeEl) modeEl.textContent = t(pool.betting_mode === 'late_knockout' ? 'wizard.lateKnockout.modeTitle' : 'wizard.step1.singlePhase.title');
     // Render scoring rules from JSONB into the v2 list
     _renderV2ScoringList(pool);
   }
@@ -6602,6 +6725,7 @@ function _fbSetDashboardProgressCard(rawState) {
 function _dashboardViewCtaSubtitle(isLocked, hasCorrectionGrant) {
   if (hasCorrectionGrant) return t('dashboard.viewCta.reviewSubtitle');
   if (isLocked) return t('dashboard.viewCta.lockedSubtitle');
+  if (_poolLateKnockoutOpen()) return t('dashboard.viewCta.lateKnockoutSubtitle', { time: _knockoutCutoffLabel() });
   if (_poolLateEntryOpen()) return t('dashboard.viewCta.lateSubtitle', { time: _lateEntryCutoffLabel() });
   return t('dashboard.viewCta.subtitle');
 }
@@ -6615,6 +6739,7 @@ async function updateBettingStatusOnDashboard() {
   const subtitleEl = ctaEl.querySelector('.bet-cta-subtitle');
   if (!titleEl || !subtitleEl) return;
 
+  const isLateKo = _isLateKnockoutPool(state.currentPool);
   const isSingle = state.currentPool && state.currentPool.betting_mode === 'single_phase';
 
   // v2.4: single_phase users predict everything in one flow (groups + bracket +
@@ -6622,8 +6747,55 @@ async function updateBettingStatusOnDashboard() {
   // on the dashboard are redundant. Hide them entirely for single_phase pools.
   const koCard = document.getElementById('bet-status-knockout');
   const tsCard = document.getElementById('bet-status-top-scorer');
-  if (koCard) koCard.style.display = isSingle ? 'none' : '';
-  if (tsCard) tsCard.style.display = isSingle ? 'none' : '';
+  if (koCard) koCard.style.display = (isSingle || isLateKo) ? 'none' : '';
+  if (tsCard) tsCard.style.display = (isSingle || isLateKo) ? 'none' : '';
+
+  if (isLateKo) {
+    const uid = state.currentUser.id;
+    const pid = state.currentPool.id;
+    const groupStageDone = await _isGroupStageOver();
+    const { data: kop } = await supabaseClient
+      .from('knockout_picks').select('bracket_position').eq('user_id', uid).eq('pool_id', pid);
+    const bracketCount = (kop || []).filter(r => r.bracket_position != null).length;
+    const bracketDone = bracketCount >= 31;
+    const locked = spIsLocked();
+
+    const row = document.getElementById('bet-cta-progress-row');
+    ctaEl.classList.toggle('done', bracketDone);
+    ctaEl.disabled = !groupStageDone && !bracketDone;
+
+    if (!groupStageDone) {
+      titleEl.textContent = t('dashboard.lateKnockout.waitingTitle');
+      subtitleEl.textContent = t('dashboard.lateKnockout.waitingSubtitle', { time: _knockoutCutoffLabel() });
+      if (row) row.style.display = 'none';
+      _fbSetDashboardProgressCard('notStarted');
+      return;
+    }
+
+    ctaEl.disabled = false;
+    if (bracketDone) {
+      titleEl.textContent = t('dashboard.viewCta.title');
+      subtitleEl.textContent = locked
+        ? t('dashboard.viewCta.lockedSubtitle')
+        : t('dashboard.viewCta.lateKnockoutSubtitle', { time: _knockoutCutoffLabel() });
+      if (row) row.style.display = 'none';
+      const iconWrap = document.getElementById('bet-cta-icon-simple');
+      if (iconWrap) iconWrap.innerHTML = _fbCtaSvgCheck();
+      _fbSetDashboardProgressCard('allSet');
+    } else if (bracketCount > 0) {
+      titleEl.textContent = t('dashboard.continueCta.title');
+      subtitleEl.textContent = t('dashboard.continueCta.lateKnockout', { n: bracketCount, total: 31 });
+      _fbSetDashboardProgressCard('partial');
+      _fbSetCtaProgress(bracketCount, 31);
+    } else {
+      titleEl.textContent = t('dashboard.lateKnockout.startTitle');
+      subtitleEl.textContent = t('dashboard.lateKnockout.startSubtitle', { time: _knockoutCutoffLabel() });
+      _fbSetDashboardProgressCard('notStarted');
+      _fbSetCtaProgress(0, 31);
+    }
+    return;
+  }
+  ctaEl.disabled = false;
 
   if (isSingle) {
     // v2.6.3: compute the TRUE completion state across EVERY stage so the CTA
@@ -8008,7 +8180,7 @@ async function updateKnockoutStatusOnDashboard() {
 
   // v2.4: knockout/top-scorer cards are hidden in single_phase mode (the user
   // already predicts these in the unified flow), so nothing to update here.
-  if (state.currentPool && state.currentPool.betting_mode === 'single_phase') {
+  if (state.currentPool && (state.currentPool.betting_mode === 'single_phase' || state.currentPool.betting_mode === 'late_knockout')) {
     return;
   }
 
@@ -9472,8 +9644,20 @@ document.addEventListener('DOMContentLoaded', () => {
 // locked_at) - this mirrors that so the client never offers a dead-end invite
 // link once the pool locks at kickoff (locked_at) or is manually locked
 // (is_locked). Sharing a bracket / leaderboard / recap is NOT gated by this.
-function isPoolJoinClosed() {
-  return isPoolWriteLocked();
+function isPoolJoinClosed(pool = state.currentPool) {
+  if (!pool) return false;
+  if (pool.is_locked || pool.locked_at) return true;
+  if (_isLateKnockoutPool(pool)) return Date.now() >= _knockoutCutoffMs();
+
+  const now = Date.now();
+  const createdAt = _poolCreatedAtMs(pool);
+  const kickoff = Date.parse(POOL_LOCK_KICKOFF_ISO);
+  const lateCutoff = Date.parse(LATE_ENTRY_CUTOFF_ISO);
+  if (!Number.isFinite(kickoff) || now < kickoff) return false;
+
+  if (createdAt < kickoff) return true;
+  if (Number.isFinite(lateCutoff) && createdAt < lateCutoff) return now >= lateCutoff;
+  return true;
 }
 
 // Guard for invite-link share paths. Returns true (and toasts) when the pool no
@@ -9551,8 +9735,14 @@ function getShareMessage(source = 'copy') {
   const code = state.currentPool.code;
   const url = getInviteUrl(source);
 
-  const key = _poolLateEntryOpen() ? 'sharePool.shareTextLate' : 'sharePool.shareText';
-  return t(key, { poolName, code, url, time: _lateEntryCutoffLabel() });
+  const key = _poolLateKnockoutOpen() ? 'sharePool.shareTextLateKnockout' : (_poolLateEntryOpen() ? 'sharePool.shareTextLate' : 'sharePool.shareText');
+  return t(key, {
+    poolName,
+    code,
+    url,
+    time: _lateEntryCutoffLabel(),
+    knockoutTime: _knockoutCutoffLabel()
+  });
 }
 
 // The per-app share helpers below serve two contexts. `mode='invite'` (default)
@@ -10595,6 +10785,19 @@ const DEFAULT_SCORING_RULES = {
     semi_final: 16,
     final: 32,
     top_scorer: 10
+  },
+  late_knockout: {
+    group_first: 0,
+    group_second: 0,
+    group_third: 0,
+    group_fourth: 0,
+    third_place_advance: 0,
+    round_of_32: 2,
+    round_of_16: 4,
+    quarter_final: 8,
+    semi_final: 16,
+    final: 32,
+    top_scorer: 0
   }
 };
 
@@ -10657,7 +10860,7 @@ function _defaultUseMultsForMode(mode) {
 
 const wizardState = {
   step: 1,
-  mode: 'single_phase',      // 'single_phase' | 'two_phase'
+  mode: 'single_phase',      // 'single_phase' | 'two_phase' | 'late_knockout'
   rulesChoice: 'default',     // 'default' | 'custom'
   customRules: null,          // populated when user customizes
   // v2.5.47: master on/off for risk multipliers. v2.5.54: per-mode default.
@@ -10678,8 +10881,9 @@ function startPoolWizard() {
   }
 
   state.pendingAdminNickname = adminNickname;
-  wizardState.step = 1;
-  wizardState.mode = 'single_phase';
+  const lateKo = _lateKnockoutCreationActive();
+  wizardState.step = lateKo ? 2 : 1;
+  wizardState.mode = lateKo ? 'late_knockout' : 'single_phase';
   wizardState.rulesChoice = 'default';
   wizardState.customRules = null;
   // v2.5.54: reset master toggle per mode default (single_phase = off)
@@ -10717,11 +10921,16 @@ function renderWizardStep() {
     });
   }
   if (wizardState.step === 2) {
+    const title = document.querySelector('#wizard-step-2 .wizard-step-title');
+    const subtitle = document.querySelector('#wizard-step-2 .wizard-step-subtitle');
+    if (title) title.textContent = t(wizardState.mode === 'late_knockout' ? 'wizard.lateKnockout.title' : 'wizard.step2.title');
+    if (subtitle) subtitle.textContent = t(wizardState.mode === 'late_knockout' ? 'wizard.lateKnockout.subtitle' : 'wizard.step2.subtitle', { time: _knockoutCutoffLabel() });
     renderWizardRulesStep();
   }
 }
 
 function wizardSelectMode(mode) {
+  if (_lateKnockoutCreationActive()) mode = 'late_knockout';
   wizardState.mode = mode;
   wizardState.customRules = null; // reset on mode change
   // v2.5.54: switching modes resets the master multipliers toggle to the
@@ -10749,6 +10958,9 @@ function getWizardRuleKeys() {
   if (wizardState.mode === 'two_phase') {
     return ['group_first','group_second','round_of_32','round_of_16','quarter_final','semi_final','final','top_scorer'];
   }
+  if (wizardState.mode === 'late_knockout') {
+    return ['round_of_32','round_of_16','quarter_final','semi_final','final'];
+  }
   return ['group_first','group_second','group_third','group_fourth','third_place_advance',
           'round_of_32','round_of_16','quarter_final','semi_final','final','top_scorer'];
 }
@@ -10759,8 +10971,14 @@ function getWizardRuleKeys() {
 function _renderV2ScoringList(pool) {
   const list = document.getElementById('settings-v2-scoring-list');
   if (!list) return;
-  const rules = (pool && pool.scoring_rules) || DEFAULT_SCORING_RULES.single_phase;
-  const groups = [
+  const mode = (pool && pool.betting_mode) || 'single_phase';
+  const rules = (pool && pool.scoring_rules) || DEFAULT_SCORING_RULES[mode] || DEFAULT_SCORING_RULES.single_phase;
+  const groups = _isLateKnockoutPool(pool) ? [
+    {
+      titleKey: 'wizard.ruleGroup.knockout',
+      rows: ['round_of_32', 'round_of_16', 'quarter_final', 'semi_final', 'final']
+    }
+  ] : [
     {
       titleKey: 'wizard.ruleGroup.group',
       rows: ['group_first', 'group_second', 'group_third', 'group_fourth', 'third_place_advance']
@@ -10796,6 +11014,14 @@ function _renderV2ScoringList(pool) {
 // misleading. The synthetic key 'advancing_team' is handled specially by
 // renderWizardRulesStep (reads from group_first, writes to BOTH).
 function _wizardRuleGroups() {
+  if (wizardState.mode === 'late_knockout') {
+    return [
+      {
+        titleKey: 'wizard.ruleGroup.knockout',
+        rows: ['round_of_32', 'round_of_16', 'quarter_final', 'semi_final', 'final']
+      }
+    ];
+  }
   if (wizardState.mode === 'two_phase') {
     return [
       {
@@ -10868,7 +11094,10 @@ function renderWizardRulesStep() {
   // v2.5.27: synthetic key 'advancing_team' mirrors group_first for two_phase
   const valueFor = (k) => (k === 'advancing_team') ? (values.group_first || 0) : values[k];
 
-  list.innerHTML = _wizardRuleGroups().map(group => `
+  const lateNotice = wizardState.mode === 'late_knockout'
+    ? `<div class="wizard-late-ko-note">${t('wizard.lateKnockout.notice', { time: _knockoutCutoffLabel() })}</div>`
+    : '';
+  list.innerHTML = lateNotice + _wizardRuleGroups().map(group => `
     <div class="wizard-rules-group">
       <div class="wizard-rules-group-title">${t(group.titleKey)}</div>
       ${group.rows.map(k => `
@@ -10948,7 +11177,10 @@ function renderWizardMultipliers() {
   const body = document.getElementById('wizard-multipliers-body');
   if (body) body.classList.toggle('is-off', wizardState.useMultipliers === false);
   const spNote = document.getElementById('wizard-mult-sp-note');
-  if (spNote) spNote.style.display = (wizardState.mode === 'single_phase') ? '' : 'none';
+  if (spNote) {
+    spNote.style.display = (wizardState.mode === 'single_phase' || wizardState.mode === 'late_knockout') ? '' : 'none';
+    spNote.textContent = t(wizardState.mode === 'late_knockout' ? 'wizard.multipliers.lateKnockoutNote' : 'wizard.multipliers.singlePhaseNote');
+  }
 
   const isCustom = wizardState.rulesChoice === 'custom';
   const cat = (isCustom && wizardState.customRules && wizardState.customRules.multipliers)
@@ -11141,7 +11373,14 @@ function calcMaxPoints(rules, mode) {
            4 * (rules.quarter_final || 0) +
            2 * (rules.semi_final || 0) +
            1 * (rules.final || 0) +
-           (rules.top_scorer || 0);
+            (rules.top_scorer || 0);
+  }
+  if (mode === 'late_knockout') {
+    return 16 * (rules.round_of_32 || 0) +
+           8 * (rules.round_of_16 || 0) +
+           4 * (rules.quarter_final || 0) +
+           2 * (rules.semi_final || 0) +
+           1 * (rules.final || 0);
   }
   // two_phase
   return 12 * ((rules.group_first||0) + (rules.group_second||0)) +
@@ -11164,6 +11403,10 @@ function wizardNext() {
 }
 
 function wizardBack() {
+  if (_lateKnockoutCreationActive() && wizardState.step === 2) {
+    showScreen('admin-nickname-screen');
+    return;
+  }
   if (wizardState.step > 1) {
     wizardState.step--;
     renderWizardStep();
@@ -11185,13 +11428,19 @@ async function wizardCreatePool() {
     return;
   }
 
-  const finalRules = getFinalScoringRules();
-
   try {
     if (isLateEntryCreationClosed()) {
-      showToast(t('errors.lateEntryClosed', { time: _lateEntryCutoffLabel() }), 'error');
+      showToast(t('errors.lateKnockoutCreationClosed', { time: _knockoutCutoffLabel() }), 'error');
       return;
     }
+    if (_lateKnockoutCreationActive() && wizardState.mode !== 'late_knockout') {
+      wizardState.mode = 'late_knockout';
+      wizardState.rulesChoice = 'default';
+      wizardState.customRules = null;
+      wizardState.useMultipliers = _defaultUseMultsForMode(wizardState.mode);
+    }
+
+    const finalRules = getFinalScoringRules();
 
     showToast(t('errors.creatingPool'), 'info');
 
@@ -11384,6 +11633,7 @@ function spHasUserSubmitted() {
 function spIsUserSubmitted() { return false; }
 
 function spTopScorerRequired() {
+  if (_isLateKnockoutPool()) return false;
   if (state.currentPool && state.currentPool.top_scorer_enabled === false) return false;
   try { return localStorage.getItem('fb_squads_released') === 'true'; } catch (_) { return false; }
 }
@@ -11395,6 +11645,16 @@ function spBracketComplete() {
 }
 
 function spCompletionState(hasTopScorerPick = false) {
+  if (_isLateKnockoutPool()) {
+    const bracketComplete = spBracketComplete();
+    return {
+      incompleteGroups: [],
+      bracketComplete,
+      missingWinner: !(spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31])),
+      missingTopScorer: false,
+      allComplete: bracketComplete
+    };
+  }
   const incompleteGroups = WC2026_GROUP_LETTERS.filter(l =>
     !spState.groupPositions[l] || !spState.groupPositions[l].every(x => x)
   );
@@ -11509,6 +11769,40 @@ async function startSinglePhaseBetting() {
   // Everything complete (or already submitted) → the summary review.
   await spShowSummary();
 }
+
+async function startLateKnockoutBetting() {
+  if (!state.currentPool || !state.currentUser) {
+    showToast(t('errors.reconnect'), 'error');
+    return;
+  }
+  if (spIsLocked()) {
+    await spShowLockedView();
+    return;
+  }
+  await spLoadExistingPicks();
+  const prepared = await spPrepareLateKnockoutBracket();
+  if (!prepared.ok) {
+    showToast(t('lateKnockout.waitingToast'), 'info');
+    goToDashboard();
+    return;
+  }
+
+  const bracketComplete = spBracketComplete();
+  if (bracketComplete) {
+    await spShowSummary();
+    return;
+  }
+
+  koSingle.mode = 'single-phase';
+  koSingle.sequence = _koSinglePhaseSequence();
+  const firstIncomplete = koSingle.sequence.findIndex(
+    s => !(spState.bracketPicks && spState.bracketPicks[s.pos]));
+  koSingle.idx = firstIncomplete >= 0 ? firstIncomplete : 0;
+  state.spInFlow = true;
+  koSingleRender();
+  showScreen('ko-single-screen');
+}
+window.startLateKnockoutBetting = startLateKnockoutBetting;
 
 // v2.9.2: dedicated entry for the "recover bracket" banner. Affected users HAVE
 // a champion (tournamentWinner set) but no knockout bracket, so the normal entry
@@ -12331,6 +12625,40 @@ function _spResolveThirdPlaceSlots() {
   const assignment = _spGreedyThirdPlaceSlots();
   return { assignment, used: new Set(Object.values(assignment)) };
 }
+
+async function spPrepareLateKnockoutBracket() {
+  if (!_isLateKnockoutPool()) return { ok: true };
+  const groupStageDone = await _isGroupStageOver();
+  if (!groupStageDone) return { ok: false, reason: 'groups-open' };
+
+  await loadResultsData({ force: true, preferDb: true });
+  const standings = (state.results && state.results.groupStandings) || {};
+  const positions = {};
+  const thirds = [];
+
+  WC2026_GROUP_LETTERS.forEach(letter => {
+    const rows = standings[letter] || [];
+    if (rows.length < 4) return;
+    positions[letter] = rows.slice(0, 4).map(r => r.code);
+    if (rows[2]) thirds.push({ group: letter, ...rows[2] });
+  });
+
+  if (Object.keys(positions).length < WC2026_GROUP_LETTERS.length || thirds.length < WC2026_GROUP_LETTERS.length) {
+    return { ok: false, reason: 'standings-incomplete' };
+  }
+
+  thirds.sort((a, b) =>
+    (b.points - a.points) ||
+    (b.gd - a.gd) ||
+    (b.gf - a.gf) ||
+    a.code.localeCompare(b.code)
+  );
+
+  spState.groupPositions = positions;
+  spState.thirdPlaceAdvancers = thirds.slice(0, 8).map(x => x.group);
+  return { ok: true };
+}
+window.spPrepareLateKnockoutBracket = spPrepareLateKnockoutBracket;
 
 
 function _spResolveFeed(feed, thirdSlots, slotPos) {
@@ -13454,6 +13782,7 @@ async function spRenderSummary() {
     ' | pool=' + (state.currentPool && state.currentPool.id));
   await spLoadExistingPicks();
   await loadResultsData({ force: true, preferDb: true });
+  if (_isLateKnockoutPool()) await spPrepareLateKnockoutBracket();
   const groupCount = Object.values(spState.groupPositions || {})
     .reduce((n, arr) => n + (arr || []).filter(Boolean).length, 0);
   console.log('[spRenderSummary] after load: groups=' + groupCount +
@@ -13483,11 +13812,15 @@ async function spRenderSummary() {
   if (summaryWarning) {
     const warningText = summaryWarning.querySelector('[data-i18n]');
     const lateEntryOpen = canEditSummary && _poolLateEntryOpen();
+    const lateKoOpen = canEditSummary && _poolLateKnockoutOpen();
     summaryWarning.style.display = canEditSummary ? '' : 'none';
     if (warningText && canEditSummary) {
-      const key = lateEntryOpen ? 'betting.summary.warningLate' : 'betting.summary.warning';
+      const key = lateKoOpen ? 'betting.summary.warningLateKnockout' : (lateEntryOpen ? 'betting.summary.warningLate' : 'betting.summary.warning');
       warningText.setAttribute('data-i18n', key);
-      warningText.textContent = t(key, { time: _lateEntryCutoffLabel() });
+      warningText.textContent = t(key, {
+        time: _lateEntryCutoffLabel(),
+        knockoutTime: _knockoutCutoffLabel()
+      });
     }
   }
 
@@ -13530,12 +13863,19 @@ async function spRenderSummary() {
   if (knockoutReviewOpen) {
     console.info('[spRenderSummary] knockout review is open; broad summary edit stays hidden');
   }
+
   // Groups summary
   const groupsEl = document.getElementById('sp-summary-groups');
-  groupsEl.innerHTML = WC2026_GROUP_LETTERS.map(letter => {
-    const positions = spState.groupPositions[letter] || [];
-    return _spGroupWithCurrentHtml(letter, positions);
-  }).join('');
+  const groupsCard = groupsEl && groupsEl.closest('.sp-summary-card');
+  if (_isLateKnockoutPool()) {
+    if (groupsCard) groupsCard.style.display = 'none';
+  } else {
+    if (groupsCard) groupsCard.style.display = '';
+    groupsEl.innerHTML = WC2026_GROUP_LETTERS.map(letter => {
+      const positions = spState.groupPositions[letter] || [];
+      return _spGroupWithCurrentHtml(letter, positions);
+    }).join('');
+  }
 
   // Full horizontal bracket tree, matching the public share page structure.
   const bracketEl = document.getElementById('sp-summary-bracket');
@@ -13561,10 +13901,16 @@ async function spRenderSummary() {
     : `<div class="sp-summary-row"><span class="sr-label">${t('betting.notPicked')}</span></div>`;
 
   // Top scorer
+  const tsEl = document.getElementById('sp-summary-topscorer');
+  const tsCard = tsEl && tsEl.closest('.sp-summary-card');
+  if (_isLateKnockoutPool()) {
+    if (tsCard) tsCard.style.display = 'none';
+    return;
+  }
+  if (tsCard) tsCard.style.display = '';
   try {
     const { data: ts } = await supabaseClient.from('top_scorer_picks')
       .select('*').eq('user_id', state.currentUser.id).maybeSingle();
-    const tsEl = document.getElementById('sp-summary-topscorer');
     if (ts) {
       tsEl.innerHTML = `<div class="sp-summary-row">
         <span class="sr-flag">${getCountryFlag(ts.team_code)}</span>
@@ -13592,6 +13938,10 @@ window.spSummaryBack = spSummaryBack;
 function spSummaryEditPicks() {
   if (spIsLocked()) {
     spShowLockedView();
+    return;
+  }
+  if (_isLateKnockoutPool()) {
+    startLateKnockoutBetting();
     return;
   }
   spState.currentGroupIdx = 0;
@@ -13733,11 +14083,7 @@ async function spAutoLockPoolIfNeeded() {
       // RPC absent -> fall through to the legacy direct write below.
     }
 
-    const { data: anyStarted } = await supabaseClient.from('matches')
-      .select('id, status')
-      .in('status', ['IN_PLAY', 'PAUSED', 'FINISHED', 'LIVE', 'started', 'finished'])
-      .limit(1);
-    if (anyStarted && anyStarted.length > 0) {
+    if (_poolEffectiveLockPassed(state.currentPool)) {
       const lockTs = new Date().toISOString();
       const { error } = await supabaseClient.from('pools')
         .update({ locked_at: lockTs })
@@ -13898,7 +14244,9 @@ function closeHypoBracket() {
 // ============================================================
 const _origStartGroupBetting = typeof startGroupBetting === 'function' ? startGroupBetting : null;
 window.startBettingFromDashboard = function() {
-  if (state.currentPool && state.currentPool.betting_mode === 'single_phase') {
+  if (state.currentPool && state.currentPool.betting_mode === 'late_knockout') {
+    startLateKnockoutBetting();
+  } else if (state.currentPool && state.currentPool.betting_mode === 'single_phase') {
     startSinglePhaseBetting();
   } else if (_origStartGroupBetting) {
     _origStartGroupBetting();
@@ -14860,6 +15208,13 @@ function koSingleFinish() {
     // v2.10: recovery is BRACKET-ONLY — champion/top-scorer stay locked. Flush the
     // final save through the reopen RPC, confirm, then exit (no top-scorer detour).
     spReopenFinish();
+  } else if (_isLateKnockoutPool()) {
+    if (!spState.tournamentWinner && spState.bracketPicks && spState.bracketPicks[31]) {
+      spState.tournamentWinner = spState.bracketPicks[31];
+      spSaveWinnerToDb(false);
+    }
+    state.spInFlow = true;
+    spShowSummary();
   } else {
     // v2.4.3: single-phase - the FINAL match (bracket position 15) is
     // the tournament winner, so we go straight to top scorer; no

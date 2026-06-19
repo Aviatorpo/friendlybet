@@ -181,6 +181,17 @@ kpByUser['U3'] = kp3;                    // wire U3's two-phase knockout picks i
 gpp('U4','C',[null,'C2',null,'C4']);    // pos2=3*1.5=4.5 ; pos4=1*1.5=1.5 ; sum=6.0 -> round 6 (NOT 7)
 // expected: group=6, knockout=0, bonus=0, total=6
 
+// U5 late-knockout, with stale group/third-place/top-scorer rows present.
+// Late pools must score only the knockout bracket.
+gpp('U5','A',['A1','A2','A3','A4']);
+thirds('U5',['A']);
+bracket('U5',1,'KO1');
+bracket('U5',17,'KO1');
+bracket('U5',25,'KO1');
+bracket('U5',29,'KO1');
+bracket('U5',31,'KO1');
+// expected: group=0, knockout=2+4+8+16+32=62, bonus=0, total=62
+
 // ---------- mock Supabase transport ----------
 const captured = {};
 const idOf = (url) => { const m = url.match(/(?:user_id|id)=eq\.([^&]+)/); return m ? m[1] : null; };
@@ -233,6 +244,23 @@ S.__setFetch(async (url, opts) => {
     [{ id:'U4', nickname:'U4' }], finishedMatches, new Map(), null);
   eq('U4 group (round(4.5+1.5)=6, not 7)', captured.U4.group_points, 6);
   eq('U4 total', captured.U4.total_score, 6);
+
+  console.log('\n== integration: late-knockout ignores stale non-knockout rows (U5) ==');
+  const rulesLate = {
+    ...S.DEFAULT_RULES_SINGLE,
+    group_first: 99,
+    group_second: 99,
+    group_third: 99,
+    group_fourth: 99,
+    third_place_advance: 99,
+    top_scorer: 99,
+  };
+  await S.scoreSinglePhasePool({ id:'P5', code:'P5', use_multipliers:false }, rulesLate,
+    [{ id:'U5', nickname:'U5' }], finishedMatches, new Map([['U5', { player_id:'TS1' }]]), 'TS1', { lateKnockout:true });
+  eq('U5 group ignored', captured.U5.group_points, 0);
+  eq('U5 knockout only', captured.U5.knockout_points, 62);
+  eq('U5 bonus ignored', captured.U5.bonus_points, 0);
+  eq('U5 total', captured.U5.total_score, 62);
 
   console.log('\n== unit: groupIsComplete requires TERMINAL status, not live scores ==');
   const finished6 = Array.from({ length: 6 }, () => ({ status: 'FINISHED', home_score: 1, away_score: 0 }));

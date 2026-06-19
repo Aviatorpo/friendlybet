@@ -663,18 +663,38 @@ async function fetchRealPicksPhaseAware(userId, poolId, lang){
     'https://kovhuahdoluxyqqwqohw.supabase.co',
     'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU'
   );
-  const [usr, gp, g2p, kp, tw, ts, tp] = await Promise.all([
+  const [usr, pool, gp, g2p, kp, tw, ts, tp, matches] = await Promise.all([
     sb.from('users').select('nickname').eq('id', userId).maybeSingle(),
+    sb.from('pools').select('betting_mode').eq('id', poolId).maybeSingle(),
     sb.from('group_position_picks').select('group_letter,position,team_code').eq('pool_id',poolId).eq('user_id',userId),
     sb.from('group_picks').select('group_letter,team_code').eq('pool_id',poolId).eq('user_id',userId),
     sb.rpc('get_public_bracket', { p_user_id: userId, p_pool_id: poolId }),
     sb.from('tournament_winner_picks').select('team_code').eq('pool_id',poolId).eq('user_id',userId).maybeSingle(),
     sb.from('top_scorer_picks').select('player_name,team_code').eq('pool_id',poolId).eq('user_id',userId).maybeSingle(),
-    sb.from('sp_third_place_picks').select('group_letter').eq('pool_id',poolId).eq('user_id',userId)
+    sb.from('sp_third_place_picks').select('group_letter').eq('pool_id',poolId).eq('user_id',userId),
+    sb.from('matches').select('stage,group_letter,home_team_code,away_team_code,home_score,away_score,status').eq('stage','GROUP_STAGE').in('status',['FINISHED','AWARDED'])
   ]);
   const nickname = (usr.data && usr.data.nickname) || (lang==='he' ? '\u05e9\u05d7\u05e7\u05df' : 'Player');
   const singleRows = gp.data || [];
   const twoPhaseRows = g2p.data || [];
+  const mode = (pool.data && pool.data.betting_mode) || 'single_phase';
+
+  const bracketPicks = {};
+  (kp.data||[]).forEach(r => { bracketPicks[r.bracket_position] = r.predicted_winner; });
+
+  if (mode === 'late_knockout') {
+    const seed = window.FBShare.lateKnockoutSeedFromMatches(matches.data || []);
+    if (seed) {
+      return {
+        nickname, lang, mode:'late_knockout',
+        groupPositions: seed.groupPositions,
+        bracketPicks,
+        thirdPlaceAdvancers: seed.thirdPlaceAdvancers,
+        tournamentWinner: (tw.data && tw.data.team_code) || bracketPicks[31],
+        topScorer: null
+      };
+    }
+  }
 
   if (twoPhaseRows.length && !singleRows.length) {
     const groupAdvancers = {};
@@ -694,8 +714,6 @@ async function fetchRealPicksPhaseAware(userId, poolId, lang){
   singleRows.forEach(r => {
     (groupPositions[r.group_letter] = groupPositions[r.group_letter] || [])[r.position-1] = r.team_code;
   });
-  const bracketPicks = {};
-  (kp.data||[]).forEach(r => { bracketPicks[r.bracket_position] = r.predicted_winner; });
   return {
     nickname, lang, mode:'single_phase', groupPositions, bracketPicks,
     thirdPlaceAdvancers: (tp.data||[]).map(r => r.group_letter),

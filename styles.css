@@ -7099,6 +7099,17 @@ body:not(.ltr) .home-lang-toggle {
   flex-direction: column;
   gap: 12px;
 }
+
+.wizard-late-ko-note {
+  margin-bottom: 4px;
+  padding: 12px 14px;
+  border: 1px solid rgba(217, 180, 106, 0.35);
+  border-radius: 12px;
+  background: rgba(217, 180, 106, 0.1);
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 13px;
+  line-height: 1.45;
+}
 .wizard-rules-group {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);

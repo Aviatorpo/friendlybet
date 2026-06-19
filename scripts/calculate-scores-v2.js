@@ -4,6 +4,7 @@
 // New scoring model that supports:
 //   - 'single_phase' pools (groups + hypothetical bracket + winner + top scorer)
 //   - 'two_phase' pools (legacy groups + knockout)
+//   - 'late_knockout' pools (real knockout bracket only)
 // All scoring rules come from pools.scoring_rules (JSONB).
 // Runs every 30 minutes via GitHub Actions.
 // ============================================================
@@ -32,6 +33,12 @@ const DEFAULT_RULES_TWO = {
   group_first: 1, group_second: 1, group_third: 0, group_fourth: 0,
   round_of_32: 2, round_of_16: 4, quarter_final: 8, semi_final: 16, final: 32,
   top_scorer: 10
+};
+const DEFAULT_RULES_LATE_KNOCKOUT = {
+  group_first: 0, group_second: 0, group_third: 0, group_fourth: 0,
+  third_place_advance: 0,
+  round_of_32: 2, round_of_16: 4, quarter_final: 8, semi_final: 16, final: 32,
+  top_scorer: 0
 };
 
 // v2.5.36: shared multiplier resolver. Looks up (in order): the
@@ -296,7 +303,7 @@ async function main() {
     try {
       const mode = pool.betting_mode || 'two_phase';
       const rules = pool.scoring_rules ||
-        (mode === 'single_phase' ? DEFAULT_RULES_SINGLE : DEFAULT_RULES_TWO);
+        (mode === 'late_knockout' ? DEFAULT_RULES_LATE_KNOCKOUT : (mode === 'single_phase' ? DEFAULT_RULES_SINGLE : DEFAULT_RULES_TWO));
 
       console.log(`\nPool ${pool.code} - ${pool.name} (${mode})`);
 
@@ -307,8 +314,8 @@ async function main() {
       const tsPicks = await sbAll('top_scorer_picks', `?pool_id=eq.${pool.id}&select=*`);
       const tsMap = new Map((tsPicks || []).map(t => [t.user_id, t]));
 
-      if (mode === 'single_phase') {
-        await scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer);
+      if (mode === 'single_phase' || mode === 'late_knockout') {
+        await scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, { lateKnockout: mode === 'late_knockout' });
       } else {
         await scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer);
       }
@@ -323,7 +330,8 @@ async function main() {
 }
 
 // ---- SINGLE PHASE scoring ----
-async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer) {
+async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, opts = {}) {
+  const lateKnockout = !!opts.lateKnockout;
   // Group standings (real-world)
   const standings = {}; // letter -> [team codes in order 1st..4th] or null if group not complete
   const groupCodes = {}; // letter -> [team codes in this group]
@@ -386,20 +394,22 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     // v2.5.36: pool-aware multiplier resolver
     const resolveMult = poolMultResolver(pool, rules);
 
-    // Group position picks
-    const gpp = await sbAll('group_position_picks', `?user_id=eq.${user.id}&select=*`);
-    (gpp || []).forEach(p => {
-      const real = standings[p.group_letter];
-      if (!real) return; // group not done
-      if (real[p.position - 1] === p.team_code) {
-        let pts = 0;
-        if (p.position === 1) pts = rules.group_first || 0;
-        else if (p.position === 2) pts = rules.group_second || 0;
-        else if (p.position === 3) pts = rules.group_third || 0;
-        else if (p.position === 4) pts = rules.group_fourth || 0;
-        groupPoints += pts * resolveMult(p.team_code, p.multiplier_applied);
-      }
-    });
+    // Group position picks. Late knockout pools never score group positions.
+    const gpp = lateKnockout ? [] : await sbAll('group_position_picks', `?user_id=eq.${user.id}&select=*`);
+    if (!lateKnockout) {
+      (gpp || []).forEach(p => {
+        const real = standings[p.group_letter];
+        if (!real) return; // group not done
+        if (real[p.position - 1] === p.team_code) {
+          let pts = 0;
+          if (p.position === 1) pts = rules.group_first || 0;
+          else if (p.position === 2) pts = rules.group_second || 0;
+          else if (p.position === 3) pts = rules.group_third || 0;
+          else if (p.position === 4) pts = rules.group_fourth || 0;
+          groupPoints += pts * resolveMult(p.team_code, p.multiplier_applied);
+        }
+      });
+    }
 
     // Hypothetical bracket picks
     const kp = await sbAll('knockout_picks', `?user_id=eq.${user.id}&bracket_position=not.is.null&select=*`);
@@ -439,7 +449,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     // "its 3rd-place team advances", check whether the team THEY put 3rd in
     // that group is actually one of the real best-8 third places. Team-based,
     // flat bonus (not multiplied). Only once all 12 groups are complete.
-    if (realBest8Thirds && (rules.third_place_advance || 0) > 0) {
+    if (!lateKnockout && realBest8Thirds && (rules.third_place_advance || 0) > 0) {
       const tpp = await sbAll('sp_third_place_picks', `?user_id=eq.${user.id}&select=group_letter`);
       (tpp || []).forEach(row => {
         const pick = (gpp || []).find(p => p.group_letter === row.group_letter && p.position === 3);
@@ -451,7 +461,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
 
     // Top scorer
     const tsp = tsMap.get(user.id);
-    if (tsp && realTopScorer && String(tsp.player_id) === String(realTopScorer)) {
+    if (!lateKnockout && tsp && realTopScorer && String(tsp.player_id) === String(realTopScorer)) {
       bonusPoints += rules.top_scorer || 0;
     }
 
