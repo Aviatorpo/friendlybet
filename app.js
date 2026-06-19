@@ -9300,10 +9300,9 @@ async function shareTheoreticalLeaderboard() {
   catch (e) { console.error('projection podium card failed', e); showToast(t('leaderboard.projection.shareUnavailable'), 'info'); return; }
   if (!blob) { showToast(t('leaderboard.projection.shareUnavailable'), 'info'); return; }
   const caption = t('leaderboard.projection.shareCaption', { pool: (_projectionShareState.poolName || 'FriendlyBet') });
-  const url = _projectionShareUrl('projection_podium');
   const file = new File([blob], 'friendlybet-theoretical-podium.png', { type: 'image/png' });
   if (navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
-    try { await navigator.share({ files: [file], text: caption, url }); }
+    try { await navigator.share({ files: [file], text: caption }); }
     catch (e) { if (e.name !== 'AbortError') console.error('projection podium share failed', e); }
   } else {
     const a = document.createElement('a');
@@ -9311,7 +9310,7 @@ async function shareTheoreticalLeaderboard() {
     a.download = 'friendlybet-theoretical-podium.png';
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    try { await navigator.clipboard.writeText(caption + ' ' + url); } catch (_) {}
+    try { await navigator.clipboard.writeText(caption); } catch (_) {}
     showToast(t('leaderboard.projection.shareDownloaded'), 'success');
   }
 }
