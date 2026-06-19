@@ -78,11 +78,14 @@ const TEAM_NAMES = {
 const STAR_PROFILES = {
   ALG: { player: 'Riyad Mahrez', number: 7 },
   ARG: { player: 'Lionel Messi', number: 10 },
+  AUT: { player: 'David Alaba', number: 8 },
   AUS: { player: 'Mathew Ryan', number: 1, role: 'captain goalkeeper' },
   BEL: { player: 'Youri Tielemans', number: 8 },
   BIH: { player: 'Edin Dzeko', number: 11 },
   BRA: { player: 'Vinicius Jr', number: 7 },
   CAN: { player: 'Jonathan David', number: 10 },
+  COD: { player: 'Cedric Bakambu', number: 17 },
+  COL: { player: 'Luis Diaz', number: 7 },
   CRO: { player: 'Luka Modric', number: 10 },
   CZE: { player: 'Patrik Schick', number: 10 },
   ENG: { player: 'Harry Kane', number: 9 },
@@ -94,9 +97,11 @@ const STAR_PROFILES = {
   CIV: { player: 'Franck Kessie', number: 8 },
   ECU: { player: 'Enner Valencia', number: 13 },
   GER: { player: 'Joshua Kimmich', number: 6 },
+  GHA: { player: 'Jordan Ayew', number: 9 },
   HAI: { player: 'Duckens Nazon', number: 9 },
   IRN: { player: 'Alireza Jahanbakhsh', number: 7 },
   IRQ: { player: 'Ali Jasim', number: 17 },
+  JOR: { player: 'Mousa Al Tamari', number: 10 },
   JPN: { player: 'Wataru Endo', number: 6 },
   KOR: { player: 'Son Heung-min', number: 7 },
   MAR: { player: 'Achraf Hakimi', number: 2 },
@@ -104,6 +109,7 @@ const STAR_PROFILES = {
   NED: { player: 'Virgil van Dijk', number: 4 },
   NOR: { player: 'Erling Haaland', number: 9 },
   NZL: { player: 'Chris Wood', number: 9 },
+  PAN: { player: 'Ismael Diaz', number: 10 },
   PAR: { player: 'Miguel Almiron', number: 10 },
   POR: { player: 'Bruno Fernandes', number: 8 },
   QAT: { player: 'Akram Afif', number: 11 },
@@ -117,6 +123,7 @@ const STAR_PROFILES = {
   TUR: { player: 'Hakan Calhanoglu', number: 10 },
   URU: { player: 'Federico Valverde', number: 8 },
   USA: { player: 'Christian Pulisic', number: 10 },
+  UZB: { player: 'Eldor Shomurodov', number: 14 },
 };
 
 const DRAW_FOCUS = {
@@ -1054,13 +1061,21 @@ function normalizeExistingStory(story, matchById) {
   };
 }
 
+function approvedStarProfile(code) {
+  const profile = STAR_PROFILES[code];
+  if (!profile || !profile.player || !profile.number || profile.number === 'current') {
+    throw new Error(`${code}: missing approved star profile / shirt number`);
+  }
+  return profile;
+}
+
 function imagePrompt(match, outcome) {
   const home = match.home_team_code;
   const away = match.away_team_code;
   const winner = outcome === 'DRAW' ? null : outcome;
   const loser = winner ? (winner === home ? away : home) : null;
-  const left = STAR_PROFILES[winner || home] || { player: `the biggest current star of ${teamName(winner || home)}`, number: 'current' };
-  const right = STAR_PROFILES[loser || away] || { player: `the biggest current star of ${teamName(loser || away)}`, number: 'current' };
+  const left = approvedStarProfile(winner || home);
+  const right = approvedStarProfile(loser || away);
   const topText = outcome === 'DRAW' ? 'DRAW!' : `${teamName(winner).toUpperCase()} WINS!`;
   const leftMood = outcome === 'DRAW' ? 'disappointed but proud after a draw' : 'celebrating the win in a fresh dynamic pose';
   const rightMood = outcome === 'DRAW' ? 'frustrated but composed after a draw' : 'sad after the loss, head down or hands on face';
@@ -1084,8 +1099,8 @@ function outcomeBasePrompt(match, outcome) {
   const away = match.away_team_code;
   const winner = outcome === 'DRAW' ? null : outcome;
   const loser = winner ? (winner === home ? away : home) : null;
-  const left = STAR_PROFILES[winner || home] || { player: `the biggest current star of ${teamName(winner || home)}`, number: 'current' };
-  const right = STAR_PROFILES[loser || away] || { player: `the biggest current star of ${teamName(loser || away)}`, number: 'current' };
+  const left = approvedStarProfile(winner || home);
+  const right = approvedStarProfile(loser || away);
   const outcomeText = outcome === 'DRAW' ? 'draw outcome' : `${teamName(winner)} win outcome`;
   const leftMood = outcome === 'DRAW' ? 'tense and defiant after a draw' : 'celebrating the win in a fresh dynamic pose';
   const rightMood = outcome === 'DRAW' ? 'tired but proud after a draw' : 'sad after the loss, head down or hands on face';
