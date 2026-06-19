@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-06-19T05:10:40.890Z",
-  "freshUntil": "2026-06-19T11:10:40.890Z",
+  "updatedAt": "2026-06-19T10:52:06.484Z",
+  "freshUntil": "2026-06-19T16:52:06.484Z",
   "count": 8,
   "items": [
+    {
+      "id": "result-9d57599d-ad49-4abb-b098-4d08de0f2ed8",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "מקסיקו עשתה את העבודה עם 1:0 נקי על דרום קוריאה. לא נוצץ, כן שימושי בטבלה.",
+      "en": "Mexico handled business with a clean 1-0 over South Korea. Not flashy, very useful on the table.",
+      "sources": [],
+      "expires_at": "2026-06-20T07:00:00.000Z"
+    },
     {
       "id": "result-14fc2a09-2287-4f51-83b3-c107147aae2a",
       "type": "result",
@@ -25,19 +34,10 @@
       "id": "result-a890fcea-97f3-4cf7-b53c-a371c72daf06",
       "type": "result",
       "confidence": "confirmed",
-      "he": "צ'כיה ודרום אפריקה התחלקו ב-1:1. אין מנצחת, יש מספיק נזק לטבלאות.",
-      "en": "Czechia and South Africa split it 1-1. No winner, plenty of damage to the tables.",
+      "he": "צ'כיה נגד דרום אפריקה נגמר 1:1. מי שחיפש הכרעה קיבל שיעור בענווה.",
+      "en": "Czechia vs South Africa finished 1-1. Anyone looking for certainty got a humility lesson.",
       "sources": [],
       "expires_at": "2026-06-19T22:00:00.000Z"
-    },
-    {
-      "id": "result-33f253ae-d708-45f8-bc0c-ac5dc5fd560b",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "קולומביה ניצחה את אוזבקיסטן 3:1. עוד תוצאה שנראית פשוטה רק אחרי שהיא כבר קרתה.",
-      "en": "Colombia beat Uzbekistan 3-1. Another result that looks obvious only after it happened.",
-      "sources": [],
-      "expires_at": "2026-06-19T08:00:00.000Z"
     },
     {
       "id": "fixture-5aaf9fdb-ff0b-4bef-ab4f-ed962bf1798f",
