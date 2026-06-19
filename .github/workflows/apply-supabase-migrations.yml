@@ -7,13 +7,6 @@ on:
         description: 'Optional migration file to apply, e.g. migrations/2026-06-19-change-nickname.sql'
         required: false
         default: ''
-  push:
-    branches:
-      - main
-    paths:
-      - 'migrations/*.sql'
-      - '.github/workflows/apply-supabase-migrations.yml'
-
 jobs:
   apply:
     runs-on: ubuntu-latest
@@ -53,8 +46,6 @@ jobs:
 
           if [[ -n "$INPUT_FILE" ]]; then
             printf '%s\n' "$INPUT_FILE" >> /tmp/friendlybet-migrations.txt
-          elif [[ "${{ github.event_name }}" == "push" ]]; then
-            git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" -- 'migrations/*.sql' >> /tmp/friendlybet-migrations.txt
           fi
 
           sort -u /tmp/friendlybet-migrations.txt -o /tmp/friendlybet-migrations.txt
