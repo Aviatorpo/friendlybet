@@ -1536,9 +1536,10 @@ function loadTablerFallback() {
       <button type="button" class="dashboard-projection-card" id="dashboard-projection-card" style="display:none;" onclick="showTheoreticalLeaderboard()">
         <div class="dpc-main">
           <div class="dpc-kicker" data-i18n="dashboard.projection.kicker">טבלה תיאורטית בלבד</div>
-          <div class="dpc-title" id="dashboard-projection-title" data-i18n="dashboard.projection.title">שום נקודה תיאורטית לא נספרת</div>
-          <div class="dpc-sub" id="dashboard-projection-sub" data-i18n="dashboard.projection.sub">זה רק מה היה קורה אם שלב הבתים היה נגמר עכשיו.</div>
+          <div class="dpc-title" id="dashboard-projection-title" data-i18n="dashboard.projection.title">אם הבתים היו נגמרים עכשיו...</div>
+          <div class="dpc-sub" id="dashboard-projection-sub" data-i18n="dashboard.projection.sub">קפוץ לראות איך הטבלה הייתה נראית כרגע.</div>
           <div class="dpc-pundit" id="dashboard-projection-pundit"></div>
+          <div class="dpc-cta" data-i18n="dashboard.projection.cta">לראות את הדרמה</div>
         </div>
         <div class="dpc-score">
           <span id="dashboard-projection-rank">-</span>
@@ -2649,14 +2650,18 @@ function loadTablerFallback() {
         <div class="lb-projection-head">
           <div>
             <div class="lb-projection-kicker" data-i18n="leaderboard.projection.kicker">טבלה תיאורטית בלבד</div>
-            <div class="lb-projection-title" data-i18n="leaderboard.projection.title">אם הבתים היו נגמרים עכשיו</div>
+            <div class="lb-projection-title" data-i18n="leaderboard.projection.title">הפודיום התיאורטי</div>
           </div>
           <span class="lb-projection-pill" data-i18n="leaderboard.projection.pill">לא רשמי</span>
         </div>
-        <div class="lb-projection-note" data-i18n="leaderboard.projection.note">שום נקודה תיאורטית לא נספרת. זה רק חישוב זמני לפי טבלאות הבתים כרגע.</div>
+        <div class="lb-projection-note" data-i18n="leaderboard.projection.note">שום נקודה תיאורטית לא נספרת. זה רק “מה היה קורה אם הבתים היו נגמרים עכשיו”.</div>
         <div class="lb-projection-source" id="lb-projection-source"></div>
         <div id="lb-projection-podium" class="lb-projection-podium"></div>
         <div id="lb-projection-pundit" class="lb-projection-pundit"></div>
+        <button type="button" class="lb-projection-share" onclick="shareTheoreticalLeaderboard()">
+          <i class="ti ti-share"></i>
+          <span data-i18n="leaderboard.projection.shareButton">שתף תמונת פודיום</span>
+        </button>
         <div id="lb-projection-list" class="lb-projection-list"></div>
       </div>
 
@@ -3125,7 +3130,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.10.76</span>
+      <span class="menu-version">v2.10.77</span>
     </div>
   </div>
 

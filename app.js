@@ -1430,7 +1430,7 @@ async function updateDashboardProjectionTeaser(users) {
     const pundit = document.getElementById('dashboard-projection-pundit');
     if (title) title.textContent = t('dashboard.projection.title');
     if (sub) sub.textContent = me
-      ? t('dashboard.projection.subWithScore', { points: me.projected_group_points || 0, groups: projection.activeGroups })
+      ? t('dashboard.projection.subWithScore', { rank, points: me.projected_group_points || 0, groups: projection.activeGroups })
       : t('dashboard.projection.sub');
     if (rankEl) rankEl.textContent = _projectionRankLabel(rank);
     if (pundit) pundit.textContent = _dashboardProjectionPundit(projection, me, rank);
@@ -8770,6 +8770,7 @@ function showTheoreticalLeaderboard() {
 function _hideTheoreticalLeaderboard() {
   const box = document.getElementById('lb-projection');
   if (box) box.style.display = 'none';
+  _projectionShareState = null;
 }
 
 function _projectionPunditLine(projection) {
@@ -8796,8 +8797,12 @@ function createProjectionPodiumSpot(rank, user, rankNum) {
   const div = document.createElement('div');
   div.className = `podium-spot projection ${rank}`;
   const medal = rankNum === 1 ? '1' : (rankNum === 2 ? '2' : '3');
+  const labelKey = rankNum === 1 ? 'leaderboard.projection.placeFirst'
+    : rankNum === 2 ? 'leaderboard.projection.placeSecond'
+    : 'leaderboard.projection.placeThird';
   div.innerHTML = `
-    <div class="podium-medal">${medal}</div>
+    <div class="projection-rank-chip">${medal}</div>
+    <div class="projection-place-label">${t(labelKey)}</div>
     <div class="podium-name">${escapeHtml(user.nickname || '?')}</div>
     <div class="podium-points">${user.projected_group_points || 0}</div>
     <div class="podium-points-label">${t('leaderboard.projection.points')}</div>
@@ -8866,6 +8871,12 @@ async function renderTheoreticalLeaderboard(users, options = {}) {
     renderProjectionPodium(projection.users);
     if (pundit) pundit.textContent = _projectionPunditLine(projection);
     renderProjectionList(projection.users);
+    _projectionShareState = {
+      users: projection.users.slice(0, 3),
+      activeGroups: projection.activeGroups,
+      pundit: _projectionPunditLine(projection),
+      poolName: (state.currentPool && state.currentPool.name) || 'FriendlyBet'
+    };
     box.style.display = '';
     if (options && options.focusProjection) {
       setTimeout(() => {
@@ -9003,6 +9014,7 @@ function formatScoreDescription(user) {
 // lines). The client just picks the current language and renders; the share card
 // re-uses the headline + podium + a QR pointing to the FEATURED user's bracket.
 let _lbBanter = null; // last loaded { headline, items, ... } for the share card
+let _projectionShareState = null; // last rendered theoretical leaderboard, for image share
 const LB_BANTER_MAX_AGE_MS = 36 * 60 * 60 * 1000;
 
 function _banterText(item) {
@@ -9083,6 +9095,227 @@ function _loadQrImage(target) {
     img.src = src;
   });
 }
+
+function _projectionShareUrl(source) {
+  const origin = window.location.origin || 'https://friendlybet.live';
+  const code = state.currentPool && state.currentPool.code;
+  const lang = (typeof currentLanguage !== 'undefined' && currentLanguage) || 'he';
+  const utm = `utm_source=${source}&utm_medium=social&utm_campaign=projection_podium`;
+  return code
+    ? `${origin}/?join=${encodeURIComponent(code)}&lang=${lang}&${utm}`
+    : `${origin}/?lang=${lang}&${utm}`;
+}
+
+function _drawProjectionPodiumCard(cv, qr, opts) {
+  const ctx = cv.getContext('2d');
+  const W = 1080, H = 1350, PAD = 72;
+  const INK = '#f8fbf8', MUTED = '#aebbb5', GREEN = '#5cd6b1', GREEN_LT = '#adf2dd', GOLD = '#d9b46a';
+  const rtl = ((typeof currentLanguage !== 'undefined' && currentLanguage) || 'he') === 'he';
+  function rr(x, y, w, h, r) {
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, w, h, r);
+    else { ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+  }
+  function fitFont(text, maxW, startPx, weight, family) {
+    let px = startPx;
+    ctx.font = `${weight} ${px}px ${family}`;
+    while (ctx.measureText(text).width > maxW && px > 16) {
+      px--;
+      ctx.font = `${weight} ${px}px ${family}`;
+    }
+    return px;
+  }
+  function wrapLines(text, maxW, px, maxLines, weight = '700') {
+    ctx.font = `${weight} ${px}px Heebo,Sora,sans-serif`;
+    const words = String(text || '').split(/\s+/).filter(Boolean);
+    const lines = [];
+    let cur = '';
+    words.forEach(w => {
+      const next = cur ? `${cur} ${w}` : w;
+      if (ctx.measureText(next).width <= maxW || !cur) cur = next;
+      else { lines.push(cur); cur = w; }
+    });
+    if (cur) lines.push(cur);
+    return lines.slice(0, maxLines);
+  }
+
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#07110f');
+  bg.addColorStop(0.52, '#0d0d0a');
+  bg.addColorStop(1, '#050706');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+  let glow = ctx.createRadialGradient(W * 0.5, 340, 60, W * 0.5, 340, 720);
+  glow.addColorStop(0, 'rgba(92,214,177,0.25)');
+  glow.addColorStop(0.52, 'rgba(217,180,106,0.10)');
+  glow.addColorStop(1, 'rgba(92,214,177,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, W, H);
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = 'rgba(92,214,177,0.34)';
+  rr(22, 22, W - 44, H - 44, 28);
+  ctx.stroke();
+
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = INK;
+  ctx.font = '900 38px Sora,sans-serif';
+  ctx.fillText('FriendlyBet', PAD, 82);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = MUTED;
+  fitFont(opts.poolName || '', 390, 25, '700', 'Heebo,sans-serif');
+  ctx.fillText(opts.poolName || '', W - PAD, 84);
+
+  ctx.save();
+  if (rtl && ctx.direction !== undefined) ctx.direction = 'rtl';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = GREEN;
+  ctx.font = '900 28px Sora,Heebo,sans-serif';
+  ctx.fillText((opts.kicker || '').toUpperCase(), W / 2, 166);
+  ctx.fillStyle = INK;
+  fitFont(opts.title || '', W - PAD * 2, 68, '900', 'Heebo,Sora,sans-serif');
+  ctx.fillText(opts.title || '', W / 2, 238);
+  ctx.fillStyle = 'rgba(248,251,248,0.78)';
+  ctx.font = '700 31px Heebo,Sora,sans-serif';
+  wrapLines(opts.note || '', W - PAD * 2, 31, 2, '700').forEach((line, i) => {
+    ctx.fillText(line, W / 2, 298 + i * 42);
+  });
+  ctx.restore();
+
+  const users = (opts.users || []).slice(0, 3);
+  const p1 = users[0], p2 = users[1], p3 = users[2];
+  const colW = 244, gap = 22, groupW = colW * 3 + gap * 2;
+  const x0 = (W - groupW) / 2;
+  const floor = 940;
+  const cols = [
+    { u: p2, rank: 2, x: x0, h: 305, color: 'rgba(188,213,206,0.14)', stroke: 'rgba(188,213,206,0.42)' },
+    { u: p1, rank: 1, x: x0 + colW + gap, h: 405, color: 'rgba(92,214,177,0.22)', stroke: 'rgba(92,214,177,0.78)' },
+    { u: p3, rank: 3, x: x0 + 2 * (colW + gap), h: 255, color: 'rgba(217,180,106,0.12)', stroke: 'rgba(217,180,106,0.38)' }
+  ];
+  cols.forEach(c => {
+    if (!c.u) return;
+    const top = floor - c.h;
+    const cx = c.x + colW / 2;
+    rr(c.x, top, colW, c.h, 24);
+    ctx.fillStyle = c.color;
+    ctx.fill();
+    ctx.lineWidth = c.rank === 1 ? 4 : 2;
+    ctx.strokeStyle = c.stroke;
+    ctx.stroke();
+    const chipR = c.rank === 1 ? 45 : 36;
+    ctx.beginPath();
+    ctx.arc(cx, top + 62, chipR, 0, Math.PI * 2);
+    ctx.fillStyle = c.rank === 1 ? GREEN : 'rgba(255,255,255,0.11)';
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = c.rank === 1 ? GREEN_LT : 'rgba(255,255,255,0.24)';
+    ctx.stroke();
+    ctx.fillStyle = c.rank === 1 ? '#06110f' : GREEN_LT;
+    ctx.font = `900 ${c.rank === 1 ? 44 : 34}px Sora,sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(c.rank), cx, top + 64);
+    ctx.fillStyle = MUTED;
+    ctx.font = '800 20px Sora,Heebo,sans-serif';
+    ctx.fillText(c.rank === 1 ? opts.firstLabel : (c.rank === 2 ? opts.secondLabel : opts.thirdLabel), cx, top + 120);
+    ctx.fillStyle = INK;
+    fitFont(c.u.nickname || '?', colW - 36, 34, '900', 'Heebo,Sora,sans-serif');
+    ctx.fillText(c.u.nickname || '?', cx, floor - 120);
+    ctx.fillStyle = c.rank === 1 ? GREEN_LT : GREEN;
+    ctx.font = '900 56px Sora,sans-serif';
+    ctx.fillText(String(c.u.projected_group_points || 0), cx, floor - 66);
+    ctx.fillStyle = MUTED;
+    ctx.font = '700 22px Heebo,Sora,sans-serif';
+    ctx.fillText(opts.pointsLabel || 'Projected', cx, floor - 28);
+  });
+
+  ctx.save();
+  if (rtl && ctx.direction !== undefined) ctx.direction = 'rtl';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(248,251,248,0.82)';
+  ctx.font = '700 27px Heebo,Sora,sans-serif';
+  wrapLines(opts.pundit || '', W - PAD * 2, 27, 2, '700').forEach((line, i) => {
+    ctx.fillText(line, W / 2, 1012 + i * 38);
+  });
+  ctx.restore();
+
+  ctx.strokeStyle = 'rgba(92,214,177,0.28)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(PAD, 1108);
+  ctx.lineTo(W - PAD, 1108);
+  ctx.stroke();
+  ctx.textAlign = 'left';
+  ctx.fillStyle = GREEN;
+  ctx.font = '900 28px Sora,Heebo,sans-serif';
+  ctx.fillText(opts.disclaimer || '', PAD, 1160);
+  ctx.fillStyle = INK;
+  ctx.font = '900 44px Sora,sans-serif';
+  ctx.fillText('friendlybet.live', PAD, 1215);
+  ctx.fillStyle = MUTED;
+  ctx.font = '700 23px Heebo,sans-serif';
+  ctx.fillText(opts.tagline || '', PAD, 1256);
+  if (qr) {
+    const q = 122, p = 14, tileX = W - PAD - q - p * 2, tileY = 1143;
+    rr(tileX, tileY, q + p * 2, q + p * 2, 18);
+    ctx.fillStyle = '#f6f4ee';
+    ctx.fill();
+    ctx.strokeStyle = GREEN;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.drawImage(qr, tileX + p, tileY + p, q, q);
+  }
+}
+
+async function _projectionPodiumCardToBlob() {
+  if (!_projectionShareState || !_projectionShareState.users || !_projectionShareState.users.length) return null;
+  const url = _projectionShareUrl('projection_podium_qr');
+  let qr = null;
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (_) {}
+  try { qr = await _loadQrImage(url); } catch (_) { qr = null; }
+  const cv = document.createElement('canvas');
+  cv.width = 1080;
+  cv.height = 1350;
+  _drawProjectionPodiumCard(cv, qr, {
+    users: _projectionShareState.users,
+    poolName: _projectionShareState.poolName,
+    kicker: t('leaderboard.projection.cardKicker'),
+    title: t('leaderboard.projection.cardTitle'),
+    note: t('leaderboard.projection.cardNote', { groups: _projectionShareState.activeGroups }),
+    pundit: _projectionShareState.pundit,
+    disclaimer: t('leaderboard.projection.cardDisclaimer'),
+    tagline: t('leaderboard.projection.cardTagline'),
+    pointsLabel: t('leaderboard.projection.points'),
+    firstLabel: t('leaderboard.projection.placeFirst'),
+    secondLabel: t('leaderboard.projection.placeSecond'),
+    thirdLabel: t('leaderboard.projection.placeThird')
+  });
+  return new Promise(resolve => cv.toBlob(resolve, 'image/png'));
+}
+
+async function shareTheoreticalLeaderboard() {
+  if (!_projectionShareState) { showToast(t('leaderboard.projection.shareUnavailable'), 'info'); return; }
+  let blob;
+  try { blob = await _projectionPodiumCardToBlob(); }
+  catch (e) { console.error('projection podium card failed', e); showToast(t('leaderboard.projection.shareUnavailable'), 'info'); return; }
+  if (!blob) { showToast(t('leaderboard.projection.shareUnavailable'), 'info'); return; }
+  const caption = t('leaderboard.projection.shareCaption', { pool: (_projectionShareState.poolName || 'FriendlyBet') });
+  const url = _projectionShareUrl('projection_podium');
+  const file = new File([blob], 'friendlybet-theoretical-podium.png', { type: 'image/png' });
+  if (navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], text: caption, url }); }
+    catch (e) { if (e.name !== 'AbortError') console.error('projection podium share failed', e); }
+  } else {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'friendlybet-theoretical-podium.png';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    try { await navigator.clipboard.writeText(caption + ' ' + url); } catch (_) {}
+    showToast(t('leaderboard.projection.shareDownloaded'), 'success');
+  }
+}
+window.shareTheoreticalLeaderboard = shareTheoreticalLeaderboard;
 
 // Render the shareable "pool moment" card: pool buzz headline + podium + a QR to
 // the featured user's bracket. 1080x1350 portrait, language-aware (he/en).

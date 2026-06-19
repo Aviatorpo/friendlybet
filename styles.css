@@ -1021,6 +1021,19 @@ body.ltr .btn-secondary .ti-arrow-left {
 .dpc-pundit {
   color: rgba(255, 255, 255, 0.78);
 }
+.dpc-cta {
+  display: inline-flex;
+  width: max-content;
+  max-width: 100%;
+  margin-top: 8px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(217, 180, 106, 0.13);
+  border: 1px solid rgba(217, 180, 106, 0.28);
+  color: #ecd49a;
+  font-size: 11px;
+  font-weight: 800;
+}
 .dpc-score {
   min-width: 58px;
   text-align: center;
@@ -3262,12 +3275,14 @@ body.ltr #next-group-btn svg {
 
 .lb-projection {
   margin: -8px 0 28px;
-  padding: 16px;
+  padding: 17px 16px 16px;
   border-radius: 14px;
-  border: 1px dashed rgba(92, 214, 177, 0.46);
+  border: 1px solid rgba(92, 214, 177, 0.46);
   background:
+    radial-gradient(160% 130% at 50% 0%, rgba(217, 180, 106, 0.12), rgba(217, 180, 106, 0) 46%),
     linear-gradient(135deg, rgba(92, 214, 177, 0.12), rgba(255, 255, 255, 0.035) 58%),
     rgba(255, 255, 255, 0.025);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055), 0 12px 30px rgba(0, 0, 0, 0.16);
 }
 .lb-projection-head {
   display: flex;
@@ -3316,32 +3331,72 @@ body.ltr #next-group-btn svg {
 .lb-projection-podium {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
+  gap: 9px;
   align-items: end;
-  margin: 14px 0 12px;
+  margin: 16px 0 12px;
 }
 .podium-spot.projection {
-  border-radius: 12px;
-  border-style: dashed;
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  border-style: solid;
+}
+.podium-spot.projection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0));
+  pointer-events: none;
 }
 .podium-spot.projection.first {
-  background: linear-gradient(180deg, rgba(92, 214, 177, 0.22), rgba(92, 214, 177, 0.07));
+  background:
+    radial-gradient(120px 80px at 50% 12%, rgba(236, 212, 154, 0.16), transparent 70%),
+    linear-gradient(180deg, rgba(92, 214, 177, 0.24), rgba(92, 214, 177, 0.07));
   border-color: rgba(92, 214, 177, 0.58);
-  min-height: 150px;
+  min-height: 164px;
 }
 .podium-spot.projection.second {
   background: linear-gradient(180deg, rgba(190, 212, 206, 0.13), rgba(190, 212, 206, 0.04));
   border-color: rgba(190, 212, 206, 0.24);
-  min-height: 124px;
+  min-height: 132px;
 }
 .podium-spot.projection.third {
-  background: linear-gradient(180deg, rgba(146, 177, 168, 0.12), rgba(146, 177, 168, 0.04));
-  border-color: rgba(146, 177, 168, 0.24);
-  min-height: 92px;
+  background: linear-gradient(180deg, rgba(217, 180, 106, 0.12), rgba(146, 177, 168, 0.04));
+  border-color: rgba(217, 180, 106, 0.22);
+  min-height: 104px;
 }
-.podium-spot.projection .podium-medal,
 .podium-spot.projection .podium-points {
   color: #5cd6b1;
+}
+.projection-rank-chip {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(92, 214, 177, 0.14);
+  border: 1px solid rgba(92, 214, 177, 0.42);
+  color: #adf2dd;
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1;
+  z-index: 1;
+}
+.podium-spot.projection.first .projection-rank-chip {
+  width: 42px;
+  height: 42px;
+  background: #5cd6b1;
+  color: #06110f;
+  border-color: #adf2dd;
+  box-shadow: 0 0 22px rgba(92, 214, 177, 0.28);
+}
+.projection-place-label {
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  z-index: 1;
 }
 .lb-projection-pundit {
   padding: 11px 12px;
@@ -3351,6 +3406,28 @@ body.ltr #next-group-btn svg {
   color: rgba(255, 255, 255, 0.8);
   font-size: 13px;
   line-height: 1.45;
+}
+.lb-projection-share {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(92, 214, 177, 0.48);
+  background: linear-gradient(180deg, rgba(92, 214, 177, 0.22), rgba(92, 214, 177, 0.08));
+  color: #adf2dd;
+  font-size: 14px;
+  font-weight: 850;
+  cursor: pointer;
+}
+.lb-projection-share:hover {
+  background: linear-gradient(180deg, rgba(92, 214, 177, 0.30), rgba(92, 214, 177, 0.11));
+}
+.lb-projection-share:active {
+  transform: scale(0.99);
 }
 .lb-projection-list {
   display: flex;
