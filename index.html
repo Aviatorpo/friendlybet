@@ -1533,6 +1533,20 @@ function loadTablerFallback() {
 
       <div class="dashboard-live-status" id="dashboard-live-status" style="display:none;"></div>
 
+      <button type="button" class="dashboard-projection-card" id="dashboard-projection-card" style="display:none;" onclick="showTheoreticalLeaderboard()">
+        <div class="dpc-main">
+          <div class="dpc-kicker" data-i18n="dashboard.projection.kicker">טבלה תיאורטית בלבד</div>
+          <div class="dpc-title" id="dashboard-projection-title" data-i18n="dashboard.projection.title">שום נקודה תיאורטית לא נספרת</div>
+          <div class="dpc-sub" id="dashboard-projection-sub" data-i18n="dashboard.projection.sub">זה רק מה היה קורה אם שלב הבתים היה נגמר עכשיו.</div>
+          <div class="dpc-pundit" id="dashboard-projection-pundit"></div>
+        </div>
+        <div class="dpc-score">
+          <span id="dashboard-projection-rank">-</span>
+          <small data-i18n="dashboard.projection.rank">תיאורטי</small>
+        </div>
+        <i class="ti ti-chevron-left dpc-arrow"></i>
+      </button>
+
       <!-- Invite friends - moved up, primary CTA -->
       <!-- v2.5.14: icon swapped to a user-plus that matches the action;
            QR mention removed from subtitle (QR section was dropped in v2.4.6). -->
@@ -2631,6 +2645,21 @@ function loadTablerFallback() {
         </button>
       </div>
 
+      <div id="lb-projection" class="lb-projection" style="display:none;">
+        <div class="lb-projection-head">
+          <div>
+            <div class="lb-projection-kicker" data-i18n="leaderboard.projection.kicker">טבלה תיאורטית בלבד</div>
+            <div class="lb-projection-title" data-i18n="leaderboard.projection.title">אם הבתים היו נגמרים עכשיו</div>
+          </div>
+          <span class="lb-projection-pill" data-i18n="leaderboard.projection.pill">לא רשמי</span>
+        </div>
+        <div class="lb-projection-note" data-i18n="leaderboard.projection.note">שום נקודה תיאורטית לא נספרת. זה רק חישוב זמני לפי טבלאות הבתים כרגע.</div>
+        <div class="lb-projection-source" id="lb-projection-source"></div>
+        <div id="lb-projection-podium" class="lb-projection-podium"></div>
+        <div id="lb-projection-pundit" class="lb-projection-pundit"></div>
+        <div id="lb-projection-list" class="lb-projection-list"></div>
+      </div>
+
       <!-- Full list -->
       <div class="section-title-small" data-i18n="leaderboard.fullRanking">דירוג מלא</div>
       <div id="lb-full-list" class="lb-full-list">
@@ -3096,7 +3125,7 @@ function loadTablerFallback() {
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
       <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.10.75</span>
+      <span class="menu-version">v2.10.76</span>
     </div>
   </div>
 

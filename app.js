@@ -1301,7 +1301,7 @@ async function goToDashboard() {
   // because group-position scoring waits for a full group to finish all 6 games.
   let allUsers = [];
   try {
-    allUsers = await _fetchAllPoolRows('users', 'id,total_score,joined_at', state.currentPool.id);
+    allUsers = await _fetchAllPoolRows('users', 'id,nickname,total_score,joined_at', state.currentPool.id);
     allUsers = _sortLeaderboardUsers(allUsers);
   } catch (e) {
     console.warn('Dashboard score summary load failed:', e);
@@ -1372,6 +1372,10 @@ async function goToDashboard() {
   // 72h grace deadline for pools affected by the two-phase pick-loss bug.
   updateTwoPhaseIncidentBanner();
 
+  updateDashboardProjectionTeaser(allUsers).catch(err => {
+    console.warn('Dashboard projection teaser failed:', err);
+  });
+
   // The Pundit - live rotating commentary (fire-and-forget, never blocks the dashboard)
   renderPundit();
   renderWorldCupStories();
@@ -1381,6 +1385,59 @@ async function goToDashboard() {
   initDashboardCountdown(tournamentStarted);
 
   showScreen('user-dashboard-screen');
+}
+
+function _hideDashboardProjectionTeaser() {
+  const card = document.getElementById('dashboard-projection-card');
+  if (card) card.style.display = 'none';
+}
+
+function _projectionRankLabel(rank) {
+  return rank > 0 ? `#${rank}` : '-';
+}
+
+function _dashboardProjectionPundit(projection, me, rank) {
+  const leader = projection && projection.users && projection.users[0];
+  if (!projection || !me) return '';
+  if ((me.projected_group_points || 0) > 0) {
+    return t('dashboard.projection.punditMe', {
+      rank,
+      points: me.projected_group_points
+    });
+  }
+  if (leader && (leader.projected_group_points || 0) > 0) {
+    return t('dashboard.projection.punditLeader', {
+      name: leader.nickname || '?',
+      points: leader.projected_group_points
+    });
+  }
+  return t('dashboard.projection.punditZero');
+}
+
+async function updateDashboardProjectionTeaser(users) {
+  const card = document.getElementById('dashboard-projection-card');
+  if (!card || !state.currentPool || !state.currentUser) return;
+  _hideDashboardProjectionTeaser();
+  try {
+    const projection = await buildTheoreticalGroupLeaderboard(users || []);
+    if (!projection || !projection.users || !projection.users.length) return;
+    const idx = projection.users.findIndex(u => u.id === state.currentUser.id);
+    const me = idx >= 0 ? projection.users[idx] : null;
+    const rank = idx >= 0 ? idx + 1 : 0;
+    const title = document.getElementById('dashboard-projection-title');
+    const sub = document.getElementById('dashboard-projection-sub');
+    const rankEl = document.getElementById('dashboard-projection-rank');
+    const pundit = document.getElementById('dashboard-projection-pundit');
+    if (title) title.textContent = t('dashboard.projection.title');
+    if (sub) sub.textContent = me
+      ? t('dashboard.projection.subWithScore', { points: me.projected_group_points || 0, groups: projection.activeGroups })
+      : t('dashboard.projection.sub');
+    if (rankEl) rankEl.textContent = _projectionRankLabel(rank);
+    if (pundit) pundit.textContent = _dashboardProjectionPundit(projection, me, rank);
+    card.style.display = '';
+  } catch (err) {
+    console.warn('updateDashboardProjectionTeaser failed:', err);
+  }
 }
 
 // v2.9.22: admin-only dashboard nudge. When members of the admin's single-phase
@@ -3074,11 +3131,21 @@ function _snapshotShouldReadDb(matches, maxAgeMs = 60000) {
   return _snapshotStaleDuringLive(matches, maxAgeMs) || _snapshotHasPastNonTerminal(matches);
 }
 
-function computeCurrentGroupStandings(matches) {
+function _matchCountsForGroupProjection(m, now = Date.now()) {
+  if (!_matchHasNumericScore(m)) return false;
+  if (_matchIsFinishedStatus(m)) return true;
+  return _matchLiveScoreTrusted(m, now);
+}
+
+function computeCurrentGroupStandings(matches, options = {}) {
   const standings = {};
+  const projection = !!options.projection;
+  const now = options.now || Date.now();
   const groupMatches = (matches || []).filter(m => {
     const stage = String(m.stage || '').toUpperCase();
-    return _matchIsFinishedStatus(m) && (stage === 'GROUP_STAGE' || !!(m.group_letter || m.group));
+    const isGroup = stage === 'GROUP_STAGE' || !!(m.group_letter || m.group);
+    if (!isGroup) return false;
+    return projection ? _matchCountsForGroupProjection(m, now) : _matchIsFinishedStatus(m);
   });
 
   const letters = (typeof WC2026_GROUP_LETTERS !== 'undefined') ? WC2026_GROUP_LETTERS : [];
@@ -3161,6 +3228,166 @@ function computeCurrentGroupStandings(matches) {
   });
 
   return standings;
+}
+
+async function _loadProjectionGroupMatches() {
+  let matches = await fetchMatchesFromCDN(0);
+  if (!matches || _snapshotShouldReadDb(matches)) {
+    const { data, error } = await supabaseClient
+      .from('matches')
+      .select('*')
+      .eq('stage', 'GROUP_STAGE');
+    if (error) throw error;
+    matches = data || [];
+  }
+  return (matches || []).filter(m => {
+    const stage = String((m && m.stage) || '').toUpperCase();
+    return stage === 'GROUP_STAGE' || !!(m && (m.group_letter || m.group));
+  });
+}
+
+function _poolProjectionRules(pool) {
+  const mode = (pool && pool.betting_mode) || 'single_phase';
+  const defaults = DEFAULT_SCORING_RULES[mode] || DEFAULT_SCORING_RULES.single_phase;
+  return { ...defaults, ...((pool && pool.scoring_rules) || {}) };
+}
+
+function _projectionMultiplier(pool, teamCode, persisted) {
+  if (pool && pool.use_multipliers === false) return 1;
+  const n = parseFloat(persisted);
+  if (persisted != null && Number.isFinite(n)) return n;
+  return getPoolTeamMultiplier(pool, teamCode);
+}
+
+function _projectionRoundPoints(points) {
+  return Math.round((points || 0) * 100) / 100;
+}
+
+function _validateProjectionTwoPhaseSet(rows) {
+  const letters = (typeof WC2026_GROUP_LETTERS !== 'undefined') ? WC2026_GROUP_LETTERS : [];
+  const seen = new Set();
+  const byGroup = {};
+  (rows || []).forEach(p => {
+    if (!p || !p.team_code || !p.group_letter) return;
+    const teams = (WC2026_GROUPS && WC2026_GROUPS[p.group_letter]) || [];
+    if (!teams.includes(p.team_code)) return;
+    if (seen.has(p.team_code)) return;
+    seen.add(p.team_code);
+    (byGroup[p.group_letter] = byGroup[p.group_letter] || []).push(p);
+  });
+  let total = 0;
+  for (const letter of letters) {
+    const n = (byGroup[letter] || []).length;
+    if (n < 2 || n > 3) return { ok: false, picks: [] };
+    total += n;
+  }
+  return total === 32
+    ? { ok: true, picks: letters.flatMap(letter => byGroup[letter] || []) }
+    : { ok: false, picks: [] };
+}
+
+function _activeProjectionGroups(standings) {
+  return Object.keys(standings || {}).filter(letter =>
+    (standings[letter] || []).some(row => (row.played || 0) > 0)
+  );
+}
+
+function _buildProjectionAdvancedSet(standings, activeLetters) {
+  const active = new Set(activeLetters || []);
+  const advanced = new Set();
+  const thirds = [];
+  (activeLetters || []).forEach(letter => {
+    const table = standings[letter] || [];
+    if (table[0]) advanced.add(table[0].code);
+    if (table[1]) advanced.add(table[1].code);
+    if (table[2]) thirds.push(table[2]);
+  });
+  if (active.size === 12 && thirds.length === 12) {
+    thirds
+      .slice()
+      .sort((a, b) => (b.points - a.points) || (b.gd - a.gd) || (b.gf - a.gf) || a.code.localeCompare(b.code))
+      .slice(0, 8)
+      .forEach(row => advanced.add(row.code));
+  }
+  return advanced;
+}
+
+async function buildTheoreticalGroupLeaderboard(users) {
+  if (!state.currentPool || !supabaseClient) return null;
+  const pool = state.currentPool;
+  const mode = pool.betting_mode || 'single_phase';
+  if (mode === 'late_knockout') return null;
+
+  const matches = await _loadProjectionGroupMatches();
+  const standings = computeCurrentGroupStandings(matches, { projection: true });
+  const activeLetters = _activeProjectionGroups(standings);
+  if (!activeLetters.length) return null;
+
+  const rules = _poolProjectionRules(pool);
+  const poolId = pool.id;
+  const pickTable = mode === 'two_phase' ? 'group_picks' : 'group_position_picks';
+  const pickCols = mode === 'two_phase'
+    ? 'user_id,group_letter,team_code,multiplier_applied'
+    : 'user_id,group_letter,position,team_code';
+  const picks = await _fetchAllPoolRows(pickTable, pickCols, poolId);
+  const picksByUser = {};
+  (picks || []).forEach(p => {
+    (picksByUser[p.user_id] = picksByUser[p.user_id] || []).push(p);
+  });
+
+  const activeSet = new Set(activeLetters);
+  const projectedAdvanced = mode === 'two_phase'
+    ? _buildProjectionAdvancedSet(standings, activeLetters)
+    : null;
+
+  const projectedUsers = (users || []).map(user => {
+    let points = 0;
+    let hits = 0;
+    const userPicks = picksByUser[user.id] || [];
+    if (mode === 'two_phase') {
+      const valid = _validateProjectionTwoPhaseSet(userPicks);
+      if (valid.ok) {
+        valid.picks.forEach(p => {
+          if (!projectedAdvanced.has(p.team_code)) return;
+          points += (rules.group_first || 0) * _projectionMultiplier(pool, p.team_code, p.multiplier_applied);
+          hits++;
+        });
+      }
+    } else {
+      userPicks.forEach(p => {
+        if (!activeSet.has(p.group_letter)) return;
+        const table = standings[p.group_letter] || [];
+        const pos = Number(p.position);
+        const real = table[pos - 1];
+        if (!real || real.code !== p.team_code) return;
+        const key = pos === 1 ? 'group_first'
+          : pos === 2 ? 'group_second'
+          : pos === 3 ? 'group_third'
+          : pos === 4 ? 'group_fourth'
+          : null;
+        if (!key) return;
+        points += (rules[key] || 0) * _projectionMultiplier(pool, p.team_code, p.multiplier_applied);
+        hits++;
+      });
+    }
+    return {
+      ...user,
+      projected_group_points: _projectionRoundPoints(points),
+      projected_group_hits: hits
+    };
+  });
+
+  projectedUsers.sort((a, b) =>
+    ((b.projected_group_points || 0) - (a.projected_group_points || 0)) ||
+    ((b.total_score || 0) - (a.total_score || 0)) ||
+    new Date(a.joined_at || 0) - new Date(b.joined_at || 0)
+  );
+
+  return {
+    users: projectedUsers,
+    activeGroups: activeLetters.length,
+    hasAnyPoints: projectedUsers.some(u => (u.projected_group_points || 0) > 0)
+  };
 }
 
 async function loadResultsData(options = {}) {
@@ -8479,7 +8706,7 @@ async function _fetchLeaderboardSnapshot(poolId) {
   }
 }
 
-async function showLeaderboard() {
+async function showLeaderboard(options = {}) {
   closeMenu();
 
   if (!state.currentPool || !supabaseClient) {
@@ -8531,6 +8758,122 @@ async function showLeaderboard() {
     emptyEl.style.display = 'block';
   } else {
     emptyEl.style.display = 'none';
+  }
+
+  renderTheoreticalLeaderboard(users, options);
+}
+
+function showTheoreticalLeaderboard() {
+  return showLeaderboard({ focusProjection: true });
+}
+
+function _hideTheoreticalLeaderboard() {
+  const box = document.getElementById('lb-projection');
+  if (box) box.style.display = 'none';
+}
+
+function _projectionPunditLine(projection) {
+  if (!projection || !projection.users || !projection.users.length) return '';
+  const leader = projection.users[0];
+  const meIdx = state.currentUser ? projection.users.findIndex(u => u.id === state.currentUser.id) : -1;
+  const me = meIdx >= 0 ? projection.users[meIdx] : null;
+  if (me && (me.projected_group_points || 0) > 0) {
+    return t('leaderboard.projection.punditMe', {
+      rank: meIdx + 1,
+      points: me.projected_group_points
+    });
+  }
+  if (leader && (leader.projected_group_points || 0) > 0) {
+    return t('leaderboard.projection.punditLeader', {
+      name: leader.nickname || '?',
+      points: leader.projected_group_points
+    });
+  }
+  return t('leaderboard.projection.punditZero');
+}
+
+function createProjectionPodiumSpot(rank, user, rankNum) {
+  const div = document.createElement('div');
+  div.className = `podium-spot projection ${rank}`;
+  const medal = rankNum === 1 ? '1' : (rankNum === 2 ? '2' : '3');
+  div.innerHTML = `
+    <div class="podium-medal">${medal}</div>
+    <div class="podium-name">${escapeHtml(user.nickname || '?')}</div>
+    <div class="podium-points">${user.projected_group_points || 0}</div>
+    <div class="podium-points-label">${t('leaderboard.projection.points')}</div>
+  `;
+  return div;
+}
+
+function renderProjectionPodium(users) {
+  const podium = document.getElementById('lb-projection-podium');
+  if (!podium) return;
+  podium.innerHTML = '';
+  const top3 = (users || []).slice(0, 3);
+  const second = top3[1];
+  const first = top3[0];
+  const third = top3[2];
+  if (second) podium.appendChild(createProjectionPodiumSpot('second', second, 2));
+  if (first) podium.appendChild(createProjectionPodiumSpot('first', first, 1));
+  if (third) podium.appendChild(createProjectionPodiumSpot('third', third, 3));
+}
+
+function renderProjectionList(users) {
+  const list = document.getElementById('lb-projection-list');
+  if (!list) return;
+  list.innerHTML = '';
+  (users || []).forEach((user, idx) => {
+    const row = document.createElement('div');
+    row.className = 'lb-row lb-projection-row';
+    const isMe = state.currentUser && user.id === state.currentUser.id;
+    if (isMe) row.classList.add('is-me');
+    row.innerHTML = `
+      <div class="lb-rank">#${idx + 1}</div>
+      <div class="lb-avatar-small">${escapeHtml((user.nickname || '?').charAt(0).toUpperCase())}</div>
+      <div class="lb-info">
+        <div class="lb-name">
+          ${escapeHtml(user.nickname || '?')}
+          ${user.is_admin ? `<span class="admin-badge">${t('common.admin')}</span>` : ''}
+          ${isMe ? `<span class="lb-badge">${t('common.you')}</span>` : ''}
+        </div>
+        <div class="lb-breakdown">
+          <span>${t('leaderboard.projection.groupHits', { n: user.projected_group_hits || 0 })}</span>
+          <span>${t('leaderboard.projection.officialStillZero')}</span>
+        </div>
+      </div>
+      <div>
+        <div class="lb-points">${user.projected_group_points || 0}</div>
+        <div class="lb-points-label">${t('leaderboard.projection.points')}</div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+async function renderTheoreticalLeaderboard(users, options = {}) {
+  _hideTheoreticalLeaderboard();
+  try {
+    const projection = await buildTheoreticalGroupLeaderboard(users || []);
+    if (!projection || !projection.users || !projection.users.length) return;
+    const box = document.getElementById('lb-projection');
+    if (!box) return;
+    const source = document.getElementById('lb-projection-source');
+    const pundit = document.getElementById('lb-projection-pundit');
+    if (source) source.textContent = t('leaderboard.projection.source', {
+      groups: projection.activeGroups,
+      total: 12
+    });
+    renderProjectionPodium(projection.users);
+    if (pundit) pundit.textContent = _projectionPunditLine(projection);
+    renderProjectionList(projection.users);
+    box.style.display = '';
+    if (options && options.focusProjection) {
+      setTimeout(() => {
+        try { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (_) {}
+      }, 50);
+    }
+  } catch (err) {
+    console.warn('Theoretical leaderboard render failed:', err);
   }
 }
 

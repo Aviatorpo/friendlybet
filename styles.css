@@ -977,6 +977,77 @@ body.ltr .btn-secondary .ti-arrow-left {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(243, 220, 160, 0.55), transparent);
 }
+.dashboard-projection-card {
+  width: 100%;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  margin: 0 0 18px;
+  border: 1px dashed rgba(92, 214, 177, 0.42);
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, rgba(92, 214, 177, 0.11), rgba(255, 255, 255, 0.035) 62%),
+    rgba(12, 18, 16, 0.72);
+  color: #f7f6f2;
+  text-align: start;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+}
+.dpc-main { min-width: 0; }
+.dpc-kicker {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5cd6b1;
+  margin-bottom: 4px;
+}
+.dpc-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.25;
+}
+.dpc-sub,
+.dpc-pundit {
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.66);
+  margin-top: 3px;
+}
+.dpc-pundit {
+  color: rgba(255, 255, 255, 0.78);
+}
+.dpc-score {
+  min-width: 58px;
+  text-align: center;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(92, 214, 177, 0.12);
+  border: 1px solid rgba(92, 214, 177, 0.22);
+}
+.dpc-score span {
+  display: block;
+  color: #5cd6b1;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+}
+.dpc-score small {
+  display: block;
+  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.dpc-arrow {
+  color: #5cd6b1;
+  font-size: 20px;
+}
 .dls-head {
   display: flex;
   align-items: center;
@@ -3188,6 +3259,112 @@ body.ltr #next-group-btn svg {
 }
 .lb-banter-share:hover { background: linear-gradient(180deg, rgba(217, 180, 106, 0.32), rgba(217, 180, 106, 0.12)); }
 .lb-banter-share:active { transform: scale(0.98); }
+
+.lb-projection {
+  margin: -8px 0 28px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px dashed rgba(92, 214, 177, 0.46);
+  background:
+    linear-gradient(135deg, rgba(92, 214, 177, 0.12), rgba(255, 255, 255, 0.035) 58%),
+    rgba(255, 255, 255, 0.025);
+}
+.lb-projection-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.lb-projection-kicker {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #5cd6b1;
+}
+.lb-projection-title {
+  margin-top: 2px;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 850;
+  line-height: 1.25;
+}
+.lb-projection-pill {
+  flex-shrink: 0;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(92, 214, 177, 0.13);
+  border: 1px solid rgba(92, 214, 177, 0.28);
+  color: #5cd6b1;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.lb-projection-note,
+.lb-projection-source {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+.lb-projection-note {
+  font-weight: 650;
+}
+.lb-projection-source {
+  margin-top: 5px;
+}
+.lb-projection-podium {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  align-items: end;
+  margin: 14px 0 12px;
+}
+.podium-spot.projection {
+  border-radius: 12px;
+  border-style: dashed;
+}
+.podium-spot.projection.first {
+  background: linear-gradient(180deg, rgba(92, 214, 177, 0.22), rgba(92, 214, 177, 0.07));
+  border-color: rgba(92, 214, 177, 0.58);
+  min-height: 150px;
+}
+.podium-spot.projection.second {
+  background: linear-gradient(180deg, rgba(190, 212, 206, 0.13), rgba(190, 212, 206, 0.04));
+  border-color: rgba(190, 212, 206, 0.24);
+  min-height: 124px;
+}
+.podium-spot.projection.third {
+  background: linear-gradient(180deg, rgba(146, 177, 168, 0.12), rgba(146, 177, 168, 0.04));
+  border-color: rgba(146, 177, 168, 0.24);
+  min-height: 92px;
+}
+.podium-spot.projection .podium-medal,
+.podium-spot.projection .podium-points {
+  color: #5cd6b1;
+}
+.lb-projection-pundit {
+  padding: 11px 12px;
+  margin: 0 0 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.16);
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.lb-projection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lb-projection-row {
+  background: rgba(92, 214, 177, 0.055);
+  border-color: rgba(92, 214, 177, 0.16);
+}
+.lb-projection-row .lb-points,
+.lb-projection-row .lb-rank {
+  color: #5cd6b1;
+}
 
 /* Full list */
 .lb-full-list {
