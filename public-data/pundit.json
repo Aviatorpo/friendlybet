@@ -1,16 +1,25 @@
 {
-  "updatedAt": "2026-06-20T05:22:33.155Z",
-  "freshUntil": "2026-06-20T11:22:33.155Z",
+  "updatedAt": "2026-06-20T09:30:58.313Z",
+  "freshUntil": "2026-06-20T15:30:58.313Z",
   "count": 8,
   "items": [
     {
-      "id": "live-e421b088-3154-4c02-8240-46f09b9c33f9",
-      "type": "live",
+      "id": "result-e421b088-3154-4c02-8240-46f09b9c33f9",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "טורקיה נגד פרגוואי עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
-      "en": "Turkey vs Paraguay is live now. Every minute can turn a genius pick into group-chat material.",
+      "he": "פרגוואי עשתה את העבודה עם 1:0 נקי על טורקיה. לא נוצץ, כן שימושי בטבלה.",
+      "en": "Paraguay handled business with a clean 1-0 over Turkey. Not flashy, very useful on the table.",
       "sources": [],
-      "expires_at": "2026-06-20T08:22:33.155Z"
+      "expires_at": "2026-06-21T09:00:00.000Z"
+    },
+    {
+      "id": "result-13ad0015-2457-4e10-a087-9b24dec98c3c",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "ברזיל עשתה את העבודה עם 3:0 נקי על האיטי. לא נוצץ, כן שימושי בטבלה.",
+      "en": "Brazil handled business with a clean 3-0 over Haiti. Not flashy, very useful on the table.",
+      "sources": [],
+      "expires_at": "2026-06-21T06:30:00.000Z"
     },
     {
       "id": "result-73cb4631-6cdd-4f56-b3cc-9c0938e90e37",
@@ -29,15 +38,6 @@
       "en": "United States handled business with a clean 2-0 over Australia. Not flashy, very useful on the table.",
       "sources": [],
       "expires_at": "2026-06-21T01:00:00.000Z"
-    },
-    {
-      "id": "result-9d57599d-ad49-4abb-b098-4d08de0f2ed8",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "מקסיקו עשתה את העבודה עם 1:0 נקי על דרום קוריאה. לא נוצץ, כן שימושי בטבלה.",
-      "en": "Mexico handled business with a clean 1-0 over South Korea. Not flashy, very useful on the table.",
-      "sources": [],
-      "expires_at": "2026-06-20T07:00:00.000Z"
     },
     {
       "id": "fixture-becdc520-1c41-4a5f-99a5-4a22e0a5812c",
