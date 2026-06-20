@@ -20,6 +20,8 @@ const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY
 const TERMINAL = new Set(['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED']);
 const MIN_AGE_MINUTES = parseInt(process.env.RESULT_FALLBACK_MIN_AGE_MINUTES || '', 10) || 115;
 const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 48;
+const BACKOFF_ENABLED = process.env.RESULT_FALLBACK_BACKOFF === '1';
+const RUN_EVERY_MINUTES = parseInt(process.env.RESULT_FALLBACK_RUN_EVERY_MINUTES || '', 10) || 15;
 
 function setOutput(name, value) {
   if (process.env.GITHUB_OUTPUT) {
@@ -65,13 +67,35 @@ async function loadMatchesPayload() {
   }
 }
 
-function isCandidate(match, nowMs) {
+function isCandidate(match, nowMs, options = {}) {
   if (!match || TERMINAL.has(String(match.status || '').toUpperCase())) return false;
   const kickoff = Date.parse(match.match_date || '');
   if (!Number.isFinite(kickoff)) return false;
   const ageMs = nowMs - kickoff;
-  return ageMs >= MIN_AGE_MINUTES * 60 * 1000
-    && ageMs <= LOOKBACK_HOURS * 60 * 60 * 1000;
+  const minAgeMinutes = options.minAgeMinutes || MIN_AGE_MINUTES;
+  const lookbackHours = options.lookbackHours || LOOKBACK_HOURS;
+  return ageMs >= minAgeMinutes * 60 * 1000
+    && ageMs <= lookbackHours * 60 * 60 * 1000;
+}
+
+function backoffIntervalMinutes(ageMinutes) {
+  if (ageMinutes < 150) return 15;
+  if (ageMinutes < 300) return 30;
+  return 60;
+}
+
+function isBackoffDue(match, nowMs, options = {}) {
+  if (!isCandidate(match, nowMs, options)) return false;
+  if (!options.enabled) return true;
+  const kickoff = Date.parse(match.match_date || '');
+  const ageMinutes = Math.floor((nowMs - kickoff) / 60000);
+  const elapsed = ageMinutes - (options.minAgeMinutes || MIN_AGE_MINUTES);
+  if (elapsed < 0) return false;
+  const interval = backoffIntervalMinutes(ageMinutes);
+  const windowMinutes = Math.max(1, options.runEveryMinutes || RUN_EVERY_MINUTES);
+  const currentBucket = Math.floor(elapsed / interval);
+  const previousBucket = Math.floor((elapsed - windowMinutes) / interval);
+  return currentBucket !== previousBucket;
 }
 
 async function main() {
@@ -81,22 +105,40 @@ async function main() {
   if (!Number.isFinite(nowMs)) throw new Error('Invalid RESULT_PREFLIGHT_NOW');
 
   const payload = await loadMatchesPayload();
-  const candidates = (payload.matches || []).filter(match => isCandidate(match, nowMs));
-  setOutput('needed', candidates.length ? 'true' : 'false');
+  const candidates = (payload.matches || []).filter(match => isCandidate(match, nowMs, {
+    minAgeMinutes: MIN_AGE_MINUTES,
+    lookbackHours: LOOKBACK_HOURS,
+  }));
+  const dueCandidates = candidates.filter(match => isBackoffDue(match, nowMs, {
+    enabled: BACKOFF_ENABLED,
+    minAgeMinutes: MIN_AGE_MINUTES,
+    runEveryMinutes: RUN_EVERY_MINUTES,
+  }));
+  setOutput('needed', dueCandidates.length ? 'true' : 'false');
   setOutput('candidate_count', String(candidates.length));
+  setOutput('due_count', String(dueCandidates.length));
   setOutput('source', payload.source || 'unknown');
 
   if (candidates.length) {
     console.log('Final-result verifier candidates:');
     for (const match of candidates.slice(0, 10)) {
-      console.log(`- ${match.home_team_code}-${match.away_team_code} ${match.status} ${match.match_date}`);
+      const due = dueCandidates.includes(match) ? 'due' : 'waiting';
+      console.log(`- ${match.home_team_code}-${match.away_team_code} ${match.status} ${match.match_date} (${due})`);
     }
   } else {
     console.log('No final-result verifier candidates in the current match window.');
   }
 }
 
-main().catch(err => {
-  console.error(err);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch(err => {
+    console.error(err);
+    process.exit(1);
+  });
+} else {
+  module.exports = {
+    isCandidate,
+    isBackoffDue,
+    backoffIntervalMinutes,
+  };
+}
