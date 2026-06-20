@@ -1,6 +1,54 @@
 {
-  "updated_at": "2026-06-20T05:57:58.894Z",
+  "updated_at": "2026-06-20T19:09:39.907Z",
   "items": [
+    {
+      "id": "ned-swe-2026-06-20",
+      "match_id": "becdc520-1c41-4a5f-99a5-4a22e0a5812c",
+      "image": "story-assets/netherlands-wins-sweden.png",
+      "teams": [
+        "NED",
+        "SWE"
+      ],
+      "outcome": "NED",
+      "result": "NED 5-1 SWE",
+      "top_label": "NETHERLANDS WINS!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "SWE",
+        "team_he": "שוודיה",
+        "team_en": "Sweden",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 5-1, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 5-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 5-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "en_name": "{names} picked {team} to top the group. After 5-1, that form already needs a defense speech 🎤😬",
+        "en_names": "{names} picked {team} to top the group. After 5-1, those forms already need a defense speech 🎤😬",
+        "en_count": "{names} picked {team} to top the group. After 5-1, those forms already need a defense speech 🎤😬"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "SWE",
+          "team_he": "שוודיה",
+          "team_en": "Sweden",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 5-1, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 5-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 5-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "en_name": "{names} picked {team} to top the group. After 5-1, that form already needs a defense speech 🎤😬",
+          "en_names": "{names} picked {team} to top the group. After 5-1, those forms already need a defense speech 🎤😬",
+          "en_count": "{names} picked {team} to top the group. After 5-1, those forms already need a defense speech 🎤😬"
+        }
+      ],
+      "he": {
+        "headline": "הולנד ניצחה את שוודיה 5-1: הצהרה!",
+        "caption": "הולנד עושה רעש עם 5-1 מול שוודיה. משחק אחד, והטבלה כבר נראית אחרת 🔥"
+      },
+      "en": {
+        "headline": "Netherlands beat Sweden 5-1: Statement made!",
+        "caption": "Netherlands makes noise with 5-1 against Sweden. One match, and the table already looks different 🔥"
+      }
+    },
     {
       "id": "tur-par-2026-06-20",
       "match_id": "e421b088-3154-4c02-8240-46f09b9c33f9",
