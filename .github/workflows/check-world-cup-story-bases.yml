@@ -31,6 +31,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install story image audit tooling
+        run: python3 -m pip install --user pillow
+
       - name: Check prepared story base coverage
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
@@ -39,3 +42,6 @@ jobs:
           WC_STORY_BASE_AUDIT_SKIP_COVERED: ${{ inputs.skip_covered && '1' || '0' }}
           WC_STORY_BASE_AUDIT_FROM: ${{ inputs.from || '' }}
         run: node scripts/check-world-cup-story-base-coverage.js
+
+      - name: Audit prepared story base image quality
+        run: python3 scripts/audit-world-cup-story-images.py --scope bases

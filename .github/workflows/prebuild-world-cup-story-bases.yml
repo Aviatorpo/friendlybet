@@ -34,6 +34,12 @@ jobs:
           WC_STORY_PREBUILD_LIMIT: ${{ inputs.limit || '0' }}
         run: node scripts/prebuild-world-cup-story-outcome-bases.js
 
+      - name: Install story image audit tooling
+        run: python3 -m pip install --user pillow
+
+      - name: Audit prepared story base image quality
+        run: python3 scripts/audit-world-cup-story-images.py --scope bases
+
       - name: Commit outcome-base index if changed
         run: |
           git config user.name "Aviatorpo"

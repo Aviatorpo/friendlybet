@@ -75,6 +75,19 @@ function removePendingDraft() {
 }
 
 function runValidation() {
+  const candidates = process.platform === 'win32' ? ['python', 'py'] : ['python3', 'python'];
+  let lastError = null;
+  for (const exe of candidates) {
+    const audit = spawnSync(exe, ['scripts/audit-world-cup-story-images.py', '--scope', 'stories'], { cwd: ROOT, stdio: 'inherit' });
+    if (audit.error && audit.error.code === 'ENOENT') {
+      lastError = audit.error;
+      continue;
+    }
+    if (audit.status !== 0) process.exit(audit.status || 1);
+    lastError = null;
+    break;
+  }
+  if (lastError) throw lastError;
   const res = spawnSync('node', ['scripts/test-world-cup-stories.js'], { cwd: ROOT, stdio: 'inherit' });
   if (res.status !== 0) process.exit(res.status || 1);
 }

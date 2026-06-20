@@ -20,6 +20,21 @@ function run(args, options = {}) {
   if (res.status !== 0) process.exit(res.status || 1);
 }
 
+function runPython(args) {
+  const candidates = process.platform === 'win32' ? ['python', 'py'] : ['python3', 'python'];
+  let lastError = null;
+  for (const exe of candidates) {
+    const res = spawnSync(exe, args, { cwd: ROOT, stdio: 'inherit' });
+    if (res.error && res.error.code === 'ENOENT') {
+      lastError = res.error;
+      continue;
+    }
+    if (res.status !== 0) process.exit(res.status || 1);
+    return;
+  }
+  throw lastError || new Error('Python not found');
+}
+
 function latestStorySummary(limit = 5) {
   const payload = readJson(STORIES_PATH, { items: [] });
   const items = (payload.items || []).slice(0, limit);
@@ -36,5 +51,6 @@ function latestStorySummary(limit = 5) {
 run(['node', 'scripts/generate-world-cup-stories.js'], {
   env: { STORY_AUTOGEN_IMAGES: '0' },
 });
+runPython(['scripts/audit-world-cup-story-images.py', '--scope', 'stories']);
 run(['node', 'scripts/test-world-cup-stories.js']);
 latestStorySummary();
