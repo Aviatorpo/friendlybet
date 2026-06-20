@@ -16270,6 +16270,14 @@ function _fbHandleBack() {
   // Immediately re-push a state so we keep "owning" the back gesture
   try { history.pushState({ fb: true, screen: state.currentScreen }, '', ''); } catch (e) {}
 
+  // If the menu sheet is open, Back should return to the screen behind it,
+  // not continue into the root-screen exit path.
+  const menuSheet = document.getElementById('menu-sheet');
+  if (menuSheet && menuSheet.classList.contains('active')) {
+    closeMenu();
+    return;
+  }
+
   // If an open modal is up, close it first
   const openModals = [
     'rc-warning-modal',

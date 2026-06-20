@@ -2951,64 +2951,16 @@ function loadTablerFallback() {
          some users (we already saw ti-x, ti-check, ti-loader-2 issues),
          leaving the menu rows looking icon-less. Inline SVGs always render. -->
 
-    <!-- Quick share -->
+    <!-- Primary navigation -->
     <div class="menu-section">
-      <button class="menu-item menu-item-share" onclick="showShareModal()">
-        <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="18" cy="5" r="3"></circle>
-          <circle cx="6" cy="12" r="3"></circle>
-          <circle cx="18" cy="19" r="3"></circle>
-          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-        </svg>
-        <span data-i18n="dashboard.menu.invite">הזמן חברים להימור</span>
-        <svg class="menu-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Main actions -->
-    <div class="menu-section">
-      <div class="menu-section-title" data-i18n="dashboard.menu.myInfo">המידע שלי</div>
-      <button class="menu-item" onclick="rcViewFromMenu()">
-        <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
-        </svg>
-        <span data-i18n="recovery.menu.viewCode">קוד השחזור שלי</span>
-        <svg class="menu-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-      </button>
-      <button class="menu-item" onclick="openNicknameModal()">
-        <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M12 20h9"></path>
-          <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
-        </svg>
-        <span data-i18n="nicknameEdit.menuItem">ערוך כינוי</span>
-        <svg class="menu-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-      </button>
+      <div class="menu-section-title" data-i18n="dashboard.menu.primary">ראשי</div>
       <button class="menu-item" onclick="fbViewMyPicks()">
         <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <rect x="8" y="3" width="8" height="4" rx="1"></rect>
           <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
           <path d="M9 12h6M9 16h4"></path>
         </svg>
-        <span data-i18n="nav.myPicks">הבחירות שלי</span>
-        <svg class="menu-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <polyline points="15 18 9 12 15 6"></polyline>
-        </svg>
-      </button>
-      <button class="menu-item" onclick="showMembers()">
-        <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-          <circle cx="9" cy="7" r="4"></circle>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-        </svg>
-        <span data-i18n="dashboard.menu.members">רשימת משתתפים</span>
+        <span data-i18n="dashboard.menu.myPrediction">ההימור שלי</span>
         <svg class="menu-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
@@ -3039,17 +2991,67 @@ function loadTablerFallback() {
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
       </button>
-      <button class="menu-item" onclick="showHelp()">
+      <button class="menu-item menu-item-share" onclick="showShareModal()">
         <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="10"></circle>
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          <circle cx="18" cy="5" r="3"></circle>
+          <circle cx="6" cy="12" r="3"></circle>
+          <circle cx="18" cy="19" r="3"></circle>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
         </svg>
-        <span data-i18n="dashboard.menu.help">עזרה ושאלות נפוצות</span>
+        <span data-i18n="dashboard.menu.invite">הזמן חברים להימור</span>
         <svg class="menu-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
       </button>
+    </div>
+
+    <!-- Pool -->
+    <div class="menu-section">
+      <div class="menu-section-title" data-i18n="dashboard.menu.pool">ההימור</div>
+      <button class="menu-item" onclick="showMembers()">
+        <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <span data-i18n="dashboard.menu.members">רשימת משתתפים</span>
+        <svg class="menu-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Account -->
+    <div class="menu-section">
+      <div class="menu-section-title" data-i18n="dashboard.menu.account">החשבון שלי</div>
+      <button class="menu-item" onclick="rcViewFromMenu()">
+        <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+        </svg>
+        <span data-i18n="recovery.menu.viewCode">קוד השחזור שלי</span>
+        <svg class="menu-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <button class="menu-item" onclick="openNicknameModal()">
+        <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 20h9"></path>
+          <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+        </svg>
+        <span data-i18n="nicknameEdit.menuItem">ערוך כינוי</span>
+        <svg class="menu-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+      <div class="menu-language-switcher">
+        <span class="menu-language-switcher-label" data-i18n="dashboard.menu.language">שפה</span>
+        <div class="menu-language-toggle">
+          <button class="menu-language-toggle-btn" id="lang-btn-he" onclick="setLanguage('he')">עב</button>
+          <button class="menu-language-toggle-btn" id="lang-btn-en" onclick="setLanguage('en')">EN</button>
+        </div>
+      </div>
     </div>
 
     <!-- Admin section -->
@@ -3088,19 +3090,20 @@ function loadTablerFallback() {
       </button>
     </div>
     
-    <!-- Settings -->
+    <!-- Support -->
     <div class="menu-section">
-      <div class="menu-section-title" data-i18n="dashboard.menu.preferences">הגדרות</div>
-      
-      <!-- Language Switcher -->
-      <div class="menu-language-switcher">
-        <span class="menu-language-switcher-label" data-i18n="dashboard.menu.language">שפה</span>
-        <div class="menu-language-toggle">
-          <button class="menu-language-toggle-btn" id="lang-btn-he" onclick="setLanguage('he')">עב</button>
-          <button class="menu-language-toggle-btn" id="lang-btn-en" onclick="setLanguage('en')">EN</button>
-        </div>
-      </div>
-      
+      <div class="menu-section-title" data-i18n="dashboard.menu.support">תמיכה</div>
+      <button class="menu-item" onclick="showHelp()">
+        <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <span data-i18n="dashboard.menu.help">עזרה ושאלות נפוצות</span>
+        <svg class="menu-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
       <button class="menu-item" onclick="openFeedbackModal('menu')">
         <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -3110,7 +3113,11 @@ function loadTablerFallback() {
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
       </button>
+    </div>
 
+    <!-- Exit -->
+    <div class="menu-section">
+      <div class="menu-section-title" data-i18n="dashboard.menu.exitSection">יציאה</div>
       <button class="menu-item menu-item-danger" onclick="logoutConfirm()">
         <svg class="menu-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -3129,8 +3136,7 @@ function loadTablerFallback() {
       <span>FriendlyBet</span>
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
-      <a href="javascript:void(0)" class="menu-version" style="text-decoration:none" onclick="openFeedbackModal('footer')" data-i18n="feedback.menuItem">שלח משוב</a>
-      <span class="menu-version">v2.10.79</span>
+      <span class="menu-version">v2.10.80</span>
     </div>
   </div>
 
