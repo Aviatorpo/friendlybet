@@ -307,7 +307,7 @@
     {
       "id": "can-qat-2026-06-18",
       "match_id": "14fc2a09-2287-4f51-83b3-c107147aae2a",
-      "image": "story-assets\\canada-wins-qatar.png",
+      "image": "story-assets/canada-wins-qatar.png",
       "teams": [
         "CAN",
         "QAT"
@@ -490,7 +490,7 @@
     {
       "id": "uzb-col-2026-06-18",
       "match_id": "33f253ae-d708-45f8-bc0c-ac5dc5fd560b",
-      "image": "story-assets\\colombia-wins-uzbekistan.png",
+      "image": "story-assets/colombia-wins-uzbekistan.png",
       "teams": [
         "UZB",
         "COL"
@@ -551,7 +551,7 @@
     {
       "id": "gha-pan-2026-06-17",
       "match_id": "3b1ffcde-eeab-425a-b634-a914333deb70",
-      "image": "story-assets\\ghana-wins-panama.png",
+      "image": "story-assets/ghana-wins-panama.png",
       "teams": [
         "GHA",
         "PAN"
@@ -612,7 +612,7 @@
     {
       "id": "eng-cro-2026-06-17",
       "match_id": "af167117-8add-43b5-9930-dae9e6a42d1f",
-      "image": "story-assets\\england-wins-croatia.png",
+      "image": "story-assets/england-wins-croatia.png",
       "teams": [
         "ENG",
         "CRO"
@@ -671,7 +671,7 @@
     {
       "id": "por-cod-2026-06-17",
       "match_id": "35e0d352-c243-43c0-8e50-3a52f3642801",
-      "image": "story-assets\\portugal-dr-congo-draw.png",
+      "image": "story-assets/portugal-dr-congo-draw.png",
       "teams": [
         "POR",
         "COD"
@@ -730,7 +730,7 @@
     {
       "id": "aut-jor-2026-06-17",
       "match_id": "22e56c30-7d43-4b78-b1f3-0e26d76dbab6",
-      "image": "story-assets\\austria-wins-jordan.png",
+      "image": "story-assets/austria-wins-jordan.png",
       "teams": [
         "AUT",
         "JOR"

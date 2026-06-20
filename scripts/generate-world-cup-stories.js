@@ -951,6 +951,10 @@ function writeJsonIfChanged(file, data) {
   return true;
 }
 
+function normalizeAssetPath(image) {
+  return String(image || '').replace(/\\/g, '/');
+}
+
 async function fetchMatchesFromSupabase() {
   if (!SUPABASE_URL || !SUPABASE_KEY || typeof fetch !== 'function') return null;
 
@@ -1057,7 +1061,7 @@ function outcomeBaseAsset(match, outcome) {
 
 function manifestAsset(manifest, match, outcome) {
   const item = (manifest.items || []).find(entry => entry.match_id === match.id);
-  const image = item && item.outcomes && item.outcomes[outcome];
+  const image = normalizeAssetPath(item && item.outcomes && item.outcomes[outcome]);
   if (!image) return '';
   return fs.existsSync(path.join(ROOT, image)) ? image : '';
 }
@@ -1065,7 +1069,7 @@ function manifestAsset(manifest, match, outcome) {
 function knownOrGeneratedAsset(manifest, match, outcome) {
   const known = manifestAsset(manifest, match, outcome);
   if (known) return known;
-  const generated = path.join('story-assets', assetSlug(match, outcome));
+  const generated = normalizeAssetPath(path.join('story-assets', assetSlug(match, outcome)));
   return fs.existsSync(path.join(ROOT, generated)) ? generated : '';
 }
 
@@ -1232,7 +1236,7 @@ function buildStory(match, image, outcome) {
   return {
     id: storyId(match),
     match_id: match.id,
-    image,
+    image: normalizeAssetPath(image),
     teams: [match.home_team_code, match.away_team_code],
     outcome,
     result: resultText(match),

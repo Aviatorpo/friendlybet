@@ -22,7 +22,11 @@ for (const story of stories) {
     fail(`${story.id}: missing source match`);
     continue;
   }
-  if (!story.image || !fs.existsSync(path.join(root, story.image))) {
+  const image = String(story.image || '');
+  if (image.includes('\\')) {
+    fail(`${story.id}: story image path must use forward slashes: ${image}`);
+  }
+  if (!image || !fs.existsSync(path.join(root, image))) {
     fail(`${story.id}: missing story image asset ${story.image || ''}`);
   }
   if (match.status !== 'FINISHED') continue;
