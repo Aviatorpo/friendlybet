@@ -17,7 +17,7 @@ const STORIES_PATH = path.join(ROOT, 'public-data', 'world-cup-stories.json');
 const ASSET_DIR = path.join(ROOT, 'story-assets');
 const OUTCOME_BASE_DIR = path.join(ASSET_DIR, 'outcome-bases');
 const MANIFEST_PATH = path.join(ASSET_DIR, 'manifest.json');
-const MAX_STORIES = Number(process.env.WC_STORY_LIMIT || 24);
+const MAX_STORIES = Number(process.env.WC_STORY_LIMIT || 104);
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY
   || process.env.SUPABASE_PUBLISHABLE_KEY
@@ -692,6 +692,214 @@ const STORY_COPY_OVERRIDES = {
         en_name: '{names} picked {team} to top the group. After 3-1 from Austria, the defense speech needs an intro, body, and conclusion 🎤',
         en_names: '{names} picked {team} to top the group. After 3-1 from Austria, the defense speech needs an intro, body, and conclusion 🎤',
         en_count: '{names} picked {team} to top the group. After 3-1 from Austria, the defense speech needs an intro, body, and conclusion 🎤',
+      },
+    ],
+  },
+  'MEX-RSA': {
+    caption: {
+      he: 'מקסיקו פתחה עם 2-0 נקי על דרום אפריקה, וזה הרגיש כמו הודעה קצרה לכל בית A: לא באנו להתחמם, באנו לקחת מקום.',
+      en: 'Mexico opened with a clean 2-0 over South Africa, the kind of short message Group A understands immediately: no warm-up, just business.',
+    },
+    pool_focuses: [
+      {
+        table: 'group_position_picks',
+        team_code: 'MEX',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 2-0 על דרום אפריקה, זה כבר נראה פחות כמו אהבת בית ויותר כמו קריאת מפה מוקדמת.',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 2-0 על דרום אפריקה, אלה כבר נראים פחות כמו הימורים ביתיים ויותר כמו קריאת מפה מוקדמת.',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 2-0 על דרום אפריקה, אלה כבר נראים פחות כמו הימורים ביתיים ויותר כמו קריאת מפה מוקדמת.',
+        en_name: '{names} picked {team} to top the group. After 2-0 over South Africa, that looks less like home love and more like reading the map early.',
+        en_names: '{names} picked {team} to top the group. After 2-0 over South Africa, those look less like home-love picks and more like reading the map early.',
+        en_count: '{names} picked {team} to top the group. After 2-0 over South Africa, those look less like home-love picks and more like reading the map early.',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'RSA',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 2-0 ממקסיקו, הטופס לא מת, אבל הוא כבר מחפש הסבר שלא מתחיל ב"משחק פתיחה".',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 2-0 ממקסיקו, הטפסים לא מתים, אבל הם כבר מחפשים הסבר שלא מתחיל ב"משחק פתיחה".',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 2-0 ממקסיקו, הטפסים לא מתים, אבל הם כבר מחפשים הסבר שלא מתחיל ב"משחק פתיחה".',
+        en_name: '{names} picked {team} to top the group. After 2-0 from Mexico, the form is not dead, but it needs an explanation that is not "opening game".',
+        en_names: '{names} picked {team} to top the group. After 2-0 from Mexico, the forms are not dead, but they need an explanation that is not "opening game".',
+        en_count: '{names} picked {team} to top the group. After 2-0 from Mexico, the forms are not dead, but they need an explanation that is not "opening game".',
+      },
+    ],
+  },
+  'KOR-CZE': {
+    caption: {
+      he: 'קוריאה הדרומית לקחה 2-1 מצ׳כיה והשאירה את בית A עם פחות חמצן. ניצחון קטן, אבל כזה שמזיז הרבה טפסים בכיסא.',
+      en: 'South Korea took 2-1 from Czech Republic and left Group A with less oxygen. A small win, but one that moves a lot of forms in their seats.',
+    },
+    pool_focuses: [
+      {
+        table: 'group_position_picks',
+        team_code: 'KOR',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 2-1 על צ׳כיה, זה כבר לא טופס שקט - זה טופס שמבקש שיסתכלו עליו שוב.',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 2-1 על צ׳כיה, אלה כבר לא טפסים שקטים - אלה טפסים שמבקשים שיסתכלו עליהם שוב.',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 2-1 על צ׳כיה, אלה כבר לא טפסים שקטים - אלה טפסים שמבקשים שיסתכלו עליהם שוב.',
+        en_name: '{names} picked {team} to top the group. After 2-1 over Czech Republic, that is no longer a quiet form - it wants another look.',
+        en_names: '{names} picked {team} to top the group. After 2-1 over Czech Republic, those are no longer quiet forms - they want another look.',
+        en_count: '{names} picked {team} to top the group. After 2-1 over Czech Republic, those are no longer quiet forms - they want another look.',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'CZE',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 2-1 מקוריאה הדרומית, יש עדיין דרך, אבל עכשיו היא מגיעה עם עלייה ודופק.',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 2-1 מקוריאה הדרומית, יש עדיין דרך, אבל עכשיו היא מגיעה עם עלייה ודופק.',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 2-1 מקוריאה הדרומית, יש עדיין דרך, אבל עכשיו היא מגיעה עם עלייה ודופק.',
+        en_name: '{names} picked {team} to top the group. After 2-1 from South Korea, there is still a path, but now it comes uphill and breathing hard.',
+        en_names: '{names} picked {team} to top the group. After 2-1 from South Korea, there is still a path, but now it comes uphill and breathing hard.',
+        en_count: '{names} picked {team} to top the group. After 2-1 from South Korea, there is still a path, but now it comes uphill and breathing hard.',
+      },
+    ],
+  },
+  'CAN-BIH': {
+    caption: {
+      he: 'קנדה ובוסניה נפרדו ב-1-1, תוצאה שלא סוגרת כלום אבל פותחת מספיק ויכוחים. בית B קיבל תיקו עם רעש לוואי.',
+      en: 'Canada and Bosnia drew 1-1, a result that closes nothing and opens plenty of arguments. Group B got a draw with aftershock.',
+    },
+    pool_focuses: [
+      {
+        table: 'group_position_picks',
+        team_code: 'CAN',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 1-1 מול בוסניה, זה עדיין חי, אבל כבר פחות הולך עם משקפי שמש.',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול בוסניה, זה עדיין חי, אבל כבר פחות הולך עם משקפי שמש.',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול בוסניה, זה עדיין חי, אבל כבר פחות הולך עם משקפי שמש.',
+        en_name: '{names} picked {team} to top the group. After 1-1 with Bosnia, it is still alive, just wearing fewer sunglasses.',
+        en_names: '{names} picked {team} to top the group. After 1-1 with Bosnia, it is still alive, just wearing fewer sunglasses.',
+        en_count: '{names} picked {team} to top the group. After 1-1 with Bosnia, it is still alive, just wearing fewer sunglasses.',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'BIH',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. 1-1 מול קנדה לא נותן מצעד, אבל הוא בהחלט משאיר את הדלת פתוחה עם רגל בפנים.',
+        he_names: '{names} שמו את {team} ראשונה בבית. 1-1 מול קנדה לא נותן מצעד, אבל הוא בהחלט משאיר את הדלת פתוחה עם רגל בפנים.',
+        he_count: '{names} שמו את {team} ראשונה בבית. 1-1 מול קנדה לא נותן מצעד, אבל הוא בהחלט משאיר את הדלת פתוחה עם רגל בפנים.',
+        en_name: '{names} picked {team} to top the group. A 1-1 with Canada is not a parade, but it keeps one foot firmly in the door.',
+        en_names: '{names} picked {team} to top the group. A 1-1 with Canada is not a parade, but it keeps one foot firmly in the door.',
+        en_count: '{names} picked {team} to top the group. A 1-1 with Canada is not a parade, but it keeps one foot firmly in the door.',
+      },
+    ],
+  },
+  'USA-PAR': {
+    caption: {
+      he: 'ארה״ב פתחה מבערים עם 4-1 על פרגוואי. זה לא היה רמז, זה היה שלט ניאון באמצע בית D.',
+      en: 'USA hit the burners with 4-1 over Paraguay. That was not a hint, it was a neon sign in the middle of Group D.',
+    },
+    pool_focuses: [
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'USA',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי 4-1 על פרגוואי, זה עדיין אמיץ - אבל פתאום הרבה יותר קשה לצחוק.',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 4-1 על פרגוואי, זה עדיין אמיץ - אבל פתאום הרבה יותר קשה לצחוק.',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 4-1 על פרגוואי, זה עדיין אמיץ - אבל פתאום הרבה יותר קשה לצחוק.',
+        en_name: '{names} picked {team} to win the World Cup. After 4-1 over Paraguay, it is still bold - just suddenly harder to laugh at.',
+        en_names: '{names} picked {team} to win the World Cup. After 4-1 over Paraguay, it is still bold - just suddenly harder to laugh at.',
+        en_count: '{names} picked {team} to win the World Cup. After 4-1 over Paraguay, it is still bold - just suddenly harder to laugh at.',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'PAR',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 4-1 מארה״ב, הטופס לא נקרע, אבל הוא בהחלט עבר למצב טיוטה.',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 4-1 מארה״ב, הטפסים לא נקרעים, אבל הם בהחלט עברו למצב טיוטה.',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 4-1 מארה״ב, הטפסים לא נקרעים, אבל הם בהחלט עברו למצב טיוטה.',
+        en_name: '{names} picked {team} to top the group. After 4-1 from USA, the form is not torn up, but it has definitely moved to draft mode.',
+        en_names: '{names} picked {team} to top the group. After 4-1 from USA, the forms are not torn up, but they have definitely moved to draft mode.',
+        en_count: '{names} picked {team} to top the group. After 4-1 from USA, the forms are not torn up, but they have definitely moved to draft mode.',
+      },
+    ],
+  },
+  'USA-AUS': {
+    caption: {
+      he: 'עוד 2-0 לארה״ב, הפעם מול אוסטרליה, והבית מתחיל להיראות כמו חדר שהם כבר סידרו לעצמם מראש.',
+      en: 'Another 2-0 for USA, this time over Australia, and the group is starting to look like a room they arranged for themselves in advance.',
+    },
+    pool_focuses: [
+      {
+        table: 'group_position_picks',
+        team_code: 'USA',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי עוד 2-0, הפעם על אוסטרליה, הטופס הזה כבר לא מבקש אישור - הוא מבקש מסגרת.',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי עוד 2-0, הפעם על אוסטרליה, הטפסים האלה כבר לא מבקשים אישור - הם מבקשים מסגרת.',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי עוד 2-0, הפעם על אוסטרליה, הטפסים האלה כבר לא מבקשים אישור - הם מבקשים מסגרת.',
+        en_name: '{names} picked {team} to top the group. After another 2-0, this time over Australia, that form is not asking for approval anymore - it wants a frame.',
+        en_names: '{names} picked {team} to top the group. After another 2-0, this time over Australia, those forms are not asking for approval anymore - they want frames.',
+        en_count: '{names} picked {team} to top the group. After another 2-0, this time over Australia, those forms are not asking for approval anymore - they want frames.',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'AUS',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 2-0 מארה״ב, הדרך עדיין קיימת, אבל היא כבר צריכה GPS ומצב רוח חזק.',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 2-0 מארה״ב, הדרך עדיין קיימת, אבל היא כבר צריכה GPS ומצב רוח חזק.',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 2-0 מארה״ב, הדרך עדיין קיימת, אבל היא כבר צריכה GPS ומצב רוח חזק.',
+        en_name: '{names} picked {team} to top the group. After 2-0 from USA, the route still exists, but now it needs GPS and a strong mood.',
+        en_names: '{names} picked {team} to top the group. After 2-0 from USA, the route still exists, but now it needs GPS and a strong mood.',
+        en_count: '{names} picked {team} to top the group. After 2-0 from USA, the route still exists, but now it needs GPS and a strong mood.',
+      },
+    ],
+  },
+  'SCO-MAR': {
+    caption: {
+      he: 'מרוקו גנבה 1-0 מסקוטלנד, מהסוג שלא עושה רעש ענק בזמן אמת ואז פתאום יושב באמצע הטבלה עם חיוך.',
+      en: 'Morocco stole 1-0 from Scotland, the kind of result that sounds small live and then sits in the table with a grin.',
+    },
+    pool_focuses: [
+      {
+        table: 'group_position_picks',
+        team_code: 'MAR',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 1-0 על סקוטלנד, זה לא זיקוקים - זה יותר מסוכן: שלוש נקודות בשקט.',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 על סקוטלנד, אלה לא זיקוקים - זה יותר מסוכן: שלוש נקודות בשקט.',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 על סקוטלנד, אלה לא זיקוקים - זה יותר מסוכן: שלוש נקודות בשקט.',
+        en_name: '{names} picked {team} to top the group. After 1-0 over Scotland, it is not fireworks - it is more dangerous: quiet three points.',
+        en_names: '{names} picked {team} to top the group. After 1-0 over Scotland, those are not fireworks - they are more dangerous: quiet three points.',
+        en_count: '{names} picked {team} to top the group. After 1-0 over Scotland, those are not fireworks - they are more dangerous: quiet three points.',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'SCO',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 1-0 ממרוקו, זה עדיין אפשרי, אבל הטופס כבר הפסיק לדבר בביטחון מלא.',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 ממרוקו, זה עדיין אפשרי, אבל הטפסים כבר הפסיקו לדבר בביטחון מלא.',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 ממרוקו, זה עדיין אפשרי, אבל הטפסים כבר הפסיקו לדבר בביטחון מלא.',
+        en_name: '{names} picked {team} to top the group. After 1-0 from Morocco, it is still possible, but the form has stopped speaking with full confidence.',
+        en_names: '{names} picked {team} to top the group. After 1-0 from Morocco, it is still possible, but the forms have stopped speaking with full confidence.',
+        en_count: '{names} picked {team} to top the group. After 1-0 from Morocco, it is still possible, but the forms have stopped speaking with full confidence.',
+      },
+    ],
+  },
+  'BRA-HAI': {
+    caption: {
+      he: 'ברזיל עשתה 3-0 על האיטי בלי להרים יותר מדי את הקול. לפעמים הכי מפחיד זה כשזה נראה כמו יום עבודה רגיל.',
+      en: 'Brazil made it 3-0 over Haiti without raising the volume too much. Sometimes the scary part is when it looks like a normal day at work.',
+    },
+    pool_focuses: [
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'BRA',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי 3-0 על האיטי, הוא לא צריך לצעוק "אמרתי לכם" - הטבלה עושה את זה בשבילו.',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-0 על האיטי, הם לא צריכים לצעוק "אמרנו לכם" - הטבלה עושה את זה בשבילם.',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-0 על האיטי, הם לא צריכים לצעוק "אמרנו לכם" - הטבלה עושה את זה בשבילם.',
+        en_name: '{names} picked {team} to win the World Cup. After 3-0 over Haiti, he does not need to shout "told you" - the table is doing it for him.',
+        en_names: '{names} picked {team} to win the World Cup. After 3-0 over Haiti, they do not need to shout "told you" - the table is doing it for them.',
+        en_count: '{names} picked {team} to win the World Cup. After 3-0 over Haiti, they do not need to shout "told you" - the table is doing it for them.',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'HAI',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 3-0 מברזיל, הטופס עדיין על השולחן, אבל הוא יושב שם עם מגבת על הראש.',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 3-0 מברזיל, הטפסים עדיין על השולחן, אבל הם יושבים שם עם מגבת על הראש.',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 3-0 מברזיל, הטפסים עדיין על השולחן, אבל הם יושבים שם עם מגבת על הראש.',
+        en_name: '{names} picked {team} to top the group. After 3-0 from Brazil, the form is still on the table, but it is sitting there with a towel over its head.',
+        en_names: '{names} picked {team} to top the group. After 3-0 from Brazil, the forms are still on the table, but they are sitting there with towels over their heads.',
+        en_count: '{names} picked {team} to top the group. After 3-0 from Brazil, the forms are still on the table, but they are sitting there with towels over their heads.',
       },
     ],
   },

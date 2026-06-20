@@ -23,7 +23,20 @@ begin
     return new;
   end if;
 
-  if coalesce(old.status, '') = 'FINISHED' or coalesce(new.status, '') <> 'FINISHED' then
+  if coalesce(new.status, '') <> 'FINISHED' then
+    return new;
+  end if;
+
+  if new.home_score is null or new.away_score is null then
+    return new;
+  end if;
+
+  if not (
+    old.status is distinct from new.status
+    or old.home_score is distinct from new.home_score
+    or old.away_score is distinct from new.away_score
+    or old.winner_code is distinct from new.winner_code
+  ) then
     return new;
   end if;
 
@@ -57,7 +70,17 @@ alter function public.dispatch_world_cup_story_on_finished() owner to postgres;
 drop trigger if exists matches_world_cup_story_dispatch on public.matches;
 
 create trigger matches_world_cup_story_dispatch
-after update of status on public.matches
+after update of status, home_score, away_score, winner_code on public.matches
 for each row
-when (old.status is distinct from 'FINISHED' and new.status = 'FINISHED')
+when (
+  new.status = 'FINISHED'
+  and new.home_score is not null
+  and new.away_score is not null
+  and (
+    old.status is distinct from new.status
+    or old.home_score is distinct from new.home_score
+    or old.away_score is distinct from new.away_score
+    or old.winner_code is distinct from new.winner_code
+  )
+)
 execute function public.dispatch_world_cup_story_on_finished();

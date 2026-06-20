@@ -20,15 +20,22 @@ function env(name: string) {
   return value;
 }
 
-function isFinishedTransition(payload: SupabaseWebhookPayload) {
+function isChangedFinishedResult(payload: SupabaseWebhookPayload) {
   if (String(payload.table || "") !== "matches") return false;
   if (String(payload.type || "").toUpperCase() !== "UPDATE") return false;
 
   const next = String(payload.record?.status || "").toUpperCase();
   const prev = String(payload.old_record?.status || "").toUpperCase();
-  if (next !== "FINISHED" || prev === "FINISHED") return false;
+  if (next !== "FINISHED") return false;
+  if (payload.record?.home_score == null || payload.record?.away_score == null) return false;
 
-  return Boolean(payload.record?.id || payload.record?.external_id);
+  const becameFinished = prev !== "FINISHED";
+  const scoreChanged =
+    payload.record?.home_score !== payload.old_record?.home_score ||
+    payload.record?.away_score !== payload.old_record?.away_score ||
+    payload.record?.winner_code !== payload.old_record?.winner_code;
+
+  return Boolean(payload.record?.id || payload.record?.external_id) && (becameFinished || scoreChanged);
 }
 
 Deno.serve(async (req) => {
@@ -45,8 +52,8 @@ Deno.serve(async (req) => {
     return json(400, { ok: false, error: "invalid_json" });
   }
 
-  if (!isFinishedTransition(payload)) {
-    return json(200, { ok: true, dispatched: false, reason: "not_finished_transition" });
+  if (!isChangedFinishedResult(payload)) {
+    return json(200, { ok: true, dispatched: false, reason: "not_changed_finished_result" });
   }
 
   const repo = env("GITHUB_REPO");
