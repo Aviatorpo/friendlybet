@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-06-19T23:07:05.602Z",
-  "freshUntil": "2026-06-20T05:07:05.602Z",
+  "updatedAt": "2026-06-20T00:21:45.048Z",
+  "freshUntil": "2026-06-20T06:21:45.048Z",
   "count": 10,
   "items": [
     {
-      "id": "live-73cb4631-6cdd-4f56-b3cc-9c0938e90e37",
-      "type": "live",
+      "id": "result-73cb4631-6cdd-4f56-b3cc-9c0938e90e37",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "סקוטלנד נגד מרוקו עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
-      "en": "Scotland vs Morocco is live now. Every minute can turn a genius pick into group-chat material.",
+      "he": "מרוקו עשתה את העבודה עם 1:0 נקי על סקוטלנד. לא נוצץ, כן שימושי בטבלה.",
+      "en": "Morocco handled business with a clean 1-0 over Scotland. Not flashy, very useful on the table.",
       "sources": [],
-      "expires_at": "2026-06-20T02:07:05.602Z"
+      "expires_at": "2026-06-21T04:00:00.000Z"
     },
     {
       "id": "result-5aaf9fdb-ff0b-4bef-ab4f-ed962bf1798f",
