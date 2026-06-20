@@ -1,6 +1,54 @@
 {
-  "updated_at": "2026-06-20T19:09:39.907Z",
+  "updated_at": "2026-06-20T22:48:37.500Z",
   "items": [
+    {
+      "id": "ger-civ-2026-06-20",
+      "match_id": "e2b5d1b4-d049-4112-b475-0069cff805cc",
+      "image": "story-assets/germany-wins-ivory-coast.png",
+      "teams": [
+        "GER",
+        "CIV"
+      ],
+      "outcome": "GER",
+      "result": "GER 2-1 CIV",
+      "top_label": "GERMANY WINS!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "CIV",
+        "team_he": "חוף השנהב",
+        "team_en": "Ivory Coast",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 2-1, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 2-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 2-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "en_name": "{names} picked {team} to top the group. After 2-1, that form already needs a defense speech 🎤😬",
+        "en_names": "{names} picked {team} to top the group. After 2-1, those forms already need a defense speech 🎤😬",
+        "en_count": "{names} picked {team} to top the group. After 2-1, those forms already need a defense speech 🎤😬"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "CIV",
+          "team_he": "חוף השנהב",
+          "team_en": "Ivory Coast",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 2-1, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 2-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 2-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "en_name": "{names} picked {team} to top the group. After 2-1, that form already needs a defense speech 🎤😬",
+          "en_names": "{names} picked {team} to top the group. After 2-1, those forms already need a defense speech 🎤😬",
+          "en_count": "{names} picked {team} to top the group. After 2-1, those forms already need a defense speech 🎤😬"
+        }
+      ],
+      "he": {
+        "headline": "גרמניה ניצחה את חוף השנהב 2-1: הצהרה!",
+        "caption": "גרמניה עושה רעש עם 2-1 מול חוף השנהב. משחק אחד, והטבלה כבר נראית אחרת 🔥"
+      },
+      "en": {
+        "headline": "Germany beat Ivory Coast 2-1: Statement made!",
+        "caption": "Germany makes noise with 2-1 against Ivory Coast. One match, and the table already looks different 🔥"
+      }
+    },
     {
       "id": "ned-swe-2026-06-20",
       "match_id": "becdc520-1c41-4a5f-99a5-4a22e0a5812c",
