@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-06-20T00:21:45.048Z",
-  "freshUntil": "2026-06-20T06:21:45.048Z",
-  "count": 10,
+  "updatedAt": "2026-06-20T05:22:33.155Z",
+  "freshUntil": "2026-06-20T11:22:33.155Z",
+  "count": 8,
   "items": [
+    {
+      "id": "live-e421b088-3154-4c02-8240-46f09b9c33f9",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "טורקיה נגד פרגוואי עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
+      "en": "Turkey vs Paraguay is live now. Every minute can turn a genius pick into group-chat material.",
+      "sources": [],
+      "expires_at": "2026-06-20T08:22:33.155Z"
+    },
     {
       "id": "result-73cb4631-6cdd-4f56-b3cc-9c0938e90e37",
       "type": "result",
@@ -31,42 +40,6 @@
       "expires_at": "2026-06-20T07:00:00.000Z"
     },
     {
-      "id": "result-14fc2a09-2287-4f51-83b3-c107147aae2a",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "קנדה ניצחה את קטאר 6:0 במשחק פתוח לגמרי. כיף לצופים, כאב ראש למהמרים.",
-      "en": "Canada beat Qatar 6-0 in a wide-open one. Great for viewers, brutal for predictors.",
-      "sources": [],
-      "expires_at": "2026-06-20T04:00:00.000Z"
-    },
-    {
-      "id": "result-c6b739ae-aafa-44aa-af77-9723d08ae056",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "שווייץ ניצחה את בוסניה-הרצגובינה 4:1 במשחק פתוח לגמרי. כיף לצופים, כאב ראש למהמרים.",
-      "en": "Switzerland beat Bosnia-Herzegovina 4-1 in a wide-open one. Great for viewers, brutal for predictors.",
-      "sources": [],
-      "expires_at": "2026-06-20T01:00:00.000Z"
-    },
-    {
-      "id": "fixture-13ad0015-2457-4e10-a087-9b24dec98c3c",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "ברזיל נגד האיטי, היום 03:30. ברזיל מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
-      "en": "Brazil vs Haiti, today 03:30. Brazil comes in as favorite, which is exactly where predictions start sweating.",
-      "sources": [],
-      "expires_at": "2026-06-20T00:30:00.000Z"
-    },
-    {
-      "id": "fixture-e421b088-3154-4c02-8240-46f09b9c33f9",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "טורקיה נגד פרגוואי, היום 06:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
-      "en": "Turkey vs Paraguay, today 06:00. Not the shiniest match, but these are the ones that move places without asking.",
-      "sources": [],
-      "expires_at": "2026-06-20T03:00:00.000Z"
-    },
-    {
       "id": "fixture-becdc520-1c41-4a5f-99a5-4a22e0a5812c",
       "type": "fixture",
       "confidence": "confirmed",
@@ -92,6 +65,15 @@
       "en": "Ecuador vs Curaçao, tomorrow 03:00. Not the shiniest match, but these are the ones that move places without asking.",
       "sources": [],
       "expires_at": "2026-06-21T00:00:00.000Z"
+    },
+    {
+      "id": "fixture-f1ad412d-4028-49b3-b2b1-58f9524e1c89",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "תוניסיה נגד יפן, מחר 07:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
+      "en": "Tunisia vs Japan, tomorrow 07:00. Quiet on paper, which is usually where pool chaos begins.",
+      "sources": [],
+      "expires_at": "2026-06-21T04:00:00.000Z"
     }
   ]
 }
