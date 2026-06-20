@@ -35,7 +35,7 @@ jobs:
         run: node scripts/prebuild-world-cup-story-outcome-bases.js
 
       - name: Install story image audit tooling
-        run: python3 -m pip install --user pillow
+        run: python3 -m pip install --user pillow pypdf
 
       - name: Audit prepared story base image quality
         run: python3 scripts/audit-world-cup-story-images.py --scope bases

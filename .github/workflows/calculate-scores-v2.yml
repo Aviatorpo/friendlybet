@@ -90,6 +90,12 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/generate-banter.js
 
+      - name: Install story image audit tooling
+        run: python3 -m pip install --user pillow pypdf
+
+      - name: Audit World Cup story image quality
+        run: python3 scripts/audit-world-cup-story-images.py --scope stories
+
       - name: Validate World Cup stories
         run: node scripts/test-world-cup-stories.js
 

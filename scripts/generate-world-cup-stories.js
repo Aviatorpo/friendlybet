@@ -102,7 +102,7 @@ const STAR_PROFILES = {
   IRN: { player: 'Alireza Jahanbakhsh', number: 7 },
   IRQ: { player: 'Ali Jasim', number: 17 },
   JOR: { player: 'Mousa Al Tamari', number: 10 },
-  JPN: { player: 'Wataru Endo', number: 6 },
+  JPN: { player: 'Shuto Machino', number: 6 },
   KOR: { player: 'Son Heung-min', number: 7 },
   MAR: { player: 'Achraf Hakimi', number: 2 },
   MEX: { player: 'Raul Jimenez', number: 9 },

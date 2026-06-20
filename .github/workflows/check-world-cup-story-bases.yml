@@ -32,7 +32,7 @@ jobs:
           node-version: '20'
 
       - name: Install story image audit tooling
-        run: python3 -m pip install --user pillow
+        run: python3 -m pip install --user pillow pypdf
 
       - name: Check prepared story base coverage
         env:

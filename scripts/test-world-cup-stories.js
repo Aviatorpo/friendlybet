@@ -10,6 +10,26 @@ const appJs = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
 const stylesCss = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 const generatorJs = fs.readFileSync(path.join(root, 'scripts', 'generate-world-cup-stories.js'), 'utf8');
 const byId = new Map(matches.map(match => [match.id, match]));
+const seenFallbacks = new Map();
+
+function copyShape(text) {
+  return String(text || '')
+    .replace(/\d+\s*-\s*\d+/g, '#-#')
+    .replace(/\b[A-Z]{3}\b/g, 'TEAM')
+    .replace(/[^\p{Letter}\p{Number}\s{}#-]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function focusText(focus, lang) {
+  const prefix = lang === 'he' ? 'he_' : 'en_';
+  return [
+    focus && focus[`${prefix}name`],
+    focus && focus[`${prefix}names`],
+    focus && focus[`${prefix}count`],
+  ].filter(Boolean).join(' ');
+}
 
 function fail(message) {
   console.error(message);
@@ -54,6 +74,15 @@ for (const story of stories) {
     story.he && story.he.caption,
     story.en && story.en.caption
   ].join(' ');
+  ['he', 'en'].forEach(lang => {
+    const caption = String(story[lang] && story[lang].caption || '').trim();
+    if (!caption) fail(`${story.id}: ${lang} fallback caption is empty`);
+    const key = `${lang}:${caption}`;
+    if (seenFallbacks.has(key)) {
+      fail(`${story.id}: ${lang} fallback caption duplicates ${seenFallbacks.get(key)}`);
+    }
+    seenFallbacks.set(key, story.id);
+  });
   if (/מי ש|Anyone who|anyone who/i.test(copyText)) {
     fail(`${story.id}: fallback caption must be match-specific, not generic pick banter`);
   }
@@ -65,6 +94,15 @@ for (const story of stories) {
         fail(`${story.id}: pool_focuses[${idx}].${key} must preserve participant names`);
       }
     });
+    const enFocus = focusText(focus, 'en');
+    if (!/picked \{team\} (to (win the World Cup|top the group)|first in the group)/i.test(enFocus)) {
+      fail(`${story.id}: pool_focuses[${idx}] English text must name the exact pick type`);
+    }
+    const heFocus = focusText(focus, 'he');
+    const hasHebrewPickType = /(\u05d2\u05d1\u05d9\u05e2 \u05d4\u05e2\u05d5\u05dc\u05dd|\u05de\u05d5\u05e0\u05d3\u05d9\u05d0\u05dc|\u05d1\u05e8\u05d0\u05e9 \u05d4\u05d1\u05d9\u05ea|\u05e8\u05d0\u05e9\u05d5\u05e0\u05d4 \u05d1\u05d1\u05d9\u05ea)/u.test(heFocus);
+    if (heFocus && (!heFocus.includes('{team}') || !hasHebrewPickType)) {
+      fail(`${story.id}: pool_focuses[${idx}] Hebrew text must name the exact pick type`);
+    }
   });
   if (outcome !== 'DRAW') {
     const heHeadline = String(story.he && story.he.headline || '');
@@ -75,6 +113,18 @@ for (const story of stories) {
       fail(`${story.id}: English win headline must say beat`);
     }
   }
+}
+
+for (let i = 1; i < stories.length; i++) {
+  const prev = stories[i - 1];
+  const current = stories[i];
+  ['he', 'en'].forEach(lang => {
+    const prevShape = copyShape(prev[lang] && prev[lang].caption);
+    const currentShape = copyShape(current[lang] && current[lang].caption);
+    if (prevShape && currentShape && prevShape === currentShape) {
+      fail(`${current.id}: ${lang} fallback caption structure duplicates adjacent story ${prev.id}`);
+    }
+  });
 }
 
 const visualChecks = [

@@ -122,7 +122,7 @@ jobs:
 
       - name: Install story image tooling
         if: steps.story_work.outputs.publishable == 'true'
-        run: python3 -m pip install --user pillow
+        run: python3 -m pip install --user pillow pypdf
 
       - name: Publish prepared World Cup stories
         if: steps.story_work.outputs.publishable == 'true'

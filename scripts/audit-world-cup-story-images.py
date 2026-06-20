@@ -12,6 +12,7 @@ import json
 import math
 import re
 import sys
+import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
@@ -23,6 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 STORIES_PATH = ROOT / "public-data" / "world-cup-stories.json"
 MANIFEST_PATH = ROOT / "story-assets" / "manifest.json"
 PROMPT_INDEX_PATH = ROOT / "story-assets" / "outcome-bases" / "prompt-index.json"
+SQUAD_NUMBERS_PATH = ROOT / "story-assets" / "world-cup-squad-shirt-numbers.json"
 OUTCOME_BASE_DIR = ROOT / "story-assets" / "outcome-bases"
 EXPECTED_SIZE = (941, 1672)
 
@@ -35,6 +37,7 @@ FORBIDDEN_TEXT = re.compile(
     re.I,
 )
 PLAYER_LINE = re.compile(r":\s*([^,\n]+),\s*([^,\n]+),\s*shirt number #(\d+)", re.I)
+TEAM_SUFFIX = re.compile(r"\s+national(?:-[a-z]+)?\s+kit.*$", re.I)
 
 
 @dataclass(frozen=True)
@@ -51,12 +54,57 @@ def load_json(path: Path, fallback):
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def normalize(value: str) -> str:
+    text = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode("ascii")
+    return re.sub(r"[^a-z0-9]+", " ", text.lower()).strip()
+
+
+def key_tokens(value: str) -> list[str]:
+    return [token for token in normalize(value).split() if token not in {"jr", "junior", "fc"}]
+
+
 def rel(path: Path) -> str:
     return path.relative_to(ROOT).as_posix()
 
 
 def image_path(image: str) -> Path:
     return ROOT / image.replace("\\", "/")
+
+
+def squad_data() -> dict:
+    return load_json(SQUAD_NUMBERS_PATH, {"teams": {}})
+
+
+def team_name_index(squads: dict) -> dict[str, str]:
+    index = {}
+    for code, data in (squads.get("teams") or {}).items():
+        for name in [code, data.get("team") or ""]:
+            normalized = normalize(str(name))
+            if normalized:
+                index[normalized] = code
+    aliases = {
+        "cabo verde": "CPV",
+        "cape verde": "CPV",
+        "curacao": "CUR",
+        "cura ao": "CUR",
+        "czech republic": "CZE",
+        "czechia": "CZE",
+        "dr congo": "COD",
+        "congo dr": "COD",
+        "ivory coast": "CIV",
+        "cote d ivoire": "CIV",
+        "iran": "IRN",
+        "ir iran": "IRN",
+        "saudi arabia": "SAU",
+        "korea republic": "KOR",
+        "south korea": "KOR",
+        "south africa": "RSA",
+        "turkiye": "TUR",
+        "turkey": "TUR",
+        "usa": "USA",
+    }
+    index.update(aliases)
+    return index
 
 
 def story_targets() -> list[AuditTarget]:
@@ -155,6 +203,10 @@ def assert_prompt(target: AuditTarget, errors: list[str]) -> None:
         errors.append("prompt contains forbidden generic/current-player wording")
     required = [
         "Create a vertical 9:16 premium sports meme-card base image",
+        "high-end illustrated sports caricature poster",
+        "not photorealistic",
+        "not a real photo",
+        "not a deepfake",
         "Show exactly two football stars",
         "shirt number #",
         "printed naturally into the jersey fabric",
@@ -169,11 +221,35 @@ def assert_prompt(target: AuditTarget, errors: list[str]) -> None:
     players = PLAYER_LINE.findall(prompt)
     if len(players) != 2:
         errors.append("prompt must identify exactly two named players with shirt numbers")
-    for player, _team, number in players:
+    squads = squad_data()
+    teams = squads.get("teams") or {}
+    if not teams:
+        errors.append("missing PDF-derived squad shirt-number data")
+    team_index = team_name_index(squads)
+    for player, team_text, number in players:
         if not player.strip() or player.strip().lower() in {"player", "star", "current star"}:
             errors.append("prompt has an unnamed or generic player")
         if not number.isdigit() or int(number) <= 0:
             errors.append(f"invalid shirt number for {player.strip() or 'player'}")
+            continue
+        team_name = TEAM_SUFFIX.sub("", team_text).strip()
+        code = team_index.get(normalize(team_name))
+        if not code:
+            errors.append(f"could not map prompt team to squad PDF roster: {team_name}")
+            continue
+        roster = teams.get(code, {}).get("players") or []
+        idx = int(number) - 1
+        if idx < 0 or idx >= len(roster):
+            errors.append(f"{team_name} #{number} is outside the PDF squad range")
+            continue
+        row = roster[idx]
+        row_text = str(row.get("normalized") or normalize(row.get("raw") or ""))
+        missing = [token for token in key_tokens(player) if token not in row_text]
+        if missing:
+            raw = str(row.get("raw") or "")
+            errors.append(
+                f"{player.strip()} #{number} does not match PDF row for {team_name} #{number}: {raw[:140]}"
+            )
 
 
 def audit_image(target: AuditTarget) -> tuple[list[str], dict[str, float | str]]:

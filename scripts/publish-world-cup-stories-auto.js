@@ -48,6 +48,7 @@ function latestStorySummary(limit = 5) {
   }
 }
 
+runPython(['scripts/audit-world-cup-story-images.py', '--scope', 'bases']);
 run(['node', 'scripts/generate-world-cup-stories.js'], {
   env: { STORY_AUTOGEN_IMAGES: '0' },
 });
