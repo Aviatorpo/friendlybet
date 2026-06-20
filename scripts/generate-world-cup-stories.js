@@ -903,6 +903,36 @@ const STORY_COPY_OVERRIDES = {
       },
     ],
   },
+  'TUR-PAR': {
+    caption: {
+      he: 'פרגוואי לקחה 1-0 קשוח מטורקיה, בדיוק מהסוג שמרגיש קטן בלוח התוצאות וגדול מאוד בבית D.',
+      en: 'Paraguay took a stubborn 1-0 from Turkey, exactly the kind of result that looks small on the scoreboard and huge in Group D.',
+    },
+    pool_focuses: [
+      {
+        table: 'group_position_picks',
+        team_code: 'PAR',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 1-0 על טורקיה, זה כבר לא הימור שקט - זה טופס שמרים גבה לכל הבית.',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 על טורקיה, אלה כבר לא הימורים שקטים - אלה טפסים שמרימים גבה לכל הבית.',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 על טורקיה, אלה כבר לא הימורים שקטים - אלה טפסים שמרימים גבה לכל הבית.',
+        en_name: '{names} picked {team} to top the group. After 1-0 over Turkey, that is no longer a quiet form - it is raising an eyebrow at the whole group.',
+        en_names: '{names} picked {team} to top the group. After 1-0 over Turkey, those are no longer quiet forms - they are raising an eyebrow at the whole group.',
+        en_count: '{names} picked {team} to top the group. After 1-0 over Turkey, those are no longer quiet forms - they are raising an eyebrow at the whole group.',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'TUR',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 1-0 מפרגוואי, הדרך עדיין שם, אבל היא כבר הגיעה עם תיק גב כבד.',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 מפרגוואי, הדרך עדיין שם, אבל היא כבר הגיעה עם תיק גב כבד.',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 מפרגוואי, הדרך עדיין שם, אבל היא כבר הגיעה עם תיק גב כבד.',
+        en_name: '{names} picked {team} to top the group. After 1-0 from Paraguay, the route is still there, but it is carrying a heavier bag now.',
+        en_names: '{names} picked {team} to top the group. After 1-0 from Paraguay, the route is still there, but it is carrying a heavier bag now.',
+        en_count: '{names} picked {team} to top the group. After 1-0 from Paraguay, the route is still there, but it is carrying a heavier bag now.',
+      },
+    ],
+  },
 };
 
 function readJson(file, fallback) {

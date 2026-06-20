@@ -1,6 +1,67 @@
 {
-  "updated_at": "2026-06-20T05:37:26.003Z",
+  "updated_at": "2026-06-20T05:57:58.894Z",
   "items": [
+    {
+      "id": "tur-par-2026-06-20",
+      "match_id": "e421b088-3154-4c02-8240-46f09b9c33f9",
+      "image": "story-assets/paraguay-wins-turkey.png",
+      "teams": [
+        "TUR",
+        "PAR"
+      ],
+      "outcome": "PAR",
+      "result": "PAR 1-0 TUR",
+      "top_label": "PARAGUAY WINS!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "PAR",
+        "team_he": "פרגוואי",
+        "team_en": "Paraguay",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 1-0 על טורקיה, זה כבר לא הימור שקט - זה טופס שמרים גבה לכל הבית.",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 1-0 על טורקיה, אלה כבר לא הימורים שקטים - אלה טפסים שמרימים גבה לכל הבית.",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 1-0 על טורקיה, אלה כבר לא הימורים שקטים - אלה טפסים שמרימים גבה לכל הבית.",
+        "en_name": "{names} picked {team} to top the group. After 1-0 over Turkey, that is no longer a quiet form - it is raising an eyebrow at the whole group.",
+        "en_names": "{names} picked {team} to top the group. After 1-0 over Turkey, those are no longer quiet forms - they are raising an eyebrow at the whole group.",
+        "en_count": "{names} picked {team} to top the group. After 1-0 over Turkey, those are no longer quiet forms - they are raising an eyebrow at the whole group."
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "PAR",
+          "team_he": "פרגוואי",
+          "team_en": "Paraguay",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 1-0 על טורקיה, זה כבר לא הימור שקט - זה טופס שמרים גבה לכל הבית.",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 1-0 על טורקיה, אלה כבר לא הימורים שקטים - אלה טפסים שמרימים גבה לכל הבית.",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 1-0 על טורקיה, אלה כבר לא הימורים שקטים - אלה טפסים שמרימים גבה לכל הבית.",
+          "en_name": "{names} picked {team} to top the group. After 1-0 over Turkey, that is no longer a quiet form - it is raising an eyebrow at the whole group.",
+          "en_names": "{names} picked {team} to top the group. After 1-0 over Turkey, those are no longer quiet forms - they are raising an eyebrow at the whole group.",
+          "en_count": "{names} picked {team} to top the group. After 1-0 over Turkey, those are no longer quiet forms - they are raising an eyebrow at the whole group."
+        },
+        {
+          "table": "group_position_picks",
+          "team_code": "TUR",
+          "team_he": "טורקיה",
+          "team_en": "Turkey",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 1-0 מפרגוואי, הדרך עדיין שם, אבל היא כבר הגיעה עם תיק גב כבד.",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 1-0 מפרגוואי, הדרך עדיין שם, אבל היא כבר הגיעה עם תיק גב כבד.",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 1-0 מפרגוואי, הדרך עדיין שם, אבל היא כבר הגיעה עם תיק גב כבד.",
+          "en_name": "{names} picked {team} to top the group. After 1-0 from Paraguay, the route is still there, but it is carrying a heavier bag now.",
+          "en_names": "{names} picked {team} to top the group. After 1-0 from Paraguay, the route is still there, but it is carrying a heavier bag now.",
+          "en_count": "{names} picked {team} to top the group. After 1-0 from Paraguay, the route is still there, but it is carrying a heavier bag now."
+        }
+      ],
+      "he": {
+        "headline": "פרגוואי ניצחה את טורקיה 1-0: הצהרה!",
+        "caption": "פרגוואי לקחה 1-0 קשוח מטורקיה, בדיוק מהסוג שמרגיש קטן בלוח התוצאות וגדול מאוד בבית D."
+      },
+      "en": {
+        "headline": "Paraguay beat Turkey 1-0: Statement made!",
+        "caption": "Paraguay took a stubborn 1-0 from Turkey, exactly the kind of result that looks small on the scoreboard and huge in Group D."
+      }
+    },
     {
       "id": "bra-hai-2026-06-20",
       "match_id": "13ad0015-2457-4e10-a087-9b24dec98c3c",
