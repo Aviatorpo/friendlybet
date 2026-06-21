@@ -1,6 +1,54 @@
 {
-  "updated_at": "2026-06-21T18:07:09.632Z",
+  "updated_at": "2026-06-21T21:20:11.460Z",
   "items": [
+    {
+      "id": "bel-irn-2026-06-21",
+      "match_id": "b7f44bb4-74a9-409f-9d21-616997345172",
+      "image": "story-assets/belgium-iran-draw.png",
+      "teams": [
+        "BEL",
+        "IRN"
+      ],
+      "outcome": "DRAW",
+      "result": "BEL 0-0 IRN",
+      "top_label": "DRAW!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "BEL",
+        "team_he": "בלגיה",
+        "team_en": "Belgium",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 0-0, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 0-0, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 0-0, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+        "en_name": "{names} picked {team} to top the group. After 0-0, that choice suddenly looks much less calm 😬",
+        "en_names": "{names} picked {team} to top the group. After 0-0, that choice suddenly looks much less calm 😬",
+        "en_count": "{names} picked {team} to top the group. After 0-0, that choice suddenly looks much less calm 😬"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "BEL",
+          "team_he": "בלגיה",
+          "team_en": "Belgium",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 0-0, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 0-0, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 0-0, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+          "en_name": "{names} picked {team} to top the group. After 0-0, that choice suddenly looks much less calm 😬",
+          "en_names": "{names} picked {team} to top the group. After 0-0, that choice suddenly looks much less calm 😬",
+          "en_count": "{names} picked {team} to top the group. After 0-0, that choice suddenly looks much less calm 😬"
+        }
+      ],
+      "he": {
+        "headline": "בלגיה ואיראן נפרדו ב-0-0: דרמה בלי הכרעה",
+        "caption": "בלגיה ואיראן משאירות את הבית פתוח אחרי 0-0. הדרמה בטבלה רק התחילה 👀"
+      },
+      "en": {
+        "headline": "Belgium and Iran draw 0-0: No winner, all drama",
+        "caption": "Belgium and Iran leave the group open after 0-0. The table drama is just getting started 👀"
+      }
+    },
     {
       "id": "esp-sau-2026-06-21",
       "match_id": "abbfa32e-7ac6-4b04-a483-221352040fc8",
