@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-06-21T10:38:04.164Z",
-  "freshUntil": "2026-06-21T16:38:04.164Z",
-  "count": 8,
+  "updatedAt": "2026-06-21T13:14:24.544Z",
+  "freshUntil": "2026-06-21T19:14:24.544Z",
+  "count": 9,
   "items": [
     {
       "id": "result-f1ad412d-4028-49b3-b2b1-58f9524e1c89",
@@ -74,6 +74,15 @@
       "en": "New Zealand vs Egypt, tomorrow 04:00. Quiet on paper, which is usually where pool chaos begins.",
       "sources": [],
       "expires_at": "2026-06-22T01:00:00.000Z"
+    },
+    {
+      "id": "fixture-812814a3-47f1-44d9-99c5-b574e5adeae4",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "ארגנטינה נגד אוסטריה, מחר 20:00. על הנייר ארגנטינה אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
+      "en": "Argentina vs Austria, tomorrow 20:00. On paper Argentina should control it, but paper does not score pool points.",
+      "sources": [],
+      "expires_at": "2026-06-22T17:00:00.000Z"
     }
   ]
 }
