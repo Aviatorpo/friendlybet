@@ -1,6 +1,54 @@
 {
-  "updated_at": "2026-06-20T22:48:37.500Z",
+  "updated_at": "2026-06-21T02:10:12.920Z",
   "items": [
+    {
+      "id": "ecu-cur-2026-06-21",
+      "match_id": "636d9e56-06c4-402e-9dac-1d24fbd8089d",
+      "image": "story-assets/ecuador-curacao-draw.png",
+      "teams": [
+        "ECU",
+        "CUR"
+      ],
+      "outcome": "DRAW",
+      "result": "ECU 0-0 CUR",
+      "top_label": "DRAW!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "ECU",
+        "team_he": "אקוודור",
+        "team_en": "Ecuador",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 0-0, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 0-0, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 0-0, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+        "en_name": "{names} picked {team} to top the group. After 0-0, that choice suddenly looks much less calm 😬",
+        "en_names": "{names} picked {team} to top the group. After 0-0, that choice suddenly looks much less calm 😬",
+        "en_count": "{names} picked {team} to top the group. After 0-0, that choice suddenly looks much less calm 😬"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "ECU",
+          "team_he": "אקוודור",
+          "team_en": "Ecuador",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 0-0, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 0-0, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 0-0, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+          "en_name": "{names} picked {team} to top the group. After 0-0, that choice suddenly looks much less calm 😬",
+          "en_names": "{names} picked {team} to top the group. After 0-0, that choice suddenly looks much less calm 😬",
+          "en_count": "{names} picked {team} to top the group. After 0-0, that choice suddenly looks much less calm 😬"
+        }
+      ],
+      "he": {
+        "headline": "אקוודור וקוראסאו נפרדו ב-0-0: דרמה בלי הכרעה",
+        "caption": "אקוודור וקוראסאו משאירות את הבית פתוח אחרי 0-0. הדרמה בטבלה רק התחילה 👀"
+      },
+      "en": {
+        "headline": "Ecuador and Curacao draw 0-0: No winner, all drama",
+        "caption": "Ecuador and Curacao leave the group open after 0-0. The table drama is just getting started 👀"
+      }
+    },
     {
       "id": "ger-civ-2026-06-20",
       "match_id": "e2b5d1b4-d049-4112-b475-0069cff805cc",
