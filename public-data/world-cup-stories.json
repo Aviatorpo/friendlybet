@@ -1,6 +1,54 @@
 {
-  "updated_at": "2026-06-21T02:10:12.920Z",
+  "updated_at": "2026-06-21T07:20:24.203Z",
   "items": [
+    {
+      "id": "tun-jpn-2026-06-21",
+      "match_id": "f1ad412d-4028-49b3-b2b1-58f9524e1c89",
+      "image": "story-assets/japan-wins-tunisia.png",
+      "teams": [
+        "TUN",
+        "JPN"
+      ],
+      "outcome": "JPN",
+      "result": "JPN 4-0 TUN",
+      "top_label": "JAPAN WINS!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "TUN",
+        "team_he": "תוניסיה",
+        "team_en": "Tunisia",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 4-0, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 4-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 4-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "en_name": "{names} picked {team} to top the group. After 4-0, that form already needs a defense speech 🎤😬",
+        "en_names": "{names} picked {team} to top the group. After 4-0, those forms already need a defense speech 🎤😬",
+        "en_count": "{names} picked {team} to top the group. After 4-0, those forms already need a defense speech 🎤😬"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "TUN",
+          "team_he": "תוניסיה",
+          "team_en": "Tunisia",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 4-0, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 4-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 4-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "en_name": "{names} picked {team} to top the group. After 4-0, that form already needs a defense speech 🎤😬",
+          "en_names": "{names} picked {team} to top the group. After 4-0, those forms already need a defense speech 🎤😬",
+          "en_count": "{names} picked {team} to top the group. After 4-0, those forms already need a defense speech 🎤😬"
+        }
+      ],
+      "he": {
+        "headline": "יפן ניצחה את תוניסיה 4-0: הצהרה!",
+        "caption": "יפן עושה רעש עם 4-0 מול תוניסיה. משחק אחד, והטבלה כבר נראית אחרת 🔥"
+      },
+      "en": {
+        "headline": "Japan beat Tunisia 4-0: Statement made!",
+        "caption": "Japan makes noise with 4-0 against Tunisia. One match, and the table already looks different 🔥"
+      }
+    },
     {
       "id": "ecu-cur-2026-06-21",
       "match_id": "636d9e56-06c4-402e-9dac-1d24fbd8089d",
