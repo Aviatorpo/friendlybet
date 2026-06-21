@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-06-21T06:11:26.072Z",
-  "freshUntil": "2026-06-21T12:11:26.072Z",
-  "count": 10,
+  "updatedAt": "2026-06-21T10:38:04.164Z",
+  "freshUntil": "2026-06-21T16:38:04.164Z",
+  "count": 8,
   "items": [
     {
-      "id": "live-f1ad412d-4028-49b3-b2b1-58f9524e1c89",
-      "type": "live",
+      "id": "result-f1ad412d-4028-49b3-b2b1-58f9524e1c89",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "תוניסיה נגד יפן עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
-      "en": "Tunisia vs Japan is live now. Every minute can turn a genius pick into group-chat material.",
+      "he": "יפן עשתה את העבודה עם 4:0 נקי על תוניסיה. לא נוצץ, כן שימושי בטבלה.",
+      "en": "Japan handled business with a clean 4-0 over Tunisia. Not flashy, very useful on the table.",
       "sources": [],
-      "expires_at": "2026-06-21T09:11:26.072Z"
+      "expires_at": "2026-06-22T10:00:00.000Z"
     },
     {
       "id": "result-636d9e56-06c4-402e-9dac-1d24fbd8089d",
       "type": "result",
       "confidence": "confirmed",
-      "he": "אקוודור וקוראסאו סיימו 0:0. לפעמים גם תיקו בלי שערים יודע לעשות רעש בטבלה.",
-      "en": "Ecuador and Curaçao ended 0-0. Sometimes a goalless draw still makes noise on the table.",
+      "he": "אקוודור וקוראסאו נפרדו ב-0:0. לא משחק לפוסטר, כן משחק שמבלגן תחזיות.",
+      "en": "Ecuador and Curaçao finished 0-0. Not one for the poster, definitely one for messy predictions.",
       "sources": [],
       "expires_at": "2026-06-22T06:00:00.000Z"
     },
@@ -38,24 +38,6 @@
       "en": "Netherlands beat Sweden 5-1 in a wide-open one. Great for viewers, brutal for predictors.",
       "sources": [],
       "expires_at": "2026-06-21T23:00:00.000Z"
-    },
-    {
-      "id": "result-e421b088-3154-4c02-8240-46f09b9c33f9",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "פרגוואי עשתה את העבודה עם 1:0 נקי על טורקיה. לא נוצץ, כן שימושי בטבלה.",
-      "en": "Paraguay handled business with a clean 1-0 over Turkey. Not flashy, very useful on the table.",
-      "sources": [],
-      "expires_at": "2026-06-21T09:00:00.000Z"
-    },
-    {
-      "id": "result-13ad0015-2457-4e10-a087-9b24dec98c3c",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "ברזיל עשתה את העבודה עם 3:0 נקי על האיטי. לא נוצץ, כן שימושי בטבלה.",
-      "en": "Brazil handled business with a clean 3-0 over Haiti. Not flashy, very useful on the table.",
-      "sources": [],
-      "expires_at": "2026-06-21T06:30:00.000Z"
     },
     {
       "id": "fixture-abbfa32e-7ac6-4b04-a483-221352040fc8",
