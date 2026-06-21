@@ -1,6 +1,54 @@
 {
-  "updated_at": "2026-06-21T07:20:24.203Z",
+  "updated_at": "2026-06-21T18:07:09.632Z",
   "items": [
+    {
+      "id": "esp-sau-2026-06-21",
+      "match_id": "abbfa32e-7ac6-4b04-a483-221352040fc8",
+      "image": "story-assets/spain-wins-saudi-arabia.png",
+      "teams": [
+        "ESP",
+        "SAU"
+      ],
+      "outcome": "ESP",
+      "result": "ESP 4-0 SAU",
+      "top_label": "SPAIN WINS!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "SAU",
+        "team_he": "ערב הסעודית",
+        "team_en": "Saudi Arabia",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 4-0, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 4-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 4-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "en_name": "{names} picked {team} to top the group. After 4-0, that form already needs a defense speech 🎤😬",
+        "en_names": "{names} picked {team} to top the group. After 4-0, those forms already need a defense speech 🎤😬",
+        "en_count": "{names} picked {team} to top the group. After 4-0, those forms already need a defense speech 🎤😬"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "SAU",
+          "team_he": "ערב הסעודית",
+          "team_en": "Saudi Arabia",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 4-0, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 4-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 4-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "en_name": "{names} picked {team} to top the group. After 4-0, that form already needs a defense speech 🎤😬",
+          "en_names": "{names} picked {team} to top the group. After 4-0, those forms already need a defense speech 🎤😬",
+          "en_count": "{names} picked {team} to top the group. After 4-0, those forms already need a defense speech 🎤😬"
+        }
+      ],
+      "he": {
+        "headline": "ספרד ניצחה את ערב הסעודית 4-0: הצהרה!",
+        "caption": "ספרד עושה רעש עם 4-0 מול ערב הסעודית. משחק אחד, והטבלה כבר נראית אחרת 🔥"
+      },
+      "en": {
+        "headline": "Spain beat Saudi Arabia 4-0: Statement made!",
+        "caption": "Spain makes noise with 4-0 against Saudi Arabia. One match, and the table already looks different 🔥"
+      }
+    },
     {
       "id": "tun-jpn-2026-06-21",
       "match_id": "f1ad412d-4028-49b3-b2b1-58f9524e1c89",
