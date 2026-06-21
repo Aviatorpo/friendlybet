@@ -1,16 +1,25 @@
 {
-  "updatedAt": "2026-06-21T17:46:13.060Z",
-  "freshUntil": "2026-06-21T23:46:13.060Z",
-  "count": 10,
+  "updatedAt": "2026-06-21T19:56:04.228Z",
+  "freshUntil": "2026-06-22T01:56:04.228Z",
+  "count": 11,
   "items": [
     {
-      "id": "live-abbfa32e-7ac6-4b04-a483-221352040fc8",
+      "id": "live-b7f44bb4-74a9-409f-9d21-616997345172",
       "type": "live",
       "confidence": "confirmed",
-      "he": "ספרד נגד ערב הסעודית עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
-      "en": "Spain vs Saudi Arabia is live now. Every minute can turn a genius pick into group-chat material.",
+      "he": "בלגיה נגד איראן עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
+      "en": "Belgium vs Iran is live now. Every minute can turn a genius pick into group-chat material.",
       "sources": [],
-      "expires_at": "2026-06-21T20:46:13.060Z"
+      "expires_at": "2026-06-21T22:56:04.228Z"
+    },
+    {
+      "id": "result-abbfa32e-7ac6-4b04-a483-221352040fc8",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "ספרד עשתה את העבודה עם 4:0 נקי על ערב הסעודית. לא נוצץ, כן שימושי בטבלה.",
+      "en": "Spain handled business with a clean 4-0 over Saudi Arabia. Not flashy, very useful on the table.",
+      "sources": [],
+      "expires_at": "2026-06-22T22:00:00.000Z"
     },
     {
       "id": "result-f1ad412d-4028-49b3-b2b1-58f9524e1c89",
@@ -25,8 +34,8 @@
       "id": "result-636d9e56-06c4-402e-9dac-1d24fbd8089d",
       "type": "result",
       "confidence": "confirmed",
-      "he": "אקוודור וקוראסאו נפרדו ב-0:0. לא משחק לפוסטר, כן משחק שמבלגן תחזיות.",
-      "en": "Ecuador and Curaçao finished 0-0. Not one for the poster, definitely one for messy predictions.",
+      "he": "אקוודור וקוראסאו סיימו 0:0. לפעמים גם תיקו בלי שערים יודע לעשות רעש בטבלה.",
+      "en": "Ecuador and Curaçao ended 0-0. Sometimes a goalless draw still makes noise on the table.",
       "sources": [],
       "expires_at": "2026-06-22T06:00:00.000Z"
     },
@@ -49,20 +58,11 @@
       "expires_at": "2026-06-21T23:00:00.000Z"
     },
     {
-      "id": "fixture-b7f44bb4-74a9-409f-9d21-616997345172",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "בלגיה נגד איראן, היום 22:00. על הנייר בלגיה אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
-      "en": "Belgium vs Iran, today 22:00. On paper Belgium should control it, but paper does not score pool points.",
-      "sources": [],
-      "expires_at": "2026-06-21T19:00:00.000Z"
-    },
-    {
       "id": "fixture-477ec7c6-1c6a-4f49-9d14-c80ec6cb63e0",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "אורוגוואי נגד כף ורדה, מחר 01:00. על הנייר אורוגוואי אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
-      "en": "Uruguay vs Cape Verde, tomorrow 01:00. On paper Uruguay should control it, but paper does not score pool points.",
+      "he": "אורוגוואי נגד כף ורדה, מחר 01:00. אורוגוואי מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
+      "en": "Uruguay vs Cape Verde, tomorrow 01:00. Uruguay comes in as favorite, which is exactly where predictions start sweating.",
       "sources": [],
       "expires_at": "2026-06-21T22:00:00.000Z"
     },
@@ -70,8 +70,8 @@
       "id": "fixture-0279f687-7d6f-4887-aa6a-59d8490e2982",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "ניו זילנד נגד מצרים, מחר 04:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
-      "en": "New Zealand vs Egypt, tomorrow 04:00. Not the shiniest match, but these are the ones that move places without asking.",
+      "he": "ניו זילנד נגד מצרים, מחר 04:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
+      "en": "New Zealand vs Egypt, tomorrow 04:00. Quiet on paper, which is usually where pool chaos begins.",
       "sources": [],
       "expires_at": "2026-06-22T01:00:00.000Z"
     },
@@ -79,8 +79,8 @@
       "id": "fixture-812814a3-47f1-44d9-99c5-b574e5adeae4",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "ארגנטינה נגד אוסטריה, מחר 20:00. ארגנטינה מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
-      "en": "Argentina vs Austria, tomorrow 20:00. Argentina comes in as favorite, which is exactly where predictions start sweating.",
+      "he": "ארגנטינה נגד אוסטריה, מחר 20:00. על הנייר ארגנטינה אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
+      "en": "Argentina vs Austria, tomorrow 20:00. On paper Argentina should control it, but paper does not score pool points.",
       "sources": [],
       "expires_at": "2026-06-22T17:00:00.000Z"
     },
@@ -88,10 +88,19 @@
       "id": "fixture-89b9734a-9649-4fd4-a903-20ef8ef20ce5",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "צרפת נגד עיראק, 23/06 24:00. על הנייר צרפת אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
-      "en": "France vs Iraq, 23/06 24:00. On paper France should control it, but paper does not score pool points.",
+      "he": "צרפת נגד עיראק, 23/06 24:00. צרפת מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
+      "en": "France vs Iraq, 23/06 24:00. France comes in as favorite, which is exactly where predictions start sweating.",
       "sources": [],
       "expires_at": "2026-06-22T21:00:00.000Z"
+    },
+    {
+      "id": "fixture-9e7e1640-f49a-4d65-b82f-ff2bac4a4239",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "נורווגיה נגד סנגל, 23/06 03:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
+      "en": "Norway vs Senegal, 23/06 03:00. Not the shiniest match, but these are the ones that move places without asking.",
+      "sources": [],
+      "expires_at": "2026-06-23T00:00:00.000Z"
     }
   ]
 }
