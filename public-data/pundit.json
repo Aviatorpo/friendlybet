@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-06-22T21:10:50.507Z",
-  "freshUntil": "2026-06-23T03:10:50.507Z",
-  "count": 11,
+  "updatedAt": "2026-06-22T23:27:25.233Z",
+  "freshUntil": "2026-06-23T05:27:25.233Z",
+  "count": 10,
   "items": [
     {
       "id": "live-89b9734a-9649-4fd4-a903-20ef8ef20ce5",
@@ -10,7 +10,7 @@
       "he": "צרפת נגד עיראק עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
       "en": "France vs Iraq is live now. Every minute can turn a genius pick into group-chat material.",
       "sources": [],
-      "expires_at": "2026-06-23T00:10:50.507Z"
+      "expires_at": "2026-06-23T02:27:25.233Z"
     },
     {
       "id": "result-812814a3-47f1-44d9-99c5-b574e5adeae4",
@@ -47,15 +47,6 @@
       "en": "Belgium and Iran finished 0-0. Not one for the poster, definitely one for messy predictions.",
       "sources": [],
       "expires_at": "2026-06-23T01:00:00.000Z"
-    },
-    {
-      "id": "result-abbfa32e-7ac6-4b04-a483-221352040fc8",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "ספרד עשתה את העבודה עם 4:0 נקי על ערב הסעודית. לא נוצץ, כן שימושי בטבלה.",
-      "en": "Spain handled business with a clean 4-0 over Saudi Arabia. Not flashy, very useful on the table.",
-      "sources": [],
-      "expires_at": "2026-06-22T22:00:00.000Z"
     },
     {
       "id": "fixture-9e7e1640-f49a-4d65-b82f-ff2bac4a4239",
