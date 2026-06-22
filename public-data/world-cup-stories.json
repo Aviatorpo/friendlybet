@@ -1,6 +1,54 @@
 {
-  "updated_at": "2026-06-21T21:20:11.460Z",
+  "updated_at": "2026-06-22T03:33:05.165Z",
   "items": [
+    {
+      "id": "nzl-egy-2026-06-22",
+      "match_id": "0279f687-7d6f-4887-aa6a-59d8490e2982",
+      "image": "story-assets/egypt-wins-new-zealand.png",
+      "teams": [
+        "NZL",
+        "EGY"
+      ],
+      "outcome": "EGY",
+      "result": "EGY 3-1 NZL",
+      "top_label": "EGYPT WINS!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "NZL",
+        "team_he": "ניו זילנד",
+        "team_en": "New Zealand",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 3-1, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 3-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 3-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "en_name": "{names} picked {team} to top the group. After 3-1, that form already needs a defense speech 🎤😬",
+        "en_names": "{names} picked {team} to top the group. After 3-1, those forms already need a defense speech 🎤😬",
+        "en_count": "{names} picked {team} to top the group. After 3-1, those forms already need a defense speech 🎤😬"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "NZL",
+          "team_he": "ניו זילנד",
+          "team_en": "New Zealand",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 3-1, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 3-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 3-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "en_name": "{names} picked {team} to top the group. After 3-1, that form already needs a defense speech 🎤😬",
+          "en_names": "{names} picked {team} to top the group. After 3-1, those forms already need a defense speech 🎤😬",
+          "en_count": "{names} picked {team} to top the group. After 3-1, those forms already need a defense speech 🎤😬"
+        }
+      ],
+      "he": {
+        "headline": "מצרים ניצחה את ניו זילנד 3-1: הצהרה!",
+        "caption": "מצרים עושה רעש עם 3-1 מול ניו זילנד. משחק אחד, והטבלה כבר נראית אחרת 🔥"
+      },
+      "en": {
+        "headline": "Egypt beat New Zealand 3-1: Statement made!",
+        "caption": "Egypt makes noise with 3-1 against New Zealand. One match, and the table already looks different 🔥"
+      }
+    },
     {
       "id": "bel-irn-2026-06-21",
       "match_id": "b7f44bb4-74a9-409f-9d21-616997345172",
