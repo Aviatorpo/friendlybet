@@ -1,6 +1,54 @@
 {
-  "updated_at": "2026-06-22T06:28:43.609Z",
+  "updated_at": "2026-06-22T19:27:26.325Z",
   "items": [
+    {
+      "id": "arg-aut-2026-06-22",
+      "match_id": "812814a3-47f1-44d9-99c5-b574e5adeae4",
+      "image": "story-assets/argentina-wins-austria.png",
+      "teams": [
+        "ARG",
+        "AUT"
+      ],
+      "outcome": "ARG",
+      "result": "ARG 2-0 AUT",
+      "top_label": "ARGENTINA WINS!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "AUT",
+        "team_he": "אוסטריה",
+        "team_en": "Austria",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 2-0, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 2-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 2-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "en_name": "{names} picked {team} to top the group. After 2-0, that form already needs a defense speech 🎤😬",
+        "en_names": "{names} picked {team} to top the group. After 2-0, those forms already need a defense speech 🎤😬",
+        "en_count": "{names} picked {team} to top the group. After 2-0, those forms already need a defense speech 🎤😬"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "AUT",
+          "team_he": "אוסטריה",
+          "team_en": "Austria",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 2-0, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 2-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 2-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "en_name": "{names} picked {team} to top the group. After 2-0, that form already needs a defense speech 🎤😬",
+          "en_names": "{names} picked {team} to top the group. After 2-0, those forms already need a defense speech 🎤😬",
+          "en_count": "{names} picked {team} to top the group. After 2-0, those forms already need a defense speech 🎤😬"
+        }
+      ],
+      "he": {
+        "headline": "ארגנטינה ניצחה את אוסטריה 2-0: הצהרה!",
+        "caption": "ארגנטינה עושה רעש עם 2-0 מול אוסטריה. משחק אחד, והטבלה כבר נראית אחרת 🔥"
+      },
+      "en": {
+        "headline": "Argentina beat Austria 2-0: Statement made!",
+        "caption": "Argentina makes noise with 2-0 against Austria. One match, and the table already looks different 🔥"
+      }
+    },
     {
       "id": "nzl-egy-2026-06-22",
       "match_id": "0279f687-7d6f-4887-aa6a-59d8490e2982",
