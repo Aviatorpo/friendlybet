@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-22T03:33:05.165Z",
+  "updated_at": "2026-06-22T06:28:43.609Z",
   "items": [
     {
       "id": "nzl-egy-2026-06-22",
@@ -47,6 +47,54 @@
       "en": {
         "headline": "Egypt beat New Zealand 3-1: Statement made!",
         "caption": "Egypt makes noise with 3-1 against New Zealand. One match, and the table already looks different 🔥"
+      }
+    },
+    {
+      "id": "uru-cpv-2026-06-21",
+      "match_id": "477ec7c6-1c6a-4f49-9d14-c80ec6cb63e0",
+      "image": "story-assets/uruguay-cape-verde-draw.png",
+      "teams": [
+        "URU",
+        "CPV"
+      ],
+      "outcome": "DRAW",
+      "result": "URU 2-2 CPV",
+      "top_label": "DRAW!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "URU",
+        "team_he": "אורוגוואי",
+        "team_en": "Uruguay",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 2-2, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 2-2, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 2-2, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+        "en_name": "{names} picked {team} to top the group. After 2-2, that choice suddenly looks much less calm 😬",
+        "en_names": "{names} picked {team} to top the group. After 2-2, that choice suddenly looks much less calm 😬",
+        "en_count": "{names} picked {team} to top the group. After 2-2, that choice suddenly looks much less calm 😬"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "URU",
+          "team_he": "אורוגוואי",
+          "team_en": "Uruguay",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 2-2, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 2-2, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 2-2, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬",
+          "en_name": "{names} picked {team} to top the group. After 2-2, that choice suddenly looks much less calm 😬",
+          "en_names": "{names} picked {team} to top the group. After 2-2, that choice suddenly looks much less calm 😬",
+          "en_count": "{names} picked {team} to top the group. After 2-2, that choice suddenly looks much less calm 😬"
+        }
+      ],
+      "he": {
+        "headline": "אורוגוואי וכף ורדה נפרדו ב-2-2: דרמה בלי הכרעה",
+        "caption": "אורוגוואי וכף ורדה משאירות את הבית פתוח אחרי 2-2. הדרמה בטבלה רק התחילה 👀"
+      },
+      "en": {
+        "headline": "Uruguay and Cape Verde draw 2-2: No winner, all drama",
+        "caption": "Uruguay and Cape Verde leave the group open after 2-2. The table drama is just getting started 👀"
       }
     },
     {
