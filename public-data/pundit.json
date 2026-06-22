@@ -1,8 +1,26 @@
 {
-  "updatedAt": "2026-06-22T05:18:25.637Z",
-  "freshUntil": "2026-06-22T11:18:25.637Z",
-  "count": 8,
+  "updatedAt": "2026-06-22T12:21:13.706Z",
+  "freshUntil": "2026-06-22T18:21:13.706Z",
+  "count": 9,
   "items": [
+    {
+      "id": "result-0279f687-7d6f-4887-aa6a-59d8490e2982",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "מצרים ניצחה את ניו זילנד 3:1. עוד תוצאה שנראית פשוטה רק אחרי שהיא כבר קרתה.",
+      "en": "Egypt beat New Zealand 3-1. Another result that looks obvious only after it happened.",
+      "sources": [],
+      "expires_at": "2026-06-23T07:00:00.000Z"
+    },
+    {
+      "id": "result-477ec7c6-1c6a-4f49-9d14-c80ec6cb63e0",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "אורוגוואי נגד כף ורדה נגמר 2:2. מי שחיפש הכרעה קיבל שיעור בענווה.",
+      "en": "Uruguay vs Cape Verde finished 2-2. Anyone looking for certainty got a humility lesson.",
+      "sources": [],
+      "expires_at": "2026-06-23T04:00:00.000Z"
+    },
     {
       "id": "result-b7f44bb4-74a9-409f-9d21-616997345172",
       "type": "result",
@@ -20,24 +38,6 @@
       "en": "Spain handled business with a clean 4-0 over Saudi Arabia. Not flashy, very useful on the table.",
       "sources": [],
       "expires_at": "2026-06-22T22:00:00.000Z"
-    },
-    {
-      "id": "result-f1ad412d-4028-49b3-b2b1-58f9524e1c89",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "יפן עשתה את העבודה עם 4:0 נקי על תוניסיה. לא נוצץ, כן שימושי בטבלה.",
-      "en": "Japan handled business with a clean 4-0 over Tunisia. Not flashy, very useful on the table.",
-      "sources": [],
-      "expires_at": "2026-06-22T10:00:00.000Z"
-    },
-    {
-      "id": "result-636d9e56-06c4-402e-9dac-1d24fbd8089d",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "אקוודור וקוראסאו נפרדו ב-0:0. לא משחק לפוסטר, כן משחק שמבלגן תחזיות.",
-      "en": "Ecuador and Curaçao finished 0-0. Not one for the poster, definitely one for messy predictions.",
-      "sources": [],
-      "expires_at": "2026-06-22T06:00:00.000Z"
     },
     {
       "id": "fixture-812814a3-47f1-44d9-99c5-b574e5adeae4",
@@ -74,6 +74,15 @@
       "en": "Jordan vs Algeria, tomorrow 06:00. Not the shiniest match, but these are the ones that move places without asking.",
       "sources": [],
       "expires_at": "2026-06-23T03:00:00.000Z"
+    },
+    {
+      "id": "fixture-31a2acf9-8ee6-4657-8fe7-7732592ad3a4",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "פורטוגל נגד אוזבקיסטן, מחר 20:00. פורטוגל מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
+      "en": "Portugal vs Uzbekistan, tomorrow 20:00. Portugal comes in as favorite, which is exactly where predictions start sweating.",
+      "sources": [],
+      "expires_at": "2026-06-23T17:00:00.000Z"
     }
   ]
 }
