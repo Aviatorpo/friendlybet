@@ -55,7 +55,7 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           RESULT_FALLBACK_MIN_AGE_MINUTES: 105
           RESULT_FALLBACK_LOOKBACK_HOURS: 48
-          RESULT_FALLBACK_BACKOFF: '1'
+          RESULT_FALLBACK_BACKOFF: '0'
           RESULT_FALLBACK_RUN_EVERY_MINUTES: 15
         run: node scripts/final-result-verifier-needed.js
 

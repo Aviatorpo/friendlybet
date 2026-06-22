@@ -64,6 +64,12 @@ const fifaFinal = {
 
 ok('stuck candidate after age threshold', F.isStuckCandidate(db, Date.parse('2026-06-11T21:10:00Z')));
 ok('not stuck before age threshold', !F.isStuckCandidate(db, Date.parse('2026-06-11T20:00:00Z')));
+ok('finished match with complete clean result is not stuck',
+  !F.isStuckCandidate({ ...db, status: 'FINISHED', home_score: 1, away_score: 1 }, Date.parse('2026-06-11T21:10:00Z')));
+ok('finished match missing score is still recoverable',
+  F.isStuckCandidate({ ...db, status: 'FINISHED', home_score: null, away_score: null }, Date.parse('2026-06-11T21:10:00Z')));
+ok('finished match with live residue is still recoverable',
+  F.isStuckCandidate({ ...db, status: 'FINISHED', home_score: 1, away_score: 1, live_clock: "90'+4'" }, Date.parse('2026-06-11T21:10:00Z')));
 
 const espnTransformed = F.transformEspnEvent(espnFinal);
 eq('transform ESPN final event', {

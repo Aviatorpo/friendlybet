@@ -31,7 +31,9 @@ const match = {
 
 check('not candidate before minimum age', !isCandidate(match, minutesAfterKickoff(104)));
 check('candidate after minimum age', isCandidate(match, minutesAfterKickoff(115)));
-check('finished match is not a candidate', !isCandidate({ ...match, status: 'FINISHED' }, minutesAfterKickoff(180)));
+check('complete finished match is not a candidate', !isCandidate({ ...match, status: 'FINISHED', home_score: 1, away_score: 0 }, minutesAfterKickoff(180)));
+check('finished match missing score is a candidate', isCandidate({ ...match, status: 'FINISHED', home_score: null, away_score: null }, minutesAfterKickoff(180)));
+check('finished match with live residue is a candidate', isCandidate({ ...match, status: 'FINISHED', home_score: 1, away_score: 0, live_clock: "90'+4'" }, minutesAfterKickoff(180)));
 check('early overdue interval is 15 minutes', backoffIntervalMinutes(120) === 15);
 check('mid overdue interval is 30 minutes', backoffIntervalMinutes(180) === 30);
 check('late overdue interval is 60 minutes', backoffIntervalMinutes(360) === 60);
