@@ -139,6 +139,39 @@ Deploy-prep resolution at about `2026-06-23T13:20Z`:
 
 This still does not count as graduation proof because both target checks remain pre-kickoff.
 
+Continuation check at `2026-06-23T13:27Z` / `16:27 Israel`:
+
+- Current target windows:
+  - `POR-UZB`: kickoff in about `3.5` hours, still pre-kickoff.
+  - `ENG-GHA`: kickoff in about `6.5` hours, still pre-kickoff.
+  - `PAN-CRO`: kickoff in about `9.5` hours, not yet in the active 8-hour certifier window.
+  - `COL-COD`: kickoff in about `12.5` hours, not yet in the active 8-hour certifier window.
+- Clean deploy-worktree validation passed:
+  - `node scripts\pundit-live-window-certifier.js --match POR-UZB --record tmp\pundit-live-window-certifications-2026-06-23.jsonl`
+    - score: `100`
+    - phase: `pre`
+    - passed: `true`
+  - `node scripts\pundit-live-window-certifier.js --match ENG-GHA --record tmp\pundit-live-window-certifications-2026-06-23.jsonl`
+    - score: `100`
+    - phase: `pre`
+    - passed: `true`
+  - `node scripts\pundit-news-validate.js --require-unexpired`
+  - `node scripts\test-pundit-feed.js`
+  - `node scripts\test-pundit-news-validate.js`
+  - `node scripts\test-pundit-live-window-certifier.js`
+  - `node scripts\test-world-cup-stories.js`
+- Main-worktree live ops audit passed:
+  - `node scripts\live-ops-audit.js`
+  - `ok=true`
+  - Pundit: `12` items, fresh.
+  - Stories: `44` stories for `44` finished matches, missing: `0`.
+- Production verification passed:
+  - `https://friendlybet.live/public-data/pundit.json` has `12` items and `3` source-led news items.
+  - `https://friendlybet.live/public-data/pundit-news.json` has the `POR-UZB`, `ENG-GHA`, and `PAN-CRO` source-led items.
+  - `https://friendlybet.live/public-data/world-cup-stories.json` has `44` story items.
+
+This remains pre-kickoff certification only. It proves freshness, source routing, expiry discipline, production propagation, and Stories coverage for already finished matches; it does not prove live/post-final readiness.
+
 ## Durable Wiring
 
 - `.github/workflows/test-scoring.yml`
