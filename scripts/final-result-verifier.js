@@ -21,11 +21,12 @@ const FIFA_CALENDAR_BASE = process.env.FIFA_CALENDAR_BASE || 'https://api.fifa.c
 const FIFA_COMPETITION_ID = process.env.FIFA_COMPETITION_ID || '17';
 
 const TERMINAL = new Set(['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED']);
+const RESULT_TERMINAL = new Set(['FINISHED', 'AWARDED']);
 const FINAL_STATUSES = new Set(['FT', 'AET', 'PEN', 'AWD', 'WO']);
 const TEAM_CODE_RE = /^[A-Z]{3}$/;
 
-const MIN_AGE_MINUTES = parseInt(process.env.RESULT_FALLBACK_MIN_AGE_MINUTES || '', 10) || 115;
-const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 48;
+const MIN_AGE_MINUTES = parseInt(process.env.RESULT_FALLBACK_MIN_AGE_MINUTES || '', 10) || 95;
+const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 336;
 const MAX_KICKOFF_DELTA_MS = (parseInt(process.env.RESULT_FALLBACK_MAX_KICKOFF_DELTA_HOURS || '', 10) || 12) * 60 * 60 * 1000;
 const MIN_SOURCES = parseInt(process.env.RESULT_FALLBACK_MIN_SOURCES || '', 10) || 1;
 const REQUIRED_SOURCES = String(process.env.RESULT_FALLBACK_REQUIRED_SOURCES || 'espn,fifa')
@@ -46,6 +47,26 @@ function _status(m) {
   return String((m && m.status) || '').toUpperCase();
 }
 
+function hasNumericScore(m) {
+  return m && m.home_score != null && m.away_score != null;
+}
+
+function hasLiveResidue(m) {
+  return !!(m && (
+    m.live_clock != null ||
+    m.live_period != null ||
+    m.status_detail != null ||
+    m.live_source != null
+  ));
+}
+
+function needsFinalVerification(m) {
+  const status = _status(m);
+  if (!TERMINAL.has(status)) return true;
+  if (!RESULT_TERMINAL.has(status)) return false;
+  return !hasNumericScore(m) || hasLiveResidue(m);
+}
+
 async function fetchWithTimeout(url, options = {}, timeoutMs = 25000) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -57,7 +78,7 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 25000) {
 }
 
 function isStuckCandidate(m, nowMs = Date.now()) {
-  if (!m || TERMINAL.has(_status(m))) return false;
+  if (!m || !needsFinalVerification(m)) return false;
   if (!m.home_team_code || !m.away_team_code || !m.match_date) return false;
   const ko = Date.parse(m.match_date);
   if (isNaN(ko)) return false;
@@ -237,7 +258,7 @@ function buildUpdateFromVerifiedFixture(sourceMatch, nowIso = new Date().toISOSt
 async function loadStuckMatches(now = new Date()) {
   const end = new Date(now.getTime() - MIN_AGE_MINUTES * 60 * 1000);
   const start = new Date(now.getTime() - LOOKBACK_HOURS * 60 * 60 * 1000);
-  const q = `?select=external_id,status,match_date,home_team_code,away_team_code&match_date=gte.${start.toISOString()}&match_date=lte.${end.toISOString()}&order=match_date.asc`;
+  const q = `?select=external_id,status,match_date,home_team_code,away_team_code,home_score,away_score,winner_code,live_clock,live_period,status_detail,live_source&match_date=gte.${start.toISOString()}&match_date=lte.${end.toISOString()}&order=match_date.asc`;
   const rows = await callSupabase('GET', 'matches', null, q);
   return (rows || []).filter(m => isStuckCandidate(m, now.getTime()));
 }
@@ -321,6 +342,12 @@ function consensusUpdate(sourceUpdates, opts = {}) {
     return { update: null, reason: 'conflicting source consensus' };
   }
   return { update: best.sources[0].update, sources: best.sources };
+}
+
+function needsResultAttention(result) {
+  if (!result) return false;
+  if (result.unavailable) return true;
+  return (Number(result.checked) || 0) > 0 && (Number(result.skipped) || 0) > 0;
 }
 
 async function verifyFinalResults(opts = {}) {
@@ -409,6 +436,8 @@ if (require.main === module) {
       setGithubOutput('checked', String(r.checked || 0));
       setGithubOutput('updated', String(r.updated || 0));
       setGithubOutput('skipped', String(r.skipped || 0));
+      setGithubOutput('unavailable', r.unavailable ? 'true' : 'false');
+      setGithubOutput('needs_attention', needsResultAttention(r) ? 'true' : 'false');
       setGithubOutput('changed', r.updated > 0 ? 'true' : 'false');
     })
     .catch(err => {
@@ -418,6 +447,7 @@ if (require.main === module) {
 } else {
   module.exports = {
     isStuckCandidate,
+    needsFinalVerification,
     transformEspnEvent,
     transformFifaMatch,
     normalizeTeamCode,
@@ -425,6 +455,7 @@ if (require.main === module) {
     findMatchingFixture,
     buildUpdateFromVerifiedFixture,
     consensusUpdate,
+    needsResultAttention,
     verifyFinalResults,
     __setFetch: (fn) => { globalThis.fetch = fn; }
   };
