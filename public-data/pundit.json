@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-06-23T18:07:20.763Z",
-  "freshUntil": "2026-06-24T00:07:20.763Z",
+  "updatedAt": "2026-06-23T19:43:02.279Z",
+  "freshUntil": "2026-06-24T01:43:02.279Z",
   "count": 12,
   "items": [
     {
-      "id": "live-31a2acf9-8ee6-4657-8fe7-7732592ad3a4",
-      "type": "live",
+      "id": "result-31a2acf9-8ee6-4657-8fe7-7732592ad3a4",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "פורטוגל נגד אוזבקיסטן עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
-      "en": "Portugal vs Uzbekistan is live now. Every minute can turn a genius pick into group-chat material.",
+      "he": "פורטוגל ניצחה את אוזבקיסטן 5:0 במשחק פתוח לגמרי. כיף לצופים, כאב ראש לטבלה ולטפסים.",
+      "en": "Portugal beat Uzbekistan 5-0 in a wide-open one. Great for viewers, brutal for the table and prediction slips.",
       "sources": [],
-      "expires_at": "2026-06-23T21:07:20.763Z"
+      "expires_at": "2026-06-24T23:00:00.000Z"
     },
     {
       "id": "result-9e34eca5-117b-4fac-a02c-318b7c92002a",
       "type": "result",
       "confidence": "confirmed",
-      "he": "אלג'יריה עברה את ירדן 2:1, והבית קיבל עוד דחיפה קטנה בכיוון שאף טופס לא אוהב.",
-      "en": "Algeria got past Jordan 2-1, and the group table took another small shove that no form enjoys.",
+      "he": "אלג'יריה ניצחה 2:1 את ירדן. תוצאה קטנה בלוח, אבל מספיק גדולה כדי להזיז הימורים.",
+      "en": "Algeria beat Jordan 2-1. Small on the scoreboard, big enough to move the picks.",
       "sources": [],
       "expires_at": "2026-06-24T09:00:00.000Z"
     },
@@ -34,8 +34,8 @@
       "id": "result-89b9734a-9649-4fd4-a903-20ef8ef20ce5",
       "type": "result",
       "confidence": "confirmed",
-      "he": "צרפת עם 3:0 על עיראק, והבית קיבל עוד סימן קריאה קטן בטבלה.",
-      "en": "France beat Iraq 3-0, and the group table picked up a small exclamation mark.",
+      "he": "צרפת סגרה את עיראק עם 3:0. זה מסוג התוצאות שנראות פשוטות רק למי שסימן אותן מראש.",
+      "en": "France shut out Iraq 3-0. The kind of result that looks simple only if you called it early.",
       "sources": [],
       "expires_at": "2026-06-24T03:00:00.000Z"
     },
@@ -43,8 +43,8 @@
       "id": "result-812814a3-47f1-44d9-99c5-b574e5adeae4",
       "type": "result",
       "confidence": "confirmed",
-      "he": "ארגנטינה סגרה את אוסטריה עם 2:0. זה מסוג התוצאות שנראות פשוטות רק למי שסימן אותן מראש.",
-      "en": "Argentina shut out Austria 2-0. The kind of result that looks simple only if you called it early.",
+      "he": "ארגנטינה עם 2:0 על אוסטריה, והבית קיבל עוד סימן קריאה קטן בטבלה.",
+      "en": "Argentina beat Austria 2-0, and the group table picked up a small exclamation mark.",
       "sources": [],
       "expires_at": "2026-06-23T23:00:00.000Z"
     },

@@ -100,6 +100,32 @@ check('result recovery summary respects bounded lookback', () => {
   assert.strictEqual(result.candidates, 0);
 });
 
+check('public snapshot live-status mode ignores active-window recovery candidates only', () => {
+  const nowMs = Date.parse('2026-06-23T12:00:00Z');
+  const activeFrozen = {
+    id: 'live-public-1',
+    status: 'TIMED',
+    match_date: '2026-06-23T10:00:00Z',
+    home_team_code: 'POR',
+    away_team_code: 'UZB',
+  };
+  const oldStale = {
+    id: 'old-public-1',
+    status: 'TIMED',
+    match_date: '2026-06-22T10:00:00Z',
+    home_team_code: 'MEX',
+    away_team_code: 'KOR',
+  };
+  const filtered = Audit.summarizeResultRecovery([activeFrozen, oldStale], nowMs, {
+    lookbackHours: 336,
+    minAgeMinutes: 95,
+    ignoreSnapshotLiveStatus: true,
+  });
+  assert.strictEqual(filtered.ignored_snapshot_live_status, 1);
+  assert.strictEqual(filtered.candidates, 1);
+  assert.strictEqual(filtered.sample[0].id, 'old-public-1');
+});
+
 check('story summary reports unresolved result recovery as story-blocking', () => {
   const stories = Audit.summarizeStories([], { candidates: 3 });
   assert.strictEqual(stories.missing, 0);
@@ -143,6 +169,7 @@ check('live poller has continuous 5-minute group-stage coverage', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/live-poller.yml'), 'utf8');
   assert.ok(text.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 11-28 6 *'"), 'live poller must not rely on narrow precomputed match windows');
   assert.ok(/preflights first[\s\S]*calls providers only/.test(text), 'live poller workflow must document preflight as the cost control');
+  assert.ok(/permissions:\s*\n\s+contents:\s*write/.test(text), 'live poller must be able to push refreshed match/Pundit/leaderboard snapshots after a verified final');
 });
 
 check('scheduled scoring/export failures fail loudly', () => {
@@ -156,6 +183,7 @@ check('scheduled scoring/export failures fail loudly', () => {
 check('main scoring workflow runs the live snapshot audit on data changes', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/test-scoring.yml'), 'utf8');
   assert.ok(/run:\s*node scripts\/live-ops-audit\.js/.test(text), 'test workflow must run the real live-ops snapshot audit');
+  assert.ok(text.includes('LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS'), 'test workflow static audit must not fail on intentionally frozen live public snapshots');
   ['app.js', 'styles.css', 'i18n.js', 'index.html', 'config.js', 'service-worker.js'].forEach(file => {
     assert.ok(text.includes(file), `test workflow must trigger when ${file} changes`);
   });
@@ -194,6 +222,27 @@ check('pre-Pundit audit mode filters only Pundit watchdog findings', () => {
   });
   assert.deepStrictEqual(filtered.errors, ['m1: scheduled status is stale 120m after kickoff']);
   assert.deepStrictEqual(filtered.warnings, ['public-data/leaderboard directory is missing']);
+});
+
+check('public snapshot live-status mode demotes only frozen-live snapshot findings', () => {
+  const filtered = Audit.withoutPublicSnapshotLiveStatusErrors({
+    errors: [
+      'POR-UZB: scheduled status is stale 35m after kickoff',
+      'A-B: live status is stale 5h after kickoff',
+      'public-data/world-cup-stories.json missing story for finished match m1',
+    ],
+    warnings: [
+      'public-data/leaderboard directory is missing',
+    ],
+  });
+  assert.deepStrictEqual(filtered.errors, [
+    'public-data/world-cup-stories.json missing story for finished match m1',
+  ]);
+  assert.deepStrictEqual(filtered.warnings, [
+    'public-data/leaderboard directory is missing',
+    'public snapshot live status: POR-UZB: scheduled status is stale 35m after kickoff',
+    'public snapshot live status: A-B: live status is stale 5h after kickoff',
+  ]);
 });
 
 check('standalone Pundit workflow audits match state before build', () => {

@@ -111,6 +111,7 @@ async function auditPublicSnapshots(snapshots, nowMs, auditOptions = {}) {
     matches,
     punditFeed: snapshots && snapshots.pundit || null,
     storiesPayload: snapshots && snapshots.stories || null,
+    ignoreSnapshotLiveStatus: auditOptions.ignoreSnapshotLiveStatus !== false,
   });
 }
 
@@ -211,7 +212,7 @@ function summarizeWorkflowLiveness(runs, nowMs, maxAgeMs) {
     .sort((a, b) => b.created_ms - a.created_ms)[0] || null;
   const ageMs = latest ? nowMs - latest.created_ms : Infinity;
   const healthyStatus = latest
-    && (['queued', 'in_progress', 'requested', 'waiting'].includes(latest.status)
+    && (['queued', 'pending', 'in_progress', 'requested', 'waiting'].includes(latest.status)
       || latest.conclusion === 'success');
   return {
     ok: !isGroupStageWindow(nowMs) || (latest && ageMs <= maxAgeMs && healthyStatus),
@@ -224,7 +225,11 @@ async function runReadiness(options = {}) {
   const checks = [];
   const warnings = [];
   const nowMs = (options.auditOptions && options.auditOptions.nowMs) || Date.now();
-  const audit = await LiveOpsAudit.audit(options.auditOptions || {});
+  const baseAuditOptions = {
+    ...(options.auditOptions || {}),
+    ignoreSnapshotLiveStatus: (options.auditOptions || {}).ignoreSnapshotLiveStatus !== false,
+  };
+  const audit = await LiveOpsAudit.audit(baseAuditOptions);
 
   add(checks, 'snapshot live-ops audit is green', audit.ok, `recovery=${audit.result_recovery.candidates}, missingStories=${audit.stories.missing}`);
   add(checks, 'no unresolved result-recovery candidates', audit.result_recovery.candidates === 0, `candidates=${audit.result_recovery.candidates}`);
@@ -262,6 +267,7 @@ async function runReadiness(options = {}) {
   const readinessMonitor = read('.github/workflows/live-completion-readiness.yml');
 
   add(checks, 'live poller covers all group-stage match days', livePoller.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 11-28 6 *'"), '5-minute offset June 11-28 schedule required');
+  add(checks, 'live poller can push refreshed snapshots', /permissions:\s*\n\s+contents:\s*write/.test(livePoller), 'verified-final path must commit match, leaderboard, banter, and Pundit snapshots');
   add(checks, 'final verifier covers all group-stage match days', verifier.includes("cron: '4,19,34,49 * 11-28 6 *'"), '15-minute offset June 11-28 schedule required');
   add(
     checks,
@@ -350,6 +356,7 @@ async function runReadiness(options = {}) {
       const dbAudit = await LiveOpsAudit.audit({
         ...(options.auditOptions || {}),
         matches: dbMatches,
+        ignoreSnapshotLiveStatus: false,
       });
       liveDb = {
         source: options.dbMatches ? 'in-memory' : 'supabase',
