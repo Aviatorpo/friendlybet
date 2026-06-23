@@ -258,7 +258,9 @@ check('standalone Pundit workflow audits match state before build', () => {
   assert.ok(validateIdx > buildIdx, 'generate-pundit workflow must validate after build');
   assert.ok(text.includes("FORCE_MATCH_SNAPSHOT: '1'"), 'generate-pundit workflow must force a current match snapshot for the live desk');
   assert.ok(text.includes('LIVE_OPS_SKIP_PUNDIT'), 'generate-pundit audit must allow Pundit freshness refresh');
-  assert.ok(/git status --porcelain public-data\/matches\.json public-data\/pundit\.json/.test(text), 'generate-pundit workflow must commit matches with Pundit');
+  assert.ok(text.includes("cron: '3,13,23,33,43,53 * 11-28 6 *'"), 'generate-pundit workflow must refresh Pundit near live group-stage transitions');
+  assert.ok(/git status --porcelain public-data\/pundit\.json/.test(text), 'generate-pundit workflow must key deploys on Pundit feed changes');
+  assert.ok(/match snapshot changed without a Pundit feed change/.test(text), 'generate-pundit workflow must avoid committing match-only live churn');
   assert.ok(/git add public-data\/matches\.json public-data\/pundit\.json/.test(text), 'generate-pundit workflow must stage matches with Pundit');
   assert.ok(/pushed=0[\s\S]*failed to push Pundit feed[\s\S]*exit 1/.test(text), 'generate-pundit workflow must fail if push retries never succeed');
 });
