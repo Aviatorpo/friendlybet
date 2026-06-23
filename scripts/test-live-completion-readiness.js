@@ -57,7 +57,16 @@ const Readiness = require('./live-completion-readiness');
   const productionResult = await Readiness.runReadiness({
     auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
     publicSnapshots: {
-      matches: { updatedAt: '2026-06-23T11:00:00Z', matches: [{ id: 1 }] },
+      matches: {
+        updatedAt: '2026-06-23T11:00:00Z',
+        matches: [{
+          id: 1,
+          status: 'TIMED',
+          match_date: '2026-06-23T11:20:00Z',
+          home_team_code: 'POR',
+          away_team_code: 'UZB',
+        }],
+      },
       stories: { updated_at: '2026-06-23T11:00:00Z', items: [{ id: 's1' }] },
       pundit: { updatedAt: '2026-06-23T11:00:00Z', freshUntil: '2026-06-23T17:00:00Z', items: [{ id: 'p1' }] },
     },
@@ -78,7 +87,11 @@ const Readiness = require('./live-completion-readiness');
   );
   assert.ok(
     productionResult.checks.some(check => check.name === 'production public snapshot audit is green' && check.ok),
-    'readiness must run the live-ops audit against production public snapshots'
+    'readiness must run the live-ops audit against production public snapshots without failing on frozen active-match status'
+  );
+  assert.ok(
+    productionResult.production.watchdog.warnings.some(warning => /public snapshot live status/.test(warning)),
+    'frozen public snapshot live status must be preserved as warning evidence'
   );
 
   const dbResult = await Readiness.runReadiness({
@@ -102,6 +115,22 @@ const Readiness = require('./live-completion-readiness');
     'readiness must audit live DB matches when provided'
   );
   assert.strictEqual(dbResult.live_db.freshness.stale, 0, 'future DB matches should not be treated as stale live state');
+
+  const staleDbResult = await Readiness.runReadiness({
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    dbMatches: [
+      { id: 'db-stale', status: 'TIMED', match_date: '2026-06-23T11:20:00Z', home_team_code: 'POR', away_team_code: 'UZB', stage: 'GROUP_STAGE', group_letter: 'K' },
+    ],
+  });
+  assert.strictEqual(staleDbResult.ok, false, 'stale live DB scheduled rows must remain a hard readiness failure');
+  assert.ok(
+    staleDbResult.checks.some(check => check.name === 'live DB match audit is green' && !check.ok),
+    'live DB audit must not use the public snapshot live-status demotion'
+  );
+  assert.ok(
+    staleDbResult.checks.some(check => check.name === 'live DB active match state is fresh' && !check.ok),
+    'live DB freshness check must fail stale active rows'
+  );
 
   const staleDbFreshness = Readiness.summarizeLiveDbFreshness([
     { status: 'TIMED', match_date: '2026-06-23T11:40:00Z', home_team_code: 'NED', away_team_code: 'SWE' },
@@ -128,6 +157,13 @@ const Readiness = require('./live-completion-readiness');
   );
   assert.strictEqual(staleWorkflow.ok, false, 'stale live-poller workflow history must fail during group-stage window');
 
+  const pendingWorkflow = Readiness.summarizeWorkflowLiveness(
+    [{ id: 2, status: 'pending', conclusion: '', created_at: '2026-06-23T11:55:00Z' }],
+    Date.parse('2026-06-23T12:00:00Z'),
+    20 * 60 * 1000
+  );
+  assert.strictEqual(pendingWorkflow.ok, true, 'fresh pending scheduled workflow run must count as live liveness evidence');
+
   const requiredChecks = [
     'snapshot live-ops audit is green',
     'PWA/app versions match',
@@ -135,6 +171,7 @@ const Readiness = require('./live-completion-readiness');
     'group completion requires exactly six unique fixtures',
     'pool Pundit invite buzz is gated by effective open state',
     'live poller covers all group-stage match days',
+    'live poller can push refreshed snapshots',
     'final verifier covers all group-stage match days',
     'readiness monitor covers production during group-stage match days',
     'readiness monitor audits live DB by default',

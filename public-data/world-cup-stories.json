@@ -1,6 +1,54 @@
 {
-  "updated_at": "2026-06-23T07:53:24.197Z",
+  "updated_at": "2026-06-23T19:46:08.581Z",
   "items": [
+    {
+      "id": "por-uzb-2026-06-23",
+      "match_id": "31a2acf9-8ee6-4657-8fe7-7732592ad3a4",
+      "image": "story-assets/portugal-wins-uzbekistan.png",
+      "teams": [
+        "POR",
+        "UZB"
+      ],
+      "outcome": "POR",
+      "result": "POR 5-0 UZB",
+      "top_label": "PORTUGAL WINS!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "UZB",
+        "team_he": "אוזבקיסטן",
+        "team_en": "Uzbekistan",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 5-0, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 5-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 5-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "en_name": "{names} picked {team} to top the group. After 5-0, that form already needs a defense speech 🎤😬",
+        "en_names": "{names} picked {team} to top the group. After 5-0, those forms already need a defense speech 🎤😬",
+        "en_count": "{names} picked {team} to top the group. After 5-0, those forms already need a defense speech 🎤😬"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "UZB",
+          "team_he": "אוזבקיסטן",
+          "team_en": "Uzbekistan",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 5-0, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 5-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 5-0, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "en_name": "{names} picked {team} to top the group. After 5-0, that form already needs a defense speech 🎤😬",
+          "en_names": "{names} picked {team} to top the group. After 5-0, those forms already need a defense speech 🎤😬",
+          "en_count": "{names} picked {team} to top the group. After 5-0, those forms already need a defense speech 🎤😬"
+        }
+      ],
+      "he": {
+        "headline": "פורטוגל ניצחה את אוזבקיסטן 5-0: הצהרה!",
+        "caption": "פורטוגל עושה רעש עם 5-0 מול אוזבקיסטן. משחק אחד, והטבלה כבר נראית אחרת 🔥"
+      },
+      "en": {
+        "headline": "Portugal beat Uzbekistan 5-0: Statement made!",
+        "caption": "Portugal makes noise with 5-0 against Uzbekistan. One match, and the table already looks different 🔥"
+      }
+    },
     {
       "id": "jor-alg-2026-06-23",
       "match_id": "9e34eca5-117b-4fac-a02c-318b7c92002a",

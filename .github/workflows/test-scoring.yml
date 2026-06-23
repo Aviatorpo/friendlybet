@@ -142,6 +142,8 @@ jobs:
       - name: Run live-ops audit tests
         run: node scripts/test-live-ops-audit.js
       - name: Run live-ops snapshot audit
+        env:
+          LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS: '1'
         run: node scripts/live-ops-audit.js
       - name: Run live completion readiness gate
         run: node scripts/live-completion-readiness.js

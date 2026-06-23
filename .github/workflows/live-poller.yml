@@ -18,6 +18,9 @@ concurrency:
   group: live-poller
   cancel-in-progress: false
 
+permissions:
+  contents: write
+
 jobs:
   poll:
     runs-on: ubuntu-latest
