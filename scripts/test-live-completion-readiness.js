@@ -107,6 +107,7 @@ const Readiness = require('./live-completion-readiness');
     'live poller covers all group-stage match days',
     'final verifier covers all group-stage match days',
     'playbook records screenshot fallback rule',
+    'visual proof harness covers official scoring states',
   ];
   const names = new Set(result.checks.map(check => check.name));
   requiredChecks.forEach(name => assert.ok(names.has(name), `missing readiness check: ${name}`));
