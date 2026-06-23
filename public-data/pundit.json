@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-06-23T04:12:45.985Z",
-  "freshUntil": "2026-06-23T10:12:45.985Z",
-  "count": 9,
+  "updatedAt": "2026-06-23T08:34:37.493Z",
+  "freshUntil": "2026-06-23T14:34:37.493Z",
+  "count": 8,
   "items": [
     {
-      "id": "live-9e34eca5-117b-4fac-a02c-318b7c92002a",
-      "type": "live",
+      "id": "result-9e34eca5-117b-4fac-a02c-318b7c92002a",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "ירדן נגד אלג'יריה עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
-      "en": "Jordan vs Algeria is live now. Every minute can turn a genius pick into group-chat material.",
+      "he": "אלג'יריה ניצחה את ירדן 2:1. עוד תוצאה שנראית פשוטה רק אחרי שהיא כבר קרתה.",
+      "en": "Algeria beat Jordan 2-1. Another result that looks obvious only after it happened.",
       "sources": [],
-      "expires_at": "2026-06-23T07:12:45.985Z"
+      "expires_at": "2026-06-24T09:00:00.000Z"
     },
     {
       "id": "result-9e7e1640-f49a-4d65-b82f-ff2bac4a4239",
@@ -38,15 +38,6 @@
       "en": "Argentina handled business with a clean 2-0 over Austria. Not flashy, very useful on the table.",
       "sources": [],
       "expires_at": "2026-06-23T23:00:00.000Z"
-    },
-    {
-      "id": "result-0279f687-7d6f-4887-aa6a-59d8490e2982",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "מצרים ניצחה את ניו זילנד 3:1. עוד תוצאה שנראית פשוטה רק אחרי שהיא כבר קרתה.",
-      "en": "Egypt beat New Zealand 3-1. Another result that looks obvious only after it happened.",
-      "sources": [],
-      "expires_at": "2026-06-23T07:00:00.000Z"
     },
     {
       "id": "fixture-31a2acf9-8ee6-4657-8fe7-7732592ad3a4",
