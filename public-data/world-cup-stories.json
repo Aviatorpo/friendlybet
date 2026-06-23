@@ -1,6 +1,54 @@
 {
-  "updated_at": "2026-06-23T03:47:47.048Z",
+  "updated_at": "2026-06-23T07:53:24.197Z",
   "items": [
+    {
+      "id": "jor-alg-2026-06-23",
+      "match_id": "9e34eca5-117b-4fac-a02c-318b7c92002a",
+      "image": "story-assets/algeria-wins-jordan.png",
+      "teams": [
+        "JOR",
+        "ALG"
+      ],
+      "outcome": "ALG",
+      "result": "ALG 2-1 JOR",
+      "top_label": "ALGERIA WINS!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "JOR",
+        "team_he": "ירדן",
+        "team_en": "Jordan",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 2-1, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 2-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 2-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+        "en_name": "{names} picked {team} to top the group. After 2-1, that form already needs a defense speech 🎤😬",
+        "en_names": "{names} picked {team} to top the group. After 2-1, those forms already need a defense speech 🎤😬",
+        "en_count": "{names} picked {team} to top the group. After 2-1, those forms already need a defense speech 🎤😬"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "JOR",
+          "team_he": "ירדן",
+          "team_en": "Jordan",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 2-1, הטופס שלו כבר צריך נאום הגנה 🎤😬",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 2-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 2-1, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬",
+          "en_name": "{names} picked {team} to top the group. After 2-1, that form already needs a defense speech 🎤😬",
+          "en_names": "{names} picked {team} to top the group. After 2-1, those forms already need a defense speech 🎤😬",
+          "en_count": "{names} picked {team} to top the group. After 2-1, those forms already need a defense speech 🎤😬"
+        }
+      ],
+      "he": {
+        "headline": "אלג'יריה ניצחה את ירדן 2-1: הצהרה!",
+        "caption": "אלג'יריה עושה רעש עם 2-1 מול ירדן. משחק אחד, והטבלה כבר נראית אחרת 🔥"
+      },
+      "en": {
+        "headline": "Algeria beat Jordan 2-1: Statement made!",
+        "caption": "Algeria makes noise with 2-1 against Jordan. One match, and the table already looks different 🔥"
+      }
+    },
     {
       "id": "nor-sen-2026-06-23",
       "match_id": "9e7e1640-f49a-4d65-b82f-ff2bac4a4239",
