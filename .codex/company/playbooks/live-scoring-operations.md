@@ -39,6 +39,7 @@ Use this for World Cup match-result sync, group completion, scoring, dashboard, 
 - Reject generic copy that does not name a group, match, member, score effect, or pool consequence.
 - After kickoff, hide join/share/recent-join/recent-submit pool buzz unless late entry is explicitly open; recovery or lock-grace windows are not an invitation state.
 - Stale `pundit.json`, empty match-day news, and old stories are quality warnings.
+- During the group stage, the standalone Pundit workflow must run every 10 minutes on match days and build from a forced fresh match snapshot. To stay free-tier friendly, it should push `matches.json` only when `pundit.json` changed; match-only live clock/score churn without a Pundit change should be discarded.
 - A finished match without a prepared publishable story asset is an incident during match windows. The workflow should report it loudly instead of leaving Eyal to discover a missing story manually.
 - Unresolved result-recovery candidates are story-blocking context even before rows become `FINISHED`; audit reports must make that visible.
 

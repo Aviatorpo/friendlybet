@@ -5,12 +5,15 @@ name: Generate Pundit Feed
 # so the feed never references result/live state that public-data/matches.json
 # cannot prove.
 # Covers both phases: pre-tournament the countdown/fixtures shift daily, during
-# the tournament results/fixtures shift hourly. The script also refreshes the
-# feed timestamp every few hours so the client can detect a stuck/stale feed.
+# the group stage live/fixture/result wording can shift at kickoff, full time,
+# or when a verification state appears. The job runs every 10 minutes, but only
+# pushes when the Pundit feed itself changes; match-only live churn is discarded
+# so we do not turn every clock tick into a Vercel deploy.
 
 on:
   schedule:
-    - cron: '7 * * * *'   # hourly, offset from match-result jobs to avoid contention
+    - cron: '3,13,23,33,43,53 * 11-28 6 *'   # group-stage live desk, offset from poller/verifier
+    - cron: '7 */3 * * *'   # quiet refresh outside the group-stage live window
   workflow_dispatch:
 
 permissions:
@@ -64,7 +67,7 @@ jobs:
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
-          if [ -n "$(git status --porcelain public-data/matches.json public-data/pundit.json)" ]; then
+          if [ -n "$(git status --porcelain public-data/pundit.json)" ]; then
             git add public-data/matches.json public-data/pundit.json
             git commit -q -m "data: refresh pundit feed"
             pushed=0
@@ -76,6 +79,8 @@ jobs:
               echo "::error::failed to push Pundit feed after 3 retries"
               exit 1
             fi
+          elif [ -n "$(git status --porcelain public-data/matches.json)" ]; then
+            echo "match snapshot changed without a Pundit feed change; skipping commit to avoid live-score deploy churn"
           else
             echo "no pundit change"
           fi

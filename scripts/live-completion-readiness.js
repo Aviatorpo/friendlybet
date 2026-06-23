@@ -297,6 +297,14 @@ async function runReadiness(options = {}) {
   });
 
   add(checks, 'standalone Pundit workflow exports/audits before build', ordered(generatePundit, 'node scripts/export-snapshots.js matches', 'node scripts/generate-pundit.js') && ordered(generatePundit, 'node scripts/live-ops-audit.js', 'node scripts/generate-pundit.js'), 'matches export + audit before build');
+  add(
+    checks,
+    'standalone Pundit workflow covers live group-stage transitions',
+    generatePundit.includes("cron: '3,13,23,33,43,53 * 11-28 6 *'")
+      && /git status --porcelain public-data\/pundit\.json/.test(generatePundit)
+      && /match snapshot changed without a Pundit feed change/.test(generatePundit),
+    '10-minute group-stage cadence, deploys keyed to Pundit changes'
+  );
 
   [
     'node scripts/test-scoring.js',
