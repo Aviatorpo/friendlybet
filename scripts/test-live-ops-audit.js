@@ -265,6 +265,14 @@ check('standalone Pundit workflow audits match state before build', () => {
   assert.ok(/pushed=0[\s\S]*failed to push Pundit feed[\s\S]*exit 1/.test(text), 'generate-pundit workflow must fail if push retries never succeed');
 });
 
+check('readiness monitor can recover stale active live DB state', () => {
+  const text = fs.readFileSync(path.join(ROOT, '.github/workflows/live-completion-readiness.yml'), 'utf8');
+  assert.ok(text.includes('readiness-before.json'), 'readiness monitor must capture the first failing gate result');
+  assert.ok(text.includes("name==='live DB active match state is fresh'"), 'readiness monitor must target stale active DB state only');
+  assert.ok(text.includes('node scripts/live-poller.js'), 'readiness monitor must run one live-poller recovery pass');
+  assert.ok(/timeout-minutes:\s*18/.test(text), 'readiness monitor timeout must allow a recovery poll and second gate');
+});
+
 check('final-result verifier commits exported match snapshot with Pundit', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/final-result-verifier.yml'), 'utf8');
   assert.ok(text.includes('node scripts/export-snapshots.js matches'), 'final verifier must export match snapshot after verified results');
