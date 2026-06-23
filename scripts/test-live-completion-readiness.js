@@ -76,6 +76,10 @@ const Readiness = require('./live-completion-readiness');
     productionResult.checks.some(check => check.name === 'production Pundit feed is fresh' && check.ok),
     'readiness must verify production Pundit freshness when production snapshots are provided'
   );
+  assert.ok(
+    productionResult.checks.some(check => check.name === 'production public snapshot audit is green' && check.ok),
+    'readiness must run the live-ops audit against production public snapshots'
+  );
 
   const dbResult = await Readiness.runReadiness({
     auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
@@ -106,6 +110,8 @@ const Readiness = require('./live-completion-readiness');
     'pool Pundit invite buzz is gated by effective open state',
     'live poller covers all group-stage match days',
     'final verifier covers all group-stage match days',
+    'readiness monitor covers production during group-stage match days',
+    'readiness monitor audits live DB by default',
     'playbook records screenshot fallback rule',
     'visual proof harness covers official scoring states',
   ];

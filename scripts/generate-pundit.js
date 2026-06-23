@@ -38,6 +38,7 @@ const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
 const RESULT_WINDOW_MS = 30 * HOUR_MS;
 const FIXTURE_WINDOW_MS = 30 * HOUR_MS;
+const FIXTURE_PRE_KICKOFF_BUFFER_MS = 15 * 60 * 1000;
 const NEWS_MAX_AGE_MS = 30 * HOUR_MS;
 const NEWS_MAX_FUTURE_EXPIRY_MS = 30 * HOUR_MS;
 const FEED_FRESH_MS = 6 * HOUR_MS;
@@ -446,13 +447,13 @@ function build(now, options = {}) {
 
   // ---- 4. Upcoming fixtures (next 30h) --------------------------------------
   const upcoming = matches
-    .filter(m => (m.status === 'TIMED' || m.status === 'SCHEDULED') && Date.parse(m.match_date) > now.getTime())
+    .filter(m => (m.status === 'TIMED' || m.status === 'SCHEDULED') && Date.parse(m.match_date) - now.getTime() > FIXTURE_PRE_KICKOFF_BUFFER_MS)
     .sort((x, y) => Date.parse(x.match_date) - Date.parse(y.match_date))
     .filter(m => Date.parse(m.match_date) - now.getTime() < FIXTURE_WINDOW_MS)
     .slice(0, 5);
   for (const [idx, m] of upcoming.entries()) {
     const text = fixtureCommentary(m, now, idx);
-    items.push({ id: `fixture-${m.id}`, type: 'fixture', confidence: 'confirmed', he: text.he, en: text.en, sources: [], expires_at: iso(Date.parse(m.match_date)) });
+    items.push({ id: `fixture-${m.id}`, type: 'fixture', confidence: 'confirmed', he: text.he, en: text.en, sources: [], expires_at: iso(Date.parse(m.match_date) - FIXTURE_PRE_KICKOFF_BUFFER_MS) });
   }
 
   // ---- 5. Verified same-day news (from the news agent) ----------------------

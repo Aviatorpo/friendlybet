@@ -74,8 +74,8 @@ function summarizeGroupCompletion(matches) {
     }));
 }
 
-function summarizeStories(matches, resultRecovery = null) {
-  const stories = readJson(STORIES_FILE, { items: [] });
+function summarizeStories(matches, resultRecovery = null, storiesPayload = null) {
+  const stories = storiesPayload || readJson(STORIES_FILE, { items: [] });
   const storyIds = new Set((Array.isArray(stories.items) ? stories.items : [])
     .map(story => story && story.match_id)
     .filter(Boolean));
@@ -97,8 +97,8 @@ function summarizeStories(matches, resultRecovery = null) {
   };
 }
 
-function summarizePundit(nowMs) {
-  const feed = readJson(PUNDIT_FILE, null);
+function summarizePundit(nowMs, feedOverride = null) {
+  const feed = feedOverride || readJson(PUNDIT_FILE, null);
   const freshUntil = parseTime(feed && feed.freshUntil);
   const updatedAt = parseTime(feed && feed.updatedAt);
   return {
@@ -126,12 +126,12 @@ async function audit(options = {}) {
   const nowMs = options.nowMs == null ? Date.now() : options.nowMs;
   if (!Number.isFinite(nowMs)) throw new Error('Invalid audit nowMs');
   const matches = options.matches || loadSnapshotMatches();
-  const watchdogRaw = await Watchdog.audit({ matches, nowMs });
+  const watchdogRaw = await Watchdog.audit({ matches, nowMs, punditFeed: options.punditFeed || null });
   const watchdog = options.skipPundit ? withoutPunditWatchdogFindings(watchdogRaw) : watchdogRaw;
   const resultRecovery = summarizeResultRecovery(matches, nowMs, options);
   const groupCompletion = summarizeGroupCompletion(matches);
-  const stories = summarizeStories(matches, resultRecovery);
-  const pundit = summarizePundit(nowMs);
+  const stories = summarizeStories(matches, resultRecovery, options.storiesPayload || null);
+  const pundit = summarizePundit(nowMs, options.punditFeed || null);
   const completedGroups = groupCompletion.filter(group => group.scoreable_complete).length;
   const summary = {
     source: options.matches ? 'in-memory' : 'snapshot',
