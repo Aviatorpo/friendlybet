@@ -31,7 +31,7 @@
 const fs = require('fs');
 const path = require('path');
 const { teamName } = require('./team-names');
-const { knockoutWinner } = require('./calculate-scores-v2');
+const { computeGroupStandings, groupIsComplete, knockoutWinner } = require('./calculate-scores-v2');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
@@ -186,13 +186,83 @@ function evLeader(top, decided, tag) {
   };
 }
 
+function evGroupComplete(groupHit, tag) {
+  const A = nick(groupHit.user);
+  const groups = groupHit.groups.join(', ');
+  const hits = groupHit.hits;
+  const heHits = hits === 1 ? 'פגיעה אחת' : `${hits} פגיעות`;
+  const enHits = hits === 1 ? '1 correct slot' : `${hits} correct slots`;
+  return {
+    id: `group-complete-${groupHit.user.id}-${groups}-${hits}-${tag}`,
+    type: 'group-complete',
+    emoji: '✅',
+    he: `בית ${groups} נסגר, ו-${A} יוצא משם עם ${heHits}. עכשיו אלה כבר נקודות אמיתיות בפול.`,
+    en: `Group ${groups} is final, and ${A} walks away with ${enHits}. Those are real pool points now.`,
+    featuredUserId: groupHit.user.id,
+    featuredNickname: A,
+  };
+}
+
+function groupKey(m) {
+  const g = m && (m.group_letter || m.group || m.group_name || m.groupName || '');
+  return String(g).replace(/^Group\s+/i, '').trim().charAt(0).toUpperCase();
+}
+
+function completedGroupEvents(matches, newly) {
+  const newlyGroups = new Set((newly || []).map(groupKey).filter(Boolean));
+  const byGroup = {};
+  (matches || []).forEach(m => {
+    if (String(m.stage || '').toUpperCase() !== 'GROUP_STAGE') return;
+    const key = groupKey(m);
+    if (!key || !newlyGroups.has(key)) return;
+    (byGroup[key] = byGroup[key] || []).push(m);
+  });
+  return Object.entries(byGroup)
+    .filter(([, rows]) => groupIsComplete(rows))
+    .map(([letter, rows]) => {
+      const teams = [];
+      rows.forEach(m => {
+        if (m.home_team_code && !teams.includes(m.home_team_code)) teams.push(m.home_team_code);
+        if (m.away_team_code && !teams.includes(m.away_team_code)) teams.push(m.away_team_code);
+      });
+      if (teams.length !== 4) return null;
+      const ordered = computeGroupStandings(rows, teams).map(row => row.code);
+      return { letter, ordered };
+    })
+    .filter(Boolean)
+    .sort((a, b) => a.letter.localeCompare(b.letter));
+}
+
+function buildGroupHitEvents(curUsers, groupPositionPicks, groupEvents) {
+  if (!groupEvents || !groupEvents.length) return [];
+  const usersById = new Map((curUsers || []).map(u => [u.id, u]));
+  const eventByLetter = new Map(groupEvents.map(g => [g.letter, g]));
+  const hitsByUser = new Map();
+  (groupPositionPicks || []).forEach(p => {
+    const event = eventByLetter.get(p.group_letter);
+    if (!event || !usersById.has(p.user_id)) return;
+    const pos = Number(p.position);
+    if (!pos || event.ordered[pos - 1] !== p.team_code) return;
+    const row = hitsByUser.get(p.user_id) || { user: usersById.get(p.user_id), hits: 0, groups: new Set() };
+    row.hits++;
+    row.groups.add(p.group_letter);
+    hitsByUser.set(p.user_id, row);
+  });
+  return [...hitsByUser.values()]
+    .map(row => ({ ...row, groups: [...row.groups].sort() }))
+    .sort((a, b) =>
+      (b.hits - a.hits) ||
+      ((b.user.total_score || 0) - (a.user.total_score || 0)) ||
+      Date.parse(a.user.joined_at || 0) - Date.parse(b.user.joined_at || 0));
+}
+
 // ---------- Per-pool banter ----------
 // prevStandings: [{id,nickname,total_score}] from last run (or null on first run)
 // curUsers: full user rows for this pool (current)
 // newlyKO: [{match, winner, loser}] knockout matches finished since last run
 // lateGoals: [{goal, team}] late (>=80') goals from newly-finished matches
 // champPicks: Map userId -> championTeamCode (this pool)
-function buildPoolBanter(prevStandings, curUsers, newlyKO, lateGoals, champPicks, decidedCount) {
+function buildPoolBanter(prevStandings, curUsers, newlyKO, lateGoals, champPicks, decidedCount, groupHits = []) {
   const cur = rankUsers(curUsers);
   if (!cur.length) return null;
   const curTop = cur[0];
@@ -225,6 +295,9 @@ function buildPoolBanter(prevStandings, curUsers, newlyKO, lateGoals, champPicks
   // 1) Lead change (the headline-grabber)
   const lead = evLeadChange(prevTop, curTop, tag);
   if (lead) items.push(lead);
+
+  // 1b) Group-complete receipt: tie official points to a real settled group.
+  if (groupHits.length) items.push(evGroupComplete(groupHits[0], tag));
 
   // 2) Champion knocked out (only when a champ pick's team just lost a KO match)
   for (const ko of newlyKO) {
@@ -277,7 +350,7 @@ async function main() {
   const nowIso = new Date().toISOString();
   const now = Date.now();
 
-  const pools = await sbAll('pools', '?select=id,name');
+  const pools = await sbAll('pools', '?select=id,name,betting_mode');
   const users = await sbAll('users', '?select=id,pool_id,nickname,total_score,joined_at&order=total_score.desc.nullslast');
   const matches = await sbAll('matches', '?select=*');
   let champRows = [];
@@ -322,6 +395,19 @@ async function main() {
       if (late) lateGoals.push({ goal: late, team: late.team, match: m });
     });
 
+  const groupEvents = completedGroupEvents(matches, newly);
+  let groupPositionRows = [];
+  if (groupEvents.length) {
+    try {
+      const groups = groupEvents.map(g => g.letter);
+      groupPositionRows = await sbAll('group_position_picks',
+        `?select=pool_id,user_id,group_letter,position,team_code&group_letter=in.(${groups.join(',')})`);
+    } catch (e) {
+      console.warn('group-complete banter disabled for this run:', e.message);
+      groupPositionRows = [];
+    }
+  }
+
   // Champion picks grouped per pool.
   const champByPool = {};
   (champRows || []).forEach(r => {
@@ -339,8 +425,11 @@ async function main() {
 
     const prevStandings = (state.pools && state.pools[pool.id] && state.pools[pool.id].standings) || null;
     const champPicks = champByPool[pool.id] || new Map();
+    const poolGroupHits = pool.betting_mode === 'single_phase'
+      ? buildGroupHitEvents(pu, groupPositionRows.filter(r => r.pool_id === pool.id), groupEvents)
+      : [];
 
-    const result = buildPoolBanter(prevStandings, pu, newlyKO, lateGoals, champPicks, newly.length);
+    const result = buildPoolBanter(prevStandings, pu, newlyKO, lateGoals, champPicks, newly.length, poolGroupHits);
 
     // Always snapshot the current standings for next run's diff.
     newStatePools[pool.id] = {
@@ -362,11 +451,11 @@ async function main() {
     seenFinishedIds: finishedIds.slice(-2000), // cap so the file can't grow unbounded
   };
   fs.writeFileSync(STATE_FILE, JSON.stringify(newState));
-  console.log(`banter: ${wrote} pool file(s) updated of ${pools.length}; ${newly.length} new match(es), ${lateGoals.length} late goal(s).`);
+  console.log(`banter: ${wrote} pool file(s) updated of ${pools.length}; ${newly.length} new match(es), ${groupEvents.length} completed group(s), ${lateGoals.length} late goal(s).`);
 }
 
 if (require.main === module) {
   main().catch(e => { console.error('generate-banter fatal:', e); process.exit(1); });
 } else {
-  module.exports = { main, buildPoolBanter, rankUsers, minuteLabel };
+  module.exports = { main, buildPoolBanter, buildGroupHitEvents, completedGroupEvents, rankUsers, minuteLabel };
 }

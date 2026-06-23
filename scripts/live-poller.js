@@ -17,6 +17,12 @@
 
 const sync = require('./smart-sync.js');
 const espn = require('./espn-live-sync.js');
+const fs = require('fs');
+
+function setGithubOutput(name, value) {
+  if (!process.env.GITHUB_OUTPUT) return;
+  fs.appendFileSync(process.env.GITHUB_OUTPUT, `${name}=${value}\n`, 'utf8');
+}
 
 async function runLivePoller(opts = {}) {
   const intervalMs = opts.intervalMs || 60000;          // poll cadence during live
@@ -26,17 +32,22 @@ async function runLivePoller(opts = {}) {
 
   if (!(await sync.shouldSync())) {
     console.log('No active match right now - live-poller exiting.');
-    return 0;
+    setGithubOutput('polls', '0');
+    setGithubOutput('final_detected', 'false');
+    setGithubOutput('final_detections', '0');
+    return { polls: 0, finalDetected: false, finalDetections: 0 };
   }
 
   const end = now() + runMs;
   let polls = 0;
+  let finalDetections = 0;
   while (true) {
     try {
       const result = await espn.syncEspnLive(); // ESPN -> DB (score + provider clock)
       if (!result || result.updated === 0) {
         console.warn('ESPN live sync updated no matches - leaving result unchanged until the next ESPN/FIFA check.');
       }
+      finalDetections += Number(result && result.finalDetected || 0);
       polls++;
     } catch (e) {
       console.error('ESPN live poll failed (will retry next tick):', e.message);
@@ -49,8 +60,12 @@ async function runLivePoller(opts = {}) {
       break;
     }
   }
-  console.log(`live-poller done: ${polls} poll(s) this run.`);
-  return polls;
+  const finalDetected = finalDetections > 0;
+  console.log(`live-poller done: ${polls} poll(s) this run. finalDetected=${finalDetected ? 'true' : 'false'} (${finalDetections})`);
+  setGithubOutput('polls', String(polls));
+  setGithubOutput('final_detected', finalDetected ? 'true' : 'false');
+  setGithubOutput('final_detections', String(finalDetections));
+  return { polls, finalDetected, finalDetections };
 }
 
 if (require.main === module) {

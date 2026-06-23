@@ -1,7 +1,9 @@
 name: Generate Pundit Feed
 
-# Rebuilds public-data/pundit.json from the committed match snapshot + the
-# verified news file. Pure data, no network, no secrets - safe to run often.
+# Rebuilds public-data/pundit.json from a fresh Supabase-backed match snapshot
+# + the verified news file. The match snapshot is committed with the Pundit feed
+# so the feed never references result/live state that public-data/matches.json
+# cannot prove.
 # Covers both phases: pre-tournament the countdown/fixtures shift daily, during
 # the tournament results/fixtures shift hourly. The script also refreshes the
 # feed timestamp every few hours so the client can detect a stuck/stale feed.
@@ -30,6 +32,18 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Export current match snapshot
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+        run: node scripts/export-snapshots.js matches
+
+      - name: Audit match/story state before Pundit build
+        env:
+          LIVE_OPS_SKIP_PUNDIT: '1'
+        run: node scripts/live-ops-audit.js
+
       # Guard: if a news file exists, it must pass the verification gate. A bad
       # file fails the run instead of shipping unverified claims.
       - name: Validate pundit news (if present)
@@ -43,17 +57,25 @@ jobs:
       - name: Build pundit feed
         run: node scripts/generate-pundit.js
 
+      - name: Validate generated Pundit feed
+        run: node scripts/test-pundit-feed.js
+
       - name: Commit feed if changed
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
-          if [ -n "$(git status --porcelain public-data/pundit.json)" ]; then
-            git add public-data/pundit.json
+          if [ -n "$(git status --porcelain public-data/matches.json public-data/pundit.json)" ]; then
+            git add public-data/matches.json public-data/pundit.json
             git commit -q -m "data: refresh pundit feed"
+            pushed=0
             for a in 1 2 3; do
-              git pull --rebase --autostash && git push && break
+              if git pull --rebase --autostash && git push; then pushed=1; break; fi
               echo "push retry $a"; sleep 4
             done
+            if [ "$pushed" != "1" ]; then
+              echo "::error::failed to push Pundit feed after 3 retries"
+              exit 1
+            fi
           else
             echo "no pundit change"
           fi

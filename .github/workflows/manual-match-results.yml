@@ -44,7 +44,21 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
         run: node scripts/export-snapshots.js all
+
+      - name: Generate leaderboard banter after manual results
+        continue-on-error: true
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/generate-banter.js
+
+      - name: Build Pundit feed after manual results
+        run: node scripts/generate-pundit.js
+
+      - name: Validate Pundit feed after manual results
+        run: node scripts/test-pundit-feed.js
 
       - name: Validate World Cup stories
         run: node scripts/test-world-cup-stories.js

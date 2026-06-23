@@ -3505,6 +3505,16 @@ body.ltr #next-group-btn svg {
   display: flex;
   align-items: center;
   gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.lb-name-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .lb-badge {
@@ -3513,11 +3523,13 @@ body.ltr #next-group-btn svg {
   border-radius: 4px;
   background: rgba(212, 168, 83, 0.2);
   color: #d9b46a;
+  flex-shrink: 0;
 }
 
 /* Admin badge - styled like a shield/medal */
 .admin-badge {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 3px;
   font-size: 9px;

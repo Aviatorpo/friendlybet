@@ -95,7 +95,7 @@ const finalEvent = {
   }]
 };
 
-eq('build final patch clears live display fields', E.buildPatch(E.transformEspnEvent(finalEvent), {
+eq('build final patch keeps audit residue for verifier', E.buildPatch(E.transformEspnEvent(finalEvent), {
   nowIso: '2026-06-12T21:00:00.000Z',
   includeLiveColumns: true
 }), {
@@ -106,8 +106,8 @@ eq('build final patch clears live display fields', E.buildPatch(E.transformEspnE
   winner_code: 'CAN',
   live_clock: null,
   live_period: null,
-  status_detail: null,
-  live_source: null,
+  status_detail: 'ESPN final pending verification',
+  live_source: 'espn-final',
   source_updated_at: '2026-06-12T21:00:00.000Z'
 });
 

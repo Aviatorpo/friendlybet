@@ -15,7 +15,7 @@ let pass = 0, fail = 0;
 const ok = (label, cond) => { console.log(`${cond ? '✓' : '✗ FAIL'}  ${label}`); cond ? pass++ : fail++; };
 
 const HEADERS = { get: (k) => (k === 'X-Requests-Available-Minute' ? '8' : null) };
-const ESPN_PAYLOAD = { events: [{
+const ESPN_LIVE_PAYLOAD = { events: [{
   id: '760201',
   date: '2026-06-11T16:00Z',
   competitions: [{
@@ -23,6 +23,20 @@ const ESPN_PAYLOAD = { events: [{
     status: { displayClock: "21'", period: 1, type: { name: 'STATUS_FIRST_HALF', state: 'in', completed: false, shortDetail: "21'" } },
     competitors: [
       { homeAway: 'home', score: '1', winner: false, team: { displayName: 'Mexico', abbreviation: 'MEX' } },
+      { homeAway: 'away', score: '0', winner: false, team: { displayName: 'South Korea', abbreviation: 'KOR' } }
+    ]
+  }]
+}] };
+let ESPN_PAYLOAD = ESPN_LIVE_PAYLOAD;
+
+const ESPN_FINAL_PAYLOAD = { events: [{
+  id: '760201',
+  date: '2026-06-11T16:00Z',
+  competitions: [{
+    startDate: '2026-06-11T16:00Z',
+    status: { displayClock: "90'", period: 2, type: { name: 'STATUS_FINAL', state: 'post', completed: true, shortDetail: 'FT' } },
+    competitors: [
+      { homeAway: 'home', score: '2', winner: true, team: { displayName: 'Mexico', abbreviation: 'MEX' } },
       { homeAway: 'away', score: '0', winner: false, team: { displayName: 'South Korea', abbreviation: 'KOR' } }
     ]
   }]
@@ -55,22 +69,29 @@ sync.__setFetch(async (url, opts) => {
   console.log('\n== live-poller ==');
   // Live: should loop several times in ~18ms at a 5ms cadence.
   LIVE = true; upserts = 0; patches = 0;
-  const polls = await runLivePoller({ intervalMs: 5, runMs: 18, sleep: (ms) => new Promise(r => setTimeout(r, ms)) });
-  ok('polls performSync repeatedly while live (>=2)', polls >= 2);
-  ok('ESPN patches the live match on each poll', patches >= polls);
+  ESPN_PAYLOAD = ESPN_LIVE_PAYLOAD;
+  const result = await runLivePoller({ intervalMs: 5, runMs: 18, sleep: (ms) => new Promise(r => setTimeout(r, ms)) });
+  ok('polls performSync repeatedly while live (>=2)', result.polls >= 2);
+  ok('ESPN patches the live match on each poll', patches >= result.polls);
+  ok('live polling does not set final handoff', result.finalDetected === false);
   ok('legacy sync upsert path is not used when ESPN matches', upserts === 0);
 
   // Not live: exits immediately, no work.
   LIVE = false; upserts = 0; patches = 0;
-  const polls2 = await runLivePoller({ intervalMs: 5, runMs: 18 });
-  ok('exits immediately when nothing is live (0 polls)', polls2 === 0);
+  const result2 = await runLivePoller({ intervalMs: 5, runMs: 18 });
+  ok('exits immediately when nothing is live (0 polls)', result2.polls === 0);
   ok('no DB writes when nothing is live', upserts === 0 && patches === 0);
 
   // Live ends mid-run: stops early on the next check.
-  LIVE = true; upserts = 0; patches = 0;
+  LIVE = true; upserts = 0; patches = 0; ESPN_PAYLOAD = ESPN_LIVE_PAYLOAD;
   let n = 0;
-  const polls3 = await runLivePoller({ intervalMs: 2, runMs: 10000, sleep: async () => { if (++n >= 2) LIVE = false; } });
-  ok('stops early once matches finish', polls3 >= 1 && polls3 <= 4);
+  const result3 = await runLivePoller({ intervalMs: 2, runMs: 10000, sleep: async () => { if (++n >= 2) LIVE = false; } });
+  ok('stops early once matches finish', result3.polls >= 1 && result3.polls <= 4);
+
+  // ESPN full-time: hand off immediately to the final-result verifier workflow.
+  LIVE = true; upserts = 0; patches = 0; ESPN_PAYLOAD = ESPN_FINAL_PAYLOAD;
+  const result4 = await runLivePoller({ intervalMs: 5, runMs: 5 });
+  ok('ESPN final sets verifier handoff flag', result4.finalDetected === true && result4.finalDetections >= 1);
 
   console.log(`\n==== ${pass} passed, ${fail} failed ====`);
   process.exit(fail ? 1 : 0);

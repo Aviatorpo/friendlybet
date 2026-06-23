@@ -5,6 +5,12 @@ name: Test Scoring & Sync
 on:
   push:
     paths:
+      - 'app.js'
+      - 'styles.css'
+      - 'i18n.js'
+      - 'index.html'
+      - 'config.js'
+      - 'service-worker.js'
       - 'scripts/calculate-scores-v2.js'
       - 'scripts/test-scoring.js'
       - 'scripts/smart-sync.js'
@@ -13,13 +19,51 @@ on:
       - 'scripts/test-team-mapping.js'
       - 'scripts/live-poller.js'
       - 'scripts/test-live-poller.js'
+      - 'scripts/live-state-watchdog.js'
+      - 'scripts/test-live-state-watchdog.js'
+      - 'scripts/live-ops-audit.js'
+      - 'scripts/test-live-ops-audit.js'
+      - 'scripts/live-completion-readiness.js'
+      - 'scripts/test-live-completion-readiness.js'
+      - 'scripts/test-live-ux-state.js'
+      - 'scripts/test-match-display-state.js'
+      - 'scripts/export-snapshots.js'
+      - 'scripts/test-export-snapshots.js'
+      - '.github/workflows/live-poller.yml'
+      - 'scripts/espn-live-sync.js'
+      - 'scripts/test-espn-live-sync.js'
       - 'scripts/final-result-verifier.js'
+      - 'scripts/final-result-verifier-needed.js'
       - 'scripts/test-final-result-verifier.js'
+      - 'scripts/test-final-result-verifier-needed.js'
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
+      - 'scripts/generate-pundit.js'
+      - 'scripts/pundit-news-validate.js'
+      - 'scripts/pundit-live-window-certifier.js'
+      - 'scripts/test-pundit-news-validate.js'
+      - 'scripts/test-generate-pundit-live-state.js'
+      - 'scripts/test-pundit-live-window-certifier.js'
+      - 'scripts/test-pundit-feed.js'
+      - 'scripts/test-pundit-client-staleness.js'
+      - 'public-data/matches.json'
+      - 'public-data/pundit-news.json'
+      - 'public-data/pundit.json'
+      - 'public-data/world-cup-stories.json'
+      - '.github/workflows/calculate-scores-v2.yml'
+      - '.github/workflows/final-result-verifier.yml'
+      - '.github/workflows/generate-pundit.yml'
+      - '.github/workflows/manual-match-results.yml'
+      - '.github/workflows/publish-world-cup-stories-prepared.yml'
       - '.github/workflows/test-scoring.yml'
   pull_request:
     paths:
+      - 'app.js'
+      - 'styles.css'
+      - 'i18n.js'
+      - 'index.html'
+      - 'config.js'
+      - 'service-worker.js'
       - 'scripts/calculate-scores-v2.js'
       - 'scripts/test-scoring.js'
       - 'scripts/smart-sync.js'
@@ -28,10 +72,43 @@ on:
       - 'scripts/test-team-mapping.js'
       - 'scripts/live-poller.js'
       - 'scripts/test-live-poller.js'
+      - 'scripts/live-state-watchdog.js'
+      - 'scripts/test-live-state-watchdog.js'
+      - 'scripts/live-ops-audit.js'
+      - 'scripts/test-live-ops-audit.js'
+      - 'scripts/live-completion-readiness.js'
+      - 'scripts/test-live-completion-readiness.js'
+      - 'scripts/test-live-ux-state.js'
+      - 'scripts/test-match-display-state.js'
+      - 'scripts/export-snapshots.js'
+      - 'scripts/test-export-snapshots.js'
+      - '.github/workflows/live-poller.yml'
+      - 'scripts/espn-live-sync.js'
+      - 'scripts/test-espn-live-sync.js'
       - 'scripts/final-result-verifier.js'
+      - 'scripts/final-result-verifier-needed.js'
       - 'scripts/test-final-result-verifier.js'
+      - 'scripts/test-final-result-verifier-needed.js'
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
+      - 'scripts/generate-pundit.js'
+      - 'scripts/pundit-news-validate.js'
+      - 'scripts/pundit-live-window-certifier.js'
+      - 'scripts/test-pundit-news-validate.js'
+      - 'scripts/test-generate-pundit-live-state.js'
+      - 'scripts/test-pundit-live-window-certifier.js'
+      - 'scripts/test-pundit-feed.js'
+      - 'scripts/test-pundit-client-staleness.js'
+      - 'public-data/matches.json'
+      - 'public-data/pundit-news.json'
+      - 'public-data/pundit.json'
+      - 'public-data/world-cup-stories.json'
+      - '.github/workflows/calculate-scores-v2.yml'
+      - '.github/workflows/final-result-verifier.yml'
+      - '.github/workflows/generate-pundit.yml'
+      - '.github/workflows/manual-match-results.yml'
+      - '.github/workflows/publish-world-cup-stories-prepared.yml'
+      - '.github/workflows/test-scoring.yml'
   workflow_dispatch:
 
 jobs:
@@ -56,8 +133,40 @@ jobs:
         run: node scripts/test-team-mapping.js
       - name: Run live-poller tests
         run: node scripts/test-live-poller.js
+      - name: Run live-state watchdog tests
+        run: node scripts/test-live-state-watchdog.js
+      - name: Run live-ops audit tests
+        run: node scripts/test-live-ops-audit.js
+      - name: Run live-ops snapshot audit
+        run: node scripts/live-ops-audit.js
+      - name: Run live completion readiness gate
+        run: node scripts/live-completion-readiness.js
+      - name: Run live completion readiness tests
+        run: node scripts/test-live-completion-readiness.js
+      - name: Run live UX state tests
+        run: node scripts/test-live-ux-state.js
+      - name: Run match display-state tests
+        run: node scripts/test-match-display-state.js
+      - name: Run snapshot export tests
+        run: node scripts/test-export-snapshots.js
+      - name: Run ESPN live-sync tests
+        run: node scripts/test-espn-live-sync.js
 
+      - name: Run final-result verifier preflight tests
+        run: node scripts/test-final-result-verifier-needed.js
       - name: Run final-result verifier tests
         run: node scripts/test-final-result-verifier.js
       - name: Run banter engine tests
         run: node scripts/test-banter.js
+      - name: Run Pundit feed tests
+        run: node scripts/test-pundit-feed.js
+      - name: Run Pundit news validation tests
+        run: node scripts/test-pundit-news-validate.js
+      - name: Validate current Pundit news file
+        run: node scripts/pundit-news-validate.js
+      - name: Run Pundit live-state generation tests
+        run: node scripts/test-generate-pundit-live-state.js
+      - name: Run Pundit live-window certification tests
+        run: node scripts/test-pundit-live-window-certifier.js
+      - name: Run Pundit client staleness tests
+        run: node scripts/test-pundit-client-staleness.js

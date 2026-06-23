@@ -1,24 +1,15 @@
 name: Live Match Poller
 
-# Near-real-time live scores. During scheduled match windows it runs every
-# 5 min (GitHub's minimum); when a match is live it polls ESPN every ~60s for
-# ~4.5 min, writing ONLY to the DB (no snapshot commit -> ZERO Vercel deploys).
-# The client reads live scores straight from the DB during play.
+# Near-real-time live scores. During the full group-stage window it runs every
+# 5 min (GitHub's minimum); the script preflights first and calls providers only
+# when a match is actually active or just finished. When a match is live it polls
+# ESPN every ~60s for ~4.5 min, writing ONLY to the DB (no snapshot commit ->
+# ZERO Vercel deploys). The client reads live scores straight from the DB during play.
 on:
   schedule:
-    # UTC windows generated from public-data/matches.json for known group-stage
-    # kickoffs. Each window covers roughly kickoff-15m through kickoff+3h.
-    - cron: '*/5 15-23 18 6 *'
-    - cron: '*/5 0-4,18-23 19 6 *'
-    - cron: '*/5 0-6,16-23 20 6 *'
-    - cron: '*/5 0-7,15-23 21 6 *'
-    - cron: '*/5 0-4,16-23 22 6 *'
-    - cron: '*/5 0-6,16-23 23 6 *'
-    - cron: '*/5 0-5,18-23 24 6 *'
-    - cron: '*/5 0-4,19-23 25 6 *'
-    - cron: '*/5 0-5,18-23 26 6 *'
-    - cron: '*/5 0-6,20-23 27 6 *'
-    - cron: '*/5 0-5 28 6 *'
+    # Continuous coverage removes missed-window risk from delayed kickoffs or
+    # incorrect schedule rows; smart preflight is the cost control.
+    - cron: '*/5 * 11-28 6 *'
   workflow_dispatch:
 
 # Don't let two live-poller runs overlap (a slow run + the next cron launch).
@@ -29,7 +20,7 @@ concurrency:
 jobs:
   poll:
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 15
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -38,12 +29,147 @@ jobs:
         with:
           node-version: '20'
       - name: Poll live matches into the DB
+        id: live_poll
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            node scripts/live-poller.js || { echo "::warning::live-poller skipped after transient Supabase/ESPN failure"; exit 0; }
+            node scripts/live-poller.js
           else
             node scripts/live-poller.js
           fi
+
+      - name: Verify final immediately after ESPN full time
+        id: verify_results
+        if: steps.live_poll.outputs.final_detected == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          RESULT_FALLBACK_MIN_AGE_MINUTES: 80
+          RESULT_FALLBACK_MIN_SOURCES: 2
+          RESULT_FALLBACK_REQUIRED_SOURCES: espn,fifa
+        run: node scripts/final-result-verifier.js --apply
+
+      - name: Export match snapshot after verified final
+        if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+        run: node scripts/export-snapshots.js matches
+
+      - name: Calculate scores after verified final
+        if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/calculate-scores-v2.js
+
+      - name: Export leaderboard snapshots after scoring
+        if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/export-snapshots.js leaderboards
+
+      - name: Generate leaderboard banter after scoring
+        if: steps.verify_results.outputs.changed == 'true'
+        continue-on-error: true
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/generate-banter.js
+
+      - name: Build Pundit feed after verified final
+        if: steps.verify_results.outputs.changed == 'true'
+        run: node scripts/generate-pundit.js
+
+      - name: Validate Pundit feed after verified final
+        if: steps.verify_results.outputs.changed == 'true'
+        run: node scripts/test-pundit-feed.js
+
+      - name: Commit live final snapshots if changed
+        if: steps.verify_results.outputs.changed == 'true'
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data/matches.json public-data/leaderboard public-data/banter public-data/banter-state.json public-data/pundit.json)" ]; then
+            git add public-data/matches.json public-data/leaderboard public-data/banter public-data/banter-state.json public-data/pundit.json
+            git commit -q -m "data: refresh live final result"
+            pushed=0
+            for a in 1 2 3; do
+              if git pull --rebase --autostash && git push; then pushed=1; break; fi
+              echo "push retry $a"; sleep 4
+            done
+            if [ "$pushed" != "1" ]; then
+              echo "::error::failed to push live final snapshots after 3 retries"
+              exit 1
+            fi
+          else
+            echo "no live final snapshot change"
+          fi
+
+      - name: Validate existing World Cup stories
+        if: steps.verify_results.outputs.changed == 'true'
+        run: node scripts/test-world-cup-stories.js
+
+      - name: Check for World Cup story work
+        id: story_work
+        if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/world-cup-story-auto-needed.js
+
+      - name: Install story image tooling
+        if: steps.story_work.outputs.publishable == 'true'
+        run: python3 -m pip install --user pillow pypdf
+
+      - name: Publish prepared World Cup stories
+        if: steps.story_work.outputs.publishable == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/publish-world-cup-stories-auto.js
+
+      - name: Commit live story if changed
+        if: steps.story_work.outputs.publishable == 'true'
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data/world-cup-stories.json story-assets)" ]; then
+            git add public-data/world-cup-stories.json story-assets
+            git commit -q -m "story: publish live World Cup story"
+            pushed=0
+            for a in 1 2 3; do
+              if git pull --rebase --autostash && git push; then pushed=1; break; fi
+              echo "push retry $a"; sleep 4
+            done
+            if [ "$pushed" != "1" ]; then
+              echo "::error::failed to push live World Cup story after 3 retries"
+              exit 1
+            fi
+          else
+            echo "no live World Cup story change"
+          fi
+
+      - name: Live-state watchdog
+        if: steps.verify_results.outputs.changed == 'true' || steps.story_work.outputs.publishable == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LIVE_WATCHDOG_SOURCE: supabase
+          LIVE_WATCHDOG_REQUIRE_NEWS: '1'
+        run: node scripts/live-state-watchdog.js
+
+      - name: Escalate unresolved live final or story work
+        if: always() && (steps.verify_results.outputs.needs_attention == 'true' || (steps.story_work.outputs.unprepared_count != '' && steps.story_work.outputs.unprepared_count != '0'))
+        run: |
+          if [ "${{ steps.verify_results.outputs.needs_attention }}" = "true" ]; then
+            echo "::error::Live-poller saw ESPN full time, but final verification still has unresolved candidates. checked=${{ steps.verify_results.outputs.checked }} updated=${{ steps.verify_results.outputs.updated }} skipped=${{ steps.verify_results.outputs.skipped }} unavailable=${{ steps.verify_results.outputs.unavailable }}"
+          fi
+          if [ "${{ steps.story_work.outputs.unprepared_count }}" != "" ] && [ "${{ steps.story_work.outputs.unprepared_count }}" != "0" ]; then
+            echo "::error::World Cup story desk has ${{ steps.story_work.outputs.unprepared_count }} finished match(es) without prepared publishable story assets."
+          fi
+          exit 1

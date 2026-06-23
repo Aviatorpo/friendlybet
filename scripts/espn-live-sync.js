@@ -198,8 +198,10 @@ function buildPatch(espnMatch, opts = {}) {
     const terminal = espnMatch.status === 'FINISHED' || espnMatch.status === 'AWARDED';
     patch.live_clock = terminal ? null : espnMatch.liveClock;
     patch.live_period = terminal ? null : espnMatch.period;
-    patch.status_detail = terminal ? null : espnMatch.statusDetail;
-    patch.live_source = terminal ? null : 'espn';
+    // Keep ESPN-only final writes visibly audit-pending for the final verifier.
+    // The ESPN+FIFA verifier clears these fields once the result is confirmed.
+    patch.status_detail = terminal ? 'ESPN final pending verification' : espnMatch.statusDetail;
+    patch.live_source = terminal ? 'espn-final' : 'espn';
     patch.source_updated_at = nowIso;
   }
   return patch;
@@ -219,6 +221,7 @@ async function syncEspnLive(opts = {}) {
   const events = rawEvents.map(transformEspnEvent);
   let updated = 0;
   let skipped = 0;
+  let finalDetected = 0;
   const nowIso = now.toISOString();
 
   for (const dbMatch of candidates) {
@@ -230,6 +233,9 @@ async function syncEspnLive(opts = {}) {
       continue;
     }
     const patch = buildPatch(matches[0], { nowIso, includeLiveColumns });
+    if (patch.status === 'FINISHED' || patch.status === 'AWARDED' || patch.live_source === 'espn-final') {
+      finalDetected++;
+    }
     console.log(`ESPN live sync apply ${label}: status=${patch.status}, score=${patch.home_score ?? '-'}-${patch.away_score ?? '-'}, clock=${patch.live_clock || '-'}`);
     if (!opts.dryRun) {
       await callSupabase('PATCH', 'matches', patch, `?external_id=eq.${encodeURIComponent(dbMatch.external_id)}`);
@@ -237,7 +243,7 @@ async function syncEspnLive(opts = {}) {
     updated++;
   }
 
-  return { checked: candidates.length, updated, skipped };
+  return { checked: candidates.length, updated, skipped, finalDetected };
 }
 
 if (require.main === module) {

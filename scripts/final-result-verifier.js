@@ -25,8 +25,8 @@ const RESULT_TERMINAL = new Set(['FINISHED', 'AWARDED']);
 const FINAL_STATUSES = new Set(['FT', 'AET', 'PEN', 'AWD', 'WO']);
 const TEAM_CODE_RE = /^[A-Z]{3}$/;
 
-const MIN_AGE_MINUTES = parseInt(process.env.RESULT_FALLBACK_MIN_AGE_MINUTES || '', 10) || 115;
-const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 48;
+const MIN_AGE_MINUTES = parseInt(process.env.RESULT_FALLBACK_MIN_AGE_MINUTES || '', 10) || 95;
+const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 336;
 const MAX_KICKOFF_DELTA_MS = (parseInt(process.env.RESULT_FALLBACK_MAX_KICKOFF_DELTA_HOURS || '', 10) || 12) * 60 * 60 * 1000;
 const MIN_SOURCES = parseInt(process.env.RESULT_FALLBACK_MIN_SOURCES || '', 10) || 1;
 const REQUIRED_SOURCES = String(process.env.RESULT_FALLBACK_REQUIRED_SOURCES || 'espn,fifa')
@@ -344,6 +344,12 @@ function consensusUpdate(sourceUpdates, opts = {}) {
   return { update: best.sources[0].update, sources: best.sources };
 }
 
+function needsResultAttention(result) {
+  if (!result) return false;
+  if (result.unavailable) return true;
+  return (Number(result.checked) || 0) > 0 && (Number(result.skipped) || 0) > 0;
+}
+
 async function verifyFinalResults(opts = {}) {
   const apply = !!opts.apply;
   if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY or PROD_ANON_KEY');
@@ -430,6 +436,8 @@ if (require.main === module) {
       setGithubOutput('checked', String(r.checked || 0));
       setGithubOutput('updated', String(r.updated || 0));
       setGithubOutput('skipped', String(r.skipped || 0));
+      setGithubOutput('unavailable', r.unavailable ? 'true' : 'false');
+      setGithubOutput('needs_attention', needsResultAttention(r) ? 'true' : 'false');
       setGithubOutput('changed', r.updated > 0 ? 'true' : 'false');
     })
     .catch(err => {
@@ -447,6 +455,7 @@ if (require.main === module) {
     findMatchingFixture,
     buildUpdateFromVerifiedFixture,
     consensusUpdate,
+    needsResultAttention,
     verifyFinalResults,
     __setFetch: (fn) => { globalThis.fetch = fn; }
   };

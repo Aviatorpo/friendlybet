@@ -220,9 +220,134 @@ function computeGroupStandings(matches, groupTeams) {
 // "has scores" check could settle standings (and award group-position points) from a
 // still-running final match, then flip when it actually finished. (fix 2026-06-10)
 const TERMINAL_MATCH_STATUS = new Set(['FINISHED', 'AWARDED']);
-function isTerminalMatch(m) { return !!m && TERMINAL_MATCH_STATUS.has(m.status); }
+function isPendingProviderFinal(m) {
+  const source = String((m && m.live_source) || '').toLowerCase();
+  const detail = String((m && m.status_detail) || '').toLowerCase();
+  return source === 'espn-final' || detail.includes('pending verification');
+}
+function isTerminalMatch(m) {
+  return !!m && TERMINAL_MATCH_STATUS.has(String(m.status || '').toUpperCase()) && !isPendingProviderFinal(m);
+}
+function groupMatchIdentity(m) {
+  if (!m) return '';
+  const group = String(m.group_letter || m.group || '');
+  const date = String(m.match_date || '');
+  const home = String(m.home_team_code || '');
+  const away = String(m.away_team_code || '');
+  if (home && away) return `group:${group}|teams:${[home, away].sort().join('|')}`;
+  if (m.external_id != null) return `external:${m.external_id}`;
+  if (m.id != null) return `id:${m.id}`;
+  return `${group}|${date}|${home}|${away}`;
+}
 function groupIsComplete(matches) {
-  return (matches || []).filter(isTerminalMatch).length >= 6;
+  const terminalMatches = (matches || []).filter(isTerminalMatch);
+  const terminalFixtures = new Set();
+  (matches || []).forEach((m, index) => {
+    if (isTerminalMatch(m)) {
+      const identity = groupMatchIdentity(m);
+      terminalFixtures.add(identity || `anonymous-terminal-row:${index}`);
+    }
+  });
+  return terminalMatches.length === 6 && terminalFixtures.size === 6;
+}
+
+function indexRowsBy(rows, key) {
+  const out = new Map();
+  for (const row of rows || []) {
+    const value = row && row[key];
+    if (value == null) continue;
+    if (!out.has(value)) out.set(value, []);
+    out.get(value).push(row);
+  }
+  return out;
+}
+
+function buildGroupState(matches) {
+  const allGroupMatchesAny = (matches || []).filter(m => m && m.stage === 'GROUP_STAGE');
+  const groupCodes = {};
+  const standings = {};
+  const thirdStats = {};
+  const advanced = new Set();
+
+  allGroupMatchesAny.forEach(m => {
+    const letter = m.group_letter || m.group;
+    if (!letter) return;
+    if (!groupCodes[letter]) groupCodes[letter] = new Set();
+    if (m.home_team_code) groupCodes[letter].add(m.home_team_code);
+    if (m.away_team_code) groupCodes[letter].add(m.away_team_code);
+  });
+
+  Object.keys(groupCodes).forEach(letter => {
+    const teams = [...groupCodes[letter]];
+    if (teams.length !== 4) {
+      console.warn(`  group ${letter} has ${teams.length} teams (expected 4) - SKIPPED, will not score: ${teams.join(',')}`);
+      return;
+    }
+    const groupMatches = allGroupMatchesAny.filter(m => (m.group_letter || m.group) === letter);
+    if (!groupIsComplete(groupMatches)) return;
+    const orderedStats = computeGroupStandings(groupMatches.filter(isTerminalMatch), teams);
+    standings[letter] = orderedStats.map(s => s.code);
+    thirdStats[letter] = orderedStats[2];
+    advanced.add(orderedStats[0].code);
+    advanced.add(orderedStats[1].code);
+  });
+
+  let realBest8Thirds = null;
+  if (Object.keys(thirdStats).length === 12) {
+    const thirds = Object.values(thirdStats).slice().sort((x, y) =>
+      (y.points - x.points) || (y.gd - x.gd) || (y.gf - x.gf) || x.code.localeCompare(y.code));
+    realBest8Thirds = new Set(thirds.slice(0, 8).map(s => s.code));
+    thirds.slice(0, 8).forEach(s => advanced.add(s.code));
+  }
+
+  return { allGroupMatchesAny, groupCodes, standings, thirdStats, realBest8Thirds, advanced };
+}
+
+function scoreNumber(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints, total) {
+  if (user.total_score == null) return false;
+  if ((user.group_points ?? user.groups_score) == null) return false;
+  if ((user.knockout_points ?? user.knockout_score) == null) return false;
+  if ((user.bonus_points ?? user.bonus_score) == null) return false;
+  return scoreNumber(user.group_points ?? user.groups_score) === groupPoints
+    && scoreNumber(user.knockout_points ?? user.knockout_score) === knockoutPoints
+    && scoreNumber(user.bonus_points ?? user.bonus_score) === bonusPoints
+    && scoreNumber(user.total_score) === total;
+}
+
+async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total) {
+  if (userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints, total)) return false;
+  try {
+    await sb('PATCH', 'users', {
+      data: {
+        group_points: groupPoints,
+        knockout_points: knockoutPoints,
+        bonus_points: bonusPoints,
+        groups_score: groupPoints,
+        knockout_score: knockoutPoints,
+        bonus_score: bonusPoints,
+        total_score: total,
+        last_score_calc: new Date().toISOString()
+      },
+      query: `?id=eq.${user.id}`
+    });
+  } catch (e) {
+    try {
+      await sb('PATCH', 'users', {
+        data: { groups_score: groupPoints, knockout_score: knockoutPoints,
+                bonus_score: bonusPoints, total_score: total,
+                last_score_calc: new Date().toISOString() },
+        query: `?id=eq.${user.id}`
+      });
+    } catch (e2) {
+      console.warn(`  update failed for ${user.nickname}:`, e2.message);
+    }
+  }
+  return true;
 }
 
 // Knockout winner. Prefer the explicit winner_code (from football-data
@@ -282,9 +407,30 @@ async function main() {
   // Only TRULY-final matches count. A live (IN_PLAY/PAUSED) match has a current
   // score, so keying off "has a score" scored matches mid-play and made knockout
   // points appear/flip as the scoreline changed. Require a terminal status.
-  const TERMINAL = new Set(['FINISHED', 'AWARDED']);
-  const finishedMatches = (matches || []).filter(m => TERMINAL.has(m.status));
+  const finishedMatches = (matches || []).filter(isTerminalMatch);
   console.log(`${pools.length} pools, ${finishedMatches.length} finished matches`);
+  const groupState = buildGroupState(matches || []);
+
+  const [
+    allGroupPositionPicks,
+    allKnockoutPicks,
+    allThirdPlacePicks,
+    allGroupPicks,
+    allTopScorerPicks,
+  ] = await Promise.all([
+    sbAll('group_position_picks', '?select=*'),
+    sbAll('knockout_picks', '?select=*'),
+    sbAll('sp_third_place_picks', '?select=*'),
+    sbAll('group_picks', '?select=*'),
+    sbAll('top_scorer_picks', '?select=*'),
+  ]);
+  const pickIndexes = {
+    groupPositionByUser: indexRowsBy(allGroupPositionPicks, 'user_id'),
+    knockoutByUser: indexRowsBy(allKnockoutPicks, 'user_id'),
+    thirdPlaceByUser: indexRowsBy(allThirdPlacePicks, 'user_id'),
+    groupByUser: indexRowsBy(allGroupPicks, 'user_id'),
+    topScorerByPool: indexRowsBy(allTopScorerPicks, 'pool_id'),
+  };
 
   // 3. Top scorer truth. app_settings is a KEY/VALUE table (columns key,value) -
   // read the 'top_scorer' row's value (the real top scorer's player_id). Reading
@@ -311,13 +457,20 @@ async function main() {
       if (!users || !users.length) { console.log('  no users'); continue; }
 
       // Get all top_scorer_picks for users in this pool
-      const tsPicks = await sbAll('top_scorer_picks', `?pool_id=eq.${pool.id}&select=*`);
+      const tsPicks = pickIndexes.topScorerByPool.get(pool.id) || [];
       const tsMap = new Map((tsPicks || []).map(t => [t.user_id, t]));
 
       if (mode === 'single_phase' || mode === 'late_knockout') {
-        await scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, { lateKnockout: mode === 'late_knockout' });
+        await scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, {
+          lateKnockout: mode === 'late_knockout',
+          groupState,
+          pickIndexes,
+        });
       } else {
-        await scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer);
+        await scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, {
+          groupState,
+          pickIndexes,
+        });
       }
     } catch (e) {
       poolFailures++;
@@ -333,45 +486,10 @@ async function main() {
 async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, opts = {}) {
   const lateKnockout = !!opts.lateKnockout;
   // Group standings (real-world)
-  const standings = {}; // letter -> [team codes in order 1st..4th] or null if group not complete
-  const groupCodes = {}; // letter -> [team codes in this group]
-  const allGroupMatches = finishedMatches.filter(m => m.stage === 'GROUP_STAGE');
-  const allGroupMatchesAny = (await sbAll('matches', '?stage=eq.GROUP_STAGE&select=*')) || [];
-
-  // Build group->teams from any group match
-  allGroupMatchesAny.forEach(m => {
-    const letter = m.group_letter || m.group;
-    if (!letter) return;
-    if (!groupCodes[letter]) groupCodes[letter] = new Set();
-    if (m.home_team_code) groupCodes[letter].add(m.home_team_code);
-    if (m.away_team_code) groupCodes[letter].add(m.away_team_code);
-  });
-  const thirdStats = {}; // letter -> stat object of the 3rd-placed team
-  Object.keys(groupCodes).forEach(letter => {
-    const teams = [...groupCodes[letter]];
-    if (teams.length !== 4) {
-      // Loud warning: a group with !=4 teams will NEVER score. This is almost
-      // always a data problem (missing fixtures / unmapped team codes), as
-      // happened when Ecuador/Colombia matches were dropped on sync.
-      console.warn(`  ⚠️ group ${letter} has ${teams.length} teams (expected 4) - SKIPPED, will not score: ${teams.join(',')}`);
-      return;
-    }
-    const groupMatches = allGroupMatchesAny.filter(m => (m.group_letter || m.group) === letter);
-    if (!groupIsComplete(groupMatches)) return;
-    const orderedStats = computeGroupStandings(groupMatches.filter(isTerminalMatch), teams);
-    standings[letter] = orderedStats.map(s => s.code);
-    thirdStats[letter] = orderedStats[2]; // {code, points, gd, gf, ...}
-  });
-
-  // v2.5.82: the real "best 8 third-place teams" (only determinable once ALL
-  // groups are complete). FIFA order: points -> goal difference -> goals for
-  // (-> deterministic code tiebreak, since we don't track discipline/lots).
-  let realBest8Thirds = null;
-  if (Object.keys(thirdStats).length === 12) {
-    const thirds = Object.values(thirdStats).slice().sort((x, y) =>
-      (y.points - x.points) || (y.gd - x.gd) || (y.gf - x.gf) || x.code.localeCompare(y.code));
-    realBest8Thirds = new Set(thirds.slice(0, 8).map(s => s.code));
-  }
+  const groupState = opts.groupState || buildGroupState((finishedMatches || []).filter(m => m.stage === 'GROUP_STAGE'));
+  const standings = groupState.standings || {}; // letter -> [team codes in order 1st..4th] or null if group not complete
+  const realBest8Thirds = groupState.realBest8Thirds || null;
+  const pickIndexes = opts.pickIndexes || {};
 
   // Knockout results (real-world) - by stage
   // For hypothetical bracket: we check whether the team the user picked as
@@ -379,6 +497,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
   const realKnockoutWinners = {}; // 'R16': Set of winner codes, etc.
   ['ROUND_OF_32','LAST_32','R32','LAST_16','ROUND_OF_16','R16','QUARTER_FINALS','QF','SEMI_FINALS','SF','FINAL'].forEach(s => { realKnockoutWinners[s] = new Set(); });
   finishedMatches.forEach(m => {
+    if (!isTerminalMatch(m)) return;
     if (!m.stage || m.stage === 'GROUP_STAGE' || m.stage === 'THIRD_PLACE') return;
     const winner = knockoutWinner(m);
     if (!winner) return;
@@ -395,7 +514,9 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     const resolveMult = poolMultResolver(pool, rules);
 
     // Group position picks. Late knockout pools never score group positions.
-    const gpp = lateKnockout ? [] : await sbAll('group_position_picks', `?user_id=eq.${user.id}&select=*`);
+    const gpp = lateKnockout ? [] : (pickIndexes.groupPositionByUser
+      ? (pickIndexes.groupPositionByUser.get(user.id) || [])
+      : await sbAll('group_position_picks', `?user_id=eq.${user.id}&select=*`));
     if (!lateKnockout) {
       (gpp || []).forEach(p => {
         const real = standings[p.group_letter];
@@ -412,7 +533,10 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     }
 
     // Hypothetical bracket picks
-    const kp = await sbAll('knockout_picks', `?user_id=eq.${user.id}&bracket_position=not.is.null&select=*`);
+    const kpRaw = pickIndexes.knockoutByUser
+      ? (pickIndexes.knockoutByUser.get(user.id) || [])
+      : await sbAll('knockout_picks', `?user_id=eq.${user.id}&bracket_position=not.is.null&select=*`);
+    const kp = (kpRaw || []).filter(p => p.bracket_position != null);
     (kp || []).forEach(p => {
       const ruleKey = bracketPosRuleKey(p.bracket_position);
       if (!ruleKey) return;
@@ -450,7 +574,9 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     // that group is actually one of the real best-8 third places. Team-based,
     // flat bonus (not multiplied). Only once all 12 groups are complete.
     if (!lateKnockout && realBest8Thirds && (rules.third_place_advance || 0) > 0) {
-      const tpp = await sbAll('sp_third_place_picks', `?user_id=eq.${user.id}&select=group_letter`);
+      const tpp = pickIndexes.thirdPlaceByUser
+        ? (pickIndexes.thirdPlaceByUser.get(user.id) || [])
+        : await sbAll('sp_third_place_picks', `?user_id=eq.${user.id}&select=group_letter`);
       (tpp || []).forEach(row => {
         const pick = (gpp || []).find(p => p.group_letter === row.group_letter && p.position === 3);
         if (pick && realBest8Thirds.has(pick.team_code)) {
@@ -471,38 +597,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     bonusPoints = Math.round(bonusPoints);
     const total = groupPoints + knockoutPoints + bonusPoints;
 
-    // Persist
-    try {
-      await sb('PATCH', 'users', {
-        data: {
-          group_points: groupPoints,
-          knockout_points: knockoutPoints,
-          bonus_points: bonusPoints,
-          groups_score: groupPoints,
-          knockout_score: knockoutPoints,
-          bonus_score: bonusPoints,
-          total_score: total,
-          last_score_calc: new Date().toISOString()
-        },
-        query: `?id=eq.${user.id}`
-      });
-    } catch (e) {
-      // Fall back to a minimal update if some v2 columns don't exist yet
-      try {
-        await sb('PATCH', 'users', {
-          data: {
-            groups_score: groupPoints,
-            knockout_score: knockoutPoints,
-            bonus_score: bonusPoints,
-            total_score: total,
-            last_score_calc: new Date().toISOString()
-          },
-          query: `?id=eq.${user.id}`
-        });
-      } catch (e2) {
-        console.warn(`  update failed for ${user.nickname}:`, e2.message);
-      }
-    }
+    await updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total);
 
     if (total > 0) console.log(`  ${user.nickname}: ${total} (g${groupPoints}+k${knockoutPoints}+b${bonusPoints})`);
   }
@@ -511,32 +606,9 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
 // Which teams ADVANCED to the knockout: top-2 of each completed group, plus the
 // 8 best third-placed teams once all 12 groups are complete. Used by two-phase
 // group scoring so the awarded points match the "advanced" checkmark in the UI.
-async function computeAdvancedTeams(finishedMatches) {
-  const allGroupMatchesAny = (await sbAll('matches', '?stage=eq.GROUP_STAGE&select=*')) || [];
-  const groupCodes = {};
-  allGroupMatchesAny.forEach(m => {
-    const letter = m.group_letter || m.group; if (!letter) return;
-    (groupCodes[letter] = groupCodes[letter] || new Set());
-    if (m.home_team_code) groupCodes[letter].add(m.home_team_code);
-    if (m.away_team_code) groupCodes[letter].add(m.away_team_code);
-  });
-  const advanced = new Set();
-  const thirdStats = {};
-  Object.keys(groupCodes).forEach(letter => {
-    const teams = [...groupCodes[letter]];
-    if (teams.length !== 4) return;
-    const groupMatches = allGroupMatchesAny.filter(m => (m.group_letter || m.group) === letter);
-    if (!groupIsComplete(groupMatches)) return;
-    const ordered = computeGroupStandings(groupMatches.filter(isTerminalMatch), teams);
-    advanced.add(ordered[0].code); advanced.add(ordered[1].code); // top 2 advance directly
-    thirdStats[letter] = ordered[2];
-  });
-  if (Object.keys(thirdStats).length === 12) {
-    const thirds = Object.values(thirdStats).slice().sort((x, y) =>
-      (y.points - x.points) || (y.gd - x.gd) || (y.gf - x.gf) || x.code.localeCompare(y.code));
-    thirds.slice(0, 8).forEach(s => advanced.add(s.code)); // 8 best thirds also advance
-  }
-  return advanced;
+async function computeAdvancedTeams(finishedMatches, groupState = null) {
+  if (groupState && groupState.advanced) return groupState.advanced;
+  return buildGroupState((finishedMatches || []).filter(m => m.stage === 'GROUP_STAGE')).advanced;
 }
 
 // ---- TWO PHASE scoring (legacy-style) ----
@@ -545,13 +617,14 @@ async function computeAdvancedTeams(finishedMatches) {
 // multiplier_applied on each pick row takes priority (snapshot at pick time)
 // so historical picks aren't retroactively re-scored when the admin tweaks
 // values mid-tournament.
-async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer) {
+async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, opts = {}) {
   const resolveMult = poolMultResolver(pool, rules);
   // Two-phase groups = "pick which teams ADVANCE". Award group_first for each
   // picked team that actually reached the knockout, so the points match the
   // "advanced" checkmark the app shows (was: per group-match-won, which a
   // drawing-but-advancing team would score 0 for).
-  const advanced = await computeAdvancedTeams(finishedMatches);
+  const advanced = await computeAdvancedTeams(finishedMatches, opts.groupState || null);
+  const pickIndexes = opts.pickIndexes || {};
 
   for (const user of users) {
     let groupPoints = 0;
@@ -562,7 +635,9 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     // membership, no dupes) scores — an under-complete (24/31) or over-complete
     // (36, which unfairly covers more teams) set earns 0 group points until it's
     // corrected. The RPC enforces this on new writes; historical rows still exist.
-    const gpRaw = await sbAll('group_picks', `?user_id=eq.${user.id}&select=*`);
+    const gpRaw = pickIndexes.groupByUser
+      ? (pickIndexes.groupByUser.get(user.id) || [])
+      : await sbAll('group_picks', `?user_id=eq.${user.id}&select=*`);
     const gpValid = validateTwoPhaseGroupPickSet(gpRaw);
     if (!gpValid.ok) {
       if ((gpRaw || []).length > 0) {
@@ -577,8 +652,11 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     }
 
     // Knockout picks - per-match
-    const kp = await sbAll('knockout_picks', `?user_id=eq.${user.id}&select=*`);
+    const kp = pickIndexes.knockoutByUser
+      ? (pickIndexes.knockoutByUser.get(user.id) || [])
+      : await sbAll('knockout_picks', `?user_id=eq.${user.id}&select=*`);
     finishedMatches.forEach(m => {
+      if (!isTerminalMatch(m)) return;
       if (!m.stage || m.stage === 'GROUP_STAGE' || m.stage === 'THIRD_PLACE') return;
       const winner = knockoutWinner(m);
       if (!winner) return;
@@ -604,32 +682,7 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     bonusPoints = Math.round(bonusPoints);
 
     const total = groupPoints + knockoutPoints + bonusPoints;
-    try {
-      await sb('PATCH', 'users', {
-        data: {
-          group_points: groupPoints,
-          knockout_points: knockoutPoints,
-          bonus_points: bonusPoints,
-          groups_score: groupPoints,
-          knockout_score: knockoutPoints,
-          bonus_score: bonusPoints,
-          total_score: total,
-          last_score_calc: new Date().toISOString()
-        },
-        query: `?id=eq.${user.id}`
-      });
-    } catch (e) {
-      try {
-        await sb('PATCH', 'users', {
-          data: { groups_score: groupPoints, knockout_score: knockoutPoints,
-                  bonus_score: bonusPoints, total_score: total,
-                  last_score_calc: new Date().toISOString() },
-          query: `?id=eq.${user.id}`
-        });
-      } catch (e2) {
-        console.warn(`  update failed for ${user.nickname}:`, e2.message);
-      }
-    }
+    await updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total);
     if (total > 0) console.log(`  ${user.nickname}: ${total} (g${groupPoints}+k${knockoutPoints}+b${bonusPoints})`);
   }
 }
@@ -643,7 +696,8 @@ if (require.main === module) {
 } else {
   module.exports = {
     main, scoreSinglePhasePool, scoreTwoPhasePool,
-    computeGroupStandings, groupIsComplete, knockoutWinner,
+    computeGroupStandings, groupIsComplete, groupMatchIdentity, isPendingProviderFinal, knockoutWinner,
+    buildGroupState, indexRowsBy, userScoresAlreadyCurrent,
     bracketPosRuleKey, stageRuleKey, poolMultResolver,
     validateTwoPhaseGroupPickSet, WC2026_GROUPS, TEAM_TO_GROUP,
     DEFAULT_RULES_SINGLE, DEFAULT_RULES_TWO, DEFAULT_CAT_MULT, FIFA_RANK,

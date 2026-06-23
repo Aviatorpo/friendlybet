@@ -2,20 +2,10 @@ name: Verify Final Results with ESPN and FIFA
 
 on:
   schedule:
-    # UTC windows generated from public-data/matches.json for known group-stage
-    # kickoffs. Each run is cheap: it preflights first, backs off verifier
-    # attempts, and only calls providers when a stale match is due.
-    - cron: '*/15 17-23 18 6 *'
-    - cron: '*/15 0-6,20-23 19 6 *'
-    - cron: '*/15 0-8,18-23 20 6 *'
-    - cron: '*/15 0-9,17-23 21 6 *'
-    - cron: '*/15 0-6,18-23 22 6 *'
-    - cron: '*/15 0-8,18-23 23 6 *'
-    - cron: '*/15 0-7,20-23 24 6 *'
-    - cron: '*/15 0-6,21-23 25 6 *'
-    - cron: '*/15 0-7,20-23 26 6 *'
-    - cron: '*/15 0-8,22-23 27 6 *'
-    - cron: '*/15 0-7 28 6 *'
+    # Cheap continuous recovery during the full group-stage window. The
+    # preflight/backoff step exits before provider calls unless a stale result is
+    # actually due, so this removes multi-hour gaps without adding API-style load.
+    - cron: '*/15 * 11-28 6 *'
   workflow_dispatch:
     inputs:
       apply:
@@ -26,6 +16,23 @@ on:
         options:
           - 'false'
           - 'true'
+      lookback_hours:
+        description: 'Verifier lookback window in hours'
+        required: true
+        default: '336'
+        type: choice
+        options:
+          - '96'
+          - '168'
+          - '336'
+      backoff:
+        description: 'Use bounded backoff for scheduled recovery checks'
+        required: true
+        default: '1'
+        type: choice
+        options:
+          - '1'
+          - '0'
 
 concurrency:
   group: final-result-verifier
@@ -37,7 +44,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
 
     steps:
       - name: Checkout repository
@@ -53,11 +60,16 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          RESULT_FALLBACK_MIN_AGE_MINUTES: 105
-          RESULT_FALLBACK_LOOKBACK_HOURS: 48
-          RESULT_FALLBACK_BACKOFF: '0'
+          RESULT_FALLBACK_MIN_AGE_MINUTES: 95
+          RESULT_FALLBACK_LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '336' }}
+          RESULT_FALLBACK_BACKOFF: ${{ github.event.inputs.backoff || '1' }}
           RESULT_FALLBACK_RUN_EVERY_MINUTES: 15
         run: node scripts/final-result-verifier-needed.js
+
+      - name: Report queued final-result recovery
+        if: steps.result_preflight.outputs.candidate_count != '' && steps.result_preflight.outputs.candidate_count != '0'
+        run: |
+          echo "::notice::Final-result recovery queue: candidates=${{ steps.result_preflight.outputs.candidate_count }} due=${{ steps.result_preflight.outputs.due_count }} waiting=${{ steps.result_preflight.outputs.waiting_count }} source=${{ steps.result_preflight.outputs.source }}"
 
       - name: Verify stuck final results
         id: verify_results
@@ -65,12 +77,13 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          RESULT_FALLBACK_MIN_AGE_MINUTES: 105
+          RESULT_FALLBACK_MIN_AGE_MINUTES: 95
+          RESULT_FALLBACK_LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '336' }}
           RESULT_FALLBACK_MIN_SOURCES: 2
           RESULT_FALLBACK_REQUIRED_SOURCES: espn,fifa
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            node scripts/final-result-verifier.js --apply || { echo "::warning::final-result verifier skipped after transient Supabase/provider failure"; exit 0; }
+            node scripts/final-result-verifier.js --apply
           elif [ "${{ inputs.apply }}" = "true" ]; then
             node scripts/final-result-verifier.js --apply
           else
@@ -82,9 +95,10 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            node scripts/export-snapshots.js matches || { echo "::warning::match snapshot export skipped after transient Supabase failure"; exit 0; }
+            node scripts/export-snapshots.js matches
           else
             node scripts/export-snapshots.js matches
           fi
@@ -108,6 +122,57 @@ jobs:
             fi
           else
             echo "no match snapshot change"
+          fi
+
+      - name: Calculate scores after verified final result
+        if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/calculate-scores-v2.js
+
+      - name: Export leaderboard snapshots after scoring
+        if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/export-snapshots.js leaderboards
+
+      - name: Generate leaderboard banter after scoring
+        if: steps.verify_results.outputs.changed == 'true'
+        continue-on-error: true
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/generate-banter.js
+
+      - name: Build Pundit feed after verified result
+        if: steps.verify_results.outputs.changed == 'true'
+        run: node scripts/generate-pundit.js
+
+      - name: Validate Pundit feed after verified result
+        if: steps.verify_results.outputs.changed == 'true'
+        run: node scripts/test-pundit-feed.js
+
+      - name: Commit scoring snapshots if changed
+        if: steps.verify_results.outputs.changed == 'true'
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data/matches.json public-data/leaderboard public-data/banter public-data/banter-state.json public-data/pundit.json)" ]; then
+            git add public-data/matches.json public-data/leaderboard public-data/banter public-data/banter-state.json public-data/pundit.json
+            git commit -q -m "data: refresh scores after verified result"
+            pushed=0
+            for a in 1 2 3; do
+              if git pull --rebase --autostash && git push; then pushed=1; break; fi
+              echo "push retry $a"; sleep 4
+            done
+            if [ "$pushed" != "1" ]; then
+              echo "::error::failed to push scoring snapshots after 3 retries"
+              exit 1
+            fi
+          else
+            echo "no scoring snapshot change"
           fi
 
       - name: Validate existing World Cup stories
@@ -151,3 +216,23 @@ jobs:
           else
             echo "no World Cup story change"
           fi
+
+      - name: Live-state watchdog
+        if: steps.verify_results.outputs.changed == 'true' || steps.story_work.outputs.publishable == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LIVE_WATCHDOG_SOURCE: supabase
+          LIVE_WATCHDOG_REQUIRE_NEWS: '1'
+        run: node scripts/live-state-watchdog.js
+
+      - name: Escalate unresolved result or story work
+        if: always() && (steps.verify_results.outputs.needs_attention == 'true' || (steps.story_work.outputs.unprepared_count != '' && steps.story_work.outputs.unprepared_count != '0'))
+        run: |
+          if [ "${{ steps.verify_results.outputs.needs_attention }}" = "true" ]; then
+            echo "::error::Final-result verifier still has unresolved candidates. checked=${{ steps.verify_results.outputs.checked }} updated=${{ steps.verify_results.outputs.updated }} skipped=${{ steps.verify_results.outputs.skipped }} unavailable=${{ steps.verify_results.outputs.unavailable }}"
+          fi
+          if [ "${{ steps.story_work.outputs.unprepared_count }}" != "" ] && [ "${{ steps.story_work.outputs.unprepared_count }}" != "0" ]; then
+            echo "::error::World Cup story desk has ${{ steps.story_work.outputs.unprepared_count }} finished match(es) without prepared publishable story assets."
+          fi
+          exit 1

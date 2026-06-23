@@ -135,6 +135,36 @@ const koMatches = [
   { stage:'FINAL', home_team_code:'KO1', away_team_code:'xx6', home_score:0, away_score:0, winner_code:'KO1', status:'FINISHED' }, // FINAL on penalties -> KO1 champion
 ];
 const finishedMatches = groupMatches.concat(koMatches);
+const fullGroupMatchesSnapshot = groupMatches.slice();
+
+function setGroupMatchesForMock(rows) {
+  groupMatches.length = 0;
+  groupMatches.push(...rows);
+}
+
+function syntheticGroupRows(letter, statusOverride = null) {
+  return fullGroupMatchesSnapshot
+    .filter(m => m.group_letter === letter)
+    .map((m, idx) => ({
+      ...m,
+      ...(typeof statusOverride === 'function' ? statusOverride(m, idx) : (statusOverride || {})),
+    }));
+}
+
+function actualGroupRows(letter, limit = 6, statusOverride = null) {
+  const teams = S.WC2026_GROUPS[letter];
+  const pairs = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+  return pairs.slice(0, limit).map(([i, j], idx) => ({
+    stage: 'GROUP_STAGE',
+    group_letter: letter,
+    home_team_code: teams[i],
+    away_team_code: teams[j],
+    home_score: 1,
+    away_score: 0,
+    status: 'FINISHED',
+    ...(typeof statusOverride === 'function' ? statusOverride(idx) : (statusOverride || {})),
+  }));
+}
 
 // Per-user pick fixtures (keyed by user id)
 const gppByUser = {}, kpByUser = {}, tppByUser = {};
@@ -173,6 +203,7 @@ bracket('U2',5,'MEX');                  // 2 * x1.5 = 3
 const gp3 = [{ group_letter:'A', team_code:'A1' }, { group_letter:'A', team_code:'A2' }, { group_letter:'A', team_code:'A4' }];
 const kp3 = [{ predicted_winner:'KO1' }, { predicted_winner:'KOP2' }];
 kpByUser['U3'] = kp3;                    // wire U3's two-phase knockout picks into the mock
+const groupPicksByUser = { U3: gp3 };
 // KO1 wins LAST_32+LAST_16+QF+SF+FINAL = 2+4+8+16+32=62 ; KOP2 penalty r32 = +2 -> 64
 // U3 top scorer correct -> +10
 // expected: group=0 (incomplete set, not a valid 32), knockout=64, bonus=10, total=74
@@ -203,7 +234,7 @@ S.__setFetch(async (url, opts) => {
   if (method === 'GET'  && url.includes('/group_position_picks')) return resp(gppByUser[idOf(url)] || []);
   if (method === 'GET'  && url.includes('/knockout_picks'))       return resp(kpByUser[idOf(url)] || []);
   if (method === 'GET'  && url.includes('/sp_third_place_picks')) return resp(tppByUser[idOf(url)] || []);
-  if (method === 'GET'  && url.includes('/group_picks'))          return resp(idOf(url) === 'U3' ? gp3 : []);
+  if (method === 'GET'  && url.includes('/group_picks'))          return resp(groupPicksByUser[idOf(url)] || []);
   return resp([]);
 });
 
@@ -262,14 +293,100 @@ S.__setFetch(async (url, opts) => {
   eq('U5 bonus ignored', captured.U5.bonus_points, 0);
   eq('U5 total', captured.U5.total_score, 62);
 
+  console.log('\n== integration: partial group completion starts real scoring per group ==');
+  gpp('U6','A',['A1','A2','A3','A4']);
+  gpp('U6','B',['B1','B2','B3','B4']);
+  thirds('U6',['A']);
+  setGroupMatchesForMock([
+    ...syntheticGroupRows('A'),
+    ...syntheticGroupRows('B').slice(0, 5),
+  ]);
+  await S.scoreSinglePhasePool({ id:'P6', code:'P6', use_multipliers:false }, rulesSingle,
+    [{ id:'U6', nickname:'U6' }], groupMatches.slice(), new Map(), null);
+  eq('U6 scores completed group A immediately', captured.U6.group_points, 10);
+  eq('U6 does not score best-third bonus before all 12 groups complete', captured.U6.bonus_points, 0);
+  eq('U6 total excludes incomplete group B picks', captured.U6.total_score, 10);
+
+  console.log('\n== integration: provider-pending final does not unlock group scoring ==');
+  gpp('U8','C',['C1','C2','C3','C4']);
+  setGroupMatchesForMock(syntheticGroupRows('C', (m, idx) => (
+    idx === 5 ? { live_source: 'espn-final', status_detail: 'ESPN final pending verification' } : null
+  )));
+  await S.scoreSinglePhasePool({ id:'P8', code:'P8', use_multipliers:false }, rulesSingle,
+    [{ id:'U8', nickname:'U8' }], groupMatches.slice(), new Map(), null);
+  eq('U8 pending final keeps group C unscored', captured.U8.group_points, 0);
+  eq('U8 pending final total stays zero', captured.U8.total_score, 0);
+
+  console.log('\n== integration: provider-pending knockout final does not award points ==');
+  bracket('U9',1,'KO1');
+  kpByUser.U10 = [{ predicted_winner:'KO1' }];
+  setGroupMatchesForMock([]);
+  const pendingKnockout = [{
+    stage: 'LAST_32',
+    home_team_code: 'KO1',
+    away_team_code: 'KO2',
+    home_score: 2,
+    away_score: 1,
+    status: 'FINISHED',
+    live_source: 'espn-final',
+    status_detail: 'ESPN final pending verification',
+  }];
+  await S.scoreSinglePhasePool({ id:'P9', code:'P9', use_multipliers:false }, rulesSingle,
+    [{ id:'U9', nickname:'U9' }], pendingKnockout, new Map(), null);
+  eq('U9 pending knockout final keeps single-phase knockout unscored', captured.U9.knockout_points, 0);
+  eq('U9 pending knockout final total stays zero', captured.U9.total_score, 0);
+  await S.scoreTwoPhasePool({ id:'P10', code:'P10', use_multipliers:false }, rulesTwo,
+    [{ id:'U10', nickname:'U10' }], pendingKnockout, new Map(), null);
+  eq('U10 pending knockout final keeps two-phase knockout unscored', captured.U10.knockout_points, 0);
+  eq('U10 pending knockout final total stays zero', captured.U10.total_score, 0);
+
+  console.log('\n== integration: two-phase partial group completion scores only confirmed advancers ==');
+  const validTwoPhase32 = [];
+  'ABCDEFGHIJKL'.split('').forEach((L, i) => {
+    S.WC2026_GROUPS[L].slice(0, i < 8 ? 3 : 2).forEach(team_code => validTwoPhase32.push({ group_letter: L, team_code }));
+  });
+  groupPicksByUser.U7 = validTwoPhase32;
+  setGroupMatchesForMock([
+    ...actualGroupRows('A'),
+    ...actualGroupRows('B', 5),
+  ]);
+  await S.scoreTwoPhasePool({ id:'P7', code:'P7', use_multipliers:false }, rulesTwo,
+    [{ id:'U7', nickname:'U7' }], groupMatches.slice(), new Map(), null);
+  eq('U7 scores only Group A top-two advancers', captured.U7.group_points, 2);
+  eq('U7 total excludes Group A third and incomplete Group B', captured.U7.total_score, 2);
+  setGroupMatchesForMock(fullGroupMatchesSnapshot);
+
   console.log('\n== unit: groupIsComplete requires TERMINAL status, not live scores ==');
-  const finished6 = Array.from({ length: 6 }, () => ({ status: 'FINISHED', home_score: 1, away_score: 0 }));
+  const finished6 = Array.from({ length: 6 }, (_, i) => ({ id: i + 1, status: 'FINISHED', home_score: 1, away_score: 0 }));
   // a final match still IN_PLAY but already carrying a live score (football-data fills it):
   const fiveDoneOneLive = finished6.map((m, i) => (i === 5 ? { status: 'IN_PLAY', home_score: 1, away_score: 0 } : m));
   eq('6 FINISHED -> group complete', S.groupIsComplete(finished6), true);
   eq('5 FINISHED + 1 IN_PLAY (with live score) -> NOT complete', S.groupIsComplete(fiveDoneOneLive), false);
   eq('AWARDED counts as terminal', S.groupIsComplete(finished6.map((m, i) => (i === 0 ? { status: 'AWARDED', home_score: 3, away_score: 0 } : m))), true);
+  eq('mixed-case terminal statuses count defensively', S.groupIsComplete(finished6.map((m, i) => (
+    i === 0 ? { ...m, status: 'finished' } : (i === 1 ? { ...m, status: 'Awarded' } : m)
+  ))), true);
   eq('only 5 matches present -> NOT complete', S.groupIsComplete(finished6.slice(0, 5)), false);
+  eq('ESPN-only pending final does NOT complete group', S.groupIsComplete(finished6.map((m, i) => (
+    i === 5 ? { ...m, live_source: 'espn-final', status_detail: 'ESPN final pending verification' } : m
+  ))), false);
+  eq('duplicate terminal rows do NOT complete group', S.groupIsComplete([
+    { id: 1, status: 'FINISHED' }, { id: 2, status: 'FINISHED' }, { id: 3, status: 'FINISHED' },
+    { id: 4, status: 'FINISHED' }, { id: 5, status: 'FINISHED' }, { id: 5, status: 'FINISHED' }
+  ]), false);
+  eq('duplicate logical fixture with different id does NOT complete group', S.groupIsComplete([
+    { id: 1, group_letter: 'A', home_team_code: 'A1', away_team_code: 'A2', status: 'FINISHED' },
+    { id: 2, group_letter: 'A', home_team_code: 'A1', away_team_code: 'A3', status: 'FINISHED' },
+    { id: 3, group_letter: 'A', home_team_code: 'A1', away_team_code: 'A4', status: 'FINISHED' },
+    { id: 4, group_letter: 'A', home_team_code: 'A2', away_team_code: 'A3', status: 'FINISHED' },
+    { id: 5, group_letter: 'A', home_team_code: 'A2', away_team_code: 'A4', status: 'FINISHED' },
+    { id: 99, group_letter: 'A', home_team_code: 'A4', away_team_code: 'A2', status: 'FINISHED' },
+  ]), false);
+  eq('7 unique terminal rows do NOT complete group', S.groupIsComplete([
+    { id: 1, status: 'FINISHED' }, { id: 2, status: 'FINISHED' }, { id: 3, status: 'FINISHED' },
+    { id: 4, status: 'FINISHED' }, { id: 5, status: 'FINISHED' }, { id: 6, status: 'FINISHED' },
+    { id: 7, status: 'FINISHED' }
+  ]), false);
 
   console.log('\n== unit: validateTwoPhaseGroupPickSet (two-phase scoring fairness) ==');
   const LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L'];
