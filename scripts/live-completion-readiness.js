@@ -191,6 +191,21 @@ async function runReadiness(options = {}) {
 
   const playbook = read('.codex/company/playbooks/live-scoring-operations.md');
   add(checks, 'playbook records screenshot fallback rule', /browser screenshots are unavailable[\s\S]*test-live-ux-state[\s\S]*screenshot gap explicitly/.test(playbook), 'visual proof gap must be named');
+  const visualProof = read('scripts/live-ux-visual-proof.js');
+  add(
+    checks,
+    'visual proof harness covers official scoring states',
+    [
+      'live-no-official',
+      'first-official-zero',
+      'several-official',
+      'groups-complete',
+      'LIVE_UX_VISUAL_STRICT',
+      'hardOverflows',
+      'overlaps',
+    ].every(needle => visualProof.includes(needle)),
+    'browser-backed screenshots must cover live/no-official, official-zero, several-groups, and groups-complete'
+  );
 
   let production = null;
   const publicBaseUrl = options.publicBaseUrl || process.env.LIVE_COMPLETION_PUBLIC_BASE_URL || '';

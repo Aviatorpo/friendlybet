@@ -7,6 +7,7 @@ const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
 const styles = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 const i18n = fs.readFileSync(path.join(root, 'i18n.js'), 'utf8');
 const workflow = fs.readFileSync(path.join(root, '.github', 'workflows', 'test-scoring.yml'), 'utf8');
+const visualProof = fs.readFileSync(path.join(root, 'scripts', 'live-ux-visual-proof.js'), 'utf8');
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -255,5 +256,15 @@ assert(/\.admin-badge\s*\{[\s\S]*?flex-shrink:\s*0;[\s\S]*?\}/.test(styles), 'Ad
 
 assert(workflow.includes("scripts/test-live-ux-state.js"), 'CI workflow must watch and run live UX state tests');
 assert(/run:\s*node scripts\/test-live-ux-state\.js/.test(workflow), 'CI workflow must run live UX state tests');
+[
+  'live-no-official',
+  'first-official-zero',
+  'several-official',
+  'groups-complete',
+].forEach((stateId) => {
+  assert(visualProof.includes(`id: '${stateId}'`), `visual proof harness must cover ${stateId}`);
+});
+assert(visualProof.includes('hardOverflows') && visualProof.includes('overlaps'), 'visual proof harness must check overflow and podium overlap');
+assert(visualProof.includes('LIVE_UX_VISUAL_STRICT'), 'visual proof harness must support strict mode for release verification');
 
 console.log('Live UX state tests passed');
