@@ -283,6 +283,45 @@ Validation added:
 - `node scripts\pundit-live-window-certifier.js --production --match POR-UZB --graduation-proof`
   - expected result before kickoff: `passed=false`, `proof_window=false`, and `graduation proof requires at least one post-kickoff/live/final target`.
 
+## 2026-06-23 14:08Z Production Follow-Up
+
+The goal continuation reran production-facing checks at `2026-06-23T17:05+03:00`, while both target matches were still pre-kickoff:
+
+- `node scripts\pundit-live-window-certifier.js --production --match POR-UZB --record tmp\pundit-live-window-certifications-2026-06-23.jsonl`
+  - source: `https://friendlybet.live/`
+  - checked_at: `2026-06-23T14:08:23.733Z`
+  - score: `100`
+  - passed: `true`
+  - proof_window: `false`
+  - phase: `pre`
+  - status: `TIMED`
+
+- `node scripts\pundit-live-window-certifier.js --production --match ENG-GHA --record tmp\pundit-live-window-certifications-2026-06-23.jsonl`
+  - source: `https://friendlybet.live/`
+  - checked_at: `2026-06-23T14:08:31.718Z`
+  - score: `100`
+  - passed: `true`
+  - proof_window: `false`
+  - phase: `pre`
+  - status: `TIMED`
+
+Supporting checks:
+
+- `node scripts\pundit-news-validate.js --require-unexpired`
+- `node scripts\test-pundit-feed.js`
+- `node scripts\test-world-cup-stories.js`
+- `node scripts\test-pundit-live-window-certifier.js`
+- `node scripts\live-ops-audit.js`
+
+The explicit graduation proof command still failed as designed before kickoff:
+
+- `node scripts\pundit-live-window-certifier.js --production --match POR-UZB --graduation-proof`
+  - expected result: `passed=false`
+  - proof_window: `false`
+  - error: `graduation proof requires at least one post-kickoff/live/final target; all targets are pre-kickoff`
+
+This is readiness evidence only. It should not be counted as one of the two required live/post-final graduation windows.
+
 ## Remaining Graduation Gaps
 
 The Pundit still needs two actual live-window passes after kickoff/final whistle. The pre-kickoff checks are strong, but they do not prove:
