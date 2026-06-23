@@ -1,0 +1,51 @@
+name: Live Completion Readiness Monitor
+
+# Production-facing safety net for group-stage completion. This does not write
+# data. It checks the public snapshots users see and, by default, audits live
+# Supabase match state so stale finals, missing stories, stale Pundit, or broken
+# scoring/UX guards fail loudly during match days.
+on:
+  schedule:
+    - cron: '17,47 * 11-28 6 *'
+  workflow_dispatch:
+    inputs:
+      check_db:
+        description: 'Audit live Supabase match state'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+concurrency:
+  group: live-completion-readiness
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Run production readiness gate
+        env:
+          LIVE_COMPLETION_PUBLIC_BASE_URL: https://friendlybet.live
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: |
+          if [ "${{ github.event.inputs.check_db || 'true' }}" = "false" ]; then
+            node scripts/live-completion-readiness.js
+          else
+            LIVE_COMPLETION_DB_SOURCE=supabase node scripts/live-completion-readiness.js
+          fi

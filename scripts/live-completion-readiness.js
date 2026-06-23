@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// One-command readiness gate for group-stage completion. It stays network-free:
-// the live truth comes from public snapshots, and the operational proof comes
-// from workflow/playbook/test wiring in the current tree.
+// One-command readiness gate for group-stage completion. By default it can run
+// from local public snapshots and repo wiring; production and live DB proof are
+// enabled explicitly with environment variables.
 
 const fs = require('fs');
 const path = require('path');
@@ -89,6 +89,19 @@ function summarizePublicSnapshots(snapshots, nowMs) {
   };
 }
 
+async function auditPublicSnapshots(snapshots, nowMs, auditOptions = {}) {
+  const matches = snapshots && snapshots.matches && Array.isArray(snapshots.matches.matches)
+    ? snapshots.matches.matches
+    : [];
+  return LiveOpsAudit.audit({
+    ...auditOptions,
+    nowMs,
+    matches,
+    punditFeed: snapshots && snapshots.pundit || null,
+    storiesPayload: snapshots && snapshots.stories || null,
+  });
+}
+
 async function loadPublicSnapshots(baseUrl, fetchImpl) {
   const base = normalizeBaseUrl(baseUrl);
   return {
@@ -160,9 +173,26 @@ async function runReadiness(options = {}) {
   const storyPublish = read('.github/workflows/publish-world-cup-stories-prepared.yml');
   const testWorkflow = read('.github/workflows/test-scoring.yml');
   const generatePundit = read('.github/workflows/generate-pundit.yml');
+  const readinessMonitor = read('.github/workflows/live-completion-readiness.yml');
 
   add(checks, 'live poller covers all group-stage match days', livePoller.includes("cron: '*/5 * 11-28 6 *'"), '5-minute June 11-28 schedule required');
   add(checks, 'final verifier covers all group-stage match days', verifier.includes("cron: '*/15 * 11-28 6 *'"), '15-minute June 11-28 schedule required');
+  add(
+    checks,
+    'readiness monitor covers production during group-stage match days',
+    readinessMonitor.includes("cron: '17,47 * 11-28 6 *'")
+      && readinessMonitor.includes('LIVE_COMPLETION_PUBLIC_BASE_URL: https://friendlybet.live')
+      && readinessMonitor.includes('node scripts/live-completion-readiness.js'),
+    'scheduled monitor must audit production public snapshots twice hourly during June 11-28'
+  );
+  add(
+    checks,
+    'readiness monitor audits live DB by default',
+    readinessMonitor.includes('LIVE_COMPLETION_DB_SOURCE=supabase')
+      && readinessMonitor.includes('SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}')
+      && readinessMonitor.includes('check_db'),
+    'scheduled monitor must query Supabase unless an operator explicitly opts out'
+  );
 
   [
     ['final-result-verifier', verifier, 'FORCE_MATCH_SNAPSHOT', 'node scripts/generate-pundit.js'],
@@ -213,8 +243,13 @@ async function runReadiness(options = {}) {
     try {
       const snapshots = options.publicSnapshots || await loadPublicSnapshots(publicBaseUrl, options.fetch);
       production = summarizePublicSnapshots(snapshots, nowMs);
+      const productionAudit = await auditPublicSnapshots(snapshots, nowMs, options.auditOptions || {});
+      production.audit_ok = productionAudit.ok;
+      production.result_recovery = productionAudit.result_recovery;
+      production.watchdog = productionAudit.watchdog;
       add(checks, 'production public snapshots are readable', production.matches > 0 && production.stories > 0 && production.pundit_items > 0, `matches=${production.matches}, stories=${production.stories}, pundit=${production.pundit_items}`);
       add(checks, 'production Pundit feed is fresh', production.pundit_fresh, `freshUntil=${production.pundit_freshUntil || 'missing'}`);
+      add(checks, 'production public snapshot audit is green', productionAudit.ok, `recovery=${productionAudit.result_recovery.candidates}, errors=${productionAudit.watchdog.errors.length}`);
     } catch (err) {
       add(checks, 'production public snapshots are readable', false, err.message);
     }
@@ -308,5 +343,6 @@ if (require.main === module) {
     summarizePublicSnapshots,
     loadPublicSnapshots,
     fetchSupabaseMatches,
+    auditPublicSnapshots,
   };
 }

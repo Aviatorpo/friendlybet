@@ -38,6 +38,12 @@ const now = new Date('2026-06-23T12:00:00Z');
 }
 
 {
+  const finalPreKickoffBuffer = match({ id: 'm-buffer', match_date: '2026-06-23T12:10:00Z' });
+  const items = pundit.build(now, { matchesPayload: { matches: [finalPreKickoffBuffer] }, newsPayload: { items: [] } });
+  assert.ok(!items.some(item => item.id === 'fixture-m-buffer'), 'Feed must drop fixture commentary during the final pre-kickoff buffer');
+}
+
+{
   const actualLive = match({ id: 'm3', status: 'IN_PLAY', match_date: '2026-06-23T11:50:00Z' });
   assert.strictEqual(pundit.shouldTreatAsLive(actualLive, now), true, 'Actual live status should produce live commentary');
   const items = pundit.build(now, { matchesPayload: { matches: [actualLive] }, newsPayload: { items: [] } });
