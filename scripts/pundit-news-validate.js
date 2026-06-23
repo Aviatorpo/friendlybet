@@ -16,7 +16,7 @@
 //   * expires_at is short-lived, so old news cannot be banked for days/weeks.
 //   * no em dash (-) anywhere in the copy (house style).
 //
-// Run:  node scripts/pundit-news-validate.js
+// Run:  node scripts/pundit-news-validate.js [--require-unexpired]
 // ============================================================
 const fs = require('fs');
 const path = require('path');
@@ -25,6 +25,21 @@ const FILE = path.join(__dirname, '..', 'public-data', 'pundit-news.json');
 const HOUR_MS = 60 * 60 * 1000;
 const MAX_NEWS_AGE_MS = 30 * HOUR_MS;
 const MAX_NEWS_TTL_MS = 30 * HOUR_MS;
+const DISALLOWED_SOURCE_RE = /\b(odds?|betting|bookmaker|sportsbook|accumulator|parlay|wager|casino|bet365|draftkings|fanduel|paddy\s*power|william\s*hill)\b/i;
+const WC2026_TEAM_CODES = new Set([
+  'MEX', 'RSA', 'KOR', 'CZE',
+  'CAN', 'BIH', 'QAT', 'SUI',
+  'BRA', 'MAR', 'HAI', 'SCO',
+  'USA', 'PAR', 'AUS', 'TUR',
+  'GER', 'CUR', 'CIV', 'ECU',
+  'NED', 'JPN', 'SWE', 'TUN',
+  'BEL', 'EGY', 'IRN', 'NZL',
+  'ESP', 'CPV', 'SAU', 'URU',
+  'FRA', 'SEN', 'IRQ', 'NOR',
+  'ARG', 'ALG', 'AUT', 'JOR',
+  'POR', 'COD', 'UZB', 'COL',
+  'ENG', 'CRO', 'GHA', 'PAN',
+]);
 const OFFICIAL_HOSTS = [
   'fifa.com',
   'inside.fifa.com',
@@ -51,17 +66,25 @@ function isOfficialHost(host) {
   return !!host && OFFICIAL_HOSTS.some(official => host === official || host.endsWith(`.${official}`));
 }
 
-function validate() {
-  let raw;
-  try { raw = JSON.parse(fs.readFileSync(FILE, 'utf8')); }
-  catch (e) { return [`cannot read/parse pundit-news.json: ${e.message}`]; }
+function validateTeamCode(value, at, errors) {
+  if (value == null) return;
+  const code = String(value);
+  if (!/^[A-Z]{3}$/.test(code)) {
+    errors.push(`${at}: team code must be a 3-letter WC2026 code, got "${code}"`);
+    return;
+  }
+  if (!WC2026_TEAM_CODES.has(code)) {
+    errors.push(`${at}: "${code}" is not a known WC2026 team code`);
+  }
+}
 
+function validatePayload(raw, options = {}) {
   const items = Array.isArray(raw.items) ? raw.items : null;
   if (!items) return ['pundit-news.json: "items" must be an array'];
 
   const errors = [];
   const seenIds = new Set();
-  const now = Date.now();
+  const now = options.nowMs || Date.now();
   const feedUpdatedAt = parseTime(raw.updatedAt);
 
   items.forEach((it, i) => {
@@ -87,6 +110,12 @@ function validate() {
     const sources = Array.isArray(it.sources) ? it.sources : [];
     const validUrls = sources.filter(s => s && /^https?:\/\//i.test(s.url || ''));
     if (validUrls.length !== sources.length) errors.push(`${at}: every source needs an http(s) url`);
+    sources.forEach((source, sourceIndex) => {
+      const sourceText = `${source && source.name || ''} ${source && source.title || ''} ${source && source.url || ''}`;
+      if (DISALLOWED_SOURCE_RE.test(sourceText)) {
+        errors.push(`${at}: source[${sourceIndex}] looks like betting/odds/promotional material; use editorial, official, or professional news sources`);
+      }
+    });
     const hosts = new Set(validUrls.map(s => hostname(s.url)).filter(Boolean));
     const hasOfficial = [...hosts].some(isOfficialHost);
     if (it.confidence === 'confirmed') {
@@ -102,6 +131,9 @@ function validate() {
     } else {
       const expiresAt = parseTime(it.expires_at);
       const anchor = parseTime(it.topic_date) || parseTime(it.source_checked_at) || feedUpdatedAt;
+      if (options.requireUnexpired && expiresAt <= now) {
+        errors.push(`${at}: expires_at is already past; remove or refresh this news item for live-desk strict mode`);
+      }
       if (!Number.isFinite(anchor)) {
         errors.push(`${at}: missing topic_date/source_checked_at (or file updatedAt)`);
       } else {
@@ -111,19 +143,42 @@ function validate() {
       }
     }
 
-    // Optional: team flag. If present it must be a 3-letter WC2026 team code.
-    if (it.team != null && !/^[A-Z]{3}$/.test(String(it.team))) {
-      errors.push(`${at}: team must be a 3-letter team code (e.g. BRA), got "${it.team}"`);
+    // Optional routing flags. If present, they must be real WC2026 team codes.
+    validateTeamCode(it.team, `${at}: team`, errors);
+    if (it.teams != null) {
+      if (!Array.isArray(it.teams)) {
+        errors.push(`${at}: teams must be an array of WC2026 team codes`);
+      } else {
+        it.teams.forEach((team, teamIndex) => validateTeamCode(team, `${at}: teams[${teamIndex}]`, errors));
+      }
     }
   });
 
   return errors;
 }
 
-const errors = validate();
-if (errors.length) {
-  console.error('pundit-news validation FAILED:');
-  errors.forEach(e => console.error('  - ' + e));
-  process.exit(1);
+function validate(options = {}) {
+  let raw;
+  try { raw = JSON.parse(fs.readFileSync(FILE, 'utf8')); }
+  catch (e) { return [`cannot read/parse pundit-news.json: ${e.message}`]; }
+  return validatePayload(raw, options);
 }
-console.log('pundit-news validation OK');
+
+if (require.main === module) {
+  const args = new Set(process.argv.slice(2));
+  const errors = validate({
+    requireUnexpired: args.has('--require-unexpired') || process.env.PUNDIT_NEWS_REQUIRE_UNEXPIRED === '1',
+  });
+  if (errors.length) {
+    console.error('pundit-news validation FAILED:');
+    errors.forEach(e => console.error('  - ' + e));
+    process.exit(1);
+  }
+  console.log('pundit-news validation OK');
+} else {
+  module.exports = {
+    validate,
+    validatePayload,
+    WC2026_TEAM_CODES,
+  };
+}

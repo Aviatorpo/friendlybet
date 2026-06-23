@@ -1,88 +1,158 @@
 {
-  "updatedAt": "2026-06-20T12:03:46.652Z",
-  "freshUntil": "2026-06-20T18:03:46.652Z",
-  "count": 9,
+  "updatedAt": "2026-06-23T12:34:14.699Z",
+  "freshUntil": "2026-06-23T18:34:14.699Z",
+  "count": 11,
   "items": [
     {
-      "id": "result-e421b088-3154-4c02-8240-46f09b9c33f9",
+      "id": "result-9e34eca5-117b-4fac-a02c-318b7c92002a",
       "type": "result",
       "confidence": "confirmed",
-      "he": "פרגוואי עשתה את העבודה עם 1:0 נקי על טורקיה. לא נוצץ, כן שימושי בטבלה.",
-      "en": "Paraguay handled business with a clean 1-0 over Turkey. Not flashy, very useful on the table.",
+      "he": "אלג'יריה עברה את ירדן 2:1, והבית קיבל עוד דחיפה קטנה בכיוון שאף טופס לא אוהב.",
+      "en": "Algeria got past Jordan 2-1, and the group table took another small shove that no form enjoys.",
       "sources": [],
-      "expires_at": "2026-06-21T09:00:00.000Z"
+      "expires_at": "2026-06-24T09:00:00.000Z"
     },
     {
-      "id": "result-13ad0015-2457-4e10-a087-9b24dec98c3c",
+      "id": "result-9e7e1640-f49a-4d65-b82f-ff2bac4a4239",
       "type": "result",
       "confidence": "confirmed",
-      "he": "ברזיל עשתה את העבודה עם 3:0 נקי על האיטי. לא נוצץ, כן שימושי בטבלה.",
-      "en": "Brazil handled business with a clean 3-0 over Haiti. Not flashy, very useful on the table.",
+      "he": "נורווגיה ניצחה את סנגל 3:2 במשחק פתוח לגמרי. כיף לצופים, כאב ראש לטבלה ולטפסים.",
+      "en": "Norway beat Senegal 3-2 in a wide-open one. Great for viewers, brutal for the table and prediction slips.",
       "sources": [],
-      "expires_at": "2026-06-21T06:30:00.000Z"
+      "expires_at": "2026-06-24T06:00:00.000Z"
     },
     {
-      "id": "result-73cb4631-6cdd-4f56-b3cc-9c0938e90e37",
+      "id": "result-89b9734a-9649-4fd4-a903-20ef8ef20ce5",
       "type": "result",
       "confidence": "confirmed",
-      "he": "מרוקו עשתה את העבודה עם 1:0 נקי על סקוטלנד. לא נוצץ, כן שימושי בטבלה.",
-      "en": "Morocco handled business with a clean 1-0 over Scotland. Not flashy, very useful on the table.",
+      "he": "צרפת עם 3:0 על עיראק, והבית קיבל עוד סימן קריאה קטן בטבלה.",
+      "en": "France beat Iraq 3-0, and the group table picked up a small exclamation mark.",
       "sources": [],
-      "expires_at": "2026-06-21T04:00:00.000Z"
+      "expires_at": "2026-06-24T03:00:00.000Z"
     },
     {
-      "id": "result-5aaf9fdb-ff0b-4bef-ab4f-ed962bf1798f",
+      "id": "result-812814a3-47f1-44d9-99c5-b574e5adeae4",
       "type": "result",
       "confidence": "confirmed",
-      "he": "ארה\"ב עשתה את העבודה עם 2:0 נקי על אוסטרליה. לא נוצץ, כן שימושי בטבלה.",
-      "en": "United States handled business with a clean 2-0 over Australia. Not flashy, very useful on the table.",
+      "he": "ארגנטינה סגרה את אוסטריה עם 2:0. זה מסוג התוצאות שנראות פשוטות רק למי שסימן אותן מראש.",
+      "en": "Argentina shut out Austria 2-0. The kind of result that looks simple only if you called it early.",
       "sources": [],
-      "expires_at": "2026-06-21T01:00:00.000Z"
+      "expires_at": "2026-06-23T23:00:00.000Z"
     },
     {
-      "id": "fixture-becdc520-1c41-4a5f-99a5-4a22e0a5812c",
+      "id": "fixture-31a2acf9-8ee6-4657-8fe7-7732592ad3a4",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "הולנד נגד שבדיה, היום 20:00. על הנייר הולנד אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
-      "en": "Netherlands vs Sweden, today 20:00. On paper Netherlands should control it, but paper does not score pool points.",
+      "he": "פורטוגל נגד אוזבקיסטן, היום 20:00. פורטוגל מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
+      "en": "Portugal vs Uzbekistan, today 20:00. Portugal comes in as favorite, which is exactly where predictions start sweating.",
       "sources": [],
-      "expires_at": "2026-06-20T17:00:00.000Z"
+      "expires_at": "2026-06-23T17:00:00.000Z"
     },
     {
-      "id": "fixture-e2b5d1b4-d049-4112-b475-0069cff805cc",
+      "id": "fixture-cc3d81e8-2e37-4768-8de8-2ca1412a558a",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "גרמניה נגד חוף השנהב, היום 23:00. גרמניה מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
-      "en": "Germany vs Ivory Coast, today 23:00. Germany comes in as favorite, which is exactly where predictions start sweating.",
+      "he": "אנגליה נגד גאנה, היום 23:00. משחק של פייבוריטית על הנייר, אבל בדיוק כאן מתחילים הסיפורים של ההימור.",
+      "en": "England vs Ghana, today 23:00. A favorite on paper, but this is where pool stories usually begin.",
       "sources": [],
-      "expires_at": "2026-06-20T20:00:00.000Z"
+      "expires_at": "2026-06-23T20:00:00.000Z"
     },
     {
-      "id": "fixture-636d9e56-06c4-402e-9dac-1d24fbd8089d",
+      "id": "fixture-a984417e-7707-4e03-9642-239750701bc0",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "אקוודור נגד קוראסאו, מחר 03:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
-      "en": "Ecuador vs Curaçao, tomorrow 03:00. Not the shiniest match, but these are the ones that move places without asking.",
+      "he": "פנמה נגד קרואטיה, מחר 02:00. אם קרואטיה מחליקה כאן, הרבה טפסים יצטרכו נאום הגנה מוקדם.",
+      "en": "Panama vs Croatia, tomorrow 02:00. If Croatia slips here, plenty of forms need an early defense speech.",
       "sources": [],
-      "expires_at": "2026-06-21T00:00:00.000Z"
+      "expires_at": "2026-06-23T23:00:00.000Z"
     },
     {
-      "id": "fixture-f1ad412d-4028-49b3-b2b1-58f9524e1c89",
+      "id": "fixture-718f2821-b1fa-4746-9b20-f142f9535e24",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "תוניסיה נגד יפן, מחר 07:00. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.",
-      "en": "Tunisia vs Japan, tomorrow 07:00. Quiet on paper, which is usually where pool chaos begins.",
+      "he": "קולומביה נגד קונגו הדמוקרטית, מחר 05:00. אם קולומביה מחליקה כאן, הרבה טפסים יצטרכו נאום הגנה מוקדם.",
+      "en": "Colombia vs Congo DR, tomorrow 05:00. If Colombia slips here, plenty of forms need an early defense speech.",
       "sources": [],
-      "expires_at": "2026-06-21T04:00:00.000Z"
+      "expires_at": "2026-06-24T02:00:00.000Z"
     },
     {
-      "id": "fixture-abbfa32e-7ac6-4b04-a483-221352040fc8",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "ספרד נגד ערב הסעודית, מחר 19:00. על הנייר ספרד אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.",
-      "en": "Spain vs Saudi Arabia, tomorrow 19:00. On paper Spain should control it, but paper does not score pool points.",
-      "sources": [],
-      "expires_at": "2026-06-21T16:00:00.000Z"
+      "id": "2026-06-23-portugal-uzbekistan-pressure",
+      "type": "news",
+      "confidence": "reported",
+      "he": "פורטוגל כבר איבדה נקודות מול קונגו הדמוקרטית, ועכשיו שאלת רונאלדו חזקה כמעט כמו המשחק מול אוזבקיסטן. מי שסימן טיול בבית K מקבל בדיקת קבלות ראשונה.",
+      "en": "Portugal already dropped points against DR Congo, and now the Ronaldo question is almost as loud as the Uzbekistan match itself. If you picked Portugal to stroll Group K, this is the first receipt check.",
+      "team": "POR",
+      "teams": [
+        "POR",
+        "UZB"
+      ],
+      "sources": [
+        {
+          "name": "The Guardian",
+          "url": "https://www.theguardian.com/football/2026/jun/23/world-cup-schedule-today-how-to-watch-england-ghana-tv"
+        },
+        {
+          "name": "Times of India",
+          "url": "https://timesofindia.indiatimes.com/sports/football/fifa-world-cup/fifa-world-cup-will-ronaldo-be-benched-against-uzbekistan-portugal-coach-keeps-starting-xi-under-wraps/articleshow/131925539.cms"
+        },
+        {
+          "name": "talkSPORT",
+          "url": "https://talksport.com/football/world-cup/4353040/where-to-watch-portugal-vs-uzbekistan-tv-channel-live-stream-commentary/"
+        }
+      ],
+      "expires_at": "2026-06-23T17:00:00.000Z",
+      "topic_date": "2026-06-23T10:50:00.000Z",
+      "source_checked_at": "2026-06-23T10:50:00.000Z"
+    },
+    {
+      "id": "2026-06-23-england-ghana-defensive-warning",
+      "type": "news",
+      "confidence": "reported",
+      "he": "אנגליה יכולה לעלות מול גאנה הערב, אבל טוכל מדבר כמו מאמן שראה את סימני האזהרה מוקדם. שלוש נקודות זה נחמד, ההרגלים בהגנה הם מה שבחירת בית L צריכה לעקוב אחריו.",
+      "en": "England can qualify against Ghana tonight, but Tuchel is talking like a coach who saw the warning signs early. Three points are nice. Defensive habits are what your Group L pick should watch.",
+      "team": "ENG",
+      "teams": [
+        "ENG",
+        "GHA"
+      ],
+      "sources": [
+        {
+          "name": "The Guardian",
+          "url": "https://www.theguardian.com/football/2026/jun/23/thomas-tuchel-england-ghana-world-cup-defence-improve"
+        },
+        {
+          "name": "Times of India",
+          "url": "https://timesofindia.indiatimes.com/sports/football/fifa-world-cup/declan-rice-reveals-secret-behind-the-scenes-struggle-he-had-been-dealing-with-that-led-to-early-world-cup-substitution/articleshow/131925847.cms"
+        }
+      ],
+      "expires_at": "2026-06-23T20:00:00.000Z",
+      "topic_date": "2026-06-23T10:50:00.000Z",
+      "source_checked_at": "2026-06-23T10:50:00.000Z"
+    },
+    {
+      "id": "2026-06-23-croatia-panama-survival",
+      "type": "news",
+      "confidence": "reported",
+      "he": "קרואטיה ופנמה צריכות תגובה אחרי הפסדי פתיחה. זה לא משחק נוצץ, זה מסוג המשחקים בבית L שמחליטים בשקט למי עוד יש אוויר למקום שלישי.",
+      "en": "Croatia and Panama both need a response after opening defeats. This is not glamour, it is the kind of Group L match that quietly decides whose third-place hopes still breathe.",
+      "team": "CRO",
+      "teams": [
+        "CRO",
+        "PAN"
+      ],
+      "sources": [
+        {
+          "name": "The Guardian",
+          "url": "https://www.theguardian.com/football/2026/jun/23/world-cup-schedule-today-how-to-watch-england-ghana-tv"
+        },
+        {
+          "name": "AS",
+          "url": "https://as.com/us/futbol/mundial/croacia-no-se-confia-de-panama-zlatko-dalic-destaca-el-crecimiento-de-la-seleccion-canalera-f202606-n/"
+        }
+      ],
+      "expires_at": "2026-06-23T23:00:00.000Z",
+      "topic_date": "2026-06-23T10:50:00.000Z",
+      "source_checked_at": "2026-06-23T10:50:00.000Z"
     }
   ]
 }

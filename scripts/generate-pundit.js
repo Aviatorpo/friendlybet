@@ -43,6 +43,11 @@ const NEWS_MAX_FUTURE_EXPIRY_MS = 30 * HOUR_MS;
 const FEED_FRESH_MS = 6 * HOUR_MS;
 const REFRESH_COMMIT_MS = 3 * HOUR_MS;
 const LIVE_STATUSES = new Set(['IN_PLAY', 'LIVE', 'PAUSED']);
+const SCHEDULED_STATUSES = new Set(['TIMED', 'SCHEDULED']);
+const FINISHED_STATUSES = new Set(['FINISHED', 'AWARDED']);
+const TERMINAL_STATUSES = new Set(['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED']);
+const STALE_SCHEDULED_MS = 35 * 60 * 1000;
+const MAX_MATCH_MS = 3.5 * HOUR_MS;
 const MONTHS = {
   january: 0, jan: 0,
   february: 1, feb: 1,
@@ -148,9 +153,24 @@ function isPastDatedPreview(item, now) {
 
 function shouldTreatAsLive(match, now) {
   const status = String(match.status || '').toUpperCase();
-  if (LIVE_STATUSES.has(status)) return true;
+  return LIVE_STATUSES.has(status) && !shouldTreatAsVerification(match, now);
+}
+
+function isPendingProviderFinal(match) {
+  const source = String((match && match.live_source) || '').toLowerCase();
+  const detail = String((match && match.status_detail) || '').toLowerCase();
+  return source === 'espn-final' || detail.includes('pending verification');
+}
+
+function shouldTreatAsVerification(match, now) {
+  const status = String((match && match.status) || '').toUpperCase();
   const start = parseTime(match.match_date);
-  return Number.isFinite(start) && now.getTime() >= start && now.getTime() - start <= 3 * HOUR_MS && status !== 'FINISHED';
+  if (isPendingProviderFinal(match)) return true;
+  if (!Number.isFinite(start)) return false;
+  const elapsed = now.getTime() - start;
+  if (LIVE_STATUSES.has(status) && elapsed >= MAX_MATCH_MS) return true;
+  if (SCHEDULED_STATUSES.has(status) && elapsed >= STALE_SCHEDULED_MS && !TERMINAL_STATUSES.has(status)) return true;
+  return false;
 }
 
 // Format a UTC ISO time into Israel-local {ymd, hm} (the audience is Israeli).
@@ -236,20 +256,40 @@ function resultCommentary(match, salt = '') {
   }
   if (totalGoals >= 5) {
     return {
-      he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe} במשחק פתוח לגמרי. כיף לצופים, כאב ראש למהמרים.`,
-      en: `${winnerEn} beat ${loserEn} ${scoreEn} in a wide-open one. Great for viewers, brutal for predictors.`,
+      he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe} במשחק פתוח לגמרי. כיף לצופים, כאב ראש לטבלה ולטפסים.`,
+      en: `${winnerEn} beat ${loserEn} ${scoreEn} in a wide-open one. Great for viewers, brutal for the table and prediction slips.`,
     };
   }
   if (hs === 0 || as === 0) {
-    return {
-      he: `${winnerHe} עשתה את העבודה עם ${scoreHe} נקי על ${loserHe}. לא נוצץ, כן שימושי בטבלה.`,
-      en: `${winnerEn} handled business with a clean ${scoreEn} over ${loserEn}. Not flashy, very useful on the table.`,
-    };
+    return variantFor(match, [
+      {
+        he: `${winnerHe} לקחה ${scoreHe} נקי מ${loserHe}. לא מופע זיקוקים, כן שלוש נקודות שמזיזות טפסים.`,
+        en: `${winnerEn} took a clean ${scoreEn} from ${loserEn}. Not fireworks, but very loud on prediction slips.`,
+      },
+      {
+        he: `${winnerHe} סגרה את ${loserHe} עם ${scoreHe}. זה מסוג התוצאות שנראות פשוטות רק למי שסימן אותן מראש.`,
+        en: `${winnerEn} shut out ${loserEn} ${scoreEn}. The kind of result that looks simple only if you called it early.`,
+      },
+      {
+        he: `${winnerHe} עם ${scoreHe} על ${loserHe}, והבית קיבל עוד סימן קריאה קטן בטבלה.`,
+        en: `${winnerEn} beat ${loserEn} ${scoreEn}, and the group table picked up a small exclamation mark.`,
+      },
+    ], salt);
   }
-  return {
-    he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe}. עוד תוצאה שנראית פשוטה רק אחרי שהיא כבר קרתה.`,
-    en: `${winnerEn} beat ${loserEn} ${scoreEn}. Another result that looks obvious only after it happened.`,
-  };
+  return variantFor(match, [
+    {
+      he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe}. זה לא רק שורת תוצאה, זה עוד טופס שצריך להסביר את עצמו.`,
+      en: `${winnerEn} beat ${loserEn} ${scoreEn}. Not just a scoreline; another prediction slip now has to explain itself.`,
+    },
+    {
+      he: `${winnerHe} עברה את ${loserHe} ${scoreHe}, והבית קיבל עוד דחיפה קטנה בכיוון שאף טופס לא אוהב.`,
+      en: `${winnerEn} got past ${loserEn} ${scoreEn}, and the group table took another small shove that no form enjoys.`,
+    },
+    {
+      he: `${winnerHe} ניצחה ${scoreHe} את ${loserHe}. תוצאה קטנה בלוח, אבל מספיק גדולה כדי להזיז הימורים.`,
+      en: `${winnerEn} beat ${loserEn} ${scoreEn}. Small on the scoreboard, big enough to move the picks.`,
+    },
+  ], salt);
 }
 
 function fixtureCommentary(match, now, salt = '') {
@@ -276,19 +316,31 @@ function fixtureCommentary(match, now, salt = '') {
         en: `${homeEn} vs ${awayEn}, ${w.en}. ${favEn} comes in as favorite, which is exactly where predictions start sweating.`,
       },
       {
-        he: `${homeHe} נגד ${awayHe}, ${w.he}. על הנייר ${favHe} אמורה לשלוט, אבל הנייר לא מקבל נקודות בפול.`,
+        he: `${homeHe} נגד ${awayHe}, ${w.he}. על הנייר ${favHe} אמורה לשלוט, אבל הנייר לא מקבל נקודות בהימור.`,
         en: `${homeEn} vs ${awayEn}, ${w.en}. On paper ${favEn} should control it, but paper does not score pool points.`,
+      },
+      {
+        he: `${homeHe} נגד ${awayHe}, ${w.he}. אם ${favHe} מחליקה כאן, הרבה טפסים יצטרכו נאום הגנה מוקדם.`,
+        en: `${homeEn} vs ${awayEn}, ${w.en}. If ${favEn} slips here, plenty of forms need an early defense speech.`,
+      },
+      {
+        he: `${homeHe} נגד ${awayHe}, ${w.he}. משחק של פייבוריטית על הנייר, אבל בדיוק כאן מתחילים הסיפורים של ההימור.`,
+        en: `${homeEn} vs ${awayEn}, ${w.en}. A favorite on paper, but this is where pool stories usually begin.`,
       },
     ], salt);
   }
   return variantFor(match, [
     {
-      he: `${homeHe} נגד ${awayHe}, ${w.he}. על הנייר שקט, בפולים זה בדרך כלל הרעש האמיתי.`,
+      he: `${homeHe} נגד ${awayHe}, ${w.he}. על הנייר שקט, בהימורים זה בדרך כלל הרעש האמיתי.`,
       en: `${homeEn} vs ${awayEn}, ${w.en}. Quiet on paper, which is usually where pool chaos begins.`,
     },
     {
       he: `${homeHe} נגד ${awayHe}, ${w.he}. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.`,
       en: `${homeEn} vs ${awayEn}, ${w.en}. Not the shiniest match, but these are the ones that move places without asking.`,
+    },
+    {
+      he: `${homeHe} נגד ${awayHe}, ${w.he}. לא כל דרמה מגיעה עם שלט ניאון; לפעמים היא פשוט גונבת נקודות.`,
+      en: `${homeEn} vs ${awayEn}, ${w.en}. Not every drama arrives with neon lights; some just steal points quietly.`,
     },
   ], salt);
 }
@@ -304,8 +356,19 @@ function liveCommentary(match) {
   };
 }
 
-function build(now) {
-  const snap = readJson(MATCHES_FILE, { matches: [] });
+function verificationCommentary(match) {
+  const homeHe = teamName(match.home_team_code, 'he');
+  const awayHe = teamName(match.away_team_code, 'he');
+  const homeEn = teamName(match.home_team_code, 'en');
+  const awayEn = teamName(match.away_team_code, 'en');
+  return {
+    he: `${homeHe} נגד ${awayHe}: סטטוס המשחק בבדיקה לפני שהטבלה מקבלת נקודות. עדיף רגע של זהירות מטעות שמזיזה הימור שלם.`,
+    en: `${homeEn} vs ${awayEn}: match status is being checked before the table gets points. A careful pause beats moving a whole pool on bad data.`,
+  };
+}
+
+function build(now, options = {}) {
+  const snap = options.matchesPayload || readJson(MATCHES_FILE, { matches: [] });
   const matches = Array.isArray(snap.matches) ? snap.matches : [];
 
   const kickoff = matches
@@ -352,9 +415,27 @@ function build(now) {
     });
   }
 
+  // ---- 2b. Verification / recovery states -----------------------------------
+  const verifying = matches
+    .filter(m => shouldTreatAsVerification(m, now))
+    .sort((x, y) => Date.parse(y.match_date) - Date.parse(x.match_date))
+    .slice(0, 3);
+  for (const m of verifying) {
+    const text = verificationCommentary(m);
+    items.push({
+      id: `verify-${m.id}`,
+      type: 'verification',
+      confidence: 'confirmed',
+      he: text.he,
+      en: text.en,
+      sources: [],
+      expires_at: iso(now.getTime() + HOUR_MS),
+    });
+  }
+
   // ---- 3. Latest results (last 30h) -----------------------------------------
   const finished = matches
-    .filter(m => m.status === 'FINISHED' && m.home_score != null && m.away_score != null)
+    .filter(m => FINISHED_STATUSES.has(String(m.status || '').toUpperCase()) && !isPendingProviderFinal(m) && m.home_score != null && m.away_score != null)
     .filter(m => now.getTime() - Date.parse(m.match_date) < RESULT_WINDOW_MS)
     .sort((x, y) => Date.parse(y.match_date) - Date.parse(x.match_date))
     .slice(0, 5);
@@ -375,7 +456,7 @@ function build(now) {
   }
 
   // ---- 5. Verified same-day news (from the news agent) ----------------------
-  const news = readJson(NEWS_FILE, { items: [] });
+  const news = options.newsPayload || readJson(NEWS_FILE, { items: [] });
   const newsUpdatedAt = news && news.updatedAt;
   const freshNews = (Array.isArray(news.items) ? news.items : [])
     .filter(n => n && n.he && n.en)
@@ -387,6 +468,7 @@ function build(now) {
       confidence: n.confidence === 'confirmed' ? 'confirmed' : 'reported',
       he: n.he, en: n.en,
       team: typeof n.team === 'string' ? n.team.toUpperCase() : null,  // single-nation flag, optional
+      teams: Array.isArray(n.teams) ? n.teams.map(t => String(t || '').toUpperCase()).filter(Boolean) : undefined,
       sources: Array.isArray(n.sources) ? n.sources.filter(s => s && s.url) : [],
       expires_at: n.expires_at || null,
       topic_date: n.topic_date || null,
@@ -401,7 +483,7 @@ function build(now) {
       : independentSourceCount(it.sources) >= 2);
 
   // During the tournament, facts from the match snapshot outrank editorial news.
-  const priority = { live: 0, result: 1, fixture: 2, news: 3, stat: 4, countdown: 5 };
+  const priority = { live: 0, verification: 1, result: 2, fixture: 3, news: 4, stat: 5, countdown: 6 };
   const merged = [...items, ...freshNews]
     .sort((a, b) => (priority[a.type] ?? 9) - (priority[b.type] ?? 9))
     .slice(0, MAX_ITEMS);
@@ -447,4 +529,11 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { build, isCurrentNews, isPastDatedPreview };
+module.exports = {
+  build,
+  isCurrentNews,
+  isPastDatedPreview,
+  shouldTreatAsLive,
+  shouldTreatAsVerification,
+  isPendingProviderFinal,
+};
