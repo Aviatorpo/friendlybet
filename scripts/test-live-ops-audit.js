@@ -136,12 +136,12 @@ check('verified-result workflows force match snapshot export before dependent co
 
 check('final-result verifier has continuous 15-minute recovery schedule', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/final-result-verifier.yml'), 'utf8');
-  assert.ok(text.includes("cron: '*/15 * 11-28 6 *'"), 'final verifier must not have group-stage recovery gaps');
+  assert.ok(text.includes("cron: '4,19,34,49 * 11-28 6 *'"), 'final verifier must not have group-stage recovery gaps');
 });
 
 check('live poller has continuous 5-minute group-stage coverage', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/live-poller.yml'), 'utf8');
-  assert.ok(text.includes("cron: '*/5 * 11-28 6 *'"), 'live poller must not rely on narrow precomputed match windows');
+  assert.ok(text.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 11-28 6 *'"), 'live poller must not rely on narrow precomputed match windows');
   assert.ok(/preflights first[\s\S]*calls providers only/.test(text), 'live poller workflow must document preflight as the cost control');
 });
 

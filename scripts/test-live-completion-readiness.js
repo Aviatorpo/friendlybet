@@ -101,6 +101,32 @@ const Readiness = require('./live-completion-readiness');
     dbResult.checks.some(check => check.name === 'live DB match audit is green' && check.ok),
     'readiness must audit live DB matches when provided'
   );
+  assert.strictEqual(dbResult.live_db.freshness.stale, 0, 'future DB matches should not be treated as stale live state');
+
+  const staleDbFreshness = Readiness.summarizeLiveDbFreshness([
+    { status: 'TIMED', match_date: '2026-06-23T11:40:00Z', home_team_code: 'NED', away_team_code: 'SWE' },
+  ], Date.parse('2026-06-23T12:00:00Z'));
+  assert.strictEqual(staleDbFreshness.stale, 1, 'TIMED match 20 minutes after kickoff must be stale for live DB freshness');
+
+  const freshWorkflowResult = await Readiness.runReadiness({
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    workflowRuns: {
+      livePoller: [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T11:50:00Z' }],
+      finalResultVerifier: [{ id: 2, status: 'completed', conclusion: 'success', created_at: '2026-06-23T11:30:00Z' }],
+    },
+  });
+  assert.strictEqual(freshWorkflowResult.ok, true, JSON.stringify(freshWorkflowResult.checks.filter(check => !check.ok), null, 2));
+  assert.ok(
+    freshWorkflowResult.checks.some(check => check.name === 'live poller workflow ran recently' && check.ok),
+    'readiness must verify live-poller workflow liveness when workflow runs are provided'
+  );
+
+  const staleWorkflow = Readiness.summarizeWorkflowLiveness(
+    [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
+    Date.parse('2026-06-23T12:00:00Z'),
+    20 * 60 * 1000
+  );
+  assert.strictEqual(staleWorkflow.ok, false, 'stale live-poller workflow history must fail during group-stage window');
 
   const requiredChecks = [
     'snapshot live-ops audit is green',
