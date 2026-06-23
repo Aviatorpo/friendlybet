@@ -9,7 +9,8 @@ on:
   schedule:
     # Continuous coverage removes missed-window risk from delayed kickoffs or
     # incorrect schedule rows; smart preflight is the cost control.
-    - cron: '*/5 * 11-28 6 *'
+    # Offset from :00/:05/... because GitHub may delay or drop high-load cron edges.
+    - cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 11-28 6 *'
   workflow_dispatch:
 
 # Don't let two live-poller runs overlap (a slow run + the next cron launch).

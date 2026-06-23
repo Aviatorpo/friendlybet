@@ -13,6 +13,13 @@ process.env.SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY || LOCAL_SUPAB
 const LiveOpsAudit = require('./live-ops-audit');
 
 const ROOT = path.resolve(__dirname, '..');
+const GROUP_STAGE_START_MS = Date.parse('2026-06-11T00:00:00Z');
+const GROUP_STAGE_END_MS = Date.parse('2026-06-29T00:00:00Z');
+const LIVE_DB_SCHEDULED_GRACE_MS = 12 * 60 * 1000;
+const LIVE_DB_SOURCE_STALE_MS = 10 * 60 * 1000;
+const LIVE_DB_ACTIVE_WINDOW_MS = 4 * 60 * 60 * 1000;
+const LIVE_POLLER_STALE_MS = 20 * 60 * 1000;
+const FINAL_VERIFIER_STALE_MS = 45 * 60 * 1000;
 
 function read(file) {
   return fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -62,6 +69,11 @@ function parseSupabaseConfig(text) {
 
 function normalizeBaseUrl(value) {
   return String(value || '').replace(/\/+$/, '');
+}
+
+function parseTime(value) {
+  const ms = Date.parse(value || '');
+  return Number.isFinite(ms) ? ms : NaN;
 }
 
 async function fetchJson(url, fetchImpl = globalThis.fetch) {
@@ -134,6 +146,80 @@ async function fetchSupabaseMatches(config, fetchImpl = globalThis.fetch) {
   return matches;
 }
 
+function isGroupStageWindow(nowMs) {
+  return nowMs >= GROUP_STAGE_START_MS && nowMs < GROUP_STAGE_END_MS;
+}
+
+function summarizeLiveDbFreshness(matches, nowMs) {
+  const stale = [];
+  const active = [];
+  for (const match of matches || []) {
+    const kickoff = parseTime(match && match.match_date);
+    if (!Number.isFinite(kickoff)) continue;
+    const elapsed = nowMs - kickoff;
+    if (elapsed < 0 || elapsed > LIVE_DB_ACTIVE_WINDOW_MS) continue;
+    const status = String(match && match.status || '').toUpperCase();
+    const key = `${match.home_team_code || '?'}-${match.away_team_code || '?'}`;
+    active.push(key);
+    if ((status === 'TIMED' || status === 'SCHEDULED') && elapsed > LIVE_DB_SCHEDULED_GRACE_MS) {
+      stale.push(`${key}: still ${status} ${Math.round(elapsed / 60000)}m after kickoff`);
+      continue;
+    }
+    if (['IN_PLAY', 'LIVE', 'PAUSED'].includes(status)) {
+      const sourceUpdatedAt = parseTime(match.source_updated_at || match.last_updated);
+      if (!Number.isFinite(sourceUpdatedAt) || nowMs - sourceUpdatedAt > LIVE_DB_SOURCE_STALE_MS) {
+        const age = Number.isFinite(sourceUpdatedAt) ? `${Math.round((nowMs - sourceUpdatedAt) / 60000)}m old` : 'missing';
+        stale.push(`${key}: live source update is ${age}`);
+      }
+    }
+  }
+  return {
+    active: active.length,
+    stale: stale.length,
+    sample: stale.slice(0, 8),
+  };
+}
+
+async function fetchGitHubWorkflowRuns(workflowFile, options = {}) {
+  const fetchImpl = options.fetch || globalThis.fetch;
+  if (typeof fetchImpl !== 'function') throw new Error('fetch is not available');
+  const repo = options.repo || process.env.GITHUB_REPOSITORY || 'Aviatorpo/friendlybet';
+  const branch = options.branch || process.env.GITHUB_REF_NAME || 'main';
+  const token = options.token || process.env.GITHUB_TOKEN || '';
+  const url = `https://api.github.com/repos/${repo}/actions/workflows/${encodeURIComponent(workflowFile)}/runs?branch=${encodeURIComponent(branch)}&per_page=5`;
+  const headers = {
+    Accept: 'application/vnd.github+json',
+    'User-Agent': 'friendlybet-live-completion-readiness',
+  };
+  if (token) headers.Authorization = `Bearer ${token}`;
+  const res = await fetchImpl(url, { headers });
+  if (!res || !res.ok) throw new Error(`GitHub workflow runs ${workflowFile} failed (${res && res.status})`);
+  const payload = await res.json();
+  return Array.isArray(payload && payload.workflow_runs) ? payload.workflow_runs : [];
+}
+
+function summarizeWorkflowLiveness(runs, nowMs, maxAgeMs) {
+  const latest = (runs || [])
+    .map(run => ({
+      id: run.id || run.databaseId || null,
+      status: run.status || '',
+      conclusion: run.conclusion || '',
+      created_at: run.created_at || run.createdAt || '',
+      created_ms: parseTime(run.created_at || run.createdAt),
+    }))
+    .filter(run => Number.isFinite(run.created_ms))
+    .sort((a, b) => b.created_ms - a.created_ms)[0] || null;
+  const ageMs = latest ? nowMs - latest.created_ms : Infinity;
+  const healthyStatus = latest
+    && (['queued', 'in_progress', 'requested', 'waiting'].includes(latest.status)
+      || latest.conclusion === 'success');
+  return {
+    ok: !isGroupStageWindow(nowMs) || (latest && ageMs <= maxAgeMs && healthyStatus),
+    latest,
+    age_minutes: Number.isFinite(ageMs) ? Math.round(ageMs / 60000) : null,
+  };
+}
+
 async function runReadiness(options = {}) {
   const checks = [];
   const warnings = [];
@@ -175,15 +261,16 @@ async function runReadiness(options = {}) {
   const generatePundit = read('.github/workflows/generate-pundit.yml');
   const readinessMonitor = read('.github/workflows/live-completion-readiness.yml');
 
-  add(checks, 'live poller covers all group-stage match days', livePoller.includes("cron: '*/5 * 11-28 6 *'"), '5-minute June 11-28 schedule required');
-  add(checks, 'final verifier covers all group-stage match days', verifier.includes("cron: '*/15 * 11-28 6 *'"), '15-minute June 11-28 schedule required');
+  add(checks, 'live poller covers all group-stage match days', livePoller.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 11-28 6 *'"), '5-minute offset June 11-28 schedule required');
+  add(checks, 'final verifier covers all group-stage match days', verifier.includes("cron: '4,19,34,49 * 11-28 6 *'"), '15-minute offset June 11-28 schedule required');
   add(
     checks,
     'readiness monitor covers production during group-stage match days',
-    readinessMonitor.includes("cron: '17,47 * 11-28 6 *'")
+    readinessMonitor.includes("cron: '6,16,26,36,46,56 * 11-28 6 *'")
       && readinessMonitor.includes('LIVE_COMPLETION_PUBLIC_BASE_URL: https://friendlybet.live')
+      && readinessMonitor.includes("LIVE_COMPLETION_GITHUB_WORKFLOWS: '1'")
       && readinessMonitor.includes('node scripts/live-completion-readiness.js'),
-    'scheduled monitor must audit production public snapshots twice hourly during June 11-28'
+    'scheduled monitor must audit production public snapshots every 10 minutes during June 11-28'
   );
   add(
     checks,
@@ -268,14 +355,37 @@ async function runReadiness(options = {}) {
         source: options.dbMatches ? 'in-memory' : 'supabase',
         matches: dbMatches.length,
         ok: dbAudit.ok,
+        freshness: summarizeLiveDbFreshness(dbMatches, nowMs),
         completed_groups: dbAudit.completed_groups,
         result_recovery: dbAudit.result_recovery,
         watchdog: dbAudit.watchdog,
       };
       add(checks, 'live DB matches are readable', dbMatches.length > 0, `matches=${dbMatches.length}`);
       add(checks, 'live DB match audit is green', dbAudit.ok, `recovery=${dbAudit.result_recovery.candidates}, errors=${dbAudit.watchdog.errors.length}`);
+      add(checks, 'live DB active match state is fresh', liveDb.freshness.stale === 0, `active=${liveDb.freshness.active}, stale=${liveDb.freshness.stale}${liveDb.freshness.sample.length ? `, sample=${liveDb.freshness.sample.join('; ')}` : ''}`);
     } catch (err) {
       add(checks, 'live DB matches are readable', false, err.message);
+    }
+  }
+
+  let workflowLiveness = null;
+  const shouldCheckWorkflowLiveness = options.workflowRuns || process.env.LIVE_COMPLETION_GITHUB_WORKFLOWS === '1';
+  if (shouldCheckWorkflowLiveness) {
+    try {
+      const livePollerRuns = options.workflowRuns && options.workflowRuns.livePoller
+        ? options.workflowRuns.livePoller
+        : await fetchGitHubWorkflowRuns('live-poller.yml', { fetch: options.fetch });
+      const finalVerifierRuns = options.workflowRuns && options.workflowRuns.finalResultVerifier
+        ? options.workflowRuns.finalResultVerifier
+        : await fetchGitHubWorkflowRuns('final-result-verifier.yml', { fetch: options.fetch });
+      workflowLiveness = {
+        live_poller: summarizeWorkflowLiveness(livePollerRuns, nowMs, LIVE_POLLER_STALE_MS),
+        final_result_verifier: summarizeWorkflowLiveness(finalVerifierRuns, nowMs, FINAL_VERIFIER_STALE_MS),
+      };
+      add(checks, 'live poller workflow ran recently', workflowLiveness.live_poller.ok, `latest=${workflowLiveness.live_poller.latest && workflowLiveness.live_poller.latest.created_at || 'missing'}, age=${workflowLiveness.live_poller.age_minutes == null ? 'missing' : workflowLiveness.live_poller.age_minutes + 'm'}`);
+      add(checks, 'final verifier workflow ran recently', workflowLiveness.final_result_verifier.ok, `latest=${workflowLiveness.final_result_verifier.latest && workflowLiveness.final_result_verifier.latest.created_at || 'missing'}, age=${workflowLiveness.final_result_verifier.age_minutes == null ? 'missing' : workflowLiveness.final_result_verifier.age_minutes + 'm'}`);
+    } catch (err) {
+      add(checks, 'workflow liveness is readable', false, err.message);
     }
   }
 
@@ -312,6 +422,7 @@ async function runReadiness(options = {}) {
     checks,
     warnings,
     live_db: liveDb,
+    workflow_liveness: workflowLiveness,
     production,
     audit: {
       completed_groups: audit.completed_groups,
@@ -344,5 +455,8 @@ if (require.main === module) {
     loadPublicSnapshots,
     fetchSupabaseMatches,
     auditPublicSnapshots,
+    summarizeLiveDbFreshness,
+    summarizeWorkflowLiveness,
+    fetchGitHubWorkflowRuns,
   };
 }

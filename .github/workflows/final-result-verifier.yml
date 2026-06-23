@@ -5,7 +5,7 @@ on:
     # Cheap continuous recovery during the full group-stage window. The
     # preflight/backoff step exits before provider calls unless a stale result is
     # actually due, so this removes multi-hour gaps without adding API-style load.
-    - cron: '*/15 * 11-28 6 *'
+    - cron: '4,19,34,49 * 11-28 6 *'
   workflow_dispatch:
     inputs:
       apply:

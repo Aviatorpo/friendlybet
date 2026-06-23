@@ -6,7 +6,7 @@ name: Live Completion Readiness Monitor
 # scoring/UX guards fail loudly during match days.
 on:
   schedule:
-    - cron: '17,47 * 11-28 6 *'
+    - cron: '6,16,26,36,46,56 * 11-28 6 *'
   workflow_dispatch:
     inputs:
       check_db:
@@ -24,6 +24,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   monitor:
@@ -41,8 +42,10 @@ jobs:
       - name: Run production readiness gate
         env:
           LIVE_COMPLETION_PUBLIC_BASE_URL: https://friendlybet.live
+          LIVE_COMPLETION_GITHUB_WORKFLOWS: '1'
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           if [ "${{ github.event.inputs.check_db || 'true' }}" = "false" ]; then
             node scripts/live-completion-readiness.js
