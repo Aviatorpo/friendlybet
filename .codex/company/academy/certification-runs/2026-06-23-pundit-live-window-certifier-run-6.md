@@ -322,6 +322,50 @@ The explicit graduation proof command still failed as designed before kickoff:
 
 This is readiness evidence only. It should not be counted as one of the two required live/post-final graduation windows.
 
+## 2026-06-23 14:22Z Production Follow-Up
+
+The goal continuation reran production-facing checks at `2026-06-23T17:21+03:00`. Both target matches were still pre-kickoff, so this remains readiness evidence only:
+
+- `node scripts\pundit-live-window-certifier.js --production --match POR-UZB --record tmp\pundit-live-window-certifications-2026-06-23.jsonl`
+  - source: `https://friendlybet.live/`
+  - checked_at: `2026-06-23T14:22:12.904Z`
+  - score: `100`
+  - passed: `true`
+  - proof_window: `false`
+  - phase: `pre`
+  - status: `TIMED`
+
+- `node scripts\pundit-live-window-certifier.js --production --match ENG-GHA --record tmp\pundit-live-window-certifications-2026-06-23.jsonl`
+  - source: `https://friendlybet.live/`
+  - checked_at: `2026-06-23T14:22:12.583Z`
+  - score: `100`
+  - passed: `true`
+  - proof_window: `false`
+  - phase: `pre`
+  - status: `TIMED`
+
+Supporting checks:
+
+- `node scripts\pundit-news-validate.js --require-unexpired`
+- `node scripts\test-pundit-feed.js`
+- `node scripts\test-world-cup-stories.js`
+- `node scripts\live-ops-audit.js`
+- `python .codex\skills\friendlybet-social-content-excellence\scripts\certification_audit.py`
+- `python .codex\skills\friendlybet-social-content-excellence\scripts\training_regression_suite.py`
+- `python .codex\skills\friendlybet-social-content-excellence\scripts\certification_audit.py --require-production-ready`
+
+The social-content academy remained `ready for Eyal review`, with `production_ready=false`, because Eyal approval/live-cycle proof is still missing.
+
+The explicit graduation proof command still failed as designed before kickoff:
+
+- `node scripts\pundit-live-window-certifier.js --production --match POR-UZB --graduation-proof`
+  - checked_at: `2026-06-23T14:22:48.185Z`
+  - expected result: `passed=false`
+  - proof_window: `false`
+  - error: `graduation proof requires at least one post-kickoff/live/final target; all targets are pre-kickoff`
+
+This should not be counted toward the two required real live/post-final graduation windows.
+
 ## Remaining Graduation Gaps
 
 The Pundit still needs two actual live-window passes after kickoff/final whistle. The pre-kickoff checks are strong, but they do not prove:
