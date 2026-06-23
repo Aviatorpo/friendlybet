@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-06-23T17:02:24.103Z",
-  "freshUntil": "2026-06-23T23:02:24.103Z",
-  "count": 11,
+  "updatedAt": "2026-06-23T18:07:20.763Z",
+  "freshUntil": "2026-06-24T00:07:20.763Z",
+  "count": 12,
   "items": [
+    {
+      "id": "live-31a2acf9-8ee6-4657-8fe7-7732592ad3a4",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "פורטוגל נגד אוזבקיסטן עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
+      "en": "Portugal vs Uzbekistan is live now. Every minute can turn a genius pick into group-chat material.",
+      "sources": [],
+      "expires_at": "2026-06-23T21:07:20.763Z"
+    },
     {
       "id": "result-9e34eca5-117b-4fac-a02c-318b7c92002a",
       "type": "result",
