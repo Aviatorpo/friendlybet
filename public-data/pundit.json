@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-06-23T20:02:25.702Z",
-  "freshUntil": "2026-06-24T02:02:25.702Z",
-  "count": 11,
+  "updatedAt": "2026-06-23T20:31:59.095Z",
+  "freshUntil": "2026-06-24T02:31:59.095Z",
+  "count": 12,
   "items": [
+    {
+      "id": "live-cc3d81e8-2e37-4768-8de8-2ca1412a558a",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "אנגליה נגד גאנה עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.",
+      "en": "England vs Ghana is live now. Every minute can turn a genius pick into group-chat material.",
+      "sources": [],
+      "expires_at": "2026-06-23T23:31:59.095Z"
+    },
     {
       "id": "result-31a2acf9-8ee6-4657-8fe7-7732592ad3a4",
       "type": "result",
