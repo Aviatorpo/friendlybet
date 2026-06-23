@@ -243,6 +243,46 @@ Thread follow-up:
   - status: `ACTIVE`
   - cadence: hourly during calibration
 
+## 2026-06-23 13:41Z Production Follow-Up
+
+The heartbeat reran production-facing certification while both target matches were still pre-kickoff:
+
+- `node scripts\pundit-live-window-certifier.js --production --match POR-UZB --record tmp\pundit-live-window-certifications-2026-06-23.jsonl`
+  - source: `https://friendlybet.live/`
+  - checked_at: `2026-06-23T13:41:39.008Z`
+  - score: `100`
+  - phase: `pre`
+  - status: `TIMED`
+
+- `node scripts\pundit-live-window-certifier.js --production --match ENG-GHA --record tmp\pundit-live-window-certifications-2026-06-23.jsonl`
+  - source: `https://friendlybet.live/`
+  - checked_at: `2026-06-23T13:41:40.048Z`
+  - score: `100`
+  - phase: `pre`
+  - status: `TIMED`
+
+Supporting checks:
+
+- `node scripts\pundit-news-validate.js --require-unexpired`
+- `node scripts\test-pundit-feed.js`
+- `node scripts\test-world-cup-stories.js`
+- `node scripts\live-ops-audit.js`
+
+This remains readiness evidence only. It proves production freshness, source expiry discipline, and Stories coverage for already finished matches, but it is not graduation proof because no target had reached kickoff.
+
+## Graduation-Proof Gate
+
+The certifier now supports `--graduation-proof`. Normal pre-kickoff checks can still pass for readiness, but `--graduation-proof` fails if every target is still in phase `pre`. Graduation evidence must include at least one post-kickoff/live/final target, and the full goal still requires two real live match windows at 90+ with no stale/current-state misses.
+
+Validation added:
+
+- `node scripts\test-pundit-live-window-certifier.js`
+  - proves ordinary pre-kickoff readiness still passes,
+  - proves `--graduation-proof` rejects pre-kickoff-only evidence,
+  - proves a final-state target with result copy and story coverage can satisfy the proof window.
+- `node scripts\pundit-live-window-certifier.js --production --match POR-UZB --graduation-proof`
+  - expected result before kickoff: `passed=false`, `proof_window=false`, and `graduation proof requires at least one post-kickoff/live/final target`.
+
 ## Remaining Graduation Gaps
 
 The Pundit still needs two actual live-window passes after kickoff/final whistle. The pre-kickoff checks are strong, but they do not prove:

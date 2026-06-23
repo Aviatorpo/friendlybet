@@ -135,6 +135,49 @@ assert.throws(() => normaliseBaseUrl('file:///tmp/feed'), /http\(s\)/);
   assert.strictEqual(report.source, 'https://friendlybet.live/');
   assert.strictEqual(report.passed, true);
   assert.strictEqual(report.targets[0].score, 100);
+  assert.strictEqual(report.proof_window, false);
+  assert.deepStrictEqual(report.proof_phases, ['pre']);
+}
+
+{
+  const report = certifyWithPayloads(
+    { match: 'POR-UZB', now: '2026-06-23T16:30:00Z', minScore: 90, graduationProof: true },
+    {
+      source: 'https://friendlybet.live/',
+      matchesPayload: { matches: [match] },
+      feed: {
+        updatedAt: '2026-06-23T16:00:00Z',
+        freshUntil: '2026-06-23T20:00:00Z',
+        items: [fixtureItem()],
+      },
+      stories: { items: [] },
+      news: { items: [{ id: 'por-preview', teams: ['POR', 'UZB'], en: 'Portugal pressure preview', expires_at: kickoff }] },
+    },
+  );
+  assert.strictEqual(report.passed, false);
+  assert.strictEqual(report.proof_window, false);
+  assert.ok(report.errors.includes('graduation proof requires at least one post-kickoff/live/final target; all targets are pre-kickoff'));
+}
+
+{
+  const finalMatch = { ...match, status: 'FINISHED', home_score: 2, away_score: 0, winner_code: 'POR' };
+  const report = certifyWithPayloads(
+    { match: 'POR-UZB', now: '2026-06-23T19:00:00Z', minScore: 90, graduationProof: true },
+    {
+      source: 'https://friendlybet.live/',
+      matchesPayload: { matches: [finalMatch] },
+      feed: {
+        updatedAt: '2026-06-23T18:55:00Z',
+        freshUntil: '2026-06-24T00:55:00Z',
+        items: [resultItem()],
+      },
+      stories: { items: [{ match_id: 'm-por-uzb' }] },
+      news: { items: [] },
+    },
+  );
+  assert.strictEqual(report.passed, true);
+  assert.strictEqual(report.proof_window, true);
+  assert.deepStrictEqual(report.proof_phases, ['final']);
 }
 
 {

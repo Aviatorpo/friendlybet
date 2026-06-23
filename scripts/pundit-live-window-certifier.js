@@ -127,6 +127,7 @@ function parseArgs(argv) {
     else if (arg === '--json') args.json = true;
     else if (arg === '--record') args.record = argv[++i];
     else if (arg === '--allow-pre') args.allowPre = true;
+    else if (arg === '--graduation-proof') args.graduationProof = true;
     else if (arg === '--base-url') args.baseUrl = argv[++i];
     else if (arg === '--production') args.baseUrl = PRODUCTION_BASE_URL;
     else throw new Error(`Unknown argument: ${arg}`);
@@ -319,6 +320,11 @@ function certifyWithPayloads(args, payloads) {
     report.errors.forEach(error => errors.push(`${report.match}: ${error}`));
     report.warnings.forEach(warning => warnings.push(`${report.match}: ${warning}`));
   }
+  const proofWindow = targetReports.some(report => report.phase !== 'pre');
+  const proofPhases = targetReports.map(report => report.phase);
+  if (args.graduationProof && !proofWindow) {
+    errors.push('graduation proof requires at least one post-kickoff/live/final target; all targets are pre-kickoff');
+  }
 
   const targetScore = targetReports.length
     ? Math.min(...targetReports.map(report => report.score))
@@ -334,6 +340,9 @@ function certifyWithPayloads(args, payloads) {
     min_score: args.minScore,
     score,
     passed,
+    proof_window: proofWindow,
+    proof_phases: proofPhases,
+    graduation_proof_required: Boolean(args.graduationProof),
     feed: {
       updatedAt: feed && feed.updatedAt,
       freshUntil: feed && feed.freshUntil,
@@ -364,6 +373,7 @@ function printReport(report, json) {
   console.log(`Pundit live-window certification: score=${report.score} passed=${report.passed}`);
   console.log(`source=${report.source || 'local'}`);
   console.log(`checked_at=${report.checked_at}`);
+  console.log(`proof_window=${report.proof_window} phases=${(report.proof_phases || []).join(',') || '-'}`);
   console.log(`feed=${report.feed.items} item(s), updatedAt=${report.feed.updatedAt}, freshUntil=${report.feed.freshUntil}`);
   report.targets.forEach(target => {
     console.log(`- ${target.match} phase=${target.phase} status=${target.status} score=${target.score} items=${target.itemTypes.join(',') || '-'}`);
