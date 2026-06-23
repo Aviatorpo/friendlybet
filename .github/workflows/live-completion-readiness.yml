@@ -1,9 +1,11 @@
 name: Live Completion Readiness Monitor
 
 # Production-facing safety net for group-stage completion. This does not write
-# data. It checks the public snapshots users see and, by default, audits live
-# Supabase match state so stale finals, missing stories, stale Pundit, or broken
-# scoring/UX guards fail loudly during match days.
+# data unless stale active-match state is detected. It checks the public
+# snapshots users see and, by default, audits live Supabase match state so stale
+# finals, missing stories, stale Pundit, or broken scoring/UX guards fail loudly
+# during match days. If the dedicated live-poller cron was delayed or dropped,
+# this monitor runs the live poller once and then re-runs the gate.
 on:
   schedule:
     - cron: '6,16,26,36,46,56 * 11-28 6 *'
@@ -29,7 +31,7 @@ permissions:
 jobs:
   monitor:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 18
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -39,7 +41,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Run production readiness gate
+      - name: Run production readiness gate with stale-live recovery
         env:
           LIVE_COMPLETION_PUBLIC_BASE_URL: https://friendlybet.live
           LIVE_COMPLETION_GITHUB_WORKFLOWS: '1'
@@ -47,6 +49,27 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
+          set +e
+          if [ "${{ github.event.inputs.check_db || 'true' }}" = "false" ]; then
+            node scripts/live-completion-readiness.js > readiness-before.json
+          else
+            LIVE_COMPLETION_DB_SOURCE=supabase node scripts/live-completion-readiness.js > readiness-before.json
+          fi
+          status=$?
+          cat readiness-before.json
+          set -e
+          if [ "$status" = "0" ]; then
+            exit 0
+          fi
+
+          stale_live_db=$(node -e "const r=require('./readiness-before.json'); const c=(r.checks||[]).find(x=>x.name==='live DB active match state is fresh'); process.stdout.write(c && !c.ok ? '1' : '0')")
+          if [ "$stale_live_db" != "1" ]; then
+            exit "$status"
+          fi
+
+          echo "::warning::Readiness detected stale active live DB state; running one live-poller recovery pass."
+          node scripts/live-poller.js
+
           if [ "${{ github.event.inputs.check_db || 'true' }}" = "false" ]; then
             node scripts/live-completion-readiness.js
           else

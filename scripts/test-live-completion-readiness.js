@@ -175,6 +175,7 @@ const Readiness = require('./live-completion-readiness');
     'final verifier covers all group-stage match days',
     'readiness monitor covers production during group-stage match days',
     'readiness monitor audits live DB by default',
+    'readiness monitor self-heals stale active live DB',
     'standalone Pundit workflow covers live group-stage transitions',
     'playbook records screenshot fallback rule',
     'visual proof harness covers official scoring states',

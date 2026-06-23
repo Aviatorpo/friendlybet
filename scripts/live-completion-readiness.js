@@ -286,6 +286,15 @@ async function runReadiness(options = {}) {
       && readinessMonitor.includes('check_db'),
     'scheduled monitor must query Supabase unless an operator explicitly opts out'
   );
+  add(
+    checks,
+    'readiness monitor self-heals stale active live DB',
+    readinessMonitor.includes('readiness-before.json')
+      && readinessMonitor.includes("name==='live DB active match state is fresh'")
+      && readinessMonitor.includes('node scripts/live-poller.js')
+      && readinessMonitor.includes('running one live-poller recovery pass'),
+    'stale active match state should trigger one direct live-poller pass before the monitor fails'
+  );
 
   [
     ['final-result-verifier', verifier, 'FORCE_MATCH_SNAPSHOT', 'node scripts/generate-pundit.js'],
