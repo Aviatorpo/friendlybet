@@ -40,6 +40,7 @@
     "537397",
     "537398",
     "537399",
+    "537400",
     "537403",
     "537404",
     "537409",
@@ -823,7 +824,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-23T10:08:28.916Z",
+      "file": "private-backups/2026-06-23T10-08-28-916Z__537400-JOR-ALG.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537400"
+      ],
+      "tableCounts": {
+        "pools": 2017,
+        "users": 6347,
+        "group_picks": 23024,
+        "knockout_picks": 95524,
+        "group_position_picks": 175357,
+        "tournament_winner_picks": 3372,
+        "top_scorer_picks": 2932,
+        "sp_third_place_picks": 29170,
+        "pick_backups": 47191,
+        "knockout_reopen_grants": 1701,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-23T06:06:36.696Z"
+  "updatedAt": "2026-06-23T10:08:28.916Z"
 }
