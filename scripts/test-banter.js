@@ -1,7 +1,7 @@
 // Deterministic unit test for the Pool-Pundit banter engine. No network.
 // Run: node scripts/test-banter.js   (exit 0 = pass, 1 = fail)
 const assert = require('assert');
-const { buildPoolBanter } = require('./generate-banter');
+const { buildPoolBanter, buildGroupHitEvents } = require('./generate-banter');
 
 let passed = 0;
 function check(name, fn) { fn(); passed++; console.log(`  ✓ ${name}`); }
@@ -91,7 +91,28 @@ check('tight race at the top', () => {
   assert.ok(r.items.some(i => i.type === 'tight-race'), 'has tight-race');
 });
 
-// 8) Every produced item has both he and en non-empty and a featured id where relevant
+// 8) Completed group receipt uses real group-position hits.
+check('completed group hit receipt', () => {
+  const users = [U('a', 'Avi', 8), U('b', 'Ben', 4)];
+  const groupEvents = [{ letter: 'A', ordered: ['MEX', 'RSA', 'KOR', 'CZE'] }];
+  const picks = [
+    { user_id: 'a', group_letter: 'A', position: 1, team_code: 'MEX' },
+    { user_id: 'a', group_letter: 'A', position: 2, team_code: 'RSA' },
+    { user_id: 'b', group_letter: 'A', position: 1, team_code: 'RSA' },
+  ];
+  const hits = buildGroupHitEvents(users, picks, groupEvents);
+  assert.strictEqual(hits[0].user.id, 'a');
+  assert.strictEqual(hits[0].hits, 2);
+  const prev = [{ id: 'b', nickname: 'Ben', total_score: 4 }, { id: 'a', nickname: 'Avi', total_score: 0 }];
+  const r = buildPoolBanter(prev, users, [], [], new Map(), 1, hits);
+  const item = r.items.find(i => i.type === 'group-complete');
+  assert.ok(item, 'has group-complete item');
+  assert.strictEqual(item.featuredUserId, 'a');
+  assert.ok(/Group A/.test(item.en), 'mentions group in English');
+  assert.ok(/2 correct slots/.test(item.en), 'mentions hit count');
+});
+
+// 9) Every produced item has both he and en non-empty and a featured id where relevant
 check('all items bilingual + well-formed', () => {
   const prev = [{ id: 'a', nickname: 'A', total_score: 10 }, { id: 'b', nickname: 'B', total_score: 8 }];
   const cur = [U('b', 'B', 16), U('a', 'A', 10)];

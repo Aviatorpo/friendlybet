@@ -335,12 +335,12 @@ function fixtureCommentary(match, now, salt = '') {
       en: `${homeEn} vs ${awayEn}, ${w.en}. Quiet on paper, which is usually where pool chaos begins.`,
     },
     {
-      he: `${homeHe} נגד ${awayHe}, ${w.he}. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.`,
-      en: `${homeEn} vs ${awayEn}, ${w.en}. Not the shiniest match, but these are the ones that move table places without asking.`,
+      he: `${homeHe} נגד ${awayHe}, ${w.he}. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בטבלה בלי לבקש רשות.`,
+      en: `${homeEn} vs ${awayEn}, ${w.en}. Not the shiniest match, but these are the ones that move places in the group table without asking.`,
     },
     {
       he: `${homeHe} נגד ${awayHe}, ${w.he}. לא כל דרמה מגיעה עם שלט ניאון; לפעמים היא פשוט גונבת נקודות.`,
-      en: `${homeEn} vs ${awayEn}, ${w.en}. Not every pool drama arrives with neon lights; some just steal points quietly.`,
+      en: `${homeEn} vs ${awayEn}, ${w.en}. Not every drama arrives with neon lights; some just steal points quietly.`,
     },
   ], salt);
 }

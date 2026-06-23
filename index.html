@@ -1461,7 +1461,7 @@ function loadTablerFallback() {
           <span class="brb-icon">⚠️</span>
           <span class="brb-title" id="brb-title" data-i18n="recoverBracket.title">שלב הנוקאאוט שלך לא נשמר</span>
         </div>
-        <div class="brb-sub" id="brb-sub" data-i18n="recoverBracket.sub">?????? ????? ??? ????? ?????? ? ?? ??? ???? ?????, ??? ???????? (??????) ?? ????. ??? ??? ???? ???? ???? ????? ???????? ? ??????? ?? ?? ??????!</div>
+        <div class="brb-sub" id="brb-sub" data-i18n="recoverBracket.sub">בחירות הבתים שלך נשמרו בהצלחה ✓ אך עקב תקלה טכנית, שלב הנוקאאוט (הבראקט) לא נשמר. אנא מלא אותו מחדש בזמן שחלון העריכה פתוח — מצטערים על אי הנוחות!</div>
         <div class="brb-cta" id="brb-cta" data-i18n="recoverBracket.cta">מלא את הנוקאאוט</div>
       </div>
 
@@ -1483,7 +1483,7 @@ function loadTablerFallback() {
           <span class="anb-icon">⚠️</span>
           <span class="anb-title" id="admin-nudge-title"></span>
         </div>
-        <div class="anb-sub" id="admin-nudge-sub" data-i18n="dashboard.adminNudge.sub">??? ????? ???? ?????? ???? ??????, ?? ?????? ???? ?? ???? ??? ????. ????? ??? ?????? ???? ???? ????? ????????.</div>
+        <div class="anb-sub" id="admin-nudge-sub" data-i18n="dashboard.adminNudge.sub">חלק מחברי הפול צריכים לוודא או להשלים את הבראקט שלהם בזמן שחלון העריכה פתוח.</div>
         <div class="anb-actions">
           <button type="button" class="anb-copy" id="admin-nudge-copy">
             <i class="ti ti-copy"></i><span data-i18n="adminMembersEx.copyNudge">העתק הודעה לקבוצה</span>
@@ -1688,7 +1688,15 @@ function loadTablerFallback() {
             <div class="wc-stories-kicker" data-i18n="worldCupStories.kicker">הסטורי של המונדיאל</div>
             <div class="wc-stories-sub" data-i18n="worldCupStories.sub">רגעים מהמשחקים שכיף לשתף</div>
           </div>
-          <span class="wc-stories-count" id="world-cup-stories-count"></span>
+          <div class="wc-stories-actions">
+            <button type="button" class="wc-stories-nav" id="world-cup-stories-prev" aria-label="Previous story">
+              <i class="ti ti-chevron-left"></i>
+            </button>
+            <span class="wc-stories-count" id="world-cup-stories-count"></span>
+            <button type="button" class="wc-stories-nav" id="world-cup-stories-next" aria-label="Next story">
+              <i class="ti ti-chevron-right"></i>
+            </button>
+          </div>
         </div>
         <div class="wc-stories-rail" id="world-cup-stories-rail"></div>
         <div class="wc-stories-dots" id="world-cup-stories-dots"></div>
@@ -3136,7 +3144,7 @@ function loadTablerFallback() {
       <span>FriendlyBet</span>
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
-      <span class="menu-version">v2.10.80</span>
+      <span class="menu-version">v2.10.89</span>
     </div>
   </div>
 
@@ -3412,8 +3420,8 @@ function loadTablerFallback() {
     <div class="sp-locked-banner">
       <i class="ti ti-lock-check gold"></i>
       <div>
-        <strong data-i18n="betting.locked.heading">???????? ????? ???????</strong>
-        <div data-i18n="betting.locked.message">?? ???? ????? ????. ??? ???????? ??? ????.</div>
+        <strong data-i18n="betting.locked.heading">הניחושים נעולים</strong>
+        <div data-i18n="betting.locked.message">לא ניתן לשנות יותר. אפשר לצפות במה שנשמר למטה.</div>
       </div>
     </div>
     <div id="sp-locked-content"></div>

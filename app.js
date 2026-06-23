@@ -1309,13 +1309,16 @@ async function goToDashboard() {
   const totalAcrossPool = allUsers.reduce((s, u) => s + (u.total_score || 0), 0);
   const hasScores = totalAcrossPool > 0;
   const tournamentStarted = await _dashboardTournamentStarted(hasScores);
+  const progress = _dashboardGroupProgress();
+  const phase = _groupStagePhase(tournamentStarted, hasScores, progress);
+  const officialStarted = _phaseHasOfficialScoring(phase);
 
   // v2.6.74: the pre-tournament progress card was removed (it duplicated the
   // betting CTA). Only the stats card toggles now: shown once the tournament
   // has real scores; the live/no-points state gets its own explainer card.
   const statsEl = document.getElementById('dashboard-stats');
   if (statsEl) {
-    if (hasScores) {
+    if (officialStarted) {
       statsEl.style.display = '';
       const pointsEl = document.getElementById('user-points');
       const freshMe = allUsers.find(u => u.id === state.currentUser.id);
@@ -1324,7 +1327,7 @@ async function goToDashboard() {
       if (allUsers.length) {
         const rank = allUsers.findIndex(u => u.id === state.currentUser.id) + 1;
         const rankEl = document.getElementById('user-rank');
-        if (rankEl) rankEl.textContent = rank > 0 ? rank : '-';
+        if (rankEl) rankEl.textContent = (hasScores && rank > 0) ? rank : '-';
       }
     } else {
       statsEl.style.display = 'none';
@@ -1372,7 +1375,7 @@ async function goToDashboard() {
   // 72h grace deadline for pools affected by the two-phase pick-loss bug.
   updateTwoPhaseIncidentBanner();
 
-  updateDashboardProjectionTeaser(allUsers).catch(err => {
+  updateDashboardProjectionTeaser(allUsers, { phase }).catch(err => {
     console.warn('Dashboard projection teaser failed:', err);
   });
 
@@ -1414,10 +1417,13 @@ function _dashboardProjectionPundit(projection, me, rank) {
   return t('dashboard.projection.punditZero');
 }
 
-async function updateDashboardProjectionTeaser(users) {
+async function updateDashboardProjectionTeaser(users, options = {}) {
   const card = document.getElementById('dashboard-projection-card');
   if (!card || !state.currentPool || !state.currentUser) return;
   _hideDashboardProjectionTeaser();
+  const officialScoreTotal = (users || []).reduce((sum, u) => sum + (u.total_score || 0), 0);
+  const phase = options.phase || _groupStagePhase(true, officialScoreTotal > 0, _dashboardGroupProgress());
+  if (officialScoreTotal > 0 || _phaseHasOfficialScoring(phase)) return;
   try {
     const projection = await buildTheoreticalGroupLeaderboard(users || []);
     if (!projection || !projection.users || !projection.users.length) return;
@@ -1772,26 +1778,52 @@ async function initDashboardCountdown(tournamentStarted) {
   _countdownTimer = setInterval(tick, 1000);
 }
 
+function _dashboardMatchIdentity(m) {
+  if (!m) return '';
+  const group = String(m.group_letter || m.group || m.group_name || m.groupName || '').replace(/^Group\s+/i, '').trim().charAt(0).toUpperCase();
+  const home = String(m.home_team_code || m.homeTeamCode || m.home || '');
+  const away = String(m.away_team_code || m.awayTeamCode || m.away || '');
+  if (home && away) return `${group}|${[home, away].sort().join('|')}`;
+  if (m.external_id != null) return `external:${m.external_id}`;
+  if (m.id != null) return `id:${m.id}`;
+  return `${group}|${String(m.match_date || '')}|${home}|${away}`;
+}
+
 function _dashboardGroupProgress() {
   const finishedMatches = (state.results && Array.isArray(state.results.finishedMatches)) ? state.results.finishedMatches : [];
   const groupMatches = finishedMatches.filter(m => String(m.stage || '').toLowerCase().includes('group'));
-  const finished = groupMatches.length;
   const byGroup = {};
+  const allFinished = new Set();
   groupMatches.forEach(m => {
     const g = m.group_letter || m.group || m.group_name || m.groupName || '';
     const key = String(g).replace(/^Group\s+/i, '').trim().charAt(0).toUpperCase();
     if (!key) return;
-    if (!byGroup[key]) byGroup[key] = { total: 0, done: 0 };
-    byGroup[key].total += 1;
-    byGroup[key].done += 1;
+    const matchKey = _dashboardMatchIdentity(m);
+    if (!matchKey) return;
+    allFinished.add(`${key}:${matchKey}`);
+    if (!byGroup[key]) byGroup[key] = new Set();
+    byGroup[key].add(matchKey);
   });
-  const completeGroups = Object.values(byGroup).filter(g => g.total >= 6 && g.done >= 6).length;
+  const completeGroups = Object.values(byGroup).filter(g => g.size === 6).length;
   return {
-    finished,
+    finished: allFinished.size,
     total: 72,
     completeGroups,
     totalGroups: 12
   };
+}
+
+function _phaseHasOfficialScoring(phase) {
+  return phase === 'officialFirst' || phase === 'officialSeveral' || phase === 'groupsComplete';
+}
+
+function _groupStagePhase(tournamentStarted, hasScores, progress) {
+  const gp = progress || _dashboardGroupProgress();
+  if (!tournamentStarted) return 'pre';
+  if (gp.completeGroups >= gp.totalGroups && gp.totalGroups > 0) return 'groupsComplete';
+  if (gp.completeGroups > 0) return gp.completeGroups > 1 ? 'officialSeveral' : 'officialFirst';
+  if (hasScores) return 'officialFirst';
+  return 'liveNoOfficial';
 }
 
 async function _dashboardTournamentStarted(hasScores) {
@@ -1807,24 +1839,36 @@ async function _dashboardTournamentStarted(hasScores) {
 function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
   const el = document.getElementById('dashboard-live-status');
   if (!el) return;
-  if (!tournamentStarted || hasScores) {
+  const gp = _dashboardGroupProgress();
+  const phase = _groupStagePhase(tournamentStarted, hasScores, gp);
+  if (!tournamentStarted) {
     el.style.display = 'none';
     el.innerHTML = '';
     return;
   }
 
-  const gp = _dashboardGroupProgress();
   const pct = gp.total ? Math.min(100, Math.round((gp.finished / gp.total) * 100)) : 0;
   const lateKo = _isLateKnockoutPool(state.currentPool);
   const lateOpen = !lateKo && _poolLateEntryOpen();
-  const textKey = lateKo
+  let textKey = lateKo
     ? 'dashboard.liveStatus.lateKnockoutText'
     : lateOpen
     ? 'dashboard.liveStatus.lateText'
     : (state._dashboardKnockoutReviewOpen ? 'dashboard.liveStatus.reviewText' : 'dashboard.liveStatus.text');
-  const titleKey = lateKo ? 'dashboard.liveStatus.lateKnockoutTitle' : (lateOpen ? 'dashboard.liveStatus.lateTitle' : 'dashboard.liveStatus.title');
-  const kickerKey = lateKo ? 'dashboard.liveStatus.lateKnockoutKicker' : (lateOpen ? 'dashboard.liveStatus.lateKicker' : 'dashboard.liveStatus.kicker');
-  const zeroKey = lateKo ? 'dashboard.liveStatus.lateKnockoutDeadline' : (lateOpen ? 'dashboard.liveStatus.lateDeadline' : 'dashboard.liveStatus.zeroPoints');
+  let titleKey = lateKo ? 'dashboard.liveStatus.lateKnockoutTitle' : (lateOpen ? 'dashboard.liveStatus.lateTitle' : 'dashboard.liveStatus.title');
+  let kickerKey = lateKo ? 'dashboard.liveStatus.lateKnockoutKicker' : (lateOpen ? 'dashboard.liveStatus.lateKicker' : 'dashboard.liveStatus.kicker');
+  let zeroKey = lateKo ? 'dashboard.liveStatus.lateKnockoutDeadline' : (lateOpen ? 'dashboard.liveStatus.lateDeadline' : 'dashboard.liveStatus.zeroPoints');
+  if (!lateKo && !lateOpen && (phase === 'officialFirst' || phase === 'officialSeveral')) {
+    titleKey = phase === 'officialFirst' ? 'dashboard.officialStatus.firstGroupTitle' : 'dashboard.officialStatus.severalGroupsTitle';
+    textKey = phase === 'officialFirst' ? 'dashboard.officialStatus.firstGroupText' : 'dashboard.officialStatus.severalGroupsText';
+    kickerKey = 'dashboard.officialStatus.kicker';
+    zeroKey = 'dashboard.officialStatus.pointsLive';
+  } else if (!lateKo && !lateOpen && phase === 'groupsComplete') {
+    titleKey = 'dashboard.groupStageComplete.title';
+    textKey = 'dashboard.groupStageComplete.text';
+    kickerKey = 'dashboard.groupStageComplete.kicker';
+    zeroKey = 'dashboard.groupStageComplete.badge';
+  }
   const deadline = lateKo ? _knockoutCutoffLabel() : _lateEntryCutoffLabel();
   el.innerHTML = `
     <div class="dls-head">
@@ -1832,7 +1876,7 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
       <span class="dls-zero">${t(zeroKey, { time: deadline })}</span>
     </div>
     <div class="dls-title">${t(titleKey)}</div>
-    <div class="dls-text">${t(textKey, { time: deadline })}</div>
+    <div class="dls-text">${t(textKey, { time: deadline, done: gp.completeGroups, total: gp.totalGroups })}</div>
     <div class="dls-progress" aria-hidden="true">
       <div class="dls-progress-fill" style="width:${pct}%"></div>
     </div>
@@ -1852,7 +1896,7 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
 // The feed is generated by scripts/generate-pundit.js (data items, zero
 // hallucination) merged with verified news items, so nothing here can invent
 // a claim - we only display what the feed already vetted.
-let _punditState = { items: [], idx: 0, timer: null, refreshTimer: null, loadedAt: 0, ctx: '', pool: null };
+let _punditState = { items: [], idx: 0, timer: null, refreshTimer: null, loadedAt: 0, cacheUntil: 0, ctx: '', pool: null };
 
 // Identifies the pool+user the cached pundit feed was built for. Pool-pulse
 // items ("X joined", "X locked in", leader teases) are scoped to ONE pool and
@@ -1873,6 +1917,7 @@ function resetPunditState() {
   _punditState.items = [];
   _punditState.idx = 0;
   _punditState.loadedAt = 0;
+  _punditState.cacheUntil = 0;
   _punditState.ctx = '';
   _punditState.pool = null;
 }
@@ -1886,15 +1931,17 @@ async function loadPundit() {
       _punditState.items = [];
       _punditState.idx = 0;
       _punditState.loadedAt = 0;
+      _punditState.cacheUntil = 0;
       _punditState.pool = null;
       _punditState.ctx = ctx;
     }
-    if (_punditState.items.length && (Date.now() - _punditState.loadedAt) < 5 * 60 * 1000) {
+    const now = Date.now();
+    if (_punditState.items.length && now < (_punditState.cacheUntil || 0)) {
       return _punditState.items;
     }
     const res = await fetch('/public-data/pundit.json', { cache: 'no-store' });
-    const now = Date.now();
     let globalItems = [];
+    let globalFreshUntil = 0;
     if (res.ok) {
       const j = await res.json();
       const updatedAt = Date.parse((j && j.updatedAt) || '');
@@ -1903,6 +1950,7 @@ async function loadPundit() {
         ? freshUntil > now
         : (Number.isFinite(updatedAt) && now - updatedAt < 6 * 60 * 60 * 1000);
       if (feedFresh) {
+        globalFreshUntil = Number.isFinite(freshUntil) ? freshUntil : (updatedAt + 6 * 60 * 60 * 1000);
         globalItems = (j && Array.isArray(j.items) ? j.items : [])
           .filter(it => it && (it.he || it.en))
           .filter(it => !it.expires_at || Date.parse(it.expires_at) > now);
@@ -1971,17 +2019,25 @@ async function loadPundit() {
     if (!items.length) return [];
     _punditState.items = items;
     _punditState.loadedAt = now;
+    const itemExpiries = items
+      .map(it => Date.parse((it && it.expires_at) || ''))
+      .filter(ts => Number.isFinite(ts) && ts > now);
+    const freshnessBoundaries = [now + 5 * 60 * 1000, globalFreshUntil]
+      .concat(itemExpiries)
+      .filter(ts => Number.isFinite(ts) && ts > now);
+    _punditState.cacheUntil = freshnessBoundaries.length
+      ? Math.min.apply(null, freshnessBoundaries)
+      : now + 5 * 60 * 1000;
     if (_punditState.idx >= items.length) _punditState.idx = 0;
     return items;
   } catch (_) { return []; }
 }
 
 // ---- Pool pulse: client-side, privacy-safe pool commentary -----------------
-// Builds teasing/celebratory items about THIS pool's activity from AGGREGATE
-// facts only: member count, who joined, who submitted (a boolean), and public
-// scores. It NEVER reads any pick value (group_position_picks / knockout_picks
-// / tournament_winner_picks), so a specific prediction can't leak by
-// construction - the "surprises" lines are pure flavor, not derived from picks.
+// Builds teasing/celebratory items about THIS pool's activity. Most lines use
+// aggregate facts only: member count, who joined, who submitted (a boolean), and
+// public scores. A single story-receipt line may reuse the same pool-scoped pick
+// focus already rendered by World Cup Stories, with visible member nicknames.
 const _PP_DAY_MS = 24 * 60 * 60 * 1000;
 
 function _ppSeed() {
@@ -2015,6 +2071,72 @@ async function _loadPoolMembers() {
   } catch (_) { return null; }
 }
 
+function _ppFormatNamesForLang(names, totalCount, lang) {
+  const clean = (names || []).map(n => String(n || '').trim()).filter(Boolean);
+  const total = Math.max(Number(totalCount) || clean.length, clean.length);
+  const extra = Math.max(0, total - clean.length);
+  if (!clean.length) {
+    if (!total) return '';
+    return lang === 'he' ? `${total} ${total === 1 ? 'משתתף' : 'משתתפים'}` : `${total} ${total === 1 ? 'member' : 'members'}`;
+  }
+  if (extra) {
+    if (lang === 'he') return `${clean.join(', ')} ועוד ${extra} ${extra === 1 ? 'משתתף' : 'משתתפים'}`;
+    return `${clean.join(', ')} and ${extra} ${extra === 1 ? 'other' : 'others'}`;
+  }
+  if (clean.length === 1) return clean[0];
+  const joiner = lang === 'he' ? ' ו' : ' and ';
+  if (clean.length === 2) return clean[0] + joiner + clean[1];
+  return clean.slice(0, -1).join(', ') + joiner + clean[clean.length - 1];
+}
+
+function _ppStoryFocusCaption(focus, pickedMembers, count, lang) {
+  const team = lang === 'he'
+    ? (focus.team_he || focus.team_en || focus.team_code)
+    : (focus.team_en || focus.team_he || focus.team_code);
+  const templateKey = count > 3 ? `${lang}_count` : (count === 1 ? `${lang}_name` : `${lang}_names`);
+  const fallbackKey = count === 1 ? `${lang}_names` : `${lang}_count`;
+  const template = focus[templateKey] || focus[fallbackKey] || focus[`${lang}_count`];
+  if (!template) return '';
+  const names = pickedMembers.map(m => m.nickname).filter(Boolean).slice(0, 3);
+  return _wcFillTemplate(template, {
+    names: _ppFormatNamesForLang(names, count, lang),
+    count,
+    team
+  });
+}
+
+async function _punditLatestStoryReceipt(members) {
+  const pool = state.currentPool;
+  if (!pool || !pool.id || !Array.isArray(members) || !members.length || typeof supabaseClient === 'undefined' || !supabaseClient) return null;
+  let stories = [];
+  try { stories = await loadWorldCupStories(); } catch (_) { stories = []; }
+  for (const story of (stories || []).slice(0, 3)) {
+    const focuses = _wcStoryFocuses(story);
+    for (const focus of focuses) {
+      try {
+        const res = await _wcStoryFocusQuery(pool.id, focus);
+        const picks = (res && !res.error && Array.isArray(res.data)) ? res.data : [];
+        if (!picks.length) continue;
+        const pickedIds = new Set(picks.map(p => p.user_id));
+        const pickedMembers = members.filter(m => pickedIds.has(m.id));
+        if (!pickedMembers.length) continue;
+        const count = pickedIds.size;
+        const he = _ppStoryFocusCaption(focus, pickedMembers, count, 'he');
+        const en = _ppStoryFocusCaption(focus, pickedMembers, count, 'en');
+        if (he && en) {
+          return {
+            id: `pool-story-${story.id || story.match_id || focus.team_code || 'latest'}`,
+            prio: 2,
+            he,
+            en,
+          };
+        }
+      } catch (_) {}
+    }
+  }
+  return null;
+}
+
 async function buildPoolPundit() {
   const pool = state.currentPool, viewer = state.currentUser;
   if (!pool || !viewer || !viewer.id) return [];
@@ -2039,6 +2161,7 @@ async function buildPoolPundit() {
   const poolLocked = isPoolWriteLocked(pool);
   const tournamentStarted = hasScores || Date.now() >= Date.parse(POOL_LOCK_KICKOFF_ISO);
   const lateEntryOpen = !poolLocked && _poolLateEntryOpen(pool);
+  const poolOpenForNewBuzz = !poolLocked && (lateEntryOpen || !tournamentStarted);
   const lateEntryCutoff = _lateEntryCutoffLabel();
   const me = members.find(m => m.id === viewer.id) || null;
   const iSubmitted = !!(me && me.predictions_submitted_at);
@@ -2063,6 +2186,13 @@ async function buildPoolPundit() {
     cand.push({ id, prio, he: v.he, en: v.en });
   };
 
+  if (poolLocked || tournamentStarted) {
+    try {
+      const storyReceipt = await _punditLatestStoryReceipt(members);
+      if (storyReceipt) cand.push(storyReceipt);
+    } catch (_) {}
+  }
+
   if (poolLocked) {
     push('pool-locked-live', 1, [
       { he: 'ההימור נעול. עכשיו הבחירות שלכם פוגשות את המציאות, וכל משחק יכול להזיז את הטבלה.',
@@ -2081,7 +2211,7 @@ async function buildPoolPundit() {
     ]);
   }
 
-  if (!poolLocked && total <= 1) {
+  if (poolOpenForNewBuzz && total <= 1) {
     push('pool-solo', 1, [{
       he: 'אתה הראשון בהימור! תזמין כמה חברים שיהיה מעניין 😎',
       en: "You're first in the pool! Invite a few friends to make it interesting 😎",
@@ -2105,7 +2235,7 @@ async function buildPoolPundit() {
     ]);
   }
 
-  if (!poolLocked && recentSubmitter) {
+  if (poolOpenForNewBuzz && recentSubmitter) {
     const n = nameOf(recentSubmitter);
     push('pool-recent-submit', 2, [
       { he: `${n} בדיוק נעל את הבחירות — ויש שם כמה הפתעות 👀`,
@@ -2127,7 +2257,7 @@ async function buildPoolPundit() {
     ]);
   }
 
-  if (!poolLocked && recentJoiner) {
+  if (poolOpenForNewBuzz && recentJoiner) {
     const n = nameOf(recentJoiner);
     push('pool-recent-join', 3, [
       { he: `${n} הצטרף להימור! התחרות מתחממת 🔥`,
@@ -2153,7 +2283,7 @@ async function buildPoolPundit() {
     }]);
   }
 
-  if (!poolLocked && total >= 3) {
+  if (poolOpenForNewBuzz && total >= 3) {
     push('pool-growth', 5, [
       { he: `כבר ${total} חברים בהימור! איזה כיף 🎉`,
         en: `Already ${total} friends in the pool! 🎉` },
@@ -2178,7 +2308,7 @@ async function buildPoolPundit() {
   // pool slots can PAGE to different lines every hour (v2.7.4) instead of being
   // stuck on the same 1-2 facts. Still about THIS pool / the viewer's own
   // predictions, never a fabricated member fact.
-  if (!lateEntryOpen) {
+  if (!tournamentStarted && !lateEntryOpen) {
     push('pool-ev-lock', 7, [{
       he: 'הבחירות שלך בהימור ננעלות עם שריקת הפתיחה. עבור עליהן שוב לפני שיהיה מאוחר ⏰',
       en: 'Your pool picks lock at kickoff. Give them one more look before it is too late ⏰' }]);
@@ -2192,9 +2322,11 @@ async function buildPoolPundit() {
   push('pool-ev-topscorer', 10, [{
     he: 'מלך השערים שתבחר יכול להכריע את ההימור שלך ⚽',
     en: 'The top scorer you pick could decide your pool ⚽' }]);
-  push('pool-ev-share', 11, [{
-    he: 'שתף את לינק ההצטרפות. ככל שיותר חברים מצטרפים, כיף יותר להוביל 🔗',
-    en: 'Share your pool link. The more friends join, the more fun it is to lead 🔗' }]);
+  if (poolOpenForNewBuzz) {
+    push('pool-ev-share', 11, [{
+      he: 'שתף את לינק ההצטרפות. ככל שיותר חברים מצטרפים, כיף יותר להוביל 🔗',
+      en: 'Share your pool link. The more friends join, the more fun it is to lead 🔗' }]);
+  }
   push('pool-ev-compare', 12, [{
     he: 'אחרי שלב הבתים, השווה את הבחירות שלך מול שאר החברים בהימור 📊',
     en: 'After the group stage, compare your picks against the rest of your pool 📊' }]);
@@ -2390,7 +2522,7 @@ function _ppLeastRecent(cands, count, seen, H) {
     // leader / your-still-pending) so the real buzz leads the pool slots.
     if (typeof it.id === 'string' && it.id.indexOf('pool-ev-') === 0) return 1;
     const ty = it.type;
-    if (ty === 'live' || ty === 'news' || ty === 'result' || ty === 'fixture' || ty === 'stat' || ty === 'pool') return 0;
+    if (ty === 'live' || ty === 'verification' || ty === 'news' || ty === 'result' || ty === 'fixture' || ty === 'stat' || ty === 'pool') return 0;
     return 1; // countdown + evergreen deck filler
   };
   return (cands || [])
@@ -2484,6 +2616,7 @@ async function renderPundit() {
       if (!c || document.hidden) return; // skip when the tab/card isn't visible
       const before = (_punditState.items || []).map(i => i && i.id).join('|');
       _punditState.loadedAt = 0; // bypass the in-memory cache -> real re-fetch
+      _punditState.cacheUntil = 0;
       const fresh = await loadPundit();
       const after = (fresh || []).map(i => i && i.id).join('|');
       if (after && after !== before) { _punditState.idx = 0; _punditDraw(); _punditRestartTimer(); }
@@ -2751,7 +2884,9 @@ async function _wcStoryPoolCaption(story, baseCopy) {
       if (!picks.length) continue;
       const pickedIds = new Set(picks.map(p => p.user_id));
       const pickedMembers = members.filter(m => pickedIds.has(m.id));
+      if (!pickedMembers.length) continue;
       const names = pickedMembers.map(m => m.nickname).filter(Boolean).slice(0, 3);
+      if (!names.length) continue;
       const team = lang === 'he' ? (focus.team_he || focus.team_en || focus.team_code) : (focus.team_en || focus.team_he || focus.team_code);
       const count = pickedIds.size;
       const templateKey = count > 3 ? `${lang}_count` : (count === 1 ? `${lang}_name` : `${lang}_names`);
@@ -3065,8 +3200,13 @@ const USER_PUBLIC_COLS = 'id,pool_id,nickname,is_admin,is_approved,is_late_joine
 const _TERMINAL_MATCH_STATUSES = ['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED'];
 const _FINISHED_MATCH_STATUSES = ['FINISHED', 'AWARDED'];
 const _MAX_MATCH_MS = 3.5 * 60 * 60 * 1000; // longest plausible match incl. ET + pens
+const _SCHEDULED_MATCH_STATUSES = ['TIMED', 'SCHEDULED'];
+const _STALE_SCHEDULED_MATCH_MS = 35 * 60 * 1000;
 function _matchStatus(m) {
   return String((m && m.status) || '').toUpperCase();
+}
+function _matchIsScheduledStatus(m) {
+  return _SCHEDULED_MATCH_STATUSES.includes(_matchStatus(m));
 }
 function _matchIsLiveStatus(m) {
   return _LIVE_MATCH_STATUSES.includes(_matchStatus(m));
@@ -3078,6 +3218,10 @@ function _matchElapsedMs(m, now = Date.now()) {
 function _matchIsStaleLive(m, now = Date.now()) {
   const elapsed = _matchElapsedMs(m, now);
   return _matchIsLiveStatus(m) && elapsed != null && elapsed >= _MAX_MATCH_MS;
+}
+function _matchIsStaleScheduled(m, now = Date.now()) {
+  const elapsed = _matchElapsedMs(m, now);
+  return _matchIsScheduledStatus(m) && elapsed != null && elapsed >= _STALE_SCHEDULED_MATCH_MS;
 }
 function _matchSourceFresh(m, now = Date.now(), maxAgeMs = 3 * 60 * 1000) {
   const ts = Date.parse((m && (m.source_updated_at || m.last_updated)) || '');
@@ -3091,6 +3235,11 @@ function _matchLiveClockLabel(m, now = Date.now()) {
 function _matchHasNumericScore(m) {
   return m && m.home_score != null && m.away_score != null;
 }
+function _matchIsPendingProviderFinal(m) {
+  const source = String((m && m.live_source) || '').toLowerCase();
+  const detail = String((m && m.status_detail) || '').toLowerCase();
+  return source === 'espn-final' || detail.includes('pending verification');
+}
 function _matchHasFreshEspnSource(m, now = Date.now()) {
   return String((m && m.live_source) || '').toLowerCase() === 'espn' && _matchSourceFresh(m, now);
 }
@@ -3102,17 +3251,23 @@ function _matchLiveScoreTrusted(m, now = Date.now()) {
   return !!_matchLiveClockLabel(m, now);
 }
 function _matchIsFinishedStatus(m) {
-  return _FINISHED_MATCH_STATUSES.includes(_matchStatus(m));
+  return _FINISHED_MATCH_STATUSES.includes(_matchStatus(m)) && !_matchIsPendingProviderFinal(m);
 }
 function _matchIsTerminalStatus(m) {
   return _TERMINAL_MATCH_STATUSES.includes(_matchStatus(m));
 }
+function _matchNeedsStatusVerification(m, now = Date.now()) {
+  return _matchIsPendingProviderFinal(m) || _matchIsStaleLive(m, now) || (_matchIsStaleScheduled(m, now) && !_matchIsTerminalStatus(m));
+}
 function _matchIsLiveish(m, now = Date.now()) {
   if (!m) return false;
-  if (_matchIsStaleLive(m, now)) return false;
+  if (_matchNeedsStatusVerification(m, now)) return false;
   if (_matchIsLiveStatus(m)) return true;
   const ko = Date.parse(m.match_date);
   return !isNaN(ko) && ko <= now && (now - ko) < _MAX_MATCH_MS && !_matchIsTerminalStatus(m);
+}
+function _snapshotHasStaleScheduled(matches, now = Date.now()) {
+  return (matches || []).some(m => _matchIsStaleScheduled(m, now) && !_matchIsTerminalStatus(m));
 }
 function _snapshotHasPastNonTerminal(matches, now = Date.now()) {
   return (matches || []).some(m => {
@@ -3128,7 +3283,7 @@ function _snapshotStaleDuringLive(matches, maxAgeMs = 60000) {
 }
 function _snapshotShouldReadDb(matches, maxAgeMs = 60000) {
   if (!matches) return true;
-  return _snapshotStaleDuringLive(matches, maxAgeMs) || _snapshotHasPastNonTerminal(matches);
+  return _snapshotStaleDuringLive(matches, maxAgeMs) || _snapshotHasStaleScheduled(matches) || _snapshotHasPastNonTerminal(matches);
 }
 
 function _matchCountsForGroupProjection(m, now = Date.now()) {
@@ -3417,6 +3572,7 @@ async function loadResultsData(options = {}) {
         .in('status', _FINISHED_MATCH_STATUSES);
       matches = data || [];
     }
+    matches = (matches || []).filter(_matchIsFinishedStatus);
 
     state.results.finishedMatches = matches || [];
     state.results.groupStandings = computeCurrentGroupStandings(matches || []);
@@ -8736,31 +8892,58 @@ async function showLeaderboard(options = {}) {
 
   document.getElementById('lb-members-count').textContent = t('leaderboard.participantsCount', { n: users.length });
 
-  // Check tournament status (for now - always pre-tournament)
   const totalScores = users.reduce((sum, u) => sum + (u.total_score || 0), 0);
   const hasScores = totalScores > 0;
+  await loadResultsData().catch(() => {});
+  const progress = _dashboardGroupProgress();
+  const tournamentStarted = await _dashboardTournamentStarted(hasScores);
+  const phase = _groupStagePhase(tournamentStarted, hasScores, progress);
+  const officialStarted = _phaseHasOfficialScoring(phase);
 
+  const statusKey = phase === 'pre' ? 'leaderboard.statusBefore'
+    : phase === 'liveNoOfficial' ? 'leaderboard.statusLiveNoOfficial'
+    : phase === 'groupsComplete' ? 'leaderboard.statusGroupsComplete'
+    : 'leaderboard.statusOfficialStarted';
   document.getElementById('lb-tournament-status').textContent =
-    hasScores ? t('leaderboard.statusDuring') : t('leaderboard.statusBefore');
+    t(statusKey, { groups: progress.completeGroups, total: progress.totalGroups });
 
-  // Render podium (top 3)
-  renderPodium(users);
+  const podiumEl = document.getElementById('lb-podium');
+  if (hasScores) {
+    if (podiumEl) podiumEl.style.display = '';
+    renderPodium(users);
+  } else if (podiumEl) {
+    podiumEl.innerHTML = '';
+    podiumEl.style.display = 'none';
+  }
 
   // Pool Pundit: live banter about what the latest results did to the board
   renderLeaderboardBanter(users);
 
   // Render full list
-  renderFullLeaderboard(users);
+  const fullListTitle = document.querySelector('#leaderboard-screen .section-title-small[data-i18n="leaderboard.fullRanking"]');
+  if (fullListTitle) fullListTitle.textContent = t(hasScores ? 'leaderboard.fullRanking' : 'leaderboard.participantsList');
+  renderFullLeaderboard(users, { hasScores, phase });
 
   // Empty state
   const emptyEl = document.getElementById('lb-empty');
   if (!hasScores) {
+    const emptyTitle = emptyEl && emptyEl.querySelector('.lb-empty-title');
+    const emptyText = emptyEl && emptyEl.querySelector('.lb-empty-text');
+    const emptyTitleKey = officialStarted ? 'leaderboard.emptyOfficialZeroTitle'
+      : (phase === 'liveNoOfficial' ? 'leaderboard.emptyLiveNoOfficialTitle' : 'leaderboard.emptyTitle');
+    const emptyTextKey = officialStarted ? 'leaderboard.emptyOfficialZeroText'
+      : (phase === 'liveNoOfficial' ? 'leaderboard.emptyLiveNoOfficialText' : 'leaderboard.emptyText');
+    if (emptyTitle) emptyTitle.textContent = t(emptyTitleKey);
+    if (emptyText) emptyText.textContent = t(emptyTextKey, {
+      groups: progress.completeGroups,
+      total: progress.totalGroups
+    });
     emptyEl.style.display = 'block';
   } else {
     emptyEl.style.display = 'none';
   }
 
-  renderTheoreticalLeaderboard(users, options);
+  renderTheoreticalLeaderboard(users, { ...options, hasScores, phase });
 }
 
 function showTheoreticalLeaderboard() {
@@ -8834,10 +9017,10 @@ function renderProjectionList(users) {
     if (isMe) row.classList.add('is-me');
     row.innerHTML = `
       <div class="lb-rank">#${idx + 1}</div>
-      <div class="lb-avatar-small">${escapeHtml((user.nickname || '?').charAt(0).toUpperCase())}</div>
-      <div class="lb-info">
-        <div class="lb-name">
-          ${escapeHtml(user.nickname || '?')}
+        <div class="lb-avatar-small">${escapeHtml((user.nickname || '?').charAt(0).toUpperCase())}</div>
+        <div class="lb-info">
+          <div class="lb-name">
+          <span class="lb-name-text">${escapeHtml(user.nickname || '?')}</span>
           ${user.is_admin ? `<span class="admin-badge">${t('common.admin')}</span>` : ''}
           ${isMe ? `<span class="lb-badge">${t('common.you')}</span>` : ''}
         </div>
@@ -8857,6 +9040,7 @@ function renderProjectionList(users) {
 
 async function renderTheoreticalLeaderboard(users, options = {}) {
   _hideTheoreticalLeaderboard();
+  if (options && (options.hasScores || _phaseHasOfficialScoring(options.phase))) return;
   try {
     const projection = await buildTheoreticalGroupLeaderboard(users || []);
     if (!projection || !projection.users || !projection.users.length) return;
@@ -8947,7 +9131,7 @@ function createEmptyPodium(rank) {
   return div;
 }
 
-function renderFullLeaderboard(users) {
+function renderFullLeaderboard(users, options = {}) {
   const list = document.getElementById('lb-full-list');
   list.innerHTML = '';
 
@@ -8970,13 +9154,14 @@ function renderFullLeaderboard(users) {
     const knockoutPts = (user.knockout_points ?? user.knockout_score) || 0;
     const bonusPts = (user.bonus_points ?? user.bonus_score) || 0;
     const isSinglePhase = state.currentPool && state.currentPool.betting_mode === 'single_phase';
+    const rankLabel = options.hasScores ? `#${rank}` : '-';
 
     row.innerHTML = `
-      <div class="lb-rank">#${rank}</div>
+      <div class="lb-rank">${rankLabel}</div>
       <div class="lb-avatar-small">${escapeHtml((user.nickname || '?').charAt(0).toUpperCase())}</div>
       <div class="lb-info">
         <div class="lb-name">
-          ${escapeHtml(user.nickname)}
+          <span class="lb-name-text">${escapeHtml(user.nickname || '?')}</span>
           ${user.is_admin ? `<span class="admin-badge">${t('common.admin')}</span>` : ''}
           ${isMe ? `<span class="lb-badge">${t('common.you')}</span>` : ''}
         </div>
@@ -9745,14 +9930,14 @@ function createMatchCard(match) {
   // PAUSED (halftime / breaks) counts as live too - otherwise the score would
   // vanish and the match would show as "upcoming" for ~15 min every half-time.
   const status = _matchStatus(match);
-  const isStaleLive = _matchIsStaleLive(match);
+  const needsStatusVerification = _matchNeedsStatusVerification(match);
   const isLive = _matchIsLiveish(match);
   const isFinished = _matchIsFinishedStatus(match);
   const isScheduled = !isLive && !isFinished;
-  const liveScoreTrusted = !isStaleLive && isLive && _matchLiveScoreTrusted(match);
+  const liveScoreTrusted = !needsStatusVerification && isLive && _matchLiveScoreTrusted(match);
   
   card.className = 'match-card';
-  if (isStaleLive) card.classList.add('verifying');
+  if (needsStatusVerification) card.classList.add('verifying');
   else if (status === 'PAUSED') card.classList.add('halftime'); // calm break look, not pulsing-live
   else if (isLive) card.classList.add('live');
   if (isFinished) card.classList.add('finished');
@@ -9772,7 +9957,7 @@ function createMatchCard(match) {
   // local minute label would look precise while being wrong.
   let statusText;
   let statusClass;
-  if (isStaleLive) {
+  if (needsStatusVerification) {
     statusText = t('matchesEx.verifyingResult');
     statusClass = 'verifying';
   } else if (status === 'PAUSED') {
@@ -9808,9 +9993,9 @@ function createMatchCard(match) {
   // Score display
   let scoreHtml;
   let pendingScoreNote = '';
-  if (isStaleLive) {
+  if (needsStatusVerification) {
     scoreHtml = `<div class="match-score no-score">VS</div>`;
-    pendingScoreNote = `<div class="match-score-pending-note">${t('matchesEx.resultBeingVerified')}</div>`;
+    pendingScoreNote = `<div class="match-score-pending-note">${t('matchesEx.statusBeingVerified')}</div>`;
   } else if (isFinished || isLive) {
     const hasScore = isFinished ? _matchHasNumericScore(match) : liveScoreTrusted;
     scoreHtml = hasScore ? `
@@ -10018,16 +10203,19 @@ function _fbForceHomeIfBlank(reason) {
 }
 // 6s instead of 8: previous timeout was longer than typical Supabase init,
 // so a quick recovery is fine. Still gives the loading splash a reasonable
-// dwell time on a slow first paint.
-setTimeout(() => _fbForceHomeIfBlank('init timeout'), 6000);
-window.addEventListener('error', (e) => {
-  console.error('[GLOBAL ERROR]', e && e.error || e);
-  _fbForceHomeIfBlank('global error: ' + (e && e.message));
-});
-window.addEventListener('unhandledrejection', (e) => {
-  console.error('[UNHANDLED REJECTION]', e && e.reason);
-  _fbForceHomeIfBlank('unhandled rejection');
-});
+// dwell time on a slow first paint. Browser smoke tests set FB_TEST_MODE to
+// render states directly without the startup fallback racing the scenario.
+if (!window.FB_TEST_MODE) {
+  setTimeout(() => _fbForceHomeIfBlank('init timeout'), 6000);
+  window.addEventListener('error', (e) => {
+    console.error('[GLOBAL ERROR]', e && e.error || e);
+    _fbForceHomeIfBlank('global error: ' + (e && e.message));
+  });
+  window.addEventListener('unhandledrejection', (e) => {
+    console.error('[UNHANDLED REJECTION]', e && e.reason);
+    _fbForceHomeIfBlank('unhandled rejection');
+  });
+}
 // v2.5.52: if the user taps the loading splash after 3 seconds of being
 // stuck on it, treat that as an explicit "get me out" request. Belt-and-
 // suspenders behavior — useful on devices where the timeout above is for
@@ -10396,10 +10584,12 @@ async function initApp() {
 }
 
 // Start when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initApp);
-} else {
-  initApp();
+if (!window.FB_TEST_MODE) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
 }
 
 // v2.5.28: when the user returns to the tab, refresh the dashboard
@@ -11353,7 +11543,7 @@ if (!navigator.onLine) {
 }
 
 
-if ('serviceWorker' in navigator) {
+if (!window.FB_TEST_MODE && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
       .then(reg => {

@@ -1,0 +1,224 @@
+#!/usr/bin/env node
+// Deterministic tests for live-ops audit summaries. No network, no DB.
+
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+
+process.env.SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY || 'test-key';
+
+const Audit = require('./live-ops-audit');
+const ROOT = path.resolve(__dirname, '..');
+
+function assertOrdered(text, file, firstNeedle, laterNeedle, message) {
+  const firstIdx = text.indexOf(firstNeedle);
+  const laterIdx = text.indexOf(laterNeedle);
+  assert.ok(firstIdx >= 0, `${file} missing ${firstNeedle}`);
+  assert.ok(laterIdx >= 0, `${file} missing ${laterNeedle}`);
+  assert.ok(firstIdx < laterIdx, message || `${file}: ${firstNeedle} must come before ${laterNeedle}`);
+}
+
+let passed = 0;
+function check(name, fn) {
+  fn();
+  passed++;
+  console.log(`ok: ${name}`);
+}
+
+const groupAComplete = [
+  ['MEX', 'RSA', 2, 0],
+  ['KOR', 'CZE', 2, 1],
+  ['MEX', 'KOR', 1, 0],
+  ['CZE', 'RSA', 1, 1],
+  ['CZE', 'MEX', 0, 2],
+  ['RSA', 'KOR', 1, 3],
+].map(([home, away, hs, as], idx) => ({
+  id: `a${idx}`,
+  stage: 'GROUP_STAGE',
+  group_letter: 'A',
+  home_team_code: home,
+  away_team_code: away,
+  home_score: hs,
+  away_score: as,
+  status: 'FINISHED',
+  match_date: `2026-06-${11 + idx}T19:00:00Z`,
+  winner_code: hs > as ? home : (as > hs ? away : null),
+}));
+
+check('group completion summary uses scoreable terminal fixtures', () => {
+  const groups = Audit.summarizeGroupCompletion(groupAComplete);
+  assert.strictEqual(groups.length, 1);
+  assert.strictEqual(groups[0].group, 'A');
+  assert.strictEqual(groups[0].fixtures, 6);
+  assert.strictEqual(groups[0].terminal_fixtures, 6);
+  assert.strictEqual(groups[0].scoreable_complete, true);
+});
+
+check('pending provider final does not complete a group', () => {
+  const pending = groupAComplete.map((match, idx) => idx === 5
+    ? { ...match, live_source: 'espn-final', status_detail: 'ESPN final pending verification' }
+    : match);
+  const groups = Audit.summarizeGroupCompletion(pending);
+  assert.strictEqual(groups[0].terminal_fixtures, 5);
+  assert.strictEqual(groups[0].scoreable_complete, false);
+});
+
+check('result recovery summary finds old non-terminal candidates', () => {
+  const nowMs = Date.parse('2026-06-23T12:00:00Z');
+  const stale = [{
+    id: 'stale-1',
+    external_id: '537400',
+    status: 'TIMED',
+    match_date: '2026-06-23T03:00:00Z',
+    home_team_code: 'JOR',
+    away_team_code: 'ALG',
+  }];
+  const result = Audit.summarizeResultRecovery(stale, nowMs, {
+    lookbackHours: 336,
+    minAgeMinutes: 95,
+    backoff: false,
+  });
+  assert.strictEqual(result.candidates, 1);
+  assert.strictEqual(result.due, 1);
+  assert.strictEqual(result.waiting, 0);
+  assert.strictEqual(result.sample[0].match, 'JOR-ALG');
+});
+
+check('result recovery summary respects bounded lookback', () => {
+  const nowMs = Date.parse('2026-06-23T12:00:00Z');
+  const tooOld = [{
+    id: 'old-1',
+    status: 'TIMED',
+    match_date: '2026-06-10T03:00:00Z',
+    home_team_code: 'AAA',
+    away_team_code: 'BBB',
+  }];
+  const result = Audit.summarizeResultRecovery(tooOld, nowMs, {
+    lookbackHours: 96,
+    minAgeMinutes: 95,
+  });
+  assert.strictEqual(result.candidates, 0);
+});
+
+check('story summary reports unresolved result recovery as story-blocking', () => {
+  const stories = Audit.summarizeStories([], { candidates: 3 });
+  assert.strictEqual(stories.missing, 0);
+  assert.strictEqual(stories.blocked_by_result_recovery, 3);
+});
+
+check('verified-result workflows force match snapshot export before dependent context', () => {
+  const files = {
+    '.github/workflows/final-result-verifier.yml': [
+      'node scripts/export-snapshots.js leaderboards',
+      'node scripts/generate-pundit.js',
+    ],
+    '.github/workflows/live-poller.yml': [
+      'node scripts/export-snapshots.js leaderboards',
+      'node scripts/generate-pundit.js',
+      'node scripts/world-cup-story-auto-needed.js',
+    ],
+    '.github/workflows/manual-match-results.yml': [
+      'node scripts/generate-pundit.js',
+      'node scripts/world-cup-story-auto-needed.js',
+    ],
+    '.github/workflows/publish-world-cup-stories-prepared.yml': [
+      'node scripts/world-cup-story-auto-needed.js',
+    ],
+  };
+  for (const [file, dependentSteps] of Object.entries(files)) {
+    const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    assert.ok(text.includes('FORCE_MATCH_SNAPSHOT'), `${file} must force settled-result match snapshot export`);
+    dependentSteps.forEach(step => {
+      assertOrdered(text, file, 'FORCE_MATCH_SNAPSHOT', step, `${file} must force match snapshot export before ${step}`);
+    });
+  }
+});
+
+check('final-result verifier has continuous 15-minute recovery schedule', () => {
+  const text = fs.readFileSync(path.join(ROOT, '.github/workflows/final-result-verifier.yml'), 'utf8');
+  assert.ok(text.includes("cron: '*/15 * 11-28 6 *'"), 'final verifier must not have group-stage recovery gaps');
+});
+
+check('live poller has continuous 5-minute group-stage coverage', () => {
+  const text = fs.readFileSync(path.join(ROOT, '.github/workflows/live-poller.yml'), 'utf8');
+  assert.ok(text.includes("cron: '*/5 * 11-28 6 *'"), 'live poller must not rely on narrow precomputed match windows');
+  assert.ok(/preflights first[\s\S]*calls providers only/.test(text), 'live poller workflow must document preflight as the cost control');
+});
+
+check('scheduled scoring/export failures fail loudly', () => {
+  const text = fs.readFileSync(path.join(ROOT, '.github/workflows/calculate-scores-v2.yml'), 'utf8');
+  assert.ok(!/score calculation skipped[\s\S]*exit 0/.test(text), 'scheduled scoring must not exit 0 after scoring failure');
+  assert.ok(!/leaderboard snapshot export skipped[\s\S]*exit 0/.test(text), 'scheduled snapshot export must not exit 0 after export failure');
+  assert.ok(/run:\s*node scripts\/calculate-scores-v2\.js/.test(text), 'scoring workflow must run scoring directly');
+  assert.ok(/run:\s*node scripts\/export-snapshots\.js leaderboards/.test(text), 'scoring workflow must run snapshot export directly');
+});
+
+check('main scoring workflow runs the live snapshot audit on data changes', () => {
+  const text = fs.readFileSync(path.join(ROOT, '.github/workflows/test-scoring.yml'), 'utf8');
+  assert.ok(/run:\s*node scripts\/live-ops-audit\.js/.test(text), 'test workflow must run the real live-ops snapshot audit');
+  ['app.js', 'styles.css', 'i18n.js', 'index.html', 'config.js', 'service-worker.js'].forEach(file => {
+    assert.ok(text.includes(file), `test workflow must trigger when ${file} changes`);
+  });
+  assert.ok(text.includes('public-data/matches.json'), 'test workflow must trigger on match snapshot changes');
+  assert.ok(text.includes('public-data/pundit.json'), 'test workflow must trigger on Pundit snapshot changes');
+  assert.ok(text.includes('public-data/world-cup-stories.json'), 'test workflow must trigger on story snapshot changes');
+  [
+    '.github/workflows/calculate-scores-v2.yml',
+    '.github/workflows/final-result-verifier.yml',
+    '.github/workflows/generate-pundit.yml',
+    '.github/workflows/live-poller.yml',
+    '.github/workflows/manual-match-results.yml',
+    '.github/workflows/publish-world-cup-stories-prepared.yml',
+    '.github/workflows/test-scoring.yml',
+  ].forEach(file => {
+    assert.ok(text.includes(file), `test workflow must trigger when ${file} changes`);
+  });
+  assert.ok(
+    (text.match(/'\.github\/workflows\/test-scoring\.yml'/g) || []).length >= 2,
+    'test workflow must trigger on its own changes for both push and pull_request'
+  );
+});
+
+check('pre-Pundit audit mode filters only Pundit watchdog findings', () => {
+  const filtered = Audit.withoutPunditWatchdogFindings({
+    errors: [
+      'Pundit feed is stale or missing freshUntil',
+      'Pundit item live-m1: live commentary references non-live match m1 (TIMED)',
+      'public-data/pundit.json missing or invalid during tournament window',
+      'm1: scheduled status is stale 120m after kickoff',
+    ],
+    warnings: [
+      'pundit-news.json is empty during tournament window',
+      'public-data/leaderboard directory is missing',
+    ],
+  });
+  assert.deepStrictEqual(filtered.errors, ['m1: scheduled status is stale 120m after kickoff']);
+  assert.deepStrictEqual(filtered.warnings, ['public-data/leaderboard directory is missing']);
+});
+
+check('standalone Pundit workflow audits match state before build', () => {
+  const text = fs.readFileSync(path.join(ROOT, '.github/workflows/generate-pundit.yml'), 'utf8');
+  const exportIdx = text.indexOf('node scripts/export-snapshots.js matches');
+  const auditIdx = text.indexOf('node scripts/live-ops-audit.js');
+  const buildIdx = text.indexOf('node scripts/generate-pundit.js');
+  const validateIdx = text.indexOf('node scripts/test-pundit-feed.js');
+  assert.ok(exportIdx >= 0, 'generate-pundit workflow must export current match snapshot');
+  assert.ok(auditIdx > exportIdx, 'generate-pundit workflow must export matches before audit');
+  assert.ok(auditIdx >= 0, 'generate-pundit workflow must run live-ops audit');
+  assert.ok(buildIdx > auditIdx, 'generate-pundit workflow must audit before build');
+  assert.ok(validateIdx > buildIdx, 'generate-pundit workflow must validate after build');
+  assert.ok(text.includes("FORCE_MATCH_SNAPSHOT: '1'"), 'generate-pundit workflow must force a current match snapshot for the live desk');
+  assert.ok(text.includes('LIVE_OPS_SKIP_PUNDIT'), 'generate-pundit audit must allow Pundit freshness refresh');
+  assert.ok(/git status --porcelain public-data\/matches\.json public-data\/pundit\.json/.test(text), 'generate-pundit workflow must commit matches with Pundit');
+  assert.ok(/git add public-data\/matches\.json public-data\/pundit\.json/.test(text), 'generate-pundit workflow must stage matches with Pundit');
+  assert.ok(/pushed=0[\s\S]*failed to push Pundit feed[\s\S]*exit 1/.test(text), 'generate-pundit workflow must fail if push retries never succeed');
+});
+
+check('final-result verifier commits exported match snapshot with Pundit', () => {
+  const text = fs.readFileSync(path.join(ROOT, '.github/workflows/final-result-verifier.yml'), 'utf8');
+  assert.ok(text.includes('node scripts/export-snapshots.js matches'), 'final verifier must export match snapshot after verified results');
+  assert.ok(/git status --porcelain public-data\/matches\.json public-data\/leaderboard/.test(text), 'final verifier must include matches in changed snapshot check');
+  assert.ok(/git add public-data\/matches\.json public-data\/leaderboard/.test(text), 'final verifier must stage matches with scoring/Pundit snapshots');
+});
+
+console.log(`\nLive-ops audit tests passed: ${passed}`);

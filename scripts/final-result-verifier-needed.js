@@ -18,8 +18,8 @@ const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY
   || 'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU';
 
 const TERMINAL = new Set(['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED']);
-const MIN_AGE_MINUTES = parseInt(process.env.RESULT_FALLBACK_MIN_AGE_MINUTES || '', 10) || 115;
-const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 48;
+const MIN_AGE_MINUTES = parseInt(process.env.RESULT_FALLBACK_MIN_AGE_MINUTES || '', 10) || 95;
+const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 336;
 const BACKOFF_ENABLED = process.env.RESULT_FALLBACK_BACKOFF === '1';
 const RUN_EVERY_MINUTES = parseInt(process.env.RESULT_FALLBACK_RUN_EVERY_MINUTES || '', 10) || 15;
 
@@ -138,9 +138,11 @@ async function main() {
     minAgeMinutes: MIN_AGE_MINUTES,
     runEveryMinutes: RUN_EVERY_MINUTES,
   }));
+  const waitingCandidates = candidates.filter(match => !dueCandidates.includes(match));
   setOutput('needed', dueCandidates.length ? 'true' : 'false');
   setOutput('candidate_count', String(candidates.length));
   setOutput('due_count', String(dueCandidates.length));
+  setOutput('waiting_count', String(waitingCandidates.length));
   setOutput('source', payload.source || 'unknown');
 
   if (candidates.length) {

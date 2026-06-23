@@ -22,7 +22,6 @@ const path = require('path');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
-if (!SUPABASE_KEY) { console.error('Missing SUPABASE_SECRET_KEY'); process.exit(1); }
 
 const ROOT = path.resolve(__dirname, '..');
 const OUT_DIR = path.join(ROOT, 'public-data');
@@ -75,8 +74,30 @@ function writeIfChanged(file, payloadKey, payload) {
 // row churns every poll (clock/score), which would re-commit the snapshot and
 // trigger a Vercel redeploy on every 10-min sync.
 const LIVE_STATUSES = new Set(['IN_PLAY', 'PAUSED', 'LIVE']);
+const FINAL_STATUSES = new Set(['FINISHED', 'AWARDED']);
+
+function isPendingProviderFinal(match) {
+  const source = String((match && match.live_source) || '').toLowerCase();
+  const detail = String((match && match.status_detail) || '').toLowerCase();
+  return source === 'espn-final' || detail.includes('pending verification');
+}
+
+function sanitizeMatchForSnapshot(match) {
+  if (!match || typeof match !== 'object') return match;
+  const clean = { ...match };
+  const status = String(clean.status || '').toUpperCase();
+  const hasScore = clean.home_score != null && clean.away_score != null;
+  if (FINAL_STATUSES.has(status) && hasScore && !isPendingProviderFinal(clean)) {
+    clean.live_clock = null;
+    clean.live_period = null;
+    clean.live_source = null;
+    clean.status_detail = null;
+  }
+  return clean;
+}
 
 async function exportMatches() {
+  if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY');
   let matches;
   try {
     matches = await sbAll('matches', '?select=*&order=match_date.asc,id.asc');
@@ -102,6 +123,7 @@ async function exportMatches() {
     console.log(`matches.json: frozen - ${liveCount} live match(es); live scores come from the DB, snapshot refreshes once play settles.`);
     return 0;
   }
+  matches = matches.map(sanitizeMatchForSnapshot);
 
   const wrote = writeIfChanged(matchesFile, 'matches',
     { updatedAt: new Date().toISOString(), count: matches.length, matches });
@@ -110,6 +132,7 @@ async function exportMatches() {
 }
 
 async function exportLeaderboards() {
+  if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY');
   let pools, users;
   try {
     pools = await sbAll('pools', '?select=id');
@@ -133,12 +156,25 @@ async function exportLeaderboards() {
   return changed;
 }
 
-// mode: 'matches' | 'leaderboards' | 'all' (default). Lets the 10-min match cron skip the
-// all-users read and the 30-min score cron do both.
-const MODE = (process.argv[2] || 'all').toLowerCase();
-(async () => {
+async function main() {
+  if (!SUPABASE_KEY) { console.error('Missing SUPABASE_SECRET_KEY'); process.exit(1); }
+  // mode: 'matches' | 'leaderboards' | 'all' (default). Lets the 10-min match cron skip the
+  // all-users read and the 30-min score cron do both.
+  const MODE = (process.argv[2] || 'all').toLowerCase();
   fs.mkdirSync(LB_DIR, { recursive: true });
   const m = MODE === 'leaderboards' ? 0 : await exportMatches();
   const l = MODE === 'matches' ? 0 : await exportLeaderboards();
   console.log(`snapshot export done (mode=${MODE}). matches changed=${m}, leaderboards changed=${l}.`);
-})().catch((e) => { console.error('export-snapshots fatal:', e); process.exit(1); });
+}
+
+if (require.main === module) {
+  main().catch((e) => { console.error('export-snapshots fatal:', e); process.exit(1); });
+} else {
+  module.exports = {
+    exportMatches,
+    exportLeaderboards,
+    isPendingProviderFinal,
+    sanitizeMatchForSnapshot,
+    writeIfChanged,
+  };
+}
