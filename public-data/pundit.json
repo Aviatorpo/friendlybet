@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-06-23T19:43:02.279Z",
-  "freshUntil": "2026-06-24T01:43:02.279Z",
-  "count": 12,
+  "updatedAt": "2026-06-23T20:02:25.702Z",
+  "freshUntil": "2026-06-24T02:02:25.702Z",
+  "count": 11,
   "items": [
     {
       "id": "result-31a2acf9-8ee6-4657-8fe7-7732592ad3a4",
@@ -49,20 +49,11 @@
       "expires_at": "2026-06-23T23:00:00.000Z"
     },
     {
-      "id": "fixture-cc3d81e8-2e37-4768-8de8-2ca1412a558a",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "אנגליה נגד גאנה, היום 23:00. אנגליה מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
-      "en": "England vs Ghana, today 23:00. England comes in as favorite, which is exactly where predictions start sweating.",
-      "sources": [],
-      "expires_at": "2026-06-23T19:45:00.000Z"
-    },
-    {
       "id": "fixture-a984417e-7707-4e03-9642-239750701bc0",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "פנמה נגד קרואטיה, מחר 02:00. על הנייר קרואטיה אמורה לשלוט, אבל הנייר לא מקבל נקודות בהימור.",
-      "en": "Panama vs Croatia, tomorrow 02:00. On paper Croatia should control it, but paper does not score pool points.",
+      "he": "פנמה נגד קרואטיה, מחר 02:00. קרואטיה מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
+      "en": "Panama vs Croatia, tomorrow 02:00. Croatia comes in as favorite, which is exactly where predictions start sweating.",
       "sources": [],
       "expires_at": "2026-06-23T22:45:00.000Z"
     },
@@ -70,8 +61,8 @@
       "id": "fixture-718f2821-b1fa-4746-9b20-f142f9535e24",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "קולומביה נגד קונגו הדמוקרטית, מחר 05:00. משחק של פייבוריטית על הנייר, אבל בדיוק כאן מתחילים הסיפורים של ההימור.",
-      "en": "Colombia vs Congo DR, tomorrow 05:00. A favorite on paper, but this is where pool stories usually begin.",
+      "he": "קולומביה נגד קונגו הדמוקרטית, מחר 05:00. קולומביה מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.",
+      "en": "Colombia vs Congo DR, tomorrow 05:00. Colombia comes in as favorite, which is exactly where predictions start sweating.",
       "sources": [],
       "expires_at": "2026-06-24T01:45:00.000Z"
     },
@@ -79,8 +70,8 @@
       "id": "fixture-0b825d4e-6106-4113-8324-e6565b0a1e24",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שווייץ נגד קנדה, מחר 22:00. לא כל דרמה מגיעה עם שלט ניאון; לפעמים היא פשוט גונבת נקודות.",
-      "en": "Switzerland vs Canada, tomorrow 22:00. Not every drama arrives with neon lights; some just steal points quietly.",
+      "he": "שווייץ נגד קנדה, מחר 22:00. על הנייר שקט, בהימורים זה בדרך כלל הרעש האמיתי.",
+      "en": "Switzerland vs Canada, tomorrow 22:00. Quiet on paper, which is usually where pool chaos begins.",
       "sources": [],
       "expires_at": "2026-06-24T18:45:00.000Z"
     },
@@ -88,35 +79,19 @@
       "id": "fixture-1b45a450-6148-4bcc-ae32-4205a98f090a",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "בוסניה-הרצגובינה נגד קטאר, מחר 22:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בטבלה בלי לבקש רשות.",
-      "en": "Bosnia-Herzegovina vs Qatar, tomorrow 22:00. Not the shiniest match, but these are the ones that move places in the group table without asking.",
+      "he": "בוסניה-הרצגובינה נגד קטאר, מחר 22:00. על הנייר שקט, בהימורים זה בדרך כלל הרעש האמיתי.",
+      "en": "Bosnia-Herzegovina vs Qatar, tomorrow 22:00. Quiet on paper, which is usually where pool chaos begins.",
       "sources": [],
       "expires_at": "2026-06-24T18:45:00.000Z"
     },
     {
-      "id": "2026-06-23-england-ghana-defensive-warning",
-      "type": "news",
-      "confidence": "reported",
-      "he": "אנגליה יכולה לעלות מול גאנה הערב, אבל טוכל מדבר כמו מאמן שראה את סימני האזהרה מוקדם. שלוש נקודות זה נחמד, ההרגלים בהגנה הם מה שבחירת בית L צריכה לעקוב אחריו.",
-      "en": "England can qualify against Ghana tonight, but Tuchel is talking like a coach who saw the warning signs early. Three points are nice. Defensive habits are what your Group L pick should watch.",
-      "team": "ENG",
-      "teams": [
-        "ENG",
-        "GHA"
-      ],
-      "sources": [
-        {
-          "name": "The Guardian",
-          "url": "https://www.theguardian.com/football/2026/jun/23/thomas-tuchel-england-ghana-world-cup-defence-improve"
-        },
-        {
-          "name": "Times of India",
-          "url": "https://timesofindia.indiatimes.com/sports/football/fifa-world-cup/declan-rice-reveals-secret-behind-the-scenes-struggle-he-had-been-dealing-with-that-led-to-early-world-cup-substitution/articleshow/131925847.cms"
-        }
-      ],
-      "expires_at": "2026-06-23T20:00:00.000Z",
-      "topic_date": "2026-06-23T10:50:00.000Z",
-      "source_checked_at": "2026-06-23T10:50:00.000Z"
+      "id": "fixture-970c8b45-92d8-4b62-83ff-ecc9e05957e9",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "סקוטלנד נגד ברזיל, 25/06 01:00. משחק של פייבוריטית על הנייר, אבל בדיוק כאן מתחילים הסיפורים של ההימור.",
+      "en": "Scotland vs Brazil, 25/06 01:00. A favorite on paper, but this is where pool stories usually begin.",
+      "sources": [],
+      "expires_at": "2026-06-24T21:45:00.000Z"
     },
     {
       "id": "2026-06-23-croatia-panama-survival",
