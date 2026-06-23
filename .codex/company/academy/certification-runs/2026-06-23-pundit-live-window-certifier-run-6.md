@@ -182,6 +182,7 @@ This remains pre-kickoff certification only. It proves freshness, source routing
   - appends JSONL evidence for each certification run,
   - blocks paths outside the repository,
   - should use `tmp\...` during automated calibration because Node cannot write into `.codex` in this sandbox.
+  - now supports `--base-url <url>` and `--production` so certification can fetch `public-data/matches.json`, `public-data/pundit.json`, `public-data/world-cup-stories.json`, and `public-data/pundit-news.json` from the live site with cache busting.
   - now requires pre-kickoff source-backed news/editorial items for the target match to expire no later than kickoff.
   - now matches news items to team codes with exact/team-list/word-boundary logic, so `POR` is not falsely detected inside words such as `SPORTS`.
   - now treats explicit `team` / `teams[]` fields as authoritative; arbitrary source URL/title text is only a legacy fallback when no routing field exists.
@@ -225,6 +226,8 @@ Passed:
 - `node scripts\pundit-live-window-certifier.js --match ENG-GHA`
 - `node scripts\pundit-live-window-certifier.js --match POR-UZB --record tmp\pundit-live-window-certifications-2026-06-23.jsonl`
 - `node scripts\pundit-live-window-certifier.js --match ENG-GHA --record tmp\pundit-live-window-certifications-2026-06-23.jsonl`
+- `node scripts\pundit-live-window-certifier.js --production --match POR-UZB --record tmp\pundit-live-window-certifications-2026-06-23.jsonl`
+- `node scripts\pundit-live-window-certifier.js --production --match ENG-GHA --record tmp\pundit-live-window-certifications-2026-06-23.jsonl`
 - `node --check scripts\pundit-news-validate.js`
 - `node --check scripts\test-pundit-news-validate.js`
 - `node scripts\test-pundit-news-validate.js`

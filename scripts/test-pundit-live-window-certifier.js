@@ -1,7 +1,15 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const { phaseFor, scoreTarget, recordReport, mentionsTeamCode } = require('./pundit-live-window-certifier');
+const {
+  phaseFor,
+  scoreTarget,
+  recordReport,
+  mentionsTeamCode,
+  certifyWithPayloads,
+  assetUrl,
+  normaliseBaseUrl,
+} = require('./pundit-live-window-certifier');
 
 const kickoff = '2026-06-23T17:00:00Z';
 const match = {
@@ -61,6 +69,9 @@ assert.strictEqual(mentionsTeamCode({ team: 'ENG', source: 'BBC Sport' }, 'POR')
 assert.strictEqual(mentionsTeamCode({ teams: ['POR'] }, 'POR'), true);
 assert.strictEqual(mentionsTeamCode({ team: 'ENG', url: 'https://example.com/POR-UZB-preview' }, 'POR'), false);
 assert.strictEqual(mentionsTeamCode({ url: 'https://example.com/POR-UZB-preview' }, 'POR'), true);
+assert.strictEqual(normaliseBaseUrl('https://friendlybet.live'), 'https://friendlybet.live/');
+assert.strictEqual(assetUrl('https://friendlybet.live', 'public-data/pundit.json', 123), 'https://friendlybet.live/public-data/pundit.json?v=pundit-certifier-123');
+assert.throws(() => normaliseBaseUrl('file:///tmp/feed'), /http\(s\)/);
 
 {
   const report = scoreTarget(match, ctx(
@@ -104,6 +115,26 @@ assert.strictEqual(mentionsTeamCode({ url: 'https://example.com/POR-UZB-preview'
   const finalMatch = { ...match, status: 'FINISHED', home_score: 2, away_score: 0, winner_code: 'POR' };
   const report = scoreTarget(finalMatch, ctx('2026-06-23T19:00:00Z', [resultItem()]));
   assert.ok(report.errors.includes('finished match lacks World Cup story'));
+}
+
+{
+  const report = certifyWithPayloads(
+    { match: 'POR-UZB', now: '2026-06-23T16:30:00Z', minScore: 90 },
+    {
+      source: 'https://friendlybet.live/',
+      matchesPayload: { matches: [match] },
+      feed: {
+        updatedAt: '2026-06-23T16:00:00Z',
+        freshUntil: '2026-06-23T20:00:00Z',
+        items: [fixtureItem()],
+      },
+      stories: { items: [] },
+      news: { items: [{ id: 'por-preview', teams: ['POR', 'UZB'], en: 'Portugal pressure preview', expires_at: kickoff }] },
+    },
+  );
+  assert.strictEqual(report.source, 'https://friendlybet.live/');
+  assert.strictEqual(report.passed, true);
+  assert.strictEqual(report.targets[0].score, 100);
 }
 
 {

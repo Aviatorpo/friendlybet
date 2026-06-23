@@ -9,6 +9,7 @@ const MATCHES_FILE = path.join(DATA_DIR, 'matches.json');
 const PUNDIT_FILE = path.join(DATA_DIR, 'pundit.json');
 const STORIES_FILE = path.join(DATA_DIR, 'world-cup-stories.json');
 const NEWS_FILE = path.join(DATA_DIR, 'pundit-news.json');
+const PRODUCTION_BASE_URL = 'https://friendlybet.live/';
 
 const HOUR_MS = 60 * 60 * 1000;
 const STALE_SCHEDULED_MS = 35 * 60 * 1000;
@@ -21,6 +22,32 @@ const HE_CONSEQUENCE_TERMS = /(?:טבלה|טבלאות|בית|בתים|תחזי�
 
 function readJson(file, fallback) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { return fallback; }
+}
+
+function normaliseBaseUrl(baseUrl) {
+  const value = String(baseUrl || '').trim();
+  if (!value) throw new Error('--base-url requires a URL');
+  const url = new URL(value);
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') {
+    throw new Error('--base-url must be an http(s) URL');
+  }
+  if (!url.pathname.endsWith('/')) url.pathname += '/';
+  return url.href;
+}
+
+function assetUrl(baseUrl, relativePath, stamp = Date.now()) {
+  const url = new URL(relativePath, normaliseBaseUrl(baseUrl));
+  url.searchParams.set('v', `pundit-certifier-${stamp}`);
+  return url.href;
+}
+
+async function fetchJson(baseUrl, relativePath) {
+  const url = assetUrl(baseUrl, relativePath);
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`cannot fetch ${url}: HTTP ${response.status}`);
+  }
+  return response.json();
 }
 
 function parseTime(value) {
@@ -100,6 +127,8 @@ function parseArgs(argv) {
     else if (arg === '--json') args.json = true;
     else if (arg === '--record') args.record = argv[++i];
     else if (arg === '--allow-pre') args.allowPre = true;
+    else if (arg === '--base-url') args.baseUrl = argv[++i];
+    else if (arg === '--production') args.baseUrl = PRODUCTION_BASE_URL;
     else throw new Error(`Unknown argument: ${arg}`);
   }
   return args;
@@ -222,13 +251,40 @@ function scoreTarget(match, ctx) {
   };
 }
 
-function certify(args) {
+function localPayloads() {
+  return {
+    source: 'local',
+    matchesPayload: readJson(MATCHES_FILE, { matches: [] }),
+    feed: readJson(PUNDIT_FILE, null),
+    stories: readJson(STORIES_FILE, { items: [] }),
+    news: readJson(NEWS_FILE, { items: [] }),
+  };
+}
+
+async function remotePayloads(baseUrl) {
+  const normalised = normaliseBaseUrl(baseUrl);
+  const [matchesPayload, feed, stories, news] = await Promise.all([
+    fetchJson(normalised, 'public-data/matches.json'),
+    fetchJson(normalised, 'public-data/pundit.json'),
+    fetchJson(normalised, 'public-data/world-cup-stories.json'),
+    fetchJson(normalised, 'public-data/pundit-news.json'),
+  ]);
+  return {
+    source: normalised,
+    matchesPayload,
+    feed,
+    stories,
+    news,
+  };
+}
+
+function certifyWithPayloads(args, payloads) {
   const nowMs = args.now ? Date.parse(args.now) : Date.now();
   if (!Number.isFinite(nowMs)) throw new Error(`Invalid --now value: ${args.now}`);
-  const matchesPayload = readJson(MATCHES_FILE, { matches: [] });
-  const feed = readJson(PUNDIT_FILE, null);
-  const stories = readJson(STORIES_FILE, { items: [] });
-  const news = readJson(NEWS_FILE, { items: [] });
+  const matchesPayload = payloads.matchesPayload || { matches: [] };
+  const feed = payloads.feed || null;
+  const stories = payloads.stories || { items: [] };
+  const news = payloads.news || { items: [] };
   const matches = Array.isArray(matchesPayload.matches) ? matchesPayload.matches : [];
   const feedItems = feed && Array.isArray(feed.items) ? feed.items : [];
   const storiesByMatch = new Set((Array.isArray(stories.items) ? stories.items : [])
@@ -273,6 +329,7 @@ function certify(args) {
   score = Math.max(0, score);
   const passed = errors.length === 0 && score >= args.minScore;
   return {
+    source: payloads.source || 'local',
     checked_at: nowIso,
     min_score: args.minScore,
     score,
@@ -288,12 +345,24 @@ function certify(args) {
   };
 }
 
+function certify(args) {
+  return certifyWithPayloads(args, localPayloads());
+}
+
+async function certifyAsync(args) {
+  if (args.baseUrl) {
+    return certifyWithPayloads(args, await remotePayloads(args.baseUrl));
+  }
+  return certify(args);
+}
+
 function printReport(report, json) {
   if (json) {
     console.log(JSON.stringify(report, null, 2));
     return;
   }
   console.log(`Pundit live-window certification: score=${report.score} passed=${report.passed}`);
+  console.log(`source=${report.source || 'local'}`);
   console.log(`checked_at=${report.checked_at}`);
   console.log(`feed=${report.feed.items} item(s), updatedAt=${report.feed.updatedAt}, freshUntil=${report.feed.freshUntil}`);
   report.targets.forEach(target => {
@@ -315,22 +384,26 @@ function recordReport(report, recordPath) {
 }
 
 if (require.main === module) {
-  try {
+  (async () => {
     const args = parseArgs(process.argv);
-    const report = certify(args);
+    const report = await certifyAsync(args);
     printReport(report, args.json);
     if (args.record) recordReport(report, args.record);
     if (!report.passed) process.exit(1);
-  } catch (err) {
+  })().catch(err => {
     console.error(err.message);
     process.exit(1);
-  }
+  });
 } else {
   module.exports = {
     certify,
+    certifyAsync,
+    certifyWithPayloads,
     phaseFor,
     scoreTarget,
     mentionsTeamCode,
     recordReport,
+    assetUrl,
+    normaliseBaseUrl,
   };
 }
