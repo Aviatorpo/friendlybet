@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-23T13:19:14.862Z",
-  "freshUntil": "2026-06-23T19:19:14.862Z",
+  "updatedAt": "2026-06-23T15:58:18.340Z",
+  "freshUntil": "2026-06-23T21:58:18.340Z",
   "count": 12,
   "items": [
     {
@@ -79,8 +79,8 @@
       "id": "fixture-0b825d4e-6106-4113-8324-e6565b0a1e24",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שווייץ נגד קנדה, מחר 22:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בלי לבקש רשות.",
-      "en": "Switzerland vs Canada, tomorrow 22:00. Not the shiniest match, but these are the ones that move table places without asking.",
+      "he": "שווייץ נגד קנדה, מחר 22:00. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בטבלה בלי לבקש רשות.",
+      "en": "Switzerland vs Canada, tomorrow 22:00. Not the shiniest match, but these are the ones that move places in the group table without asking.",
       "sources": [],
       "expires_at": "2026-06-24T19:00:00.000Z"
     },
