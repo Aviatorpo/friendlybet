@@ -1,4 +1,61 @@
 {
-  "updatedAt": "2026-06-24T05:34:25.000Z",
-  "items": []
+  "updatedAt": "2026-06-24T06:36:00.000Z",
+  "items": [
+    {
+      "id": "2026-06-24-colombia-knockout-munoz",
+      "confidence": "reported",
+      "team": "COL",
+      "teams": [
+        "COL",
+        "COD"
+      ],
+      "topic_date": "2026-06-24T06:30:00.000Z",
+      "source_checked_at": "2026-06-24T06:36:00.000Z",
+      "expires_at": "2026-06-24T12:36:00.000Z",
+      "he": "קולומביה כבר בשלב הבא אחרי שדניאל מוניוס שבר את קונגו הדמוקרטית ב-1:0. בית K עכשיו מצביע ישר לקולומביה-פורטוגל, וכל מי שסימן את קולומביה ראשונה קיבל קבלה.",
+      "en": "Colombia are through after Daniel Munoz finally broke DR Congo 1-0. Group K now points straight at Colombia-Portugal, and every Colombia-first form has a receipt.",
+      "sources": [
+        {
+          "name": "The Guardian",
+          "url": "https://www.theguardian.com/football/live/2026/jun/24/fifa-world-cup-2026-live-colombia-v-dr-congo-updates-col-vs-cod-group-k-match-score-latest"
+        },
+        {
+          "name": "Times of India",
+          "url": "https://timesofindia.indiatimes.com/sports/football/fifa-world-cup/fifa-world-cup-2026-daniel-muoz-fires-colombia-into-knockout-stage-with-win-over-dr-congo/articleshow/131955359.cms"
+        },
+        {
+          "name": "El Pais",
+          "url": "https://elpais.com/america-colombia/2026-06-24/colombia-rd-congo-en-directo-partido-del-grupo-k-del-mundial-2026-en-vivo.html"
+        }
+      ]
+    },
+    {
+      "id": "2026-06-24-croatia-modric-budimir-survival",
+      "confidence": "reported",
+      "team": "CRO",
+      "teams": [
+        "CRO",
+        "PAN"
+      ],
+      "topic_date": "2026-06-24T06:30:00.000Z",
+      "source_checked_at": "2026-06-24T06:36:00.000Z",
+      "expires_at": "2026-06-24T12:36:00.000Z",
+      "he": "קרואטיה עוד נושמת ופנמה בחוץ אחרי שבודימיר הפך את ההופעה ה-200 של מודריץ' ללילה של 1:0 והישרדות. בית L מחכה עכשיו לקרואטיה-גאנה עם קבלות בשני הכיוונים.",
+      "en": "Croatia are still breathing and Panama are out after Budimir turned Modric's 200th cap into a 1-0 survival night. Group L now waits for Croatia-Ghana with receipts both ways.",
+      "sources": [
+        {
+          "name": "The Guardian",
+          "url": "https://www.theguardian.com/football/2026/jun/24/croatia-panama-world-cup-2026-match-report"
+        },
+        {
+          "name": "The Times",
+          "url": "https://www.thetimes.com/sport/football/world-cup/article/world-cup-2026-latest-news-live-scores-team-updates-day-13-mfnppt8dm"
+        },
+        {
+          "name": "Cadena SER",
+          "url": "https://cadenaser.com/nacional/2026/06/24/panama-0-1-croacia-resumen-resultado-y-gol-del-partido-del-grupo-l-del-mundial-2026-cadena-ser/"
+        }
+      ]
+    }
+  ]
 }

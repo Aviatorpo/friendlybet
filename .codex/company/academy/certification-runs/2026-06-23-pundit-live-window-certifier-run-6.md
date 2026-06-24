@@ -423,3 +423,32 @@ Supporting checks after cleanup:
 - `node scripts\live-ops-audit.js`: failed as designed because PAN-CRO and COL-COD remain stale scheduled rows after kickoff, ENG-GHA is missing a Story, and `pundit-news.json` is empty during the tournament window.
 
 Graduation status: not graduated. This checkpoint proves the deterministic stale-data recovery works after refresh, but it also confirms that the live desk still needs source result recovery, an ENG-GHA story, and a non-empty or explicitly source-checked news desk before TV-level readiness can be claimed.
+
+## 2026-06-24 06:32Z Final-State Follow-Up
+
+Checkpoint ran at `2026-06-24T09:32+03:00` and recorded local evidence in `tmp\pundit-live-window-certifications-2026-06-24.jsonl`.
+
+Current local snapshot changed materially from the previous checkpoint:
+
+- POR-UZB: `FINISHED`, Portugal 5-0 Uzbekistan.
+- ENG-GHA: `FINISHED`, England 0-0 Ghana.
+- PAN-CRO: `FINISHED`, Panama 0-1 Croatia.
+- COL-COD: `FINISHED`, Colombia 1-0 Congo DR.
+- `public-data/world-cup-stories.json` now has 48 stories for 48 finished matches; missing-story count is 0.
+- `public-data/pundit.json` is fresh: `updatedAt=2026-06-24T05:52:55.632Z`, `freshUntil=2026-06-24T11:52:55.632Z`.
+
+Certifier evidence:
+
+- POR-UZB: `score=100`, `passed=true`, phase `final`.
+- ENG-GHA: `score=100`, `passed=true`, phase `final`.
+- PAN-CRO: `score=100`, `passed=true`, phase `final`.
+- COL-COD: `score=100`, `passed=true`, phase `final`.
+
+Supporting checks:
+
+- `node scripts\live-ops-audit.js`: `ok=true`, 0 errors, 48 finished matches, 48 stories, 0 result-recovery candidates.
+- `node scripts\pundit-news-validate.js --require-unexpired`: passed.
+- `node scripts\test-pundit-feed.js`: passed, with the expected warning that `pundit-news.json` is empty during the tournament window.
+- `node scripts\test-world-cup-stories.js`: passed for 48 stories.
+
+Graduation status: still not fully graduated. The final-state structural gate now passes for the target matches, including two real post-final windows, but the TV-level editorial standard still needs a source-led news desk record or fresh verified news. An empty news file is acceptable for strict correctness only when accompanied by a source ledger explaining why no item passed.
