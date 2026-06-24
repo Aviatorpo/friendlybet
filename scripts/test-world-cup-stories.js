@@ -118,6 +118,7 @@ for (const story of stories) {
   ['he', 'en'].forEach(lang => {
     const caption = String(story[lang] && story[lang].caption || '').trim();
     if (!caption) fail(`${story.id}: ${lang} fallback caption is empty`);
+    if (!endingEmojiPattern.test(caption)) fail(`${story.id}: ${lang} fallback caption should end with a fitting emoji`);
     const key = `${lang}:${caption}`;
     if (seenFallbacks.has(key)) {
       fail(`${story.id}: ${lang} fallback caption duplicates ${seenFallbacks.get(key)}`);
@@ -137,6 +138,11 @@ for (const story of stories) {
     });
     const enFocus = focusText(focus, 'en');
     const heFocus = focusText(focus, 'he');
+    ['he_name', 'he_names', 'he_count', 'en_name', 'en_names', 'en_count'].forEach(key => {
+      if (focus && focus[key] && !endingEmojiPattern.test(String(focus[key]).trim())) {
+        fail(`${story.id}: pool_focuses[${idx}].${key} should end with a fitting emoji`);
+      }
+    });
     if (/(^|[^\u05d0-\u05ea])\u05e4\u05d5\u05dc([^\u05d0-\u05ea]|$)/u.test(heFocus)) {
       fail(`${story.id}: Hebrew pool_focuses[${idx}] must say heymur/tfasim/chat, not "פול"`);
     }

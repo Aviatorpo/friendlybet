@@ -201,6 +201,37 @@ function variantFor(match, variants, salt = '') {
   return variants[Math.abs(hash(key)) % variants.length];
 }
 
+const PUNDIT_EMOJI_BY_TYPE = {
+  countdown: '🏆',
+  live: '🔥',
+  verification: '🧐',
+  result: '🧾',
+  fixture: '⏰',
+  news: '👀',
+  stat: '📊',
+  pool: '🎯',
+};
+
+function hasEndingEmoji(text) {
+  return /[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?$/u.test(String(text || '').trim());
+}
+
+function withPunditEmoji(text, type) {
+  const copy = String(text || '').trim();
+  if (!copy || hasEndingEmoji(copy)) return copy;
+  const emoji = PUNDIT_EMOJI_BY_TYPE[type] || '⚽';
+  return `${copy.replace(/[.。]\s*$/, '')} ${emoji}`;
+}
+
+function withPunditItemEmoji(item) {
+  if (!item || typeof item !== 'object') return item;
+  return {
+    ...item,
+    he: withPunditEmoji(item.he, item.type),
+    en: withPunditEmoji(item.en, item.type),
+  };
+}
+
 function resultCommentary(match, salt = '') {
   const hs = Number(match.home_score);
   const as = Number(match.away_score);
@@ -497,7 +528,7 @@ function build(now, options = {}) {
       en: 'Welcome to World Cup 2026! Follow The Pundit for hot updates.',
     });
   }
-  return merged;
+  return merged.map(withPunditItemEmoji);
 }
 
 function hash(s) {

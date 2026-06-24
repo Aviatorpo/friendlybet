@@ -1412,6 +1412,46 @@ function withEndingStoryEmoji(text, match, outcome) {
   return `${withoutTrailingEmoji.replace(/[.。]\s*$/, '')} ${storyEmoji(match, outcome)}`;
 }
 
+function withPoolFocusStoryEmojis(focus, match, outcome) {
+  if (!focus || typeof focus !== 'object') return focus;
+  const next = { ...focus };
+  [
+    'he_name',
+    'he_names',
+    'he_count',
+    'en_name',
+    'en_names',
+    'en_count',
+  ].forEach(key => {
+    if (next[key]) next[key] = withEndingStoryEmoji(next[key], match, outcome);
+  });
+  return next;
+}
+
+function applyStoryEmojiDiscipline(story, match) {
+  if (!story || !match) return story;
+  const outcome = outcomeFor(match);
+  const focuses = Array.isArray(story.pool_focuses) && story.pool_focuses.length
+    ? story.pool_focuses
+    : (story.pool_focus ? [story.pool_focus] : []);
+  const nextFocuses = focuses.map(focus => withPoolFocusStoryEmojis(focus, match, outcome));
+  return {
+    ...story,
+    pool_focus: nextFocuses[0] || story.pool_focus,
+    pool_focuses: nextFocuses,
+    he: {
+      ...story.he,
+      headline: withStoryEmoji(story.he && story.he.headline, match, outcome),
+      caption: withEndingStoryEmoji(story.he && story.he.caption, match, outcome),
+    },
+    en: {
+      ...story.en,
+      headline: withStoryEmoji(story.en && story.en.headline, match, outcome),
+      caption: withEndingStoryEmoji(story.en && story.en.caption, match, outcome),
+    },
+  };
+}
+
 function fallbackEditorialCaption(match, outcome) {
   const score = scoreForOutcome(match, outcome);
   const group = match && match.group_letter ? match.group_letter : 'WC';
@@ -1781,7 +1821,7 @@ function buildStory(match, image, outcome) {
     he: { headline: withStoryEmoji(titles.he, match, outcome), caption: withStoryEmoji(captions.he, match, outcome) },
     en: { headline: withStoryEmoji(titles.en, match, outcome), caption: withStoryEmoji(captions.en, match, outcome) },
   };
-  return applyFallbackEditorialVariety(story, match, outcome);
+  return applyStoryEmojiDiscipline(applyFallbackEditorialVariety(story, match, outcome), match);
 }
 
 function validateStory(story, match) {
@@ -1986,6 +2026,7 @@ async function main() {
     })
     .slice(0, MAX_STORIES);
   items = applyLatestStoryShapeVariety(items, matchById);
+  items = items.map(story => applyStoryEmojiDiscipline(story, matchById.get(story && story.match_id)));
   items.forEach(story => {
     const match = matchById.get(story.match_id);
     if (match) validateStory(story, match);

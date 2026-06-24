@@ -2483,6 +2483,24 @@ const _PP_SEEN_KEY = 'fb_pundit_seen';   // { id: lastHourIndexShown }
 const _PP_HOUR_KEY = 'fb_pundit_hour';   // { H, pool:[ids], news:[ids] }
 const _PP_SEEN_MAX = 600;                // cap stored ids so localStorage stays small
 
+const _PUNDIT_EMOJI_BY_TYPE = {
+  countdown: '🏆',
+  live: '🔥',
+  verification: '🧐',
+  result: '🧾',
+  fixture: '⏰',
+  news: '👀',
+  pool: '🎯',
+  stat: '📊',
+};
+
+function _punditWithEmoji(text, type) {
+  const copy = String(text || '').trim();
+  if (!copy) return '';
+  if (/[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?$/u.test(copy)) return copy;
+  return `${copy.replace(/[.。]\s*$/, '')} ${_PUNDIT_EMOJI_BY_TYPE[type] || '⚽'}`;
+}
+
 function _ppHash(s) {
   let h = 0; const str = String(s);
   for (let i = 0; i < str.length; i++) { h = (h << 5) - h + str.charCodeAt(i); h |= 0; }
@@ -2635,7 +2653,8 @@ function _punditDraw() {
   if (textEl) {
     textEl.classList.add('pundit-fade');
     setTimeout(() => {
-      textEl.textContent = (lang === 'he' ? it.he : it.en) || it.he || it.en || '';
+      const rawText = (lang === 'he' ? it.he : it.en) || it.he || it.en || '';
+      textEl.textContent = _punditWithEmoji(rawText, it && it.type);
       textEl.classList.remove('pundit-fade');
       // Reset to collapsed and decide whether "see more" is needed for this item.
       textEl.classList.remove('expanded');

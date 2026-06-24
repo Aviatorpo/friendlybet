@@ -35,6 +35,8 @@ function copyShape(text) {
 const EN_CONSEQUENCE_TERMS = /\b(table|tables|group|prediction|predictions|predictors|pool|pools|pick|picks|picked|form|forms|slip|slips|called|safe|sweating|points|qualify|qualification|receipt|receipts)\b/i;
 const HE_CONSEQUENCE_TERMS = /(?:טבלה|טבלאות|בית|בתים|תחזית|תחזיות|הימור|הימורים|טופס|טפסים|נקודות|מקום|מקומות|עלייה|קבלה|קבלות|סימן)/u;
 
+const ENDING_EMOJI = /[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?$/u;
+
 function fail(message) {
   console.error(message);
   process.exitCode = 1;
@@ -80,6 +82,8 @@ for (const item of items) {
   if (!item.confidence) fail(`${item.id}: missing confidence`);
   if (!String(item.he || '').trim()) fail(`${item.id}: missing Hebrew copy`);
   if (!String(item.en || '').trim()) fail(`${item.id}: missing English copy`);
+  if (!ENDING_EMOJI.test(String(item.he || '').trim())) fail(`${item.id}: Hebrew Pundit copy should end with an emoji`);
+  if (!ENDING_EMOJI.test(String(item.en || '').trim())) fail(`${item.id}: English Pundit copy should end with an emoji`);
   const expiresAt = parseTime(item.expires_at);
   if (item.expires_at && !Number.isFinite(expiresAt)) fail(`${item.id}: invalid expires_at`);
   if (Number.isFinite(expiresAt) && expiresAt <= nowMs) fail(`${item.id}: expired item included in generated feed`);

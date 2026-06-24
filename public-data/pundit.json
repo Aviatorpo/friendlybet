@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-06-24T12:35:58.501Z",
-  "freshUntil": "2026-06-24T18:35:58.501Z",
+  "updatedAt": "2026-06-24T14:03:34.755Z",
+  "freshUntil": "2026-06-24T20:03:34.755Z",
   "count": 11,
   "items": [
     {
       "id": "result-718f2821-b1fa-4746-9b20-f142f9535e24",
       "type": "result",
       "confidence": "confirmed",
-      "he": "קולומביה ניצחה את קונגו הדמוקרטית 1:0. שלוש נקודות חשובות לבית ולכל מי שבחר בה.",
-      "en": "Colombia beat Congo DR 1-0. Three important points for the group and for anyone who picked them.",
+      "he": "קולומביה ניצחה את קונגו הדמוקרטית 1:0. שלוש נקודות חשובות לבית ולכל מי שבחר בה 🧾",
+      "en": "Colombia beat Congo DR 1-0. Three important points for the group and for anyone who picked them 🧾",
       "sources": [],
       "expires_at": "2026-06-25T08:00:00.000Z"
     },
@@ -16,8 +16,8 @@
       "id": "result-a984417e-7707-4e03-9642-239750701bc0",
       "type": "result",
       "confidence": "confirmed",
-      "he": "קרואטיה עם 1:0 על פנמה. זה ניצחון שמסדר לה עמדה טובה יותר בבית.",
-      "en": "Croatia beat Panama 1-0. That gives them a stronger position in the group.",
+      "he": "קרואטיה עם 1:0 על פנמה. זה ניצחון שמסדר לה עמדה טובה יותר בבית 🧾",
+      "en": "Croatia beat Panama 1-0. That gives them a stronger position in the group 🧾",
       "sources": [],
       "expires_at": "2026-06-25T05:00:00.000Z"
     },
@@ -25,8 +25,8 @@
       "id": "result-cc3d81e8-2e37-4768-8de8-2ca1412a558a",
       "type": "result",
       "confidence": "confirmed",
-      "he": "אנגליה וגאנה נפרדו ב-0:0. תיקו כזה משאיר הרבה תחזיות בלי הכרעה ברורה.",
-      "en": "England and Ghana finished 0-0. That leaves a lot of predictions without a clear answer.",
+      "he": "אנגליה וגאנה נפרדו ב-0:0. תיקו כזה משאיר הרבה תחזיות בלי הכרעה ברורה 🧾",
+      "en": "England and Ghana finished 0-0. That leaves a lot of predictions without a clear answer 🧾",
       "sources": [],
       "expires_at": "2026-06-25T02:00:00.000Z"
     },
@@ -34,8 +34,8 @@
       "id": "result-31a2acf9-8ee6-4657-8fe7-7732592ad3a4",
       "type": "result",
       "confidence": "confirmed",
-      "he": "פורטוגל ניצחה את אוזבקיסטן 5:0 במשחק פתוח. תוצאה כזאת משנה גם את הבית וגם לא מעט תחזיות.",
-      "en": "Portugal beat Uzbekistan 5-0 in an open match. That result changes the group and a lot of predictions.",
+      "he": "פורטוגל ניצחה את אוזבקיסטן 5:0 במשחק פתוח. תוצאה כזאת משנה גם את הבית וגם לא מעט תחזיות 🧾",
+      "en": "Portugal beat Uzbekistan 5-0 in an open match. That result changes the group and a lot of predictions 🧾",
       "sources": [],
       "expires_at": "2026-06-24T23:00:00.000Z"
     },
@@ -43,8 +43,8 @@
       "id": "fixture-0b825d4e-6106-4113-8324-e6565b0a1e24",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שווייץ נגד קנדה, היום 22:00. מי שפוגע במשחקים האלה בדרך כלל מתקדם יפה בטבלה.",
-      "en": "Switzerland vs Canada, today 22:00. People who get these matches right usually move well in the table.",
+      "he": "שווייץ נגד קנדה, היום 22:00. מי שפוגע במשחקים האלה בדרך כלל מתקדם יפה בטבלה ⏰",
+      "en": "Switzerland vs Canada, today 22:00. People who get these matches right usually move well in the table ⏰",
       "sources": [],
       "expires_at": "2026-06-24T18:45:00.000Z"
     },
@@ -52,8 +52,8 @@
       "id": "fixture-1b45a450-6148-4bcc-ae32-4205a98f090a",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "בוסניה-הרצגובינה נגד קטאר, היום 22:00. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות.",
-      "en": "Bosnia-Herzegovina vs Qatar, today 22:00. Not the biggest match, but the points here can be crucial.",
+      "he": "בוסניה-הרצגובינה נגד קטאר, היום 22:00. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות ⏰",
+      "en": "Bosnia-Herzegovina vs Qatar, today 22:00. Not the biggest match, but the points here can be crucial ⏰",
       "sources": [],
       "expires_at": "2026-06-24T18:45:00.000Z"
     },
@@ -61,8 +61,8 @@
       "id": "fixture-970c8b45-92d8-4b62-83ff-ecc9e05957e9",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "סקוטלנד נגד ברזיל, מחר 01:00. הרבה תחזיות ילכו עם ברזיל; איבוד נקודות כאן יכאב.",
-      "en": "Scotland vs Brazil, tomorrow 01:00. A lot of predictions will back Brazil; dropped points here would hurt.",
+      "he": "סקוטלנד נגד ברזיל, מחר 01:00. הרבה תחזיות ילכו עם ברזיל; איבוד נקודות כאן יכאב ⏰",
+      "en": "Scotland vs Brazil, tomorrow 01:00. A lot of predictions will back Brazil; dropped points here would hurt ⏰",
       "sources": [],
       "expires_at": "2026-06-24T21:45:00.000Z"
     },
@@ -70,8 +70,8 @@
       "id": "fixture-acaa0411-271e-496c-a382-222c8892a4b3",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "מרוקו נגד האיטי, מחר 01:00. משחק כזה יכול להכריע מקומות בבית בלי הרבה כותרות.",
-      "en": "Morocco vs Haiti, tomorrow 01:00. This kind of match can decide group places without making many headlines.",
+      "he": "מרוקו נגד האיטי, מחר 01:00. משחק כזה יכול להכריע מקומות בבית בלי הרבה כותרות ⏰",
+      "en": "Morocco vs Haiti, tomorrow 01:00. This kind of match can decide group places without making many headlines ⏰",
       "sources": [],
       "expires_at": "2026-06-24T21:45:00.000Z"
     },
@@ -79,8 +79,8 @@
       "id": "fixture-236ff99f-19a6-426d-85fa-bca5cf570ae2",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "צ'כיה נגד מקסיקו, מחר 04:00. מי שפוגע במשחקים האלה בדרך כלל מתקדם יפה בטבלה.",
-      "en": "Czechia vs Mexico, tomorrow 04:00. People who get these matches right usually move well in the table.",
+      "he": "צ'כיה נגד מקסיקו, מחר 04:00. מי שפוגע במשחקים האלה בדרך כלל מתקדם יפה בטבלה ⏰",
+      "en": "Czechia vs Mexico, tomorrow 04:00. People who get these matches right usually move well in the table ⏰",
       "sources": [],
       "expires_at": "2026-06-25T00:45:00.000Z"
     },
@@ -88,8 +88,8 @@
       "id": "2026-06-24-group-b-final-window",
       "type": "news",
       "confidence": "reported",
-      "he": "בית B מגיע לחלון האחרון שלו: קנדה ושווייץ על ראשות הבית, ובוסניה-הרצגובינה נגד קטאר הוא כבר לא משחק רק למי שאוהב סדר. כל טופס ששם לב לטבלה מקבל כאן בדיקת קבלות.",
-      "en": "Group B hits its final window: Canada and Switzerland are playing for control, while Bosnia-Herzegovina vs Qatar is survival math with boots on. Every table-aware form gets a receipt check here.",
+      "he": "בית B מגיע לחלון האחרון שלו: קנדה ושווייץ על ראשות הבית, ובוסניה-הרצגובינה נגד קטאר הוא כבר לא משחק רק למי שאוהב סדר. כל טופס ששם לב לטבלה מקבל כאן בדיקת קבלות 👀",
+      "en": "Group B hits its final window: Canada and Switzerland are playing for control, while Bosnia-Herzegovina vs Qatar is survival math with boots on. Every table-aware form gets a receipt check here 👀",
       "team": null,
       "teams": [
         "SUI",
@@ -115,8 +115,8 @@
       "id": "2026-06-24-scotland-brazil-neymar-door",
       "type": "news",
       "confidence": "reported",
-      "he": "סקוטלנד נגד ברזיל קיבלה את כל התבלינים: ניימאר עשוי לחזור, וברקע סקוטלנד רואה דלת היסטורית לשלב הבא. מי שסימן ברזיל קיבל זוהר; מי שסימן סקוטלנד קיבל דופק.",
-      "en": "Scotland vs Brazil has the full pre-match spice: Neymar may be back, and Scotland can see a historic knockout-stage door. Brazil pickers get glamour; Scotland pickers get pulse.",
+      "he": "סקוטלנד נגד ברזיל קיבלה את כל התבלינים: ניימאר עשוי לחזור, וברקע סקוטלנד רואה דלת היסטורית לשלב הבא. מי שסימן ברזיל קיבל זוהר; מי שסימן סקוטלנד קיבל דופק 👀",
+      "en": "Scotland vs Brazil has the full pre-match spice: Neymar may be back, and Scotland can see a historic knockout-stage door. Brazil pickers get glamour; Scotland pickers get pulse 👀",
       "team": null,
       "teams": [
         "SCO",
