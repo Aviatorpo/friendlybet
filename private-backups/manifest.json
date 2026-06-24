@@ -44,9 +44,11 @@
     "537403",
     "537404",
     "537405",
+    "537406",
     "537409",
     "537410",
-    "537411"
+    "537411",
+    "537412"
   ],
   "backups": [
     {
@@ -898,7 +900,32 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-24T05:56:21.083Z",
+      "file": "private-backups/2026-06-24T05-56-21-083Z__537412-PAN-CRO__537406-COL-COD.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537412",
+        "537406"
+      ],
+      "tableCounts": {
+        "pools": 2026,
+        "users": 6356,
+        "group_picks": 22992,
+        "knockout_picks": 95524,
+        "group_position_picks": 175357,
+        "tournament_winner_picks": 3372,
+        "top_scorer_picks": 2932,
+        "sp_third_place_picks": 29170,
+        "pick_backups": 47179,
+        "knockout_reopen_grants": 1701,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-24T01:32:15.530Z"
+  "updatedAt": "2026-06-24T05:56:21.083Z"
 }
