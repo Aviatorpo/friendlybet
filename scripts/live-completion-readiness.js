@@ -20,6 +20,7 @@ const LIVE_DB_SOURCE_STALE_MS = 10 * 60 * 1000;
 const LIVE_DB_ACTIVE_WINDOW_MS = 4 * 60 * 60 * 1000;
 const LIVE_POLLER_STALE_MS = 20 * 60 * 1000;
 const FINAL_VERIFIER_STALE_MS = 45 * 60 * 1000;
+const WORKFLOW_LIVENESS_PRE_MATCH_MS = 90 * 60 * 1000;
 
 function read(file) {
   return fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -99,6 +100,15 @@ function summarizePublicSnapshots(snapshots, nowMs) {
     pundit_freshUntil: (pundit && pundit.freshUntil) || null,
     stories_updatedAt: (stories && (stories.updated_at || stories.updatedAt)) || null,
   };
+}
+
+function readLocalMatches() {
+  try {
+    const payload = JSON.parse(read(path.join('public-data', 'matches.json')));
+    return Array.isArray(payload && payload.matches) ? payload.matches : [];
+  } catch (_err) {
+    return [];
+  }
 }
 
 async function auditPublicSnapshots(snapshots, nowMs, auditOptions = {}) {
@@ -181,6 +191,22 @@ function summarizeLiveDbFreshness(matches, nowMs) {
   };
 }
 
+function isGroupStageMatch(match) {
+  return String(match && match.stage || '').toUpperCase() === 'GROUP_STAGE'
+    || !!(match && match.group_letter);
+}
+
+function isWorkflowLivenessRequired(matches, nowMs) {
+  if (!isGroupStageWindow(nowMs)) return false;
+  return (Array.isArray(matches) ? matches : []).some(match => {
+    if (!isGroupStageMatch(match)) return false;
+    const kickoff = parseTime(match && match.match_date);
+    if (!Number.isFinite(kickoff)) return false;
+    return nowMs >= kickoff - WORKFLOW_LIVENESS_PRE_MATCH_MS
+      && nowMs <= kickoff + LIVE_DB_ACTIVE_WINDOW_MS;
+  });
+}
+
 async function fetchGitHubWorkflowRuns(workflowFile, options = {}) {
   const fetchImpl = options.fetch || globalThis.fetch;
   if (typeof fetchImpl !== 'function') throw new Error('fetch is not available');
@@ -199,7 +225,8 @@ async function fetchGitHubWorkflowRuns(workflowFile, options = {}) {
   return Array.isArray(payload && payload.workflow_runs) ? payload.workflow_runs : [];
 }
 
-function summarizeWorkflowLiveness(runs, nowMs, maxAgeMs) {
+function summarizeWorkflowLiveness(runs, nowMs, maxAgeMs, options = {}) {
+  const required = options.required !== false && isGroupStageWindow(nowMs);
   const latest = (runs || [])
     .map(run => ({
       id: run.id || run.databaseId || null,
@@ -215,7 +242,8 @@ function summarizeWorkflowLiveness(runs, nowMs, maxAgeMs) {
     && (['queued', 'pending', 'in_progress', 'requested', 'waiting'].includes(latest.status)
       || latest.conclusion === 'success');
   return {
-    ok: !isGroupStageWindow(nowMs) || (latest && ageMs <= maxAgeMs && healthyStatus),
+    ok: !required || (latest && ageMs <= maxAgeMs && healthyStatus),
+    required,
     latest,
     age_minutes: Number.isFinite(ageMs) ? Math.round(ageMs / 60000) : null,
   };
@@ -348,10 +376,14 @@ async function runReadiness(options = {}) {
   );
 
   let production = null;
+  let workflowContextMatches = null;
   const publicBaseUrl = options.publicBaseUrl || process.env.LIVE_COMPLETION_PUBLIC_BASE_URL || '';
   if (options.publicSnapshots || publicBaseUrl) {
     try {
       const snapshots = options.publicSnapshots || await loadPublicSnapshots(publicBaseUrl, options.fetch);
+      workflowContextMatches = Array.isArray(snapshots && snapshots.matches && snapshots.matches.matches)
+        ? snapshots.matches.matches
+        : workflowContextMatches;
       production = summarizePublicSnapshots(snapshots, nowMs);
       const productionAudit = await auditPublicSnapshots(snapshots, nowMs, options.auditOptions || {});
       production.audit_ok = productionAudit.ok;
@@ -370,6 +402,7 @@ async function runReadiness(options = {}) {
   if (shouldCheckDb) {
     try {
       const dbMatches = options.dbMatches || await fetchSupabaseMatches(supabaseConfig, options.fetch);
+      workflowContextMatches = dbMatches;
       const dbAudit = await LiveOpsAudit.audit({
         ...(options.auditOptions || {}),
         matches: dbMatches,
@@ -402,12 +435,27 @@ async function runReadiness(options = {}) {
       const finalVerifierRuns = options.workflowRuns && options.workflowRuns.finalResultVerifier
         ? options.workflowRuns.finalResultVerifier
         : await fetchGitHubWorkflowRuns('final-result-verifier.yml', { fetch: options.fetch });
+      const workflowRequired = isWorkflowLivenessRequired(workflowContextMatches || readLocalMatches(), nowMs);
       workflowLiveness = {
-        live_poller: summarizeWorkflowLiveness(livePollerRuns, nowMs, LIVE_POLLER_STALE_MS),
-        final_result_verifier: summarizeWorkflowLiveness(finalVerifierRuns, nowMs, FINAL_VERIFIER_STALE_MS),
+        required: workflowRequired,
+        live_poller: summarizeWorkflowLiveness(livePollerRuns, nowMs, LIVE_POLLER_STALE_MS, { required: workflowRequired }),
+        final_result_verifier: summarizeWorkflowLiveness(finalVerifierRuns, nowMs, FINAL_VERIFIER_STALE_MS, { required: workflowRequired }),
       };
-      add(checks, 'live poller workflow ran recently', workflowLiveness.live_poller.ok, `latest=${workflowLiveness.live_poller.latest && workflowLiveness.live_poller.latest.created_at || 'missing'}, age=${workflowLiveness.live_poller.age_minutes == null ? 'missing' : workflowLiveness.live_poller.age_minutes + 'm'}`);
-      add(checks, 'final verifier workflow ran recently', workflowLiveness.final_result_verifier.ok, `latest=${workflowLiveness.final_result_verifier.latest && workflowLiveness.final_result_verifier.latest.created_at || 'missing'}, age=${workflowLiveness.final_result_verifier.age_minutes == null ? 'missing' : workflowLiveness.final_result_verifier.age_minutes + 'm'}`);
+      const workflowWindowDetail = workflowRequired ? 'required' : 'not in live/final coverage window';
+      add(checks, 'live poller workflow ran recently', workflowLiveness.live_poller.ok, `latest=${workflowLiveness.live_poller.latest && workflowLiveness.live_poller.latest.created_at || 'missing'}, age=${workflowLiveness.live_poller.age_minutes == null ? 'missing' : workflowLiveness.live_poller.age_minutes + 'm'}, ${workflowWindowDetail}`);
+      add(checks, 'final verifier workflow ran recently', workflowLiveness.final_result_verifier.ok, `latest=${workflowLiveness.final_result_verifier.latest && workflowLiveness.final_result_verifier.latest.created_at || 'missing'}, age=${workflowLiveness.final_result_verifier.age_minutes == null ? 'missing' : workflowLiveness.final_result_verifier.age_minutes + 'm'}, ${workflowWindowDetail}`);
+      if (!workflowRequired) {
+        const staleOutsideWindow = [workflowLiveness.live_poller, workflowLiveness.final_result_verifier]
+          .some(item => item && item.latest && item.required === false && item.ok === true && item.age_minutes != null);
+        if (staleOutsideWindow) {
+          addWarning(
+            warnings,
+            'workflow_liveness_outside_match_window',
+            'Live poller/final-verifier recency is being reported as warning evidence outside the active match coverage window.',
+            'The readiness monitor still fails this gate inside the 90-minute pre-match through 4-hour post-kickoff window.'
+          );
+        }
+      }
     } catch (err) {
       add(checks, 'workflow liveness is readable', false, err.message);
     }
@@ -480,6 +528,7 @@ if (require.main === module) {
     fetchSupabaseMatches,
     auditPublicSnapshots,
     summarizeLiveDbFreshness,
+    isWorkflowLivenessRequired,
     summarizeWorkflowLiveness,
     fetchGitHubWorkflowRuns,
   };

@@ -150,6 +150,50 @@ const Readiness = require('./live-completion-readiness');
     'readiness must verify live-poller workflow liveness when workflow runs are provided'
   );
 
+  const staleWorkflowOutsideMatchWindow = await Readiness.runReadiness({
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    dbMatches: [
+      { id: 'future-db1', status: 'TIMED', match_date: '2026-06-23T19:00:00Z', home_team_code: 'A', away_team_code: 'B', stage: 'GROUP_STAGE', group_letter: 'A' },
+    ],
+    workflowRuns: {
+      livePoller: [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
+      finalResultVerifier: [{ id: 2, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
+    },
+  });
+  assert.strictEqual(staleWorkflowOutsideMatchWindow.ok, true, JSON.stringify(staleWorkflowOutsideMatchWindow.checks.filter(check => !check.ok), null, 2));
+  assert.strictEqual(staleWorkflowOutsideMatchWindow.workflow_liveness.required, false, 'workflow liveness must not hard-fail outside a real match coverage window');
+  assert.ok(
+    staleWorkflowOutsideMatchWindow.warnings.some(warning => warning.code === 'workflow_liveness_outside_match_window'),
+    'stale workflow recency outside match windows must remain visible as warning evidence'
+  );
+
+  const staleWorkflowInsideMatchWindow = await Readiness.runReadiness({
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    dbMatches: [
+      { id: 'soon-db1', status: 'TIMED', match_date: '2026-06-23T12:30:00Z', home_team_code: 'A', away_team_code: 'B', stage: 'GROUP_STAGE', group_letter: 'A' },
+    ],
+    workflowRuns: {
+      livePoller: [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
+      finalResultVerifier: [{ id: 2, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
+    },
+  });
+  assert.strictEqual(staleWorkflowInsideMatchWindow.ok, false, 'stale workflow history must hard-fail inside a live match coverage window');
+  assert.strictEqual(staleWorkflowInsideMatchWindow.workflow_liveness.required, true, 'workflow liveness must be required near kickoff');
+  assert.strictEqual(
+    Readiness.isWorkflowLivenessRequired(
+      [{ id: 'soon-db1', match_date: '2026-06-23T12:30:00Z', stage: 'GROUP_STAGE' }],
+      Date.parse('2026-06-23T12:00:00Z')
+    ),
+    true
+  );
+  assert.strictEqual(
+    Readiness.isWorkflowLivenessRequired(
+      [{ id: 'future-db1', match_date: '2026-06-23T19:00:00Z', stage: 'GROUP_STAGE' }],
+      Date.parse('2026-06-23T12:00:00Z')
+    ),
+    false
+  );
+
   const staleWorkflow = Readiness.summarizeWorkflowLiveness(
     [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
     Date.parse('2026-06-23T12:00:00Z'),
