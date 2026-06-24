@@ -52,6 +52,8 @@ Reject copy that only swaps team names into a generic sentence, repeats the prev
 
 Voice rule: the Pundit may be sharp, but it should sound like a real TV analyst or group-chat sports friend, not a standup routine. Avoid invented metaphors, forced analogies, "clever" object jokes, and unnatural lines such as forms needing speeches, paper scoring points, neon-light drama, or points being stolen quietly. Prefer direct consequence: who won, what changed in the group/table, and whose prediction was helped or hurt.
 
+Story finish rule: direct does not mean sterile. For Story of the World Cup headlines/captions, after the match/table/pool consequence is clear, add one fitting emoji at the end when it makes the card feel more shareable. Use the emoji as punctuation, not as the idea.
+
 For stories and Pundit cards, repeated structure is measured after normalizing team names, scores, dates, and group letters. Five different matches with the same sentence skeleton is a failed desk, even if each fact is technically true.
 
 ## Research Desk Requirement
