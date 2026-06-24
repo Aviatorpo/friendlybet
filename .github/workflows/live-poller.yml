@@ -77,6 +77,13 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/export-snapshots.js leaderboards
 
+      - name: Verify scoring snapshots after scoring
+        if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/verify-scoring-snapshots.js
+
       - name: Generate leaderboard banter after scoring
         if: steps.verify_results.outputs.changed == 'true'
         continue-on-error: true
@@ -103,6 +110,7 @@ jobs:
             node scripts/export-snapshots.js matches
             node scripts/calculate-scores-v2.js
             node scripts/export-snapshots.js leaderboards
+            node scripts/verify-scoring-snapshots.js
             node scripts/generate-banter.js || true
             node scripts/generate-pundit.js
             node scripts/test-pundit-feed.js

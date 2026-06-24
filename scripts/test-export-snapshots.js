@@ -2,7 +2,8 @@
 // Deterministic tests for public snapshot sanitization. No network, no DB.
 
 const assert = require('assert');
-const { isPendingProviderFinal, sanitizeMatchForSnapshot } = require('./export-snapshots');
+const Export = require('./export-snapshots');
+const { isPendingProviderFinal, sanitizeMatchForSnapshot } = Export;
 
 let passed = 0;
 function check(name, fn) {
@@ -76,4 +77,28 @@ check('scheduled match remains unchanged', () => {
   assert.deepStrictEqual(sanitizeMatchForSnapshot(scheduled), scheduled);
 });
 
-console.log(`\nExport snapshot tests passed: ${passed}`);
+(async () => {
+  console.log('\n== integration: export sbAll paginates beyond 100 pages ==');
+  const ranges = [];
+  Export.__setFetch(async (_url, opts) => {
+    const range = opts.headers.Range;
+    ranges.push(range);
+    const [fromText] = range.split('-');
+    const from = Number(fromText);
+    const fullPage = Array.from({ length: 1000 }, (_, i) => ({ id: from + i }));
+    return {
+      ok: true,
+      json: async () => (from < 100000 ? fullPage : [{ id: 100000 }])
+    };
+  });
+  const rows = await Export.sbAll('users', '?select=id');
+  assert.strictEqual(rows.length, 100001);
+  assert.strictEqual(ranges.includes('100000-100999'), true);
+  passed++;
+  console.log('ok: export sbAll fetches page 101 instead of truncating at 100k rows');
+
+  console.log(`\nExport snapshot tests passed: ${passed}`);
+})().catch(err => {
+  console.error(err);
+  process.exit(1);
+});

@@ -506,7 +506,9 @@ async function main() {
       console.error(`  ✖ pool ${pool.code} failed, skipping:`, e.message);
     }
   }
-  if (poolFailures) console.warn(`\n${poolFailures} pool(s) failed and were skipped.`);
+  if (poolFailures) {
+    throw new Error(`${poolFailures} pool(s) failed during scoring`);
+  }
 
   console.log(`\nDone in ${((Date.now() - startedAt) / 1000).toFixed(1)}s`);
 }

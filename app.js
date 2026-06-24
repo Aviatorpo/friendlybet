@@ -8871,6 +8871,60 @@ function _sortLeaderboardUsers(users) {
     String(a.id || '').localeCompare(String(b.id || '')));
 }
 
+let _scoreSurfaceRefreshTimer = null;
+let _scoreSurfaceRefreshInFlight = false;
+
+function _activeScreen(id) {
+  const el = document.getElementById(id);
+  return !!(el && el.classList.contains('active'));
+}
+
+async function refreshScoreSurfaces(reason = 'auto') {
+  if (_scoreSurfaceRefreshInFlight) return;
+  if (!state.currentPool || !state.currentPool.id || !supabaseClient) return;
+  const onDashboard = _activeScreen('user-dashboard-screen');
+  const onLeaderboard = _activeScreen('leaderboard-screen');
+  if (!onDashboard && !onLeaderboard) return;
+
+  _scoreSurfaceRefreshInFlight = true;
+  try {
+    if (onLeaderboard) {
+      await showLeaderboard({ refreshReason: reason });
+      return;
+    }
+
+    const users = _sortLeaderboardUsers(await _fetchAllPoolRows('users', 'id,nickname,total_score,joined_at', state.currentPool.id));
+    const totalAcrossPool = users.reduce((sum, user) => sum + (user.total_score || 0), 0);
+    const hasScores = totalAcrossPool > 0;
+    const me = users.find(user => state.currentUser && user.id === state.currentUser.id);
+    if (me && state.currentUser) {
+      state.currentUser.total_score = me.total_score || 0;
+      saveLocalUser(state.currentUser);
+    }
+
+    const statsEl = document.getElementById('dashboard-stats');
+    if (statsEl && hasScores) statsEl.style.display = '';
+    const pointsEl = document.getElementById('user-points');
+    if (pointsEl) pointsEl.textContent = me ? (me.total_score || 0) : (state.currentUser ? (state.currentUser.total_score || 0) : 0);
+    const rankEl = document.getElementById('user-rank');
+    if (rankEl) {
+      const rank = me ? users.findIndex(user => user.id === me.id) + 1 : 0;
+      rankEl.textContent = (hasScores && rank > 0) ? rank : '-';
+    }
+  } catch (err) {
+    console.warn('Score surface refresh failed:', err);
+  } finally {
+    _scoreSurfaceRefreshInFlight = false;
+  }
+}
+
+function startScoreSurfaceRefreshLoop() {
+  if (_scoreSurfaceRefreshTimer) return;
+  _scoreSurfaceRefreshTimer = setInterval(() => {
+    if (document.visibilityState === 'visible') refreshScoreSurfaces('interval');
+  }, 60 * 1000);
+}
+
 async function _fetchLeaderboardSnapshot(poolId) {
   try {
     const res = await fetch(`/public-data/leaderboard/${poolId}.json`, { cache: 'no-store' });
@@ -10614,9 +10668,13 @@ async function initApp() {
 // Start when DOM is ready
 if (!window.FB_TEST_MODE) {
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initApp);
+    document.addEventListener('DOMContentLoaded', () => {
+      initApp();
+      startScoreSurfaceRefreshLoop();
+    });
   } else {
     initApp();
+    startScoreSurfaceRefreshLoop();
   }
 }
 
@@ -10627,6 +10685,7 @@ if (!window.FB_TEST_MODE) {
 // change is the standard hook for "the user is now looking again".
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'visible') return;
+  refreshScoreSurfaces('visible');
   const dash = document.getElementById('user-dashboard-screen');
   if (!dash || !dash.classList.contains('active')) return;
   if (typeof updateKnockoutStatusOnDashboard === 'function') {

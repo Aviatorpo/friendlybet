@@ -58,6 +58,12 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/export-snapshots.js leaderboards
 
+      - name: Verify scoring snapshots
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/verify-scoring-snapshots.js
+
       - name: Encrypted critical-data backup after finished matches
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
@@ -94,6 +100,7 @@ jobs:
           REGENERATE_COMMANDS: |
             node scripts/calculate-scores-v2.js
             node scripts/export-snapshots.js leaderboards
+            node scripts/verify-scoring-snapshots.js
             node scripts/backup-critical-data.js
             node scripts/generate-banter.js || true
             python3 scripts/audit-world-cup-story-images.py --scope stories
