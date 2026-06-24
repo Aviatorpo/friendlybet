@@ -49,6 +49,7 @@ Read academy docs when content quality, World Cup expertise, or live-desk behavi
 8. For current external claims, require a Pundit Research Desk pass: broad web scan, source ledger, story scoring, expiry, self-review, and relevant handoffs.
 9. Reject repeated copy shape across adjacent Pundit/story/social items after normalizing team names, scores, dates, and group letters.
 10. For user-reported live content bugs, verify the cache-busted production public-data URL before saying the issue is fixed. Local generated JSON is not enough.
+11. If trusted sources and FriendlyBet state disagree, suppress result-driven copy and stay with the incident: trigger or monitor the safe recovery workflow, re-fetch production, and report the exact remaining blocker only after that action.
 
 ## Output
 

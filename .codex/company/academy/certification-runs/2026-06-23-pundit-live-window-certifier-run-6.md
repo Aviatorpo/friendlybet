@@ -385,3 +385,41 @@ Next required windows:
 Decision: encoded and calibrating.
 
 The Pundit now has a measurable live-window certification gate. It is closer to autonomous TV-level behavior, but not graduated until two real match windows pass the gate at 90+ with no stale/current-state misses.
+
+## 2026-06-24 05:35Z Local Live-Window Follow-Up
+
+Checkpoint ran at `2026-06-24T08:33-08:35+03:00` against local snapshot data and recorded evidence in `tmp\pundit-live-window-certifications-2026-06-24.jsonl`.
+
+Initial state before refresh:
+
+- `public-data/pundit.json` was stale: `updatedAt=2026-06-23T22:49:23.666Z`, `freshUntil=2026-06-24T04:49:23.666Z`.
+- `public-data/pundit-news.json` still contained three expired preview items for POR-UZB, ENG-GHA, and PAN-CRO.
+- POR-UZB and ENG-GHA were locally `FINISHED`; PAN-CRO and COL-COD were still stale `TIMED` rows hours after kickoff.
+
+Pre-refresh certifier evidence:
+
+- POR-UZB: `score=60`, `passed=false`; final result existed, but feed was stale and expired items remained.
+- ENG-GHA: `score=30`, `passed=false`; final result existed, feed was stale, and the finished match lacked a World Cup Story.
+- PAN-CRO: `score=20`, `passed=false`; stale scheduled row lacked verification/recovery copy.
+- COL-COD: `score=0`, `passed=false`; stale scheduled row still had fixture copy after kickoff and lacked verification/recovery copy.
+
+Actions taken:
+
+- Regenerated `public-data/pundit.json`.
+- Removed the three expired items from `public-data/pundit-news.json` and regenerated the Pundit feed again.
+
+Post-refresh certifier evidence:
+
+- POR-UZB: `score=100`, `passed=true`; final result item present, fresh feed, no stale fixture copy.
+- ENG-GHA: `score=70`, `passed=false`; result item present, but the finished match still lacks a World Cup Story.
+- PAN-CRO: `score=100`, `passed=true`; stale scheduled row is represented only by verification/recovery copy.
+- COL-COD: `score=100`, `passed=true`; stale scheduled row is represented only by verification/recovery copy.
+
+Supporting checks after cleanup:
+
+- `node scripts\pundit-news-validate.js --require-unexpired`: passed.
+- `node scripts\test-pundit-feed.js`: passed, with warning that `pundit-news.json` is empty during the tournament window.
+- `node scripts\test-world-cup-stories.js`: passed for 45 stories.
+- `node scripts\live-ops-audit.js`: failed as designed because PAN-CRO and COL-COD remain stale scheduled rows after kickoff, ENG-GHA is missing a Story, and `pundit-news.json` is empty during the tournament window.
+
+Graduation status: not graduated. This checkpoint proves the deterministic stale-data recovery works after refresh, but it also confirms that the live desk still needs source result recovery, an ENG-GHA story, and a non-empty or explicitly source-checked news desk before TV-level readiness can be claimed.

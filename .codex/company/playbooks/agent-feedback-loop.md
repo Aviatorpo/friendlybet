@@ -19,6 +19,7 @@ If Eyal reports that the live app still shows a bug after an agent claimed it wa
 - Compare local files, committed Git state, deployed production artifacts, and browser/service-worker/CDN cache behavior as separate layers.
 - Do not reassure. State which layer is proven, which layer is not, and what exact live check will close the loop.
 - The durable fix must include either a release gate, a live verification command, or a skill/playbook update that blocks local-only completion claims.
+- Do not stop at "blocked" while an executable recovery path remains. The agent owns the next safe action: trigger the workflow, monitor it, patch the workflow, or state the exact missing credential/permission after trying the available route.
 
 ## Pundit / Live Content Incidents
 

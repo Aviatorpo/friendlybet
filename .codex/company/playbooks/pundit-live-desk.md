@@ -27,6 +27,7 @@ Use this minimum cadence during match days:
 - Kickoff watch: after kickoff, remove preview language for that match; live text must say the match is live or stay silent.
 - Scheduled-after-kickoff rows are not live facts. The deterministic Pundit must not infer "live now" from `TIMED`/`SCHEDULED`; inside the grace window it should stay silent, and after the grace window it should use verification/recovery wording until a trusted live or verified final state exists.
 - Trusted-source consensus conflict: if multiple independent trusted sources agree on a final score while FriendlyBet still shows `TIMED`, live, blank score, or no `winner_code`, classify FriendlyBet state as stale/failed, not "unclear". Suppress local live/upcoming copy for that match, block result-driven publication from the stale row, and hand off the exact stale match id/teams/status plus verifier output to QA/Sports Integrations.
+- Recovery ownership: the desk must not stop after naming the blocker. After a trusted-source/FriendlyBet mismatch, inspect workflow status, run or dispatch the existing verifier/manual-result/live-poller recovery path when it is the safe Supabase-backed route, monitor the run, re-fetch production public data, and only then report either recovery evidence or the exact external permission/credential blocker. A handoff is incomplete unless it includes the action already attempted and the next executable step.
 - Post-match desk: within 30 minutes of final score, verify score/winner, table impact, pool-specific pick impact, and whether a story asset is publishable.
 - Group-complete desk: when a group reaches 6 verified terminal fixtures, verify official scoring ran, identify pool members with group-position hits, refresh leaderboard banter, and hide or demote theoretical group tables.
 - Story readiness failure: if a finished match has no prepared publishable story asset, treat it as an incident and escalate through the verifier/story workflow instead of letting the feed quietly skip it.
@@ -84,9 +85,10 @@ When content is stale:
 1. Print `updatedAt`, `freshUntil`, current time, item count, and the latest 5 Pundit/story items.
 2. Run local validation/generation where safe: `node scripts\pundit-news-validate.js`, `node scripts\generate-pundit.js`, `node scripts\test-world-cup-stories.js`.
 3. Determine which layer failed: source data, generator, workflow commit/push, deploy/cache, empty editorial news, or weak copy templates.
-4. If production can show stale user content, ship the smallest data or workflow fix first, then improve copy depth.
-5. After push/deploy, re-fetch the live production URL with a cache-busting query string and print the latest visible items. Do not call the incident closed until the live artifact changed, or state the remaining deploy/cache blocker.
-6. Record a reusable lesson in the relevant skill or playbook.
+4. If the failed layer is stale match state, check trusted sources and workflow health, then use the existing Supabase-backed recovery path (`final-result-verifier`, `live-poller`, or `manual-match-results`) instead of only documenting the mismatch.
+5. If production can show stale user content, ship the smallest data or workflow fix first, then improve copy depth.
+6. After push/deploy/recovery, re-fetch the live production URL with a cache-busting query string and print the latest visible items. Do not call the incident closed until the live artifact changed, or state the remaining deploy/cache blocker.
+7. Record a reusable lesson in the relevant skill or playbook.
 
 For editorial misses, also run the feedback loop:
 

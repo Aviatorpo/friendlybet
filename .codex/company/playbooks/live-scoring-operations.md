@@ -14,6 +14,7 @@ Use this for World Cup match-result sync, group completion, scoring, dashboard, 
 - The scheduled verifier should cover normal missed finals and older tournament residue with bounded backoff. A match that is days old but still non-terminal or carrying finished-match live residue remains a recovery candidate.
 - Snapshot export may freeze during live play to avoid excessive deploys. During active matches, public snapshot `TIMED`/live-status staleness is warning evidence only when a separate live DB/provider freshness check is green; verified final/manual-result paths must still set `FORCE_MATCH_SNAPSHOT=1` before generating Pundit, stories, or leaderboard context.
 - After verified result/story refreshes, run the live-state watchdog. Finished matches with stale live/provider residue, matches still marked scheduled after kickoff, stale Pundit, missing stories, or unsafe leaderboard snapshots are release incidents.
+- A stale scheduled row after trusted-source final consensus is an owned recovery incident, not just a QA note. The responsible agent must inspect provider/verifier/workflow state, use the safe Supabase-backed recovery path when available, monitor the run, and re-fetch production snapshots before closing. Do not modify DB rows directly from web reports unless using an approved manual-result workflow with source consensus and audit trail.
 
 ## Group Completion
 
@@ -63,3 +64,4 @@ Use this for World Cup match-result sync, group completion, scoring, dashboard, 
 - Any workflow that exports or regenerates match, leaderboard, Pundit, banter, or story snapshots must have `permissions: contents: write`; a run that updates Supabase but cannot push public snapshots leaves the dashboard/Pundit/story surface stale.
 - During active match windows, the live DB must stop showing `TIMED`/`SCHEDULED` shortly after kickoff and live provider rows must have recent `source_updated_at`; otherwise treat it as an incident even if public snapshots and Pundit are fresh.
 - Scheduled scoring/export and Pundit push failures must fail loudly during tournament windows, not exit green after a skipped refresh.
+- Generated-snapshot push conflicts during match windows are production incidents. Abort/retry is not enough if the same generated files keep diverging; the owner must either rerun the full export on top of current `main`, dispatch the proper recovery workflow, or patch the workflow so it regenerates after rebase before pushing.

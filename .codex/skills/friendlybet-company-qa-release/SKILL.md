@@ -39,6 +39,7 @@ Read academy docs when release confidence, regression strategy, or senior QA rev
 5. Never revert unrelated dirty work.
 6. For live user-visible bugs, require production verification after push/deploy: cache-busted public-data fetch, live URL check, or screenshot proof as appropriate.
 7. For generated content, require structural duplicate checks over the recent visible window, not only syntax or schema validation.
+8. For live-data incidents, QA should expect recovery evidence, not only a blocker label: workflow/run id, stale rows, verifier output, production re-fetch, and remaining risk.
 
 ## Output
 
