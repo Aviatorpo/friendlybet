@@ -1870,6 +1870,7 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
     zeroKey = 'dashboard.groupStageComplete.badge';
   }
   const deadline = lateKo ? _knockoutCutoffLabel() : _lateEntryCutoffLabel();
+  const showThirdPlacePending = !lateKo && !lateOpen && (phase === 'officialFirst' || phase === 'officialSeveral');
   el.innerHTML = `
     <div class="dls-head">
       <span class="dls-live"><span class="dls-dot"></span>${t(kickerKey)}</span>
@@ -1884,6 +1885,7 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
       <span>${t('dashboard.liveStatus.progress', { done: gp.finished, total: gp.total })}</span>
       <span>${t('dashboard.liveStatus.groups', { done: gp.completeGroups, total: gp.totalGroups })}</span>
     </div>
+    ${showThirdPlacePending ? `<div class="dls-note">${t('dashboard.officialStatus.thirdPlacePending')}</div>` : ''}
   `;
   el.style.display = '';
 }
@@ -8925,6 +8927,13 @@ async function showLeaderboard(options = {}) {
     : 'leaderboard.statusOfficialStarted';
   document.getElementById('lb-tournament-status').textContent =
     t(statusKey, { groups: progress.completeGroups, total: progress.totalGroups });
+  const thirdPlaceNoteEl = document.getElementById('lb-third-place-note');
+  if (thirdPlaceNoteEl) {
+    const showThirdPlaceNote = (phase === 'officialFirst' || phase === 'officialSeveral')
+      && !(state.currentPool && state.currentPool.betting_mode === 'late_knockout');
+    thirdPlaceNoteEl.textContent = t('leaderboard.thirdPlacePending');
+    thirdPlaceNoteEl.style.display = showThirdPlaceNote ? 'block' : 'none';
+  }
 
   const podiumEl = document.getElementById('lb-podium');
   if (hasScores) {

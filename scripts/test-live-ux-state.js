@@ -128,14 +128,17 @@ assert(statusEl.innerHTML.includes('dashboard.liveStatus.progress:{"done":5,"tot
 statusEl = renderDashboardStatus({ finished: 6, total: 72, completeGroups: 1, totalGroups: 12 });
 assert(statusEl.innerHTML.includes('dashboard.officialStatus.firstGroupTitle'), 'First completed group must switch dashboard status to official scoring copy');
 assert(statusEl.innerHTML.includes('dashboard.officialStatus.pointsLive'), 'Official dashboard status must stop showing zero-point badge copy');
+assert(statusEl.innerHTML.includes('dashboard.officialStatus.thirdPlacePending'), 'Official dashboard status must explain pending third-place advancement points');
 
 statusEl = renderDashboardStatus({ finished: 18, total: 72, completeGroups: 3, totalGroups: 12 });
 assert(statusEl.innerHTML.includes('dashboard.officialStatus.severalGroupsTitle'), 'Several completed groups must use moving-table dashboard copy');
 assert(statusEl.innerHTML.includes('dashboard.officialStatus.severalGroupsText:{"time":"20:00","done":3,"total":12}'), 'Several-groups dashboard copy must include completed group count');
+assert(statusEl.innerHTML.includes('dashboard.officialStatus.thirdPlacePending'), 'Several-groups dashboard status must keep pending third-place explanation');
 
 statusEl = renderDashboardStatus({ finished: 72, total: 72, completeGroups: 12, totalGroups: 12 });
 assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.title'), 'All completed groups must use group-stage-complete dashboard copy');
 assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.badge'), 'Group-stage-complete status must show final group-points badge');
+assert(!statusEl.innerHTML.includes('dashboard.officialStatus.thirdPlacePending'), 'Group-stage-complete status must stop showing third-place pending copy');
 
 statusEl = renderDashboardStatus({ finished: 0, total: 72, completeGroups: 0, totalGroups: 12 }, false, false);
 assert(statusEl.style.display === 'none' && statusEl.innerHTML === '', 'Pre-tournament dashboard status must stay hidden');
@@ -147,6 +150,7 @@ assert(/_groupStagePhase\(tournamentStarted,\s*hasScores,\s*progress\)/.test(lea
 assert(/leaderboard\.statusLiveNoOfficial/.test(leaderboard), 'Leaderboard must have a live-but-no-official status');
 assert(/leaderboard\.statusOfficialStarted/.test(leaderboard), 'Leaderboard must have an official scoring status');
 assert(/leaderboard\.statusGroupsComplete/.test(leaderboard), 'Leaderboard must have a groups-complete status');
+assert(/lb-third-place-note/.test(leaderboard) && /leaderboard\.thirdPlacePending/.test(leaderboard), 'Leaderboard must show pending third-place explanation during official partial-group scoring');
 assert(
   /if \(hasScores\)[\s\S]*renderPodium\(users\)[\s\S]*else if \(podiumEl\)[\s\S]*podiumEl\.innerHTML\s*=\s*''[\s\S]*podiumEl\.style\.display\s*=\s*'none'/.test(leaderboard),
   'Leaderboard must hide the real podium when official scores are still zero'
@@ -242,12 +246,14 @@ assert(/\.admin-badge\s*\{[\s\S]*?flex-shrink:\s*0;[\s\S]*?\}/.test(styles), 'Ad
   'dashboard.liveStatus.text',
   'dashboard.officialStatus.firstGroupText',
   'dashboard.officialStatus.severalGroupsText',
+  'dashboard.officialStatus.thirdPlacePending',
   'dashboard.groupStageComplete.text',
   'leaderboard.statusLiveNoOfficial',
   'leaderboard.statusOfficialStarted',
   'leaderboard.statusGroupsComplete',
   'leaderboard.emptyLiveNoOfficialText',
   'leaderboard.emptyOfficialZeroText',
+  'leaderboard.thirdPlacePending',
   'leaderboard.participantsList',
 ].forEach((key) => {
   const hits = (i18n.match(new RegExp(`'${key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}'`, 'g')) || []).length;

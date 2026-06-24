@@ -977,6 +977,14 @@ body.ltr .btn-secondary .ti-arrow-left {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(243, 220, 160, 0.55), transparent);
 }
+.dls-note {
+  margin-top: 11px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  line-height: 1.45;
+}
 .dashboard-projection-card {
   width: 100%;
   position: relative;
@@ -3593,6 +3601,17 @@ body.ltr #next-group-btn svg {
 .lb-empty-text {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.5);
+}
+
+.lb-scoring-note {
+  margin: 12px 0 18px;
+  padding: 10px 12px;
+  border: 1px solid rgba(212, 168, 83, 0.22);
+  border-radius: 10px;
+  background: rgba(212, 168, 83, 0.08);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 /* ============================================================ */
