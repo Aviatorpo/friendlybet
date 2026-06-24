@@ -217,27 +217,27 @@ function resultCommentary(match, salt = '') {
     if (hs === 0) {
       return variantFor(match, [
         {
-          he: `${homeHe} ו${awayHe} נפרדו ב-0:0. לא משחק לפוסטר, כן משחק שמבלגן תחזיות.`,
-          en: `${homeEn} and ${awayEn} finished 0-0. Not one for the poster, definitely one for messy predictions.`,
+          he: `${homeHe} ו${awayHe} נפרדו ב-0:0. תיקו כזה משאיר הרבה תחזיות בלי הכרעה ברורה.`,
+          en: `${homeEn} and ${awayEn} finished 0-0. That leaves a lot of predictions without a clear answer.`,
         },
         {
-          he: `${homeHe} ו${awayHe} סיימו 0:0. לפעמים גם תיקו בלי שערים יודע לעשות רעש בטבלה.`,
-          en: `${homeEn} and ${awayEn} ended 0-0. Sometimes a goalless draw still makes noise on the table.`,
+          he: `${homeHe} ו${awayHe} סיימו 0:0. לא נוצץ, אבל נקודה לכל צד עדיין משנה את הבית.`,
+          en: `${homeEn} and ${awayEn} ended 0-0. Not flashy, but a point each still changes the group.`,
         },
       ], salt);
     }
     return variantFor(match, [
       {
-        he: `${homeHe} ו${awayHe} התחלקו ב-${hs}:${as}. אין מנצחת, יש מספיק נזק לטבלאות.`,
-        en: `${homeEn} and ${awayEn} split it ${hs}-${as}. No winner, plenty of damage to the tables.`,
+        he: `${homeHe} ו${awayHe} התחלקו ב-${hs}:${as}. אין מנצחת, והבית נשאר פתוח יותר.`,
+        en: `${homeEn} and ${awayEn} split it ${hs}-${as}. No winner, and the group stays more open.`,
       },
       {
-        he: `${homeHe} נגד ${awayHe} נגמר ${hs}:${as}. מי שחיפש הכרעה קיבל שיעור בענווה.`,
-        en: `${homeEn} vs ${awayEn} finished ${hs}-${as}. Anyone looking for certainty got a humility lesson.`,
+        he: `${homeHe} נגד ${awayHe} נגמר ${hs}:${as}. מי שסימן ניצחון לאחד הצדדים איבד נקודות חשובות.`,
+        en: `${homeEn} vs ${awayEn} finished ${hs}-${as}. Anyone who picked a winner there lost important points.`,
       },
       {
-        he: `${homeHe} ו${awayHe} עם ${hs}:${as}. נקודה לכל צד, כאב ראש לכל מי שניסה לחזות את זה.`,
-        en: `${homeEn} and ${awayEn} with a ${hs}-${as}. A point each, a headache for anyone who tried to call it.`,
+        he: `${homeHe} ו${awayHe} עם ${hs}:${as}. נקודה לכל צד, ותזכורת שתיקו הוא לא ניחוש שולי.`,
+        en: `${homeEn} and ${awayEn} with a ${hs}-${as}. A point each, and a reminder that draws are not throwaway picks.`,
       },
     ], salt);
   }
@@ -251,40 +251,40 @@ function resultCommentary(match, salt = '') {
 
   if (upset) {
     return {
-      he: `הפתעה על השולחן: ${winnerHe} ניצחה את ${loserHe} ${scoreHe}. כל מי שסימן "בטוח" כבר מזיע.`,
-      en: `Upset on the board: ${winnerEn} beat ${loserEn} ${scoreEn}. Anyone who marked this as "safe" is sweating now.`,
+      he: `הפתעה: ${winnerHe} ניצחה את ${loserHe} ${scoreHe}. מי שהלך עם הפייבוריטית איבד כאן נקודות.`,
+      en: `Upset: ${winnerEn} beat ${loserEn} ${scoreEn}. Anyone who backed the favorite dropped points here.`,
     };
   }
   if (totalGoals >= 5) {
     return {
-      he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe} במשחק פתוח לגמרי. כיף לצופים, כאב ראש לטבלה ולטפסים.`,
-      en: `${winnerEn} beat ${loserEn} ${scoreEn} in a wide-open one. Great for viewers, brutal for the table and prediction slips.`,
+      he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe} במשחק פתוח. תוצאה כזאת משנה גם את הבית וגם לא מעט תחזיות.`,
+      en: `${winnerEn} beat ${loserEn} ${scoreEn} in an open match. That result changes the group and a lot of predictions.`,
     };
   }
   if (hs === 0 || as === 0) {
     return variantFor(match, [
       {
-        he: `${winnerHe} לקחה ${scoreHe} נקי מ${loserHe}. לא מופע זיקוקים, כן שלוש נקודות שמזיזות טפסים.`,
-        en: `${winnerEn} took a clean ${scoreEn} from ${loserEn}. Not fireworks, but very loud on prediction slips.`,
+        he: `${winnerHe} לקחה ${scoreHe} נקי מ${loserHe}. שלוש נקודות חשובות לבית ולכל מי שבחר בה.`,
+        en: `${winnerEn} took a clean ${scoreEn} from ${loserEn}. Three important points for the group and for anyone who picked them.`,
       },
       {
-        he: `${winnerHe} סגרה את ${loserHe} עם ${scoreHe}. זה מסוג התוצאות שנראות פשוטות רק למי שסימן אותן מראש.`,
-        en: `${winnerEn} shut out ${loserEn} ${scoreEn}. The kind of result that looks simple only if you called it early.`,
+        he: `${winnerHe} סגרה את ${loserHe} עם ${scoreHe}. מי שחזה ניצחון נקי מקבל כאן יתרון יפה.`,
+        en: `${winnerEn} shut out ${loserEn} ${scoreEn}. Anyone who called a clean win gets a useful edge here.`,
       },
       {
-        he: `${winnerHe} עם ${scoreHe} על ${loserHe}, והבית קיבל עוד סימן קריאה קטן בטבלה.`,
-        en: `${winnerEn} beat ${loserEn} ${scoreEn}, and the group table picked up a small exclamation mark.`,
+        he: `${winnerHe} עם ${scoreHe} על ${loserHe}. זה ניצחון שמסדר לה עמדה טובה יותר בבית.`,
+        en: `${winnerEn} beat ${loserEn} ${scoreEn}. That gives them a stronger position in the group.`,
       },
     ], salt);
   }
   return variantFor(match, [
     {
-      he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe}. זה לא רק שורת תוצאה, זה עוד טופס שצריך להסביר את עצמו.`,
-      en: `${winnerEn} beat ${loserEn} ${scoreEn}. Not just a scoreline; another prediction slip now has to explain itself.`,
+      he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe}. תוצאה חשובה לבית, ועוד נקודות למי שהלך איתה.`,
+      en: `${winnerEn} beat ${loserEn} ${scoreEn}. An important group result, and points for anyone who backed them.`,
     },
     {
-      he: `${winnerHe} עברה את ${loserHe} ${scoreHe}, והבית קיבל עוד דחיפה קטנה בכיוון שאף טופס לא אוהב.`,
-      en: `${winnerEn} got past ${loserEn} ${scoreEn}, and the group table took another small shove that no form enjoys.`,
+      he: `${winnerHe} עברה את ${loserHe} ${scoreHe}, והבית מתחיל לקבל צורה ברורה יותר.`,
+      en: `${winnerEn} got past ${loserEn} ${scoreEn}, and the group is starting to take clearer shape.`,
     },
     {
       he: `${winnerHe} ניצחה ${scoreHe} את ${loserHe}. תוצאה קטנה בלוח, אבל מספיק גדולה כדי להזיז הימורים.`,
@@ -304,8 +304,8 @@ function fixtureCommentary(match, now, salt = '') {
 
   if (homeFav && awayFav) {
     return {
-      he: `משחק ענק: ${homeHe} נגד ${awayHe}, ${w.he}. זה מסוג המשחקים שמזיזים גם טבלאות וגם אגו.`,
-      en: `Heavyweight alert: ${homeEn} vs ${awayEn}, ${w.en}. The kind of match that moves tables and egos.`,
+      he: `משחק גדול: ${homeHe} נגד ${awayHe}, ${w.he}. ניצחון כאן יכול לשנות את כל תמונת הבית.`,
+      en: `Big match: ${homeEn} vs ${awayEn}, ${w.en}. A win here can change the whole group picture.`,
     };
   }
   if (homeFav || awayFav) {
@@ -313,35 +313,35 @@ function fixtureCommentary(match, now, salt = '') {
     const favEn = homeFav ? homeEn : awayEn;
     return variantFor(match, [
       {
-        he: `${homeHe} נגד ${awayHe}, ${w.he}. ${favHe} מגיעה כפייבוריטית, וזה בדיוק איפה שההימורים מתחילים להזיע.`,
-        en: `${homeEn} vs ${awayEn}, ${w.en}. ${favEn} comes in as favorite, which is exactly where predictions start sweating.`,
+        he: `${homeHe} נגד ${awayHe}, ${w.he}. ${favHe} פייבוריטית, אבל היא עדיין צריכה לעשות את העבודה על הדשא.`,
+        en: `${homeEn} vs ${awayEn}, ${w.en}. ${favEn} are the favorite, but they still have to prove it on the pitch.`,
       },
       {
-        he: `${homeHe} נגד ${awayHe}, ${w.he}. על הנייר ${favHe} אמורה לשלוט, אבל הנייר לא מקבל נקודות בהימור.`,
-        en: `${homeEn} vs ${awayEn}, ${w.en}. On paper ${favEn} should control it, but paper does not score pool points.`,
+        he: `${homeHe} נגד ${awayHe}, ${w.he}. הרבה תחזיות ילכו עם ${favHe}; איבוד נקודות כאן יכאב.`,
+        en: `${homeEn} vs ${awayEn}, ${w.en}. A lot of predictions will back ${favEn}; dropped points here would hurt.`,
       },
       {
-        he: `${homeHe} נגד ${awayHe}, ${w.he}. אם ${favHe} מחליקה כאן, הרבה טפסים יצטרכו נאום הגנה מוקדם.`,
-        en: `${homeEn} vs ${awayEn}, ${w.en}. If ${favEn} slips here, plenty of forms need an early defense speech.`,
+        he: `${homeHe} נגד ${awayHe}, ${w.he}. אם ${favHe} לא מנצחת, הרבה הימורים ייפגעו מוקדם.`,
+        en: `${homeEn} vs ${awayEn}, ${w.en}. If ${favEn} do not win, a lot of picks take an early hit.`,
       },
       {
-        he: `${homeHe} נגד ${awayHe}, ${w.he}. משחק של פייבוריטית על הנייר, אבל בדיוק כאן מתחילים הסיפורים של ההימור.`,
-        en: `${homeEn} vs ${awayEn}, ${w.en}. A favorite on paper, but this is where pool stories usually begin.`,
+        he: `${homeHe} נגד ${awayHe}, ${w.he}. משחק שהרבה אנשים יסמנו כבטוח, וזה בדיוק הסיכון.`,
+        en: `${homeEn} vs ${awayEn}, ${w.en}. Many people will mark this as safe, and that is exactly the risk.`,
       },
     ], salt);
   }
   return variantFor(match, [
     {
-      he: `${homeHe} נגד ${awayHe}, ${w.he}. על הנייר שקט, בהימורים זה בדרך כלל הרעש האמיתי.`,
-      en: `${homeEn} vs ${awayEn}, ${w.en}. Quiet on paper, which is usually where pool chaos begins.`,
+      he: `${homeHe} נגד ${awayHe}, ${w.he}. משחק כזה יכול להכריע מקומות בבית בלי הרבה כותרות.`,
+      en: `${homeEn} vs ${awayEn}, ${w.en}. This kind of match can decide group places without making many headlines.`,
     },
     {
-      he: `${homeHe} נגד ${awayHe}, ${w.he}. לא המשחק הכי נוצץ, אבל בדיוק כאלה מזיזים מקומות בטבלה בלי לבקש רשות.`,
-      en: `${homeEn} vs ${awayEn}, ${w.en}. Not the shiniest match, but these are the ones that move places in the group table without asking.`,
+      he: `${homeHe} נגד ${awayHe}, ${w.he}. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות.`,
+      en: `${homeEn} vs ${awayEn}, ${w.en}. Not the biggest match, but the points here can be crucial.`,
     },
     {
-      he: `${homeHe} נגד ${awayHe}, ${w.he}. לא כל דרמה מגיעה עם שלט ניאון; לפעמים היא פשוט גונבת נקודות.`,
-      en: `${homeEn} vs ${awayEn}, ${w.en}. Not every drama arrives with neon lights; some just steal points quietly.`,
+      he: `${homeHe} נגד ${awayHe}, ${w.he}. מי שפוגע במשחקים האלה בדרך כלל מתקדם יפה בטבלה.`,
+      en: `${homeEn} vs ${awayEn}, ${w.en}. People who get these matches right usually move well in the table.`,
     },
   ], salt);
 }
@@ -352,8 +352,8 @@ function liveCommentary(match) {
   const homeEn = teamName(match.home_team_code, 'en');
   const awayEn = teamName(match.away_team_code, 'en');
   return {
-    he: `${homeHe} נגד ${awayHe} עכשיו על הדשא. כל דקה יכולה להפוך ניחוש גאוני לבדיחה בקבוצה.`,
-    en: `${homeEn} vs ${awayEn} is live now. Every minute can turn a genius pick into group-chat material.`,
+    he: `${homeHe} נגד ${awayHe} עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים.`,
+    en: `${homeEn} vs ${awayEn} is live now. Every goal can change the group and the predictions.`,
   };
 }
 

@@ -50,6 +50,8 @@ Every current item must answer at least one of:
 
 Reject copy that only swaps team names into a generic sentence, repeats the previous story shape, says a match is upcoming after kickoff, or shows old results as if they are fresh.
 
+Voice rule: the Pundit may be sharp, but it should sound like a real TV analyst or group-chat sports friend, not a standup routine. Avoid invented metaphors, forced analogies, "clever" object jokes, and unnatural lines such as forms needing speeches, paper scoring points, neon-light drama, or points being stolen quietly. Prefer direct consequence: who won, what changed in the group/table, and whose prediction was helped or hurt.
+
 For stories and Pundit cards, repeated structure is measured after normalizing team names, scores, dates, and group letters. Five different matches with the same sentence skeleton is a failed desk, even if each fact is technically true.
 
 ## Research Desk Requirement
