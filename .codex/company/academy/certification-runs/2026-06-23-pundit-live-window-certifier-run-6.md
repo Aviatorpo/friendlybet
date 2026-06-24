@@ -544,3 +544,41 @@ Current feed state:
 - `public-data/world-cup-stories.json`: 48 stories for 48 finished matches.
 
 Interpretation: the completed-match checks are real anti-staleness proof: production shows final/result Pundit items for all four requested completed matches, with no stale fixture wording. The 22:00 and 01:00 Israel windows remain readiness evidence only because those matches are still pre-kickoff. Graduation remains open until the next live/post-final transition proves stale fixture copy disappears, source-led news expires correctly, live/final state stays accurate, and Stories coverage catches the newly finished matches.
+
+### 2026-06-24 14:41Z Academy Audit Gate
+
+Added a one-command Pundit/Stories academy audit:
+
+- `scripts\pundit-academy-audit.js`
+- `scripts\test-pundit-academy-audit.js`
+
+Purpose: prevent future agents from claiming TV-level or production-ready status by stitching together partial evidence. The audit combines:
+
+- fresh `public-data/pundit.json` state and item-level expiry
+- required Pundit emoji finish in Hebrew and English
+- strict `public-data/pundit-news.json` validation with unexpired source-led items
+- `public-data/world-cup-stories.json` coverage for finished matches and recent emoji-ending visible copy
+- production live-window JSONL proof from `tmp\pundit-live-window-certifications-YYYY-MM-DD.jsonl`
+- social/content academy certification status from `.codex\skills\friendlybet-social-content-excellence\scripts\certification_audit.py`
+
+Validation:
+
+- `node --check scripts\pundit-academy-audit.js`: passed.
+- `node --check scripts\test-pundit-academy-audit.js`: passed.
+- `node scripts\test-pundit-academy-audit.js`: passed.
+- `node scripts\test-pundit-live-window-certifier.js`: passed.
+- `node scripts\test-pundit-feed.js`: passed for 12 items.
+- `node scripts\test-world-cup-stories.js`: passed for 48 stories.
+- `node scripts\pundit-academy-audit.js`: passed with status `calibrating-with-live-proof`, `production_ready=false`.
+- `node scripts\pundit-academy-audit.js --require-tv-ready`: failed as designed because the social/content academy is not production-ready.
+- `python .codex\skills\friendlybet-social-content-excellence\scripts\certification_audit.py --require-production-ready`: failed as designed because production-ready still requires Eyal approval or live publish-cycle proof.
+
+Current audit evidence:
+
+- Pundit feed: 12 items, `freshUntil=2026-06-24T20:08:46.560Z`.
+- Stories: 48 stories for 48 finished matches.
+- News desk: 3 items, all unexpired at the audit time.
+- Production live-window proof windows: 4.
+- Social/content academy: `ready for Eyal review`, not production-ready.
+
+Interpretation: the academy now has an enforceable graduation audit. The current honest status is `calibrating-with-live-proof`, not TV-level production-ready. This moves the Pundit/Stories agents closer to autonomous operation by making overclaiming mechanically harder.
