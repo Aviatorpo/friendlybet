@@ -617,3 +617,30 @@ Production propagation:
 - Fetched production file saved to `tmp\prod-pundit-news-e8d7f2f35.json`.
 - `node -e "... validatePayload(raw,{nowMs:Date.now(),requireUnexpired:true}) ..."` passed: `production pundit-news evidence schema validated: 3 item(s)`.
 - Production live-window certifiers for `SUI-CAN`, `BIH-QAT`, `SCO-BRA`, and `MAR-HAI` remained `score=100`, phase `pre`.
+
+### 2026-06-24 14:56Z Red Team Review Gate For Pundit News
+
+Added a mandatory Red Team review layer for source-led Pundit news:
+
+- `scripts\pundit-news-validate.js` now requires `red_team_review` on every `public-data/pundit-news.json` item.
+- Required Red Team fields: `score`, `blockers`, `decision`, `stale_state_check`, `source_check`, `pool_relevance_check`, `tone_check`, `repetition_check`, and `rewrite_note`.
+- Publishable items must have `score >= 90`, `decision=approve`, and an empty `blockers[]` list.
+- `scripts\test-pundit-news-validate.js` now covers missing Red Team review, score below 90, and non-empty blockers.
+- `public-data/pundit-news.json` now carries approved Red Team review for all 3 active source-led items.
+- `.codex\company\playbooks\pundit-live-desk.md` now documents that Red Team review is enforced for published Pundit news.
+
+Validation:
+
+- `node --check scripts\pundit-news-validate.js`: passed.
+- `node --check scripts\test-pundit-news-validate.js`: passed.
+- `node scripts\test-pundit-news-validate.js`: passed.
+- `node scripts\pundit-news-validate.js --require-unexpired`: passed.
+- `node scripts\test-pundit-academy-audit.js`: passed.
+- `node scripts\pundit-academy-audit.js`: passed with status `calibrating-with-live-proof`, `production_ready=false`.
+- `node scripts\test-pundit-feed.js`: passed for 12 items.
+- `node scripts\test-world-cup-stories.js`: passed for 48 stories.
+- `node scripts\generate-pundit.js`: no visible feed change; current `public-data/pundit.json` stayed fresh.
+- `node scripts\live-ops-audit.js`: `ok=true`.
+- Local live-window certifiers for `SUI-CAN`, `BIH-QAT`, `SCO-BRA`, and `MAR-HAI`: all `score=100`, phase `pre`.
+
+Interpretation: this is still not graduation. It does make the Pundit harder to operate lazily: source-led news now needs source evidence, story scoring, self-review, and an explicit Red Team approval with no blockers before publication.

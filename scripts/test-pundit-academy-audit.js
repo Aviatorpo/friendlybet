@@ -177,6 +177,17 @@ const nowMs = Date.parse('2026-06-24T14:00:00Z');
         repeated_shape_check: 'specific enough for fixture validation',
         expiry_reason: 'short-lived live desk test item',
       },
+      red_team_review: {
+        score: 91,
+        blockers: [],
+        decision: 'approve',
+        stale_state_check: 'expires before stale state',
+        source_check: 'two independent fixture sources',
+        pool_relevance_check: 'prediction relevance is explicit',
+        tone_check: 'safe and non-offensive',
+        repetition_check: 'not a repeated template',
+        rewrite_note: 'test fixture approved after removing unsupported claims',
+      },
     }],
   });
   assert.strictEqual(news.ok, true);

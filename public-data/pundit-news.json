@@ -66,6 +66,17 @@
         "gambling_check": "uses FriendlyBet prediction language, no odds or money terms",
         "repeated_shape_check": "focuses on Group B final-window table stakes rather than generic fixture hype",
         "expiry_reason": "expires before the related kickoff window can make preview wording stale"
+      },
+      "red_team_review": {
+        "score": 92,
+        "blockers": [],
+        "decision": "approve",
+        "stale_state_check": "pre-kickoff stakes only; no live, final, lineup, injury, qualification, or score claim",
+        "source_check": "two independent trusted source hosts with matching source ledger rows",
+        "pool_relevance_check": "connects Group B control/survival stakes to table-aware prediction forms",
+        "tone_check": "direct and lightly sharp without insulting teams, players, or users",
+        "repetition_check": "specific final-window framing, not a generic upcoming-match sentence",
+        "rewrite_note": "kept the item table-led and removed any unsupported result or advancement implication"
       }
     },
     {
@@ -145,6 +156,17 @@
         "gambling_check": "no odds, payouts, or betting-source language",
         "repeated_shape_check": "combines star-return and historic-door stakes instead of generic favorite preview",
         "expiry_reason": "expires before the 01:00 Israel kickoff window"
+      },
+      "red_team_review": {
+        "score": 93,
+        "blockers": [],
+        "decision": "approve",
+        "stale_state_check": "uses may-be-back availability language and expires before kickoff; no lineup or final claim",
+        "source_check": "three source rows support the Scotland stakes and Neymar availability angle",
+        "pool_relevance_check": "clearly separates Brazil pick glamour from Scotland pick pulse",
+        "tone_check": "energetic but not cruel, nationalistic, or player-mocking",
+        "repetition_check": "distinct star-return plus historic-door shape, not recycled fixture filler",
+        "rewrite_note": "kept Neymar wording cautious and made the Scotland consequence explicit"
       }
     },
     {
@@ -212,6 +234,17 @@
         "gambling_check": "prediction receipt framing only, no odds or money language",
         "repeated_shape_check": "adds specific Group C route and breakout-player context rather than generic favorite copy",
         "expiry_reason": "expires at the Morocco-Haiti kickoff boundary"
+      },
+      "red_team_review": {
+        "score": 94,
+        "blockers": [],
+        "decision": "approve",
+        "stale_state_check": "explicitly conditional Group C scenario, expiring at kickoff before live state changes it",
+        "source_check": "two independent trusted source hosts support the table scenario and breakout-player context",
+        "pool_relevance_check": "ties Morocco route to believer receipts and prediction-form consequences",
+        "tone_check": "confident and lively without belittling Haiti or overhyping the player",
+        "repetition_check": "uses Group C route plus human breakout angle, distinct from the other active items",
+        "rewrite_note": "kept the underdog/favorite balance respectful and avoided claiming Bouaddi starts or decides the match"
       }
     }
   ]

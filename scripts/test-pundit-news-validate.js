@@ -39,6 +39,17 @@ function item(overrides = {}) {
       repeated_shape_check: 'specific Group L consequence, not generic fixture filler',
       expiry_reason: 'preview expires before kickoff',
     },
+    red_team_review: {
+      score: 92,
+      blockers: [],
+      decision: 'approve',
+      stale_state_check: 'preview wording expires before kickoff and does not claim live/final state',
+      source_check: 'two independent source hosts and matching source ledger rows',
+      pool_relevance_check: 'names Group L and prediction-form consequence',
+      tone_check: 'sharp but not insulting or personal',
+      repetition_check: 'specific to this fixture, not a reused generic shape',
+      rewrite_note: 'kept the line direct and removed any unsupported lineup/result implication',
+    },
   };
   const merged = { ...base, ...overrides };
   if (!Object.prototype.hasOwnProperty.call(overrides, 'source_ledger')) {
@@ -161,6 +172,30 @@ function item(overrides = {}) {
     items: [item({ self_review: undefined })],
   }, { nowMs });
   assert.ok(errors.some(error => /missing self_review/.test(error)));
+}
+
+{
+  const errors = validatePayload({
+    updatedAt: '2026-06-23T11:00:00Z',
+    items: [item({ red_team_review: undefined })],
+  }, { nowMs });
+  assert.ok(errors.some(error => /missing red_team_review/.test(error)));
+}
+
+{
+  const errors = validatePayload({
+    updatedAt: '2026-06-23T11:00:00Z',
+    items: [item({ red_team_review: { score: 89, blockers: [], decision: 'approve', stale_state_check: 'ok', source_check: 'ok', pool_relevance_check: 'ok', tone_check: 'ok', repetition_check: 'ok', rewrite_note: 'ok' } })],
+  }, { nowMs });
+  assert.ok(errors.some(error => /red_team_review\.score must be at least 90/.test(error)));
+}
+
+{
+  const errors = validatePayload({
+    updatedAt: '2026-06-23T11:00:00Z',
+    items: [item({ red_team_review: { score: 95, blockers: ['stale state'], decision: 'approve', stale_state_check: 'failed', source_check: 'ok', pool_relevance_check: 'ok', tone_check: 'ok', repetition_check: 'ok', rewrite_note: 'ok' } })],
+  }, { nowMs });
+  assert.ok(errors.some(error => /red_team_review\.blockers must be empty/.test(error)));
 }
 
 console.log('pundit news validator tests passed');

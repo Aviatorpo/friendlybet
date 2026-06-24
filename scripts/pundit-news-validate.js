@@ -14,8 +14,8 @@
 //   * expires_at present and a valid future-ish ISO date.
 //   * topic_date/source_checked_at is recent enough for a live tournament feed.
 //   * expires_at is short-lived, so old news cannot be banked for days/weeks.
-//   * source_ledger, story_score, and self_review present, so the desk proves
-//     why this story is source-led, relevant, safe, and worth publishing.
+//   * source_ledger, story_score, self_review, and red_team_review present, so
+//     the desk proves why this story is source-led, relevant, safe, and worth publishing.
 //   * no em dash (-) anywhere in the copy (house style).
 //
 // Run:  node scripts/pundit-news-validate.js [--require-unexpired]
@@ -158,6 +158,39 @@ function validateSelfReview(it, at, errors) {
   });
 }
 
+function validateRedTeamReview(it, at, errors) {
+  const review = it.red_team_review;
+  if (!review || typeof review !== 'object' || Array.isArray(review)) {
+    errors.push(`${at}: missing red_team_review`);
+    return;
+  }
+  if (!Number.isInteger(review.score) || review.score < 0 || review.score > 100) {
+    errors.push(`${at}: red_team_review.score must be an integer from 0 to 100`);
+  } else if (review.score < 90) {
+    errors.push(`${at}: red_team_review.score must be at least 90 for publishable Pundit news`);
+  }
+  const blockers = Array.isArray(review.blockers) ? review.blockers : null;
+  if (!blockers) {
+    errors.push(`${at}: red_team_review.blockers must be an array`);
+  } else if (blockers.length > 0) {
+    errors.push(`${at}: red_team_review.blockers must be empty before publication`);
+  }
+  [
+    'decision',
+    'stale_state_check',
+    'source_check',
+    'pool_relevance_check',
+    'tone_check',
+    'repetition_check',
+    'rewrite_note',
+  ].forEach(key => {
+    if (!nonEmptyString(review[key])) errors.push(`${at}: red_team_review.${key} is required`);
+  });
+  if (nonEmptyString(review.decision) && review.decision !== 'approve') {
+    errors.push(`${at}: red_team_review.decision must be approve before publication`);
+  }
+}
+
 function validatePayload(raw, options = {}) {
   const items = Array.isArray(raw.items) ? raw.items : null;
   if (!items) return ['pundit-news.json: "items" must be an array'];
@@ -226,6 +259,7 @@ function validatePayload(raw, options = {}) {
     validateSourceLedger(it, at, validUrls, errors);
     validateStoryScore(it, at, errors);
     validateSelfReview(it, at, errors);
+    validateRedTeamReview(it, at, errors);
 
     // Optional routing flags. If present, they must be real WC2026 team codes.
     validateTeamCode(it.team, `${at}: team`, errors);
