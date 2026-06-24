@@ -846,8 +846,8 @@ const STORY_COPY_OVERRIDES = {
   },
   'SCO-MAR': {
     caption: {
-      he: 'מרוקו גנבה 1-0 מסקוטלנד, מהסוג שלא עושה רעש ענק בזמן אמת ואז פתאום יושב באמצע הטבלה עם חיוך.',
-      en: 'Morocco stole 1-0 from Scotland, the kind of result that sounds small live and then sits in the table with a grin.',
+      he: 'מרוקו לקחה 1-0 מסקוטלנד, תוצאה קטנה על המסך אבל גדולה באמצע בית C 🔥',
+      en: 'Morocco took 1-0 from Scotland, a small scoreline with real weight in Group C 🔥',
     },
     pool_focuses: [
       {
