@@ -261,8 +261,8 @@ check('standalone Pundit workflow audits match state before build', () => {
   assert.ok(text.includes("cron: '3,13,23,33,43,53 * 11-28 6 *'"), 'generate-pundit workflow must refresh Pundit near live group-stage transitions');
   assert.ok(/git status --porcelain public-data\/pundit\.json/.test(text), 'generate-pundit workflow must key deploys on Pundit feed changes');
   assert.ok(/match snapshot changed without a Pundit feed change/.test(text), 'generate-pundit workflow must avoid committing match-only live churn');
-  assert.ok(/git add public-data\/matches\.json public-data\/pundit\.json/.test(text), 'generate-pundit workflow must stage matches with Pundit');
-  assert.ok(/pushed=0[\s\S]*failed to push Pundit feed[\s\S]*exit 1/.test(text), 'generate-pundit workflow must fail if push retries never succeed');
+  assert.ok(/commit-generated-snapshots\.sh[\s\S]*public-data\/matches\.json public-data\/pundit\.json/.test(text), 'generate-pundit workflow must stage matches with Pundit');
+  assert.ok(/REGENERATE_COMMANDS:[\s\S]*node scripts\/export-snapshots\.js matches[\s\S]*node scripts\/generate-pundit\.js/.test(text), 'generate-pundit workflow must regenerate from current main after generated-data push conflicts');
 });
 
 check('readiness monitor can recover stale active live DB state', () => {
@@ -277,7 +277,8 @@ check('final-result verifier commits exported match snapshot with Pundit', () =>
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/final-result-verifier.yml'), 'utf8');
   assert.ok(text.includes('node scripts/export-snapshots.js matches'), 'final verifier must export match snapshot after verified results');
   assert.ok(/git status --porcelain public-data\/matches\.json public-data\/leaderboard/.test(text), 'final verifier must include matches in changed snapshot check');
-  assert.ok(/git add public-data\/matches\.json public-data\/leaderboard/.test(text), 'final verifier must stage matches with scoring/Pundit snapshots');
+  assert.ok(/commit-generated-snapshots\.sh[\s\S]*public-data\/matches\.json public-data\/leaderboard/.test(text), 'final verifier must stage matches with scoring/Pundit snapshots');
+  assert.ok(/REGENERATE_COMMANDS:[\s\S]*node scripts\/calculate-scores-v2\.js[\s\S]*node scripts\/generate-pundit\.js/.test(text), 'final verifier must regenerate scoring and Pundit snapshots after generated-data push conflicts');
 });
 
 console.log(`\nLive-ops audit tests passed: ${passed}`);
