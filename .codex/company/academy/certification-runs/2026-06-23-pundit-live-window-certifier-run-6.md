@@ -494,3 +494,21 @@ Production snapshot evidence:
 - Cache-busted `https://friendlybet.live/public-data/world-cup-stories.json` shows recent Stories with emoji-ending headlines, captions, and pool-focus templates.
 
 Graduation status: still not fully graduated. This checkpoint proves source-led pre-kickoff readiness and production propagation for the 22:00 and 01:00 Israel windows, but it does not count as live/post-final graduation proof because all four current target matches are still pre-kickoff. The next proof must happen after kickoff and after final whistle, verifying that stale fixture copy disappears, live/final state is correct, source-led news expires, and new Stories exist for finished matches.
+
+### 2026-06-24 14:31Z Automation Liveness Check
+
+Because the latest visible scheduled `Generate Pundit Feed` run was older than the surrounding live desk monitors, the workflow was manually dispatched once as an operational safeguard:
+
+- `gh workflow run generate-pundit.yml --ref main`
+- Run: `28106016928`
+- Result: success.
+- Evidence from workflow logs:
+  - exported current match snapshot with `FORCE_MATCH_SNAPSHOT=1`; `matches.json` unchanged at 72 rows.
+  - ran `node scripts/live-ops-audit.js` before build; `ok=true`, 48 stories for 48 finished matches, 0 result-recovery candidates.
+  - ran `node scripts/pundit-news-validate.js`; passed.
+  - ran `node scripts/generate-pundit.js`; `pundit: no change, keeping existing feed`.
+  - ran `node scripts/test-pundit-feed.js`; passed for 12 items.
+
+Production remained on the existing fresh 12-item feed: `updatedAt=2026-06-24T14:08:46.560Z`, `freshUntil=2026-06-24T20:08:46.560Z`.
+
+Interpretation: the autonomous Pundit refresh path is executable and correctly avoided unnecessary deploy churn. This is operational readiness evidence only, not graduation proof, because it still occurred before the 22:00 Israel kickoff boundary.
