@@ -299,7 +299,7 @@ function resultCommentary(match, salt = '') {
         en: `${winnerEn} beat ${loserEn} ${scoreEn}. Three important points for the group and for anyone who picked them.`,
       },
       {
-        he: `${winnerHe} סגרה את ${loserHe} עם ${scoreHe}. מי שחזה ניצחון נקי מקבל כאן יתרון יפה.`,
+        he: `${winnerHe} סגרה את ${loserHe} עם ${scoreHe}. מי שסימן ניצחון נקי מקבל כאן יתרון יפה.`,
         en: `${winnerEn} shut out ${loserEn} ${scoreEn}. Anyone who called a clean win gets a useful edge here.`,
       },
       {
