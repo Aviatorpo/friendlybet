@@ -324,6 +324,22 @@ function resultCommentary(match, salt = '') {
   ], salt);
 }
 
+const FIXTURE_CONSEQUENCE_EN = /\b(table|tables|group|prediction|predictions|predictors|pool|pools|pick|picks|picked|safe|sweating|points|qualify|qualification|places)\b/i;
+const FIXTURE_CONSEQUENCE_HE = /(?:בית|בתים|תחזית|תחזיות|הימור|הימורים|נקודות|מקום|מקומות|עלייה|טבלה)/u;
+
+function withFixtureConsequence(text) {
+  const he = String((text && text.he) || '').trim();
+  const en = String((text && text.en) || '').trim();
+  return {
+    he: FIXTURE_CONSEQUENCE_HE.test(he)
+      ? he
+      : `${he.replace(/[.。]\s*$/, '')}. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית.`,
+    en: FIXTURE_CONSEQUENCE_EN.test(en)
+      ? en
+      : `${en.replace(/[.。]\s*$/, '')}. It still matters for table places, picks, and pool points.`,
+  };
+}
+
 function fixtureCommentary(match, now, salt = '') {
   const w = whenLabel(match.match_date, now);
   const homeHe = teamName(match.home_team_code, 'he');
@@ -334,15 +350,15 @@ function fixtureCommentary(match, now, salt = '') {
   const awayFav = FAVORITES.has(match.away_team_code);
 
   if (homeFav && awayFav) {
-    return {
+    return withFixtureConsequence({
       he: `משחק גדול: ${homeHe} נגד ${awayHe}, ${w.he}. ניצחון כאן יכול לשנות את כל תמונת הבית.`,
       en: `Big match: ${homeEn} vs ${awayEn}, ${w.en}. A win here can change the whole group picture.`,
-    };
+    });
   }
   if (homeFav || awayFav) {
     const favHe = homeFav ? homeHe : awayHe;
     const favEn = homeFav ? homeEn : awayEn;
-    return variantFor(match, [
+    return withFixtureConsequence(variantFor(match, [
       {
         he: `${homeHe} נגד ${awayHe}, ${w.he}. ${favHe} פייבוריטית, אבל היא עדיין צריכה לעשות את העבודה על הדשא.`,
         en: `${homeEn} vs ${awayEn}, ${w.en}. ${favEn} are the favorite, but they still have to prove it on the pitch.`,
@@ -359,9 +375,9 @@ function fixtureCommentary(match, now, salt = '') {
         he: `${homeHe} נגד ${awayHe}, ${w.he}. משחק שהרבה אנשים יסמנו כבטוח, וזה בדיוק הסיכון.`,
         en: `${homeEn} vs ${awayEn}, ${w.en}. Many people will mark this as safe, and that is exactly the risk.`,
       },
-    ], salt);
+    ], salt));
   }
-  return variantFor(match, [
+  return withFixtureConsequence(variantFor(match, [
     {
       he: `${homeHe} נגד ${awayHe}, ${w.he}. משחק כזה יכול להכריע מקומות בבית בלי הרבה כותרות.`,
       en: `${homeEn} vs ${awayEn}, ${w.en}. This kind of match can decide group places without making many headlines.`,
@@ -374,7 +390,7 @@ function fixtureCommentary(match, now, salt = '') {
       he: `${homeHe} נגד ${awayHe}, ${w.he}. מי שפוגע במשחקים האלה בדרך כלל מתקדם יפה בטבלה.`,
       en: `${homeEn} vs ${awayEn}, ${w.en}. People who get these matches right usually move well in the table.`,
     },
-  ], salt);
+  ], salt));
 }
 
 function liveCommentary(match) {

@@ -17,6 +17,8 @@ function match(overrides) {
 }
 
 const now = new Date('2026-06-23T12:00:00Z');
+const EN_FIXTURE_CONSEQUENCE = /\b(table|tables|group|prediction|predictions|predictors|pool|pools|pick|picks|picked|safe|sweating|points|qualify|qualification|places)\b/i;
+const HE_FIXTURE_CONSEQUENCE = /(?:בית|בתים|תחזית|תחזיות|הימור|הימורים|נקודות|מקום|מקומות|עלייה|טבלה)/u;
 
 {
   const staleScheduled = match();
@@ -41,6 +43,21 @@ const now = new Date('2026-06-23T12:00:00Z');
   const finalPreKickoffBuffer = match({ id: 'm-buffer', match_date: '2026-06-23T12:10:00Z' });
   const items = pundit.build(now, { matchesPayload: { matches: [finalPreKickoffBuffer] }, newsPayload: { items: [] } });
   assert.ok(!items.some(item => item.id === 'fixture-m-buffer'), 'Feed must drop fixture commentary during the final pre-kickoff buffer');
+}
+
+{
+  const fixtures = [
+    match({ id: 'm-favorite-1', match_date: '2026-06-23T14:00:00Z', home_team_code: 'BRA', away_team_code: 'HAI' }),
+    match({ id: 'm-favorite-2', match_date: '2026-06-23T14:10:00Z', home_team_code: 'MAR', away_team_code: 'ARG' }),
+    match({ id: 'm-neutral', match_date: '2026-06-23T14:20:00Z', home_team_code: 'QAT', away_team_code: 'BIH' }),
+  ];
+  const items = pundit.build(now, { matchesPayload: { matches: fixtures }, newsPayload: { items: [] } })
+    .filter(item => item.type === 'fixture');
+  assert.ok(items.length >= 3, 'Future fixtures should produce fixture commentary');
+  for (const item of items) {
+    assert.ok(EN_FIXTURE_CONSEQUENCE.test(item.en), `${item.id} English fixture copy must include table/picks/pool consequence`);
+    assert.ok(HE_FIXTURE_CONSEQUENCE.test(item.he), `${item.id} Hebrew fixture copy must include table/picks/pool consequence`);
+  }
 }
 
 {
