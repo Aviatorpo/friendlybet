@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-24T12:32:00.000Z",
+  "updatedAt": "2026-06-24T14:08:00.000Z",
   "items": [
     {
       "id": "2026-06-24-group-b-final-window",
@@ -50,6 +50,31 @@
         {
           "name": "Times of India",
           "url": "https://timesofindia.indiatimes.com/sports/football/fifa-world-cup/neymar-is-ready-carlo-ancelotti-gives-major-update-ahead-of-fifa-world-cup-match-against-scotland/articleshow/131954718.cms"
+        }
+      ]
+    },
+    {
+      "id": "2026-06-24-morocco-haiti-group-c-receipts",
+      "confidence": "reported",
+      "teams": [
+        "MAR",
+        "HAI",
+        "BRA",
+        "SCO"
+      ],
+      "topic_date": "2026-06-24T14:08:00.000Z",
+      "source_checked_at": "2026-06-24T14:08:00.000Z",
+      "expires_at": "2026-06-24T22:00:00.000Z",
+      "he": "מרוקו נגד האיטי היא לא עוד סימון קל: מרוקו יכולה אפילו לקחת את בית C אם היא מנצחת וברזיל מאבדת נקודות, ואיוב בואדי כבר נראה כמו שם שכולם מסמנים בפנקס. מי שבנה על מרוקו מקבל עכשיו בדיקת קבלות רצינית לטופס.",
+      "en": "Morocco vs Haiti is not just a tidy favorite pick: Morocco can still take Group C if they win and Brazil drop points, and Ayyoub Bouaddi is already making scout notebooks sweat. Morocco believers get a serious receipt check.",
+      "sources": [
+        {
+          "name": "SB Nation",
+          "url": "https://www.sbnation.com/fifa-world-cup/1119075/world-cup-2026-group-c-standings-scenarios-scotland-brazil"
+        },
+        {
+          "name": "The Guardian",
+          "url": "https://www.theguardian.com/football/2026/jun/24/five-breakout-world-cup-stars-who-could-prosper-in-the-premier-league"
         }
       ]
     }
