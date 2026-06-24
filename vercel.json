@@ -1,5 +1,9 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
+  "github": {
+    "silent": true
+  },
   "trailingSlash": false,
   "redirects": [
     { "source": "/owner-annex-dashboard", "destination": "/", "permanent": false },
