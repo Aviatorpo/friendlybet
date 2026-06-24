@@ -582,3 +582,31 @@ Current audit evidence:
 - Social/content academy: `ready for Eyal review`, not production-ready.
 
 Interpretation: the academy now has an enforceable graduation audit. The current honest status is `calibrating-with-live-proof`, not TV-level production-ready. This moves the Pundit/Stories agents closer to autonomous operation by making overclaiming mechanically harder.
+
+### 2026-06-24 14:48Z Source-Led News Desk Schema
+
+Added a stricter Pundit news evidence requirement so source-led items prove editorial judgment, not only URL attachment.
+
+Changed:
+
+- `scripts\pundit-news-validate.js` now requires every `public-data/pundit-news.json` item to include:
+  - `source_ledger[]` with claim, source, URL, source tier, timestamp, confirmation, uncertainty, and usability.
+  - `story_score` with freshness, verification, FriendlyBet relevance, drama, uniqueness, clarity, decision, and reason.
+  - `self_review` with stale-risk, overclaiming, privacy, gambling, repeated-shape, proof-source, and expiry checks.
+- `scripts\test-pundit-news-validate.js` now covers the richer schema and fails missing ledger/score/self-review cases.
+- `public-data/pundit-news.json` now carries the richer source-led desk evidence for the three current active news items.
+- `.codex\company\academy\domains\pundit-research-desk.md` now documents those fields as mandatory for published Pundit news.
+
+Validation:
+
+- `node --check scripts\pundit-news-validate.js`: passed.
+- `node --check scripts\test-pundit-news-validate.js`: passed.
+- `node scripts\test-pundit-news-validate.js`: passed.
+- `node scripts\pundit-news-validate.js --require-unexpired`: passed.
+- `node scripts\test-pundit-feed.js`: passed for 12 items.
+- `node scripts\pundit-academy-audit.js`: passed with status `calibrating-with-live-proof`, `production_ready=false`.
+- `node scripts\live-ops-audit.js`: `ok=true`.
+- `node scripts\generate-pundit.js`: no visible feed change; existing `public-data/pundit.json` stayed current.
+- Local live-window certifiers for `SUI-CAN`, `BIH-QAT`, `SCO-BRA`, and `MAR-HAI`: all `score=100`, phase `pre`.
+
+Interpretation: this does not graduate the Pundit, but it closes a real training gap. The news desk now has machine-checkable evidence of source ledger, story scoring, and self-review for every source-led item, making it harder for future agents to publish shallow or unexplained "current" commentary.

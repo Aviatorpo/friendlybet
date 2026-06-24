@@ -24,7 +24,49 @@
           "name": "SB Nation",
           "url": "https://weaintgotnohistory.sbnation.com/ex-chelsea-fc/169678/2026-world-cup-day-14-final-games-in-groups-a-b-c"
         }
-      ]
+      ],
+      "source_ledger": [
+        {
+          "claim": "Group B has reached its final match window with Canada and Switzerland fighting for control while Bosnia-Herzegovina vs Qatar carries survival stakes.",
+          "source": "The Guardian",
+          "url": "https://www.theguardian.com/football/2026/jun/24/world-cup-schedule-today-how-to-watch-scotland-v-brazil",
+          "tier": "trusted",
+          "published_or_updated_at": "2026-06-24T12:32:00.000Z",
+          "confirmation": "trusted professional matchday schedule and fixture context",
+          "uncertainty": "exact table movement depends on final scores",
+          "usable": true
+        },
+        {
+          "claim": "The Group B and Group C final-game slate creates prediction and table consequences for the next windows.",
+          "source": "SB Nation",
+          "url": "https://weaintgotnohistory.sbnation.com/ex-chelsea-fc/169678/2026-world-cup-day-14-final-games-in-groups-a-b-c",
+          "tier": "trusted",
+          "published_or_updated_at": "2026-06-24T12:32:00.000Z",
+          "confirmation": "independent professional matchday/source-led context",
+          "uncertainty": "not a final-result source; use only for pre-kickoff stakes",
+          "usable": true
+        }
+      ],
+      "story_score": {
+        "freshness": 5,
+        "verification": 4,
+        "friendlybet_relevance": 5,
+        "drama": 3,
+        "uniqueness": 3,
+        "clarity": 5,
+        "decision": "publish",
+        "reason": "current final-window group stakes with direct table and prediction-form consequences"
+      },
+      "self_review": {
+        "could_be_wrong": "the final scores, qualification order, and exact table movement are not known before kickoff",
+        "proof_source": "refresh FriendlyBet match state and trusted match centre after kickoff and final whistle",
+        "stale_risk": "preview becomes stale once the 22:00 Israel window approaches kickoff",
+        "overclaiming_check": "does not claim a final result, lineup, injury, or qualification",
+        "privacy_check": "mentions prediction forms only, no private member data",
+        "gambling_check": "uses FriendlyBet prediction language, no odds or money terms",
+        "repeated_shape_check": "focuses on Group B final-window table stakes rather than generic fixture hype",
+        "expiry_reason": "expires before the related kickoff window can make preview wording stale"
+      }
     },
     {
       "id": "2026-06-24-scotland-brazil-neymar-door",
@@ -51,7 +93,59 @@
           "name": "Times of India",
           "url": "https://timesofindia.indiatimes.com/sports/football/fifa-world-cup/neymar-is-ready-carlo-ancelotti-gives-major-update-ahead-of-fifa-world-cup-match-against-scotland/articleshow/131954718.cms"
         }
-      ]
+      ],
+      "source_ledger": [
+        {
+          "claim": "Scotland have a historic knockout-stage opportunity against Brazil.",
+          "source": "The Guardian",
+          "url": "https://www.theguardian.com/football/2026/jun/23/scotland-brazil-world-cup-group-steve-clarke-history-beckons",
+          "tier": "trusted",
+          "published_or_updated_at": "2026-06-23T12:32:00.000Z",
+          "confirmation": "trusted professional reporting on match stakes",
+          "uncertainty": "qualification status depends on the actual result and table",
+          "usable": true
+        },
+        {
+          "claim": "Brazil may have Neymar available again for the Scotland match.",
+          "source": "The Guardian",
+          "url": "https://www.theguardian.com/football/2026/jun/23/steve-clarke-warns-scotland-of-threat-posed-by-returning-brazil-icon-neymar",
+          "tier": "trusted",
+          "published_or_updated_at": "2026-06-23T12:32:00.000Z",
+          "confirmation": "trusted professional report on pre-match availability context",
+          "uncertainty": "actual lineup and minutes are not confirmed by this item",
+          "usable": true
+        },
+        {
+          "claim": "Carlo Ancelotti gave a positive Neymar availability update before Scotland vs Brazil.",
+          "source": "Times of India",
+          "url": "https://timesofindia.indiatimes.com/sports/football/fifa-world-cup/neymar-is-ready-carlo-ancelotti-gives-major-update-ahead-of-fifa-world-cup-match-against-scotland/articleshow/131954718.cms",
+          "tier": "trusted",
+          "published_or_updated_at": "2026-06-24T12:32:00.000Z",
+          "confirmation": "independent professional report aligned with the pre-match availability angle",
+          "uncertainty": "not a lineup confirmation; avoid saying Neymar starts",
+          "usable": true
+        }
+      ],
+      "story_score": {
+        "freshness": 4,
+        "verification": 4,
+        "friendlybet_relevance": 5,
+        "drama": 5,
+        "uniqueness": 4,
+        "clarity": 4,
+        "decision": "publish",
+        "reason": "strong pre-kickoff story: historic Scotland stakes plus Brazil star-return pressure with direct pick consequences"
+      },
+      "self_review": {
+        "could_be_wrong": "Neymar availability could change at lineup release and Scotland's actual path depends on the final table",
+        "proof_source": "check official lineups and FriendlyBet match state before any live or result wording",
+        "stale_risk": "the item becomes stale at kickoff or when lineups contradict the availability angle",
+        "overclaiming_check": "says may be back, not starts or scores",
+        "privacy_check": "uses team/pick framing only, no hidden pool member data",
+        "gambling_check": "no odds, payouts, or betting-source language",
+        "repeated_shape_check": "combines star-return and historic-door stakes instead of generic favorite preview",
+        "expiry_reason": "expires before the 01:00 Israel kickoff window"
+      }
     },
     {
       "id": "2026-06-24-morocco-haiti-group-c-receipts",
@@ -76,7 +170,49 @@
           "name": "The Guardian",
           "url": "https://www.theguardian.com/football/2026/jun/24/five-breakout-world-cup-stars-who-could-prosper-in-the-premier-league"
         }
-      ]
+      ],
+      "source_ledger": [
+        {
+          "claim": "Morocco can still take Group C if they win and Brazil drop points.",
+          "source": "SB Nation",
+          "url": "https://www.sbnation.com/fifa-world-cup/1119075/world-cup-2026-group-c-standings-scenarios-scotland-brazil",
+          "tier": "trusted",
+          "published_or_updated_at": "2026-06-24T14:08:00.000Z",
+          "confirmation": "trusted professional scenario summary for Group C",
+          "uncertainty": "exact table outcome depends on Morocco-Haiti and Scotland-Brazil results",
+          "usable": true
+        },
+        {
+          "claim": "Ayyoub Bouaddi is a breakout World Cup name drawing Premier League attention.",
+          "source": "The Guardian",
+          "url": "https://www.theguardian.com/football/2026/jun/24/five-breakout-world-cup-stars-who-could-prosper-in-the-premier-league",
+          "tier": "trusted",
+          "published_or_updated_at": "2026-06-24T14:08:00.000Z",
+          "confirmation": "trusted professional feature on tournament breakout players",
+          "uncertainty": "does not prove match lineup or direct scoring impact",
+          "usable": true
+        }
+      ],
+      "story_score": {
+        "freshness": 5,
+        "verification": 4,
+        "friendlybet_relevance": 5,
+        "drama": 4,
+        "uniqueness": 4,
+        "clarity": 4,
+        "decision": "publish",
+        "reason": "current Group C table scenario with a human breakout-player angle and clear Morocco pick receipts"
+      },
+      "self_review": {
+        "could_be_wrong": "Morocco's group-winning route disappears if Brazil do not drop points or Morocco fail to win",
+        "proof_source": "check FriendlyBet match states and final Group C table after both matches",
+        "stale_risk": "the item expires at kickoff because the scenario changes once live results arrive",
+        "overclaiming_check": "does not claim Morocco will win the group or that Bouaddi starts",
+        "privacy_check": "mentions Morocco believers generally, no private pool data",
+        "gambling_check": "prediction receipt framing only, no odds or money language",
+        "repeated_shape_check": "adds specific Group C route and breakout-player context rather than generic favorite copy",
+        "expiry_reason": "expires at the Morocco-Haiti kickoff boundary"
+      }
     }
   ]
 }

@@ -14,6 +14,8 @@
 //   * expires_at present and a valid future-ish ISO date.
 //   * topic_date/source_checked_at is recent enough for a live tournament feed.
 //   * expires_at is short-lived, so old news cannot be banked for days/weeks.
+//   * source_ledger, story_score, and self_review present, so the desk proves
+//     why this story is source-led, relevant, safe, and worth publishing.
 //   * no em dash (-) anywhere in the copy (house style).
 //
 // Run:  node scripts/pundit-news-validate.js [--require-unexpired]
@@ -51,6 +53,8 @@ const OFFICIAL_HOSTS = [
   'the-afc.com',
   'oceaniafootball.com',
 ];
+const STORY_SCORE_KEYS = ['freshness', 'verification', 'friendlybet_relevance', 'drama', 'uniqueness', 'clarity'];
+const SOURCE_LEDGER_TIERS = new Set(['official', 'trusted', 'primary-social', 'scout-only']);
 
 function parseTime(value) {
   if (!value) return NaN;
@@ -76,6 +80,82 @@ function validateTeamCode(value, at, errors) {
   if (!WC2026_TEAM_CODES.has(code)) {
     errors.push(`${at}: "${code}" is not a known WC2026 team code`);
   }
+}
+
+function nonEmptyString(value) {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function validateSourceLedger(it, at, validSourceUrls, errors) {
+  const ledger = Array.isArray(it.source_ledger) ? it.source_ledger : null;
+  if (!ledger || ledger.length === 0) {
+    errors.push(`${at}: missing source_ledger with claim/source/tier/confirmation/usability rows`);
+    return;
+  }
+  const sourceUrls = new Set(validSourceUrls.map(source => source.url));
+  ledger.forEach((row, rowIndex) => {
+    const rowAt = `${at}: source_ledger[${rowIndex}]`;
+    if (!row || typeof row !== 'object') {
+      errors.push(`${rowAt}: must be an object`);
+      return;
+    }
+    if (!nonEmptyString(row.claim)) errors.push(`${rowAt}: missing claim`);
+    if (!nonEmptyString(row.source)) errors.push(`${rowAt}: missing source`);
+    if (!nonEmptyString(row.url) || !/^https?:\/\//i.test(row.url)) {
+      errors.push(`${rowAt}: missing http(s) url`);
+    } else if (!sourceUrls.has(row.url)) {
+      errors.push(`${rowAt}: url must match one of the item sources[] urls`);
+    }
+    if (!SOURCE_LEDGER_TIERS.has(row.tier)) {
+      errors.push(`${rowAt}: tier must be one of ${Array.from(SOURCE_LEDGER_TIERS).join(', ')}`);
+    }
+    if (!nonEmptyString(row.published_or_updated_at)) errors.push(`${rowAt}: missing published_or_updated_at`);
+    if (!nonEmptyString(row.confirmation)) errors.push(`${rowAt}: missing confirmation`);
+    if (!nonEmptyString(row.uncertainty)) errors.push(`${rowAt}: missing uncertainty`);
+    if (row.usable !== true && row.usable !== false) errors.push(`${rowAt}: usable must be boolean`);
+  });
+}
+
+function validateStoryScore(it, at, errors) {
+  const score = it.story_score;
+  if (!score || typeof score !== 'object' || Array.isArray(score)) {
+    errors.push(`${at}: missing story_score`);
+    return;
+  }
+  STORY_SCORE_KEYS.forEach(key => {
+    const value = score[key];
+    if (!Number.isInteger(value) || value < 0 || value > 5) {
+      errors.push(`${at}: story_score.${key} must be an integer from 0 to 5`);
+    }
+  });
+  if (!nonEmptyString(score.decision)) errors.push(`${at}: story_score.decision is required`);
+  if (!nonEmptyString(score.reason)) errors.push(`${at}: story_score.reason is required`);
+  if (Number.isInteger(score.verification) && score.verification < 3) {
+    errors.push(`${at}: story_score.verification must be at least 3 for publishable Pundit news`);
+  }
+  if (Number.isInteger(score.friendlybet_relevance) && score.friendlybet_relevance < 3) {
+    errors.push(`${at}: story_score.friendlybet_relevance must be at least 3 for publishable Pundit news`);
+  }
+}
+
+function validateSelfReview(it, at, errors) {
+  const review = it.self_review;
+  if (!review || typeof review !== 'object' || Array.isArray(review)) {
+    errors.push(`${at}: missing self_review`);
+    return;
+  }
+  [
+    'could_be_wrong',
+    'proof_source',
+    'stale_risk',
+    'overclaiming_check',
+    'privacy_check',
+    'gambling_check',
+    'repeated_shape_check',
+    'expiry_reason',
+  ].forEach(key => {
+    if (!nonEmptyString(review[key])) errors.push(`${at}: self_review.${key} is required`);
+  });
 }
 
 function validatePayload(raw, options = {}) {
@@ -142,6 +222,10 @@ function validatePayload(raw, options = {}) {
         if (expiresAt - anchor > MAX_NEWS_TTL_MS) errors.push(`${at}: expires_at is too far from topic/source timestamp`);
       }
     }
+
+    validateSourceLedger(it, at, validUrls, errors);
+    validateStoryScore(it, at, errors);
+    validateSelfReview(it, at, errors);
 
     // Optional routing flags. If present, they must be real WC2026 team codes.
     validateTeamCode(it.team, `${at}: team`, errors);

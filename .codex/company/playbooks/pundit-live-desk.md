@@ -69,6 +69,8 @@ When the item depends on current external information, run a Pundit Research Des
 6. Publish only source-backed, short-lived items with an expiry.
 7. Self-review for stale timing, overclaiming, privacy, gambling wording, and repeated copy shape.
 
+Any published `public-data/pundit-news.json` item must carry that evidence in-machine: `source_ledger[]`, `story_score`, and `self_review`. `node scripts\pundit-news-validate.js` enforces the fields, including publishable minimums for verification and FriendlyBet relevance.
+
 The deterministic Pundit generator is the fallback layer, not the full editorial product. A match-day Pundit that never checks external stories is undertrained.
 
 ## News Policy
