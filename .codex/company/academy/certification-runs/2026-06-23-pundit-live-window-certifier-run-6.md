@@ -452,3 +452,45 @@ Supporting checks:
 - `node scripts\test-world-cup-stories.js`: passed for 48 stories.
 
 Graduation status: still not fully graduated. The final-state structural gate now passes for the target matches, including two real post-final windows, but the TV-level editorial standard still needs a source-led news desk record or fresh verified news. An empty news file is acceptable for strict correctness only when accompanied by a source ledger explaining why no item passed.
+
+## 2026-06-24 14:17Z Production Pre-Kickoff Readiness Follow-Up
+
+Checkpoint ran at `2026-06-24T17:17+03:00` and recorded local plus production evidence in `tmp\pundit-live-window-certifications-2026-06-24.jsonl`.
+
+Current state:
+
+- `public-data/pundit.json` has `12` items, `updatedAt=2026-06-24T14:08:46.560Z`, `freshUntil=2026-06-24T20:08:46.560Z`.
+- `public-data/pundit-news.json` is no longer empty. It contains three active source-led desk items:
+  - Group B final window, expiring before the 22:00 Israel kickoff window.
+  - Scotland-Brazil Neymar/history angle, expiring before the 01:00 Israel kickoff window.
+  - Morocco-Haiti Group C receipts angle, expiring at kickoff.
+- The Morocco-Haiti item was added after source review using SB Nation for Group C qualification scenarios and The Guardian for Ayyoub Bouaddi tournament context. It closed the previous `MAR-HAI` warning for missing source-backed pre-kickoff editorial context.
+- `public-data/world-cup-stories.json` remains at `48` stories for `48` finished matches.
+
+Local supporting checks:
+
+- `node scripts\live-ops-audit.js`: `ok=true`; Pundit fresh, 48 stories for 48 finished matches, 0 missing stories, 0 result-recovery candidates.
+- `node scripts\pundit-news-validate.js --require-unexpired`: passed.
+- `node scripts\test-pundit-feed.js`: passed for 12 items.
+- `node scripts\test-world-cup-stories.js`: passed for 48 stories.
+
+Local certifier evidence:
+
+- `SUI-CAN`: `score=100`, `passed=true`, phase `pre`.
+- `BIH-QAT`: `score=100`, `passed=true`, phase `pre`.
+- `SCO-BRA`: `score=100`, `passed=true`, phase `pre`.
+- `MAR-HAI`: `score=100`, `passed=true`, phase `pre`.
+
+Production certifier evidence against `https://friendlybet.live/`:
+
+- `SUI-CAN`: `score=100`, `passed=true`, phase `pre`.
+- `BIH-QAT`: `score=100`, `passed=true`, phase `pre`.
+- `SCO-BRA`: `score=100`, `passed=true`, phase `pre`.
+- `MAR-HAI`: `score=100`, `passed=true`, phase `pre`.
+
+Production snapshot evidence:
+
+- Cache-busted `https://friendlybet.live/public-data/pundit.json` shows the new 12-item feed and all active Pundit lines end with emojis.
+- Cache-busted `https://friendlybet.live/public-data/world-cup-stories.json` shows recent Stories with emoji-ending headlines, captions, and pool-focus templates.
+
+Graduation status: still not fully graduated. This checkpoint proves source-led pre-kickoff readiness and production propagation for the 22:00 and 01:00 Israel windows, but it does not count as live/post-final graduation proof because all four current target matches are still pre-kickoff. The next proof must happen after kickoff and after final whistle, verifying that stale fixture copy disappears, live/final state is correct, source-led news expires, and new Stories exist for finished matches.
