@@ -1139,8 +1139,8 @@ function titleCopy(match, outcome) {
         en: `${homeEn} and ${awayEn} draw ${score}: the table is not settled`,
       },
       {
-        he: `${homeHe} ו${awayHe} נפרדו ב-${score}: הטפסים עדיין מזיעים`,
-        en: `${homeEn} and ${awayEn} draw ${score}: the forms are still sweating`,
+        he: `${homeHe} ו${awayHe} נפרדו ב-${score}: בית ${group} נשאר צמוד`,
+        en: `${homeEn} and ${awayEn} draw ${score}: Group ${group} stays tight`,
       },
     ]);
   }
@@ -1160,12 +1160,12 @@ function titleCopy(match, outcome) {
       en: `${winnerEn} beat ${loserEn} ${score}: the table felt it`,
     },
     {
-      he: `${winnerHe} ניצחה את ${loserHe} ${score}: הטפסים קיבלו מבחן`,
-      en: `${winnerEn} beat ${loserEn} ${score}: the forms felt it`,
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: בית ${group} משתנה`,
+      en: `${winnerEn} beat ${loserEn} ${score}: Group ${group} shifts`,
     },
     {
-      he: `${winnerHe} ניצחה את ${loserHe} ${score}: בית ${group} קורא מחדש`,
-      en: `${winnerEn} beat ${loserEn} ${score}: Group ${group} needs a reread`,
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: בית ${group} נפתח מחדש`,
+      en: `${winnerEn} beat ${loserEn} ${score}: Group ${group} opens up`,
     },
   ]);
 }
@@ -1392,6 +1392,7 @@ function storyCopyChoice(match, salt, variants) {
 
 function fallbackEditorialCaption(match, outcome) {
   const score = scoreForOutcome(match, outcome);
+  const group = match && match.group_letter ? match.group_letter : 'WC';
   const homeHe = teamName(match.home_team_code, 'he');
   const awayHe = teamName(match.away_team_code, 'he');
   const homeEn = teamName(match.home_team_code, 'en');
@@ -1403,8 +1404,8 @@ function fallbackEditorialCaption(match, outcome) {
         en: `${homeEn} and ${awayEn} left a ${score} on the board, just enough to keep the whole group arguing.`,
       },
       {
-        he: `${score} בין ${homeHe} ל${awayHe} משאיר את הבית פתוח ומוריד ביטחון מטפסים שנראו רגועים מדי.`,
-        en: `${score} between ${homeEn} and ${awayEn} keeps the group open and makes confident forms look less confident.`,
+        he: `${score} בין ${homeHe} ל${awayHe} משאיר את בית ${group} פתוח וצמוד.`,
+        en: `${score} between ${homeEn} and ${awayEn} keeps Group ${group} open and tight.`,
       },
       {
         he: `${homeHe} ו${awayHe} לא סגרו כלום עם ${score}. הטבלה קיבלה עוד סיבה להישאר ערה.`,
@@ -1418,25 +1419,25 @@ function fallbackEditorialCaption(match, outcome) {
   const winnerEn = teamName(outcome, 'en');
   const loserEn = teamName(loser, 'en');
   return storyCopyChoice(match, 'caption-win', [
-    {
-        he: `${winnerHe} הפכה את ${score} לדחיפה אמיתית בטבלה. הטפסים על ${loserHe} כבר צריכים הסבר.`,
-        en: `${winnerEn} turned ${score} into a real table shove. Forms backing ${loserEn} have homework now.`,
+      {
+        he: `${winnerHe} הפכה את ${score} לניצחון חשוב בבית ${group}. הטבלה נראית טוב יותר עבורה.`,
+        en: `${winnerEn} turned ${score} into an important Group ${group} win. The table looks better for them now.`,
     },
     {
-      he: `${winnerHe} לקחה ${score} מ${loserHe}, וזה כבר משנה את הקריאה של כל הבית.`,
-      en: `${winnerEn}'s ${score} over ${loserEn} is not just a result; it changes how the whole group reads.`,
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}, וזה משנה את מצב בית ${group}.`,
+      en: `${winnerEn}'s ${score} over ${loserEn} changes the Group ${group} picture.`,
     },
     {
-      he: `${winnerHe} עם ${score}, והטבלה נהייתה הרבה פחות מנומסת. הטפסים בקבוצה הרגע התחילו לדבר.`,
-      en: `${winnerEn} took ${score} and made the table less polite. The prediction forms just got louder.`,
+      he: `${winnerHe} עם ${score}, ובית ${group} מקבל כיוון ברור יותר.`,
+      en: `${winnerEn} won ${score}, and Group ${group} has a clearer direction now.`,
     },
     {
-      he: `${score} ל${winnerHe} מול ${loserHe}, וכל הבית צריך לקרוא שוב את הטבלה.`,
-      en: `${score} for ${winnerEn} against ${loserEn} rewired the group table. Quiet forms are officially nervous.`,
+      he: `${score} ל${winnerHe} מול ${loserHe}, ובית ${group} נראה אחרת בטבלה.`,
+      en: `${score} for ${winnerEn} against ${loserEn} changes the Group ${group} table.`,
     },
     {
-      he: `${winnerHe} סגרה ${score} שמרגיש כמו סימן קריאה. הבית כבר לא נקרא אותו דבר.`,
-      en: `${winnerEn} banked ${score}, and the group suddenly needs a fresh read. The forms felt that one.`,
+      he: `${winnerHe} סגרה ${score}, ובית ${group} כבר נראה אחרת.`,
+      en: `${winnerEn} won ${score}, and Group ${group} looks different now.`,
     },
   ]);
 }
