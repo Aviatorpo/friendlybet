@@ -15,6 +15,8 @@ Use this before the CEO or any department calls significant work done.
 9. Domain mastery: involved agents used the relevant skill, playbook, repo anchors, tests, and external verification rules for their specialty.
 10. Production truth: for any bug Eyal can see in the live app, completion requires a cache-busted live URL/public-data check after push/deploy, or an explicit statement that production is still stale.
 11. Content uniqueness: current Pundit, banter, story, and share copy must pass a structural duplicate check across the recent visible window, not only a human skim.
+12. Control-plane hygiene: repeated GitHub Actions failure emails, Vercel preview comments, or deployment-status emails are release incidents during live tournament operations. Verify open PRs, recent workflow failures, Vercel commit status, and whether `vercel.json` keeps GitHub comments silent before calling the control plane stable.
+13. Artifact sync: generated production artifacts must not live only on the local machine. Before a live window, compare local, `origin/main`, Vercel, and cache-busted production public data; if useful generated data is local-only, either ship and verify it or explicitly document why it is safe to leave out.
 
 ## Output
 
