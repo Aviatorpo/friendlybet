@@ -1,59 +1,55 @@
 {
-  "updatedAt": "2026-06-24T06:36:00.000Z",
+  "updatedAt": "2026-06-24T12:32:00.000Z",
   "items": [
     {
-      "id": "2026-06-24-colombia-knockout-munoz",
+      "id": "2026-06-24-group-b-final-window",
       "confidence": "reported",
-      "team": "COL",
       "teams": [
-        "COL",
-        "COD"
+        "SUI",
+        "CAN",
+        "BIH",
+        "QAT"
       ],
-      "topic_date": "2026-06-24T06:30:00.000Z",
-      "source_checked_at": "2026-06-24T06:36:00.000Z",
-      "expires_at": "2026-06-24T12:36:00.000Z",
-      "he": "קולומביה כבר בשלב הבא אחרי שדניאל מוניוס שבר את קונגו הדמוקרטית ב-1:0. בית K עכשיו מצביע ישר לקולומביה-פורטוגל, וכל מי שסימן את קולומביה ראשונה קיבל קבלה.",
-      "en": "Colombia are through after Daniel Munoz finally broke DR Congo 1-0. Group K now points straight at Colombia-Portugal, and every Colombia-first form has a receipt.",
+      "topic_date": "2026-06-24T12:32:00.000Z",
+      "source_checked_at": "2026-06-24T12:32:00.000Z",
+      "expires_at": "2026-06-24T18:45:00.000Z",
+      "he": "בית B מגיע לחלון האחרון שלו: קנדה ושווייץ על ראשות הבית, ובוסניה-הרצגובינה נגד קטאר הוא כבר לא משחק רק למי שאוהב סדר. כל טופס ששם לב לטבלה מקבל כאן בדיקת קבלות.",
+      "en": "Group B hits its final window: Canada and Switzerland are playing for control, while Bosnia-Herzegovina vs Qatar is survival math with boots on. Every table-aware form gets a receipt check here.",
       "sources": [
         {
           "name": "The Guardian",
-          "url": "https://www.theguardian.com/football/live/2026/jun/24/fifa-world-cup-2026-live-colombia-v-dr-congo-updates-col-vs-cod-group-k-match-score-latest"
+          "url": "https://www.theguardian.com/football/2026/jun/24/world-cup-schedule-today-how-to-watch-scotland-v-brazil"
         },
         {
-          "name": "Times of India",
-          "url": "https://timesofindia.indiatimes.com/sports/football/fifa-world-cup/fifa-world-cup-2026-daniel-muoz-fires-colombia-into-knockout-stage-with-win-over-dr-congo/articleshow/131955359.cms"
-        },
-        {
-          "name": "El Pais",
-          "url": "https://elpais.com/america-colombia/2026-06-24/colombia-rd-congo-en-directo-partido-del-grupo-k-del-mundial-2026-en-vivo.html"
+          "name": "SB Nation",
+          "url": "https://weaintgotnohistory.sbnation.com/ex-chelsea-fc/169678/2026-world-cup-day-14-final-games-in-groups-a-b-c"
         }
       ]
     },
     {
-      "id": "2026-06-24-croatia-modric-budimir-survival",
+      "id": "2026-06-24-scotland-brazil-neymar-door",
       "confidence": "reported",
-      "team": "CRO",
       "teams": [
-        "CRO",
-        "PAN"
+        "SCO",
+        "BRA"
       ],
-      "topic_date": "2026-06-24T06:30:00.000Z",
-      "source_checked_at": "2026-06-24T06:36:00.000Z",
-      "expires_at": "2026-06-24T12:36:00.000Z",
-      "he": "קרואטיה עוד נושמת ופנמה בחוץ אחרי שבודימיר הפך את ההופעה ה-200 של מודריץ' ללילה של 1:0 והישרדות. בית L מחכה עכשיו לקרואטיה-גאנה עם קבלות בשני הכיוונים.",
-      "en": "Croatia are still breathing and Panama are out after Budimir turned Modric's 200th cap into a 1-0 survival night. Group L now waits for Croatia-Ghana with receipts both ways.",
+      "topic_date": "2026-06-24T12:32:00.000Z",
+      "source_checked_at": "2026-06-24T12:32:00.000Z",
+      "expires_at": "2026-06-24T21:45:00.000Z",
+      "he": "סקוטלנד נגד ברזיל קיבלה את כל התבלינים: ניימאר עשוי לחזור, וברקע סקוטלנד רואה דלת היסטורית לשלב הבא. מי שסימן ברזיל קיבל זוהר; מי שסימן סקוטלנד קיבל דופק.",
+      "en": "Scotland vs Brazil has the full pre-match spice: Neymar may be back, and Scotland can see a historic knockout-stage door. Brazil pickers get glamour; Scotland pickers get pulse.",
       "sources": [
         {
           "name": "The Guardian",
-          "url": "https://www.theguardian.com/football/2026/jun/24/croatia-panama-world-cup-2026-match-report"
+          "url": "https://www.theguardian.com/football/2026/jun/23/steve-clarke-warns-scotland-of-threat-posed-by-returning-brazil-icon-neymar"
         },
         {
-          "name": "The Times",
-          "url": "https://www.thetimes.com/sport/football/world-cup/article/world-cup-2026-latest-news-live-scores-team-updates-day-13-mfnppt8dm"
+          "name": "The Guardian",
+          "url": "https://www.theguardian.com/football/2026/jun/23/scotland-brazil-world-cup-group-steve-clarke-history-beckons"
         },
         {
-          "name": "Cadena SER",
-          "url": "https://cadenaser.com/nacional/2026/06/24/panama-0-1-croacia-resumen-resultado-y-gol-del-partido-del-grupo-l-del-mundial-2026-cadena-ser/"
+          "name": "Times of India",
+          "url": "https://timesofindia.indiatimes.com/sports/football/fifa-world-cup/neymar-is-ready-carlo-ancelotti-gives-major-update-ahead-of-fifa-world-cup-match-against-scotland/articleshow/131954718.cms"
         }
       ]
     }
