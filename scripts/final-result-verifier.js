@@ -347,7 +347,14 @@ function consensusUpdate(sourceUpdates, opts = {}) {
 function needsResultAttention(result) {
   if (!result) return false;
   if (result.unavailable) return true;
-  return (Number(result.checked) || 0) > 0 && (Number(result.skipped) || 0) > 0;
+  return (Number(result.attention_skips) || 0) > 0;
+}
+
+function skipNeedsAttention(sourceUpdates, consensus) {
+  if (!consensus || !consensus.reason) return false;
+  if (/conflicting source consensus/i.test(consensus.reason)) return true;
+  const minSources = parseInt(process.env.RESULT_FALLBACK_MIN_SOURCES || '', 10) || 2;
+  return (sourceUpdates || []).length >= minSources;
 }
 
 async function verifyFinalResults(opts = {}) {
@@ -383,6 +390,8 @@ async function verifyFinalResults(opts = {}) {
 
   let updated = 0;
   let skipped = 0;
+  let waiting = 0;
+  let attentionSkips = 0;
   for (const dbMatch of stuck) {
     const label = `${dbMatch.home_team_code} vs ${dbMatch.away_team_code} (${dbMatch.external_id})`;
     const sourceUpdates = [];
@@ -412,6 +421,8 @@ async function verifyFinalResults(opts = {}) {
     const agreed = consensusUpdate(sourceUpdates);
     if (!agreed.update) {
       skipped++;
+      if (skipNeedsAttention(sourceUpdates, agreed)) attentionSkips++;
+      else waiting++;
       const sources = sourceUpdates.map(s => `${s.source}:${s.update.home_score}-${s.update.away_score}`).join(', ') || 'none';
       console.log(`SKIP ${label}: ${agreed.reason}; sources=${sources}`);
       continue;
@@ -425,7 +436,7 @@ async function verifyFinalResults(opts = {}) {
     }
   }
 
-  return { checked: stuck.length, updated, skipped };
+  return { checked: stuck.length, updated, skipped, waiting, attention_skips: attentionSkips };
 }
 
 if (require.main === module) {
@@ -436,6 +447,8 @@ if (require.main === module) {
       setGithubOutput('checked', String(r.checked || 0));
       setGithubOutput('updated', String(r.updated || 0));
       setGithubOutput('skipped', String(r.skipped || 0));
+      setGithubOutput('waiting', String(r.waiting || 0));
+      setGithubOutput('attention_skips', String(r.attention_skips || 0));
       setGithubOutput('unavailable', r.unavailable ? 'true' : 'false');
       setGithubOutput('needs_attention', needsResultAttention(r) ? 'true' : 'false');
       setGithubOutput('changed', r.updated > 0 ? 'true' : 'false');
@@ -456,6 +469,7 @@ if (require.main === module) {
     buildUpdateFromVerifiedFixture,
     consensusUpdate,
     needsResultAttention,
+    skipNeedsAttention,
     verifyFinalResults,
     __setFetch: (fn) => { globalThis.fetch = fn; }
   };

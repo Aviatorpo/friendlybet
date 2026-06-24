@@ -155,8 +155,10 @@ ok('conflicting sources do not produce consensus', !F.consensusUpdate([
   { source: 'fifa', update: fifaUpdate },
   { source: 'espn', update: { ...espnUpdate, away_score: 2 } }
 ], 2).update);
-ok('unresolved checked candidates require operational attention',
-  F.needsResultAttention({ checked: 2, updated: 1, skipped: 1 }));
+ok('provider-confirmed waiting candidates do not require operational attention',
+  !F.needsResultAttention({ checked: 2, updated: 0, skipped: 2, waiting: 2, attention_skips: 0 }));
+ok('conflicting or fully final-but-unresolved candidates require operational attention',
+  F.needsResultAttention({ checked: 2, updated: 1, skipped: 1, waiting: 0, attention_skips: 1 }));
 ok('clean verifier run does not require operational attention',
   !F.needsResultAttention({ checked: 2, updated: 2, skipped: 0 }));
 ok('provider unavailability requires operational attention',
