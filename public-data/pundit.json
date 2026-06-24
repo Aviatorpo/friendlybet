@@ -1,25 +1,25 @@
 {
-  "updatedAt": "2026-06-24T22:44:36.100Z",
-  "freshUntil": "2026-06-25T04:44:36.100Z",
+  "updatedAt": "2026-06-24T22:58:05.781Z",
+  "freshUntil": "2026-06-25T04:58:05.781Z",
   "count": 12,
   "items": [
     {
-      "id": "verify-970c8b45-92d8-4b62-83ff-ecc9e05957e9",
-      "type": "verification",
+      "id": "live-970c8b45-92d8-4b62-83ff-ecc9e05957e9",
+      "type": "live",
       "confidence": "confirmed",
-      "he": "סקוטלנד נגד ברזיל: סטטוס המשחק בבדיקה לפני שהטבלה מקבלת נקודות. עדיף רגע של זהירות מטעות שמזיזה הימור שלם 🧐",
-      "en": "Scotland vs Brazil: match status is being checked before the table gets points. A careful pause beats moving a whole pool on bad data 🧐",
+      "he": "סקוטלנד נגד ברזיל עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
+      "en": "Scotland vs Brazil is live now. Every goal can change the group and the predictions 🔥",
       "sources": [],
-      "expires_at": "2026-06-24T23:44:36.100Z"
+      "expires_at": "2026-06-25T01:58:05.781Z"
     },
     {
-      "id": "verify-acaa0411-271e-496c-a382-222c8892a4b3",
-      "type": "verification",
+      "id": "live-acaa0411-271e-496c-a382-222c8892a4b3",
+      "type": "live",
       "confidence": "confirmed",
-      "he": "מרוקו נגד האיטי: סטטוס המשחק בבדיקה לפני שהטבלה מקבלת נקודות. עדיף רגע של זהירות מטעות שמזיזה הימור שלם 🧐",
-      "en": "Morocco vs Haiti: match status is being checked before the table gets points. A careful pause beats moving a whole pool on bad data 🧐",
+      "he": "מרוקו נגד האיטי עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
+      "en": "Morocco vs Haiti is live now. Every goal can change the group and the predictions 🔥",
       "sources": [],
-      "expires_at": "2026-06-24T23:44:36.100Z"
+      "expires_at": "2026-06-25T01:58:05.781Z"
     },
     {
       "id": "result-0b825d4e-6106-4113-8324-e6565b0a1e24",
