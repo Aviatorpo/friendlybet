@@ -452,3 +452,72 @@ Supporting checks:
 - `node scripts\test-world-cup-stories.js`: passed for 48 stories.
 
 Graduation status: still not fully graduated. The final-state structural gate now passes for the target matches, including two real post-final windows, but the TV-level editorial standard still needs a source-led news desk record or fresh verified news. An empty news file is acceptable for strict correctness only when accompanied by a source ledger explaining why no item passed.
+
+## 2026-06-24 06:40Z Source-Led News Desk Follow-Up
+
+Checkpoint ran at `2026-06-24T09:34-09:40+03:00` after the final-state structural gate had passed but the news desk remained empty.
+
+Source-led desk artifact:
+
+- Added `.codex/company/academy/certification-runs/2026-06-24-pundit-news-desk-source-ledger.md`.
+- The run scanned current post-final reporting, built a source ledger, scored candidates, published two items, and held weaker/single-source candidates.
+
+Published local news items:
+
+- `2026-06-24-colombia-knockout-munoz`: Colombia 1-0 Congo DR, Daniel Munoz winner, Colombia through, Colombia-Portugal Group K consequence.
+- `2026-06-24-croatia-modric-budimir-survival`: Croatia 1-0 Panama, Ante Budimir winner, Luka Modric 200th cap, Croatia survival and Panama elimination.
+
+Source policy:
+
+- Both items are marked `reported`.
+- Both have at least two independent source hosts.
+- Both expire at `2026-06-24T12:36:00.000Z`.
+- Rejected/held items included England-Ghana penalty-dispute copy, because only one source was captured in this run, and FIFA ticket-pricing controversy, because pool relevance was too weak for the Pundit feed.
+
+Local validation after publishing:
+
+- `node scripts\pundit-news-validate.js --require-unexpired`: passed.
+- `node scripts\generate-pundit.js`: local feed now has 12 items, including both news items; `updatedAt=2026-06-24T06:39:28.252Z`, `freshUntil=2026-06-24T12:39:28.252Z`.
+- `node scripts\test-pundit-feed.js`: passed.
+- `node scripts\test-world-cup-stories.js`: passed for 48 stories.
+- `node scripts\live-ops-audit.js`: `ok=true`, 0 errors, 0 warnings.
+- Local certifiers for POR-UZB, ENG-GHA, PAN-CRO, and COL-COD all passed at `score=100`, phase `final`, with evidence appended to `tmp\pundit-live-window-certifications-2026-06-24.jsonl`.
+
+Production verification:
+
+- Cache-busted production public data was fetched after the local source-led update.
+- Production `matches.json` had all four targets `FINISHED` with correct scores.
+- Production `world-cup-stories.json` had 48 stories and included COL-COD, PAN-CRO, and ENG-GHA.
+- Production certifiers for POR-UZB, ENG-GHA, PAN-CRO, and COL-COD all passed at `score=100`, phase `final`.
+- Production `pundit-news.json` was still empty and production `pundit.json` still had 10 items from `2026-06-24T05:52:55.632Z`, so the source-led news desk is encoded locally but not yet production-visible.
+
+Graduation status: not complete. The local TV-level evidence is now stronger because final-state certification, story coverage, strict news validation, and source-led news all pass together. Production still needs the source-led `pundit-news.json` and regenerated 12-item `pundit.json` to deploy before this can be counted as production-visible editorial readiness.
+
+## 2026-06-24 06:45Z Production-Visible Source-Led Follow-Up
+
+Checkpoint ran at `2026-06-24T09:44-09:45+03:00` after `origin/main` advanced to `7cd585e76` (`Refresh Pundit live news desk (#11)`).
+
+Cache-busted production public data now shows:
+
+- `public-data/matches.json`: all four target matches are `FINISHED` with expected scores.
+- `public-data/world-cup-stories.json`: 48 stories, including COL-COD, PAN-CRO, ENG-GHA, and POR-UZB.
+- `public-data/pundit-news.json`: 2 source-led items:
+  - `2026-06-24-colombia-knockout-munoz`
+  - `2026-06-24-croatia-modric-budimir-survival`
+- `public-data/pundit.json`: 12 items, `updatedAt=2026-06-24T06:39:28.252Z`, `freshUntil=2026-06-24T12:39:28.252Z`.
+
+Production certifier evidence appended to `tmp\pundit-live-window-certifications-2026-06-24.jsonl`:
+
+- POR-UZB: `score=100`, `passed=true`, phase `final`, source `https://friendlybet.live/`.
+- ENG-GHA: `score=100`, `passed=true`, phase `final`, source `https://friendlybet.live/`.
+- PAN-CRO: `score=100`, `passed=true`, phase `final`, source `https://friendlybet.live/`.
+- COL-COD: `score=100`, `passed=true`, phase `final`, source `https://friendlybet.live/`.
+
+Local supporting checks:
+
+- `node scripts\pundit-news-validate.js --require-unexpired`: passed.
+- `node scripts\test-pundit-feed.js`: passed for 12 items.
+- `node scripts\test-world-cup-stories.js`: passed for 48 stories.
+- `node scripts\live-ops-audit.js`: `ok=true`, 0 errors, 0 warnings.
+
+Graduation status: stronger but still active. This is now real production-visible evidence for two-plus final windows, complete Stories coverage, fresh Pundit feed, and source-led news. The larger TV-level academy goal still needs continued creator/virality practice, Red Team scoring on current stories, and another upcoming pre-kickoff/live/post-final cycle before declaring the Pundit fully autonomous.
