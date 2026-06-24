@@ -512,3 +512,35 @@ Because the latest visible scheduled `Generate Pundit Feed` run was older than t
 Production remained on the existing fresh 12-item feed: `updatedAt=2026-06-24T14:08:46.560Z`, `freshUntil=2026-06-24T20:08:46.560Z`.
 
 Interpretation: the autonomous Pundit refresh path is executable and correctly avoided unnecessary deploy churn. This is operational readiness evidence only, not graduation proof, because it still occurred before the 22:00 Israel kickoff boundary.
+
+### 2026-06-24 14:35Z Final-State And Pre-Kickoff Certification Slice
+
+Checkpoint ran at `2026-06-24T17:35+03:00` and recorded local plus production evidence in `tmp\pundit-live-window-certifications-2026-06-24.jsonl`.
+
+Supporting checks:
+
+- `node scripts\live-ops-audit.js`: `ok=true`; 72 matches, 48 stories for 48 finished matches, 0 missing stories, 0 result-recovery candidates, Pundit fresh.
+- `node scripts\pundit-news-validate.js --require-unexpired`: passed.
+- `node scripts\test-pundit-feed.js`: passed for 12 items.
+- `node scripts\test-world-cup-stories.js`: passed for 48 stories.
+
+Final-state certifier evidence, local and production:
+
+- `POR-UZB`: `score=100`, `passed=true`, phase `final`, item type `result`.
+- `ENG-GHA`: `score=100`, `passed=true`, phase `final`, item type `result`.
+- `PAN-CRO`: `score=100`, `passed=true`, phase `final`, item type `result`.
+- `COL-COD`: `score=100`, `passed=true`, phase `final`, item type `result`.
+
+Pre-kickoff readiness evidence, local and production:
+
+- `SUI-CAN`: `score=100`, `passed=true`, phase `pre`, item type `fixture`.
+- `BIH-QAT`: `score=100`, `passed=true`, phase `pre`, item type `fixture`.
+- `SCO-BRA`: `score=100`, `passed=true`, phase `pre`, item type `fixture`.
+- `MAR-HAI`: `score=100`, `passed=true`, phase `pre`, item type `fixture`.
+
+Current feed state:
+
+- `public-data/pundit.json`: 12 items, `updatedAt=2026-06-24T14:08:46.560Z`, `freshUntil=2026-06-24T20:08:46.560Z`.
+- `public-data/world-cup-stories.json`: 48 stories for 48 finished matches.
+
+Interpretation: the completed-match checks are real anti-staleness proof: production shows final/result Pundit items for all four requested completed matches, with no stale fixture wording. The 22:00 and 01:00 Israel windows remain readiness evidence only because those matches are still pre-kickoff. Graduation remains open until the next live/post-final transition proves stale fixture copy disappears, source-led news expires correctly, live/final state stays accurate, and Stories coverage catches the newly finished matches.
