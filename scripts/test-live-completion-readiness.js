@@ -142,12 +142,17 @@ const Readiness = require('./live-completion-readiness');
     workflowRuns: {
       livePoller: [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T11:50:00Z' }],
       finalResultVerifier: [{ id: 2, status: 'completed', conclusion: 'success', created_at: '2026-06-23T11:30:00Z' }],
+      pundit: [{ id: 3, status: 'completed', conclusion: 'success', created_at: '2026-06-23T11:45:00Z' }],
     },
   });
   assert.strictEqual(freshWorkflowResult.ok, true, JSON.stringify(freshWorkflowResult.checks.filter(check => !check.ok), null, 2));
   assert.ok(
     freshWorkflowResult.checks.some(check => check.name === 'live poller workflow ran recently' && check.ok),
     'readiness must verify live-poller workflow liveness when workflow runs are provided'
+  );
+  assert.ok(
+    freshWorkflowResult.checks.some(check => check.name === 'Pundit workflow ran recently' && check.ok),
+    'readiness must verify Pundit workflow liveness when workflow runs are provided'
   );
 
   const staleWorkflowOutsideMatchWindow = await Readiness.runReadiness({
@@ -158,6 +163,7 @@ const Readiness = require('./live-completion-readiness');
     workflowRuns: {
       livePoller: [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
       finalResultVerifier: [{ id: 2, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
+      pundit: [{ id: 3, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
     },
   });
   assert.strictEqual(staleWorkflowOutsideMatchWindow.ok, true, JSON.stringify(staleWorkflowOutsideMatchWindow.checks.filter(check => !check.ok), null, 2));
@@ -175,6 +181,7 @@ const Readiness = require('./live-completion-readiness');
     workflowRuns: {
       livePoller: [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
       finalResultVerifier: [{ id: 2, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
+      pundit: [{ id: 3, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
     },
   });
   assert.strictEqual(staleWorkflowInsideMatchWindow.ok, false, 'stale workflow history must hard-fail inside a live match coverage window');

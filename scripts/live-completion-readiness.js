@@ -20,6 +20,7 @@ const LIVE_DB_SOURCE_STALE_MS = 10 * 60 * 1000;
 const LIVE_DB_ACTIVE_WINDOW_MS = 4 * 60 * 60 * 1000;
 const LIVE_POLLER_STALE_MS = 20 * 60 * 1000;
 const FINAL_VERIFIER_STALE_MS = 45 * 60 * 1000;
+const PUNDIT_WORKFLOW_STALE_MS = 35 * 60 * 1000;
 const WORKFLOW_LIVENESS_PRE_MATCH_MS = 90 * 60 * 1000;
 
 function read(file) {
@@ -435,17 +436,22 @@ async function runReadiness(options = {}) {
       const finalVerifierRuns = options.workflowRuns && options.workflowRuns.finalResultVerifier
         ? options.workflowRuns.finalResultVerifier
         : await fetchGitHubWorkflowRuns('final-result-verifier.yml', { fetch: options.fetch });
+      const punditRuns = options.workflowRuns && options.workflowRuns.pundit
+        ? options.workflowRuns.pundit
+        : await fetchGitHubWorkflowRuns('generate-pundit.yml', { fetch: options.fetch });
       const workflowRequired = isWorkflowLivenessRequired(workflowContextMatches || readLocalMatches(), nowMs);
       workflowLiveness = {
         required: workflowRequired,
         live_poller: summarizeWorkflowLiveness(livePollerRuns, nowMs, LIVE_POLLER_STALE_MS, { required: workflowRequired }),
         final_result_verifier: summarizeWorkflowLiveness(finalVerifierRuns, nowMs, FINAL_VERIFIER_STALE_MS, { required: workflowRequired }),
+        pundit: summarizeWorkflowLiveness(punditRuns, nowMs, PUNDIT_WORKFLOW_STALE_MS, { required: workflowRequired }),
       };
       const workflowWindowDetail = workflowRequired ? 'required' : 'not in live/final coverage window';
       add(checks, 'live poller workflow ran recently', workflowLiveness.live_poller.ok, `latest=${workflowLiveness.live_poller.latest && workflowLiveness.live_poller.latest.created_at || 'missing'}, age=${workflowLiveness.live_poller.age_minutes == null ? 'missing' : workflowLiveness.live_poller.age_minutes + 'm'}, ${workflowWindowDetail}`);
       add(checks, 'final verifier workflow ran recently', workflowLiveness.final_result_verifier.ok, `latest=${workflowLiveness.final_result_verifier.latest && workflowLiveness.final_result_verifier.latest.created_at || 'missing'}, age=${workflowLiveness.final_result_verifier.age_minutes == null ? 'missing' : workflowLiveness.final_result_verifier.age_minutes + 'm'}, ${workflowWindowDetail}`);
+      add(checks, 'Pundit workflow ran recently', workflowLiveness.pundit.ok, `latest=${workflowLiveness.pundit.latest && workflowLiveness.pundit.latest.created_at || 'missing'}, age=${workflowLiveness.pundit.age_minutes == null ? 'missing' : workflowLiveness.pundit.age_minutes + 'm'}, ${workflowWindowDetail}`);
       if (!workflowRequired) {
-        const staleOutsideWindow = [workflowLiveness.live_poller, workflowLiveness.final_result_verifier]
+        const staleOutsideWindow = [workflowLiveness.live_poller, workflowLiveness.final_result_verifier, workflowLiveness.pundit]
           .some(item => item && item.latest && item.required === false && item.ok === true && item.age_minutes != null);
         if (staleOutsideWindow) {
           addWarning(
