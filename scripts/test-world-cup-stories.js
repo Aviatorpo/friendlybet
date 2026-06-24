@@ -137,6 +137,9 @@ for (const story of stories) {
     });
     const enFocus = focusText(focus, 'en');
     const heFocus = focusText(focus, 'he');
+    if (/(^|[^\u05d0-\u05ea])\u05e4\u05d5\u05dc([^\u05d0-\u05ea]|$)/u.test(heFocus)) {
+      fail(`${story.id}: Hebrew pool_focuses[${idx}] must say heymur/tfasim/chat, not "פול"`);
+    }
     bannedFocusFragments.forEach(pattern => {
       if (pattern.test(enFocus) || pattern.test(heFocus)) {
         fail(`${story.id}: pool_focuses[${idx}] uses banned repeated defense-speech phrasing`);

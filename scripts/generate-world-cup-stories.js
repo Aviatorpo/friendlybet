@@ -1216,8 +1216,8 @@ function tournamentWinnerFocus(match, outcome, teamCode) {
         enNames: `{names} picked {team} to win the World Cup. ${enContext}, those forms are no longer hiding in the margins.`,
       },
       {
-        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הצ'אט של הפול חייב לתת לזה מבט שני.`,
-        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הצ'אט של הפול חייב לתת לזה מבט שני.`,
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הצ'אט של ההימור חייב לתת לזה מבט שני.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הצ'אט של ההימור חייב לתת לזה מבט שני.`,
         enName: `{names} picked {team} to win the World Cup. ${enContext}, the pool chat owes that pick a second look.`,
         enNames: `{names} picked {team} to win the World Cup. ${enContext}, the pool chat owes those picks a second look.`,
       },
@@ -1234,8 +1234,8 @@ function tournamentWinnerFocus(match, outcome, teamCode) {
         enNames: `{names} picked {team} to win the World Cup. ${enContext}, the jokes about those picks have to lower the volume.`,
       },
       {
-        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, זה נראה פחות רומנטי ויותר מסוכן לשאר הפול.`,
-        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, זה נראה פחות רומנטי ויותר מסוכן לשאר הפול.`,
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, זה נראה פחות רומנטי ויותר מסוכן לשאר ההימור.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, זה נראה פחות רומנטי ויותר מסוכן לשאר ההימור.`,
         enName: `{names} picked {team} to win the World Cup. ${enContext}, that looks less romantic and more dangerous for the pool.`,
         enNames: `{names} picked {team} to win the World Cup. ${enContext}, those look less romantic and more dangerous for the pool.`,
       },
@@ -1531,8 +1531,8 @@ function fallbackEditorialFocus(match, outcome, focus) {
         enNames: `{names} picked {team} to top the group. After ${score}, Group ${group} looks a little more like those forms.`,
       },
       {
-        heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, הבחירה הזאת יצאה מהשורה הקטנה והפכה לכותרת בפול.`,
-        heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, הבחירות האלה יצאו מהשורה הקטנה והפכו לכותרת בפול.`,
+        heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, הבחירה הזאת יצאה מהשורה הקטנה והפכה לכותרת בהימור.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, הבחירות האלה יצאו מהשורה הקטנה והפכו לכותרת בהימור.`,
         enName: `{names} picked {team} to top the group. After ${score}, that pick moved from a small line to the pool headline.`,
         enNames: `{names} picked {team} to top the group. After ${score}, those picks moved from small lines to the pool headline.`,
       },
@@ -1551,8 +1551,8 @@ function fallbackEditorialFocus(match, outcome, focus) {
         enNames: `{names} picked {team} to top the group. After ${score}, those first-place calls look much less simple.`,
       },
       {
-        heName: `{names} שם את {team} ראשונה בבית. ${score} הפך את הבחירה הזאת לדיון רציני בפול.`,
-        heNames: `{names} שמו את {team} ראשונה בבית. ${score} הפך את הבחירות האלה לדיון רציני בפול.`,
+        heName: `{names} שם את {team} ראשונה בבית. ${score} הפך את הבחירה הזאת לדיון רציני בהימור.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. ${score} הפך את הבחירות האלה לדיון רציני בהימור.`,
         enName: `{names} picked {team} to top the group. ${score} turned that pick into a serious pool debate.`,
         enNames: `{names} picked {team} to top the group. ${score} turned those picks into a serious pool debate.`,
       },
@@ -1634,7 +1634,7 @@ const RECENT_COPY_VARIETY_ATTEMPTS = 8;
 const RECENT_COPY_VARIETY_CLAUSES = {
   caption: {
     he: [
-      'הפול קיבל ויכוח אחר לגמרי.',
+      'ההימור קיבל ויכוח אחר לגמרי.',
       'הטופס הבא כבר נקרא אחרת.',
       'זה משנה את השיחה על הבית.',
       'בחירות המקום הראשון מרגישות את זה מיד.',
@@ -1656,12 +1656,12 @@ const RECENT_COPY_VARIETY_CLAUSES = {
   },
   focus: {
     he: [
-      'עכשיו זה רגע אישי בפול.',
+      'עכשיו זה רגע אישי בהימור.',
       'הצ\'אט יצטרך לבחור צד.',
       'הטופס הזה כבר לא רק רקע.',
       'זה בדיוק מסוג הבחירות שמצלמים למסך.',
       'הטבלה הכריחה את כולם לקרוא שוב.',
-      'הבדיחה בפול השתנתה כיוון.',
+      'הבדיחה בצ\'אט השתנתה כיוון.',
       'זה חומר אמיתי לדיון אחרי המשחק.',
       'הבחירה הזאת קיבלה חיים משלה.',
     ],
