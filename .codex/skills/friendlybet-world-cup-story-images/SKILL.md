@@ -150,6 +150,7 @@ Before shipping any new Story of the World Cup item:
 - Do not approve a new story while `public-data/world-cup-stories.json` is missing newer finished matches that have prepared assets; run `node scripts\world-cup-story-auto-needed.js` or explain the blocker.
 - After generating stories, compare the latest 10 stories and fail the review if fallback captions or any `pool_focuses` template are structurally identical after normalizing team names and scores.
 - Before deploy, print the latest stories' `he.caption`, `en.caption`, and `pool_focuses` and verify the copy names the specific pool pick before falling back to match-only text.
+- After deploy for any story issue Eyal can see in the app, fetch `https://friendlybet.live/public-data/world-cup-stories.json?cb=<timestamp>` and print the latest visible stories. Do not report the issue fixed until this production fetch shows the corrected feed, or clearly say production is still stale.
 
 ## Validation Checklist
 
@@ -163,6 +164,7 @@ Before shipping:
 - Confirm every story image/export contains the homepage-matching `⚽ FriendlyBet` watermark: same ball, same Sora/800 brand text, same warm gold ball glow, and no misspelling.
 - Print and compare the latest 10 stories' fallback captions and every `pool_focuses` entry; confirm recent stories are not template clones and that pool-specific captions name the actual pick type.
 - Run `node scripts\test-world-cup-stories.js`.
+- If this was a production-visible story bug, verify the live cache-busted `friendlybet.live` story JSON and search that downloaded file for the banned/repeated phrases.
 - Search for forbidden regressions:
 
 ```powershell

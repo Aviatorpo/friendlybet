@@ -14,6 +14,7 @@ Check these before writing or approving current content:
 - Pundit feed: `public-data/pundit.json` `updatedAt`, `freshUntil`, item types, and item expiry.
 - News desk: `public-data/pundit-news.json`, source URLs, `source_checked_at`, `topic_date`, `expires_at`, and validator output.
 - Stories: `public-data/world-cup-stories.json`, latest match ids/results, `pool_focuses`, and story image availability.
+- Production stories: when Eyal reports what the app shows, fetch `https://friendlybet.live/public-data/world-cup-stories.json?cb=<timestamp>` and inspect the latest visible stories before claiming the issue is fixed.
 - Pool context: visible leaderboard, aggregate picks, pool lock state, late-entry state, and member names already visible in the pool.
 - External research: use `../academy/domains/pundit-research-desk.md` and `../academy/practice-artifacts/pundit-research-run-template.md` for live web scanning, source ledgers, story scoring, and self-review.
 - Continuous learning: use `pundit-continuous-learning-loop.md` so the Pundit records accepted stories, rejected stories, stale misses, handoffs, and reusable lessons.
@@ -47,6 +48,8 @@ Every current item must answer at least one of:
 - What is the one human story a friend would repeat in a group chat?
 
 Reject copy that only swaps team names into a generic sentence, repeats the previous story shape, says a match is upcoming after kickoff, or shows old results as if they are fresh.
+
+For stories and Pundit cards, repeated structure is measured after normalizing team names, scores, dates, and group letters. Five different matches with the same sentence skeleton is a failed desk, even if each fact is technically true.
 
 ## Research Desk Requirement
 
@@ -82,7 +85,8 @@ When content is stale:
 2. Run local validation/generation where safe: `node scripts\pundit-news-validate.js`, `node scripts\generate-pundit.js`, `node scripts\test-world-cup-stories.js`.
 3. Determine which layer failed: source data, generator, workflow commit/push, deploy/cache, empty editorial news, or weak copy templates.
 4. If production can show stale user content, ship the smallest data or workflow fix first, then improve copy depth.
-5. Record a reusable lesson in the relevant skill or playbook.
+5. After push/deploy, re-fetch the live production URL with a cache-busting query string and print the latest visible items. Do not call the incident closed until the live artifact changed, or state the remaining deploy/cache blocker.
+6. Record a reusable lesson in the relevant skill or playbook.
 
 For editorial misses, also run the feedback loop:
 
@@ -102,6 +106,7 @@ A trained Pundit/content agent must practice these cases:
 - A pool has visible members whose exact group-position or tournament-winner picks match the result.
 - News exists but has only one non-official source.
 - The latest 3 stories have the same caption structure.
+- The local story feed is fixed but production still serves the old repeated story text.
 
 ## Output
 
