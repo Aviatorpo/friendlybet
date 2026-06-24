@@ -690,3 +690,13 @@ Interpretation: production is now current for this heartbeat window. This is mea
 - Follow-up gates: strict news validation passed with zero unexpired news items, `test-pundit-feed` passed with an empty-news warning, `test-world-cup-stories` passed for 50 stories, and `test-generate-pundit-live-state` passed. `live-ops-audit` still fails until the underlying Group C match rows leave stale `TIMED` state.
 
 Interpretation: useful recovery proof and a generator hardening fix, not graduation. Production still needs the refreshed Pundit data deployed and verified, and the live-data layer still needs provider/DB recovery for Group C.
+
+Production propagation after `daae9b749`:
+
+- Initial production checks still served the old feed (`updatedAt=2026-06-24T22:09:35.129Z`, 10 items), and production certifiers for `SCO-BRA`, `MAR-HAI`, and `POR-UZB` failed. After propagation, cache-busted production served `updatedAt=2026-06-24T22:44:36.100Z`, 12 items.
+- Cache-busted `https://friendlybet.live/public-data/pundit.json?cb=daae9b749-2` showed the first two items as `verification` copy for `SCO-BRA` and `MAR-HAI`, both with emoji treatment.
+- Cache-busted `https://friendlybet.live/public-data/pundit-news.json?cb=daae9b749-2` contained 0 items; strict production validation passed with `production pundit-news strict validation OK: 0 item(s)`.
+- Production certifiers recorded to `tmp\pundit-live-window-certifications-2026-06-25.jsonl`: `POR-UZB`, `ENG-GHA`, `PAN-CRO`, `COL-COD`, `SUI-CAN`, and `BIH-QAT` all `score=100`, phase `final`; `SCO-BRA` and `MAR-HAI` both `score=100`, phase `stale_scheduled`, item type `verify`.
+- Production `node scripts\live-ops-audit.js --production` still failed because `SCO-BRA` and `MAR-HAI` remain stale `TIMED` rows in the match snapshot, and because the news desk is empty during the tournament window.
+
+Interpretation: production visible Pundit recovery is now current, but this window is not clean live-window graduation proof. The Pundit correctly avoids stale fixture/live claims; the match-data layer still needs real state recovery.
