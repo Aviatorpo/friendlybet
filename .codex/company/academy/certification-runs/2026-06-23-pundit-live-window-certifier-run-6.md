@@ -644,3 +644,29 @@ Validation:
 - Local live-window certifiers for `SUI-CAN`, `BIH-QAT`, `SCO-BRA`, and `MAR-HAI`: all `score=100`, phase `pre`.
 
 Interpretation: this is still not graduation. It does make the Pundit harder to operate lazily: source-led news now needs source evidence, story scoring, self-review, and an explicit Red Team approval with no blockers before publication.
+
+Production propagation:
+
+- Initial cache-busted production fetch still served the previous source-led schema, and the new validator correctly failed with missing `red_team_review` for all 3 items.
+- After a short deploy/CDN propagation wait, cache-busted `https://friendlybet.live/public-data/pundit-news.json?cb=2ec14faea-2` contained the new Red Team fields.
+- Fetched production file saved to `tmp\prod-pundit-news-2ec14faea.json`.
+- `node -e "... validatePayload(raw,{nowMs:Date.now(),requireUnexpired:true}) ..."` passed: `production pundit-news red team schema validated: 3 item(s)`.
+- Production live-window certifiers for `SUI-CAN`, `BIH-QAT`, `SCO-BRA`, and `MAR-HAI` remained `score=100`, phase `pre`.
+
+2026-06-24 22:40 Israel live-window incident:
+
+- `node scripts\live-ops-audit.js` failed because `SUI-CAN` and `BIH-QAT` were still `TIMED` 41-42 minutes after kickoff; this is a live-data incident, not graduation evidence.
+- `node scripts\pundit-news-validate.js --require-unexpired` initially failed because `2026-06-24-group-b-final-window` had expired at `2026-06-24T18:45:00Z`; the expired pre-kickoff item was removed instead of extended.
+- `node scripts\generate-pundit.js` refreshed `public-data\pundit.json` at `2026-06-24T19:42:07.279Z` with explicit `verification` items for `SUI-CAN` and `BIH-QAT`, both ending with the Pundit emoji treatment.
+- Local certifiers recorded to `tmp\pundit-live-window-certifications-2026-06-24.jsonl`: `POR-UZB`, `ENG-GHA`, `PAN-CRO`, and `COL-COD` all `score=100`, phase `final`; `SUI-CAN` and `BIH-QAT` both `score=100`, phase `stale_scheduled`, item type `verify`; `SCO-BRA` and `MAR-HAI` both `score=100`, phase `pre`.
+- Follow-up gates: strict news validation passed, `test-pundit-feed` passed, and `test-world-cup-stories` passed. `live-ops-audit` still fails by design until the underlying match snapshot leaves stale `TIMED` state.
+
+Interpretation: useful live-window recovery evidence, but not TV-level graduation. The Pundit showed the correct cautionary copy locally; the live match-data layer still needs provider/DB recovery and production verification.
+
+Rebased follow-up:
+
+- After rebasing onto latest `main`, upstream live-fixture gating/snapshot work moved the Group B rows out of stale scheduled state: `node scripts\live-ops-audit.js` passed with `ok=true` and no watchdog errors.
+- Rebased local certifiers recorded to `tmp\pundit-live-window-certifications-2026-06-24.jsonl`: `SUI-CAN` and `BIH-QAT` both `score=100`, phase `live`, status `PAUSED`, item type `live`; `POR-UZB`, `ENG-GHA`, `PAN-CRO`, and `COL-COD` stayed `score=100`, phase `final`; `SCO-BRA` and `MAR-HAI` stayed `score=100`, phase `pre`.
+- Strict news validation, `test-pundit-feed`, `test-world-cup-stories`, and `test-generate-pundit-live-state` all passed after the rebase.
+
+Interpretation: the final local state is stronger than the first recovery state because both layers now agree: live match rows are live/paused, and the Pundit says live instead of previewing or hiding the match. Still not graduation until production is checked and two real 90+ live windows complete cleanly.
