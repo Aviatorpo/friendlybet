@@ -108,6 +108,14 @@ console.log('\n== unit: poolMultResolver (precedence / disabled / NaN) ==');
   eq('NaN persisted ignored -> falls through', on('FRA', 'oops'), 1);
 })();
 
+console.log('\n== unit: scoreCalcTimestampFresh ==');
+(() => {
+  const now = Date.parse('2026-06-24T00:00:00.000Z');
+  eq('fresh within heartbeat window', S.scoreCalcTimestampFresh('2026-06-23T19:01:00.000Z', now), true);
+  eq('stale at heartbeat limit', S.scoreCalcTimestampFresh('2026-06-23T19:00:00.000Z', now), false);
+  eq('missing timestamp is stale', S.scoreCalcTimestampFresh(null, now), false);
+})();
+
 // ---------- 2. FULL TOURNAMENT INTEGRATION ----------
 // Build 12 groups A..L, teams <L>1..<L>4, better seed always wins 1-0.
 // Final standings per group = [<L>1,<L>2,<L>3,<L>4]; each 3rd has pts3 gd-1 gf1.
@@ -339,6 +347,31 @@ S.__setFetch(async (url, opts) => {
     [{ id:'U10', nickname:'U10' }], pendingKnockout, new Map(), null);
   eq('U10 pending knockout final keeps two-phase knockout unscored', captured.U10.knockout_points, 0);
   eq('U10 pending knockout final total stays zero', captured.U10.total_score, 0);
+
+  console.log('\n== integration: unchanged scores refresh stale heartbeat only ==');
+  const unchangedZero = {
+    id: 'U11',
+    nickname: 'U11',
+    group_points: 0,
+    knockout_points: 0,
+    bonus_points: 0,
+    groups_score: 0,
+    knockout_score: 0,
+    bonus_score: 0,
+    total_score: 0,
+    last_score_calc: '2026-06-20T00:00:00.000Z',
+  };
+  const staleTouched = await S.updateUserScoreIfChanged(unchangedZero, 0, 0, 0, 0);
+  eq('stale unchanged score writes heartbeat', staleTouched, true);
+  eq('stale unchanged score patches timestamp only', Object.keys(captured.U11).sort(), ['last_score_calc']);
+  eq('heartbeat timestamp is parseable', Number.isFinite(Date.parse(captured.U11.last_score_calc)), true);
+  const freshSkipped = await S.updateUserScoreIfChanged({
+    ...unchangedZero,
+    id: 'U12',
+    last_score_calc: new Date().toISOString(),
+  }, 0, 0, 0, 0);
+  eq('fresh unchanged score skips write', freshSkipped, false);
+  eq('fresh unchanged score has no patch', captured.U12, undefined);
 
   console.log('\n== integration: two-phase partial group completion scores only confirmed advancers ==');
   const validTwoPhase32 = [];

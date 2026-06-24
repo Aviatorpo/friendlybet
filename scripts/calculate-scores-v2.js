@@ -308,6 +308,15 @@ function scoreNumber(value) {
   return Number.isFinite(n) ? n : 0;
 }
 
+const SCORE_HEARTBEAT_MAX_AGE_MS = 5 * 60 * 60 * 1000;
+
+function scoreCalcTimestampFresh(value, nowMs = Date.now()) {
+  if (!value) return false;
+  const ts = Date.parse(value);
+  if (!Number.isFinite(ts)) return false;
+  return nowMs - ts < SCORE_HEARTBEAT_MAX_AGE_MS;
+}
+
 function userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints, total) {
   if (user.total_score == null) return false;
   if ((user.group_points ?? user.groups_score) == null) return false;
@@ -320,7 +329,16 @@ function userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints
 }
 
 async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total) {
-  if (userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints, total)) return false;
+  const now = new Date();
+  const nowIso = now.toISOString();
+  if (userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints, total)) {
+    if (scoreCalcTimestampFresh(user.last_score_calc, now.getTime())) return false;
+    await sb('PATCH', 'users', {
+      data: { last_score_calc: nowIso },
+      query: `?id=eq.${user.id}`
+    });
+    return true;
+  }
   try {
     await sb('PATCH', 'users', {
       data: {
@@ -331,7 +349,7 @@ async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonus
         knockout_score: knockoutPoints,
         bonus_score: bonusPoints,
         total_score: total,
-        last_score_calc: new Date().toISOString()
+        last_score_calc: nowIso
       },
       query: `?id=eq.${user.id}`
     });
@@ -340,7 +358,7 @@ async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonus
       await sb('PATCH', 'users', {
         data: { groups_score: groupPoints, knockout_score: knockoutPoints,
                 bonus_score: bonusPoints, total_score: total,
-                last_score_calc: new Date().toISOString() },
+                last_score_calc: nowIso },
         query: `?id=eq.${user.id}`
       });
     } catch (e2) {
@@ -697,7 +715,8 @@ if (require.main === module) {
   module.exports = {
     main, scoreSinglePhasePool, scoreTwoPhasePool,
     computeGroupStandings, groupIsComplete, groupMatchIdentity, isPendingProviderFinal, knockoutWinner,
-    buildGroupState, indexRowsBy, userScoresAlreadyCurrent,
+    buildGroupState, indexRowsBy, userScoresAlreadyCurrent, updateUserScoreIfChanged,
+    scoreCalcTimestampFresh,
     bracketPosRuleKey, stageRuleKey, poolMultResolver,
     validateTwoPhaseGroupPickSet, WC2026_GROUPS, TEAM_TO_GROUP,
     DEFAULT_RULES_SINGLE, DEFAULT_RULES_TWO, DEFAULT_CAT_MULT, FIFA_RANK,
