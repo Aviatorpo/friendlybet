@@ -670,3 +670,12 @@ Rebased follow-up:
 - Strict news validation, `test-pundit-feed`, `test-world-cup-stories`, and `test-generate-pundit-live-state` all passed after the rebase.
 
 Interpretation: the final local state is stronger than the first recovery state because both layers now agree: live match rows are live/paused, and the Pundit says live instead of previewing or hiding the match. Still not graduation until production is checked and two real 90+ live windows complete cleanly.
+
+Production propagation after `bf89b6e30`:
+
+- Cache-busted `https://friendlybet.live/public-data/pundit.json?cb=bf89b6e30` served `updatedAt=2026-06-24T19:44:47.628Z`, `count=12`; first two items were `live` copy for `SUI-CAN` and `BIH-QAT`, both with emoji treatment.
+- Cache-busted `https://friendlybet.live/public-data/pundit-news.json?cb=bf89b6e30` contained 2 items; the expired `2026-06-24-group-b-final-window` item was gone. Strict production validation passed: `production pundit-news strict validation OK: 2 item(s)`.
+- Production `node scripts\live-ops-audit.js --production` passed with `ok=true`, zero watchdog errors, 48/48 finished-match Stories covered, and fresh Pundit data.
+- Production certifiers recorded to `tmp\pundit-live-window-certifications-2026-06-24.jsonl`: `POR-UZB`, `ENG-GHA`, `PAN-CRO`, and `COL-COD` all `score=100`, phase `final`; `SUI-CAN` and `BIH-QAT` both `score=100`, phase `live`, status `PAUSED`; `SCO-BRA` and `MAR-HAI` both `score=100`, phase `pre`.
+
+Interpretation: production is now current for this heartbeat window. This is meaningful live-window proof, but it still does not close the overall TV-level goal because the academy audit remains `calibrating-with-live-proof` and requires clean completion through additional real live/final windows.
