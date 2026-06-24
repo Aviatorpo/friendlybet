@@ -126,7 +126,7 @@ Dashboard cards and exported share images must match:
   - `כולם לעמוד ולמחוא כפיים ל{names}. {team} בראש הבית, ומסתבר שהם ראו את העתיד 👏`
   - `אוי הבושה. {names} שמו את {team} ראשונה בבית וכבר מכינים נאום הגנה 🎤😬`
   - `זה היה מביך... {names} בחרו את {team}. אחרי היכולת הזאת, אפשר לקרוע את הטופס 🧾`
-- Emojis are allowed when they sharpen the emotion, usually 1-2 per caption. Do not let emojis replace the joke.
+- Emojis are part of the Story voice, not an optional afterthought. For Story fallback headlines and captions, usually end each visible headline/caption with one fitting emoji (`⚖️` for a draw/table still open, `🔥` for a meaningful win/table swing, `👏` for a clear pool receipt) unless the line already has a better emoji. Keep it to 1 emoji in most cases; do not let emojis replace the match/table/pool consequence.
 - Avoid vague team-only banter like `anyone who picked them` or `the group got loud` when pool-specific data can be queried. If no matching pickers exist in the pool, use a match-only fallback with no fake personalization.
 - Current story data may include `pool_focuses` ordered from most-specific to fallback. The client should try each focus until it finds real pickers, then render the first matching named caption.
 
@@ -144,6 +144,7 @@ Before shipping any new Story of the World Cup item:
 - For a finished winning match, do not publish only the losing team's group-position angle. Include the winning team's `tournament_winner_picks` first, then the winning team's exact first-in-group focus, then loser/fallback focuses. This gives real pools multiple chances to show named member receipts before falling back to match-only text.
 - Every `pool_focuses` template must explicitly name the pick type, for example `picked {team} to win the World Cup`, `picked {team} to top the group`, or the Hebrew equivalent.
 - Story headlines must be consequence-led, not stock hype. Ban generic phrases such as `Statement made!`, `No winner, all drama`, `הצהרה!`, and `דרמה בלי הכרעה`; name the group/table/prediction consequence instead.
+- Story copy should feel emotionally shareable. After the consequence-led wording is correct, check that the visible headline/caption has a simple emotional finish, usually one emoji at the end. If the story looks dry without it, the copy is not finished.
 - The fallback `he.caption` / `en.caption` may be match-only, but it must be unique to that match and must not be a reused generic sentence.
 - Fallback captions must not use vague noise language such as `makes noise with` / `עושה רעש עם`. If there is no sourced player/coach angle, write the specific table or pool-pick consequence quietly and clearly.
 - For each finished match, identify the strongest human angle before writing: upset, collapse, table swing, favorite pressure, exact pick receipts, named pool members, or verified player/coach story. If no angle is visible, write a quieter but still unique table/pool angle instead of forcing hype.

@@ -1390,6 +1390,20 @@ function storyCopyChoice(match, salt, variants) {
   return variants[storyCopyHash(`${match.id || matchKey(match)}:${salt}`) % variants.length];
 }
 
+function storyEmoji(match, outcome) {
+  if (outcome === 'DRAW') return '⚖️';
+  const totalGoals = Number(match && match.home_score || 0) + Number(match && match.away_score || 0);
+  if (totalGoals >= 4) return '🔥';
+  return '⚽';
+}
+
+function withStoryEmoji(text, match, outcome) {
+  const copy = String(text || '').trim();
+  if (!copy) return copy;
+  if (/[\p{Extended_Pictographic}\p{Emoji_Presentation}]/u.test(copy)) return copy;
+  return `${copy.replace(/[.。]\s*$/, '')} ${storyEmoji(match, outcome)}`;
+}
+
 function fallbackEditorialCaption(match, outcome) {
   const score = scoreForOutcome(match, outcome);
   const group = match && match.group_letter ? match.group_letter : 'WC';
@@ -1755,8 +1769,8 @@ function buildStory(match, image, outcome) {
     top_label: topLabel(match, outcome),
     pool_focus: focuses[0],
     pool_focuses: focuses,
-    he: { headline: titles.he, caption: captions.he },
-    en: { headline: titles.en, caption: captions.en },
+    he: { headline: withStoryEmoji(titles.he, match, outcome), caption: withStoryEmoji(captions.he, match, outcome) },
+    en: { headline: withStoryEmoji(titles.en, match, outcome), caption: withStoryEmoji(captions.en, match, outcome) },
   };
   return applyFallbackEditorialVariety(story, match, outcome);
 }

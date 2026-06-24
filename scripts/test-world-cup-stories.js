@@ -28,6 +28,12 @@ const bannedFocusFragments = [
   /already need[s]? a defense speech/i,
   /\u05db\u05d1\u05e8 \u05e6\u05e8\u05d9\u05da(?:\u05d9\u05dd)? \u05e0\u05d0\u05d5\u05dd \u05d4\u05d2\u05e0\u05d4/u,
 ];
+const emojiRequiredStoryIds = new Set([
+  'eng-gha-2026-06-23',
+  'pan-cro-2026-06-23',
+  'col-cod-2026-06-24',
+]);
+const endingEmojiPattern = /[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?$/u;
 const RECENT_STORY_COPY_WINDOW = 10;
 
 function copyShape(text, options = {}) {
@@ -184,6 +190,16 @@ latest.forEach(story => {
   if (!match) return;
   const draw = Number(match.home_score) === Number(match.away_score);
   const outcome = match.winner_code || (draw ? 'DRAW' : null);
+  if (emojiRequiredStoryIds.has(story.id)) {
+    ['he', 'en'].forEach(lang => {
+      ['headline', 'caption'].forEach(key => {
+        const value = String(story[lang] && story[lang][key] || '');
+        if (!endingEmojiPattern.test(value.trim())) {
+          fail(`${story.id}: ${lang}.${key} should end with a fitting emoji`);
+        }
+      });
+    });
+  }
   const focuses = Array.isArray(story.pool_focuses) && story.pool_focuses.length ? story.pool_focuses : (story.pool_focus ? [story.pool_focus] : []);
   if (outcome && outcome !== 'DRAW') {
     const first = focuses[0] || {};

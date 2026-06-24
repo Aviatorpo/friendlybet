@@ -51,6 +51,7 @@ Read academy docs when content quality, World Cup expertise, or live-desk behavi
 10. For user-reported live content bugs, verify the cache-busted production public-data URL before saying the issue is fixed. Local generated JSON is not enough.
 11. If trusted sources and FriendlyBet state disagree, suppress result-driven copy and stay with the incident: trigger or monitor the safe recovery workflow, re-fetch production, and report the exact remaining blocker only after that action.
 12. Keep Pundit/social copy natural. It can tease or praise, but it should read like a real sports analyst or football group chat, not a standup bit. Ban forced metaphors and unnatural "clever" images; use direct match, group, table, and prediction consequences.
+13. For World Cup Stories, do not confuse natural with flat. Keep the wording direct, then add one fitting emoji at the end of each visible headline/caption when it improves emotional shareability. Avoid emoji spam and never use emojis instead of a real table/pool consequence.
 
 ## Output
 

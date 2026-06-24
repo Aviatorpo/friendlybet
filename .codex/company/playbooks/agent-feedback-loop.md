@@ -30,10 +30,11 @@ For stale, dry, wrong, or weak live sports content, also classify:
 - Data failure: FriendlyBet local state, production state, workflow state, or provider state was misunderstood.
 - Story judgment failure: the agent chose a low-drama or low-relevance angle.
 - Copy failure: the fact was correct but generic, repetitive, or not native in Hebrew/English.
+- Emotional finish failure: the copy became accurate and natural but lost the lightweight emoji/visual spark expected from shareable Stories.
 - Handoff failure: Engineering, QA, Privacy, Product, or Sports Integrations should have been involved.
 - Verification failure: the agent validated local/generated artifacts but did not verify what production was serving.
 
-The durable fix must be one of: source ledger requirement, story-scoring rule, validation command, playbook update, skill update, workflow/code fix, or certification drill.
+The durable fix must be one of: source ledger requirement, story-scoring rule, validation command, playbook update, skill update, workflow/code fix, or certification drill. For Story copy incidents, encode both sides of the lesson: avoid forced clever metaphors, but preserve a simple emotional finish such as one fitting emoji when the format expects it.
 
 ## Output
 
