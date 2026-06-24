@@ -281,4 +281,18 @@ check('final-result verifier commits exported match snapshot with Pundit', () =>
   assert.ok(/REGENERATE_COMMANDS:[\s\S]*node scripts\/calculate-scores-v2\.js[\s\S]*node scripts\/generate-pundit\.js/.test(text), 'final verifier must regenerate scoring and Pundit snapshots after generated-data push conflicts');
 });
 
+check('story asset backlog cannot fail scoring/result workflows', () => {
+  [
+    '.github/workflows/final-result-verifier.yml',
+    '.github/workflows/live-poller.yml',
+  ].forEach(file => {
+    const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    assert.ok(text.includes('failed=0'), `${file} must track result failure separately`);
+    assert.ok(/needs_attention[\s\S]*failed=1/.test(text), `${file} must still fail on unresolved result verification`);
+    assert.ok(/::warning::World Cup story desk/.test(text), `${file} must warn, not fail, on missing story assets`);
+    assert.ok(!/::error::World Cup story desk/.test(text), `${file} must not report story backlog as a workflow error`);
+    assert.ok(/exit "\$failed"/.test(text), `${file} must exit only on result-verification failure`);
+  });
+});
+
 console.log(`\nLive-ops audit tests passed: ${passed}`);

@@ -218,13 +218,15 @@ jobs:
           LIVE_WATCHDOG_REQUIRE_NEWS: '1'
         run: node scripts/live-state-watchdog.js
 
-      - name: Escalate unresolved result or story work
+      - name: Escalate unresolved result work
         if: always() && (steps.verify_results.outputs.needs_attention == 'true' || (steps.story_work.outputs.unprepared_count != '' && steps.story_work.outputs.unprepared_count != '0'))
         run: |
+          failed=0
           if [ "${{ steps.verify_results.outputs.needs_attention }}" = "true" ]; then
             echo "::error::Final-result verifier still has unresolved candidates. checked=${{ steps.verify_results.outputs.checked }} updated=${{ steps.verify_results.outputs.updated }} skipped=${{ steps.verify_results.outputs.skipped }} unavailable=${{ steps.verify_results.outputs.unavailable }}"
+            failed=1
           fi
           if [ "${{ steps.story_work.outputs.unprepared_count }}" != "" ] && [ "${{ steps.story_work.outputs.unprepared_count }}" != "0" ]; then
-            echo "::error::World Cup story desk has ${{ steps.story_work.outputs.unprepared_count }} finished match(es) without prepared publishable story assets."
+            echo "::warning::World Cup story desk has ${{ steps.story_work.outputs.unprepared_count }} finished match(es) without prepared publishable story assets."
           fi
-          exit 1
+          exit "$failed"
