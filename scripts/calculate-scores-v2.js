@@ -11,6 +11,7 @@
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
+const SUPABASE_FETCH_TIMEOUT_MS = Number(process.env.SCORING_SUPABASE_FETCH_TIMEOUT_MS || 30000);
 
 if (!SUPABASE_KEY && require.main === module) {
   console.error('Missing SUPABASE_SECRET_KEY');
@@ -115,17 +116,30 @@ async function sb(method, table, options = {}) {
   fbGuardDelete(method, table);  // scoring must never DELETE user-data tables
   const { data, query = '', headers = {} } = options;
   const url = `${SUPABASE_URL}/rest/v1/${table}${query}`;
-  const res = await fetch(url, {
-    method,
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      'Content-Type': 'application/json',
-      Prefer: 'return=representation,resolution=merge-duplicates',
-      ...headers
-    },
-    body: data ? JSON.stringify(data) : undefined
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), SUPABASE_FETCH_TIMEOUT_MS);
+  let res;
+  try {
+    res = await fetch(url, {
+      method,
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=representation,resolution=merge-duplicates',
+        ...headers
+      },
+      body: data ? JSON.stringify(data) : undefined,
+      signal: controller.signal
+    });
+  } catch (err) {
+    if (err && err.name === 'AbortError') {
+      throw new Error(`Supabase ${method} ${table} timed out after ${SUPABASE_FETCH_TIMEOUT_MS}ms`);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeout);
+  }
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`Supabase ${method} ${table} ${res.status}: ${text}`);
