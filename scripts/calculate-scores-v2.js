@@ -137,7 +137,10 @@ async function sb(method, table, options = {}) {
 const REST_PAGE_SIZE = 1000;
 async function sbAll(table, query = '', pageSize = REST_PAGE_SIZE) {
   const all = [];
-  for (let from = 0, guard = 0; guard < 100; guard++, from += pageSize) {
+  for (let from = 0, guard = 0; ; guard++, from += pageSize) {
+    if (guard >= 10000) {
+      throw new Error(`Supabase GET ${table}: pagination guard exceeded after ${all.length} rows`);
+    }
     const page = await sb('GET', table, {
       query,
       headers: { Range: `${from}-${from + pageSize - 1}` }

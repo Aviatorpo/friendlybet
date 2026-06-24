@@ -235,7 +235,7 @@ bracket('U5',31,'KO1');
 const captured = {};
 const idOf = (url) => { const m = url.match(/(?:user_id|id)=eq\.([^&]+)/); return m ? m[1] : null; };
 const resp = (data) => ({ ok:true, status:200, text: async () => JSON.stringify(data) });
-S.__setFetch(async (url, opts) => {
+const mockScoringFetch = async (url, opts) => {
   const method = (opts && opts.method) || 'GET';
   if (method === 'PATCH' && url.includes('/users')) { captured[idOf(url)] = JSON.parse(opts.body); return resp([{}]); }
   if (method === 'GET'  && url.includes('/matches') && url.includes('GROUP_STAGE')) return resp(groupMatches);
@@ -244,9 +244,24 @@ S.__setFetch(async (url, opts) => {
   if (method === 'GET'  && url.includes('/sp_third_place_picks')) return resp(tppByUser[idOf(url)] || []);
   if (method === 'GET'  && url.includes('/group_picks'))          return resp(groupPicksByUser[idOf(url)] || []);
   return resp([]);
-});
+};
+S.__setFetch(mockScoringFetch);
 
 (async () => {
+  console.log('\n== integration: sbAll paginates beyond 100 pages ==');
+  const ranges = [];
+  S.__setFetch(async (_url, opts) => {
+    const range = opts.headers.Range;
+    ranges.push(range);
+    const from = Number(range.split('-')[0]);
+    const len = from < 100000 ? 1000 : 1;
+    return resp(Array.from({ length: len }, (_, i) => ({ row: from + i })));
+  });
+  const pagedRows = await S.sbAll('big_table');
+  eq('sbAll fetches page 101 instead of truncating at 100k rows', pagedRows.length, 100001);
+  eq('sbAll requested the page after 0-99999', ranges.includes('100000-100999'), true);
+  S.__setFetch(mockScoringFetch);
+
   const rulesSingle = { ...S.DEFAULT_RULES_SINGLE };           // 4/3/2/1, r32..final, third_place_advance=1, top_scorer=10
   const rulesAllX15 = { ...S.DEFAULT_RULES_SINGLE, multipliers: { favorite:1.5, contender:1.5, underdog:1.5 } };
   const rulesTwo    = { ...S.DEFAULT_RULES_TWO };              // group_first=1, r32..final, top_scorer=10
