@@ -610,3 +610,10 @@ Validation:
 - Local live-window certifiers for `SUI-CAN`, `BIH-QAT`, `SCO-BRA`, and `MAR-HAI`: all `score=100`, phase `pre`.
 
 Interpretation: this does not graduate the Pundit, but it closes a real training gap. The news desk now has machine-checkable evidence of source ledger, story scoring, and self-review for every source-led item, making it harder for future agents to publish shallow or unexplained "current" commentary.
+
+Production propagation:
+
+- Cache-busted `https://friendlybet.live/public-data/pundit-news.json?cb=e8d7f2f35-2` showed the new `source_ledger`, `story_score`, and `self_review` fields for all 3 active news items.
+- Fetched production file saved to `tmp\prod-pundit-news-e8d7f2f35.json`.
+- `node -e "... validatePayload(raw,{nowMs:Date.now(),requireUnexpired:true}) ..."` passed: `production pundit-news evidence schema validated: 3 item(s)`.
+- Production live-window certifiers for `SUI-CAN`, `BIH-QAT`, `SCO-BRA`, and `MAR-HAI` remained `score=100`, phase `pre`.
