@@ -1127,18 +1127,47 @@ function titleCopy(match, outcome) {
   const awayHe = teamName(match.away_team_code, 'he');
   const homeEn = teamName(match.home_team_code, 'en');
   const awayEn = teamName(match.away_team_code, 'en');
+  const group = match && match.group_letter ? match.group_letter : 'WC';
   if (outcome === 'DRAW') {
-    return {
-      he: `${homeHe} ו${awayHe} נפרדו ב-${score}: דרמה בלי הכרעה`,
-      en: `${homeEn} and ${awayEn} draw ${score}: No winner, all drama`,
-    };
+    return storyCopyChoice(match, 'title-draw', [
+      {
+        he: `${homeHe} ו${awayHe} נפרדו ב-${score}: בית ${group} נשאר פתוח`,
+        en: `${homeEn} and ${awayEn} draw ${score}: Group ${group} stays open`,
+      },
+      {
+        he: `${homeHe} ו${awayHe} נפרדו ב-${score}: הטבלה עוד לא נרגעה`,
+        en: `${homeEn} and ${awayEn} draw ${score}: the table is not settled`,
+      },
+      {
+        he: `${homeHe} ו${awayHe} נפרדו ב-${score}: הטפסים עדיין מזיעים`,
+        en: `${homeEn} and ${awayEn} draw ${score}: the forms are still sweating`,
+      },
+    ]);
   }
   const winner = outcome;
   const loser = winner === match.home_team_code ? match.away_team_code : match.home_team_code;
-  return {
-    he: `${teamName(winner, 'he')} ניצחה את ${teamName(loser, 'he')} ${score}: הצהרה!`,
-    en: `${teamName(winner, 'en')} beat ${teamName(loser, 'en')} ${score}: Statement made!`,
-  };
+  const winnerHe = teamName(winner, 'he');
+  const loserHe = teamName(loser, 'he');
+  const winnerEn = teamName(winner, 'en');
+  const loserEn = teamName(loser, 'en');
+  return storyCopyChoice(match, 'title-win', [
+    {
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: בית ${group} זז`,
+      en: `${winnerEn} beat ${loserEn} ${score}: Group ${group} moved`,
+    },
+    {
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: הטבלה הרגישה את זה`,
+      en: `${winnerEn} beat ${loserEn} ${score}: the table felt it`,
+    },
+    {
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: הטפסים קיבלו מבחן`,
+      en: `${winnerEn} beat ${loserEn} ${score}: the forms felt it`,
+    },
+    {
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: בית ${group} קורא מחדש`,
+      en: `${winnerEn} beat ${loserEn} ${score}: Group ${group} needs a reread`,
+    },
+  ]);
 }
 
 function topLabel(match, outcome) {
@@ -1158,11 +1187,159 @@ function hydratePoolFocus(focus, fallbackTeamCode) {
   };
 }
 
+function opponentForTeam(match, teamCode) {
+  return teamCode === match.home_team_code ? match.away_team_code : match.home_team_code;
+}
+
+function resultContext(match, outcome, teamCode, lang) {
+  const score = scoreForOutcome(match, outcome);
+  const opponent = teamName(opponentForTeam(match, teamCode), lang);
+  if (outcome === 'DRAW') {
+    return lang === 'he' ? `אחרי ${score} מול ${opponent}` : `After ${score} with ${opponent}`;
+  }
+  if (teamCode === outcome) {
+    return lang === 'he' ? `אחרי ${score} על ${opponent}` : `After ${score} over ${opponent}`;
+  }
+  return lang === 'he' ? `אחרי ${score} מול ${opponent}` : `After ${score} against ${opponent}`;
+}
+
+function tournamentWinnerFocus(match, outcome, teamCode) {
+  const heContext = resultContext(match, outcome, teamCode, 'he');
+  const enContext = resultContext(match, outcome, teamCode, 'en');
+  const category = outcome === 'DRAW' ? 'draw' : (teamCode === outcome ? 'winner' : 'loser');
+  const variants = {
+    winner: [
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הטופס הזה כבר לא מתחבא בשוליים.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הטפסים האלה כבר לא מתחבאים בשוליים.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, that form is no longer hiding in the margins.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, those forms are no longer hiding in the margins.`,
+      },
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הצ'אט של הפול חייב לתת לזה מבט שני.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הצ'אט של הפול חייב לתת לזה מבט שני.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, the pool chat owes that pick a second look.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, the pool chat owes those picks a second look.`,
+      },
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, החלום על הגביע קיבל הוכחה ראשונה.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, החלום על הגביע קיבל הוכחה ראשונה.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, the trophy dream just got its first real proof.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, the trophy dream just got its first real proof.`,
+      },
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הבדיחות על הבחירה הזאת צריכות להוריד ווליום.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הבדיחות על הבחירות האלה צריכות להוריד ווליום.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, the jokes about that pick have to lower the volume.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, the jokes about those picks have to lower the volume.`,
+      },
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, זה נראה פחות רומנטי ויותר מסוכן לשאר הפול.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, זה נראה פחות רומנטי ויותר מסוכן לשאר הפול.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, that looks less romantic and more dangerous for the pool.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, those look less romantic and more dangerous for the pool.`,
+      },
+    ],
+    loser: [
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הטופס הזה צריך נאום הגנה מוקדם.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הטפסים האלה צריכים נאום הגנה מוקדם.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, that form needs an early defense speech.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, those forms need an early defense speech.`,
+      },
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הבחירה על הגביע קיבלה מכה פומבית.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הבחירות על הגביע קיבלו מכה פומבית.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, that trophy pick just took a public hit.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, those trophy picks just took a public hit.`,
+      },
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, החלום עדיין חי אבל כבר מזיע.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, החלום עדיין חי אבל כבר מזיע.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, the dream is alive but already sweating.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, the dream is alive but already sweating.`,
+      },
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, כל צילום מסך של הבחירה הזאת נהיה מסוכן.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, כל צילום מסך של הבחירות האלה נהיה מסוכן.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, every screenshot of that pick just became dangerous.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, every screenshot of those picks just became dangerous.`,
+      },
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הצ'אט קיבל שאלה הוגנת מאוד.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הצ'אט קיבל שאלה הוגנת מאוד.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, the chat has a very fair question now.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, the chat has a very fair question now.`,
+      },
+    ],
+    draw: [
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הטופס עוד חי אבל כבר פחות זחוח.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הטפסים עוד חיים אבל כבר פחות זחוחים.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, that form is alive but less smug.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, those forms are alive but less smug.`,
+      },
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, זה לא מוחק את החלום אבל כן מעקם אותו.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, זה לא מוחק את החלום אבל כן מעקם אותו.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, it does not erase the dream, but it bends it.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, it does not erase the dream, but it bends it.`,
+      },
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הצ'אט קיבל חומר חדש לדיון.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הצ'אט קיבל חומר חדש לדיון.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, the chat just got fresh debate material.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, the chat just got fresh debate material.`,
+      },
+      {
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הביטחון בטופס ירד מדרגה אחת.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הביטחון בטפסים ירד מדרגה אחת.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, confidence in that form just dropped one level.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, confidence in those forms just dropped one level.`,
+      },
+    ],
+  };
+  const copy = storyCopyChoice(match, `focus-tournament-${category}-${teamCode}`, variants[category]);
+  return {
+    table: 'tournament_winner_picks',
+    team_code: teamCode,
+    team_he: teamName(teamCode, 'he'),
+    team_en: teamName(teamCode, 'en'),
+    he_name: copy.heName,
+    he_names: copy.heNames,
+    he_count: copy.heNames,
+    en_name: copy.enName,
+    en_names: copy.enNames,
+    en_count: copy.enNames,
+  };
+}
+
+function groupPositionFocus(match, outcome, teamCode) {
+  const focus = {
+    table: 'group_position_picks',
+    team_code: teamCode,
+    team_he: teamName(teamCode, 'he'),
+    team_en: teamName(teamCode, 'en'),
+    position: 1,
+  };
+  return {
+    ...focus,
+    ...fallbackEditorialFocus(match, outcome, focus),
+  };
+}
+
+function uniquePoolFocuses(focuses) {
+  const seen = new Set();
+  return focuses.filter(focus => {
+    const key = [focus.table || 'group_position_picks', focus.team_code || '', focus.position || '', focus.bracket_position || ''].join(':');
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function poolFocuses(match, outcome) {
   const focus = focusTeam(match, outcome);
-  const teamHe = teamName(focus, 'he');
-  const teamEn = teamName(focus, 'en');
-  const score = scoreForOutcome(match, outcome);
   const override = storyOverride(match);
   if (override && Array.isArray(override.pool_focuses) && override.pool_focuses.length) {
     return override.pool_focuses.map(item => hydratePoolFocus(item, focus));
@@ -1171,44 +1348,378 @@ function poolFocuses(match, outcome) {
     return [{
       table: 'group_position_picks',
       team_code: focus,
-      team_he: teamHe,
-      team_en: teamEn,
+      team_he: teamName(focus, 'he'),
+      team_en: teamName(focus, 'en'),
       position: 1,
       ...override.pool,
     }];
   }
   if (outcome === 'DRAW') {
-    return [{
-      table: 'group_position_picks',
-      team_code: focus,
-      team_he: teamHe,
-      team_en: teamEn,
-      position: 1,
-      he_name: `{names} שם את {team} ראשונה בבית. אחרי ${score}, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬`,
-      he_names: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬`,
-      he_count: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, הבחירה הזאת פתאום נראית הרבה פחות רגועה 😬`,
-      en_name: `{names} picked {team} to top the group. After ${score}, that choice suddenly looks much less calm 😬`,
-      en_names: `{names} picked {team} to top the group. After ${score}, that choice suddenly looks much less calm 😬`,
-      en_count: `{names} picked {team} to top the group. After ${score}, that choice suddenly looks much less calm 😬`,
-    }];
+    const other = opponentForTeam(match, focus);
+    return uniquePoolFocuses([
+      tournamentWinnerFocus(match, outcome, focus),
+      groupPositionFocus(match, outcome, focus),
+      groupPositionFocus(match, outcome, other),
+      tournamentWinnerFocus(match, outcome, other),
+    ]);
   }
-  return [{
-    table: 'group_position_picks',
-    team_code: focus,
-    team_he: teamHe,
-    team_en: teamEn,
-    position: 1,
-    he_name: `{names} שם את {team} ראשונה בבית. אחרי ${score}, הטופס שלו כבר צריך נאום הגנה 🎤😬`,
-    he_names: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬`,
-    he_count: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, הטפסים שלהם כבר צריכים נאום הגנה 🎤😬`,
-    en_name: `{names} picked {team} to top the group. After ${score}, that form already needs a defense speech 🎤😬`,
-    en_names: `{names} picked {team} to top the group. After ${score}, those forms already need a defense speech 🎤😬`,
-    en_count: `{names} picked {team} to top the group. After ${score}, those forms already need a defense speech 🎤😬`,
-  }];
+  const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
+  return uniquePoolFocuses([
+    tournamentWinnerFocus(match, outcome, outcome),
+    groupPositionFocus(match, outcome, outcome),
+    groupPositionFocus(match, outcome, loser),
+    tournamentWinnerFocus(match, outcome, loser),
+  ]);
 }
 
 function poolFocus(match, outcome) {
   return poolFocuses(match, outcome)[0];
+}
+
+function storyCopyHash(value) {
+  let h = 0;
+  const s = String(value || '');
+  for (let i = 0; i < s.length; i++) {
+    h = (h << 5) - h + s.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h);
+}
+
+function storyCopyChoice(match, salt, variants) {
+  return variants[storyCopyHash(`${match.id || matchKey(match)}:${salt}`) % variants.length];
+}
+
+function fallbackEditorialCaption(match, outcome) {
+  const score = scoreForOutcome(match, outcome);
+  const homeHe = teamName(match.home_team_code, 'he');
+  const awayHe = teamName(match.away_team_code, 'he');
+  const homeEn = teamName(match.home_team_code, 'en');
+  const awayEn = teamName(match.away_team_code, 'en');
+  if (outcome === 'DRAW') {
+    return storyCopyChoice(match, 'caption-draw', [
+      {
+        he: `${homeHe} ו${awayHe} השאירו ${score} על הלוח, בדיוק מספיק כדי להשאיר את כל הבית בוויכוח.`,
+        en: `${homeEn} and ${awayEn} left a ${score} on the board, just enough to keep the whole group arguing.`,
+      },
+      {
+        he: `${score} בין ${homeHe} ל${awayHe} משאיר את הבית פתוח ומוריד ביטחון מטפסים שנראו רגועים מדי.`,
+        en: `${score} between ${homeEn} and ${awayEn} keeps the group open and makes confident forms look less confident.`,
+      },
+      {
+        he: `${homeHe} ו${awayHe} לא סגרו כלום עם ${score}. הטבלה קיבלה עוד סיבה להישאר ערה.`,
+        en: `${homeEn} and ${awayEn} settled nothing with ${score}. The table got another reason to stay awake.`,
+      },
+    ]);
+  }
+  const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
+  const winnerHe = teamName(outcome, 'he');
+  const loserHe = teamName(loser, 'he');
+  const winnerEn = teamName(outcome, 'en');
+  const loserEn = teamName(loser, 'en');
+  return storyCopyChoice(match, 'caption-win', [
+    {
+        he: `${winnerHe} הפכה את ${score} לדחיפה אמיתית בטבלה. הטפסים על ${loserHe} כבר צריכים הסבר.`,
+        en: `${winnerEn} turned ${score} into a real table shove. Forms backing ${loserEn} have homework now.`,
+    },
+    {
+      he: `${winnerHe} לקחה ${score} מ${loserHe}, וזה כבר משנה את הקריאה של כל הבית.`,
+      en: `${winnerEn}'s ${score} over ${loserEn} is not just a result; it changes how the whole group reads.`,
+    },
+    {
+      he: `${winnerHe} עם ${score}, והטבלה נהייתה הרבה פחות מנומסת. הטפסים בקבוצה הרגע התחילו לדבר.`,
+      en: `${winnerEn} took ${score} and made the table less polite. The prediction forms just got louder.`,
+    },
+    {
+      he: `${score} ל${winnerHe} מול ${loserHe}, וכל הבית צריך לקרוא שוב את הטבלה.`,
+      en: `${score} for ${winnerEn} against ${loserEn} rewired the group table. Quiet forms are officially nervous.`,
+    },
+    {
+      he: `${winnerHe} סגרה ${score} שמרגיש כמו סימן קריאה. הבית כבר לא נקרא אותו דבר.`,
+      en: `${winnerEn} banked ${score}, and the group suddenly needs a fresh read. The forms felt that one.`,
+    },
+  ]);
+}
+
+function fallbackEditorialFocus(match, outcome, focus) {
+  const score = scoreForOutcome(match, outcome);
+  const group = match && match.group_letter ? match.group_letter : 'WC';
+  if (outcome === 'DRAW') {
+    const copy = storyCopyChoice(match, `focus-draw-${focus.team_code || ''}`, [
+      {
+        heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, זה עדיין חי - רק עם הרבה פחות ביטחון.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, זה עדיין חי - רק עם הרבה פחות ביטחון.`,
+        enName: `{names} picked {team} to top the group. After ${score}, it is still alive, just with much less swagger.`,
+        enNames: `{names} picked {team} to top the group. After ${score}, those forms are still alive, just with much less swagger.`,
+      },
+      {
+        heName: `{names} שם את {team} ראשונה בבית. ${score} לא הורג את הטופס, אבל הוא בהחלט מזיז אותו לקצה הכיסא.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. ${score} לא הורג את הטפסים, אבל הוא בהחלט מזיז אותם לקצה הכיסא.`,
+        enName: `{names} picked {team} to top the group. ${score} does not kill the form, but it moves it to the edge of the chair.`,
+        enNames: `{names} picked {team} to top the group. ${score} does not kill those forms, but it moves them to the edge of the chair.`,
+      },
+      {
+        heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, בית ${group} עדיין פתוח והטופס הזה תקוע באמצע הוויכוח.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, בית ${group} עדיין פתוח והטפסים האלה תקועים באמצע הוויכוח.`,
+        enName: `{names} picked {team} to top the group. After ${score}, Group ${group} is still open and that form is stuck in the argument.`,
+        enNames: `{names} picked {team} to top the group. After ${score}, Group ${group} is still open and those forms are stuck in the argument.`,
+      },
+      {
+        heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, הבחירה הזאת לא נפלה - היא פשוט צריכה סבלנות.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, הבחירות האלה לא נפלו - הן פשוט צריכות סבלנות.`,
+        enName: `{names} picked {team} to top the group. After ${score}, that pick is not dead - it just needs patience.`,
+        enNames: `{names} picked {team} to top the group. After ${score}, those picks are not dead - they just need patience.`,
+      },
+    ]);
+    return {
+      he_name: copy.heName,
+      he_names: copy.heNames,
+      he_count: copy.heNames,
+      en_name: copy.enName,
+      en_names: copy.enNames,
+      en_count: copy.enNames,
+    };
+  }
+  const category = focus.team_code === outcome ? 'winner' : 'loser';
+  const variants = {
+    winner: [
+      {
+        heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, זה כבר לא רק תקווה - זאת קבלה קטנה.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, אלה כבר לא רק תקוות - אלה קבלות קטנות.`,
+        enName: `{names} picked {team} to top the group. After ${score}, that pick has receipts, not just hope.`,
+        enNames: `{names} picked {team} to top the group. After ${score}, those picks have receipts, not just hope.`,
+      },
+      {
+        heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, הטבלה פתאום מקשיבה לטופס הזה.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, הטבלה פתאום מקשיבה לטפסים האלה.`,
+        enName: `{names} picked {team} to top the group. After ${score}, the table is suddenly listening to that form.`,
+        enNames: `{names} picked {team} to top the group. After ${score}, the table is suddenly listening to those forms.`,
+      },
+      {
+        heName: `{names} שם את {team} ראשונה בבית. ${score} שם את הטופס שלו מתחת לפרוז'קטור.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. ${score} שם את הטפסים שלהם מתחת לפרוז'קטור.`,
+        enName: `{names} picked {team} to top the group. ${score} puts that form under the floodlights.`,
+        enNames: `{names} picked {team} to top the group. ${score} puts those forms under the floodlights.`,
+      },
+      {
+        heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, בית ${group} נראה קצת יותר כמו הטופס שלו.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, בית ${group} נראה קצת יותר כמו הטפסים שלהם.`,
+        enName: `{names} picked {team} to top the group. After ${score}, Group ${group} looks a little more like that form.`,
+        enNames: `{names} picked {team} to top the group. After ${score}, Group ${group} looks a little more like those forms.`,
+      },
+      {
+        heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, הבחירה הזאת יצאה מהשורה הקטנה והפכה לכותרת בפול.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, הבחירות האלה יצאו מהשורה הקטנה והפכו לכותרת בפול.`,
+        enName: `{names} picked {team} to top the group. After ${score}, that pick moved from a small line to the pool headline.`,
+        enNames: `{names} picked {team} to top the group. After ${score}, those picks moved from small lines to the pool headline.`,
+      },
+    ],
+    loser: [
+      {
+        heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, הטופס הזה צריך תשובה טובה בצ'אט.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, הטפסים האלה צריכים תשובה טובה בצ'אט.`,
+        enName: `{names} picked {team} to top the group. After ${score}, that form needs a good answer in the chat.`,
+        enNames: `{names} picked {team} to top the group. After ${score}, those forms need a good answer in the chat.`,
+      },
+      {
+        heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, המקום הראשון הזה נראה הרבה פחות פשוט.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, המקום הראשון הזה נראה הרבה פחות פשוט.`,
+        enName: `{names} picked {team} to top the group. After ${score}, that first-place call looks much less simple.`,
+        enNames: `{names} picked {team} to top the group. After ${score}, those first-place calls look much less simple.`,
+      },
+      {
+        heName: `{names} שם את {team} ראשונה בבית. ${score} הפך את הבחירה הזאת לדיון רציני בפול.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. ${score} הפך את הבחירות האלה לדיון רציני בפול.`,
+        enName: `{names} picked {team} to top the group. ${score} turned that pick into a serious pool debate.`,
+        enNames: `{names} picked {team} to top the group. ${score} turned those picks into a serious pool debate.`,
+      },
+      {
+        heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, בית ${group} כבר לא משתף פעולה עם הטופס הזה.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, בית ${group} כבר לא משתף פעולה עם הטפסים האלה.`,
+        enName: `{names} picked {team} to top the group. After ${score}, Group ${group} is no longer cooperating with that form.`,
+        enNames: `{names} picked {team} to top the group. After ${score}, Group ${group} is no longer cooperating with those forms.`,
+      },
+      {
+        heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, זו כבר לא בחירה שקטה - זו שיחה שצריך לשרוד.`,
+        heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, אלה כבר לא בחירות שקטות - אלה שיחות שצריך לשרוד.`,
+        enName: `{names} picked {team} to top the group. After ${score}, that is no longer a quiet pick - it is a conversation to survive.`,
+        enNames: `{names} picked {team} to top the group. After ${score}, those are no longer quiet picks - they are conversations to survive.`,
+      },
+    ],
+  };
+  const copy = storyCopyChoice(match, `focus-win-${category}-${focus.team_code || ''}`, variants[category]);
+  return {
+    he_name: copy.heName,
+    he_names: copy.heNames,
+    he_count: copy.heNames,
+    en_name: copy.enName,
+    en_names: copy.enNames,
+    en_count: copy.enNames,
+  };
+}
+
+function applyFallbackEditorialVariety(story, match, outcome) {
+  if (storyOverride(match)) return story;
+  const caption = fallbackEditorialCaption(match, outcome);
+  const focuses = (story.pool_focuses || []).map(focus => {
+    if (focus && focus.table === 'group_position_picks' && !focus.en_name && !focus.he_name) {
+      return { ...focus, ...fallbackEditorialFocus(match, outcome, focus) };
+    }
+    return focus;
+  });
+  return {
+    ...story,
+    pool_focus: focuses[0] || story.pool_focus,
+    pool_focuses: focuses,
+    he: { ...story.he, caption: caption.he },
+    en: { ...story.en, caption: caption.en },
+  };
+}
+
+const STORY_SHAPE_TEAM_NAMES = Object.values(TEAM_NAMES || {})
+  .flatMap(item => [item.en, item.he])
+  .filter(Boolean)
+  .sort((a, b) => b.length - a.length);
+
+function storyShape(text, options = {}) {
+  let value = String(text || '');
+  if (options.normalizeTeams) {
+    for (const name of STORY_SHAPE_TEAM_NAMES) value = value.split(name).join('{team}');
+  }
+  return value
+    .replace(/\{names\}/g, '{names}')
+    .replace(/\{team\}/g, '{team}')
+    .replace(/\d+\s*-\s*\d+/g, '#-#')
+    .replace(/\b[A-Z]{3}\b/g, 'TEAM')
+    .replace(/[^\p{Letter}\p{Number}\s{}#-]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function focusTextForShape(focus, lang) {
+  const prefix = lang === 'he' ? 'he_' : 'en_';
+  return [
+    focus && focus[`${prefix}name`],
+    focus && focus[`${prefix}names`],
+    focus && focus[`${prefix}count`],
+  ].filter(Boolean).join(' ');
+}
+
+const RECENT_STORY_COPY_WINDOW = 10;
+const RECENT_COPY_VARIETY_ATTEMPTS = 8;
+const RECENT_COPY_VARIETY_CLAUSES = {
+  caption: {
+    he: [
+      'הפול קיבל ויכוח אחר לגמרי.',
+      'הטופס הבא כבר נקרא אחרת.',
+      'זה משנה את השיחה על הבית.',
+      'בחירות המקום הראשון מרגישות את זה מיד.',
+      'הצ\'אט קיבל חומר חדש.',
+      'הטבלה דחפה את הטפסים לצד אחר.',
+      'הבחירות הישנות נראות פחות בטוחות עכשיו.',
+      'זה לא אותו סיפור כמו המשחק הקודם.',
+    ],
+    en: [
+      'The pool got a completely different argument.',
+      'The next form reads differently now.',
+      'That changes the group conversation.',
+      'First-place picks feel it immediately.',
+      'The chat just got new material.',
+      'The table pushed the forms somewhere else.',
+      'Old picks look less comfortable now.',
+      'This is not the same story as the previous match.',
+    ],
+  },
+  focus: {
+    he: [
+      'עכשיו זה רגע אישי בפול.',
+      'הצ\'אט יצטרך לבחור צד.',
+      'הטופס הזה כבר לא רק רקע.',
+      'זה בדיוק מסוג הבחירות שמצלמים למסך.',
+      'הטבלה הכריחה את כולם לקרוא שוב.',
+      'הבדיחה בפול השתנתה כיוון.',
+      'זה חומר אמיתי לדיון אחרי המשחק.',
+      'הבחירה הזאת קיבלה חיים משלה.',
+    ],
+    en: [
+      'Now it is a personal pool moment.',
+      'The chat has to pick a side.',
+      'That form is no longer background noise.',
+      'This is exactly the kind of pick people screenshot.',
+      'The table forced everyone to read it again.',
+      'The pool joke changed direction.',
+      'That is real post-match debate material.',
+      'That pick just got a life of its own.',
+    ],
+  },
+};
+
+function latestVarietyClause(story, kind, lang, attempt) {
+  const clauses = RECENT_COPY_VARIETY_CLAUSES[kind] && RECENT_COPY_VARIETY_CLAUSES[kind][lang];
+  if (!clauses || !clauses.length) return '';
+  const index = storyCopyHash(`${story && story.id || ''}:${kind}:${lang}:${attempt}`) % clauses.length;
+  return clauses[index];
+}
+
+function appendLatestShapeClause(story, match, kind, lang, focusIndex = 0, attempt = 0) {
+  const group = match && match.group_letter ? match.group_letter : 'WC';
+  const clause = latestVarietyClause(story, kind, lang, attempt);
+  const safeClause = clause ? ` ${clause}` : (lang === 'he' ? ` בית ${group} מרגיש את זה.` : ` Group ${group} felt that one.`);
+  if (kind === 'caption') {
+    return {
+      ...story,
+      [lang]: {
+        ...story[lang],
+        caption: `${String(story[lang] && story[lang].caption || '').replace(/\s+$/, '')}${safeClause}`,
+      },
+    };
+  }
+  const focuses = (story.pool_focuses || []).map((focus, idx) => {
+    if (idx !== focusIndex) return focus;
+    const prefix = lang === 'he' ? 'he_' : 'en_';
+    return {
+      ...focus,
+      [`${prefix}name`]: `${String(focus[`${prefix}name`] || '').replace(/\s+$/, '')}${safeClause}`,
+      [`${prefix}names`]: `${String(focus[`${prefix}names`] || '').replace(/\s+$/, '')}${safeClause}`,
+      [`${prefix}count`]: `${String(focus[`${prefix}count`] || '').replace(/\s+$/, '')}${safeClause}`,
+    };
+  });
+  return { ...story, pool_focus: focuses[0] || story.pool_focus, pool_focuses: focuses };
+}
+
+function applyLatestStoryShapeVariety(items, matchById) {
+  const seenCaptions = { he: new Set(), en: new Set() };
+  const seenFocuses = { he: new Set(), en: new Set() };
+  return items.map((story, idx) => {
+    if (idx >= RECENT_STORY_COPY_WINDOW) return story;
+    let next = story;
+    const match = matchById.get(story && story.match_id);
+    for (const lang of ['he', 'en']) {
+      let captionShape = storyShape(next[lang] && next[lang].caption, { normalizeTeams: true });
+      for (let attempt = 0; captionShape && seenCaptions[lang].has(captionShape) && attempt < RECENT_COPY_VARIETY_ATTEMPTS; attempt += 1) {
+        next = appendLatestShapeClause(next, match, 'caption', lang, 0, attempt);
+        captionShape = storyShape(next[lang] && next[lang].caption, { normalizeTeams: true });
+      }
+      if (captionShape) seenCaptions[lang].add(captionShape);
+
+      let focuses = Array.isArray(next.pool_focuses) && next.pool_focuses.length
+        ? next.pool_focuses
+        : (next.pool_focus ? [next.pool_focus] : []);
+      for (let focusIndex = 0; focusIndex < focuses.length; focusIndex += 1) {
+        let focusShape = storyShape(focusTextForShape(focuses[focusIndex], lang), { normalizeTeams: true });
+        for (let attempt = 0; focusShape && seenFocuses[lang].has(focusShape) && attempt < RECENT_COPY_VARIETY_ATTEMPTS; attempt += 1) {
+          next = appendLatestShapeClause(next, match, 'focus', lang, focusIndex, attempt);
+          focuses = Array.isArray(next.pool_focuses) && next.pool_focuses.length
+            ? next.pool_focuses
+            : (next.pool_focus ? [next.pool_focus] : []);
+          focusShape = storyShape(focusTextForShape(focuses[focusIndex], lang), { normalizeTeams: true });
+        }
+        if (focusShape) seenFocuses[lang].add(focusShape);
+      }
+    }
+    return next;
+  });
 }
 
 function captionCopy(match, outcome) {
@@ -1224,8 +1735,8 @@ function captionCopy(match, outcome) {
   }
   const loser = focus;
   return {
-    he: `${teamName(outcome, 'he')} עושה רעש עם ${score} מול ${teamName(loser, 'he')}. משחק אחד, והטבלה כבר נראית אחרת 🔥`,
-    en: `${teamName(outcome)} makes noise with ${score} against ${teamName(loser)}. One match, and the table already looks different 🔥`,
+    he: `${teamName(outcome, 'he')} לקחה ${score} מול ${teamName(loser, 'he')}, והבית צריך לחשב מחדש את הטפסים.`,
+    en: `${teamName(outcome)} took ${score} against ${teamName(loser)}. The group has to reread the forms now.`,
   };
 }
 
@@ -1233,7 +1744,7 @@ function buildStory(match, image, outcome) {
   const titles = titleCopy(match, outcome);
   const captions = captionCopy(match, outcome);
   const focuses = poolFocuses(match, outcome);
-  return {
+  const story = {
     id: storyId(match),
     match_id: match.id,
     image: normalizeAssetPath(image),
@@ -1246,6 +1757,7 @@ function buildStory(match, image, outcome) {
     he: { headline: titles.he, caption: captions.he },
     en: { headline: titles.en, caption: captions.en },
   };
+  return applyFallbackEditorialVariety(story, match, outcome);
 }
 
 function validateStory(story, match) {
@@ -1441,7 +1953,7 @@ async function main() {
     existingByMatch.add(match.id);
   }
 
-  const items = additions
+  let items = additions
     .concat(existing)
     .sort((a, b) => {
       const aTime = existingMatchDates.get(a && a.match_id) || 0;
@@ -1449,6 +1961,7 @@ async function main() {
       return bTime - aTime;
     })
     .slice(0, MAX_STORIES);
+  items = applyLatestStoryShapeVariety(items, matchById);
   items.forEach(story => {
     const match = matchById.get(story.match_id);
     if (match) validateStory(story, match);

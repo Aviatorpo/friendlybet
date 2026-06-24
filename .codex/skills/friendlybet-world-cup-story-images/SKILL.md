@@ -37,6 +37,17 @@ Create premium share-story assets for FriendlyBet that look like the approved Wo
 - Do not replace the homepage ball with a different icon, flat SVG, sticker, trophy, generic football, or custom illustrated ball. Use the same soccer-ball mark used beside `FriendlyBet` on the homepage.
 - Do not let the watermark enter the caption safe zone, cover faces, or sit low enough that WhatsApp previews crop it.
 - Do not request or accept photorealistic player portraits. The target is a clearly cartooned version of the real player: similar enough to identify, stylized enough to avoid looking like an exact photo.
+- Never create or accept a story image with a generic, invented, anonymous, unnamed, or placeholder footballer. Every visible player must be a named real footballer whose team, shirt number, and match relevance have been verified. If no named player can be verified, stop and require a non-player design or manual review instead of using a generic player.
+
+## Player Selection And Match Availability
+
+- For match-result stories, visible players must be selected from named players who actually started or appeared as substitutes in that match whenever post-match data is available.
+- Primary no-API source: the FIFA Training Centre FIFA World Cup 2026 Match Report Hub. Each finished match has a public Post Match Summary Report PDF. Parse page 1 `STARTING` and `SUBSTITUTES` sections for each team; shirt numbers, player names, positions, goals/cards/substitution minutes, and participation are present there.
+- Treat a player as match-available when they appear in the PDF starting XI or have a substitution minute in the substitutes section. A listed substitute with no substitution minute is squad/bench context only and should not be used as a match-result hero unless the story is specifically about the bench or squad.
+- Prefer the scorer, captain, player of the match, or most recognizable participating star. If the most famous candidate did not play, skip them for match-result art.
+- Captain is useful but not required if match participation is known. When captain data is needed, prefer a `(C)` marker in official FIFA match data or the post-match PDF if present; otherwise use the most relevant confirmed participant and note that captain was not verified.
+- If the FIFA post-match PDF is not yet published or cannot be parsed, do not invent a player. Use a non-player design with flags, stadium, score, and team colors, or send the item to manual review.
+- Existing pre-generated assets containing phrases like `biggest current star`, `current star`, `#current`, or unnamed team players must not be reused for new final stories until replaced with named, verified real players.
 
 ## Required FriendlyBet Watermark
 
@@ -82,7 +93,7 @@ Two football players as stylized cartoon likenesses of the real players, wearing
 - [Player B], [team], shirt number #[number], number printed naturally into the jersey fabric.
 Players' heads high in frame but clearly below the top title.
 Leave the lower-middle band around 60-77% visually clean enough for a black caption panel.
-No Hebrew text, no yellow result headline, no stickers, no fake number patches, no text over faces.
+No Hebrew text, no yellow result headline, no stickers, no fake number patches, no text over faces, no generic unnamed players.
 Premium stadium lights, crowd, confetti, sharp cartoon editorial sports poster look.
 The players should look like recognizable cartoon versions of the real footballers, not photorealistic portraits or exact photo recreations.
 After generation, add the required homepage-matching `⚽ FriendlyBet` watermark near the lower edge using deterministic rendering.
@@ -123,15 +134,21 @@ Dashboard cards and exported share images must match:
 
 Before shipping any new Story of the World Cup item:
 
+- Check `../../company/playbooks/pundit-live-desk.md` when the story is current, news-like, stale, repetitive, or pool-context dependent.
 - Do not allow adjacent stories to use the same fallback caption template with only team names or scores swapped.
 - The app-rendered caption must be pool-aware whenever matching picks can be queried.
 - Each story must define `pool_focuses` in priority order:
   1. `tournament_winner_picks` for the winning or favorite team when emotionally relevant.
   2. Exact `group_position_picks` for the team most affected by the result.
   3. Other specific pick tables only if they are more relevant.
+- For a finished winning match, do not publish only the losing team's group-position angle. Include the winning team's `tournament_winner_picks` first, then the winning team's exact first-in-group focus, then loser/fallback focuses. This gives real pools multiple chances to show named member receipts before falling back to match-only text.
 - Every `pool_focuses` template must explicitly name the pick type, for example `picked {team} to win the World Cup`, `picked {team} to top the group`, or the Hebrew equivalent.
+- Story headlines must be consequence-led, not stock hype. Ban generic phrases such as `Statement made!`, `No winner, all drama`, `הצהרה!`, and `דרמה בלי הכרעה`; name the group/table/prediction consequence instead.
 - The fallback `he.caption` / `en.caption` may be match-only, but it must be unique to that match and must not be a reused generic sentence.
-- After generating stories, compare the latest 3-5 stories and fail the review if their fallback captions or first pool-specific templates are structurally identical.
+- Fallback captions must not use vague noise language such as `makes noise with` / `עושה רעש עם`. If there is no sourced player/coach angle, write the specific table or pool-pick consequence quietly and clearly.
+- For each finished match, identify the strongest human angle before writing: upset, collapse, table swing, favorite pressure, exact pick receipts, named pool members, or verified player/coach story. If no angle is visible, write a quieter but still unique table/pool angle instead of forcing hype.
+- Do not approve a new story while `public-data/world-cup-stories.json` is missing newer finished matches that have prepared assets; run `node scripts\world-cup-story-auto-needed.js` or explain the blocker.
+- After generating stories, compare the latest 10 stories and fail the review if fallback captions or any `pool_focuses` template are structurally identical after normalizing team names and scores.
 - Before deploy, print the latest stories' `he.caption`, `en.caption`, and `pool_focuses` and verify the copy names the specific pool pick before falling back to match-only text.
 
 ## Validation Checklist
@@ -139,16 +156,18 @@ Before shipping any new Story of the World Cup item:
 Before shipping:
 
 - Confirm every visible shirt number against `SquadLists-English.pdf` when that PDF is available, including cases where the image number identifies a different valid player than the default profile.
+- Confirm every visible player is a named real footballer verified from the official match post-summary PDF when available; fail the story if any prompt or asset uses a generic/anonymous player, `biggest current star`, `current star`, `#current`, or a placeholder instead of a verified name and shirt number.
 - Create a contact sheet of all story images with the caption safe-zone rectangle overlaid.
 - Visually confirm no caption safe-zone rectangle crosses any player face.
 - Check the caption is not so low that WhatsApp preview crops it.
 - Confirm every story image/export contains the homepage-matching `⚽ FriendlyBet` watermark: same ball, same Sora/800 brand text, same warm gold ball glow, and no misspelling.
-- Print and compare the latest 3-5 stories' fallback captions and `pool_focuses`; confirm adjacent stories are not template clones and that pool-specific captions name the actual pick type.
+- Print and compare the latest 10 stories' fallback captions and every `pool_focuses` entry; confirm recent stories are not template clones and that pool-specific captions name the actual pick type.
 - Run `node scripts\test-world-cup-stories.js`.
 - Search for forbidden regressions:
 
 ```powershell
 rg -n "wc-story-headline|wc-story-copy|_wcDrawCenteredText\(ctx, copy\.headline|headlineY|top: 53\.5%|\[dir=\"he\"\]" app.js styles.css scripts\test-world-cup-stories.js
+rg -n "biggest current star|current star|#current|generic player|unnamed player|placeholder player" scripts story-assets public-data
 ```
 
 - Bump `config.js`, `service-worker.js`, `index.html`, and `CHANGELOG.md` only when shipping app-code/cache changes. Do not require a version bump for data-only story feed or PNG asset updates.

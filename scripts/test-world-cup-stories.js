@@ -9,11 +9,37 @@ const matches = JSON.parse(fs.readFileSync(path.join(root, 'public-data', 'match
 const appJs = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
 const stylesCss = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 const generatorJs = fs.readFileSync(path.join(root, 'scripts', 'generate-world-cup-stories.js'), 'utf8');
+const { TEAM_NAMES } = require('./generate-world-cup-stories');
 const byId = new Map(matches.map(match => [match.id, match]));
 const seenFallbacks = new Map();
+const teamNames = Object.values(TEAM_NAMES || {}).flatMap(item => [item.en, item.he]).filter(Boolean);
+teamNames.sort((a, b) => b.length - a.length);
+const bannedHeadlineFragments = [
+  /Statement made!?/i,
+  /No winner, all drama/i,
+  /\u05d4\u05e6\u05d4\u05e8\u05d4!?/u,
+  /\u05d3\u05e8\u05de\u05d4 \u05d1\u05dc\u05d9 \u05d4\u05db\u05e8\u05e2\u05d4/u,
+];
+const bannedFallbackFragments = [
+  /makes noise with/i,
+  /\u05e2\u05d5\u05e9\u05d4 \u05e8\u05e2\u05e9 \u05e2\u05dd/u,
+];
+const bannedFocusFragments = [
+  /already need[s]? a defense speech/i,
+  /\u05db\u05d1\u05e8 \u05e6\u05e8\u05d9\u05da(?:\u05d9\u05dd)? \u05e0\u05d0\u05d5\u05dd \u05d4\u05d2\u05e0\u05d4/u,
+];
+const RECENT_STORY_COPY_WINDOW = 10;
 
-function copyShape(text) {
-  return String(text || '')
+function copyShape(text, options = {}) {
+  let value = String(text || '');
+  if (options.normalizeTeams) {
+    for (const name of teamNames) {
+      value = value.split(name).join('{team}');
+    }
+  }
+  return value
+    .replace(/\{names\}/g, '{names}')
+    .replace(/\{team\}/g, '{team}')
     .replace(/\d+\s*-\s*\d+/g, '#-#')
     .replace(/\b[A-Z]{3}\b/g, 'TEAM')
     .replace(/[^\p{Letter}\p{Number}\s{}#-]/gu, '')
@@ -70,10 +96,24 @@ for (const story of stories) {
   if (!String(story.en && story.en.headline || '').includes(score)) {
     fail(`${story.id}: English headline missing score ${score}`);
   }
+  const headlineText = [
+    story.he && story.he.headline,
+    story.en && story.en.headline,
+  ].filter(Boolean).join(' ');
+  bannedHeadlineFragments.forEach(pattern => {
+    if (pattern.test(headlineText)) {
+      fail(`${story.id}: headline uses banned generic story phrasing`);
+    }
+  });
   const copyText = [
     story.he && story.he.caption,
     story.en && story.en.caption
   ].join(' ');
+  bannedFallbackFragments.forEach(pattern => {
+    if (pattern.test(copyText)) {
+      fail(`${story.id}: fallback caption uses banned generic story phrasing`);
+    }
+  });
   ['he', 'en'].forEach(lang => {
     const caption = String(story[lang] && story[lang].caption || '').trim();
     if (!caption) fail(`${story.id}: ${lang} fallback caption is empty`);
@@ -95,10 +135,21 @@ for (const story of stories) {
       }
     });
     const enFocus = focusText(focus, 'en');
+    const heFocus = focusText(focus, 'he');
+    bannedFocusFragments.forEach(pattern => {
+      if (pattern.test(enFocus) || pattern.test(heFocus)) {
+        fail(`${story.id}: pool_focuses[${idx}] uses banned repeated defense-speech phrasing`);
+      }
+    });
     if (!/picked \{team\} (to (win the World Cup|top the group)|first in the group)/i.test(enFocus)) {
       fail(`${story.id}: pool_focuses[${idx}] English text must name the exact pick type`);
     }
-    const heFocus = focusText(focus, 'he');
+    if (focus.table === 'tournament_winner_picks' && !/picked \{team\} to win the World Cup/i.test(enFocus)) {
+      fail(`${story.id}: pool_focuses[${idx}] tournament winner text must say "picked {team} to win the World Cup"`);
+    }
+    if (focus.table === 'group_position_picks' && !/picked \{team\} (to top the group|first in the group)/i.test(enFocus)) {
+      fail(`${story.id}: pool_focuses[${idx}] group-position text must say "{team} to top the group"`);
+    }
     const hasHebrewPickType = /(\u05d2\u05d1\u05d9\u05e2 \u05d4\u05e2\u05d5\u05dc\u05dd|\u05de\u05d5\u05e0\u05d3\u05d9\u05d0\u05dc|\u05d1\u05e8\u05d0\u05e9 \u05d4\u05d1\u05d9\u05ea|\u05e8\u05d0\u05e9\u05d5\u05e0\u05d4 \u05d1\u05d1\u05d9\u05ea)/u.test(heFocus);
     if (heFocus && (!heFocus.includes('{team}') || !hasHebrewPickType)) {
       fail(`${story.id}: pool_focuses[${idx}] Hebrew text must name the exact pick type`);
@@ -127,6 +178,43 @@ for (let i = 1; i < stories.length; i++) {
   });
 }
 
+const latest = stories.slice(0, RECENT_STORY_COPY_WINDOW);
+latest.forEach(story => {
+  const match = byId.get(story.match_id);
+  if (!match) return;
+  const draw = Number(match.home_score) === Number(match.away_score);
+  const outcome = match.winner_code || (draw ? 'DRAW' : null);
+  const focuses = Array.isArray(story.pool_focuses) && story.pool_focuses.length ? story.pool_focuses : (story.pool_focus ? [story.pool_focus] : []);
+  if (outcome && outcome !== 'DRAW') {
+    const first = focuses[0] || {};
+    if (first.table !== 'tournament_winner_picks' || first.team_code !== outcome) {
+      fail(`${story.id}: latest winning stories must try the winner's tournament-winner picks first`);
+    }
+    if (!focuses.some(focus => focus.table === 'group_position_picks' && focus.team_code === outcome && Number(focus.position || 1) === 1)) {
+      fail(`${story.id}: latest winning stories must include the winner's first-in-group focus`);
+    }
+  }
+});
+['he', 'en'].forEach(lang => {
+  const seenLatestCaptions = new Map();
+  const seenLatestFocuses = new Map();
+  latest.forEach(story => {
+    const captionShape = copyShape(story[lang] && story[lang].caption, { normalizeTeams: true });
+    if (captionShape && seenLatestCaptions.has(captionShape)) {
+      fail(`${story.id}: ${lang} latest-story fallback caption structure duplicates ${seenLatestCaptions.get(captionShape)}`);
+    }
+    seenLatestCaptions.set(captionShape, story.id);
+    const focuses = Array.isArray(story.pool_focuses) && story.pool_focuses.length ? story.pool_focuses : (story.pool_focus ? [story.pool_focus] : []);
+    focuses.forEach((focus, idx) => {
+      const focusShape = copyShape(focusText(focus, lang), { normalizeTeams: true });
+      if (focusShape && seenLatestFocuses.has(focusShape)) {
+        fail(`${story.id}: ${lang} latest-story pool_focuses[${idx}] structure duplicates ${seenLatestFocuses.get(focusShape)}`);
+      }
+      if (focusShape) seenLatestFocuses.set(focusShape, `${story.id} pool_focuses[${idx}]`);
+    });
+  });
+});
+
 const visualChecks = [
   [appJs.includes('const _WC_STORY_LAYOUT'), 'app.js must define shared story layout constants'],
   [!appJs.includes('headlineY:'), 'share renderer must not add a duplicate result headline panel'],
@@ -148,6 +236,8 @@ const visualChecks = [
   [stylesCss.includes('.wc-story-caption-panel[dir="ltr"]') && stylesCss.includes('text-align: left'), 'English dashboard text must align left'],
   [!stylesCss.includes('[dir="he"]'), 'story CSS must target rtl/ltr dir values, not language codes'],
   [generatorJs.includes('shirt number #') && generatorJs.includes('printed naturally into the jersey fabric'), 'story generator prompt must require real shirt numbers integrated into kits'],
+  [generatorJs.includes("table: 'tournament_winner_picks'"), 'story generator must include tournament-winner pool focus choices'],
+  [appJs.includes('if (!pickedMembers.length) continue') && appJs.includes('if (!names.length) continue'), 'client story captions must only use pool-specific copy when visible member names are available'],
   [generatorJs.includes('60%-77%'), 'story generator prompt must preserve the current caption safe band'],
   [!generatorJs.includes('yellow result overlay'), 'story generator prompt must not reserve a yellow result overlay'],
   [!generatorJs.includes('50%-64%'), 'story generator prompt must not use the old face-level caption band'],
@@ -155,6 +245,12 @@ const visualChecks = [
   [appJs.includes("table === 'knockout_picks' ? 'predicted_winner' : 'team_code'"), 'client must query specific pick tables by their actual team column'],
 ];
 visualChecks.forEach(([ok, message]) => { if (!ok) fail(message); });
+
+bannedHeadlineFragments.concat(bannedFallbackFragments, bannedFocusFragments).forEach(pattern => {
+  if (pattern.test(generatorJs)) {
+    fail(`story generator still contains banned generic copy pattern ${pattern}`);
+  }
+});
 
 if (process.exitCode) process.exit(process.exitCode);
 console.log(`world cup stories validated: ${stories.length}`);
