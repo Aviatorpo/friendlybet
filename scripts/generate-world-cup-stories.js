@@ -1400,8 +1400,16 @@ function storyEmoji(match, outcome) {
 function withStoryEmoji(text, match, outcome) {
   const copy = String(text || '').trim();
   if (!copy) return copy;
-  if (/[\p{Extended_Pictographic}\p{Emoji_Presentation}]/u.test(copy)) return copy;
+  if (/[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?$/u.test(copy)) return copy;
   return `${copy.replace(/[.。]\s*$/, '')} ${storyEmoji(match, outcome)}`;
+}
+
+function withEndingStoryEmoji(text, match, outcome) {
+  const copy = String(text || '').trim();
+  if (!copy) return copy;
+  if (/[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?$/u.test(copy)) return copy;
+  const withoutTrailingEmoji = copy.replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, '');
+  return `${withoutTrailingEmoji.replace(/[.。]\s*$/, '')} ${storyEmoji(match, outcome)}`;
 }
 
 function fallbackEditorialCaption(match, outcome) {
@@ -1586,8 +1594,8 @@ function applyFallbackEditorialVariety(story, match, outcome) {
     ...story,
     pool_focus: focuses[0] || story.pool_focus,
     pool_focuses: focuses,
-    he: { ...story.he, caption: caption.he },
-    en: { ...story.en, caption: caption.en },
+    he: { ...story.he, caption: withEndingStoryEmoji(caption.he, match, outcome) },
+    en: { ...story.en, caption: withEndingStoryEmoji(caption.en, match, outcome) },
   };
 }
 
@@ -1682,11 +1690,12 @@ function appendLatestShapeClause(story, match, kind, lang, focusIndex = 0, attem
   const clause = latestVarietyClause(story, kind, lang, attempt);
   const safeClause = clause ? ` ${clause}` : (lang === 'he' ? ` בית ${group} מרגיש את זה.` : ` Group ${group} felt that one.`);
   if (kind === 'caption') {
+    const base = String(story[lang] && story[lang].caption || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, '');
     return {
       ...story,
       [lang]: {
         ...story[lang],
-        caption: `${String(story[lang] && story[lang].caption || '').replace(/\s+$/, '')}${safeClause}`,
+        caption: withEndingStoryEmoji(`${base}${safeClause}`, match, outcomeFor(match)),
       },
     };
   }
