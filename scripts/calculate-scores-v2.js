@@ -309,12 +309,18 @@ function scoreNumber(value) {
 }
 
 const SCORE_HEARTBEAT_MAX_AGE_MS = 5 * 60 * 60 * 1000;
+const SCORE_HEARTBEAT_MAX_PATCHES_PER_RUN = 250;
+let scoreHeartbeatPatchesThisRun = 0;
 
 function scoreCalcTimestampFresh(value, nowMs = Date.now()) {
   if (!value) return false;
   const ts = Date.parse(value);
   if (!Number.isFinite(ts)) return false;
   return nowMs - ts < SCORE_HEARTBEAT_MAX_AGE_MS;
+}
+
+function canPatchScoreHeartbeat() {
+  return scoreHeartbeatPatchesThisRun < SCORE_HEARTBEAT_MAX_PATCHES_PER_RUN;
 }
 
 function userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints, total) {
@@ -333,10 +339,12 @@ async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonus
   const nowIso = now.toISOString();
   if (userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints, total)) {
     if (scoreCalcTimestampFresh(user.last_score_calc, now.getTime())) return false;
+    if (!canPatchScoreHeartbeat()) return false;
     await sb('PATCH', 'users', {
       data: { last_score_calc: nowIso },
       query: `?id=eq.${user.id}`
     });
+    scoreHeartbeatPatchesThisRun++;
     return true;
   }
   try {
