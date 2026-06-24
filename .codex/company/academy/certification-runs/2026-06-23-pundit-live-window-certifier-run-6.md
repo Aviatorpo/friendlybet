@@ -679,3 +679,14 @@ Production propagation after `bf89b6e30`:
 - Production certifiers recorded to `tmp\pundit-live-window-certifications-2026-06-24.jsonl`: `POR-UZB`, `ENG-GHA`, `PAN-CRO`, and `COL-COD` all `score=100`, phase `final`; `SUI-CAN` and `BIH-QAT` both `score=100`, phase `live`, status `PAUSED`; `SCO-BRA` and `MAR-HAI` both `score=100`, phase `pre`.
 
 Interpretation: production is now current for this heartbeat window. This is meaningful live-window proof, but it still does not close the overall TV-level goal because the academy audit remains `calibrating-with-live-proof` and requires clean completion through additional real live/final windows.
+
+2026-06-25 01:43 Israel live-window incident:
+
+- Initial local `node scripts\live-ops-audit.js` failed because `SCO-BRA` and `MAR-HAI` were still `TIMED` 43-45 minutes after kickoff. Initial production certifiers failed the same way: both matches were stale scheduled and lacked verification/recovery Pundit items.
+- Strict news validation initially failed because `2026-06-24-scotland-brazil-neymar-door` and `2026-06-24-morocco-haiti-group-c-receipts` had expired; the expired pre-kickoff news items were removed instead of extended.
+- `node scripts\generate-pundit.js` refreshed `public-data\pundit.json` at `2026-06-24T22:44:36.100Z` with explicit `verification` items for `SCO-BRA` and `MAR-HAI`, both with emoji treatment.
+- `scripts\generate-pundit.js` now keeps the 6 most recent result cards instead of 5, because the required `POR-UZB` final was still inside the 30-hour proof window but had been capped out by newer finals.
+- Local certifiers recorded to `tmp\pundit-live-window-certifications-2026-06-25.jsonl`: `POR-UZB`, `ENG-GHA`, `PAN-CRO`, `COL-COD`, `SUI-CAN`, and `BIH-QAT` all `score=100`, phase `final`; `SCO-BRA` and `MAR-HAI` both `score=100`, phase `stale_scheduled`, item type `verify`.
+- Follow-up gates: strict news validation passed with zero unexpired news items, `test-pundit-feed` passed with an empty-news warning, `test-world-cup-stories` passed for 50 stories, and `test-generate-pundit-live-state` passed. `live-ops-audit` still fails until the underlying Group C match rows leave stale `TIMED` state.
+
+Interpretation: useful recovery proof and a generator hardening fix, not graduation. Production still needs the refreshed Pundit data deployed and verified, and the live-data layer still needs provider/DB recovery for Group C.
