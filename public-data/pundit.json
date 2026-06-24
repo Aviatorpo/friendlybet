@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-06-24T06:39:28.252Z",
-  "freshUntil": "2026-06-24T12:39:28.252Z",
-  "count": 12,
+  "updatedAt": "2026-06-24T09:48:27.050Z",
+  "freshUntil": "2026-06-24T15:48:27.050Z",
+  "count": 11,
   "items": [
     {
       "id": "result-718f2821-b1fa-4746-9b20-f142f9535e24",
@@ -38,15 +38,6 @@
       "en": "Portugal beat Uzbekistan 5-0 in an open match. That result changes the group and a lot of predictions.",
       "sources": [],
       "expires_at": "2026-06-24T23:00:00.000Z"
-    },
-    {
-      "id": "result-9e34eca5-117b-4fac-a02c-318b7c92002a",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "אלג'יריה ניצחה 2:1 את ירדן. תוצאה צמודה, אבל מספיק חשובה כדי להשפיע על ההימורים.",
-      "en": "Algeria beat Jordan 2-1. A close result, but important enough to affect the predictions.",
-      "sources": [],
-      "expires_at": "2026-06-24T09:00:00.000Z"
     },
     {
       "id": "fixture-0b825d4e-6106-4113-8324-e6565b0a1e24",
