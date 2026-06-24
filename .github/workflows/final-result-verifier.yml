@@ -105,21 +105,14 @@ jobs:
 
       - name: Commit match snapshot if changed
         if: steps.verify_results.outputs.changed == 'true'
+        env:
+          REGENERATE_COMMANDS: |
+            node scripts/export-snapshots.js matches
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
           if [ -n "$(git status --porcelain public-data/matches.json)" ]; then
-            git add public-data/matches.json
-            git commit -q -m "data: refresh match results snapshot"
-            pushed=0
-            for a in 1 2 3; do
-              if git pull --rebase --autostash && git push; then pushed=1; break; fi
-              echo "push retry $a"; sleep 4
-            done
-            if [ "$pushed" != "1" ]; then
-              echo "::error::failed to push match snapshot after 3 retries"
-              exit 1
-            fi
+            bash scripts/commit-generated-snapshots.sh "data: refresh match results snapshot" public-data/matches.json
           else
             echo "no match snapshot change"
           fi
@@ -156,21 +149,22 @@ jobs:
 
       - name: Commit scoring snapshots if changed
         if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+          REGENERATE_COMMANDS: |
+            node scripts/export-snapshots.js matches
+            node scripts/calculate-scores-v2.js
+            node scripts/export-snapshots.js leaderboards
+            node scripts/generate-banter.js || true
+            node scripts/generate-pundit.js
+            node scripts/test-pundit-feed.js
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
           if [ -n "$(git status --porcelain public-data/matches.json public-data/leaderboard public-data/banter public-data/banter-state.json public-data/pundit.json)" ]; then
-            git add public-data/matches.json public-data/leaderboard public-data/banter public-data/banter-state.json public-data/pundit.json
-            git commit -q -m "data: refresh scores after verified result"
-            pushed=0
-            for a in 1 2 3; do
-              if git pull --rebase --autostash && git push; then pushed=1; break; fi
-              echo "push retry $a"; sleep 4
-            done
-            if [ "$pushed" != "1" ]; then
-              echo "::error::failed to push scoring snapshots after 3 retries"
-              exit 1
-            fi
+            bash scripts/commit-generated-snapshots.sh "data: refresh scores after verified result" public-data/matches.json public-data/leaderboard public-data/banter public-data/banter-state.json public-data/pundit.json
           else
             echo "no scoring snapshot change"
           fi
@@ -198,21 +192,19 @@ jobs:
 
       - name: Commit World Cup stories if changed
         if: steps.story_work.outputs.publishable == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+          REGENERATE_COMMANDS: |
+            node scripts/export-snapshots.js matches
+            node scripts/publish-world-cup-stories-auto.js
+            node scripts/test-world-cup-stories.js
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
           if [ -n "$(git status --porcelain public-data/world-cup-stories.json story-assets)" ]; then
-            git add public-data/world-cup-stories.json story-assets
-            git commit -q -m "story: auto-publish World Cup story"
-            pushed=0
-            for a in 1 2 3; do
-              if git pull --rebase --autostash && git push; then pushed=1; break; fi
-              echo "push retry $a"; sleep 4
-            done
-            if [ "$pushed" != "1" ]; then
-              echo "::error::failed to push World Cup stories after 3 retries"
-              exit 1
-            fi
+            bash scripts/commit-generated-snapshots.sh "story: auto-publish World Cup story" public-data/world-cup-stories.json story-assets
           else
             echo "no World Cup story change"
           fi

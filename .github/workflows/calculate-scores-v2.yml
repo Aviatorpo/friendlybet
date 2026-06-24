@@ -86,21 +86,23 @@ jobs:
         run: node scripts/test-world-cup-stories.js
 
       - name: Commit snapshots if changed
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+          BACKUP_FORCE: ${{ inputs.force_backup == 'true' && '1' || '' }}
+          REGENERATE_COMMANDS: |
+            node scripts/calculate-scores-v2.js
+            node scripts/export-snapshots.js leaderboards
+            node scripts/backup-critical-data.js
+            node scripts/generate-banter.js || true
+            python3 scripts/audit-world-cup-story-images.py --scope stories
+            node scripts/test-world-cup-stories.js
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
           if [ -n "$(git status --porcelain public-data private-backups)" ]; then
-            git add public-data private-backups
-            git commit -q -m "data: refresh CDN snapshots / critical backup"
-            pushed=0
-            for a in 1 2 3; do
-              if git pull --rebase --autostash && git push; then pushed=1; break; fi
-              echo "push retry $a"; sleep 4
-            done
-            if [ "$pushed" != "1" ]; then
-              echo "::error::failed to push score snapshots after 3 retries"
-              exit 1
-            fi
+            bash scripts/commit-generated-snapshots.sh "data: refresh CDN snapshots / critical backup" public-data private-backups
           else
             echo "no snapshot change"
           fi
