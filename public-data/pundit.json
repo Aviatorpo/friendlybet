@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-24T22:58:05.781Z",
-  "freshUntil": "2026-06-25T04:58:05.781Z",
+  "updatedAt": "2026-06-24T23:43:54.675Z",
+  "freshUntil": "2026-06-25T05:43:54.675Z",
   "count": 12,
   "items": [
     {
@@ -10,7 +10,7 @@
       "he": "סקוטלנד נגד ברזיל עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
       "en": "Scotland vs Brazil is live now. Every goal can change the group and the predictions 🔥",
       "sources": [],
-      "expires_at": "2026-06-25T01:58:05.781Z"
+      "expires_at": "2026-06-25T02:43:54.675Z"
     },
     {
       "id": "live-acaa0411-271e-496c-a382-222c8892a4b3",
@@ -19,7 +19,7 @@
       "he": "מרוקו נגד האיטי עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
       "en": "Morocco vs Haiti is live now. Every goal can change the group and the predictions 🔥",
       "sources": [],
-      "expires_at": "2026-06-25T01:58:05.781Z"
+      "expires_at": "2026-06-25T02:43:54.675Z"
     },
     {
       "id": "result-0b825d4e-6106-4113-8324-e6565b0a1e24",
@@ -67,15 +67,6 @@
       "expires_at": "2026-06-25T02:00:00.000Z"
     },
     {
-      "id": "result-31a2acf9-8ee6-4657-8fe7-7732592ad3a4",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "פורטוגל ניצחה את אוזבקיסטן 5:0 במשחק פתוח. תוצאה כזאת משנה גם את הבית וגם לא מעט תחזיות 🧾",
-      "en": "Portugal beat Uzbekistan 5-0 in an open match. That result changes the group and a lot of predictions 🧾",
-      "sources": [],
-      "expires_at": "2026-06-24T23:00:00.000Z"
-    },
-    {
       "id": "fixture-236ff99f-19a6-426d-85fa-bca5cf570ae2",
       "type": "fixture",
       "confidence": "confirmed",
@@ -110,6 +101,15 @@
       "en": "Ecuador vs Germany, today 23:00. If Germany do not win, a lot of picks take an early hit ⏰",
       "sources": [],
       "expires_at": "2026-06-25T19:45:00.000Z"
+    },
+    {
+      "id": "fixture-6e05177f-cf10-4e46-b7be-23fa37a0c8e5",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "תוניסיה נגד הולנד, מחר 02:00. הולנד פייבוריטית, אבל היא עדיין צריכה לעשות את העבודה על הדשא. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית ⏰",
+      "en": "Tunisia vs Netherlands, tomorrow 02:00. Netherlands are the favorite, but they still have to prove it on the pitch. It still matters for table places, picks, and pool points ⏰",
+      "sources": [],
+      "expires_at": "2026-06-25T22:45:00.000Z"
     }
   ]
 }
