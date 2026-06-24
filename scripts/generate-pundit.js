@@ -264,8 +264,8 @@ function resultCommentary(match, salt = '') {
   if (hs === 0 || as === 0) {
     return variantFor(match, [
       {
-        he: `${winnerHe} לקחה ${scoreHe} נקי מ${loserHe}. שלוש נקודות חשובות לבית ולכל מי שבחר בה.`,
-        en: `${winnerEn} took a clean ${scoreEn} from ${loserEn}. Three important points for the group and for anyone who picked them.`,
+        he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe}. שלוש נקודות חשובות לבית ולכל מי שבחר בה.`,
+        en: `${winnerEn} beat ${loserEn} ${scoreEn}. Three important points for the group and for anyone who picked them.`,
       },
       {
         he: `${winnerHe} סגרה את ${loserHe} עם ${scoreHe}. מי שחזה ניצחון נקי מקבל כאן יתרון יפה.`,
@@ -287,8 +287,8 @@ function resultCommentary(match, salt = '') {
       en: `${winnerEn} got past ${loserEn} ${scoreEn}, and the group is starting to take clearer shape.`,
     },
     {
-      he: `${winnerHe} ניצחה ${scoreHe} את ${loserHe}. תוצאה קטנה בלוח, אבל מספיק גדולה כדי להזיז הימורים.`,
-      en: `${winnerEn} beat ${loserEn} ${scoreEn}. Small on the scoreboard, big enough to move the picks.`,
+      he: `${winnerHe} ניצחה ${scoreHe} את ${loserHe}. תוצאה צמודה, אבל מספיק חשובה כדי להשפיע על ההימורים.`,
+      en: `${winnerEn} beat ${loserEn} ${scoreEn}. A close result, but important enough to affect the predictions.`,
     },
   ], salt);
 }

@@ -1,25 +1,25 @@
 {
-  "updatedAt": "2026-06-24T05:45:55.204Z",
-  "freshUntil": "2026-06-24T11:45:55.204Z",
-  "count": 11,
+  "updatedAt": "2026-06-24T05:52:55.632Z",
+  "freshUntil": "2026-06-24T11:52:55.632Z",
+  "count": 10,
   "items": [
     {
-      "id": "verify-718f2821-b1fa-4746-9b20-f142f9535e24",
-      "type": "verification",
+      "id": "result-718f2821-b1fa-4746-9b20-f142f9535e24",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "קולומביה נגד קונגו הדמוקרטית: סטטוס המשחק בבדיקה לפני שהטבלה מקבלת נקודות. עדיף רגע של זהירות מטעות שמזיזה הימור שלם.",
-      "en": "Colombia vs Congo DR: match status is being checked before the table gets points. A careful pause beats moving a whole pool on bad data.",
+      "he": "קולומביה ניצחה את קונגו הדמוקרטית 1:0. שלוש נקודות חשובות לבית ולכל מי שבחר בה.",
+      "en": "Colombia beat Congo DR 1-0. Three important points for the group and for anyone who picked them.",
       "sources": [],
-      "expires_at": "2026-06-24T06:45:55.204Z"
+      "expires_at": "2026-06-25T08:00:00.000Z"
     },
     {
-      "id": "verify-a984417e-7707-4e03-9642-239750701bc0",
-      "type": "verification",
+      "id": "result-a984417e-7707-4e03-9642-239750701bc0",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "פנמה נגד קרואטיה: סטטוס המשחק בבדיקה לפני שהטבלה מקבלת נקודות. עדיף רגע של זהירות מטעות שמזיזה הימור שלם.",
-      "en": "Panama vs Croatia: match status is being checked before the table gets points. A careful pause beats moving a whole pool on bad data.",
+      "he": "קרואטיה עם 1:0 על פנמה. זה ניצחון שמסדר לה עמדה טובה יותר בבית.",
+      "en": "Croatia beat Panama 1-0. That gives them a stronger position in the group.",
       "sources": [],
-      "expires_at": "2026-06-24T06:45:55.204Z"
+      "expires_at": "2026-06-25T05:00:00.000Z"
     },
     {
       "id": "result-cc3d81e8-2e37-4768-8de8-2ca1412a558a",
@@ -43,19 +43,10 @@
       "id": "result-9e34eca5-117b-4fac-a02c-318b7c92002a",
       "type": "result",
       "confidence": "confirmed",
-      "he": "אלג'יריה ניצחה את ירדן 2:1. תוצאה חשובה לבית, ועוד נקודות למי שהלך איתה.",
-      "en": "Algeria beat Jordan 2-1. An important group result, and points for anyone who backed them.",
+      "he": "אלג'יריה ניצחה 2:1 את ירדן. תוצאה צמודה, אבל מספיק חשובה כדי להשפיע על ההימורים.",
+      "en": "Algeria beat Jordan 2-1. A close result, but important enough to affect the predictions.",
       "sources": [],
       "expires_at": "2026-06-24T09:00:00.000Z"
-    },
-    {
-      "id": "result-9e7e1640-f49a-4d65-b82f-ff2bac4a4239",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "נורווגיה ניצחה את סנגל 3:2 במשחק פתוח. תוצאה כזאת משנה גם את הבית וגם לא מעט תחזיות.",
-      "en": "Norway beat Senegal 3-2 in an open match. That result changes the group and a lot of predictions.",
-      "sources": [],
-      "expires_at": "2026-06-24T06:00:00.000Z"
     },
     {
       "id": "fixture-0b825d4e-6106-4113-8324-e6565b0a1e24",
