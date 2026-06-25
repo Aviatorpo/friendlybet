@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-25T11:22:27.726Z",
-  "freshUntil": "2026-06-25T17:22:27.726Z",
+  "updatedAt": "2026-06-25T14:54:48.748Z",
+  "freshUntil": "2026-06-25T20:54:48.748Z",
   "count": 12,
   "items": [
     {
@@ -58,15 +58,6 @@
       "expires_at": "2026-06-26T07:00:00.000Z"
     },
     {
-      "id": "result-718f2821-b1fa-4746-9b20-f142f9535e24",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "קולומביה ניצחה את קונגו הדמוקרטית 1:0. שלוש נקודות חשובות לבית ולכל מי שבחר בה 🧾",
-      "en": "Colombia beat Congo DR 1-0. Three important points for the group and for anyone who picked them 🧾",
-      "sources": [],
-      "expires_at": "2026-06-25T14:00:00.000Z"
-    },
-    {
       "id": "fixture-22c76d3e-ee0d-4766-923c-7be7689f8f2d",
       "type": "fixture",
       "confidence": "confirmed",
@@ -110,6 +101,45 @@
       "en": "Paraguay vs Australia, tomorrow 05:00. This kind of match can decide group places without making many headlines ⏰",
       "sources": [],
       "expires_at": "2026-06-26T01:45:00.000Z"
+    },
+    {
+      "id": "group-a-finals-verified-2026-06-25",
+      "type": "news",
+      "confidence": "confirmed",
+      "he": "בית A קיבל שתי תוצאות מאומתות: מקסיקו ניצחה 3-0 את צ'כיה ודרום אפריקה ניצחה 1-0 את קוריאה הדרומית. הניקוד הרשמי כבר מתבסס על שתי התוצאות האלה 👀",
+      "en": "Group A now has two verified finals: Mexico beat Czech Republic 3-0 and South Africa beat South Korea 1-0. Official pool points now use those results 👀",
+      "team": null,
+      "teams": [
+        "MEX",
+        "CZE",
+        "RSA",
+        "KOR"
+      ],
+      "sources": [
+        {
+          "name": "FIFA Match Centre",
+          "title": "Czech Republic vs Mexico, FIFA match 400021444",
+          "url": "https://www.fifa.com/en/match-centre/match/17/286833/286834/400021444"
+        },
+        {
+          "name": "ESPN Match Centre",
+          "title": "Czech Republic vs Mexico, ESPN game 760467",
+          "url": "https://www.espn.com/soccer/match/_/gameId/760467"
+        },
+        {
+          "name": "FIFA Match Centre",
+          "title": "South Africa vs South Korea, FIFA match 400021445",
+          "url": "https://www.fifa.com/en/match-centre/match/17/286833/286834/400021445"
+        },
+        {
+          "name": "ESPN Match Centre",
+          "title": "South Africa vs South Korea, ESPN game 760466",
+          "url": "https://www.espn.com/soccer/match/_/gameId/760466"
+        }
+      ],
+      "expires_at": "2026-06-25T15:42:00.000Z",
+      "topic_date": "2026-06-25T03:02:36.000Z",
+      "source_checked_at": "2026-06-25T03:42:00.000Z"
     }
   ]
 }
