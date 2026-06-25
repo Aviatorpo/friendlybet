@@ -1,8 +1,26 @@
 {
-  "updatedAt": "2026-06-25T16:04:18.974Z",
-  "freshUntil": "2026-06-25T22:04:18.974Z",
-  "count": 11,
+  "updatedAt": "2026-06-25T20:18:48.845Z",
+  "freshUntil": "2026-06-26T02:18:48.845Z",
+  "count": 12,
   "items": [
+    {
+      "id": "live-22c76d3e-ee0d-4766-923c-7be7689f8f2d",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "קוראסאו נגד חוף השנהב עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
+      "en": "Curaçao vs Ivory Coast is live now. Every goal can change the group and the predictions 🔥",
+      "sources": [],
+      "expires_at": "2026-06-25T23:18:48.845Z"
+    },
+    {
+      "id": "live-f9a41c19-2d28-48c4-9198-1553a76d159b",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "אקוודור נגד גרמניה עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
+      "en": "Ecuador vs Germany is live now. Every goal can change the group and the predictions 🔥",
+      "sources": [],
+      "expires_at": "2026-06-25T23:18:48.845Z"
+    },
     {
       "id": "result-236ff99f-19a6-426d-85fa-bca5cf570ae2",
       "type": "result",
@@ -58,29 +76,11 @@
       "expires_at": "2026-06-26T07:00:00.000Z"
     },
     {
-      "id": "fixture-22c76d3e-ee0d-4766-923c-7be7689f8f2d",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "קוראסאו נגד חוף השנהב, היום 23:00. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות ⏰",
-      "en": "Curaçao vs Ivory Coast, today 23:00. Not the biggest match, but the points here can be crucial ⏰",
-      "sources": [],
-      "expires_at": "2026-06-25T19:45:00.000Z"
-    },
-    {
-      "id": "fixture-f9a41c19-2d28-48c4-9198-1553a76d159b",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "אקוודור נגד גרמניה, היום 23:00. גרמניה פייבוריטית, אבל היא עדיין צריכה לעשות את העבודה על הדשא. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית ⏰",
-      "en": "Ecuador vs Germany, today 23:00. Germany are the favorite, but they still have to prove it on the pitch. It still matters for table places, picks, and pool points ⏰",
-      "sources": [],
-      "expires_at": "2026-06-25T19:45:00.000Z"
-    },
-    {
       "id": "fixture-6e05177f-cf10-4e46-b7be-23fa37a0c8e5",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "תוניסיה נגד הולנד, מחר 02:00. אם הולנד לא מנצחת, הרבה הימורים ייפגעו מוקדם ⏰",
-      "en": "Tunisia vs Netherlands, tomorrow 02:00. If Netherlands do not win, a lot of picks take an early hit ⏰",
+      "he": "תוניסיה נגד הולנד, מחר 02:00. הולנד פייבוריטית, אבל היא עדיין צריכה לעשות את העבודה על הדשא. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית ⏰",
+      "en": "Tunisia vs Netherlands, tomorrow 02:00. Netherlands are the favorite, but they still have to prove it on the pitch. It still matters for table places, picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-06-25T22:45:00.000Z"
     },
@@ -88,8 +88,8 @@
       "id": "fixture-cb890dbb-bed3-4101-a41f-dcd8cacca13c",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "יפן נגד שבדיה, מחר 02:00. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות ⏰",
-      "en": "Japan vs Sweden, tomorrow 02:00. Not the biggest match, but the points here can be crucial ⏰",
+      "he": "יפן נגד שבדיה, מחר 02:00. משחק כזה יכול להכריע מקומות בבית בלי הרבה כותרות ⏰",
+      "en": "Japan vs Sweden, tomorrow 02:00. This kind of match can decide group places without making many headlines ⏰",
       "sources": [],
       "expires_at": "2026-06-25T22:45:00.000Z"
     },
@@ -97,8 +97,17 @@
       "id": "fixture-95a0a3e3-a5dc-4894-9131-0bd96113bd11",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "פרגוואי נגד אוסטרליה, מחר 05:00. משחק כזה יכול להכריע מקומות בבית בלי הרבה כותרות ⏰",
-      "en": "Paraguay vs Australia, tomorrow 05:00. This kind of match can decide group places without making many headlines ⏰",
+      "he": "פרגוואי נגד אוסטרליה, מחר 05:00. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות ⏰",
+      "en": "Paraguay vs Australia, tomorrow 05:00. Not the biggest match, but the points here can be crucial ⏰",
+      "sources": [],
+      "expires_at": "2026-06-26T01:45:00.000Z"
+    },
+    {
+      "id": "fixture-abd00676-8c92-4bf8-9bdd-65f92f9298ab",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "טורקיה נגד ארה\"ב, מחר 05:00. מי שפוגע במשחקים האלה בדרך כלל מתקדם יפה בטבלה ⏰",
+      "en": "Turkey vs United States, tomorrow 05:00. People who get these matches right usually move well in the table ⏰",
       "sources": [],
       "expires_at": "2026-06-26T01:45:00.000Z"
     }
