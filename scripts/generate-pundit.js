@@ -36,7 +36,7 @@ const DEFAULT_KICKOFF = '2026-06-11T19:00:00+00:00';
 const MAX_ITEMS = 12;
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
-const RESULT_WINDOW_MS = 30 * HOUR_MS;
+const RESULT_WINDOW_MS = 36 * HOUR_MS;
 const FIXTURE_WINDOW_MS = 30 * HOUR_MS;
 const FIXTURE_PRE_KICKOFF_BUFFER_MS = 15 * 60 * 1000;
 const NEWS_MAX_AGE_MS = 30 * HOUR_MS;
@@ -486,7 +486,7 @@ function build(now, options = {}) {
     .filter(m => FINISHED_STATUSES.has(String(m.status || '').toUpperCase()) && !isPendingProviderFinal(m) && m.home_score != null && m.away_score != null)
     .filter(m => now.getTime() - Date.parse(m.match_date) < RESULT_WINDOW_MS)
     .sort((x, y) => Date.parse(y.match_date) - Date.parse(x.match_date))
-    .slice(0, 6);
+    .slice(0, 8);
   for (const [idx, m] of finished.entries()) {
     const text = resultCommentary(m, idx);
     items.push({ id: `result-${m.id}`, type: 'result', confidence: 'confirmed', he: text.he, en: text.en, sources: [], expires_at: iso(Date.parse(m.match_date) + RESULT_WINDOW_MS) });

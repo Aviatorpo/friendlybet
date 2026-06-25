@@ -700,3 +700,15 @@ Production propagation after `daae9b749`:
 - Production `node scripts\live-ops-audit.js --production` still failed because `SCO-BRA` and `MAR-HAI` remain stale `TIMED` rows in the match snapshot, and because the news desk is empty during the tournament window.
 
 Interpretation: production visible Pundit recovery is now current, but this window is not clean live-window graduation proof. The Pundit correctly avoids stale fixture/live claims; the match-data layer still needs real state recovery.
+
+2026-06-25 04:43 Israel live-window incident:
+
+- Initial local `node scripts\live-ops-audit.js` failed because `CZE-MEX` and `RSA-KOR` were still `TIMED` 43-46 minutes after kickoff; `pundit-news.json` was still empty during the tournament window.
+- Initial local certifiers for `POR-UZB` and `ENG-GHA` failed because older final results had been pushed out of the visible Pundit feed while the heartbeat certification still required those targets.
+- `scripts\generate-pundit.js` now retains result cards for 36 hours instead of 30 and keeps the 8 most recent result cards, so `POR-UZB`, `ENG-GHA`, `PAN-CRO`, `COL-COD`, `SUI-CAN`, `BIH-QAT`, `SCO-BRA`, and `MAR-HAI` can all stay visible during this certification run while current stale scheduled rows get verification copy.
+- Local `node scripts\generate-pundit.js` refreshed `public-data\pundit.json` at `2026-06-25T01:44:56.563Z` with `verification` items for `CZE-MEX` and `RSA-KOR`, and final result items for all required target matches.
+- Local certifiers recorded to `tmp\pundit-live-window-certifications-2026-06-25.jsonl`: `POR-UZB`, `ENG-GHA`, `PAN-CRO`, `COL-COD`, `SUI-CAN`, `BIH-QAT`, `SCO-BRA`, and `MAR-HAI` all `score=100`, phase `final`; `CZE-MEX` and `RSA-KOR` both `score=100`, phase `stale_scheduled`, item type `verify`.
+- Focused gates passed: strict news validation, `test-pundit-feed` with empty-news warning, `test-world-cup-stories`, `test-generate-pundit-live-state`, and `pundit-academy-audit` with status `calibrating-with-live-proof`.
+- Production pre-deploy certifiers showed `CZE-MEX` and `RSA-KOR` already `score=100`, phase `live`, status `PAUSED`, but `POR-UZB` still failed because the deployed feed did not retain its result card.
+
+Interpretation: this is a generator proof-window hardening, not graduation. The active live matches are handled in production, but the deployed feed still needs the 36-hour result retention before the heartbeat target set is fully green.
