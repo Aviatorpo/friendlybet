@@ -27,6 +27,8 @@
     "537352",
     "537353",
     "537354",
+    "537355",
+    "537356",
     "537357",
     "537358",
     "537359",
@@ -1006,7 +1008,32 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-25T23:04:54.336Z",
+      "file": "private-backups/2026-06-25T23-04-54-336Z__537356-CUR-CIV__537355-ECU-GER.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537356",
+        "537355"
+      ],
+      "tableCounts": {
+        "pools": 2064,
+        "users": 6447,
+        "group_picks": 22992,
+        "knockout_picks": 95524,
+        "group_position_picks": 175213,
+        "tournament_winner_picks": 3370,
+        "top_scorer_picks": 2930,
+        "sp_third_place_picks": 29146,
+        "pick_backups": 47172,
+        "knockout_reopen_grants": 1703,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-25T04:51:53.082Z"
+  "updatedAt": "2026-06-25T23:04:54.336Z"
 }
