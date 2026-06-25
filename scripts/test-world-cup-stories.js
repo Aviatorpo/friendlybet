@@ -17,8 +17,10 @@ teamNames.sort((a, b) => b.length - a.length);
 const bannedHeadlineFragments = [
   /Statement made!?/i,
   /No winner, all drama/i,
+  /the table felt it/i,
   /\u05d4\u05e6\u05d4\u05e8\u05d4!?/u,
   /\u05d3\u05e8\u05de\u05d4 \u05d1\u05dc\u05d9 \u05d4\u05db\u05e8\u05e2\u05d4/u,
+  /\u05d4\u05d8\u05d1\u05dc\u05d4 \u05d4\u05e8\u05d2\u05d9\u05e9\u05d4 \u05d0\u05ea \u05d6\u05d4/u,
 ];
 const bannedFallbackFragments = [
   /makes noise with/i,
@@ -30,6 +32,7 @@ const bannedFocusFragments = [
 ];
 const endingEmojiPattern = /[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?$/u;
 const RECENT_STORY_COPY_WINDOW = 10;
+const MIN_LATEST_STORY_IMAGE_BYTES = 500000;
 
 function copyShape(text, options = {}) {
   let value = String(text || '');
@@ -203,6 +206,10 @@ latest.forEach(story => {
     });
   });
   const focuses = Array.isArray(story.pool_focuses) && story.pool_focuses.length ? story.pool_focuses : (story.pool_focus ? [story.pool_focus] : []);
+  const imagePath = path.join(root, String(story.image || ''));
+  if (fs.existsSync(imagePath) && fs.statSync(imagePath).size < MIN_LATEST_STORY_IMAGE_BYTES) {
+    fail(`${story.id}: latest visible story image is too small for final poster art (${fs.statSync(imagePath).size} bytes)`);
+  }
   if (outcome && outcome !== 'DRAW') {
     const first = focuses[0] || {};
     if (first.table !== 'tournament_winner_picks' || first.team_code !== outcome) {
@@ -214,9 +221,15 @@ latest.forEach(story => {
   }
 });
 ['he', 'en'].forEach(lang => {
+  const seenLatestHeadlines = new Map();
   const seenLatestCaptions = new Map();
   const seenLatestFocuses = new Map();
   latest.forEach(story => {
+    const headlineShape = copyShape(story[lang] && story[lang].headline, { normalizeTeams: true });
+    if (headlineShape && seenLatestHeadlines.has(headlineShape)) {
+      fail(`${story.id}: ${lang} latest-story headline structure duplicates ${seenLatestHeadlines.get(headlineShape)}`);
+    }
+    if (headlineShape) seenLatestHeadlines.set(headlineShape, story.id);
     const captionShape = copyShape(story[lang] && story[lang].caption, { normalizeTeams: true });
     if (captionShape && seenLatestCaptions.has(captionShape)) {
       fail(`${story.id}: ${lang} latest-story fallback caption structure duplicates ${seenLatestCaptions.get(captionShape)}`);
@@ -257,6 +270,7 @@ const visualChecks = [
   [generatorJs.includes("table: 'tournament_winner_picks'"), 'story generator must include tournament-winner pool focus choices'],
   [appJs.includes('if (!pickedMembers.length) continue') && appJs.includes('if (!names.length) continue'), 'client story captions must only use pool-specific copy when visible member names are available'],
   [generatorJs.includes('60%-77%'), 'story generator prompt must preserve the current caption safe band'],
+  [generatorJs.includes('caption panel, black rectangle, empty box, UI card'), 'story generator prompt must ban baked caption panels and UI boxes'],
   [!generatorJs.includes('yellow result overlay'), 'story generator prompt must not reserve a yellow result overlay'],
   [!generatorJs.includes('50%-64%'), 'story generator prompt must not use the old face-level caption band'],
   [appJs.includes('function _wcStoryFocuses') && appJs.includes('pool_focuses'), 'client must support ordered pool-specific story focus choices'],

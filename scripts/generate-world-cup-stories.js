@@ -228,6 +228,94 @@ const STORY_COPY_OVERRIDES = {
       },
     ],
   },
+  'CZE-MEX': {
+    title: {
+      he: "מקסיקו ניצחה את צ'כיה 3-0: בית A קיבל מובילה בקול רם",
+      en: 'Mexico beat Czech Republic 3-0: Group A has a loud frontrunner',
+    },
+    caption: {
+      he: "מקסיקו לא רק לקחה נקודות, היא הורידה את צ'כיה מהמסלול עם 3-0. טפסי המקום הראשון שלה קיבלו קבלה שממש לא מתביישת 🔥",
+      en: 'Mexico did more than take points: 3-0 knocked Czech Republic off the road. Their first-place forms just got a receipt that is not shy 🔥',
+    },
+    pool_focuses: [
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'MEX',
+        he_name: "{names} בחר את {team} כמנצחת המונדיאל. אחרי 3-0 על צ'כיה, זה כבר לא הימור רומנטי - זה איום אמיתי על הבראקט 🔥",
+        he_names: "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-0 על צ'כיה, אלה כבר לא הימורים רומנטיים - אלה איומים אמיתיים על הבראקט 🔥",
+        he_count: "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-0 על צ'כיה, אלה כבר לא הימורים רומנטיים - אלה איומים אמיתיים על הבראקט 🔥",
+        en_name: '{names} picked {team} to win the World Cup. After 3-0 over Czech Republic, that is no longer romance - it is a bracket threat 🔥',
+        en_names: '{names} picked {team} to win the World Cup. After 3-0 over Czech Republic, those are no longer romantic picks - they are bracket threats 🔥',
+        en_count: '{names} picked {team} to win the World Cup. After 3-0 over Czech Republic, those are no longer romantic picks - they are bracket threats 🔥',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'MEX',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. 3-0 כזה הופך את הטופס שלו מצעד אמיץ למשהו שכולם צריכים לקרוא שוב 👏',
+        he_names: '{names} שמו את {team} ראשונה בבית. 3-0 כזה הופך את הטפסים שלהם מצעד אמיץ למשהו שכולם צריכים לקרוא שוב 👏',
+        he_count: '{names} שמו את {team} ראשונה בבית. 3-0 כזה הופך את הטפסים שלהם מצעד אמיץ למשהו שכולם צריכים לקרוא שוב 👏',
+        en_name: '{names} picked {team} to top the group. This 3-0 turns that form from a brave call into something everyone has to reread 👏',
+        en_names: '{names} picked {team} to top the group. This 3-0 turns those forms from brave calls into something everyone has to reread 👏',
+        en_count: '{names} picked {team} to top the group. This 3-0 turns those forms from brave calls into something everyone has to reread 👏',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'CZE',
+        position: 1,
+        he_name: "{names} שם את {team} ראשונה בבית. אחרי 3-0 ממקסיקו, הטופס הזה עוד חי אבל כבר צריך הרבה אוויר בצ'אט 😬",
+        he_names: "{names} שמו את {team} ראשונה בבית. אחרי 3-0 ממקסיקו, הטפסים האלה עוד חיים אבל כבר צריכים הרבה אוויר בצ'אט 😬",
+        he_count: "{names} שמו את {team} ראשונה בבית. אחרי 3-0 ממקסיקו, הטפסים האלה עוד חיים אבל כבר צריכים הרבה אוויר בצ'אט 😬",
+        en_name: '{names} picked {team} to top the group. After 3-0 from Mexico, that form is alive but already breathing hard in the chat 😬',
+        en_names: '{names} picked {team} to top the group. After 3-0 from Mexico, those forms are alive but already breathing hard in the chat 😬',
+        en_count: '{names} picked {team} to top the group. After 3-0 from Mexico, those forms are alive but already breathing hard in the chat 😬',
+      },
+    ],
+  },
+  'RSA-KOR': {
+    title: {
+      he: 'דרום אפריקה ניצחה את קוריאה הדרומית 1-0: בית A קיבל טוויסט',
+      en: 'South Africa beat South Korea 1-0: Group A gets a twist',
+    },
+    caption: {
+      he: 'דרום אפריקה הוציאה 1-0 קטן עם משמעות גדולה, וקוריאה הדרומית כבר לא יכולה להסתתר מאחורי משחק צמוד. בית A קיבל סיפור חדש 👀',
+      en: 'South Africa pulled out a small 1-0 with a big meaning, and South Korea can no longer hide behind a tight match. Group A has a new story 👀',
+    },
+    pool_focuses: [
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'RSA',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי 1-0 על קוריאה הדרומית, הבדיחות על ההימור הזה צריכות לרדת לווליום 👀',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-0 על קוריאה הדרומית, הבדיחות על ההימורים האלה צריכות לרדת לווליום 👀',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-0 על קוריאה הדרומית, הבדיחות על ההימורים האלה צריכות לרדת לווליום 👀',
+        en_name: '{names} picked {team} to win the World Cup. After 1-0 over South Korea, the jokes about that pick need to lower the volume 👀',
+        en_names: '{names} picked {team} to win the World Cup. After 1-0 over South Korea, the jokes about those picks need to lower the volume 👀',
+        en_count: '{names} picked {team} to win the World Cup. After 1-0 over South Korea, the jokes about those picks need to lower the volume 👀',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'RSA',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. 1-0 על קוריאה הדרומית הפך את זה ממחשבה צדדית לרגע אישי בהימור 👏',
+        he_names: '{names} שמו את {team} ראשונה בבית. 1-0 על קוריאה הדרומית הפך את זה ממחשבה צדדית לרגע אישי בהימור 👏',
+        he_count: '{names} שמו את {team} ראשונה בבית. 1-0 על קוריאה הדרומית הפך את זה ממחשבה צדדית לרגע אישי בהימור 👏',
+        en_name: '{names} picked {team} to top the group. A 1-0 over South Korea turns that from a side thought into a personal pool moment 👏',
+        en_names: '{names} picked {team} to top the group. A 1-0 over South Korea turns those from side thoughts into personal pool moments 👏',
+        en_count: '{names} picked {team} to top the group. A 1-0 over South Korea turns those from side thoughts into personal pool moments 👏',
+      },
+      {
+        table: 'group_position_picks',
+        team_code: 'KOR',
+        position: 1,
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 1-0 מדרום אפריקה, הבחירה הזאת כבר צריכה משחק תיקון מהר 😬',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 מדרום אפריקה, הבחירות האלה כבר צריכות משחק תיקון מהר 😬',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 מדרום אפריקה, הבחירות האלה כבר צריכות משחק תיקון מהר 😬',
+        en_name: '{names} picked {team} to top the group. After 1-0 from South Africa, that pick needs a recovery match fast 😬',
+        en_names: '{names} picked {team} to top the group. After 1-0 from South Africa, those picks need a recovery match fast 😬',
+        en_count: '{names} picked {team} to top the group. After 1-0 from South Africa, those picks need a recovery match fast 😬',
+      },
+    ],
+  },
   'CAN-QAT': {
     caption: {
       he: 'קנדה דרסה 6-0 את קטאר ופתחה את בית B בלי רחמים. זה מסוג המשחקים שמוחקים עיפרון ומוציאים מרקר 🔥',
@@ -1122,6 +1210,8 @@ function focusTeam(match, outcome) {
 }
 
 function titleCopy(match, outcome) {
+  const override = storyOverride(match);
+  if (override && override.title) return override.title;
   const score = scoreForOutcome(match, outcome);
   const homeHe = teamName(match.home_team_code, 'he');
   const awayHe = teamName(match.away_team_code, 'he');
@@ -1156,8 +1246,8 @@ function titleCopy(match, outcome) {
       en: `${winnerEn} beat ${loserEn} ${score}: Group ${group} moved`,
     },
     {
-      he: `${winnerHe} ניצחה את ${loserHe} ${score}: הטבלה הרגישה את זה`,
-      en: `${winnerEn} beat ${loserEn} ${score}: the table felt it`,
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: בית ${group} קיבל סימן`,
+      en: `${winnerEn} beat ${loserEn} ${score}: Group ${group} took notice`,
     },
     {
       he: `${winnerHe} ניצחה את ${loserHe} ${score}: בית ${group} משתנה`,
@@ -1672,6 +1762,28 @@ function focusTextForShape(focus, lang) {
 const RECENT_STORY_COPY_WINDOW = 10;
 const RECENT_COPY_VARIETY_ATTEMPTS = 8;
 const RECENT_COPY_VARIETY_CLAUSES = {
+  headline: {
+    he: [
+      'הטפסים זזו',
+      'הבית קיבל כיוון חדש',
+      "הצ'אט קיבל חומר",
+      'ההימורים מרגישים את זה',
+      'הטבלה שינתה טון',
+      'המקום הראשון כבר פחות שקט',
+      'הבראקטים קיבלו הערה',
+      'הסיפור בבית השתנה',
+    ],
+    en: [
+      'forms moved too',
+      'the group has a new direction',
+      'the chat got material',
+      'the picks can feel it',
+      'the table changed tone',
+      'first place is less quiet now',
+      'brackets got a note',
+      'the group story changed',
+    ],
+  },
   caption: {
     he: [
       'ההימור קיבל ויכוח אחר לגמרי.',
@@ -1729,6 +1841,17 @@ function appendLatestShapeClause(story, match, kind, lang, focusIndex = 0, attem
   const group = match && match.group_letter ? match.group_letter : 'WC';
   const clause = latestVarietyClause(story, kind, lang, attempt);
   const safeClause = clause ? ` ${clause}` : (lang === 'he' ? ` בית ${group} מרגיש את זה.` : ` Group ${group} felt that one.`);
+  if (kind === 'headline') {
+    const base = String(story[lang] && story[lang].headline || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, '');
+    const joiner = base.includes(':') ? ' -' : ':';
+    return {
+      ...story,
+      [lang]: {
+        ...story[lang],
+        headline: withStoryEmoji(`${base}${joiner}${safeClause}`, match, outcomeFor(match)),
+      },
+    };
+  }
   if (kind === 'caption') {
     const base = String(story[lang] && story[lang].caption || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, '');
     return {
@@ -1760,6 +1883,13 @@ function applyLatestStoryShapeVariety(items, matchById) {
     let next = story;
     const match = matchById.get(story && story.match_id);
     for (const lang of ['he', 'en']) {
+      let headlineShape = storyShape(next[lang] && next[lang].headline, { normalizeTeams: true });
+      for (let attempt = 0; headlineShape && seenCaptions[lang].has(`headline:${headlineShape}`) && attempt < RECENT_COPY_VARIETY_ATTEMPTS; attempt += 1) {
+        next = appendLatestShapeClause(next, match, 'headline', lang, 0, attempt);
+        headlineShape = storyShape(next[lang] && next[lang].headline, { normalizeTeams: true });
+      }
+      if (headlineShape) seenCaptions[lang].add(`headline:${headlineShape}`);
+
       let captionShape = storyShape(next[lang] && next[lang].caption, { normalizeTeams: true });
       for (let attempt = 0; captionShape && seenCaptions[lang].has(captionShape) && attempt < RECENT_COPY_VARIETY_ATTEMPTS; attempt += 1) {
         next = appendLatestShapeClause(next, match, 'caption', lang, 0, attempt);
@@ -1906,9 +2036,9 @@ function imagePrompt(match, outcome) {
     `Right/midground: ${right.player}, ${teamName(loser || away)} national-color kit, shirt number #${right.number} printed naturally into the jersey fabric, ${rightMood}, face clearly visible.`,
     `Crowd: fans and flags of ${teamName(home)} and ${teamName(away)} only; no unrelated flags.`,
     'Composition: vertical portrait, dramatic stadium lights, two-player premium sports poster. Players heads high in frame but clearly below the top title.',
-    'Leave the lower-middle band around 60%-77% visually clean enough for a black caption panel. Do not place faces in that band.',
+    'Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.',
     `Text: big baked white condensed uppercase top headline "${topText}". Add a small white score subtitle directly below it: "${teamName(home)} ${scoreDash(match)} ${teamName(away)}".`,
-    'Avoid: yellow result headline, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces.',
+    'Avoid: caption panel, black rectangle, empty box, UI card, yellow result headline, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces.',
   ].join('\n');
 }
 
@@ -1934,9 +2064,9 @@ function outcomeBasePrompt(match, outcome) {
     `Right/midground: ${right.player}, ${teamName(loser || away)} national-color kit, shirt number #${right.number} printed naturally into the jersey fabric, ${rightMood}, face clearly visible below the reserved top band.`,
     `Crowd: fans and flags of ${teamName(home)} and ${teamName(away)} only; no unrelated flags.`,
     'Composition: vertical portrait, dramatic stadium lights, two-player premium sports poster. Players heads high in frame but clearly below the reserved top result-text band.',
-    'Leave the lower-middle band around 60%-77% visually clean enough for a black caption panel. Do not place faces in that band.',
+    'Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.',
     'Leave the lower edge visually calm for the deterministic FriendlyBet watermark added later.',
-    'Avoid: score text, result title, yellow result headline, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces.',
+    'Avoid: score text, result title, caption panel, black rectangle, empty box, UI card, yellow result headline, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces.',
   ].join('\n');
 }
 

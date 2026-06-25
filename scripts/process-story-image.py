@@ -95,6 +95,13 @@ def result_card(src: Path, dest: Path, title: str, subtitle: str) -> None:
     title_font = _fit_font(d, title, "C:/Windows/Fonts/impact.ttf", 845, 96, 52)
     subtitle_font = _fit_font(d, subtitle, "C:/Windows/Fonts/seguisb.ttf", 760, 42, 28)
 
+    title_band = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    td = ImageDraw.Draw(title_band, "RGBA")
+    for y in range(0, 315):
+        alpha = int(238 * (1 - y / 315) + 72 * (y / 315))
+        td.line([(0, y), (SIZE[0], y)], fill=(5, 6, 9, alpha))
+    im.alpha_composite(title_band)
+
     # Keep all result text in the top band, away from faces and the caption panel.
     _centered_stroked(d, 74, title, title_font, stroke_width=4)
     _centered_stroked(d, 178, subtitle, subtitle_font, stroke_width=2)
