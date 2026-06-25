@@ -732,3 +732,12 @@ Interpretation: production is current and all checked live/final Pundit certifie
 - Follow-up gates passed: `live-ops-audit` with `ok=true`, strict `pundit-news-validate`, `test-pundit-feed`, `test-world-cup-stories`, and `pundit-academy-audit`. The academy audit still reports `calibrating-with-live-proof`, not production-ready.
 
 Interpretation: useful local hardening proof, not graduation. The Pundit now survives a dense final-results window without dropping the heartbeat target finals, but production propagation and the full TV-level academy criteria still need verification.
+
+Production propagation after `1ff5b8be1`:
+
+- Initial production certifiers still served the older `updatedAt=2026-06-25T03:32:14.591Z` feed, so `POR-UZB` and `ENG-GHA` failed while the edge cache propagated. Production `live-ops-audit` already saw the new `updatedAt=2026-06-25T04:44:01.704Z` feed.
+- After a short propagation wait, production certifiers recorded to `tmp\pundit-live-window-certifications-2026-06-25.jsonl`: `POR-UZB`, `ENG-GHA`, `PAN-CRO`, `COL-COD`, `CZE-MEX`, `RSA-KOR`, `SUI-CAN`, `BIH-QAT`, `SCO-BRA`, and `MAR-HAI` all `score=100`, phase `final`, with result Pundit items visible in the 12-item feed.
+- Production `node scripts\live-ops-audit.js --production` passed with `ok=true`, zero watchdog warnings/errors, 54/54 finished-match Stories covered, and fresh Pundit data.
+- Cache-busted production `pundit-news.json` passed strict validation with 1 unexpired item: `production pundit-news strict validation OK: 1 item(s)`.
+
+Interpretation: production now matches the hardened local feed and all checked final-result proof targets are green. This is strong propagation evidence for the 07:43 heartbeat, but still not full graduation until the remaining academy requirements prove sustained TV-level editorial behavior across live publish cycles.
