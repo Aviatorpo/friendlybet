@@ -486,7 +486,7 @@ function build(now, options = {}) {
     .filter(m => FINISHED_STATUSES.has(String(m.status || '').toUpperCase()) && !isPendingProviderFinal(m) && m.home_score != null && m.away_score != null)
     .filter(m => now.getTime() - Date.parse(m.match_date) < RESULT_WINDOW_MS)
     .sort((x, y) => Date.parse(y.match_date) - Date.parse(x.match_date))
-    .slice(0, 8);
+    .slice(0, 10);
   for (const [idx, m] of finished.entries()) {
     const text = resultCommentary(m, idx);
     items.push({ id: `result-${m.id}`, type: 'result', confidence: 'confirmed', he: text.he, en: text.en, sources: [], expires_at: iso(Date.parse(m.match_date) + RESULT_WINDOW_MS) });

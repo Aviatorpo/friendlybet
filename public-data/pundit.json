@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-25T03:32:14.591Z",
-  "freshUntil": "2026-06-25T09:32:14.591Z",
+  "updatedAt": "2026-06-25T04:44:01.704Z",
+  "freshUntil": "2026-06-25T10:44:01.704Z",
   "count": 12,
   "items": [
     {
@@ -76,6 +76,24 @@
       "expires_at": "2026-06-25T11:00:00.000Z"
     },
     {
+      "id": "result-cc3d81e8-2e37-4768-8de8-2ca1412a558a",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "אנגליה וגאנה נפרדו ב-0:0. תיקו כזה משאיר הרבה תחזיות בלי הכרעה ברורה 🧾",
+      "en": "England and Ghana finished 0-0. That leaves a lot of predictions without a clear answer 🧾",
+      "sources": [],
+      "expires_at": "2026-06-25T08:00:00.000Z"
+    },
+    {
+      "id": "result-31a2acf9-8ee6-4657-8fe7-7732592ad3a4",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "פורטוגל ניצחה את אוזבקיסטן 5:0 במשחק פתוח. תוצאה כזאת משנה גם את הבית וגם לא מעט תחזיות 🧾",
+      "en": "Portugal beat Uzbekistan 5-0 in an open match. That result changes the group and a lot of predictions 🧾",
+      "sources": [],
+      "expires_at": "2026-06-25T05:00:00.000Z"
+    },
+    {
       "id": "fixture-22c76d3e-ee0d-4766-923c-7be7689f8f2d",
       "type": "fixture",
       "confidence": "confirmed",
@@ -92,24 +110,6 @@
       "en": "Ecuador vs Germany, today 23:00. Germany are the favorite, but they still have to prove it on the pitch. It still matters for table places, picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-06-25T19:45:00.000Z"
-    },
-    {
-      "id": "fixture-6e05177f-cf10-4e46-b7be-23fa37a0c8e5",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "תוניסיה נגד הולנד, מחר 02:00. אם הולנד לא מנצחת, הרבה הימורים ייפגעו מוקדם ⏰",
-      "en": "Tunisia vs Netherlands, tomorrow 02:00. If Netherlands do not win, a lot of picks take an early hit ⏰",
-      "sources": [],
-      "expires_at": "2026-06-25T22:45:00.000Z"
-    },
-    {
-      "id": "fixture-cb890dbb-bed3-4101-a41f-dcd8cacca13c",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "יפן נגד שבדיה, מחר 02:00. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות ⏰",
-      "en": "Japan vs Sweden, tomorrow 02:00. Not the biggest match, but the points here can be crucial ⏰",
-      "sources": [],
-      "expires_at": "2026-06-25T22:45:00.000Z"
     }
   ]
 }

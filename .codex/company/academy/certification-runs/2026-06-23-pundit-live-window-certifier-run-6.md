@@ -721,3 +721,14 @@ Production propagation after `c57e39d15`:
 - Production `node scripts\live-ops-audit.js --production` passed with `ok=true`, zero watchdog errors, 52/52 finished-match Stories covered, and fresh Pundit data; warning remains that `pundit-news.json` is empty during the tournament window.
 
 Interpretation: production is current and all checked live/final Pundit certifiers are green for this heartbeat. This still does not graduate the Pundit because the news desk is empty and the academy audit remains `calibrating-with-live-proof`.
+
+2026-06-25 07:43 Israel final-result density hardening:
+
+- Local baseline gates passed before the fix: `live-ops-audit`, strict `pundit-news-validate`, `test-pundit-feed`, and `test-world-cup-stories` were green with 54/54 finished-match Stories covered and 1 unexpired news item.
+- Initial local certifiers for `POR-UZB` and `ENG-GHA` failed again because the newly finished Group A results (`CZE-MEX` and `RSA-KOR`) pushed those older target finals out of the visible 12-item Pundit feed.
+- `scripts\generate-pundit.js` now keeps the 10 most recent result cards inside the existing 36-hour result window. This preserves certification-critical finals without extending freshness into the 2-3 day stale-content zone.
+- Local `node scripts\generate-pundit.js` refreshed `public-data\pundit.json` at `2026-06-25T04:44:01.704Z`; the feed now includes result cards for `CZE-MEX`, `RSA-KOR`, `SCO-BRA`, `MAR-HAI`, `SUI-CAN`, `BIH-QAT`, `COL-COD`, `PAN-CRO`, `ENG-GHA`, and `POR-UZB`, followed by near-future fixtures.
+- Local certifiers recorded to `tmp\pundit-live-window-certifications-2026-06-25.jsonl`: `POR-UZB`, `ENG-GHA`, `PAN-CRO`, `COL-COD`, `SUI-CAN`, `BIH-QAT`, `CZE-MEX`, `RSA-KOR`, `SCO-BRA`, and `MAR-HAI` all `score=100`, phase `final`.
+- Follow-up gates passed: `live-ops-audit` with `ok=true`, strict `pundit-news-validate`, `test-pundit-feed`, `test-world-cup-stories`, and `pundit-academy-audit`. The academy audit still reports `calibrating-with-live-proof`, not production-ready.
+
+Interpretation: useful local hardening proof, not graduation. The Pundit now survives a dense final-results window without dropping the heartbeat target finals, but production propagation and the full TV-level academy criteria still need verification.
