@@ -712,3 +712,12 @@ Interpretation: production visible Pundit recovery is now current, but this wind
 - Production pre-deploy certifiers showed `CZE-MEX` and `RSA-KOR` already `score=100`, phase `live`, status `PAUSED`, but `POR-UZB` still failed because the deployed feed did not retain its result card.
 
 Interpretation: this is a generator proof-window hardening, not graduation. The active live matches are handled in production, but the deployed feed still needs the 36-hour result retention before the heartbeat target set is fully green.
+
+Production propagation after `c57e39d15`:
+
+- Initial production checks still served the old feed (`updatedAt=2026-06-25T01:36:21.735Z`), and `POR-UZB`/`ENG-GHA` failed because those result cards were missing. After propagation, cache-busted production served `updatedAt=2026-06-25T01:47:26.567Z`, 12 items.
+- Cache-busted `https://friendlybet.live/public-data/pundit.json?cb=c57e39d15-2` showed live items for `CZE-MEX` and `RSA-KOR`, plus result items for `POR-UZB`, `ENG-GHA`, `PAN-CRO`, `COL-COD`, `SUI-CAN`, `BIH-QAT`, `SCO-BRA`, and `MAR-HAI`.
+- Production certifiers recorded to `tmp\pundit-live-window-certifications-2026-06-25.jsonl`: `POR-UZB`, `ENG-GHA`, `PAN-CRO`, `COL-COD`, `SUI-CAN`, `BIH-QAT`, `SCO-BRA`, and `MAR-HAI` all `score=100`, phase `final`; `CZE-MEX` and `RSA-KOR` both `score=100`, phase `live`, status `PAUSED`.
+- Production `node scripts\live-ops-audit.js --production` passed with `ok=true`, zero watchdog errors, 52/52 finished-match Stories covered, and fresh Pundit data; warning remains that `pundit-news.json` is empty during the tournament window.
+
+Interpretation: production is current and all checked live/final Pundit certifiers are green for this heartbeat. This still does not graduate the Pundit because the news desk is empty and the academy audit remains `calibrating-with-live-proof`.
