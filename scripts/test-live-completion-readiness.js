@@ -201,6 +201,58 @@ const Readiness = require('./live-completion-readiness');
     false
   );
 
+  const staleHelperWorkflowsWithGreenProduction = await Readiness.runReadiness({
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    publicSnapshots: {
+      matches: {
+        updatedAt: '2026-06-23T11:55:00Z',
+        matches: [{
+          id: 'soon-public1',
+          status: 'TIMED',
+          match_date: '2026-06-23T12:30:00Z',
+          home_team_code: 'A',
+          away_team_code: 'B',
+          stage: 'GROUP_STAGE',
+          group_letter: 'A',
+        }],
+      },
+      stories: { updated_at: '2026-06-23T11:55:00Z', items: [{ id: 's1' }] },
+      pundit: { updatedAt: '2026-06-23T11:55:00Z', freshUntil: '2026-06-23T17:00:00Z', items: [{ id: 'p1' }] },
+    },
+    dbMatches: [
+      {
+        id: 'soon-db1',
+        status: 'TIMED',
+        match_date: '2026-06-23T12:30:00Z',
+        home_team_code: 'A',
+        away_team_code: 'B',
+        stage: 'GROUP_STAGE',
+        group_letter: 'A',
+      },
+    ],
+    workflowRuns: {
+      livePoller: [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T11:50:00Z' }],
+      finalResultVerifier: [{ id: 2, status: 'completed', conclusion: 'failure', created_at: '2026-06-23T11:00:00Z' }],
+      pundit: [{ id: 3, status: 'completed', conclusion: 'failure', created_at: '2026-06-23T11:00:00Z' }],
+    },
+  });
+  assert.strictEqual(staleHelperWorkflowsWithGreenProduction.ok, true, JSON.stringify(staleHelperWorkflowsWithGreenProduction.checks.filter(check => !check.ok), null, 2));
+  assert.strictEqual(staleHelperWorkflowsWithGreenProduction.workflow_liveness.required, true, 'workflow liveness remains evaluated near kickoff');
+  assert.strictEqual(
+    staleHelperWorkflowsWithGreenProduction.workflow_liveness.final_result_verifier.downgraded_after_green_surface,
+    true,
+    'stale final verifier liveness should become warning-only after green production and DB proof'
+  );
+  assert.strictEqual(
+    staleHelperWorkflowsWithGreenProduction.workflow_liveness.pundit.downgraded_after_green_surface,
+    true,
+    'stale Pundit liveness should become warning-only after green production and DB proof'
+  );
+  assert.ok(
+    staleHelperWorkflowsWithGreenProduction.warnings.some(warning => warning.code === 'helper_workflow_liveness_downgraded_after_green_surface'),
+    'downgraded helper workflow liveness must stay visible as warning evidence'
+  );
+
   const recoveredPollerInsideMatchWindow = await Readiness.runReadiness({
     auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
     dbMatches: [

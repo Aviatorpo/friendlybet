@@ -275,6 +275,43 @@ function applyLocalPollerRecovery(liveness, nowMs, context = {}) {
   };
 }
 
+function isGreenProductionSurface(context = {}) {
+  const production = context.production || null;
+  const liveDb = context.liveDb || null;
+  return !!(
+    production
+    && production.audit_ok === true
+    && production.pundit_fresh === true
+    && production.result_recovery
+    && production.result_recovery.candidates === 0
+    && liveDb
+    && liveDb.ok === true
+    && liveDb.freshness
+    && liveDb.freshness.stale === 0
+    && liveDb.result_recovery
+    && liveDb.result_recovery.candidates === 0
+  );
+}
+
+function downgradeStaleWorkflowLiveness(liveness, reason) {
+  if (!liveness || liveness.ok || !liveness.required) return liveness;
+  return {
+    ...liveness,
+    ok: true,
+    downgraded_after_green_surface: true,
+    downgrade_reason: reason,
+  };
+}
+
+function workflowLivenessDetail(liveness, workflowWindowDetail) {
+  const latest = liveness && liveness.latest && liveness.latest.created_at || 'missing';
+  const age = liveness && liveness.age_minutes != null ? `${liveness.age_minutes}m` : 'missing';
+  const suffix = liveness && liveness.downgraded_after_green_surface
+    ? `, warning only: ${liveness.downgrade_reason}`
+    : '';
+  return `latest=${latest}, age=${age}, ${workflowWindowDetail}${suffix}`;
+}
+
 async function runReadiness(options = {}) {
   const checks = [];
   const warnings = [];
@@ -476,6 +513,17 @@ async function runReadiness(options = {}) {
         production,
         recoveryAt: options.localPollerRecoveryAt,
       });
+      const greenSurface = isGreenProductionSurface({ production, liveDb });
+      if (greenSurface) {
+        workflowLiveness.final_result_verifier = downgradeStaleWorkflowLiveness(
+          workflowLiveness.final_result_verifier,
+          'production snapshots and live DB are green'
+        );
+        workflowLiveness.pundit = downgradeStaleWorkflowLiveness(
+          workflowLiveness.pundit,
+          'production snapshots and live DB are green'
+        );
+      }
       if (workflowLiveness.live_poller.recovered_locally) {
         addWarning(
           warnings,
@@ -484,10 +532,18 @@ async function runReadiness(options = {}) {
           'Investigate GitHub cron delivery if this repeats, but do not page users when live state is fresh.'
         );
       }
+      if (workflowLiveness.final_result_verifier.downgraded_after_green_surface || workflowLiveness.pundit.downgraded_after_green_surface) {
+        addWarning(
+          warnings,
+          'helper_workflow_liveness_downgraded_after_green_surface',
+          'A helper workflow was stale or last failed, but production public snapshots and live DB checks were already green.',
+          'Keep investigating repeated GitHub cron gaps, but do not send readiness-failure email when users are not seeing stale scores, missing stories, or stale Pundit.'
+        );
+      }
       const workflowWindowDetail = workflowRequired ? 'required' : 'not in live/final coverage window';
-      add(checks, 'live poller workflow ran recently', workflowLiveness.live_poller.ok, `latest=${workflowLiveness.live_poller.latest && workflowLiveness.live_poller.latest.created_at || 'missing'}, age=${workflowLiveness.live_poller.age_minutes == null ? 'missing' : workflowLiveness.live_poller.age_minutes + 'm'}, ${workflowWindowDetail}`);
-      add(checks, 'final verifier workflow ran recently', workflowLiveness.final_result_verifier.ok, `latest=${workflowLiveness.final_result_verifier.latest && workflowLiveness.final_result_verifier.latest.created_at || 'missing'}, age=${workflowLiveness.final_result_verifier.age_minutes == null ? 'missing' : workflowLiveness.final_result_verifier.age_minutes + 'm'}, ${workflowWindowDetail}`);
-      add(checks, 'Pundit workflow ran recently', workflowLiveness.pundit.ok, `latest=${workflowLiveness.pundit.latest && workflowLiveness.pundit.latest.created_at || 'missing'}, age=${workflowLiveness.pundit.age_minutes == null ? 'missing' : workflowLiveness.pundit.age_minutes + 'm'}, ${workflowWindowDetail}`);
+      add(checks, 'live poller workflow ran recently', workflowLiveness.live_poller.ok, workflowLivenessDetail(workflowLiveness.live_poller, workflowWindowDetail));
+      add(checks, 'final verifier workflow ran recently', workflowLiveness.final_result_verifier.ok, workflowLivenessDetail(workflowLiveness.final_result_verifier, workflowWindowDetail));
+      add(checks, 'Pundit workflow ran recently', workflowLiveness.pundit.ok, workflowLivenessDetail(workflowLiveness.pundit, workflowWindowDetail));
       if (!workflowRequired) {
         const staleOutsideWindow = [workflowLiveness.live_poller, workflowLiveness.final_result_verifier, workflowLiveness.pundit]
           .some(item => item && item.latest && item.required === false && item.ok === true && item.age_minutes != null);
