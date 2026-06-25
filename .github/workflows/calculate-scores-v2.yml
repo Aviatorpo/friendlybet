@@ -46,11 +46,12 @@ jobs:
           node-version: '20'
 
       - name: Calculate scores (v2)
-        timeout-minutes: 18
+        timeout-minutes: 35
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
+          SCORING_VERBOSE: '0'
         run: node scripts/calculate-scores-v2.js
       # Pillar 1: refresh CDN snapshots (matches + per-pool leaderboards) after scoring,
       # so clients read standings from the edge instead of full-table reads of `users`.
@@ -99,6 +100,8 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
           BACKUP_FORCE: ${{ inputs.force_backup == 'true' && '1' || '' }}
+          SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
+          SCORING_VERBOSE: '0'
           REGENERATE_COMMANDS: |
             node scripts/calculate-scores-v2.js
             node scripts/export-snapshots.js leaderboards

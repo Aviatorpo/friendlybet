@@ -44,7 +44,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     steps:
       - name: Checkout repository
@@ -119,11 +119,12 @@ jobs:
 
       - name: Calculate scores after verified final result
         if: steps.verify_results.outputs.changed == 'true'
-        timeout-minutes: 18
+        timeout-minutes: 35
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
+          SCORING_VERBOSE: '0'
         run: node scripts/calculate-scores-v2.js
 
       - name: Export leaderboard snapshots after scoring
@@ -155,6 +156,8 @@ jobs:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           FORCE_MATCH_SNAPSHOT: '1'
+          SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
+          SCORING_VERBOSE: '0'
           REGENERATE_COMMANDS: |
             node scripts/export-snapshots.js matches
             node scripts/calculate-scores-v2.js

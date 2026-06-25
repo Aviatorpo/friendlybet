@@ -12,6 +12,15 @@
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 const SUPABASE_FETCH_TIMEOUT_MS = Number(process.env.SCORING_SUPABASE_FETCH_TIMEOUT_MS || 30000);
+const SCORING_VERBOSE = process.env.SCORING_VERBOSE !== '0';
+
+function scoringDetail(...args) {
+  if (SCORING_VERBOSE) console.log(...args);
+}
+
+function scoringWarn(...args) {
+  if (SCORING_VERBOSE) console.warn(...args);
+}
 
 if (!SUPABASE_KEY && require.main === module) {
   console.error('Missing SUPABASE_SECRET_KEY');
@@ -297,7 +306,7 @@ function buildGroupState(matches) {
   Object.keys(groupCodes).forEach(letter => {
     const teams = [...groupCodes[letter]];
     if (teams.length !== 4) {
-      console.warn(`  group ${letter} has ${teams.length} teams (expected 4) - SKIPPED, will not score: ${teams.join(',')}`);
+      scoringWarn(`  group ${letter} has ${teams.length} teams (expected 4) - SKIPPED, will not score: ${teams.join(',')}`);
       return;
     }
     const groupMatches = allGroupMatchesAny.filter(m => (m.group_letter || m.group) === letter);
@@ -494,10 +503,10 @@ async function main() {
       const rules = pool.scoring_rules ||
         (mode === 'late_knockout' ? DEFAULT_RULES_LATE_KNOCKOUT : (mode === 'single_phase' ? DEFAULT_RULES_SINGLE : DEFAULT_RULES_TWO));
 
-      console.log(`\nPool ${pool.code} - ${pool.name} (${mode})`);
+      scoringDetail(`\nPool ${pool.code} - ${pool.name} (${mode})`);
 
       const users = await sbAll('users', `?pool_id=eq.${pool.id}&select=*`);
-      if (!users || !users.length) { console.log('  no users'); continue; }
+      if (!users || !users.length) { scoringDetail('  no users'); continue; }
 
       // Get all top_scorer_picks for users in this pool
       const tsPicks = pickIndexes.topScorerByPool.get(pool.id) || [];
@@ -644,7 +653,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
 
     await updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total);
 
-    if (total > 0) console.log(`  ${user.nickname}: ${total} (g${groupPoints}+k${knockoutPoints}+b${bonusPoints})`);
+    if (total > 0) scoringDetail(`  ${user.nickname}: ${total} (g${groupPoints}+k${knockoutPoints}+b${bonusPoints})`);
   }
 }
 
@@ -686,7 +695,7 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     const gpValid = validateTwoPhaseGroupPickSet(gpRaw);
     if (!gpValid.ok) {
       if ((gpRaw || []).length > 0) {
-        console.warn(`[scoreTwoPhasePool] user ${user.id}: invalid two-phase group set (${gpValid.reason}) — 0 group points`);
+        scoringWarn(`[scoreTwoPhasePool] user ${user.id}: invalid two-phase group set (${gpValid.reason}) — 0 group points`);
       }
     } else {
       gpValid.picks.forEach(p => {
@@ -728,7 +737,7 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
 
     const total = groupPoints + knockoutPoints + bonusPoints;
     await updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total);
-    if (total > 0) console.log(`  ${user.nickname}: ${total} (g${groupPoints}+k${knockoutPoints}+b${bonusPoints})`);
+    if (total > 0) scoringDetail(`  ${user.nickname}: ${total} (g${groupPoints}+k${knockoutPoints}+b${bonusPoints})`);
   }
 }
 
