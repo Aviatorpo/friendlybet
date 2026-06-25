@@ -63,12 +63,14 @@ jobs:
           fi
 
           stale_live_db=$(node -e "const r=require('./readiness-before.json'); const c=(r.checks||[]).find(x=>x.name==='live DB active match state is fresh'); process.stdout.write(c && !c.ok ? '1' : '0')")
-          if [ "$stale_live_db" != "1" ]; then
+          stale_live_poller=$(node -e "const r=require('./readiness-before.json'); const c=(r.checks||[]).find(x=>x.name==='live poller workflow ran recently'); process.stdout.write(c && !c.ok ? '1' : '0')")
+          if [ "$stale_live_db" != "1" ] && [ "$stale_live_poller" != "1" ]; then
             exit "$status"
           fi
 
-          echo "::warning::Readiness detected stale active live DB state; running one live-poller recovery pass."
+          echo "::warning::Readiness detected stale live-poller coverage; running one live-poller recovery pass directly."
           node scripts/live-poller.js
+          export LIVE_COMPLETION_LOCAL_POLLER_RECOVERY_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
           if [ "${{ github.event.inputs.check_db || 'true' }}" = "false" ]; then
             node scripts/live-completion-readiness.js

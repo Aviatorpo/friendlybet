@@ -250,6 +250,31 @@ function summarizeWorkflowLiveness(runs, nowMs, maxAgeMs, options = {}) {
   };
 }
 
+function applyLocalPollerRecovery(liveness, nowMs, context = {}) {
+  const recoveryAt = context.recoveryAt || process.env.LIVE_COMPLETION_LOCAL_POLLER_RECOVERY_AT || '';
+  const recoveryMs = parseTime(recoveryAt);
+  const liveDbFresh = context.liveDb && context.liveDb.ok && context.liveDb.freshness && context.liveDb.freshness.stale === 0;
+  const productionFresh = !context.production || context.production.audit_ok === true;
+  if (!liveness || liveness.ok || !liveness.required || !Number.isFinite(recoveryMs) || !liveDbFresh || !productionFresh) {
+    return liveness;
+  }
+  const ageMs = nowMs - recoveryMs;
+  if (ageMs < 0 || ageMs > LIVE_POLLER_STALE_MS) return liveness;
+  return {
+    ...liveness,
+    ok: true,
+    latest: {
+      id: 'local-readiness-recovery',
+      status: 'completed',
+      conclusion: 'success',
+      created_at: new Date(recoveryMs).toISOString(),
+      created_ms: recoveryMs,
+    },
+    age_minutes: Math.round(ageMs / 60000),
+    recovered_locally: true,
+  };
+}
+
 async function runReadiness(options = {}) {
   const checks = [];
   const warnings = [];
@@ -446,6 +471,19 @@ async function runReadiness(options = {}) {
         final_result_verifier: summarizeWorkflowLiveness(finalVerifierRuns, nowMs, FINAL_VERIFIER_STALE_MS, { required: workflowRequired }),
         pundit: summarizeWorkflowLiveness(punditRuns, nowMs, PUNDIT_WORKFLOW_STALE_MS, { required: workflowRequired }),
       };
+      workflowLiveness.live_poller = applyLocalPollerRecovery(workflowLiveness.live_poller, nowMs, {
+        liveDb,
+        production,
+        recoveryAt: options.localPollerRecoveryAt,
+      });
+      if (workflowLiveness.live_poller.recovered_locally) {
+        addWarning(
+          warnings,
+          'live_poller_recovered_by_readiness_monitor',
+          'Live poller workflow liveness was stale, but the readiness monitor ran a direct poller recovery and the post-recovery DB/production audit is green.',
+          'Investigate GitHub cron delivery if this repeats, but do not page users when live state is fresh.'
+        );
+      }
       const workflowWindowDetail = workflowRequired ? 'required' : 'not in live/final coverage window';
       add(checks, 'live poller workflow ran recently', workflowLiveness.live_poller.ok, `latest=${workflowLiveness.live_poller.latest && workflowLiveness.live_poller.latest.created_at || 'missing'}, age=${workflowLiveness.live_poller.age_minutes == null ? 'missing' : workflowLiveness.live_poller.age_minutes + 'm'}, ${workflowWindowDetail}`);
       add(checks, 'final verifier workflow ran recently', workflowLiveness.final_result_verifier.ok, `latest=${workflowLiveness.final_result_verifier.latest && workflowLiveness.final_result_verifier.latest.created_at || 'missing'}, age=${workflowLiveness.final_result_verifier.age_minutes == null ? 'missing' : workflowLiveness.final_result_verifier.age_minutes + 'm'}, ${workflowWindowDetail}`);
@@ -536,6 +574,7 @@ if (require.main === module) {
     summarizeLiveDbFreshness,
     isWorkflowLivenessRequired,
     summarizeWorkflowLiveness,
+    applyLocalPollerRecovery,
     fetchGitHubWorkflowRuns,
   };
 }

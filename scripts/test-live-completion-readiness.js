@@ -201,6 +201,34 @@ const Readiness = require('./live-completion-readiness');
     false
   );
 
+  const recoveredPollerInsideMatchWindow = await Readiness.runReadiness({
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    dbMatches: [
+      {
+        id: 'live-db1',
+        status: 'IN_PROGRESS',
+        match_date: '2026-06-23T11:30:00Z',
+        home_team_code: 'A',
+        away_team_code: 'B',
+        stage: 'GROUP_STAGE',
+        group_letter: 'A',
+        source_updated_at: '2026-06-23T11:59:00Z',
+      },
+    ],
+    workflowRuns: {
+      livePoller: [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
+      finalResultVerifier: [{ id: 2, status: 'completed', conclusion: 'success', created_at: '2026-06-23T11:50:00Z' }],
+      pundit: [{ id: 3, status: 'completed', conclusion: 'success', created_at: '2026-06-23T11:45:00Z' }],
+    },
+    localPollerRecoveryAt: '2026-06-23T11:59:30Z',
+  });
+  assert.strictEqual(recoveredPollerInsideMatchWindow.ok, true, JSON.stringify(recoveredPollerInsideMatchWindow.checks.filter(check => !check.ok), null, 2));
+  assert.strictEqual(recoveredPollerInsideMatchWindow.workflow_liveness.live_poller.recovered_locally, true, 'local readiness recovery must count as live-poller evidence only after fresh DB proof');
+  assert.ok(
+    recoveredPollerInsideMatchWindow.warnings.some(warning => warning.code === 'live_poller_recovered_by_readiness_monitor'),
+    'local live-poller recovery should stay visible as warning evidence'
+  );
+
   const staleWorkflow = Readiness.summarizeWorkflowLiveness(
     [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
     Date.parse('2026-06-23T12:00:00Z'),
