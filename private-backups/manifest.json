@@ -15,6 +15,8 @@
     "537340",
     "537341",
     "537342",
+    "537343",
+    "537344",
     "537345",
     "537346",
     "537347",
@@ -952,7 +954,32 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-25T00:59:32.621Z",
+      "file": "private-backups/2026-06-25T00-59-32-621Z__537343-SCO-BRA__537344-MAR-HAI.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537343",
+        "537344"
+      ],
+      "tableCounts": {
+        "pools": 2049,
+        "users": 6403,
+        "group_picks": 22992,
+        "knockout_picks": 95524,
+        "group_position_picks": 175261,
+        "tournament_winner_picks": 3371,
+        "top_scorer_picks": 2931,
+        "sp_third_place_picks": 29154,
+        "pick_backups": 47172,
+        "knockout_reopen_grants": 1703,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-24T21:35:36.965Z"
+  "updatedAt": "2026-06-25T00:59:32.621Z"
 }
