@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-25T08:42:07.652Z",
-  "freshUntil": "2026-06-25T14:42:07.652Z",
+  "updatedAt": "2026-06-25T11:22:27.726Z",
+  "freshUntil": "2026-06-25T17:22:27.726Z",
   "count": 12,
   "items": [
     {
@@ -67,15 +67,6 @@
       "expires_at": "2026-06-25T14:00:00.000Z"
     },
     {
-      "id": "result-a984417e-7707-4e03-9642-239750701bc0",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "קרואטיה עם 1:0 על פנמה. זה ניצחון שמסדר לה עמדה טובה יותר בבית 🧾",
-      "en": "Croatia beat Panama 1-0. That gives them a stronger position in the group 🧾",
-      "sources": [],
-      "expires_at": "2026-06-25T11:00:00.000Z"
-    },
-    {
       "id": "fixture-22c76d3e-ee0d-4766-923c-7be7689f8f2d",
       "type": "fixture",
       "confidence": "confirmed",
@@ -110,6 +101,15 @@
       "en": "Japan vs Sweden, tomorrow 02:00. Not the biggest match, but the points here can be crucial ⏰",
       "sources": [],
       "expires_at": "2026-06-25T22:45:00.000Z"
+    },
+    {
+      "id": "fixture-95a0a3e3-a5dc-4894-9131-0bd96113bd11",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "פרגוואי נגד אוסטרליה, מחר 05:00. משחק כזה יכול להכריע מקומות בבית בלי הרבה כותרות ⏰",
+      "en": "Paraguay vs Australia, tomorrow 05:00. This kind of match can decide group places without making many headlines ⏰",
+      "sources": [],
+      "expires_at": "2026-06-26T01:45:00.000Z"
     }
   ]
 }
