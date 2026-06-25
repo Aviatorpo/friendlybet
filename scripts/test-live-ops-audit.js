@@ -248,11 +248,16 @@ check('public snapshot live-status mode demotes only frozen-live snapshot findin
 check('standalone Pundit workflow audits match state before build', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/generate-pundit.yml'), 'utf8');
   const exportIdx = text.indexOf('node scripts/export-snapshots.js matches');
+  const storyWorkIdx = text.indexOf('node scripts/world-cup-story-auto-needed.js');
+  const publishStoriesIdx = text.indexOf('node scripts/publish-world-cup-stories-auto.js');
   const auditIdx = text.indexOf('node scripts/live-ops-audit.js');
   const buildIdx = text.indexOf('node scripts/generate-pundit.js');
   const validateIdx = text.indexOf('node scripts/test-pundit-feed.js');
   assert.ok(exportIdx >= 0, 'generate-pundit workflow must export current match snapshot');
+  assert.ok(storyWorkIdx > exportIdx, 'generate-pundit workflow must check prepared story work after export');
+  assert.ok(publishStoriesIdx > storyWorkIdx, 'generate-pundit workflow must publish prepared stories before audit');
   assert.ok(auditIdx > exportIdx, 'generate-pundit workflow must export matches before audit');
+  assert.ok(auditIdx > publishStoriesIdx, 'generate-pundit workflow must audit after prepared story publishing');
   assert.ok(auditIdx >= 0, 'generate-pundit workflow must run live-ops audit');
   assert.ok(buildIdx > auditIdx, 'generate-pundit workflow must audit before build');
   assert.ok(validateIdx > buildIdx, 'generate-pundit workflow must validate after build');
@@ -260,7 +265,7 @@ check('standalone Pundit workflow audits match state before build', () => {
   assert.ok(text.includes('LIVE_OPS_SKIP_PUNDIT'), 'generate-pundit audit must allow Pundit freshness refresh');
   assert.ok(text.includes('LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS'), 'generate-pundit audit must allow fresh active live snapshot rows while final verification waits');
   assert.ok(text.includes("cron: '3,13,23,33,43,53 * 11-28 6 *'"), 'generate-pundit workflow must refresh Pundit near live group-stage transitions');
-  assert.ok(/git status --porcelain public-data\/pundit\.json/.test(text), 'generate-pundit workflow must key deploys on Pundit feed changes');
+  assert.ok(/git status --porcelain public-data\/pundit\.json public-data\/world-cup-stories\.json story-assets/.test(text), 'generate-pundit workflow must key deploys on Pundit or story changes');
   assert.ok(/match snapshot changed without a Pundit feed change/.test(text), 'generate-pundit workflow must avoid committing match-only live churn');
   assert.ok(/commit-generated-snapshots\.sh[\s\S]*public-data\/matches\.json public-data\/pundit\.json/.test(text), 'generate-pundit workflow must stage matches with Pundit');
   assert.ok(/REGENERATE_COMMANDS:[\s\S]*LIVE_OPS_SKIP_PUNDIT=1 LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS=1 node scripts\/live-ops-audit\.js[\s\S]*node scripts\/generate-pundit\.js/.test(text), 'generate-pundit workflow must regenerate from current main after generated-data push conflicts');

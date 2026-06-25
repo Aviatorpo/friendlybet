@@ -42,6 +42,24 @@ jobs:
           FORCE_MATCH_SNAPSHOT: '1'
         run: node scripts/export-snapshots.js matches
 
+      - name: Check for prepared World Cup story work
+        id: story_work
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/world-cup-story-auto-needed.js
+
+      - name: Install story image tooling
+        if: steps.story_work.outputs.publishable == 'true'
+        run: python3 -m pip install --user pillow pypdf
+
+      - name: Publish prepared World Cup stories
+        if: steps.story_work.outputs.publishable == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/publish-world-cup-stories-auto.js
+
       - name: Audit match/story state before Pundit build
         env:
           LIVE_OPS_SKIP_PUNDIT: '1'
@@ -68,6 +86,7 @@ jobs:
         env:
           REGENERATE_COMMANDS: |
             node scripts/export-snapshots.js matches
+            node scripts/world-cup-story-auto-needed.js > /tmp/friendlybet-story-needed.txt; cat /tmp/friendlybet-story-needed.txt; if grep -q 'publishable=true' /tmp/friendlybet-story-needed.txt; then python3 -m pip install --user pillow pypdf; node scripts/publish-world-cup-stories-auto.js; fi
             LIVE_OPS_SKIP_PUNDIT=1 LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS=1 node scripts/live-ops-audit.js
             node scripts/pundit-news-validate.js
             node scripts/generate-pundit.js
@@ -75,8 +94,8 @@ jobs:
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
-          if [ -n "$(git status --porcelain public-data/pundit.json)" ]; then
-            bash scripts/commit-generated-snapshots.sh "data: refresh pundit feed" public-data/matches.json public-data/pundit.json
+          if [ -n "$(git status --porcelain public-data/pundit.json public-data/world-cup-stories.json story-assets)" ]; then
+            bash scripts/commit-generated-snapshots.sh "data: refresh pundit feed and stories" public-data/matches.json public-data/pundit.json public-data/world-cup-stories.json story-assets
           elif [ -n "$(git status --porcelain public-data/matches.json)" ]; then
             echo "match snapshot changed without a Pundit feed change; skipping commit to avoid live-score deploy churn"
           else
