@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-06-25T05:09:42.815Z",
-  "freshUntil": "2026-06-25T11:09:42.815Z",
+  "updatedAt": "2026-06-25T08:42:07.652Z",
+  "freshUntil": "2026-06-25T14:42:07.652Z",
   "count": 12,
   "items": [
     {
@@ -76,15 +76,6 @@
       "expires_at": "2026-06-25T11:00:00.000Z"
     },
     {
-      "id": "result-cc3d81e8-2e37-4768-8de8-2ca1412a558a",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "אנגליה וגאנה נפרדו ב-0:0. תיקו כזה משאיר הרבה תחזיות בלי הכרעה ברורה 🧾",
-      "en": "England and Ghana finished 0-0. That leaves a lot of predictions without a clear answer 🧾",
-      "sources": [],
-      "expires_at": "2026-06-25T08:00:00.000Z"
-    },
-    {
       "id": "fixture-22c76d3e-ee0d-4766-923c-7be7689f8f2d",
       "type": "fixture",
       "confidence": "confirmed",
@@ -108,6 +99,15 @@
       "confidence": "confirmed",
       "he": "תוניסיה נגד הולנד, מחר 02:00. אם הולנד לא מנצחת, הרבה הימורים ייפגעו מוקדם ⏰",
       "en": "Tunisia vs Netherlands, tomorrow 02:00. If Netherlands do not win, a lot of picks take an early hit ⏰",
+      "sources": [],
+      "expires_at": "2026-06-25T22:45:00.000Z"
+    },
+    {
+      "id": "fixture-cb890dbb-bed3-4101-a41f-dcd8cacca13c",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "יפן נגד שבדיה, מחר 02:00. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות ⏰",
+      "en": "Japan vs Sweden, tomorrow 02:00. Not the biggest match, but the points here can be crucial ⏰",
       "sources": [],
       "expires_at": "2026-06-25T22:45:00.000Z"
     }
