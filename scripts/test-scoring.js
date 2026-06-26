@@ -404,6 +404,31 @@ S.__setFetch(mockScoringFetch);
   eq('U7 total excludes Group A third and incomplete Group B', captured.U7.total_score, 2);
   setGroupMatchesForMock(fullGroupMatchesSnapshot);
 
+  console.log('\n== integration: single-phase advancement mode ignores exact position ==');
+  gpp('U13','C',['C2','C1','C3','C4']);
+  await S.scoreSinglePhasePool({ id:'P13', code:'P13', use_multipliers:false }, {
+    ...rulesSingle,
+    group_scoring_mode: 'advancement',
+    group_first: 1,
+    group_second: 99,
+    group_third: 99,
+    group_fourth: 99,
+  }, [{ id:'U13', nickname:'U13' }], groupMatches.slice(), new Map(), null);
+  eq('U13 scores C1/C2/C3 as advancers despite wrong positions', captured.U13.group_points, 3);
+  eq('U13 does not score C4 non-advancer', captured.U13.total_score, 3);
+
+  console.log('\n== integration: single-phase advancement mode waits for best-thirds ==');
+  gpp('U14','A',['KOR','MEX','RSA','CZE']);
+  setGroupMatchesForMock(actualGroupRows('A'));
+  await S.scoreSinglePhasePool({ id:'P14', code:'P14', use_multipliers:false }, {
+    ...rulesSingle,
+    group_scoring_mode: 'advancement',
+    group_first: 1,
+  }, [{ id:'U14', nickname:'U14' }], groupMatches.slice(), new Map(), null);
+  eq('U14 scores completed Group A top-two only before all thirds are known', captured.U14.group_points, 2);
+  eq('U14 third-place pick waits for all groups', captured.U14.total_score, 2);
+  setGroupMatchesForMock(fullGroupMatchesSnapshot);
+
   console.log('\n== unit: groupIsComplete requires TERMINAL status, not live scores ==');
   const finished6 = Array.from({ length: 6 }, (_, i) => ({ id: i + 1, status: 'FINISHED', home_score: 1, away_score: 0 }));
   // a final match still IN_PLAY but already carrying a live score (football-data fills it):

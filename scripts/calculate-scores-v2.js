@@ -119,6 +119,11 @@ function poolMultResolver(pool, rules) {
   };
 }
 
+function groupScoringMode(rules) {
+  const mode = String((rules && rules.group_scoring_mode) || '').toLowerCase();
+  return mode === 'advancement' ? 'advancement' : 'position';
+}
+
 // ---- Supabase fetch helper ----
 const { fbGuardDelete } = require('./lib-guard');
 async function sb(method, table, options = {}) {
@@ -571,7 +576,15 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     const gpp = lateKnockout ? [] : (pickIndexes.groupPositionByUser
       ? (pickIndexes.groupPositionByUser.get(user.id) || [])
       : await sbAll('group_position_picks', `?user_id=eq.${user.id}&select=*`));
-    if (!lateKnockout) {
+    if (!lateKnockout && groupScoringMode(rules) === 'advancement') {
+      const seenAdvancePicks = new Set();
+      (gpp || []).forEach(p => {
+        if (!p || !p.team_code || seenAdvancePicks.has(p.team_code)) return;
+        if (!groupState.advanced || !groupState.advanced.has(p.team_code)) return;
+        seenAdvancePicks.add(p.team_code);
+        groupPoints += (rules.group_first || 0) * resolveMult(p.team_code, p.multiplier_applied);
+      });
+    } else if (!lateKnockout) {
       (gpp || []).forEach(p => {
         const real = standings[p.group_letter];
         if (!real) return; // group not done
@@ -754,6 +767,7 @@ if (require.main === module) {
     buildGroupState, indexRowsBy, userScoresAlreadyCurrent, updateUserScoreIfChanged,
     scoreCalcTimestampFresh,
     bracketPosRuleKey, stageRuleKey, poolMultResolver,
+    groupScoringMode,
     validateTwoPhaseGroupPickSet, WC2026_GROUPS, TEAM_TO_GROUP,
     DEFAULT_RULES_SINGLE, DEFAULT_RULES_TWO, DEFAULT_CAT_MULT, FIFA_RANK,
     sbAll,
