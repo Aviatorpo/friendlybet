@@ -3439,6 +3439,11 @@ function _projectionRoundPoints(points) {
   return Math.round((points || 0) * 100) / 100;
 }
 
+function _groupScoringMode(rules) {
+  const mode = String((rules && rules.group_scoring_mode) || '').toLowerCase();
+  return mode === 'advancement' ? 'advancement' : 'position';
+}
+
 function _validateProjectionTwoPhaseSet(rows) {
   const letters = (typeof WC2026_GROUP_LETTERS !== 'undefined') ? WC2026_GROUP_LETTERS : [];
   const seen = new Set();
@@ -3512,7 +3517,8 @@ async function buildTheoreticalGroupLeaderboard(users) {
   });
 
   const activeSet = new Set(activeLetters);
-  const projectedAdvanced = mode === 'two_phase'
+  const groupScoringMode = _groupScoringMode(rules);
+  const projectedAdvanced = (mode === 'two_phase' || groupScoringMode === 'advancement')
     ? _buildProjectionAdvancedSet(standings, activeLetters)
     : null;
 
@@ -3529,6 +3535,15 @@ async function buildTheoreticalGroupLeaderboard(users) {
           hits++;
         });
       }
+    } else if (groupScoringMode === 'advancement') {
+      const seenAdvancePicks = new Set();
+      userPicks.forEach(p => {
+        if (!p || !p.team_code || seenAdvancePicks.has(p.team_code)) return;
+        if (!projectedAdvanced.has(p.team_code)) return;
+        seenAdvancePicks.add(p.team_code);
+        points += (rules.group_first || 0) * _projectionMultiplier(pool, p.team_code, p.multiplier_applied);
+        hits++;
+      });
     } else {
       userPicks.forEach(p => {
         if (!activeSet.has(p.group_letter)) return;
