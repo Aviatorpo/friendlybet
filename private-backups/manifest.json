@@ -49,6 +49,8 @@
     "537392",
     "537393",
     "537394",
+    "537395",
+    "537396",
     "537397",
     "537398",
     "537399",
@@ -1064,7 +1066,32 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-26T21:56:31.904Z",
+      "file": "private-backups/2026-06-26T21-56-31-904Z__537396-SEN-IRQ__537395-NOR-FRA.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537396",
+        "537395"
+      ],
+      "tableCounts": {
+        "pools": 2095,
+        "users": 6498,
+        "group_picks": 22992,
+        "knockout_picks": 95524,
+        "group_position_picks": 175213,
+        "tournament_winner_picks": 3370,
+        "top_scorer_picks": 2930,
+        "sp_third_place_picks": 29146,
+        "pick_backups": 47172,
+        "knockout_reopen_grants": 1703,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-26T06:35:04.811Z"
+  "updatedAt": "2026-06-26T21:56:31.904Z"
 }
