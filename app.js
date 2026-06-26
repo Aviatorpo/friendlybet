@@ -3444,6 +3444,16 @@ function _groupScoringMode(rules) {
   return mode === 'advancement' ? 'advancement' : 'position';
 }
 
+function _thirdPlacePickGroupSet(rows) {
+  return new Set((rows || []).map(row => row && row.group_letter).filter(Boolean));
+}
+
+function _isSinglePhaseAdvancementCandidate(pick, thirdPlaceGroups) {
+  const pos = Number(pick && pick.position);
+  if (pos === 1 || pos === 2) return true;
+  return pos === 3 && thirdPlaceGroups && thirdPlaceGroups.has(pick.group_letter);
+}
+
 function _validateProjectionTwoPhaseSet(rows) {
   const letters = (typeof WC2026_GROUP_LETTERS !== 'undefined') ? WC2026_GROUP_LETTERS : [];
   const seen = new Set();
@@ -3511,13 +3521,20 @@ async function buildTheoreticalGroupLeaderboard(users) {
     ? 'user_id,group_letter,team_code,multiplier_applied'
     : 'user_id,group_letter,position,team_code';
   const picks = await _fetchAllPoolRows(pickTable, pickCols, poolId);
+  const groupScoringMode = _groupScoringMode(rules);
+  const thirdPlacePicks = (mode === 'single_phase' && groupScoringMode === 'advancement')
+    ? await _fetchAllPoolRows('sp_third_place_picks', 'user_id,group_letter', poolId)
+    : [];
   const picksByUser = {};
   (picks || []).forEach(p => {
     (picksByUser[p.user_id] = picksByUser[p.user_id] || []).push(p);
   });
+  const thirdPlaceGroupsByUser = {};
+  (thirdPlacePicks || []).forEach(p => {
+    (thirdPlaceGroupsByUser[p.user_id] = thirdPlaceGroupsByUser[p.user_id] || []).push(p);
+  });
 
   const activeSet = new Set(activeLetters);
-  const groupScoringMode = _groupScoringMode(rules);
   const projectedAdvanced = (mode === 'two_phase' || groupScoringMode === 'advancement')
     ? _buildProjectionAdvancedSet(standings, activeLetters)
     : null;
@@ -3537,8 +3554,10 @@ async function buildTheoreticalGroupLeaderboard(users) {
       }
     } else if (groupScoringMode === 'advancement') {
       const seenAdvancePicks = new Set();
+      const thirdPlaceGroups = _thirdPlacePickGroupSet(thirdPlaceGroupsByUser[user.id] || []);
       userPicks.forEach(p => {
         if (!p || !p.team_code || seenAdvancePicks.has(p.team_code)) return;
+        if (!_isSinglePhaseAdvancementCandidate(p, thirdPlaceGroups)) return;
         if (!projectedAdvanced.has(p.team_code)) return;
         seenAdvancePicks.add(p.team_code);
         points += (rules.group_first || 0) * _projectionMultiplier(pool, p.team_code, p.multiplier_applied);

@@ -124,6 +124,16 @@ function groupScoringMode(rules) {
   return mode === 'advancement' ? 'advancement' : 'position';
 }
 
+function thirdPlacePickGroupSet(rows) {
+  return new Set((rows || []).map(row => row && row.group_letter).filter(Boolean));
+}
+
+function isSinglePhaseAdvancementCandidate(pick, thirdPlaceGroups) {
+  const pos = Number(pick && pick.position);
+  if (pos === 1 || pos === 2) return true;
+  return pos === 3 && thirdPlaceGroups && thirdPlaceGroups.has(pick.group_letter);
+}
+
 // ---- Supabase fetch helper ----
 const { fbGuardDelete } = require('./lib-guard');
 async function sb(method, table, options = {}) {
@@ -549,6 +559,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
   const standings = groupState.standings || {}; // letter -> [team codes in order 1st..4th] or null if group not complete
   const realBest8Thirds = groupState.realBest8Thirds || null;
   const pickIndexes = opts.pickIndexes || {};
+  const groupMode = groupScoringMode(rules);
 
   // Knockout results (real-world) - by stage
   // For hypothetical bracket: we check whether the team the user picked as
@@ -576,10 +587,20 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     const gpp = lateKnockout ? [] : (pickIndexes.groupPositionByUser
       ? (pickIndexes.groupPositionByUser.get(user.id) || [])
       : await sbAll('group_position_picks', `?user_id=eq.${user.id}&select=*`));
-    if (!lateKnockout && groupScoringMode(rules) === 'advancement') {
+    const needsThirdPlaceRows = !lateKnockout && (
+      groupMode === 'advancement' || (realBest8Thirds && (rules.third_place_advance || 0) > 0)
+    );
+    const tpp = needsThirdPlaceRows
+      ? (pickIndexes.thirdPlaceByUser
+        ? (pickIndexes.thirdPlaceByUser.get(user.id) || [])
+        : await sbAll('sp_third_place_picks', `?user_id=eq.${user.id}&select=group_letter`))
+      : [];
+    const thirdPlaceGroups = thirdPlacePickGroupSet(tpp);
+    if (!lateKnockout && groupMode === 'advancement') {
       const seenAdvancePicks = new Set();
       (gpp || []).forEach(p => {
         if (!p || !p.team_code || seenAdvancePicks.has(p.team_code)) return;
+        if (!isSinglePhaseAdvancementCandidate(p, thirdPlaceGroups)) return;
         if (!groupState.advanced || !groupState.advanced.has(p.team_code)) return;
         seenAdvancePicks.add(p.team_code);
         groupPoints += (rules.group_first || 0) * resolveMult(p.team_code, p.multiplier_applied);
@@ -640,10 +661,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     // "its 3rd-place team advances", check whether the team THEY put 3rd in
     // that group is actually one of the real best-8 third places. Team-based,
     // flat bonus (not multiplied). Only once all 12 groups are complete.
-    if (!lateKnockout && realBest8Thirds && (rules.third_place_advance || 0) > 0) {
-      const tpp = pickIndexes.thirdPlaceByUser
-        ? (pickIndexes.thirdPlaceByUser.get(user.id) || [])
-        : await sbAll('sp_third_place_picks', `?user_id=eq.${user.id}&select=group_letter`);
+    if (!lateKnockout && groupMode !== 'advancement' && realBest8Thirds && (rules.third_place_advance || 0) > 0) {
       (tpp || []).forEach(row => {
         const pick = (gpp || []).find(p => p.group_letter === row.group_letter && p.position === 3);
         if (pick && realBest8Thirds.has(pick.team_code)) {

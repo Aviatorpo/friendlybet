@@ -406,6 +406,7 @@ S.__setFetch(mockScoringFetch);
 
   console.log('\n== integration: single-phase advancement mode ignores exact position ==');
   gpp('U13','C',['C2','C1','C3','C4']);
+  thirds('U13',['C']);
   await S.scoreSinglePhasePool({ id:'P13', code:'P13', use_multipliers:false }, {
     ...rulesSingle,
     group_scoring_mode: 'advancement',
@@ -417,8 +418,34 @@ S.__setFetch(mockScoringFetch);
   eq('U13 scores C1/C2/C3 as advancers despite wrong positions', captured.U13.group_points, 3);
   eq('U13 does not score C4 non-advancer', captured.U13.total_score, 3);
 
+  console.log('\n== integration: single-phase advancement mode ignores non-advancing rank slots ==');
+  gpp('U15','C',['C4','C3','C2','C1']);
+  await S.scoreSinglePhasePool({ id:'P15', code:'P15', use_multipliers:false }, {
+    ...rulesSingle,
+    group_scoring_mode: 'advancement',
+    group_first: 1,
+    group_second: 99,
+    group_third: 99,
+    group_fourth: 99,
+    third_place_advance: 1,
+  }, [{ id:'U15', nickname:'U15' }], groupMatches.slice(), new Map(), null);
+  eq('U15 scores only selected advancement slots, not all ranked teams', captured.U15.group_points, 1);
+  eq('U15 does not get the old flat third-place bonus in advancement mode', captured.U15.total_score, 1);
+
+  console.log('\n== integration: single-phase advancement mode replaces flat third-place bonus ==');
+  gpp('U16','C',['C4','C1','C3','C2']);
+  thirds('U16',['C']);
+  await S.scoreSinglePhasePool({ id:'P16', code:'P16', use_multipliers:false }, {
+    ...rulesSingle,
+    group_scoring_mode: 'advancement',
+    group_first: 1,
+    third_place_advance: 1,
+  }, [{ id:'U16', nickname:'U16' }], groupMatches.slice(), new Map(), null);
+  eq('U16 scores top-two plus selected third-place candidate only', captured.U16.group_points, 2);
+  eq('U16 total has no extra flat third-place bonus', captured.U16.total_score, 2);
+
   console.log('\n== integration: single-phase advancement mode waits for best-thirds ==');
-  gpp('U14','A',['KOR','MEX','RSA','CZE']);
+  gpp('U14','A',['RSA','MEX','KOR','CZE']);
   setGroupMatchesForMock(actualGroupRows('A'));
   await S.scoreSinglePhasePool({ id:'P14', code:'P14', use_multipliers:false }, {
     ...rulesSingle,
