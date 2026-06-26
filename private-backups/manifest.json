@@ -23,6 +23,8 @@
     "537346",
     "537347",
     "537348",
+    "537349",
+    "537350",
     "537351",
     "537352",
     "537353",
@@ -33,6 +35,8 @@
     "537358",
     "537359",
     "537360",
+    "537361",
+    "537362",
     "537363",
     "537364",
     "537365",
@@ -1033,7 +1037,34 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-26T06:35:04.811Z",
+      "file": "private-backups/2026-06-26T06-35-04-811Z__537361-TUN-NED__537362-JPN-SWE__537350-PAR-AUS__537349-TUR-USA.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537361",
+        "537362",
+        "537350",
+        "537349"
+      ],
+      "tableCounts": {
+        "pools": 2069,
+        "users": 6453,
+        "group_picks": 22992,
+        "knockout_picks": 95524,
+        "group_position_picks": 175213,
+        "tournament_winner_picks": 3370,
+        "top_scorer_picks": 2930,
+        "sp_third_place_picks": 29146,
+        "pick_backups": 47172,
+        "knockout_reopen_grants": 1703,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-25T23:04:54.336Z"
+  "updatedAt": "2026-06-26T06:35:04.811Z"
 }
