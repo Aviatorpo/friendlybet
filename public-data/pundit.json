@@ -1,8 +1,26 @@
 {
-  "updatedAt": "2026-06-27T21:05:46.893Z",
-  "freshUntil": "2026-06-28T03:05:46.893Z",
-  "count": 10,
+  "updatedAt": "2026-06-27T22:12:30.165Z",
+  "freshUntil": "2026-06-28T04:12:30.165Z",
+  "count": 12,
   "items": [
+    {
+      "id": "live-78723131-ae62-4370-b4f4-15fd3df36a3b",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "פנמה נגד אנגליה עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
+      "en": "Panama vs England is live now. Every goal can change the group and the predictions 🔥",
+      "sources": [],
+      "expires_at": "2026-06-28T01:12:30.165Z"
+    },
+    {
+      "id": "live-7d45f59c-4702-4143-98ca-f5ae33d81846",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "קרואטיה נגד גאנה עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
+      "en": "Croatia vs Ghana is live now. Every goal can change the group and the predictions 🔥",
+      "sources": [],
+      "expires_at": "2026-06-28T01:12:30.165Z"
+    },
     {
       "id": "result-54c87aab-40ae-4966-a6d9-ea7a07b34811",
       "type": "result",
