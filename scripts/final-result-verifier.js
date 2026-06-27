@@ -22,6 +22,13 @@ const ESPN_SCOREBOARD_BASE = process.env.ESPN_SCOREBOARD_BASE || 'https://site.a
 const FIFA_CALENDAR_BASE = process.env.FIFA_CALENDAR_BASE || 'https://api.fifa.com/api/v3/calendar/matches';
 const FIFA_COMPETITION_ID = process.env.FIFA_COMPETITION_ID || '17';
 
+function csvList(value, fallback = '') {
+  return String(value || fallback)
+    .split(',')
+    .map(s => s.trim().toLowerCase())
+    .filter(Boolean);
+}
+
 const TERMINAL = new Set(['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED']);
 const RESULT_TERMINAL = new Set(['FINISHED', 'AWARDED']);
 const FINAL_STATUSES = new Set(['FT', 'AET', 'PEN', 'AWD', 'WO']);
@@ -31,10 +38,15 @@ const MIN_AGE_MINUTES = parseInt(process.env.RESULT_FALLBACK_MIN_AGE_MINUTES || 
 const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 336;
 const MAX_KICKOFF_DELTA_MS = (parseInt(process.env.RESULT_FALLBACK_MAX_KICKOFF_DELTA_HOURS || '', 10) || 12) * 60 * 60 * 1000;
 const MIN_SOURCES = parseInt(process.env.RESULT_FALLBACK_MIN_SOURCES || '', 10) || 1;
-const REQUIRED_SOURCES = String(process.env.RESULT_FALLBACK_REQUIRED_SOURCES || 'espn,fifa')
-  .split(',')
-  .map(s => s.trim().toLowerCase())
-  .filter(Boolean);
+const REQUIRED_SOURCES = csvList(process.env.RESULT_FALLBACK_REQUIRED_SOURCES, 'espn,fifa');
+const ENABLED_SOURCES = csvList(process.env.RESULT_FALLBACK_SOURCES, 'espn,fifa');
+const SOURCE_MODE = String(process.env.RESULT_FALLBACK_SOURCE_MODE || 'all').trim().toLowerCase();
+const SOURCE_ROTATION_MINUTES = parseInt(process.env.RESULT_FALLBACK_ROTATION_MINUTES || '', 10) || 15;
+const OBSERVATION_TTL_MINUTES = parseInt(process.env.RESULT_FALLBACK_OBSERVATION_TTL_MINUTES || '', 10) || 180;
+const LEDGER_ENABLED = process.env.RESULT_FALLBACK_LEDGER !== '0';
+const LEDGER_WRITE_DRY_RUN = process.env.RESULT_FALLBACK_LEDGER_WRITE_DRY_RUN === '1';
+const CANDIDATE_LEDGER_TABLE = 'result_verification_candidates';
+const OBSERVATION_LEDGER_TABLE = 'result_verification_observations';
 const SOURCE_FAMILIES = {
   espn: 'scoreboard:espn',
   fifa: 'official:fifa',
@@ -121,6 +133,27 @@ async function callSupabase(method, table, data = null, query = '') {
   }
   const text = await res.text();
   return text ? JSON.parse(text) : null;
+}
+
+function isLedgerUnavailableError(err) {
+  const msg = String(err && err.message || '');
+  return /result_verification_|PGRST205|PGRST116|404|42P01|does not exist|schema cache/i.test(msg);
+}
+
+async function tryLedgerCall(report, label, fn) {
+  try {
+    return { ok: true, value: await fn() };
+  } catch (err) {
+    const entry = {
+      ok: false,
+      operation: label,
+      error: err.message,
+      degraded: isLedgerUnavailableError(err),
+    };
+    report.ledger.operations.push(entry);
+    if (!entry.degraded) console.warn(`Result verifier ledger ${label} failed: ${err.message}`);
+    return { ok: false, error: err };
+  }
 }
 
 async function callEspnScoreboard(dateYmd) {
@@ -307,6 +340,86 @@ async function loadFifaMatchesFor(matches) {
   return Array.isArray(json.Results) ? json.Results : [];
 }
 
+function sourceRegistry() {
+  return {
+    espn: {
+      load: loadEspnEventsFor,
+      transform: transformEspnEvent,
+    },
+    fifa: {
+      load: loadFifaMatchesFor,
+      transform: transformFifaMatch,
+    },
+  };
+}
+
+function supportedSources(sources = ENABLED_SOURCES) {
+  const registry = sourceRegistry();
+  return (sources || []).filter(source => registry[source]);
+}
+
+function sourcesForRun(now = new Date(), options = {}) {
+  const sources = supportedSources(options.sources || ENABLED_SOURCES);
+  const mode = String(options.mode || SOURCE_MODE || 'all').toLowerCase();
+  if (mode !== 'rotate') return sources;
+  if (sources.length <= 1) return sources;
+  const rotationMinutes = Math.max(1, Number(options.rotationMinutes || SOURCE_ROTATION_MINUTES) || 15);
+  const bucket = Math.floor(now.getTime() / (rotationMinutes * 60 * 1000));
+  return [sources[bucket % sources.length]];
+}
+
+function matchKey(match) {
+  return `${match && match.home_team_code || '?'}-${match && match.away_team_code || '?'}-${match && match.match_date || '?'}`;
+}
+
+function sourceUpdateKey(update) {
+  if (!update) return '';
+  return resultKey(update);
+}
+
+function ledgerRowToSourceUpdate(row) {
+  if (!row || row.state !== 'confirmed_result') return null;
+  if (row.home_score == null || row.away_score == null || !row.status) return null;
+  return {
+    source: row.source,
+    sourceId: row.source_id || null,
+    observedAt: row.observed_at || null,
+    fromLedger: true,
+    update: {
+      home_score: row.home_score,
+      away_score: row.away_score,
+      status: row.status,
+      winner_code: row.winner_code || null,
+      live_clock: null,
+      live_period: null,
+      status_detail: null,
+      live_source: null,
+      source_updated_at: row.observed_at || new Date().toISOString(),
+      last_updated: row.observed_at || new Date().toISOString(),
+    },
+  };
+}
+
+function addSourceUpdateBySource(map, sourceUpdate, sourceState = 'current') {
+  if (!sourceUpdate || !sourceUpdate.source || !sourceUpdate.update) return;
+  const key = String(sourceUpdate.source).toLowerCase();
+  const existing = map.get(key);
+  if (!existing || sourceState === 'current') map.set(key, sourceUpdate);
+}
+
+function sourceUpdatesFromMap(map) {
+  return [...map.values()];
+}
+
+function sourceStatusSkippedByRotation(allSources, selectedSources) {
+  const selected = new Set(selectedSources);
+  const out = {};
+  for (const source of allSources) {
+    if (!selected.has(source)) out[source] = { ok: true, skipped: true, reason: 'source rotation' };
+  }
+  return out;
+}
+
 function ymdUtc(ms) {
   const d = new Date(ms);
   return `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}`;
@@ -388,6 +501,117 @@ function skipNeedsAttention(sourceUpdates, consensus) {
   return (sourceUpdates || []).length >= minSources;
 }
 
+function ledgerEnabledForRead() {
+  return LEDGER_ENABLED && HAS_SERVICE_KEY;
+}
+
+function ledgerEnabledForWrite(apply) {
+  return LEDGER_ENABLED && HAS_SERVICE_KEY && (apply || LEDGER_WRITE_DRY_RUN);
+}
+
+async function loadRecentLedgerObservations(matches, now, report) {
+  const byExternalId = new Map();
+  if (!ledgerEnabledForRead() || !matches.length) {
+    report.ledger.read = { ok: false, skipped: true, reason: ledgerEnabledForRead() ? 'no matches' : 'ledger disabled or missing service key' };
+    return { available: false, byExternalId };
+  }
+  const ids = [...new Set(matches.map(m => String(m.external_id || '').trim()).filter(Boolean))];
+  if (!ids.length) {
+    report.ledger.read = { ok: false, skipped: true, reason: 'no external ids' };
+    return { available: false, byExternalId };
+  }
+  const since = new Date(now.getTime() - OBSERVATION_TTL_MINUTES * 60 * 1000).toISOString();
+  const inList = ids.map(id => encodeURIComponent(id)).join(',');
+  const query = `?select=match_external_id,source,source_family,source_id,observed_at,state,status,home_score,away_score,winner_code,fixture_date,reason,update&match_external_id=in.(${inList})&observed_at=gte.${encodeURIComponent(since)}&order=observed_at.desc`;
+  const result = await tryLedgerCall(report, 'read observations', () => callSupabase('GET', OBSERVATION_LEDGER_TABLE, null, query));
+  if (!result.ok) {
+    report.ledger.read = { ok: false, error: result.error.message, degraded: isLedgerUnavailableError(result.error) };
+    return { available: false, byExternalId };
+  }
+  const rows = Array.isArray(result.value) ? result.value : [];
+  for (const row of rows) {
+    const id = String(row.match_external_id || '');
+    if (!byExternalId.has(id)) byExternalId.set(id, []);
+    byExternalId.get(id).push(row);
+  }
+  report.ledger.read = {
+    ok: true,
+    rows: rows.length,
+    ttl_minutes: OBSERVATION_TTL_MINUTES,
+  };
+  return { available: true, byExternalId };
+}
+
+function observationLedgerRow(match, observation, nowIso) {
+  const update = observation && observation.update || null;
+  return {
+    match_external_id: String(match.external_id || ''),
+    match_key: matchKey(match),
+    source: observation.source,
+    source_family: sourceFamily(observation.source),
+    source_id: observation.source_id || null,
+    observed_at: nowIso,
+    state: observation.state,
+    status: update && update.status || null,
+    home_score: update && update.home_score != null ? update.home_score : null,
+    away_score: update && update.away_score != null ? update.away_score : null,
+    winner_code: update && update.winner_code || null,
+    fixture_date: observation.fixture_date || match.match_date || null,
+    reason: observation.reason || null,
+    update,
+  };
+}
+
+function candidateLedgerRow(decision, nowIso) {
+  const match = decision.match || {};
+  return {
+    external_id: String(match.external_id || ''),
+    match_key: `${match.home_team_code || '?'}-${match.away_team_code || '?'}-${match.match_date || '?'}`,
+    match_date: match.match_date || null,
+    home_team_code: match.home_team_code || null,
+    away_team_code: match.away_team_code || null,
+    current_status: match.current_status || null,
+    last_checked_at: nowIso,
+    resolved_at: decision.consensus && decision.consensus.ok && decision.action === 'applied' ? nowIso : null,
+    latest_action: decision.action || null,
+    latest_consensus: decision.consensus || null,
+    latest_summary: {
+      observations: (decision.observations || []).map(item => ({
+        source: item.source,
+        state: item.state,
+        source_id: item.source_id || null,
+        reason: item.reason || null,
+      })),
+      verified_update: decision.verified_update || null,
+    },
+  };
+}
+
+async function recordLedgerDecision(decision, nowIso, report, apply) {
+  if (!ledgerEnabledForWrite(apply)) {
+    report.ledger.write = report.ledger.write || { ok: false, skipped: true, reason: ledgerEnabledForWrite(apply) ? 'no decision' : 'ledger writes disabled' };
+    return;
+  }
+  const observationRows = (decision.observations || [])
+    .filter(observation => observation.source && !observation.from_ledger)
+    .map(observation => observationLedgerRow(decision.match, observation, nowIso));
+  const candidateRow = candidateLedgerRow(decision, nowIso);
+  if (!candidateRow.external_id) return;
+
+  const candidateResult = await tryLedgerCall(report, 'upsert candidate', () =>
+    callSupabase('POST', CANDIDATE_LEDGER_TABLE, [candidateRow], '?on_conflict=external_id'));
+  const observationResult = observationRows.length
+    ? await tryLedgerCall(report, 'insert observations', () => callSupabase('POST', OBSERVATION_LEDGER_TABLE, observationRows))
+    : { ok: true, value: [] };
+  report.ledger.write = {
+    ok: candidateResult.ok && observationResult.ok,
+    candidate: candidateResult.ok,
+    observations: observationRows.length,
+    degraded: (!candidateResult.ok && isLedgerUnavailableError(candidateResult.error))
+      || (!observationResult.ok && isLedgerUnavailableError(observationResult.error)),
+  };
+}
+
 async function verifyFinalResults(opts = {}) {
   const apply = !!opts.apply;
   if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY or PROD_ANON_KEY');
@@ -399,7 +623,15 @@ async function verifyFinalResults(opts = {}) {
     apply,
     min_sources: MIN_SOURCES,
     required_sources: REQUIRED_SOURCES,
+    enabled_sources: supportedSources(),
+    source_mode: SOURCE_MODE,
+    selected_sources: [],
     source_statuses: {},
+    ledger: {
+      enabled: LEDGER_ENABLED,
+      ttl_minutes: OBSERVATION_TTL_MINUTES,
+      operations: [],
+    },
     candidates: [],
     summary: null,
   };
@@ -420,23 +652,32 @@ async function verifyFinalResults(opts = {}) {
     return result;
   }
 
-  let espnEvents = [];
-  let fifaMatches = [];
-  try {
-    espnEvents = await loadEspnEventsFor(stuck);
-    console.log(`Loaded ${espnEvents.length} ESPN event(s)`);
-    report.source_statuses.espn = { ok: true, loaded: espnEvents.length };
-  } catch (e) {
-    console.warn(`ESPN source unavailable: ${e.message}`);
-    report.source_statuses.espn = { ok: false, error: e.message };
+  const ledger = await loadRecentLedgerObservations(stuck, now, report);
+  let selectedSources = sourcesForRun(now);
+  if (SOURCE_MODE === 'rotate' && !ledger.available) {
+    selectedSources = supportedSources();
+    report.ledger.rotation_fallback = 'ledger unavailable, checking all supported sources this run';
   }
-  try {
-    fifaMatches = await loadFifaMatchesFor(stuck);
-    console.log(`Loaded ${fifaMatches.length} FIFA match(es)`);
-    report.source_statuses.fifa = { ok: true, loaded: fifaMatches.length };
-  } catch (e) {
-    console.warn(`FIFA source unavailable: ${e.message}`);
-    report.source_statuses.fifa = { ok: false, error: e.message };
+  report.selected_sources = selectedSources;
+  Object.assign(report.source_statuses, sourceStatusSkippedByRotation(supportedSources(), selectedSources));
+
+  const registry = sourceRegistry();
+  const sourceFixtures = new Map();
+  for (const source of selectedSources) {
+    const loader = registry[source];
+    if (!loader) {
+      report.source_statuses[source] = { ok: false, error: 'unsupported source' };
+      continue;
+    }
+    try {
+      const rows = await loader.load(stuck);
+      sourceFixtures.set(source, rows);
+      console.log(`Loaded ${rows.length} ${source.toUpperCase()} fixture(s)`);
+      report.source_statuses[source] = { ok: true, loaded: rows.length };
+    } catch (e) {
+      console.warn(`${source.toUpperCase()} source unavailable: ${e.message}`);
+      report.source_statuses[source] = { ok: false, error: e.message };
+    }
   }
 
   let updated = 0;
@@ -445,7 +686,7 @@ async function verifyFinalResults(opts = {}) {
   let attentionSkips = 0;
   for (const dbMatch of stuck) {
     const label = `${dbMatch.home_team_code} vs ${dbMatch.away_team_code} (${dbMatch.external_id})`;
-    const sourceUpdates = [];
+    const sourceUpdatesBySource = new Map();
     const decision = {
       match: {
         external_id: dbMatch.external_id || null,
@@ -459,40 +700,55 @@ async function verifyFinalResults(opts = {}) {
       action: null,
     };
 
-    if (espnEvents.length) {
-      const found = findMatchingFixture(dbMatch, espnEvents, transformEspnEvent);
+    const ledgerRows = ledger.byExternalId.get(String(dbMatch.external_id || '')) || [];
+    for (const row of ledgerRows) {
+      const ledgerUpdate = ledgerRowToSourceUpdate(row);
+      if (!ledgerUpdate) continue;
+      addSourceUpdateBySource(sourceUpdatesBySource, ledgerUpdate, 'ledger');
+      decision.observations.push({
+        source: row.source,
+        state: 'ledger_confirmed_result',
+        source_id: row.source_id || null,
+        observed_at: row.observed_at || null,
+        update: ledgerUpdate.update,
+        from_ledger: true,
+      });
+    }
+
+    for (const source of selectedSources) {
+      const rows = sourceFixtures.get(source) || [];
+      if (!rows.length) continue;
+      const loader = registry[source];
+      const found = findMatchingFixture(dbMatch, rows, loader.transform);
       if (found.match) {
         const built = buildUpdateFromVerifiedFixture(found.match);
         if (built.update) {
-          sourceUpdates.push({ source: 'espn', update: built.update, sourceId: found.match.api_id });
-          decision.observations.push({ source: 'espn', state: 'confirmed_result', source_id: found.match.api_id || null, update: built.update });
+          const sourceUpdate = { source, update: built.update, sourceId: found.match.api_id };
+          addSourceUpdateBySource(sourceUpdatesBySource, sourceUpdate, 'current');
+          decision.observations.push({
+            source,
+            state: 'confirmed_result',
+            source_id: found.match.api_id || null,
+            fixture_date: found.match.fixtureDate || null,
+            update: built.update,
+          });
         } else {
-          console.log(`OBSERVE ${label}: espn ${built.reason}`);
-          decision.observations.push({ source: 'espn', state: 'not_scoreable', source_id: found.match.api_id || null, reason: built.reason });
+          console.log(`OBSERVE ${label}: ${source} ${built.reason}`);
+          decision.observations.push({
+            source,
+            state: 'not_scoreable',
+            source_id: found.match.api_id || null,
+            fixture_date: found.match.fixtureDate || null,
+            reason: built.reason,
+          });
         }
       } else {
-        console.log(`OBSERVE ${label}: espn ${found.reason}`);
-        decision.observations.push({ source: 'espn', state: 'no_matching_fixture', reason: found.reason });
+        console.log(`OBSERVE ${label}: ${source} ${found.reason}`);
+        decision.observations.push({ source, state: 'no_matching_fixture', reason: found.reason });
       }
     }
 
-    if (fifaMatches.length) {
-      const found = findMatchingFixture(dbMatch, fifaMatches, transformFifaMatch);
-      if (found.match) {
-        const built = buildUpdateFromVerifiedFixture(found.match);
-        if (built.update) {
-          sourceUpdates.push({ source: 'fifa', update: built.update, sourceId: found.match.api_id });
-          decision.observations.push({ source: 'fifa', state: 'confirmed_result', source_id: found.match.api_id || null, update: built.update });
-        } else {
-          console.log(`OBSERVE ${label}: fifa ${built.reason}`);
-          decision.observations.push({ source: 'fifa', state: 'not_scoreable', source_id: found.match.api_id || null, reason: built.reason });
-        }
-      } else {
-        console.log(`OBSERVE ${label}: fifa ${found.reason}`);
-        decision.observations.push({ source: 'fifa', state: 'no_matching_fixture', reason: found.reason });
-      }
-    }
-
+    const sourceUpdates = sourceUpdatesFromMap(sourceUpdatesBySource);
     const agreed = consensusUpdate(sourceUpdates);
     decision.consensus = {
       ok: !!agreed.update,
@@ -521,6 +777,7 @@ async function verifyFinalResults(opts = {}) {
       console.log(`SKIP ${label}: ${agreed.reason}; sources=${sources}`);
       decision.action = 'skipped';
       report.candidates.push(decision);
+      await recordLedgerDecision(decision, now.toISOString(), report, apply);
       continue;
     }
 
@@ -533,6 +790,7 @@ async function verifyFinalResults(opts = {}) {
       updated++;
     }
     report.candidates.push(decision);
+    await recordLedgerDecision(decision, now.toISOString(), report, apply);
   }
 
   const result = { checked: stuck.length, updated, skipped, waiting, attention_skips: attentionSkips, report };
@@ -574,6 +832,11 @@ if (require.main === module) {
     consensusUpdate,
     sourceFamily,
     uniqueSourceFamilyCount,
+    sourcesForRun,
+    ledgerRowToSourceUpdate,
+    addSourceUpdateBySource,
+    sourceUpdatesFromMap,
+    matchKey,
     needsResultAttention,
     skipNeedsAttention,
     verifyFinalResults,

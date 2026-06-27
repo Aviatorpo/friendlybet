@@ -172,6 +172,13 @@ check('final-result verifier uploads an audit report artifact', () => {
   assert.ok(text.includes('final-result-verification-report.json'), 'final verifier must use a stable report artifact path');
 });
 
+check('scheduled final-result verifier rotates sources through the ledger', () => {
+  const text = fs.readFileSync(path.join(ROOT, '.github/workflows/final-result-verifier.yml'), 'utf8');
+  assert.ok(text.includes('RESULT_FALLBACK_SOURCE_MODE'), 'final verifier must choose a source mode explicitly');
+  assert.ok(text.includes("github.event_name == 'schedule' && 'rotate' || 'all'"), 'scheduled verifier must rotate, manual verifier must check all sources');
+  assert.ok(text.includes('RESULT_FALLBACK_OBSERVATION_TTL_MINUTES'), 'final verifier must bound ledger observation freshness');
+});
+
 check('live poller has continuous 5-minute group-stage coverage', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/live-poller.yml'), 'utf8');
   assert.ok(text.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 11-28 6 *'"), 'live poller must not rely on narrow precomputed match windows');
@@ -179,6 +186,7 @@ check('live poller has continuous 5-minute group-stage coverage', () => {
   assert.ok(/permissions:\s*\n\s+contents:\s*write/.test(text), 'live poller must be able to push refreshed match/Pundit/leaderboard snapshots after a verified final');
   assert.ok(text.includes('RESULT_VERIFICATION_REPORT_PATH'), 'live poller must write a structured final-verification report');
   assert.ok(text.includes('live-final-verification-report.json'), 'live poller must use a stable final-verification report path');
+  assert.ok(/RESULT_FALLBACK_SOURCE_MODE:\s*all/.test(text), 'live full-time handoff must check all supported sources immediately');
 });
 
 check('scheduled scoring/export failures fail loudly', () => {
