@@ -24,6 +24,7 @@ const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY
   || process.env.SUPABASE_ANON_KEY
   || 'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU';
 const MATCH_SOURCE = String(process.env.WC_STORY_MATCH_SOURCE || 'auto').toLowerCase();
+const ADD_LATEST_MISSING = Number(process.env.WC_STORY_ADD_LATEST_MISSING || 0);
 const TEAM_NAMES = {
   ALG: { en: 'Algeria', he: "אלג'יריה" },
   ARG: { en: 'Argentina', he: 'ארגנטינה' },
@@ -2130,8 +2131,16 @@ async function main() {
     .filter(match => match && match.status === 'FINISHED' && match.home_score != null && match.away_score != null)
     .sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
 
+  const addCandidates = ADD_LATEST_MISSING > 0
+    ? finished
+      .filter(match => match && !existingByMatch.has(match.id) && outcomeFor(match))
+      .sort((a, b) => new Date(b.match_date) - new Date(a.match_date))
+      .slice(0, ADD_LATEST_MISSING)
+      .sort((a, b) => new Date(a.match_date) - new Date(b.match_date))
+    : finished;
+
   const additions = [];
-  for (const match of finished) {
+  for (const match of addCandidates) {
     if (existingByMatch.has(match.id)) continue;
     const outcome = outcomeFor(match);
     if (!outcome) continue;
