@@ -151,6 +151,16 @@ ok('ESPN + FIFA agreeing produce the default consensus', !!F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
   { source: 'fifa', update: fifaUpdate }
 ]).update);
+ok('duplicate ESPN-family confirmations do not count as independent consensus', !F.consensusUpdate([
+  { source: 'espn', update: espnUpdate },
+  { source: 'espn', update: espnUpdate }
+], { minSources: 2, requiredSources: [] }).update);
+ok('three independent non-official families can produce consensus when explicitly allowed', !!F.consensusUpdate([
+  { source: 'espn', update: espnUpdate },
+  { source: 'bbc', update: espnUpdate },
+  { source: 'guardian', update: espnUpdate },
+  { source: 'fox', update: { ...espnUpdate, status_detail: null } },
+], { minSources: 3, requiredSources: [] }).update);
 ok('conflicting sources do not produce consensus', !F.consensusUpdate([
   { source: 'fifa', update: fifaUpdate },
   { source: 'espn', update: { ...espnUpdate, away_score: 2 } }

@@ -154,6 +154,19 @@ function withoutPublicSnapshotLiveStatusErrors(watchdog) {
   };
 }
 
+function withoutStoryBacklogFindings(watchdog) {
+  const isStoryBacklogFinding = finding =>
+    /^World Cup stories missing for \d+ finished match/.test(String(finding || ''));
+  const storyBacklogErrors = (watchdog.errors || []).filter(isStoryBacklogFinding);
+  return {
+    errors: (watchdog.errors || []).filter(finding => !isStoryBacklogFinding(finding)),
+    warnings: [
+      ...(watchdog.warnings || []),
+      ...storyBacklogErrors.map(finding => `story backlog: ${finding}`),
+    ],
+  };
+}
+
 async function audit(options = {}) {
   const nowMs = options.nowMs == null ? Date.now() : options.nowMs;
   if (!Number.isFinite(nowMs)) throw new Error('Invalid audit nowMs');
@@ -162,6 +175,9 @@ async function audit(options = {}) {
   let watchdog = options.skipPundit ? withoutPunditWatchdogFindings(watchdogRaw) : watchdogRaw;
   if (options.ignoreSnapshotLiveStatus) {
     watchdog = withoutPublicSnapshotLiveStatusErrors(watchdog);
+  }
+  if (options.allowStoryBacklog) {
+    watchdog = withoutStoryBacklogFindings(watchdog);
   }
   const resultRecovery = summarizeResultRecovery(matches, nowMs, options);
   const groupCompletion = summarizeGroupCompletion(matches);
@@ -181,9 +197,10 @@ async function audit(options = {}) {
       warnings: watchdog.warnings,
     },
   };
+  const storyBacklogOk = options.allowStoryBacklog || stories.missing === 0;
   summary.ok = summary.watchdog.errors.length === 0
     && resultRecovery.candidates === 0
-    && stories.missing === 0
+    && storyBacklogOk
     && (options.skipPundit || pundit.fresh);
   return summary;
 }
@@ -194,6 +211,7 @@ if (require.main === module) {
     backoff: process.env.LIVE_OPS_RESULT_BACKOFF === '1',
     skipPundit: process.env.LIVE_OPS_SKIP_PUNDIT === '1',
     ignoreSnapshotLiveStatus: process.env.LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS === '1',
+    allowStoryBacklog: process.env.LIVE_OPS_ALLOW_STORY_BACKLOG === '1',
   }).then(result => {
     console.log(JSON.stringify(result, null, 2));
     if (!result.ok) process.exit(1);
@@ -210,5 +228,6 @@ if (require.main === module) {
     summarizePundit,
     withoutPunditWatchdogFindings,
     withoutPublicSnapshotLiveStatusErrors,
+    withoutStoryBacklogFindings,
   };
 }

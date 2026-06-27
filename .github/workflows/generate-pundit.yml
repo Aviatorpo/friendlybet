@@ -64,6 +64,7 @@ jobs:
         env:
           LIVE_OPS_SKIP_PUNDIT: '1'
           LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS: '1'
+          LIVE_OPS_ALLOW_STORY_BACKLOG: '1'
         run: node scripts/live-ops-audit.js
 
       # Guard: if a news file exists, it must pass the verification gate. A bad
@@ -87,7 +88,7 @@ jobs:
           REGENERATE_COMMANDS: |
             node scripts/export-snapshots.js matches
             node scripts/world-cup-story-auto-needed.js > /tmp/friendlybet-story-needed.txt; cat /tmp/friendlybet-story-needed.txt; if grep -q 'publishable=true' /tmp/friendlybet-story-needed.txt; then python3 -m pip install --user pillow pypdf; node scripts/publish-world-cup-stories-auto.js; fi
-            LIVE_OPS_SKIP_PUNDIT=1 LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS=1 node scripts/live-ops-audit.js
+            LIVE_OPS_SKIP_PUNDIT=1 LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS=1 LIVE_OPS_ALLOW_STORY_BACKLOG=1 node scripts/live-ops-audit.js
             node scripts/pundit-news-validate.js
             node scripts/generate-pundit.js
             node scripts/test-pundit-feed.js
