@@ -13,6 +13,8 @@ const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.s
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 const SUPABASE_FETCH_TIMEOUT_MS = Number(process.env.SCORING_SUPABASE_FETCH_TIMEOUT_MS || 30000);
 const SCORING_VERBOSE = process.env.SCORING_VERBOSE !== '0';
+const fs = require('fs');
+const path = require('path');
 const WCR = require('../share-assets/world-cup-rules.js');
 
 function scoringDetail(...args) {
@@ -290,7 +292,7 @@ function indexRowsBy(rows, key) {
 }
 
 function buildGroupState(matches) {
-  const st = WCR.buildGroupState(matches, { strict: false });
+  const st = WCR.buildGroupState(matches, { strict: true, fairPlayResolutions: loadFairPlayResolutions() });
   if (st.status === 'needs_verification') {
     scoringWarn('[buildGroupState] official ranking needs fair-play/team-conduct verification:', JSON.stringify(st.unresolved));
   }
@@ -312,6 +314,20 @@ function buildGroupState(matches) {
     status: st.status,
     unresolved: st.unresolved
   };
+}
+
+function loadFairPlayResolutions() {
+  try {
+    if (process.env.FAIR_PLAY_RESOLUTIONS_JSON) {
+      return JSON.parse(process.env.FAIR_PLAY_RESOLUTIONS_JSON);
+    }
+    const file = process.env.FAIR_PLAY_RESOLUTIONS_FILE
+      ? path.resolve(process.env.FAIR_PLAY_RESOLUTIONS_FILE)
+      : path.join(__dirname, '..', 'public-data', 'fair-play-resolutions.json');
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (_err) {
+    return { version: 1, status: 'missing', resolutions: [] };
+  }
 }
 
 function scoreNumber(value) {

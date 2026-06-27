@@ -25,6 +25,10 @@ on:
       - 'scripts/test-live-ops-audit.js'
       - 'scripts/live-completion-readiness.js'
       - 'scripts/test-live-completion-readiness.js'
+      - 'scripts/resolve-fair-play.js'
+      - 'scripts/test-fair-play-resolver.js'
+      - 'public-data/fair-play-resolutions.json'
+      - '.github/workflows/resolve-fair-play.yml'
       - 'scripts/test-live-ux-state.js'
       - 'scripts/live-ux-visual-proof.js'
       - 'scripts/test-match-display-state.js'
@@ -83,6 +87,10 @@ on:
       - 'scripts/test-live-ops-audit.js'
       - 'scripts/live-completion-readiness.js'
       - 'scripts/test-live-completion-readiness.js'
+      - 'scripts/resolve-fair-play.js'
+      - 'scripts/test-fair-play-resolver.js'
+      - 'public-data/fair-play-resolutions.json'
+      - '.github/workflows/resolve-fair-play.yml'
       - 'scripts/test-live-ux-state.js'
       - 'scripts/live-ux-visual-proof.js'
       - 'scripts/test-match-display-state.js'
@@ -137,6 +145,8 @@ jobs:
         run: node scripts/test-scoring.js
       - name: Run World Cup rules tests
         run: node scripts/test-world-cup-rules.js
+      - name: Run fair-play resolver tests
+        run: node scripts/test-fair-play-resolver.js
       - name: Run smart-sync window tests
         run: node scripts/test-smart-sync.js
       - name: Run sync transform tests

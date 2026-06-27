@@ -1,0 +1,54 @@
+name: Resolve Fair Play
+
+on:
+  schedule:
+    - cron: '4,14,24,34,44,54 * 27-29 6 *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: resolve-fair-play
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Export current match snapshot
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+        run: node scripts/export-snapshots.js matches
+
+      - name: Resolve fair-play data
+        env:
+          FAIR_PLAY_AUDIT_FILE: tmp/fair-play-audit.json
+        run: node scripts/resolve-fair-play.js --write
+
+      - name: Validate fair-play resolver
+        run: node scripts/test-fair-play-resolver.js
+
+      - name: Commit fair-play snapshot if changed
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+          REGENERATE_COMMANDS: |
+            node scripts/export-snapshots.js matches
+            FAIR_PLAY_AUDIT_FILE=tmp/fair-play-audit.json node scripts/resolve-fair-play.js --write
+            node scripts/test-fair-play-resolver.js
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          bash scripts/commit-generated-snapshots.sh "data: refresh fair-play resolutions" public-data/matches.json public-data/fair-play-resolutions.json
