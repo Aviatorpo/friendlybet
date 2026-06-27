@@ -53,7 +53,16 @@ jobs:
           RESULT_FALLBACK_MIN_AGE_MINUTES: 80
           RESULT_FALLBACK_MIN_SOURCES: 2
           RESULT_FALLBACK_REQUIRED_SOURCES: espn,fifa
+          RESULT_VERIFICATION_REPORT_PATH: artifacts/live-final-verification-report.json
         run: node scripts/final-result-verifier.js --apply
+
+      - name: Upload live final verification report
+        if: always() && steps.verify_results.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-final-verification-report
+          path: artifacts/live-final-verification-report.json
+          if-no-files-found: warn
 
       - name: Export match snapshot after verified final
         if: steps.verify_results.outputs.changed == 'true'

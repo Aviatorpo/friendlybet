@@ -10,6 +10,8 @@
 //   SUPABASE_URL, SUPABASE_SECRET_KEY
 // ============================================================
 
+const fs = require('fs');
+const path = require('path');
 const { fbGuardDelete } = require('./lib-guard');
 const { getTeamCode } = require('./smart-sync.js');
 
@@ -46,7 +48,13 @@ const SOURCE_FAMILIES = {
 
 function setGithubOutput(name, value) {
   if (!process.env.GITHUB_OUTPUT) return;
-  require('fs').appendFileSync(process.env.GITHUB_OUTPUT, `${name}=${value}\n`, 'utf8');
+  fs.appendFileSync(process.env.GITHUB_OUTPUT, `${name}=${value}\n`, 'utf8');
+}
+
+function writeJsonReport(file, payload) {
+  if (!file) return;
+  fs.mkdirSync(path.dirname(path.resolve(file)), { recursive: true });
+  fs.writeFileSync(file, `${JSON.stringify(payload, null, 2)}\n`, 'utf8');
 }
 
 function isoDate(d) {
@@ -386,29 +394,49 @@ async function verifyFinalResults(opts = {}) {
   if (apply && !HAS_SERVICE_KEY) throw new Error('Refusing --apply without SUPABASE_SECRET_KEY');
 
   const now = opts.now || new Date();
+  const report = {
+    checked_at: now.toISOString(),
+    apply,
+    min_sources: MIN_SOURCES,
+    required_sources: REQUIRED_SOURCES,
+    source_statuses: {},
+    candidates: [],
+    summary: null,
+  };
   let stuck = [];
   try {
     stuck = await loadStuckMatches(now);
   } catch (e) {
     console.warn(`Could not load stuck match candidates: ${e.message}`);
-    return { checked: 0, updated: 0, skipped: 0, unavailable: true };
+    report.load_error = e.message;
+    const result = { checked: 0, updated: 0, skipped: 0, unavailable: true, report };
+    report.summary = { ...result, report: undefined };
+    return result;
   }
   console.log(`Found ${stuck.length} stuck match candidate(s). apply=${apply ? 'true' : 'false'}`);
-  if (!stuck.length) return { checked: 0, updated: 0, skipped: 0 };
+  if (!stuck.length) {
+    const result = { checked: 0, updated: 0, skipped: 0, report };
+    report.summary = { ...result, report: undefined };
+    return result;
+  }
 
   let espnEvents = [];
   let fifaMatches = [];
   try {
     espnEvents = await loadEspnEventsFor(stuck);
     console.log(`Loaded ${espnEvents.length} ESPN event(s)`);
+    report.source_statuses.espn = { ok: true, loaded: espnEvents.length };
   } catch (e) {
     console.warn(`ESPN source unavailable: ${e.message}`);
+    report.source_statuses.espn = { ok: false, error: e.message };
   }
   try {
     fifaMatches = await loadFifaMatchesFor(stuck);
     console.log(`Loaded ${fifaMatches.length} FIFA match(es)`);
+    report.source_statuses.fifa = { ok: true, loaded: fifaMatches.length };
   } catch (e) {
     console.warn(`FIFA source unavailable: ${e.message}`);
+    report.source_statuses.fifa = { ok: false, error: e.message };
   }
 
   let updated = 0;
@@ -418,15 +446,33 @@ async function verifyFinalResults(opts = {}) {
   for (const dbMatch of stuck) {
     const label = `${dbMatch.home_team_code} vs ${dbMatch.away_team_code} (${dbMatch.external_id})`;
     const sourceUpdates = [];
+    const decision = {
+      match: {
+        external_id: dbMatch.external_id || null,
+        home_team_code: dbMatch.home_team_code || null,
+        away_team_code: dbMatch.away_team_code || null,
+        match_date: dbMatch.match_date || null,
+        current_status: dbMatch.status || null,
+      },
+      observations: [],
+      consensus: null,
+      action: null,
+    };
 
     if (espnEvents.length) {
       const found = findMatchingFixture(dbMatch, espnEvents, transformEspnEvent);
       if (found.match) {
         const built = buildUpdateFromVerifiedFixture(found.match);
-        if (built.update) sourceUpdates.push({ source: 'espn', update: built.update, sourceId: found.match.api_id });
-        else console.log(`OBSERVE ${label}: espn ${built.reason}`);
+        if (built.update) {
+          sourceUpdates.push({ source: 'espn', update: built.update, sourceId: found.match.api_id });
+          decision.observations.push({ source: 'espn', state: 'confirmed_result', source_id: found.match.api_id || null, update: built.update });
+        } else {
+          console.log(`OBSERVE ${label}: espn ${built.reason}`);
+          decision.observations.push({ source: 'espn', state: 'not_scoreable', source_id: found.match.api_id || null, reason: built.reason });
+        }
       } else {
         console.log(`OBSERVE ${label}: espn ${found.reason}`);
+        decision.observations.push({ source: 'espn', state: 'no_matching_fixture', reason: found.reason });
       }
     }
 
@@ -434,38 +480,73 @@ async function verifyFinalResults(opts = {}) {
       const found = findMatchingFixture(dbMatch, fifaMatches, transformFifaMatch);
       if (found.match) {
         const built = buildUpdateFromVerifiedFixture(found.match);
-        if (built.update) sourceUpdates.push({ source: 'fifa', update: built.update, sourceId: found.match.api_id });
-        else console.log(`OBSERVE ${label}: fifa ${built.reason}`);
+        if (built.update) {
+          sourceUpdates.push({ source: 'fifa', update: built.update, sourceId: found.match.api_id });
+          decision.observations.push({ source: 'fifa', state: 'confirmed_result', source_id: found.match.api_id || null, update: built.update });
+        } else {
+          console.log(`OBSERVE ${label}: fifa ${built.reason}`);
+          decision.observations.push({ source: 'fifa', state: 'not_scoreable', source_id: found.match.api_id || null, reason: built.reason });
+        }
       } else {
         console.log(`OBSERVE ${label}: fifa ${found.reason}`);
+        decision.observations.push({ source: 'fifa', state: 'no_matching_fixture', reason: found.reason });
       }
     }
 
     const agreed = consensusUpdate(sourceUpdates);
+    decision.consensus = {
+      ok: !!agreed.update,
+      reason: agreed.update ? null : agreed.reason,
+      family_count: agreed.familyCount || 0,
+      agreeing_sources: (agreed.sources || []).map(source => ({
+        source: source.source,
+        family: sourceFamily(source.source),
+        source_id: source.sourceId || null,
+      })),
+      groups: (agreed.groups || []).map(group => ({
+        key: group.key,
+        family_count: group.familyCount,
+        sources: group.sources.map(source => ({
+          source: source.source,
+          family: sourceFamily(source.source),
+          source_id: source.sourceId || null,
+        })),
+      })),
+    };
     if (!agreed.update) {
       skipped++;
       if (skipNeedsAttention(sourceUpdates, agreed)) attentionSkips++;
       else waiting++;
       const sources = sourceUpdates.map(s => `${s.source}:${s.update.home_score}-${s.update.away_score}`).join(', ') || 'none';
       console.log(`SKIP ${label}: ${agreed.reason}; sources=${sources}`);
+      decision.action = 'skipped';
+      report.candidates.push(decision);
       continue;
     }
 
     const sourceNames = agreed.sources.map(s => `${s.source}#${s.sourceId || '?'}`).join(', ');
     console.log(`${apply ? 'APPLY' : 'DRY'} ${label}: ${agreed.update.home_score}-${agreed.update.away_score}, status=${agreed.update.status}, sources=${sourceNames}`);
+    decision.action = apply ? 'applied' : 'dry_run';
+    decision.verified_update = agreed.update;
     if (apply) {
       await callSupabase('PATCH', 'matches', agreed.update, `?external_id=eq.${encodeURIComponent(dbMatch.external_id)}`);
       updated++;
     }
+    report.candidates.push(decision);
   }
 
-  return { checked: stuck.length, updated, skipped, waiting, attention_skips: attentionSkips };
+  const result = { checked: stuck.length, updated, skipped, waiting, attention_skips: attentionSkips, report };
+  report.summary = { ...result, report: undefined };
+  return result;
 }
 
 if (require.main === module) {
   const apply = process.argv.includes('--apply');
+  const reportArg = process.argv.find(arg => arg.startsWith('--report='));
+  const reportPath = reportArg ? reportArg.slice('--report='.length) : process.env.RESULT_VERIFICATION_REPORT_PATH;
   verifyFinalResults({ apply })
     .then(r => {
+      writeJsonReport(reportPath, r.report || null);
       console.log(`Done. checked=${r.checked} updated=${r.updated} skipped=${r.skipped}`);
       setGithubOutput('checked', String(r.checked || 0));
       setGithubOutput('updated', String(r.updated || 0));

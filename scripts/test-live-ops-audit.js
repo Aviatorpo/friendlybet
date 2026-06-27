@@ -165,11 +165,20 @@ check('final-result verifier has continuous 15-minute recovery schedule', () => 
   assert.ok(text.includes("cron: '4,19,34,49 * 11-28 6 *'"), 'final verifier must not have group-stage recovery gaps');
 });
 
+check('final-result verifier uploads an audit report artifact', () => {
+  const text = fs.readFileSync(path.join(ROOT, '.github/workflows/final-result-verifier.yml'), 'utf8');
+  assert.ok(text.includes('RESULT_VERIFICATION_REPORT_PATH'), 'final verifier must write a structured report');
+  assert.ok(text.includes('actions/upload-artifact@v4'), 'final verifier must upload the structured report');
+  assert.ok(text.includes('final-result-verification-report.json'), 'final verifier must use a stable report artifact path');
+});
+
 check('live poller has continuous 5-minute group-stage coverage', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/live-poller.yml'), 'utf8');
   assert.ok(text.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 11-28 6 *'"), 'live poller must not rely on narrow precomputed match windows');
   assert.ok(/preflights first[\s\S]*calls providers only/.test(text), 'live poller workflow must document preflight as the cost control');
   assert.ok(/permissions:\s*\n\s+contents:\s*write/.test(text), 'live poller must be able to push refreshed match/Pundit/leaderboard snapshots after a verified final');
+  assert.ok(text.includes('RESULT_VERIFICATION_REPORT_PATH'), 'live poller must write a structured final-verification report');
+  assert.ok(text.includes('live-final-verification-report.json'), 'live poller must use a stable final-verification report path');
 });
 
 check('scheduled scoring/export failures fail loudly', () => {
