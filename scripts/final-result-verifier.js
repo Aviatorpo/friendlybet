@@ -411,6 +411,15 @@ function sourceUpdatesFromMap(map) {
   return [...map.values()];
 }
 
+function updateWithFreshTimestamps(update, nowIso) {
+  if (!update) return update;
+  return {
+    ...update,
+    source_updated_at: nowIso,
+    last_updated: nowIso,
+  };
+}
+
 function sourceStatusSkippedByRotation(allSources, selectedSources) {
   const selected = new Set(selectedSources);
   const out = {};
@@ -782,11 +791,12 @@ async function verifyFinalResults(opts = {}) {
     }
 
     const sourceNames = agreed.sources.map(s => `${s.source}#${s.sourceId || '?'}`).join(', ');
-    console.log(`${apply ? 'APPLY' : 'DRY'} ${label}: ${agreed.update.home_score}-${agreed.update.away_score}, status=${agreed.update.status}, sources=${sourceNames}`);
+    const verifiedUpdate = updateWithFreshTimestamps(agreed.update, now.toISOString());
+    console.log(`${apply ? 'APPLY' : 'DRY'} ${label}: ${verifiedUpdate.home_score}-${verifiedUpdate.away_score}, status=${verifiedUpdate.status}, sources=${sourceNames}`);
     decision.action = apply ? 'applied' : 'dry_run';
-    decision.verified_update = agreed.update;
+    decision.verified_update = verifiedUpdate;
     if (apply) {
-      await callSupabase('PATCH', 'matches', agreed.update, `?external_id=eq.${encodeURIComponent(dbMatch.external_id)}`);
+      await callSupabase('PATCH', 'matches', verifiedUpdate, `?external_id=eq.${encodeURIComponent(dbMatch.external_id)}`);
       updated++;
     }
     report.candidates.push(decision);

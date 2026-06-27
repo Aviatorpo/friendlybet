@@ -74,14 +74,22 @@ const ledgerRows = [{
 }];
 
 const writes = [];
+const patches = [];
 
 F.__setFetch(async (url, options = {}) => {
   const textUrl = String(url);
   const method = options.method || 'GET';
-  if (textUrl.includes('/rest/v1/matches')) {
+  if (textUrl.includes('/rest/v1/matches') && method === 'GET') {
     return {
       ok: true,
       text: async () => JSON.stringify([stuckMatch])
+    };
+  }
+  if (textUrl.includes('/rest/v1/matches') && method === 'PATCH') {
+    patches.push(JSON.parse(options.body || '{}'));
+    return {
+      ok: true,
+      text: async () => '[]'
     };
   }
   if (textUrl.includes('/rest/v1/result_verification_observations') && method === 'GET') {
@@ -109,9 +117,9 @@ F.__setFetch(async (url, options = {}) => {
   fail('unexpected fetch', textUrl);
 });
 
-F.verifyFinalResults({ now: new Date('2026-06-11T21:10:00Z') })
+F.verifyFinalResults({ apply: true, now: new Date('2026-06-11T21:10:00Z') })
   .then(result => {
-    eq('ledger-assisted run reaches dry consensus', {
+    eq('ledger-assisted apply run reaches consensus', {
       checked: result.checked,
       updated: result.updated,
       skipped: result.skipped,
@@ -120,16 +128,21 @@ F.verifyFinalResults({ now: new Date('2026-06-11T21:10:00Z') })
       action: result.report.candidates[0].action,
       states: result.report.candidates[0].observations.map(item => `${item.source}:${item.state}`),
       families: result.report.candidates[0].consensus.agreeing_sources.map(item => item.family),
+      verifiedUpdatedAt: result.report.candidates[0].verified_update.source_updated_at,
+      patchUpdatedAt: patches[0] && patches[0].source_updated_at,
     }, {
       checked: 1,
-      updated: 0,
+      updated: 1,
       skipped: 0,
       selected: ['espn'],
       ledgerRead: { ok: true, rows: 1, ttl_minutes: 180 },
-      action: 'dry_run',
+      action: 'applied',
       states: ['fifa:ledger_confirmed_result', 'espn:confirmed_result'],
       families: ['official:fifa', 'scoreboard:espn'],
+      verifiedUpdatedAt: '2026-06-11T21:10:00.000Z',
+      patchUpdatedAt: '2026-06-11T21:10:00.000Z',
     });
+    ok('match result is patched once', patches.length === 1);
     ok('candidate and observation rows are written', writes.length === 2);
     ok('new current-source observation is written without duplicating ledger rows',
       writes.some(write => write.url.includes('/result_verification_observations') && write.body.length === 1 && write.body[0].source === 'espn'));
