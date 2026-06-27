@@ -41,10 +41,14 @@
     "537364",
     "537365",
     "537366",
+    "537367",
+    "537368",
     "537369",
     "537370",
     "537371",
     "537372",
+    "537373",
+    "537374",
     "537391",
     "537392",
     "537393",
@@ -1091,7 +1095,34 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-27T08:18:27.632Z",
+      "file": "private-backups/2026-06-27T08-18-27-632Z__537374-CPV-SAU__537373-URU-ESP__537368-EGY-IRN__537367-NZL-BEL.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537374",
+        "537373",
+        "537368",
+        "537367"
+      ],
+      "tableCounts": {
+        "pools": 2102,
+        "users": 6512,
+        "group_picks": 22960,
+        "knockout_picks": 95524,
+        "group_position_picks": 175213,
+        "tournament_winner_picks": 3370,
+        "top_scorer_picks": 2930,
+        "sp_third_place_picks": 29146,
+        "pick_backups": 47160,
+        "knockout_reopen_grants": 1703,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-26T21:56:31.904Z"
+  "updatedAt": "2026-06-27T08:18:27.632Z"
 }
