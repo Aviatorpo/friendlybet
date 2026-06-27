@@ -3314,6 +3314,29 @@ function _matchCountsForGroupProjection(m, now = Date.now()) {
 }
 
 function computeCurrentGroupStandings(matches, options = {}) {
+  if (window.FBWorldCupRules && typeof window.FBWorldCupRules.computeGroupStandings === 'function') {
+    const rules = window.FBWorldCupRules;
+    const standings = {};
+    const projection = !!options.projection;
+    const now = options.now || Date.now();
+    const groupMatches = (matches || []).filter(m => {
+      const stage = String(m.stage || '').toUpperCase();
+      const isGroup = stage === 'GROUP_STAGE' || !!(m.group_letter || m.group);
+      if (!isGroup) return false;
+      return projection ? _matchCountsForGroupProjection(m, now) : rules.isTerminalMatch(m);
+    });
+    const letters = rules.WC2026_GROUP_LETTERS || WC2026_GROUP_LETTERS || [];
+    letters.forEach(letter => {
+      const teams = ((rules.WC2026_GROUPS && rules.WC2026_GROUPS[letter]) || (WC2026_GROUPS && WC2026_GROUPS[letter]) || []).slice();
+      standings[letter] = rules.computeGroupStandings(
+        groupMatches.filter(m => (m.group_letter || m.group) === letter),
+        teams,
+        { strict: !projection }
+      );
+    });
+    return standings;
+  }
+
   const standings = {};
   const projection = !!options.projection;
   const now = options.now || Date.now();
@@ -3491,14 +3514,13 @@ function _buildProjectionAdvancedSet(standings, activeLetters) {
     const table = standings[letter] || [];
     if (table[0]) advanced.add(table[0].code);
     if (table[1]) advanced.add(table[1].code);
-    if (table[2]) thirds.push(table[2]);
+    if (table[2]) thirds.push({ ...table[2], group: letter, group_letter: letter });
   });
   if (active.size === 12 && thirds.length === 12) {
-    thirds
-      .slice()
-      .sort((a, b) => (b.points - a.points) || (b.gd - a.gd) || (b.gf - a.gf) || a.code.localeCompare(b.code))
-      .slice(0, 8)
-      .forEach(row => advanced.add(row.code));
+    const ranked = window.FBWorldCupRules && typeof window.FBWorldCupRules.rankThirdPlacedTeamsDetailed === 'function'
+      ? window.FBWorldCupRules.rankThirdPlacedTeamsDetailed(thirds.map(row => ({ ...row, group: row.group || row.group_letter })), { strict: false }).best8
+      : thirds.slice().sort((a, b) => (b.points - a.points) || (b.gd - a.gd) || (b.gf - a.gf) || a.code.localeCompare(b.code)).slice(0, 8);
+    ranked.forEach(row => advanced.add(row.code));
   }
   return advanced;
 }
@@ -5562,6 +5584,7 @@ async function loadMyTopScorerPick() {
       .from('top_scorer_picks')
       .select('*, players(*)')
       .eq('user_id', state.currentUser.id)
+      .eq('pool_id', state.currentPool.id)
       .maybeSingle();
     
     if (error) {
@@ -5571,6 +5594,7 @@ async function loadMyTopScorerPick() {
         .from('top_scorer_picks')
         .select('*')
         .eq('user_id', state.currentUser.id)
+        .eq('pool_id', state.currentPool.id)
         .maybeSingle();
       
       if (simpleData?.player_id) {
@@ -6474,6 +6498,11 @@ async function startGroupBetting() {
 
   // Load results data for "got it right" indicators
   await loadResultsData();
+  const readiness = await _officialKnockoutReadiness();
+  if (!readiness || !readiness.ok) {
+    showToast(t('knockoutEx.notOpenExact'), 'error');
+    return;
+  }
 
   // v2.4.2: removed "Loading teams..." toast - the screen change to the
   // group-betting screen is itself the feedback; the toast only confused
@@ -7552,20 +7581,34 @@ async function updateBettingStatusOnDashboard() {
   }
   let picksCount = picks ? picks.length : 0;
   const { data: koPicks, error: koError } = await supabaseClient
-    .from('knockout_picks').select('id', { count: 'exact' })
+    .from('knockout_picks').select('id,match_id', { count: 'exact' })
     .eq('user_id', state.currentUser.id)
     .eq('pool_id', pid);
   if (koError) {
     console.warn('updateBettingStatusOnDashboard: knockout_picks read failed', koError);
     return;
   }
-  const koCount = koPicks ? koPicks.length : 0;
+  const koCount = (koPicks || []).filter(r => r && r.match_id).length;
+  const { data: tsPicks } = await supabaseClient
+    .from('top_scorer_picks').select('id')
+    .eq('user_id', state.currentUser.id)
+    .eq('pool_id', pid);
+  const tsRequired = (typeof spTopScorerRequired === 'function') ? spTopScorerRequired() : true;
+  const tsChosen = (tsPicks || []).length >= 1;
+  let officialReady = false;
+  if (picksCount >= 32) {
+    try {
+      const readiness = await _officialKnockoutReadiness();
+      officialReady = !!(readiness && readiness.ok);
+    } catch (_) {
+      officialReady = false;
+    }
+  }
   if (picksCount < 32 && typeof _tpRestoreFullGroupBackupIfLiveShort === 'function') {
     const restoredCount = await _tpRestoreFullGroupBackupIfLiveShort(picksCount);
     if (restoredCount > picksCount) picksCount = restoredCount;
   }
-  // v2.5.36: "all set" in two_phase requires groups (32) + knockout (16)
-  const twoPhaseAllSet = picksCount >= 32 && koCount >= 16;
+  const twoPhaseAllSet = picksCount >= 32 && koCount >= 31 && (!tsRequired || tsChosen);
 
   if (picksCount === 0) {
     titleEl.textContent = t('dashboard.startCta.title');
@@ -7577,13 +7620,33 @@ async function updateBettingStatusOnDashboard() {
     subtitleEl.textContent = t('dashboard.status.partialGroups', { n: picksCount });
     ctaEl.classList.remove('done');
     _fbSetDashboardProgressCard('partial');
-  } else {
+  } else if (!officialReady) {
     titleEl.textContent = t('dashboard.editCta.title');
-    subtitleEl.textContent = t('dashboard.status.completedGroups');
+    subtitleEl.textContent = t('dashboard.twoPhase.waitingKnockout');
+    ctaEl.classList.add('done');
+    _fbSetDashboardProgressCard('partial');
+  } else if (koCount === 0) {
+    titleEl.textContent = t('dashboard.twoPhase.knockoutOpenTitle');
+    subtitleEl.textContent = t('dashboard.twoPhase.knockoutOpenSub');
+    ctaEl.classList.remove('done');
+    _fbSetDashboardProgressCard('partial');
+  } else if (koCount < 31) {
+    titleEl.textContent = t('dashboard.continueCta.title');
+    subtitleEl.textContent = t('dashboard.status.partialKo', { n: koCount });
+    ctaEl.classList.remove('done');
+    _fbSetDashboardProgressCard('partial');
+  } else if (tsRequired && !tsChosen) {
+    titleEl.textContent = t('dashboard.continueCta.title');
+    subtitleEl.textContent = t('dashboard.continueCta.topScorer');
+    ctaEl.classList.remove('done');
+    _fbSetDashboardProgressCard('partial');
+  } else {
+    titleEl.textContent = t('dashboard.viewCta.title');
+    subtitleEl.textContent = t('dashboard.viewCta.subtitle');
     ctaEl.classList.add('done');
     _fbSetDashboardProgressCard(twoPhaseAllSet ? 'allSet' : 'partial');
   }
-  _fbSetCtaProgress(picksCount, 32);
+  _fbSetCtaProgress(Math.min(picksCount, 32) + Math.min(koCount, 31) + (tsRequired && tsChosen ? 1 : 0), 32 + 31 + (tsRequired ? 1 : 0));
 }
 
 // ============================================================
@@ -7630,7 +7693,8 @@ async function startKnockoutBetting() {
   const { data: groupPicks } = await supabaseClient
     .from('group_picks')
     .select('team_code, group_letter')
-    .eq('user_id', state.currentUser.id);
+    .eq('user_id', state.currentUser.id)
+    .eq('pool_id', state.currentPool.id);
 
   if (!groupPicks || groupPicks.length < 32) {
     showToast(t('knockoutEx.needGroups'), 'error');
@@ -7654,17 +7718,16 @@ async function startKnockoutBetting() {
   knockoutState.allTeams = {};
   teams.forEach(t => { knockoutState.allTeams[t.code] = t; });
   
-  // Get the 32 teams the user picked
-  knockoutState.selectedGroupTeams = groupPicks.map(p => p.team_code);
-  
-  // Generate R32 matchups (16 matches from 32 teams)
-  generateR32Matches();
+  // The second phase uses the real post-group FIFA bracket, not each user's
+  // pre-group advancing-team guesses. Group guesses still score group points.
+  buildOfficialTwoPhaseKnockout(readiness.seed);
   
   // Load existing knockout picks
   const { data: existingPicks } = await supabaseClient
     .from('knockout_picks')
     .select('*')
-    .eq('user_id', state.currentUser.id);
+    .eq('user_id', state.currentUser.id)
+    .eq('pool_id', state.currentPool.id);
   
   knockoutState.picks = {};
   if (existingPicks) {
@@ -7681,6 +7744,87 @@ async function startKnockoutBetting() {
   
   renderKnockout();
   showScreen('knockout-screen');
+}
+
+function _initEmptyKnockoutRounds() {
+  knockoutState.matches.R16 = [];
+  for (let i = 0; i < 8; i++) {
+    knockoutState.matches.R16.push({
+      id: `R16_M${i + 1}`,
+      round: 'R16',
+      number: i + 1,
+      team1: null,
+      team2: null,
+      nextMatch: `QF_M${Math.floor(i / 2) + 1}`
+    });
+  }
+
+  knockoutState.matches.QF = [];
+  for (let i = 0; i < 4; i++) {
+    knockoutState.matches.QF.push({
+      id: `QF_M${i + 1}`,
+      round: 'QF',
+      number: i + 1,
+      team1: null,
+      team2: null,
+      nextMatch: `SF_M${Math.floor(i / 2) + 1}`
+    });
+  }
+
+  knockoutState.matches.SF = [];
+  for (let i = 0; i < 2; i++) {
+    knockoutState.matches.SF.push({
+      id: `SF_M${i + 1}`,
+      round: 'SF',
+      number: i + 1,
+      team1: null,
+      team2: null,
+      nextMatch: 'FINAL_M1'
+    });
+  }
+
+  knockoutState.matches.FINAL = [{
+    id: 'FINAL_M1',
+    round: 'FINAL',
+    number: 1,
+    team1: null,
+    team2: null,
+    nextMatch: null
+  }];
+}
+
+function _resolveSeedFeed(feed, seed, thirdAssignment, pos) {
+  if (!feed || !seed) return null;
+  if (feed.type === 'gp') {
+    const arr = seed.groupPositions && seed.groupPositions[feed.g];
+    return arr ? arr[feed.p - 1] : null;
+  }
+  if (feed.type === 'third') {
+    const group = thirdAssignment && thirdAssignment[pos];
+    const arr = group && seed.groupPositions && seed.groupPositions[group];
+    return arr ? arr[2] : null;
+  }
+  return null;
+}
+
+function buildOfficialTwoPhaseKnockout(seed) {
+  const thirdAssignment = _spMatchThirdPlace(seed && seed.thirdPlaceAdvancers);
+  if (!seed || !thirdAssignment) throw new Error('official knockout seed is not ready');
+  const matches = [];
+  for (let pos = 1; pos <= 16; pos++) {
+    const feeds = SP_R32_DEF[pos];
+    matches.push({
+      id: `R32_M${pos}`,
+      round: 'R32',
+      number: pos,
+      team1: _resolveSeedFeed(feeds[0], seed, thirdAssignment, pos),
+      team2: _resolveSeedFeed(feeds[1], seed, thirdAssignment, pos),
+      nextMatch: `R16_M${Math.floor((pos - 1) / 2) + 1}`
+    });
+  }
+  knockoutState.matches.R32 = matches;
+  knockoutState.selectedGroupTeams = matches.flatMap(m => [m.team1, m.team2]).filter(Boolean);
+  _initEmptyKnockoutRounds();
 }
 
 function generateR32Matches() {
@@ -7712,52 +7856,7 @@ function generateR32Matches() {
   }
   
   knockoutState.matches.R32 = matches;
-  
-  // Initialize empty matches for subsequent rounds
-  knockoutState.matches.R16 = [];
-  for (let i = 0; i < 8; i++) {
-    knockoutState.matches.R16.push({
-      id: `R16_M${i + 1}`,
-      round: 'R16',
-      number: i + 1,
-      team1: null,
-      team2: null,
-      nextMatch: `QF_M${Math.floor(i / 2) + 1}`
-    });
-  }
-  
-  knockoutState.matches.QF = [];
-  for (let i = 0; i < 4; i++) {
-    knockoutState.matches.QF.push({
-      id: `QF_M${i + 1}`,
-      round: 'QF',
-      number: i + 1,
-      team1: null,
-      team2: null,
-      nextMatch: `SF_M${Math.floor(i / 2) + 1}`
-    });
-  }
-  
-  knockoutState.matches.SF = [];
-  for (let i = 0; i < 2; i++) {
-    knockoutState.matches.SF.push({
-      id: `SF_M${i + 1}`,
-      round: 'SF',
-      number: i + 1,
-      team1: null,
-      team2: null,
-      nextMatch: 'FINAL_M1'
-    });
-  }
-  
-  knockoutState.matches.FINAL = [{
-    id: 'FINAL_M1',
-    round: 'FINAL',
-    number: 1,
-    team1: null,
-    team2: null,
-    nextMatch: null
-  }];
+  _initEmptyKnockoutRounds();
 }
 
 function propagateKnockoutBracket() {
@@ -8807,22 +8906,36 @@ function renderStagesBreakdown(stages) {
 async function _isGroupStageOver() {
   if (!supabaseClient) return false;
   try {
-    const { data, error } = await supabaseClient
-      .from('matches')
-      .select('id,status')
-      .eq('stage', 'GROUP_STAGE')
-      .neq('status', 'FINISHED')
-      .limit(1);
-    if (error) {
-      console.warn('_isGroupStageOver query failed:', error);
-      return false;
-    }
-    // No unfinished group-stage matches = group stage is over
-    return Array.isArray(data) && data.length === 0;
+    const readiness = await _officialKnockoutReadiness();
+    return !!(readiness && readiness.ok);
   } catch (err) {
     console.warn('_isGroupStageOver err:', err);
     return false;
   }
+}
+
+async function _loadOfficialGroupMatchesForBracket() {
+  if (!supabaseClient) return [];
+  const { data, error } = await supabaseClient
+    .from('matches')
+    .select('*')
+    .eq('stage', 'GROUP_STAGE');
+  if (error) throw error;
+  return data || [];
+}
+
+async function _officialKnockoutReadiness() {
+  if (!window.FBWorldCupRules || !supabaseClient) {
+    return { ok: false, reason: 'rules-or-db-missing' };
+  }
+  const matches = await _loadOfficialGroupMatchesForBracket();
+  const seed = window.FBWorldCupRules.lateKnockoutSeedFromMatches(matches, { strict: true });
+  if (!seed || !seed.ok) return seed || { ok: false, reason: 'groups-incomplete' };
+  const assignment = _spMatchThirdPlace(seed.thirdPlaceAdvancers || []);
+  if (!assignment) {
+    return { ok: false, reason: 'annex-c-missing', thirdPlaceAdvancers: seed.thirdPlaceAdvancers || [] };
+  }
+  return { ok: true, seed, assignment };
 }
 
 async function updateKnockoutStatusOnDashboard() {
@@ -8843,7 +8956,8 @@ async function updateKnockoutStatusOnDashboard() {
   // v2.5.28: gate on REAL-WORLD group stage completion, not user's own
   // pick count. Knockout betting is only meaningful once the group stage
   // is over and the actual R16 matchups are known.
-  const groupStageDone = await _isGroupStageOver();
+  const readiness = await _officialKnockoutReadiness();
+  const groupStageDone = !!(readiness && readiness.ok);
 
   const koLabel = t('dashboard.status.knockout');
   if (!groupStageDone) {
@@ -8864,7 +8978,8 @@ async function updateKnockoutStatusOnDashboard() {
   const { data: koPicks } = await supabaseClient
     .from('knockout_picks')
     .select('id')
-    .eq('user_id', state.currentUser.id);
+    .eq('user_id', state.currentUser.id)
+    .eq('pool_id', state.currentPool.id);
   
   const koCount = koPicks ? koPicks.length : 0;
   
@@ -13730,34 +13845,11 @@ function _spResolveThirdPlaceSlots() {
 
 async function spPrepareLateKnockoutBracket() {
   if (!_isLateKnockoutPool()) return { ok: true };
-  const groupStageDone = await _isGroupStageOver();
-  if (!groupStageDone) return { ok: false, reason: 'groups-open' };
+  const readiness = await _officialKnockoutReadiness();
+  if (!readiness || !readiness.ok) return { ok: false, reason: (readiness && readiness.reason) || 'groups-open' };
 
-  await loadResultsData({ force: true, preferDb: true });
-  const standings = (state.results && state.results.groupStandings) || {};
-  const positions = {};
-  const thirds = [];
-
-  WC2026_GROUP_LETTERS.forEach(letter => {
-    const rows = standings[letter] || [];
-    if (rows.length < 4) return;
-    positions[letter] = rows.slice(0, 4).map(r => r.code);
-    if (rows[2]) thirds.push({ group: letter, ...rows[2] });
-  });
-
-  if (Object.keys(positions).length < WC2026_GROUP_LETTERS.length || thirds.length < WC2026_GROUP_LETTERS.length) {
-    return { ok: false, reason: 'standings-incomplete' };
-  }
-
-  thirds.sort((a, b) =>
-    (b.points - a.points) ||
-    (b.gd - a.gd) ||
-    (b.gf - a.gf) ||
-    a.code.localeCompare(b.code)
-  );
-
-  spState.groupPositions = positions;
-  spState.thirdPlaceAdvancers = thirds.slice(0, 8).map(x => x.group);
+  spState.groupPositions = readiness.seed.groupPositions;
+  spState.thirdPlaceAdvancers = readiness.seed.thirdPlaceAdvancers;
   return { ok: true };
 }
 window.spPrepareLateKnockoutBracket = spPrepareLateKnockoutBracket;
@@ -14751,6 +14843,11 @@ function spStartTopScorerStep() {
   // The cache was warmed when the dashboard loaded.
   const released = (localStorage.getItem('fb_squads_released') === 'true');
   if (!released) {
+    if (state.tpInFlow) {
+      state.tpInFlow = false;
+      tpShowSummary();
+      return;
+    }
     state.spInFlow = false;
     spShowSummary(); // self-awaits the render, then reveals the screen
     return;
@@ -14769,6 +14866,11 @@ function spTopScorerBack() {
   state.spInFlow = false;
   const nav = document.getElementById('ts-sp-flow-nav');
   if (nav) nav.style.display = 'none';
+  if (state.tpInFlow) {
+    state.tpInFlow = false;
+    _koOpenTwoPhaseWalkthrough(_koFirstIncompleteTwoPhaseIdx());
+    return;
+  }
   // v2.4.3: back from top-scorer in the SP flow goes to the bracket
   // (the standalone winner screen is no longer in the flow).
   spRenderBracket();
@@ -14783,6 +14885,11 @@ async function spTopScorerNext() {
   // for that save to land before the summary reloads from the DB (else the
   // summary could show the top scorer as "Not picked").
   try { if (topScorerState.savingPromise) await topScorerState.savingPromise; } catch (_) {}
+  if (state.tpInFlow) {
+    state.tpInFlow = false;
+    await tpShowSummary();
+    return;
+  }
   spShowSummary(); // self-awaits the render, then reveals the screen
 }
 
@@ -14852,6 +14959,59 @@ async function spShowSummary() {
 }
 window.spShowSummary = spShowSummary;
 
+function _tpMatchIdToBracketPos(matchId) {
+  const m = String(matchId || '').match(/^(R32|R16|QF|SF|FINAL)_M(\d+)$/);
+  if (!m) return null;
+  const n = parseInt(m[2], 10);
+  if (m[1] === 'R32') return n >= 1 && n <= 16 ? n : null;
+  if (m[1] === 'R16') return n >= 1 && n <= 8 ? 16 + n : null;
+  if (m[1] === 'QF') return n >= 1 && n <= 4 ? 24 + n : null;
+  if (m[1] === 'SF') return n >= 1 && n <= 2 ? 28 + n : null;
+  return n === 1 ? 31 : null;
+}
+
+async function tpLoadSummaryState() {
+  const readiness = await _officialKnockoutReadiness();
+  if (!readiness || !readiness.ok) throw new Error((readiness && readiness.reason) || 'official bracket not ready');
+  spState.groupPositions = readiness.seed.groupPositions || {};
+  spState.thirdPlaceAdvancers = readiness.seed.thirdPlaceAdvancers || [];
+  spState.bracketPicks = {};
+  spState.tournamentWinner = null;
+
+  const { data, error } = await supabaseClient
+    .from('knockout_picks')
+    .select('*')
+    .eq('user_id', state.currentUser.id)
+    .eq('pool_id', state.currentPool.id)
+    .is('bracket_position', null);
+  if (error) throw error;
+  (data || []).forEach(row => {
+    const pos = _tpMatchIdToBracketPos(row.match_id);
+    if (!pos || !row.predicted_winner) return;
+    spState.bracketPicks[pos] = row.predicted_winner;
+    if (pos === 31) spState.tournamentWinner = row.predicted_winner;
+  });
+}
+
+async function tpShowSummary() {
+  try {
+    if (knockoutSaveTimeout) {
+      clearTimeout(knockoutSaveTimeout);
+      knockoutSaveTimeout = null;
+      await saveKnockoutPicksToDb(false);
+    }
+  } catch (_) {}
+  try {
+    await tpLoadSummaryState();
+    await spRenderSummary();
+  } catch (e) {
+    console.error('[tpShowSummary] render failed:', e);
+    showToast(t('errors.unexpected'), 'error');
+  }
+  showScreen('sp-summary-screen');
+}
+window.tpShowSummary = tpShowSummary;
+
 function spRenderSummarySharePreview() {
   const cv = document.getElementById('sp-summary-share-card-canvas');
   const wrap = document.getElementById('sp-summary-share-card-preview');
@@ -14882,7 +15042,11 @@ async function spRenderSummary() {
   console.log('[spRenderSummary] forcing fresh DB load | user=' +
     (state.currentUser && state.currentUser.id) +
     ' | pool=' + (state.currentPool && state.currentPool.id));
-  await spLoadExistingPicks();
+  if (state.currentPool && state.currentPool.betting_mode === 'two_phase') {
+    await tpLoadSummaryState();
+  } else {
+    await spLoadExistingPicks();
+  }
   await loadResultsData({ force: true, preferDb: true });
   if (_isLateKnockoutPool()) await spPrepareLateKnockoutBracket();
   const groupCount = Object.values(spState.groupPositions || {})
@@ -14939,8 +15103,9 @@ async function spRenderSummary() {
   const summaryTopScorerEditBtn = document.getElementById('sp-summary-ts-edit');
 
   const submitted = typeof spHasUserSubmitted === 'function' && spHasUserSubmitted();
+  const isTwoPhaseSummary = !!(state.currentPool && state.currentPool.betting_mode === 'two_phase');
   const hasChamp = !!(spState.tournamentWinner || (spState.bracketPicks && spState.bracketPicks[31]));
-  const shareIsAvailable = submitted && hasChamp;
+  const shareIsAvailable = (submitted || isTwoPhaseSummary) && hasChamp;
   if (summaryShareStage) summaryShareStage.style.display = shareIsAvailable ? '' : 'none';
   if (summaryShareImageBtn) summaryShareImageBtn.style.display = shareIsAvailable ? '' : 'none';
   if (summaryShareFullBtn) summaryShareFullBtn.style.display = shareIsAvailable ? '' : 'none';
@@ -15012,7 +15177,7 @@ async function spRenderSummary() {
   if (tsCard) tsCard.style.display = '';
   try {
     const { data: ts } = await supabaseClient.from('top_scorer_picks')
-      .select('*').eq('user_id', state.currentUser.id).maybeSingle();
+      .select('*').eq('user_id', state.currentUser.id).eq('pool_id', state.currentPool.id).maybeSingle();
     if (ts) {
       tsEl.innerHTML = `<div class="sp-summary-row">
         <span class="sr-flag">${getCountryFlag(ts.team_code)}</span>
@@ -15345,11 +15510,40 @@ function closeHypoBracket() {
 // Patch dashboard betting entry to route by mode
 // ============================================================
 const _origStartGroupBetting = typeof startGroupBetting === 'function' ? startGroupBetting : null;
-window.startBettingFromDashboard = function() {
+window.startBettingFromDashboard = async function() {
   if (state.currentPool && state.currentPool.betting_mode === 'late_knockout') {
     startLateKnockoutBetting();
   } else if (state.currentPool && state.currentPool.betting_mode === 'single_phase') {
     startSinglePhaseBetting();
+  } else if (state.currentPool && state.currentPool.betting_mode === 'two_phase') {
+    try {
+      const pid = state.currentPool.id;
+      const uid = state.currentUser && state.currentUser.id;
+      const [gp, kp, tp] = await Promise.all([
+        supabaseClient.from('group_picks').select('id').eq('user_id', uid).eq('pool_id', pid),
+        supabaseClient.from('knockout_picks').select('match_id').eq('user_id', uid).eq('pool_id', pid),
+        supabaseClient.from('top_scorer_picks').select('id').eq('user_id', uid).eq('pool_id', pid)
+      ]);
+      const groupCount = (gp.data || []).length;
+      if (groupCount < 32) return _origStartGroupBetting && _origStartGroupBetting();
+      const readiness = await _officialKnockoutReadiness();
+      if (!readiness || !readiness.ok) {
+        showToast(t('knockoutEx.notOpenExact'), 'info');
+        return;
+      }
+      const koCount = (kp.data || []).filter(r => r && r.match_id).length;
+      const tsRequired = (typeof spTopScorerRequired === 'function') ? spTopScorerRequired() : true;
+      const tsChosen = (tp.data || []).length >= 1;
+      if (koCount < 31) return startKnockoutBetting();
+      if (tsRequired && !tsChosen) {
+        state.tpInFlow = true;
+        return spStartTopScorerStep();
+      }
+      return tpShowSummary();
+    } catch (e) {
+      console.warn('two-phase dashboard route failed:', e);
+      if (_origStartGroupBetting) _origStartGroupBetting();
+    }
   } else if (_origStartGroupBetting) {
     _origStartGroupBetting();
   }
@@ -16296,16 +16490,16 @@ function koSingleOpenBracketView() {
 }
 window.koSingleOpenBracketView = koSingleOpenBracketView;
 
-function koSingleFinish() {
+async function koSingleFinish() {
   if (koSingle.advanceTimer) { clearTimeout(koSingle.advanceTimer); koSingle.advanceTimer = null; }
   const wasMode = koSingle.mode;
   koSingle.mode = null;
 
   if (wasMode === 'two-phase') {
-    // v2.5.86: the old grid review screen is retired. Return to the dashboard;
-    // the user can re-enter the walkthrough (or the bracket view) to edit.
+    try { await saveKnockoutPicksToDb(false); } catch (_) {}
     showToast(t('knockoutFirst.completedToast'), 'success');
-    goToDashboard();
+    state.tpInFlow = true;
+    spStartTopScorerStep();
   } else if (spReopenActive) {
     // v2.10: recovery is BRACKET-ONLY — champion/top-scorer stay locked. Flush the
     // final save through the reopen RPC, confirm, then exit (no top-scorer detour).
