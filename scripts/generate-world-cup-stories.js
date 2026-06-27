@@ -17,6 +17,7 @@ const STORIES_PATH = path.join(ROOT, 'public-data', 'world-cup-stories.json');
 const ASSET_DIR = path.join(ROOT, 'story-assets');
 const OUTCOME_BASE_DIR = path.join(ASSET_DIR, 'outcome-bases');
 const MANIFEST_PATH = path.join(ASSET_DIR, 'manifest.json');
+const MIN_FINAL_STORY_IMAGE_BYTES = 500000;
 const MAX_STORIES = Number(process.env.WC_STORY_LIMIT || 104);
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY
@@ -1159,7 +1160,8 @@ function knownOrGeneratedAsset(manifest, match, outcome) {
   const known = manifestAsset(manifest, match, outcome);
   if (known) return known;
   const generated = normalizeAssetPath(path.join('story-assets', assetSlug(match, outcome)));
-  return fs.existsSync(path.join(ROOT, generated)) ? generated : '';
+  const generatedPath = path.join(ROOT, generated);
+  return fs.existsSync(generatedPath) && fs.statSync(generatedPath).size >= MIN_FINAL_STORY_IMAGE_BYTES ? generated : '';
 }
 
 function runPython(args) {
@@ -1183,7 +1185,9 @@ function scoreLine(match) {
 
 function finalizeOutcomeBase(match, outcome, baseImage) {
   const output = path.join(ROOT, 'story-assets', assetSlug(match, outcome));
-  if (fs.existsSync(output)) return path.relative(ROOT, output).replace(/\\/g, '/');
+  if (fs.existsSync(output) && fs.statSync(output).size >= MIN_FINAL_STORY_IMAGE_BYTES) {
+    return path.relative(ROOT, output).replace(/\\/g, '/');
+  }
   runPython([
     'scripts/process-story-image.py',
     'result-card',
