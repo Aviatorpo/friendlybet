@@ -245,6 +245,18 @@ check('public snapshot live-status mode demotes only frozen-live snapshot findin
   ]);
 });
 
+check('story backlog mode demotes missing story errors without hiding other errors', () => {
+  const filtered = Audit.withoutStoryBacklogFindings({
+    errors: [
+      'World Cup stories missing for 8 finished match(es): a, b',
+      'm1: scheduled status is stale 120m after kickoff',
+    ],
+    warnings: [],
+  });
+  assert.deepStrictEqual(filtered.errors, ['m1: scheduled status is stale 120m after kickoff']);
+  assert.deepStrictEqual(filtered.warnings, ['story backlog: World Cup stories missing for 8 finished match(es): a, b']);
+});
+
 check('standalone Pundit workflow audits match state before build', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/generate-pundit.yml'), 'utf8');
   const exportIdx = text.indexOf('node scripts/export-snapshots.js matches');
@@ -264,11 +276,12 @@ check('standalone Pundit workflow audits match state before build', () => {
   assert.ok(text.includes("FORCE_MATCH_SNAPSHOT: '1'"), 'generate-pundit workflow must force a current match snapshot for the live desk');
   assert.ok(text.includes('LIVE_OPS_SKIP_PUNDIT'), 'generate-pundit audit must allow Pundit freshness refresh');
   assert.ok(text.includes('LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS'), 'generate-pundit audit must allow fresh active live snapshot rows while final verification waits');
+  assert.ok(text.includes('LIVE_OPS_ALLOW_STORY_BACKLOG'), 'generate-pundit audit must let accepted story backlog refresh Pundit');
   assert.ok(text.includes("cron: '3,13,23,33,43,53 * 11-28 6 *'"), 'generate-pundit workflow must refresh Pundit near live group-stage transitions');
   assert.ok(/git status --porcelain public-data\/pundit\.json public-data\/world-cup-stories\.json story-assets/.test(text), 'generate-pundit workflow must key deploys on Pundit or story changes');
   assert.ok(/match snapshot changed without a Pundit feed change/.test(text), 'generate-pundit workflow must avoid committing match-only live churn');
   assert.ok(/commit-generated-snapshots\.sh[\s\S]*public-data\/matches\.json public-data\/pundit\.json/.test(text), 'generate-pundit workflow must stage matches with Pundit');
-  assert.ok(/REGENERATE_COMMANDS:[\s\S]*LIVE_OPS_SKIP_PUNDIT=1 LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS=1 node scripts\/live-ops-audit\.js[\s\S]*node scripts\/generate-pundit\.js/.test(text), 'generate-pundit workflow must regenerate from current main after generated-data push conflicts');
+  assert.ok(/REGENERATE_COMMANDS:[\s\S]*LIVE_OPS_SKIP_PUNDIT=1 LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS=1 LIVE_OPS_ALLOW_STORY_BACKLOG=1 node scripts\/live-ops-audit\.js[\s\S]*node scripts\/generate-pundit\.js/.test(text), 'generate-pundit workflow must regenerate from current main after generated-data push conflicts');
 });
 
 check('readiness monitor can recover stale active live DB state', () => {

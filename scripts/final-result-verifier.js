@@ -33,6 +33,16 @@ const REQUIRED_SOURCES = String(process.env.RESULT_FALLBACK_REQUIRED_SOURCES || 
   .split(',')
   .map(s => s.trim().toLowerCase())
   .filter(Boolean);
+const SOURCE_FAMILIES = {
+  espn: 'scoreboard:espn',
+  fifa: 'official:fifa',
+  fifa_calendar: 'official:fifa',
+  fifa_report: 'official:fifa',
+  bbc: 'scoreboard:bbc',
+  guardian: 'media:guardian',
+  fox: 'scoreboard:fox',
+  cbs: 'scoreboard:cbs',
+};
 
 function setGithubOutput(name, value) {
   if (!process.env.GITHUB_OUTPUT) return;
@@ -313,6 +323,15 @@ function resultKey(update) {
   return `${update.status}|${update.home_score}|${update.away_score}|${update.winner_code || ''}`;
 }
 
+function sourceFamily(source) {
+  const key = String(source || '').trim().toLowerCase();
+  return SOURCE_FAMILIES[key] || `source:${key || 'unknown'}`;
+}
+
+function uniqueSourceFamilyCount(sourceUpdates) {
+  return new Set((sourceUpdates || []).map(s => sourceFamily(s && s.source))).size;
+}
+
 function consensusUpdate(sourceUpdates, opts = {}) {
   const options = typeof opts === 'number' ? { minSources: opts, requiredSources: [] } : (opts || {});
   const requiredSources = Array.isArray(options.requiredSources) ? options.requiredSources : REQUIRED_SOURCES;
@@ -328,20 +347,24 @@ function consensusUpdate(sourceUpdates, opts = {}) {
     groups.get(key).push(su);
   }
   const winners = [...groups.entries()]
-    .map(([key, sources]) => ({ key, sources }))
-    .sort((a, b) => b.sources.length - a.sources.length);
+    .map(([key, sources]) => ({ key, sources, familyCount: uniqueSourceFamilyCount(sources) }))
+    .sort((a, b) => b.familyCount - a.familyCount || b.sources.length - a.sources.length);
   const best = winners.find(group => {
     const names = new Set(group.sources.map(s => String(s.source || '').toLowerCase()));
     return requiredSources.every(source => names.has(source));
   }) || (requiredSources.length ? null : winners[0]);
-  if (!best || best.sources.length < minSources) {
+  if (!best || best.familyCount < minSources) {
     const req = requiredSources.length ? `; requires agreeing ${requiredSources.join('+')}` : '';
-    return { update: null, reason: `${sourceUpdates.length} final source(s), ${minSources} required${req}` };
+    return {
+      update: null,
+      reason: `${uniqueSourceFamilyCount(sourceUpdates)} independent final source family/families, ${minSources} required${req}`,
+      groups: winners,
+    };
   }
-  if (!requiredSources.length && winners[1] && winners[1].sources.length === best.sources.length) {
-    return { update: null, reason: 'conflicting source consensus' };
+  if (!requiredSources.length && winners[1] && winners[1].familyCount === best.familyCount) {
+    return { update: null, reason: 'conflicting source consensus', groups: winners };
   }
-  return { update: best.sources[0].update, sources: best.sources };
+  return { update: best.sources[0].update, sources: best.sources, familyCount: best.familyCount, groups: winners };
 }
 
 function needsResultAttention(result) {
@@ -468,6 +491,8 @@ if (require.main === module) {
     findMatchingFixture,
     buildUpdateFromVerifiedFixture,
     consensusUpdate,
+    sourceFamily,
+    uniqueSourceFamilyCount,
     needsResultAttention,
     skipNeedsAttention,
     verifyFinalResults,
