@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-06-27T22:15:01.230Z",
-  "freshUntil": "2026-06-28T04:15:01.230Z",
-  "count": 12,
+  "updatedAt": "2026-06-27T23:31:05.690Z",
+  "freshUntil": "2026-06-28T05:31:05.690Z",
+  "count": 10,
   "items": [
     {
       "id": "live-78723131-ae62-4370-b4f4-15fd3df36a3b",
@@ -10,7 +10,7 @@
       "he": "פנמה נגד אנגליה עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
       "en": "Panama vs England is live now. Every goal can change the group and the predictions 🔥",
       "sources": [],
-      "expires_at": "2026-06-28T01:15:01.230Z"
+      "expires_at": "2026-06-28T02:31:05.690Z"
     },
     {
       "id": "live-7d45f59c-4702-4143-98ca-f5ae33d81846",
@@ -19,7 +19,7 @@
       "he": "קרואטיה נגד גאנה עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
       "en": "Croatia vs Ghana is live now. Every goal can change the group and the predictions 🔥",
       "sources": [],
-      "expires_at": "2026-06-28T01:15:01.230Z"
+      "expires_at": "2026-06-28T02:31:05.690Z"
     },
     {
       "id": "result-54c87aab-40ae-4966-a6d9-ea7a07b34811",
@@ -76,29 +76,11 @@
       "expires_at": "2026-06-28T07:00:00.000Z"
     },
     {
-      "id": "fixture-48674a8f-7c5a-43c9-9f00-e6c1a8a982f9",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "משחק גדול: קולומביה נגד פורטוגל, היום 02:30. ניצחון כאן יכול לשנות את כל תמונת הבית ⏰",
-      "en": "Big match: Colombia vs Portugal, today 02:30. A win here can change the whole group picture ⏰",
-      "sources": [],
-      "expires_at": "2026-06-27T23:15:00.000Z"
-    },
-    {
-      "id": "fixture-651a15a4-261b-41d4-8a9a-74dc490575dc",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "קונגו הדמוקרטית נגד אוזבקיסטן, היום 02:30. משחק כזה יכול להכריע מקומות בבית בלי הרבה כותרות ⏰",
-      "en": "Congo DR vs Uzbekistan, today 02:30. This kind of match can decide group places without making many headlines ⏰",
-      "sources": [],
-      "expires_at": "2026-06-27T23:15:00.000Z"
-    },
-    {
       "id": "fixture-9404e5df-df31-4237-a3fc-9ed17b9bdc57",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "אלג'יריה נגד אוסטריה, היום 05:00. מי שפוגע במשחקים האלה בדרך כלל מתקדם יפה בטבלה ⏰",
-      "en": "Algeria vs Austria, today 05:00. People who get these matches right usually move well in the table ⏰",
+      "he": "אלג'יריה נגד אוסטריה, היום 05:00. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות ⏰",
+      "en": "Algeria vs Austria, today 05:00. Not the biggest match, but the points here can be crucial ⏰",
       "sources": [],
       "expires_at": "2026-06-28T01:45:00.000Z"
     },
@@ -106,8 +88,8 @@
       "id": "fixture-b22515cc-80c5-46e5-8fd7-2dbf90a86503",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "ירדן נגד ארגנטינה, היום 05:00. הרבה תחזיות ילכו עם ארגנטינה; איבוד נקודות כאן יכאב ⏰",
-      "en": "Jordan vs Argentina, today 05:00. A lot of predictions will back Argentina; dropped points here would hurt ⏰",
+      "he": "ירדן נגד ארגנטינה, היום 05:00. משחק שהרבה אנשים יסמנו כבטוח, וזה בדיוק הסיכון. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית ⏰",
+      "en": "Jordan vs Argentina, today 05:00. Many people will mark this as safe, and that is exactly the risk ⏰",
       "sources": [],
       "expires_at": "2026-06-28T01:45:00.000Z"
     }
