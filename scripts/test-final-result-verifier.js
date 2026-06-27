@@ -151,6 +151,18 @@ ok('ESPN + FIFA agreeing produce the default consensus', !!F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
   { source: 'fifa', update: fifaUpdate }
 ]).update);
+const defaultConsensus = F.consensusUpdate([
+  { source: 'espn', update: espnUpdate, sourceId: '760415' },
+  { source: 'fifa', update: fifaUpdate, sourceId: '400021443' }
+]);
+eq('default consensus exposes independent source family count', defaultConsensus.familyCount, 2);
+eq('default consensus exposes grouped agreeing source evidence', defaultConsensus.groups.map(group => ({
+  familyCount: group.familyCount,
+  sources: group.sources.map(source => source.source)
+})), [{
+  familyCount: 2,
+  sources: ['espn', 'fifa']
+}]);
 ok('duplicate ESPN-family confirmations do not count as independent consensus', !F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
   { source: 'espn', update: espnUpdate }
@@ -174,4 +186,71 @@ ok('clean verifier run does not require operational attention',
 ok('provider unavailability requires operational attention',
   F.needsResultAttention({ checked: 0, updated: 0, skipped: 0, unavailable: true }));
 
-console.log('\nFinal result verifier tests passed');
+async function testStructuredReport() {
+  const stuckMatch = {
+    ...db,
+    home_score: null,
+    away_score: null,
+    winner_code: null,
+    live_clock: null,
+    live_period: null,
+    status_detail: null,
+    live_source: null
+  };
+  F.__setFetch(async (url) => {
+    const textUrl = String(url);
+    if (textUrl.includes('/rest/v1/matches')) {
+      return {
+        ok: true,
+        text: async () => JSON.stringify([stuckMatch])
+      };
+    }
+    if (textUrl.includes('site.api.espn.com')) {
+      return {
+        ok: true,
+        json: async () => ({ events: textUrl.includes('20260611') ? [espnFinal] : [] })
+      };
+    }
+    if (textUrl.includes('api.fifa.com')) {
+      return {
+        ok: true,
+        json: async () => ({ Results: [fifaFinal] })
+      };
+    }
+    throw new Error(`unexpected fetch: ${textUrl}`);
+  });
+
+  const result = await F.verifyFinalResults({ now: new Date('2026-06-11T21:10:00Z') });
+  eq('structured report summarizes dry-run verifier result', {
+    checked: result.checked,
+    updated: result.updated,
+    skipped: result.skipped,
+    action: result.report.candidates[0].action,
+    sourceStatuses: result.report.source_statuses,
+    observationStates: result.report.candidates[0].observations.map(o => `${o.source}:${o.state}`),
+    consensusOk: result.report.candidates[0].consensus.ok,
+    familyCount: result.report.candidates[0].consensus.family_count
+  }, {
+    checked: 1,
+    updated: 0,
+    skipped: 0,
+    action: 'dry_run',
+    sourceStatuses: {
+      espn: { ok: true, loaded: 1 },
+      fifa: { ok: true, loaded: 1 }
+    },
+    observationStates: ['espn:confirmed_result', 'fifa:confirmed_result'],
+    consensusOk: true,
+    familyCount: 2
+  });
+}
+
+testStructuredReport()
+  .then(() => {
+    console.log('\nFinal result verifier tests passed');
+  })
+  .catch(err => {
+    console.error('FAIL: structured report test');
+    console.error(err);
+    process.exit(1);
+  });
