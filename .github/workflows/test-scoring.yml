@@ -36,6 +36,7 @@ on:
       - 'scripts/final-result-verifier.js'
       - 'scripts/final-result-verifier-needed.js'
       - 'scripts/test-final-result-verifier.js'
+      - 'scripts/test-final-result-verifier-ledger.js'
       - 'scripts/test-final-result-verifier-needed.js'
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
@@ -58,6 +59,7 @@ on:
       - '.github/workflows/manual-match-results.yml'
       - '.github/workflows/publish-world-cup-stories-prepared.yml'
       - '.github/workflows/test-scoring.yml'
+      - 'migrations/*.sql'
   pull_request:
     paths:
       - 'app.js'
@@ -91,6 +93,7 @@ on:
       - 'scripts/final-result-verifier.js'
       - 'scripts/final-result-verifier-needed.js'
       - 'scripts/test-final-result-verifier.js'
+      - 'scripts/test-final-result-verifier-ledger.js'
       - 'scripts/test-final-result-verifier-needed.js'
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
@@ -113,6 +116,7 @@ on:
       - '.github/workflows/manual-match-results.yml'
       - '.github/workflows/publish-world-cup-stories-prepared.yml'
       - '.github/workflows/test-scoring.yml'
+      - 'migrations/*.sql'
   workflow_dispatch:
 
 jobs:
@@ -164,6 +168,8 @@ jobs:
         run: node scripts/test-final-result-verifier-needed.js
       - name: Run final-result verifier tests
         run: node scripts/test-final-result-verifier.js
+      - name: Run final-result verifier ledger tests
+        run: node scripts/test-final-result-verifier-ledger.js
       - name: Run banter engine tests
         run: node scripts/test-banter.js
       - name: Run Pundit feed tests

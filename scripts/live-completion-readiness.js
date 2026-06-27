@@ -438,6 +438,8 @@ async function runReadiness(options = {}) {
     'node scripts/test-live-ux-state.js',
     'node scripts/test-live-state-watchdog.js',
     'node scripts/test-match-display-state.js',
+    'node scripts/test-final-result-verifier.js',
+    'node scripts/test-final-result-verifier-ledger.js',
     'node scripts/test-pundit-client-staleness.js',
     'node scripts/test-generate-pundit-live-state.js',
     'node scripts/test-banter.js',

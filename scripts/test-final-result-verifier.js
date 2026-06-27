@@ -163,6 +163,15 @@ eq('default consensus exposes grouped agreeing source evidence', defaultConsensu
   familyCount: 2,
   sources: ['espn', 'fifa']
 }]);
+eq('source rotation selects one source per bucket', [
+  F.sourcesForRun(new Date('2026-06-11T19:00:00Z'), { mode: 'rotate', sources: ['espn', 'fifa'], rotationMinutes: 15 }),
+  F.sourcesForRun(new Date('2026-06-11T19:15:00Z'), { mode: 'rotate', sources: ['espn', 'fifa'], rotationMinutes: 15 }),
+  F.sourcesForRun(new Date('2026-06-11T19:30:00Z'), { mode: 'rotate', sources: ['espn', 'fifa'], rotationMinutes: 15 })
+], [
+  ['espn'],
+  ['fifa'],
+  ['espn']
+]);
 ok('duplicate ESPN-family confirmations do not count as independent consensus', !F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
   { source: 'espn', update: espnUpdate }

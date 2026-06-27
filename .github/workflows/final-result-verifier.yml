@@ -81,6 +81,10 @@ jobs:
           RESULT_FALLBACK_LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '336' }}
           RESULT_FALLBACK_MIN_SOURCES: 2
           RESULT_FALLBACK_REQUIRED_SOURCES: espn,fifa
+          RESULT_FALLBACK_SOURCES: espn,fifa
+          RESULT_FALLBACK_SOURCE_MODE: ${{ github.event_name == 'schedule' && 'rotate' || 'all' }}
+          RESULT_FALLBACK_ROTATION_MINUTES: 15
+          RESULT_FALLBACK_OBSERVATION_TTL_MINUTES: 180
           RESULT_VERIFICATION_REPORT_PATH: artifacts/final-result-verification-report.json
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
