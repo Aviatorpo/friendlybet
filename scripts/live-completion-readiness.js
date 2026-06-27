@@ -113,6 +113,14 @@ function readLocalMatches() {
   }
 }
 
+function readLocalFairPlayResolutions() {
+  try {
+    return JSON.parse(read(path.join('public-data', 'fair-play-resolutions.json')));
+  } catch (_err) {
+    return { version: 1, status: 'missing', resolutions: [] };
+  }
+}
+
 async function auditPublicSnapshots(snapshots, nowMs, auditOptions = {}) {
   const matches = snapshots && snapshots.matches && Array.isArray(snapshots.matches.matches)
     ? snapshots.matches.matches
@@ -129,11 +137,17 @@ async function auditPublicSnapshots(snapshots, nowMs, auditOptions = {}) {
 
 async function loadPublicSnapshots(baseUrl, fetchImpl) {
   const base = normalizeBaseUrl(baseUrl);
-  return {
+  const snapshots = {
     matches: await fetchJson(`${base}/public-data/matches.json`, fetchImpl),
     pundit: await fetchJson(`${base}/public-data/pundit.json`, fetchImpl),
     stories: await fetchJson(`${base}/public-data/world-cup-stories.json`, fetchImpl),
   };
+  try {
+    snapshots.fairPlay = await fetchJson(`${base}/public-data/fair-play-resolutions.json`, fetchImpl);
+  } catch (_err) {
+    snapshots.fairPlay = { version: 1, status: 'missing', resolutions: [] };
+  }
+  return snapshots;
 }
 
 async function fetchSupabaseMatches(config, fetchImpl = globalThis.fetch) {
@@ -313,8 +327,8 @@ function workflowLivenessDetail(liveness, workflowWindowDetail) {
   return `latest=${latest}, age=${age}, ${workflowWindowDetail}${suffix}`;
 }
 
-function summarizeOfficialKnockoutReadiness(matches) {
-  const seed = WCR.lateKnockoutSeedFromMatches(matches || [], { strict: true });
+function summarizeOfficialKnockoutReadiness(matches, fairPlayResolutions = null) {
+  const seed = WCR.lateKnockoutSeedFromMatches(matches || [], { strict: true, fairPlayResolutions });
   if (!seed || !seed.ok) {
     const state = seed && seed.state;
     const complete = state && Array.isArray(state.completeGroups) ? state.completeGroups.length : 0;
@@ -340,6 +354,7 @@ async function runReadiness(options = {}) {
   const checks = [];
   const warnings = [];
   const nowMs = (options.auditOptions && options.auditOptions.nowMs) || Date.now();
+  let fairPlayResolutions = options.fairPlayResolutions || readLocalFairPlayResolutions();
   const baseAuditOptions = {
     ...(options.auditOptions || {}),
     ignoreSnapshotLiveStatus: (options.auditOptions || {}).ignoreSnapshotLiveStatus !== false,
@@ -435,6 +450,7 @@ async function runReadiness(options = {}) {
     'node scripts/test-scoring.js',
     'node scripts/test-live-ops-audit.js',
     'node scripts/live-ops-audit.js',
+    'node scripts/test-fair-play-resolver.js',
     'node scripts/test-live-ux-state.js',
     'node scripts/test-live-state-watchdog.js',
     'node scripts/test-match-display-state.js',
@@ -472,6 +488,7 @@ async function runReadiness(options = {}) {
   if (options.publicSnapshots || publicBaseUrl) {
     try {
       const snapshots = options.publicSnapshots || await loadPublicSnapshots(publicBaseUrl, options.fetch);
+      if (snapshots.fairPlay) fairPlayResolutions = snapshots.fairPlay;
       workflowContextMatches = Array.isArray(snapshots && snapshots.matches && snapshots.matches.matches)
         ? snapshots.matches.matches
         : workflowContextMatches;
@@ -511,7 +528,7 @@ async function runReadiness(options = {}) {
       add(checks, 'live DB matches are readable', dbMatches.length > 0, `matches=${dbMatches.length}`);
       add(checks, 'live DB match audit is green', dbAudit.ok, `recovery=${dbAudit.result_recovery.candidates}, errors=${dbAudit.watchdog.errors.length}`);
       add(checks, 'live DB active match state is fresh', liveDb.freshness.stale === 0, `active=${liveDb.freshness.active}, stale=${liveDb.freshness.stale}${liveDb.freshness.sample.length ? `, sample=${liveDb.freshness.sample.join('; ')}` : ''}`);
-      const officialBracket = summarizeOfficialKnockoutReadiness(dbMatches);
+      const officialBracket = summarizeOfficialKnockoutReadiness(dbMatches, fairPlayResolutions);
       liveDb.official_knockout_readiness = officialBracket;
       add(checks, 'official knockout bracket is exact when groups are complete', !officialBracket.active || officialBracket.ok, officialBracket.detail);
     } catch (err) {

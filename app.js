@@ -8924,12 +8924,31 @@ async function _loadOfficialGroupMatchesForBracket() {
   return data || [];
 }
 
+let _fairPlayResolutionCache = { loadedAt: 0, payload: null };
+async function _loadFairPlayResolutionsForBracket() {
+  const now = Date.now();
+  if (_fairPlayResolutionCache.payload && now - _fairPlayResolutionCache.loadedAt < 60 * 1000) {
+    return _fairPlayResolutionCache.payload;
+  }
+  try {
+    const res = await fetch('/public-data/fair-play-resolutions.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error(`fair-play snapshot ${res.status}`);
+    const payload = await res.json();
+    _fairPlayResolutionCache = { loadedAt: now, payload };
+    return payload;
+  } catch (err) {
+    console.warn('fair-play resolutions unavailable:', err);
+    return { version: 1, status: 'missing', resolutions: [] };
+  }
+}
+
 async function _officialKnockoutReadiness() {
   if (!window.FBWorldCupRules || !supabaseClient) {
     return { ok: false, reason: 'rules-or-db-missing' };
   }
   const matches = await _loadOfficialGroupMatchesForBracket();
-  const seed = window.FBWorldCupRules.lateKnockoutSeedFromMatches(matches, { strict: true });
+  const fairPlayResolutions = await _loadFairPlayResolutionsForBracket();
+  const seed = window.FBWorldCupRules.lateKnockoutSeedFromMatches(matches, { strict: true, fairPlayResolutions });
   if (!seed || !seed.ok) return seed || { ok: false, reason: 'groups-incomplete' };
   const assignment = _spMatchThirdPlace(seed.thirdPlaceAdvancers || []);
   if (!assignment) {
@@ -8961,12 +8980,19 @@ async function updateKnockoutStatusOnDashboard() {
 
   const koLabel = t('dashboard.status.knockout');
   if (!groupStageDone) {
+    const unresolved = Array.isArray(readiness && readiness.unresolved) ? readiness.unresolved : [];
+    const waitingOnFairPlay = unresolved.some(item => /fair-play|conduct/i.test(String(item && item.type || '')));
+    const verifyingBracket = readiness && readiness.reason === 'needs_verification';
     // Still locked - group stage hasn't finished in the real tournament yet
     koCard.className = 'bet-status-card locked';
     const titleEl = koCard.querySelector('.bet-status-title');
     const subtitleEl = koCard.querySelector('.bet-status-subtitle');
     if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> ' + koLabel;
-    if (subtitleEl) subtitleEl.textContent = t('dashboard.status.afterGroups');
+    if (subtitleEl) {
+      subtitleEl.textContent = waitingOnFairPlay
+        ? t('dashboard.status.fairPlayDelay')
+        : (verifyingBracket ? t('dashboard.status.verifyingBracket') : t('dashboard.status.afterGroups'));
+    }
 
     // Remove any button
     const existingBtn = koCard.querySelector('button');

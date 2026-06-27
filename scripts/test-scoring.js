@@ -121,6 +121,19 @@ console.log('\n== unit: scoreCalcTimestampFresh ==');
 // Final standings per group = [<L>1,<L>2,<L>3,<L>4]; each 3rd has pts3 gd-1 gf1.
 const LETTERS = 'ABCDEFGHIJKL'.split('');
 const groupMatches = [];
+const syntheticConductScores = {};
+LETTERS.forEach((L, idx) => {
+  syntheticConductScores[`${L}3`] = 100 - idx;
+});
+process.env.FAIR_PLAY_RESOLUTIONS_JSON = JSON.stringify({
+  version: 1,
+  status: 'ready',
+  resolutions: [{
+    id: 'test-third-place-cutoff',
+    status: 'consensus_resolved',
+    conductScores: syntheticConductScores
+  }]
+});
 for (const L of LETTERS) {
   const t = [L+'1', L+'2', L+'3', L+'4'];
   const pairs = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
@@ -129,7 +142,8 @@ for (const L of LETTERS) {
       home_team_code:t[i], away_team_code:t[j], home_score:1, away_score:0, status:'FINISHED' });
   }
 }
-// best-8 thirds: all 3rds identical -> alphabetical -> A3..H3 advance, I3..L3 don't.
+// best-8 thirds: all 3rds identical on points/GD/GF; the resolver snapshot above
+// supplies conduct scores so A3..H3 advance and I3..L3 don't.
 
 // Knockout matches (note TWO penalty-decided: a R32 and the FINAL).
 const koMatches = [

@@ -44,8 +44,8 @@ function buildIncidentText(payload) {
   lines.push('');
   lines.push('What to do:');
   lines.push('1. Open the failed GitHub Actions run for live-completion-readiness.');
-  lines.push('2. If the group stage is complete, verify live Supabase matches, fair-play/team-conduct tie data, and the Annex C third-place combination.');
-  lines.push('3. Do not manually tell users knockout is open until the official bracket check is green.');
+  lines.push('2. The automated readiness/resolver workflows will keep retrying; keep knockout closed until the official bracket check is green.');
+  lines.push('3. Do not manually tell users knockout is open while fair-play/team-conduct or Annex C readiness is blocked.');
   return short(lines.join('\n'));
 }
 

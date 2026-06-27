@@ -61,18 +61,59 @@
     return Number.isFinite(n) ? n : fallback;
   }
 
-  function _conductValue(row) {
+  function _validConductCode(code) {
+    return /^[A-Z0-9]{2,4}$/.test(String(code || ''));
+  }
+
+  const RESOLVED_FAIR_PLAY_STATUSES = new Set([
+    'official',
+    'official_resolved',
+    'consensus_fallback',
+    'consensus_resolved',
+    'conduct_equal_use_fifa_ranking'
+  ]);
+
+  function _resolvedConductScores(options = {}) {
+    const out = {};
+    const direct = options.conductScores || options.fairPlayConductScores || null;
+    if (direct && typeof direct === 'object') {
+      Object.entries(direct).forEach(([code, value]) => {
+        const n = Number(value);
+        if (_validConductCode(code) && Number.isFinite(n)) out[String(code)] = n;
+      });
+    }
+    const payload = options.fairPlayResolutions || options.fair_play_resolutions || null;
+    const rows = Array.isArray(payload) ? payload : (payload && Array.isArray(payload.resolutions) ? payload.resolutions : []);
+    rows.forEach(row => {
+      const status = String(row && row.status || '').toLowerCase();
+      if (!RESOLVED_FAIR_PLAY_STATUSES.has(status)) return;
+      const scores = row && row.conductScores;
+      if (!scores || typeof scores !== 'object') return;
+      Object.entries(scores).forEach(([code, value]) => {
+        const n = Number(value);
+        if (_validConductCode(code) && Number.isFinite(n)) out[String(code)] = n;
+      });
+    });
+    return out;
+  }
+
+  function _conductValue(row, conductScores = {}) {
     const keys = ['team_conduct_score', 'fair_play_score', 'conduct_points', 'fair_play_points'];
     for (const key of keys) {
       if (row && row[key] != null && Number.isFinite(Number(row[key]))) return Number(row[key]);
     }
+    const resolved = conductScores && row && conductScores[row.code];
+    if (resolved != null && Number.isFinite(Number(resolved))) return Number(resolved);
     return null;
   }
 
-  function _buildStats(matches, groupTeams) {
+  function _buildStats(matches, groupTeams, options = {}) {
+    const conductScores = _resolvedConductScores(options);
     const stats = {};
     (groupTeams || []).forEach((code, seed) => {
+      const conduct = conductScores[code];
       stats[code] = { code, played:0, wins:0, draws:0, losses:0, gf:0, ga:0, gd:0, points:0, seed, fifa_rank:fifaRankOf(code) };
+      if (conduct != null && Number.isFinite(Number(conduct))) stats[code].team_conduct_score = Number(conduct);
     });
     (matches || []).forEach(m => {
       const h = stats[m && m.home_team_code];
@@ -119,7 +160,8 @@
 
   function computeGroupStandingsDetailed(matches, groupTeams, options = {}) {
     const strict = options.strict !== false;
-    const stats = _buildStats(matches, groupTeams);
+    const conductScores = _resolvedConductScores(options);
+    const stats = _buildStats(matches, groupTeams, options);
     const rows = Object.values(stats);
     const unresolved = [];
 
@@ -139,14 +181,14 @@
         (ht[b.code].pts - ht[a.code].pts) ||
         (ht[b.code].gd - ht[a.code].gd) ||
         (ht[b.code].gf - ht[a.code].gf) ||
-        ((_conductValue(b) ?? 0) - (_conductValue(a) ?? 0)) ||
+        ((_conductValue(b, conductScores) ?? 0) - (_conductValue(a, conductScores) ?? 0)) ||
         (fifaRankOf(a.code) - fifaRankOf(b.code)) ||
         (a.seed - b.seed)
       );
       for (let k = 0; k < chunk.length;) {
         let l = k + 1;
         while (l < chunk.length && _sameGroupRank(chunk[k], chunk[l], ht)) l++;
-        if (l - k > 1 && strict && chunk.slice(k, l).some(r => _conductValue(r) == null)) {
+        if (l - k > 1 && strict && chunk.slice(k, l).some(r => _conductValue(r, conductScores) == null)) {
           unresolved.push({
             type: 'group-fair-play-needed',
             teams: chunk.slice(k, l).map(r => r.code)
@@ -166,12 +208,13 @@
 
   function rankThirdPlacedTeamsDetailed(thirds, options = {}) {
     const strict = options.strict !== false;
+    const conductScores = _resolvedConductScores(options);
     const rows = (thirds || []).slice();
     rows.sort((a, b) =>
       (_num(b.points) - _num(a.points)) ||
       (_num(b.gd) - _num(a.gd)) ||
       (_num(b.gf) - _num(a.gf)) ||
-      ((_conductValue(b) ?? 0) - (_conductValue(a) ?? 0)) ||
+      ((_conductValue(b, conductScores) ?? 0) - (_conductValue(a, conductScores) ?? 0)) ||
       (fifaRankOf(a.code) - fifaRankOf(b.code))
     );
     let unresolved = [];
@@ -179,7 +222,7 @@
       const cutA = rows[7], cutB = rows[8];
       if (cutA && cutB && cutA.points === cutB.points && cutA.gd === cutB.gd && cutA.gf === cutB.gf) {
         const tied = rows.filter(r => r.points === cutA.points && r.gd === cutA.gd && r.gf === cutA.gf);
-        if (tied.some(r => _conductValue(r) == null)) {
+        if (tied.some(r => _conductValue(r, conductScores) == null)) {
           unresolved = [{ type:'third-place-fair-play-needed', teams:tied.map(r => r.code), groups:tied.map(r => r.group).filter(Boolean) }];
         }
       }
@@ -217,7 +260,7 @@
       const officialTeams = WC2026_GROUPS[letter] || [];
       const groupTeams = officialTeams.every(code => fromMatches.has(code)) ? officialTeams : Array.from(fromMatches);
       if (groupTeams.length !== 4) continue;
-      const detail = computeGroupStandingsDetailed(terminal, groupTeams, { strict });
+      const detail = computeGroupStandingsDetailed(terminal, groupTeams, { ...options, strict });
       if (detail.unresolved.length) unresolved.push(...detail.unresolved.map(u => ({ ...u, group: letter })));
       const rows = detail.standings;
       standings[letter] = rows.map(s => s.code);
@@ -231,7 +274,7 @@
     let realBest8Thirds = null;
     let thirdPlaceGroups = [];
     if (Object.values(thirdStats).filter(Boolean).length === 12) {
-      const ranked = rankThirdPlacedTeamsDetailed(Object.values(thirdStats), { strict });
+      const ranked = rankThirdPlacedTeamsDetailed(Object.values(thirdStats), { ...options, strict });
       if (ranked.unresolved.length) unresolved.push(...ranked.unresolved);
       if (ranked.status === 'ready' || !strict) {
         realBest8Thirds = new Set(ranked.best8.map(s => s.code));
@@ -277,6 +320,7 @@
     computeGroupStandings,
     rankThirdPlacedTeamsDetailed,
     buildGroupState,
-    lateKnockoutSeedFromMatches
+    lateKnockoutSeedFromMatches,
+    resolvedConductScores: _resolvedConductScores
   };
 });
