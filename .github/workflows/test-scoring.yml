@@ -129,6 +129,8 @@ jobs:
         run: node scripts/check-destructive-sql.js
       - name: Run scoring tests
         run: node scripts/test-scoring.js
+      - name: Run World Cup rules tests
+        run: node scripts/test-world-cup-rules.js
       - name: Run smart-sync window tests
         run: node scripts/test-smart-sync.js
       - name: Run sync transform tests

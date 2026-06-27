@@ -47,6 +47,8 @@ jobs:
           LIVE_COMPLETION_GITHUB_WORKFLOWS: '1'
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_ADMIN_CHAT_ID: ${{ secrets.TELEGRAM_ADMIN_CHAT_ID }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           set +e
@@ -65,6 +67,7 @@ jobs:
           stale_live_db=$(node -e "const r=require('./readiness-before.json'); const c=(r.checks||[]).find(x=>x.name==='live DB active match state is fresh'); process.stdout.write(c && !c.ok ? '1' : '0')")
           stale_live_poller=$(node -e "const r=require('./readiness-before.json'); const c=(r.checks||[]).find(x=>x.name==='live poller workflow ran recently'); process.stdout.write(c && !c.ok ? '1' : '0')")
           if [ "$stale_live_db" != "1" ] && [ "$stale_live_poller" != "1" ]; then
+            node scripts/send-telegram-incident.js readiness-before.json || true
             exit "$status"
           fi
 
@@ -72,8 +75,16 @@ jobs:
           node scripts/live-poller.js
           export LIVE_COMPLETION_LOCAL_POLLER_RECOVERY_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
+          set +e
           if [ "${{ github.event.inputs.check_db || 'true' }}" = "false" ]; then
-            node scripts/live-completion-readiness.js
+            node scripts/live-completion-readiness.js > readiness-after.json
           else
-            LIVE_COMPLETION_DB_SOURCE=supabase node scripts/live-completion-readiness.js
+            LIVE_COMPLETION_DB_SOURCE=supabase node scripts/live-completion-readiness.js > readiness-after.json
+          fi
+          status_after=$?
+          cat readiness-after.json
+          set -e
+          if [ "$status_after" != "0" ]; then
+            node scripts/send-telegram-incident.js readiness-after.json || true
+            exit "$status_after"
           fi

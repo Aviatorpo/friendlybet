@@ -66,6 +66,9 @@ const FIFA_RANKINGS = {
 function fifaRankOf(code){ return FIFA_RANKINGS[code] ?? 999; }
 
 function computeGroupStandings(matches, groupTeams){
+  if (window.FBWorldCupRules && typeof window.FBWorldCupRules.computeGroupStandings === 'function') {
+    return window.FBWorldCupRules.computeGroupStandings(matches, groupTeams, { strict: true });
+  }
   const stats = {};
   groupTeams.forEach(code => {
     stats[code] = { code, played:0, wins:0, draws:0, losses:0, gf:0, ga:0, gd:0, points:0 };
@@ -126,6 +129,10 @@ function computeGroupStandings(matches, groupTeams){
 }
 
 function lateKnockoutSeedFromMatches(matches){
+  if (window.FBWorldCupRules && typeof window.FBWorldCupRules.lateKnockoutSeedFromMatches === 'function') {
+    const seed = window.FBWorldCupRules.lateKnockoutSeedFromMatches(matches, { strict: true });
+    return seed && seed.ok ? { groupPositions: seed.groupPositions, thirdPlaceAdvancers: seed.thirdPlaceAdvancers } : null;
+  }
   const groupPositions = {};
   const thirds = [];
   for (const letter of WC2026_GROUP_LETTERS) {

@@ -11,6 +11,7 @@ const HAD_SUPABASE_SECRET_KEY = !!process.env.SUPABASE_SECRET_KEY;
 process.env.SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY || LOCAL_SUPABASE_SECRET_KEY;
 
 const LiveOpsAudit = require('./live-ops-audit');
+const WCR = require('../share-assets/world-cup-rules.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const GROUP_STAGE_START_MS = Date.parse('2026-06-11T00:00:00Z');
@@ -312,6 +313,29 @@ function workflowLivenessDetail(liveness, workflowWindowDetail) {
   return `latest=${latest}, age=${age}, ${workflowWindowDetail}${suffix}`;
 }
 
+function summarizeOfficialKnockoutReadiness(matches) {
+  const seed = WCR.lateKnockoutSeedFromMatches(matches || [], { strict: true });
+  if (!seed || !seed.ok) {
+    const state = seed && seed.state;
+    const complete = state && Array.isArray(state.completeGroups) ? state.completeGroups.length : 0;
+    return {
+      ok: false,
+      active: complete === 12,
+      reason: (seed && seed.reason) || 'groups-incomplete',
+      detail: `completeGroups=${complete}/12${seed && seed.unresolved && seed.unresolved.length ? ` unresolved=${JSON.stringify(seed.unresolved).slice(0, 240)}` : ''}`
+    };
+  }
+  const key = (seed.thirdPlaceAdvancers || []).slice().sort().join('');
+  const annex = read('third-place-allocation.js');
+  const ok = key.length === 8 && annex.includes(`"${key}"`);
+  return {
+    ok,
+    active: true,
+    reason: ok ? 'ready' : 'annex-c-missing',
+    detail: `thirdPlaceGroups=${key || 'missing'}`
+  };
+}
+
 async function runReadiness(options = {}) {
   const checks = [];
   const warnings = [];
@@ -343,8 +367,9 @@ async function runReadiness(options = {}) {
   );
 
   const scoring = read('scripts/calculate-scores-v2.js');
-  add(checks, 'scoring excludes provider-pending finals', /filter\(isTerminalMatch\)/.test(scoring) && /isPendingProviderFinal/.test(scoring), 'finished matches must use isTerminalMatch');
-  add(checks, 'group completion requires exactly six unique fixtures', /terminalMatches\.length\s*===\s*6/.test(scoring) && /terminalFixtures\.size\s*===\s*6/.test(scoring), 'no 5-match, duplicate, or 7-row groups');
+  const rules = read('share-assets/world-cup-rules.js');
+  add(checks, 'scoring excludes provider-pending finals', (/filter\(isTerminalMatch\)/.test(scoring) || /WCR\.isTerminalMatch/.test(scoring)) && /isPendingProviderFinal/.test(rules), 'finished matches must use shared terminal-match rules');
+  add(checks, 'group completion requires exactly six unique fixtures', (/terminalMatches\.length\s*===\s*6/.test(scoring) || /WCR\.groupIsComplete/.test(scoring)) && /terminalMatches\.length\s*===\s*6/.test(rules) && /terminalFixtures\.size\s*===\s*6/.test(rules), 'no 5-match, duplicate, or 7-row groups');
 
   const app = read('app.js');
   add(checks, 'pool Pundit invite buzz is gated by effective open state', /const poolOpenForNewBuzz\s*=\s*!poolLocked\s*&&\s*\(lateEntryOpen\s*\|\|\s*!tournamentStarted\)/.test(app), 'join/share copy must not leak after kickoff');
@@ -483,6 +508,9 @@ async function runReadiness(options = {}) {
       add(checks, 'live DB matches are readable', dbMatches.length > 0, `matches=${dbMatches.length}`);
       add(checks, 'live DB match audit is green', dbAudit.ok, `recovery=${dbAudit.result_recovery.candidates}, errors=${dbAudit.watchdog.errors.length}`);
       add(checks, 'live DB active match state is fresh', liveDb.freshness.stale === 0, `active=${liveDb.freshness.active}, stale=${liveDb.freshness.stale}${liveDb.freshness.sample.length ? `, sample=${liveDb.freshness.sample.join('; ')}` : ''}`);
+      const officialBracket = summarizeOfficialKnockoutReadiness(dbMatches);
+      liveDb.official_knockout_readiness = officialBracket;
+      add(checks, 'official knockout bracket is exact when groups are complete', !officialBracket.active || officialBracket.ok, officialBracket.detail);
     } catch (err) {
       add(checks, 'live DB matches are readable', false, err.message);
     }

@@ -327,6 +327,19 @@ function resultCommentary(match, salt = '') {
 const FIXTURE_CONSEQUENCE_EN = /\b(table|tables|group|prediction|predictions|predictors|pool|pools|pick|picks|picked|safe|sweating|points|qualify|qualification|places)\b/i;
 const FIXTURE_CONSEQUENCE_HE = /(?:בית|בתים|תחזית|תחזיות|הימור|הימורים|נקודות|מקום|מקומות|עלייה|טבלה)/u;
 
+function withResultConsequence(text) {
+  const he = String((text && text.he) || '').trim();
+  const en = String((text && text.en) || '').trim();
+  return {
+    he: FIXTURE_CONSEQUENCE_HE.test(he)
+      ? he
+      : `${he.replace(/[.。]\s*$/, '')}. זה משנה נקודות, הימורים ואת תמונת הבית.`,
+    en: FIXTURE_CONSEQUENCE_EN.test(en)
+      ? en
+      : `${en.replace(/[.。]\s*$/, '')}. It still matters for table places, picks, and pool points.`,
+  };
+}
+
 function withFixtureConsequence(text) {
   const he = String((text && text.he) || '').trim();
   const en = String((text && text.en) || '').trim();
@@ -488,7 +501,7 @@ function build(now, options = {}) {
     .sort((x, y) => Date.parse(y.match_date) - Date.parse(x.match_date))
     .slice(0, 10);
   for (const [idx, m] of finished.entries()) {
-    const text = resultCommentary(m, idx);
+    const text = withResultConsequence(resultCommentary(m, idx));
     items.push({ id: `result-${m.id}`, type: 'result', confidence: 'confirmed', he: text.he, en: text.en, sources: [], expires_at: iso(Date.parse(m.match_date) + RESULT_WINDOW_MS) });
   }
 

@@ -13,6 +13,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.s
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 const SUPABASE_FETCH_TIMEOUT_MS = Number(process.env.SCORING_SUPABASE_FETCH_TIMEOUT_MS || 30000);
 const SCORING_VERBOSE = process.env.SCORING_VERBOSE !== '0';
+const WCR = require('../share-assets/world-cup-rules.js');
 
 function scoringDetail(...args) {
   if (SCORING_VERBOSE) console.log(...args);
@@ -194,6 +195,8 @@ async function sbAll(table, query = '', pageSize = REST_PAGE_SIZE) {
 
 // ---- Compute actual group standings from finished group_stage matches ----
 function computeGroupStandings(matches, groupTeams) {
+  return WCR.computeGroupStandings(matches, groupTeams, { strict: true });
+/*
   // Build per-team stats
   const stats = {};
   groupTeams.forEach(code => {
@@ -253,6 +256,7 @@ function computeGroupStandings(matches, groupTeams) {
     result.push(...tied); i = j;
   }
   return result;
+*/
 }
 
 // A 4-team group is a 6-match round robin. It is SETTLED only when all its matches
@@ -262,34 +266,16 @@ function computeGroupStandings(matches, groupTeams) {
 // still-running final match, then flip when it actually finished. (fix 2026-06-10)
 const TERMINAL_MATCH_STATUS = new Set(['FINISHED', 'AWARDED']);
 function isPendingProviderFinal(m) {
-  const source = String((m && m.live_source) || '').toLowerCase();
-  const detail = String((m && m.status_detail) || '').toLowerCase();
-  return source === 'espn-final' || detail.includes('pending verification');
+  return WCR.isPendingProviderFinal(m);
 }
 function isTerminalMatch(m) {
-  return !!m && TERMINAL_MATCH_STATUS.has(String(m.status || '').toUpperCase()) && !isPendingProviderFinal(m);
+  return WCR.isTerminalMatch(m);
 }
 function groupMatchIdentity(m) {
-  if (!m) return '';
-  const group = String(m.group_letter || m.group || '');
-  const date = String(m.match_date || '');
-  const home = String(m.home_team_code || '');
-  const away = String(m.away_team_code || '');
-  if (home && away) return `group:${group}|teams:${[home, away].sort().join('|')}`;
-  if (m.external_id != null) return `external:${m.external_id}`;
-  if (m.id != null) return `id:${m.id}`;
-  return `${group}|${date}|${home}|${away}`;
+  return WCR.groupMatchIdentity(m);
 }
 function groupIsComplete(matches) {
-  const terminalMatches = (matches || []).filter(isTerminalMatch);
-  const terminalFixtures = new Set();
-  (matches || []).forEach((m, index) => {
-    if (isTerminalMatch(m)) {
-      const identity = groupMatchIdentity(m);
-      terminalFixtures.add(identity || `anonymous-terminal-row:${index}`);
-    }
-  });
-  return terminalMatches.length === 6 && terminalFixtures.size === 6;
+  return WCR.groupIsComplete(matches);
 }
 
 function indexRowsBy(rows, key) {
@@ -304,44 +290,28 @@ function indexRowsBy(rows, key) {
 }
 
 function buildGroupState(matches) {
-  const allGroupMatchesAny = (matches || []).filter(m => m && m.stage === 'GROUP_STAGE');
+  const st = WCR.buildGroupState(matches, { strict: false });
+  if (st.status === 'needs_verification') {
+    scoringWarn('[buildGroupState] official ranking needs fair-play/team-conduct verification:', JSON.stringify(st.unresolved));
+  }
   const groupCodes = {};
-  const standings = {};
-  const thirdStats = {};
-  const advanced = new Set();
-
-  allGroupMatchesAny.forEach(m => {
+  (st.allGroupMatchesAny || []).forEach(m => {
     const letter = m.group_letter || m.group;
     if (!letter) return;
     if (!groupCodes[letter]) groupCodes[letter] = new Set();
     if (m.home_team_code) groupCodes[letter].add(m.home_team_code);
     if (m.away_team_code) groupCodes[letter].add(m.away_team_code);
   });
-
-  Object.keys(groupCodes).forEach(letter => {
-    const teams = [...groupCodes[letter]];
-    if (teams.length !== 4) {
-      scoringWarn(`  group ${letter} has ${teams.length} teams (expected 4) - SKIPPED, will not score: ${teams.join(',')}`);
-      return;
-    }
-    const groupMatches = allGroupMatchesAny.filter(m => (m.group_letter || m.group) === letter);
-    if (!groupIsComplete(groupMatches)) return;
-    const orderedStats = computeGroupStandings(groupMatches.filter(isTerminalMatch), teams);
-    standings[letter] = orderedStats.map(s => s.code);
-    thirdStats[letter] = orderedStats[2];
-    advanced.add(orderedStats[0].code);
-    advanced.add(orderedStats[1].code);
-  });
-
-  let realBest8Thirds = null;
-  if (Object.keys(thirdStats).length === 12) {
-    const thirds = Object.values(thirdStats).slice().sort((x, y) =>
-      (y.points - x.points) || (y.gd - x.gd) || (y.gf - x.gf) || x.code.localeCompare(y.code));
-    realBest8Thirds = new Set(thirds.slice(0, 8).map(s => s.code));
-    thirds.slice(0, 8).forEach(s => advanced.add(s.code));
-  }
-
-  return { allGroupMatchesAny, groupCodes, standings, thirdStats, realBest8Thirds, advanced };
+  return {
+    allGroupMatchesAny: st.allGroupMatchesAny,
+    groupCodes,
+    standings: st.standings,
+    thirdStats: st.thirdStats,
+    realBest8Thirds: st.realBest8Thirds,
+    advanced: st.advanced,
+    status: st.status,
+    unresolved: st.unresolved
+  };
 }
 
 function scoreNumber(value) {
