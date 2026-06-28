@@ -125,7 +125,11 @@ const HE_FIXTURE_CONSEQUENCE = /(?:בית|בתים|תחזית|תחזיות|הי�
   const phase = items.find(item => item.id === 'phase-groups-complete-knockout-open');
   assert.ok(phase, 'Feed should include a group-complete knockout-open phase item');
   assert.ok(phase.en.includes('all 12 groups are final'), 'Phase item must say the groups are final');
+  assert.ok(phase.en.includes('two-phase') && phase.en.includes('one-phase'), 'Phase item must not claim the knockout window is open for every pool mode');
   assert.ok(phase.en.includes('July 4') && phase.en.includes('08:00 PM'), 'Phase item must include the exact knockout deadline');
+  const knockoutWindow = items.find(item => item.id === 'phase-knockout-window');
+  assert.ok(knockoutWindow, 'Feed should include a two-phase/knockout window card');
+  assert.deepStrictEqual(knockoutWindow.mode_scopes, ['two_phase', 'late_knockout'], 'Knockout-window card must be hidden from one-phase pools');
   assert.ok(items.filter(item => item.type === 'phase').length >= 4, 'Post-groups feed should be a phase-aware desk, not one token line');
   assert.ok(!items.some(item => item.type === 'result'), 'Post-groups feed must not rotate old group-stage result cards');
 }

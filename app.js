@@ -1924,6 +1924,18 @@ function resetPunditState() {
   _punditState.pool = null;
 }
 
+function _punditItemAllowedForPoolMode(item, poolMode) {
+  if (!item || !poolMode) return true;
+  const scopes = Array.isArray(item.mode_scopes) ? item.mode_scopes : [];
+  if (scopes.length) return scopes.includes(poolMode);
+  if (poolMode === 'one_phase') {
+    const text = `${item.he || ''} ${item.en || ''}`;
+    if (/knockout picks (stay open|are open)|editable until|next picks are knockout picks/i.test(text)) return false;
+    if (/ההימור על הנוקאאוט פתוח|ניתן לעריכה עד|הבחירות הבאות הן נוקאאוט/.test(text)) return false;
+  }
+  return true;
+}
+
 async function loadPundit() {
   try {
     const ctx = _punditCtxKey();
@@ -1957,6 +1969,10 @@ async function loadPundit() {
           .filter(it => it && (it.he || it.en))
           .filter(it => !it.expires_at || Date.parse(it.expires_at) > now);
       }
+    }
+    const poolMode = state.currentPool && state.currentPool.betting_mode;
+    if (poolMode) {
+      globalItems = globalItems.filter(item => _punditItemAllowedForPoolMode(item, poolMode));
     }
 
     // v2.6.79: merge in pool-specific "pool pulse" commentary computed live on

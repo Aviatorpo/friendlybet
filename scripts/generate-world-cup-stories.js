@@ -1214,6 +1214,22 @@ function focusTeam(match, outcome) {
   return outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
 }
 
+function allGroupsComplete(matches) {
+  const byGroup = new Map();
+  for (const match of matches || []) {
+    if (!match || match.stage !== 'GROUP_STAGE') continue;
+    const group = String(match.group_letter || '').trim().toUpperCase();
+    if (!group || match.status !== 'FINISHED' || match.home_score == null || match.away_score == null) continue;
+    const teams = [match.home_team_code, match.away_team_code]
+      .map(code => String(code || '').trim().toUpperCase())
+      .sort();
+    if (!teams[0] || !teams[1]) continue;
+    if (!byGroup.has(group)) byGroup.set(group, new Set());
+    byGroup.get(group).add(teams.join('-'));
+  }
+  return Array.from(byGroup.values()).filter(fixtures => fixtures.size === 6).length >= 12;
+}
+
 function titleCopy(match, outcome) {
   const override = storyOverride(match);
   if (override && override.title) return override.title;
@@ -1792,7 +1808,7 @@ const RECENT_COPY_VARIETY_CLAUSES = {
   caption: {
     he: [
       'ההימור קיבל ויכוח אחר לגמרי.',
-      'הטופס הבא כבר נקרא אחרת.',
+      'הטבלה הרשמית כבר קוראת את זה אחרת.',
       'זה משנה את השיחה על הבית.',
       'בחירות המקום הראשון מרגישות את זה מיד.',
       'הצ\'אט קיבל חומר חדש.',
@@ -1802,7 +1818,7 @@ const RECENT_COPY_VARIETY_CLAUSES = {
     ],
     en: [
       'The pool got a completely different argument.',
-      'The next form reads differently now.',
+      'The official table reads it differently now.',
       'That changes the group conversation.',
       'First-place picks feel it immediately.',
       'The chat just got new material.',
@@ -1870,11 +1886,16 @@ function appendLatestShapeClause(story, match, kind, lang, focusIndex = 0, attem
   const focuses = (story.pool_focuses || []).map((focus, idx) => {
     if (idx !== focusIndex) return focus;
     const prefix = lang === 'he' ? 'he_' : 'en_';
+    const addClause = (value) => withEndingStoryEmoji(
+      `${String(value || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, '')}${safeClause}`,
+      match,
+      outcomeFor(match)
+    );
     return {
       ...focus,
-      [`${prefix}name`]: `${String(focus[`${prefix}name`] || '').replace(/\s+$/, '')}${safeClause}`,
-      [`${prefix}names`]: `${String(focus[`${prefix}names`] || '').replace(/\s+$/, '')}${safeClause}`,
-      [`${prefix}count`]: `${String(focus[`${prefix}count`] || '').replace(/\s+$/, '')}${safeClause}`,
+      [`${prefix}name`]: addClause(focus[`${prefix}name`]),
+      [`${prefix}names`]: addClause(focus[`${prefix}names`]),
+      [`${prefix}count`]: addClause(focus[`${prefix}count`]),
     };
   });
   return { ...story, pool_focus: focuses[0] || story.pool_focus, pool_focuses: focuses };
@@ -1957,6 +1978,167 @@ function buildStory(match, image, outcome) {
     en: { headline: withStoryEmoji(titles.en, match, outcome), caption: withStoryEmoji(captions.en, match, outcome) },
   };
   return applyStoryEmojiDiscipline(applyFallbackEditorialVariety(story, match, outcome), match);
+}
+
+function postGroupStageTitle(match, outcome) {
+  const score = scoreForOutcome(match, outcome);
+  const group = match && match.group_letter ? match.group_letter : 'WC';
+  const homeHe = teamName(match.home_team_code, 'he');
+  const awayHe = teamName(match.away_team_code, 'he');
+  const homeEn = teamName(match.home_team_code, 'en');
+  const awayEn = teamName(match.away_team_code, 'en');
+  if (outcome === 'DRAW') {
+    return storyCopyChoice(match, 'post-group-title-draw', [
+      {
+        he: `${homeHe} ו${awayHe} נפרדו ב-${score}: בית ${group} נסגר`,
+        en: `${homeEn} and ${awayEn} draw ${score}: Group ${group} is settled`,
+      },
+      {
+        he: `${homeHe} ו${awayHe} נפרדו ב-${score}: טבלת בית ${group} סופית`,
+        en: `${homeEn} and ${awayEn} draw ${score}: Group ${group} table is final`,
+      },
+      {
+        he: `${homeHe} ו${awayHe} נפרדו ב-${score}: בית ${group} ננעל`,
+        en: `${homeEn} and ${awayEn} draw ${score}: Group ${group} is locked`,
+      },
+    ]);
+  }
+  const winner = outcome;
+  const loser = winner === match.home_team_code ? match.away_team_code : match.home_team_code;
+  const winnerHe = teamName(winner, 'he');
+  const loserHe = teamName(loser, 'he');
+  const winnerEn = teamName(winner, 'en');
+  const loserEn = teamName(loser, 'en');
+  return storyCopyChoice(match, 'post-group-title-win', [
+    {
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: בית ${group} נסגר`,
+      en: `${winnerEn} beat ${loserEn} ${score}: Group ${group} is settled`,
+    },
+    {
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: טבלת בית ${group} סופית`,
+      en: `${winnerEn} beat ${loserEn} ${score}: Group ${group} table is final`,
+    },
+    {
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: בית ${group} ננעל`,
+      en: `${winnerEn} beat ${loserEn} ${score}: Group ${group} is locked`,
+    },
+    {
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: בית ${group} השאיר קבלות`,
+      en: `${winnerEn} beat ${loserEn} ${score}: Group ${group} left receipts`,
+    },
+  ]);
+}
+
+function postGroupStageCaption(match, outcome) {
+  const score = scoreForOutcome(match, outcome);
+  const group = match && match.group_letter ? match.group_letter : 'WC';
+  if (outcome === 'DRAW') {
+    const homeHe = teamName(match.home_team_code, 'he');
+    const awayHe = teamName(match.away_team_code, 'he');
+    const homeEn = teamName(match.home_team_code, 'en');
+    const awayEn = teamName(match.away_team_code, 'en');
+    return storyCopyChoice(match, 'post-group-caption-draw', [
+      {
+        he: `${score} בין ${homeHe} ל${awayHe} נכנס לטבלה הסופית של בית ${group}. אין עוד תרחישים, רק ניקוד רשמי.`,
+        en: `${score} between ${homeEn} and ${awayEn} is part of Group ${group}'s final table now. No more scenarios, just official points.`,
+      },
+      {
+        he: `התיקו ${score} בין ${homeHe} ל${awayHe} כבר לא פותח ויכוח עתידי. בית ${group} סגור, וההימור חי לפי הקבלות.`,
+        en: `The ${score} draw between ${homeEn} and ${awayEn} is not a future argument anymore. Group ${group} is closed, and pools live with the receipts.`,
+      },
+      {
+        he: `בית ${group} סיים את העבודה עם ${score} בין ${homeHe} ל${awayHe}. הקריאה הנכונה של הטבלה כבר מופיעה בניקוד.`,
+        en: `Group ${group} finished its business with ${score} between ${homeEn} and ${awayEn}. The right table read is already visible in the points.`,
+      },
+    ]);
+  }
+  const winner = outcome;
+  const loser = winner === match.home_team_code ? match.away_team_code : match.home_team_code;
+  const winnerHe = teamName(winner, 'he');
+  const loserHe = teamName(loser, 'he');
+  const winnerEn = teamName(winner, 'en');
+  const loserEn = teamName(loser, 'en');
+  return storyCopyChoice(match, 'post-group-caption-win', [
+    {
+      he: `${winnerHe} לקחה ${score} מול ${loserHe}, ועכשיו זה חלק מטבלת בית ${group} הסופית. אין עוד חישובי בית, רק ניקוד רשמי.`,
+      en: `${winnerEn} took ${score} against ${loserEn}, and now it sits in Group ${group}'s final table. No more group math, just official points.`,
+    },
+    {
+      he: `${score} ל${winnerHe} מול ${loserHe} סגר עוד חתיכה בבית ${group}. פגיעות קיבלו נקודות; פספוסים מחפשים את הבראקט.`,
+      en: `${score} for ${winnerEn} over ${loserEn} closed another piece of Group ${group}. Hits got points; misses are looking to the bracket.`,
+    },
+    {
+      he: `${winnerHe} ניצחה ${score}, ובית ${group} כבר לא סיפור פתוח. הטבלה הרשמית לקחה את המיקרופון.`,
+      en: `${winnerEn} won ${score}, and Group ${group} is no longer an open story. The official table has the microphone now.`,
+    },
+    {
+      he: `${winnerHe} מול ${loserHe}, ${score}, ועכשיו בית ${group} חתום. זה כבר לא תחזית, זו קבלה.`,
+      en: `${winnerEn} over ${loserEn}, ${score}, and Group ${group} is signed off. It is no longer a prediction, it is a receipt.`,
+    },
+  ]);
+}
+
+function postGroupStageFocus(focus, match, outcome) {
+  if (!focus || focus.table !== 'group_position_picks') return focus;
+  const score = scoreForOutcome(match, outcome);
+  const group = match && match.group_letter ? match.group_letter : 'WC';
+  const copy = storyCopyChoice(match, `post-group-focus-${focus.team_code || ''}-${focus.position || 1}`, [
+    {
+      heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, בית ${group} סגור והטופס הזה כבר חי בניקוד הרשמי.`,
+      heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, בית ${group} סגור והטפסים האלה כבר חיים בניקוד הרשמי.`,
+      enName: `{names} picked {team} to top the group. After ${score}, Group ${group} is closed and that form now lives on the official scoreboard.`,
+      enNames: `{names} picked {team} to top the group. After ${score}, Group ${group} is closed and those forms now live on the official scoreboard.`,
+    },
+    {
+      heName: `{names} שם את {team} ראשונה בבית. עכשיו בית ${group} סופי, אז זו כבר לא תקווה - זו קבלה או צלקת.`,
+      heNames: `{names} שמו את {team} ראשונה בבית. עכשיו בית ${group} סופי, אז אלה כבר לא תקוות - אלה קבלות או צלקות.`,
+      enName: `{names} picked {team} to top the group. Group ${group} is final now, so this is no longer hope - it is either a receipt or a scar.`,
+      enNames: `{names} picked {team} to top the group. Group ${group} is final now, so these are no longer hopes - they are receipts or scars.`,
+    },
+    {
+      heName: `{names} שם את {team} ראשונה בבית. בית ${group} ננעל, והבחירה הזאת כבר חלק מהרישום הרשמי.`,
+      heNames: `{names} שמו את {team} ראשונה בבית. בית ${group} ננעל, והבחירות האלה כבר חלק מהרישום הרשמי.`,
+      enName: `{names} picked {team} to top the group. Group ${group} is locked, and that pick is already part of the official record.`,
+      enNames: `{names} picked {team} to top the group. Group ${group} is locked, and those picks are already part of the official record.`,
+    },
+  ]);
+  return {
+    ...focus,
+    he_name: copy.heName,
+    he_names: copy.heNames,
+    he_count: copy.heNames,
+    en_name: copy.enName,
+    en_names: copy.enNames,
+    en_count: copy.enNames,
+  };
+}
+
+function applyPostGroupStageFinalCopy(story, match) {
+  if (!story || !match || match.stage !== 'GROUP_STAGE') return story;
+  const outcome = outcomeFor(match);
+  if (!outcome) return story;
+  const title = postGroupStageTitle(match, outcome);
+  const caption = postGroupStageCaption(match, outcome);
+  const focuses = (Array.isArray(story.pool_focuses) && story.pool_focuses.length
+    ? story.pool_focuses
+    : (story.pool_focus ? [story.pool_focus] : []))
+    .map(focus => postGroupStageFocus(focus, match, outcome))
+    .map(focus => withPoolFocusStoryEmojis(focus, match, outcome));
+  return applyStoryEmojiDiscipline({
+    ...story,
+    pool_focus: focuses[0] || story.pool_focus,
+    pool_focuses: focuses,
+    he: {
+      ...story.he,
+      headline: withStoryEmoji(title.he, match, outcome),
+      caption: withStoryEmoji(caption.he, match, outcome),
+    },
+    en: {
+      ...story.en,
+      headline: withStoryEmoji(title.en, match, outcome),
+      caption: withStoryEmoji(caption.en, match, outcome),
+    },
+  }, match);
 }
 
 function validateStory(story, match) {
@@ -2134,6 +2316,7 @@ async function main() {
   const finished = (matchesPayload.matches || [])
     .filter(match => match && match.status === 'FINISHED' && match.home_score != null && match.away_score != null)
     .sort((a, b) => new Date(a.match_date) - new Date(b.match_date));
+  const postGroupStageComplete = allGroupsComplete(matchesPayload.matches || []);
 
   const addCandidates = ADD_LATEST_MISSING > 0
     ? finished
@@ -2170,12 +2353,17 @@ async function main() {
     .slice(0, MAX_STORIES);
   items = applyLatestStoryShapeVariety(items, matchById);
   items = items.map(story => applyStoryEmojiDiscipline(story, matchById.get(story && story.match_id)));
+  if (postGroupStageComplete) {
+    items = items.map(story => applyPostGroupStageFinalCopy(story, matchById.get(story && story.match_id)));
+    items = applyLatestStoryShapeVariety(items, matchById);
+  }
+  const contentChanged = JSON.stringify(items) !== JSON.stringify(Array.isArray(storiesPayload.items) ? storiesPayload.items : []);
   items.forEach(story => {
     const match = matchById.get(story.match_id);
     if (match) validateStory(story, match);
   });
   const next = {
-    updated_at: additions.length ? new Date().toISOString() : (storiesPayload.updated_at || new Date().toISOString()),
+    updated_at: (additions.length || contentChanged) ? new Date().toISOString() : (storiesPayload.updated_at || new Date().toISOString()),
     items,
   };
   const changed = writeJsonIfChanged(STORIES_PATH, next);
@@ -2214,6 +2402,7 @@ module.exports = {
   scoreForOutcome,
   scoreDash,
   resultText,
+  allGroupsComplete,
   assetSlug,
   outcomeBaseSlug,
   outcomeBaseAsset,
