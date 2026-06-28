@@ -59,10 +59,14 @@
     "537398",
     "537399",
     "537400",
+    "537401",
+    "537402",
     "537403",
     "537404",
     "537405",
     "537406",
+    "537407",
+    "537408",
     "537409",
     "537410",
     "537411",
@@ -1149,7 +1153,34 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-28T06:54:35.419Z",
+      "file": "private-backups/2026-06-28T06-54-35-419Z__537407-COL-POR__537408-COD-UZB__537402-ALG-AUT__537401-JOR-ARG.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "537407",
+        "537408",
+        "537402",
+        "537401"
+      ],
+      "tableCounts": {
+        "pools": 2138,
+        "users": 6573,
+        "group_picks": 22960,
+        "knockout_picks": 97177,
+        "group_position_picks": 175165,
+        "tournament_winner_picks": 3394,
+        "top_scorer_picks": 2953,
+        "sp_third_place_picks": 29146,
+        "pick_backups": 47473,
+        "knockout_reopen_grants": 1707,
+        "matches": 72,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-28T01:44:52.430Z"
+  "updatedAt": "2026-06-28T06:54:35.419Z"
 }
