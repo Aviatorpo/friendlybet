@@ -1595,7 +1595,7 @@ async function updateTwoPhaseIncidentBanner() {
 const FIRST_MATCH_FALLBACK_ISO = '2026-06-11T19:00:00+00:00'; // countdown display fallback
 const POOL_LOCK_KICKOFF_ISO = '2026-06-11T19:00:00.000Z'; // server lock cutoff
 const LATE_ENTRY_CUTOFF_ISO = '2026-06-18T16:00:00.000Z'; // first team second group match
-const KNOCKOUT_LOCK_FALLBACK_ISO = '2026-07-04T17:00:00.000Z'; // first R32 kickoff fallback
+const KNOCKOUT_LOCK_FALLBACK_ISO = '2026-06-28T17:00:00.000Z'; // first R32 kickoff fallback
 let _countdownTimer = null;
 let _countdownKickoffMs = null;
 

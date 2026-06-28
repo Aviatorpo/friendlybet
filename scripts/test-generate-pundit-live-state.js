@@ -126,7 +126,7 @@ const HE_FIXTURE_CONSEQUENCE = /(?:בית|בתים|תחזית|תחזיות|הי�
   assert.ok(phase, 'Feed should include a group-complete knockout-open phase item');
   assert.ok(phase.en.includes('all 12 groups are final'), 'Phase item must say the groups are final');
   assert.ok(phase.en.includes('two-phase') && phase.en.includes('one-phase'), 'Phase item must not claim the knockout window is open for every pool mode');
-  assert.ok(phase.en.includes('July 4') && phase.en.includes('08:00 PM'), 'Phase item must include the exact knockout deadline');
+  assert.ok(phase.en.includes('June 28') && phase.en.includes('08:00 PM'), 'Phase item must include the exact first-knockout deadline');
   const knockoutWindow = items.find(item => item.id === 'phase-knockout-window');
   assert.ok(knockoutWindow, 'Feed should include a two-phase/knockout window card');
   assert.deepStrictEqual(knockoutWindow.mode_scopes, ['two_phase', 'late_knockout'], 'Knockout-window card must be hidden from one-phase pools');

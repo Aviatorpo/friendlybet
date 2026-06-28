@@ -102,6 +102,10 @@ assert(
   /const readiness\s*=\s*await\s+_officialKnockoutReadiness\(\)[\s\S]*buildOfficialTwoPhaseKnockout\(readiness\.seed\)/.test(twoPhaseKnockoutEntry),
   'Two-phase knockout entry must load official readiness before building the real bracket'
 );
+assert(
+  /KNOCKOUT_LOCK_FALLBACK_ISO\s*=\s*'2026-06-28T17:00:00\.000Z'/.test(app),
+  'Knockout fallback lock must be the first knockout kickoff, June 28 20:00 Israel time'
+);
 
 const dashboardStatusSandbox = {
   state: { currentPool: {}, _dashboardKnockoutReviewOpen: false },

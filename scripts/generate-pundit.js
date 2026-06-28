@@ -33,7 +33,7 @@ const OUT_FILE = path.join(DATA_DIR, 'pundit.json');
 // First WC2026 match (UTC). Used as the countdown anchor; overridden by the
 // earliest match in the snapshot when available so we never drift from reality.
 const DEFAULT_KICKOFF = '2026-06-11T19:00:00+00:00';
-const KNOCKOUT_LOCK_ISO = '2026-07-04T17:00:00.000Z';
+const KNOCKOUT_LOCK_ISO = '2026-06-28T17:00:00.000Z';
 const WORLD_CUP_GROUP_COUNT = 12;
 const MAX_ITEMS = 12;
 const HOUR_MS = 60 * 60 * 1000;
