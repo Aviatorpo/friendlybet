@@ -3230,6 +3230,21 @@ async function fetchMatchesFromCDN(maxAgeMs = 25000) {
   } catch (_) { return null; }
 }
 
+let _worldCupScheduleCache = { at: 0, data: null, updatedAt: 0 };
+async function fetchWorldCupScheduleFromCDN(maxAgeMs = 5 * 60 * 1000) {
+  try {
+    if (_worldCupScheduleCache.data && (Date.now() - _worldCupScheduleCache.at) < maxAgeMs) return _worldCupScheduleCache.data;
+    const res = await fetch('/public-data/world-cup-schedule.json', { cache: 'no-store' });
+    if (!res.ok) return null;
+    const j = await res.json();
+    if (!j || !Array.isArray(j.matches) || j.matches.length === 0) return null;
+    const m0 = j.matches[0];
+    if (!m0 || typeof m0.match_number === 'undefined' || typeof m0.status === 'undefined') return null;
+    _worldCupScheduleCache = { at: Date.now(), data: j.matches, updatedAt: Date.parse(j.updatedAt) || 0 };
+    return j.matches;
+  } catch (_) { return null; }
+}
+
 // Defense-in-depth: when a match is live (or its kickoff has passed but it isn't
 // finished yet - e.g. right after kickoff, when the snapshot can still say
 // "upcoming") and the snapshot is older than maxAgeMs, the sync->snapshot->CDN
@@ -10092,6 +10107,8 @@ const matchesState = {
   currentFilter: 'all',
   loading: false,
   lastSync: null,
+  lastScheduleSync: null,
+  shouldAnchor: false,
   // v2.5.37: auto-refresh handles. refreshTimer pulls fresh rows from
   // Supabase every 60s; tickTimer re-renders cards every 20s so the
   // computed live minute updates without a DB round-trip.
@@ -10155,6 +10172,7 @@ function _startMatchesAutoRefresh() {
 async function showMatches() {
   closeMenu();
   showScreen('matches-screen');
+  matchesState.shouldAnchor = matchesState.currentFilter === 'all';
 
   // Show loading
   document.getElementById('matches-loading').style.display = 'block';
@@ -10166,14 +10184,10 @@ async function showMatches() {
 }
 
 async function loadMatches(silent = false) {
-  if (!supabaseClient) {
-    if (!silent) showToast(t('errors.serverConnectingShort'), 'error');
-    return;
-  }
-
   matchesState.loading = true;
 
   try {
+    const officialSchedule = await fetchWorldCupScheduleFromCDN();
     // Pillar 1: prefer the CDN snapshot (edge) over a live DB read during spikes.
     let matches = await fetchMatchesFromCDN();
     // ...but if the snapshot is lagging while a match is live OR still shows an
@@ -10183,7 +10197,7 @@ async function loadMatches(silent = false) {
       console.warn('match snapshot stale for live/past match - reading live from DB');
       matches = null;
     }
-    if (!matches) {
+    if (!matches && supabaseClient) {
       const { data, error } = await supabaseClient
         .from('matches')
         .select('*')
@@ -10197,7 +10211,12 @@ async function loadMatches(silent = false) {
       matches = data || [];
     }
 
-    matchesState.allMatches = matches;
+    if (!matches && !officialSchedule && !supabaseClient) {
+      if (!silent) showToast(t('errors.serverConnectingShort'), 'error');
+      return;
+    }
+
+    matchesState.allMatches = mergeOfficialScheduleWithLiveMatches(officialSchedule, matches || []);
     
     // Find most recent update
     if (matchesState.allMatches.length > 0) {
@@ -10207,6 +10226,7 @@ async function loadMatches(silent = false) {
         .sort()
         .reverse();
       matchesState.lastSync = lastUpdates[0];
+      matchesState.lastScheduleSync = _worldCupScheduleCache.updatedAt || null;
     }
     
     renderMatches();
@@ -10220,13 +10240,97 @@ async function loadMatches(silent = false) {
   }
 }
 
+function _matchIdentityKey(m) {
+  if (!m || !m.match_date || !m.home_team_code || !m.away_team_code) return null;
+  const ts = Date.parse(m.match_date);
+  if (isNaN(ts)) return null;
+  return `${new Date(ts).toISOString()}|${m.home_team_code}|${m.away_team_code}`;
+}
+
+function mergeOfficialScheduleWithLiveMatches(scheduleRows, liveRows) {
+  const official = Array.isArray(scheduleRows) ? scheduleRows.map(m => ({ ...m, display_source: 'fifa' })) : [];
+  if (!official.length) return liveRows || [];
+
+  const byKey = new Map();
+  official.forEach((m, index) => {
+    const key = _matchIdentityKey(m);
+    if (key) byKey.set(key, index);
+  });
+
+  (liveRows || []).forEach(row => {
+    const key = _matchIdentityKey(row);
+    if (!key || !byKey.has(key)) return;
+    const index = byKey.get(key);
+    const liveish = _matchIsLiveStatus(row) || _matchNeedsStatusVerification(row);
+    if (!liveish) return;
+    official[index] = {
+      ...official[index],
+      status: row.status,
+      home_score: row.home_score,
+      away_score: row.away_score,
+      live_clock: row.live_clock,
+      live_period: row.live_period,
+      live_source: row.live_source,
+      source_updated_at: row.source_updated_at,
+      status_detail: row.status_detail,
+      last_updated: row.last_updated || official[index].last_updated,
+      display_source: 'fifa-live-overlay'
+    };
+  });
+
+  return official.sort((a, b) => {
+    const at = Date.parse(a.match_date || '') || 0;
+    const bt = Date.parse(b.match_date || '') || 0;
+    return at - bt || (a.match_number || 0) - (b.match_number || 0);
+  });
+}
+
+function _localDayKey(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function _dayDiffFromToday(date) {
+  const today = new Date();
+  const a = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+  const b = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+  return Math.round((b - a) / 86400000);
+}
+
+function formatMatchDayHeader(date) {
+  const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+  const diff = _dayDiffFromToday(date);
+  if (diff === -1) return t('matchesEx.yesterday');
+  if (diff === 0) return t('matchesEx.today');
+  if (diff === 1) return t('matchesEx.tomorrow');
+  return date.toLocaleDateString(lang === 'he' ? 'he-IL' : 'en-US', { weekday: 'short', day: 'numeric', month: 'short' });
+}
+
+function _matchTimelineAnchorIndex(matches, now = Date.now()) {
+  const futureIndex = matches.findIndex(m => {
+    const ts = Date.parse(m.match_date || '');
+    return !isNaN(ts) && ts >= now - (20 * 60 * 1000);
+  });
+  if (futureIndex >= 0) return futureIndex;
+  for (let i = matches.length - 1; i >= 0; i--) {
+    const ts = Date.parse(matches[i].match_date || '');
+    if (!isNaN(ts) && ts < now) return i;
+  }
+  return 0;
+}
+
 function renderMatches() {
   const list = document.getElementById('matches-list');
   const empty = document.getElementById('matches-empty');
   const updatedText = document.getElementById('matches-last-updated-text');
   
   // Update last sync indicator
-  if (matchesState.lastSync) {
+  if (matchesState.lastScheduleSync) {
+    const date = new Date(matchesState.lastScheduleSync);
+    updatedText.textContent = t('matchesEx.officialUpdated', { time: formatRelativeTime(date) });
+  } else if (matchesState.lastSync) {
     const date = new Date(matchesState.lastSync);
     updatedText.textContent = t('matchesEx.lastUpdated', { time: formatRelativeTime(date) });
   } else {
@@ -10253,18 +10357,62 @@ function renderMatches() {
   
   if (filtered.length === 0) {
     list.style.display = 'flex';
-    list.innerHTML = `<div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.4); font-size: 12px;">${t('matchesEx.noInCategory')}</div>`;
+    list.classList.remove('matches-timeline');
+    list.innerHTML = `<div class="matches-category-empty">${t('matchesEx.noInCategory')}</div>`;
     empty.style.display = 'none';
     return;
   }
   
   empty.style.display = 'none';
   list.style.display = 'flex';
+  list.classList.toggle('matches-timeline', matchesState.currentFilter === 'all');
   list.innerHTML = '';
-  
-  filtered.forEach(match => {
+
+  if (matchesState.currentFilter === 'all') {
+    renderMatchesTimeline(list, filtered);
+  } else {
+    filtered.forEach(match => {
+      list.appendChild(createMatchCard(match));
+    });
+  }
+}
+
+function renderMatchesTimeline(list, matches) {
+  const anchorIndex = _matchTimelineAnchorIndex(matches);
+  let currentDay = null;
+
+  matches.forEach((match, index) => {
+    const date = match.match_date ? new Date(match.match_date) : null;
+    const dayKey = date && !isNaN(date) ? _localDayKey(date) : 'unknown';
+    if (dayKey !== currentDay) {
+      currentDay = dayKey;
+      const header = document.createElement('div');
+      header.className = 'matches-day-header';
+      header.innerHTML = `
+        <span>${date && !isNaN(date) ? formatMatchDayHeader(date) : t('matchesEx.dateUnknown')}</span>
+        <span>${date && !isNaN(date) ? date.toLocaleDateString((typeof getCurrentLanguage === 'function' && getCurrentLanguage() === 'he') ? 'he-IL' : 'en-US', { day: 'numeric', month: 'short' }) : ''}</span>
+      `;
+      list.appendChild(header);
+    }
+
+    if (index === anchorIndex) {
+      const anchor = document.createElement('div');
+      anchor.id = 'matches-current-anchor';
+      anchor.className = 'matches-current-anchor';
+      anchor.textContent = t('matchesEx.currentAnchor');
+      list.appendChild(anchor);
+    }
+
     list.appendChild(createMatchCard(match));
   });
+
+  if (matchesState.shouldAnchor) {
+    matchesState.shouldAnchor = false;
+    requestAnimationFrame(() => {
+      const anchor = document.getElementById('matches-current-anchor');
+      if (anchor) anchor.scrollIntoView({ block: 'center' });
+    });
+  }
 }
 
 function createMatchCard(match) {
@@ -10286,13 +10434,14 @@ function createMatchCard(match) {
   if (isFinished) card.classList.add('finished');
   
   // Get team data
-  const homeFlag = getCountryFlag(match.home_team_code);
-  const awayFlag = getCountryFlag(match.away_team_code);
-  const homeName = getTeamName(match.home_team_code);
-  const awayName = getTeamName(match.away_team_code);
+  const homeFlag = match.home_team_code ? getCountryFlag(match.home_team_code) : '';
+  const awayFlag = match.away_team_code ? getCountryFlag(match.away_team_code) : '';
+  const homeName = match.home_team_code ? getTeamName(match.home_team_code) : (match.home_team_name || getTeamName(match.home_team_code));
+  const awayName = match.away_team_code ? getTeamName(match.away_team_code) : (match.away_team_name || getTeamName(match.away_team_code));
   
   // Stage label
-  const stageLabel = getStageLabel(match.stage, match.group_letter);
+  const stageLabelBase = getStageLabel(match.stage, match.group_letter, match.stage_name);
+  const stageLabel = match.match_number ? `${t('matchesEx.matchNumberShort', { n: match.match_number })} · ${stageLabelBase}` : stageLabelBase;
   
   // Status text
   // Do not show a computed minute from scheduled kickoff. The official feed can
@@ -10358,6 +10507,16 @@ function createMatchCard(match) {
     scoreHtml = `<div class="match-score no-score">${timeStr}</div>`;
   }
   
+  const venueLabel = [
+    match.venue || '',
+    match.city && match.city !== match.venue ? match.city : ''
+  ].filter(Boolean).join(' · ');
+  const dateLabel = match.match_date ? formatMatchDate(match.match_date) : '';
+  const infoParts = [
+    venueLabel ? `<span>${escapeHtml(venueLabel)}</span>` : '',
+    dateLabel ? `<span>${dateLabel}</span>` : ''
+  ].filter(Boolean).join('');
+
   card.innerHTML = `
     <div class="match-header">
       <span class="match-stage-badge">${stageLabel}</span>
@@ -10375,7 +10534,7 @@ function createMatchCard(match) {
       </div>
     </div>
     ${pendingScoreNote}
-    ${match.match_date ? `<div class="match-info">${match.venue ? `<span>${match.venue}</span>` : ''}<span>${formatMatchDate(match.match_date)}</span></div>` : ''}
+    ${infoParts ? `<div class="match-info">${infoParts}</div>` : ''}
   `;
   
   return card;
@@ -10410,15 +10569,17 @@ function getTeamName(code) {
   return code;
 }
 
-function getStageLabel(stage, groupLetter) {
+function getStageLabel(stage, groupLetter, fallbackName) {
   switch (stage) {
     case 'GROUP_STAGE': return t('matchesEx.stageGroup', { letter: groupLetter || '' });
+    case 'ROUND_OF_32': return t('matchesEx.stageR32');
+    case 'ROUND_OF_16': return t('matchesEx.stageR16');
     case 'LAST_16': return t('matchesEx.stageR16');
     case 'QUARTER_FINALS': return t('matchesEx.stageQF');
     case 'SEMI_FINALS': return t('matchesEx.stageSF');
     case 'FINAL': return t('matchesEx.stageFinal');
     case 'THIRD_PLACE': return t('matchesEx.stageThird');
-    default: return stage;
+    default: return fallbackName || stage;
   }
 }
 
