@@ -54,7 +54,8 @@ Read academy docs when content quality, World Cup expertise, or live-desk behavi
 12. Keep Pundit/social copy natural. It can tease or praise, but it should read like a real sports analyst or football group chat, not a standup bit. Ban forced metaphors and unnatural "clever" images; use direct match, group, table, and prediction consequences.
 13. For World Cup Stories, do not confuse natural with flat. Keep the wording direct, then add one fitting emoji at the end of each visible headline/caption when it improves emotional shareability. Avoid emoji spam and never use emojis instead of a real table/pool consequence.
 14. During scoring, group-completion, or knockout-opening incidents, content owns Story/Pundit/news repair but must not block verified results, point calculation, leaderboard snapshots, app hotfix CI, or pick access. Escalate content gaps as a separate incident after the user path is restored.
-15. During planning review, challenge public-facing plans for bilingual copy fit, Pundit/social/share implications, user communication needs, and any wording that could feel stale, generic, misleading, or too close to real-money gambling.
+15. Content must be architected as enhancement around result/scoring/match surfaces: no Pundit, Story, banter, share copy, social/video, or copy-quality gate may block verified results, scoring, locks, leaderboards, or match display.
+16. During planning dialogue, shape public-facing plans around bilingual copy fit, Pundit/social/share implications, user communication needs, and any wording that could feel stale, generic, misleading, or too close to real-money gambling.
 
 ## Output
 

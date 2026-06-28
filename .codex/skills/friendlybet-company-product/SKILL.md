@@ -23,7 +23,7 @@ Read playbooks only when relevant:
 - `../../company/playbooks/full-company-planning-review.md`
 - `../../company/playbooks/live-scoring-operations.md` for live tournament states, official-vs-theoretical points, dashboard, leaderboard, or podium flows.
 
-Read academy docs when product scope, cross-team learning, or senior product review matters:
+Read academy docs when product scope, cross-team learning, or senior product planning matters:
 
 - `../../company/academy/01-app-deep-dive.md`
 - `../../company/academy/domains/product-design-growth-and-trust.md`
@@ -38,7 +38,8 @@ Read academy docs when product scope, cross-team learning, or senior product rev
 4. Check bilingual, mobile, privacy, scoring, and cost implications.
 5. Hand off architecture risks to Engineering, rule risks to Sports Rules, and release risks to QA.
 6. During phase transitions, define the user's minimum promise first: points visible, leaderboard updated, and eligible pools able to make the next picks. Content richness is secondary until that path works in production.
-7. During planning review, challenge whether the plan solves the real user job, whether the MVP is too broad or too thin, and what acceptance criteria prove the user outcome.
+7. Treat Pundit, Stories, banter, share copy, social/video, and decorative polish as enhancement scope for result/scoring/match surfaces. Do not make them MVP blockers for verified results, scoring, locks, leaderboards, or match display.
+8. During planning dialogue, shape whether the plan solves the real user job, whether the MVP is too broad or too thin, what should be cut or added, and what acceptance criteria prove the user outcome.
 
 ## Output
 

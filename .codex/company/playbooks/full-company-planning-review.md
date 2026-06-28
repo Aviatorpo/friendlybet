@@ -1,18 +1,29 @@
-# Playbook: Full Company Planning Review
+# Playbook: Full Company Planning Dialogue
 
-Use this before presenting a meaningful plan to Eyal.
+Use this while forming any meaningful plan for Eyal.
+
+This is not a late signoff checklist. It is the planning process itself.
 
 ## Trigger
 
-Run this cadence when Eyal asks for a plan, program, implementation strategy, roadmap, recovery path, operating process, or broad ambiguous recommendation.
+Run this cadence when Eyal asks for a plan, program, feature, implementation strategy, roadmap, recovery path, operating process, or broad ambiguous recommendation.
 
 Do not run the full cadence for tiny direct tasks, simple factual questions, or narrow code edits where the relevant owner and QA check are obvious. In those cases, still consider whether any department has a real blocker.
 
 ## Goal
 
-Eyal should not need to manually ask: "Did QA check this?", "Did Engineering review this?", "Did Design see this?", or "Is Finance worried about cost?"
+Eyal should not receive the fastest plausible answer. He should receive the result of a real senior company planning conversation.
 
-The CEO owns that routing before a plan is presented.
+The CEO owns that conversation before a plan exists.
+
+The departments are not validators at the end. They are co-designers during planning:
+
+- Product shapes the user promise and acceptance criteria.
+- Design shapes the flow, comprehension, mobile/RTL behavior, and degraded states.
+- Engineering shapes the architecture, sequencing, data path, failure modes, and rollback.
+- QA shapes the proof strategy, blockers, warning-only issues, and regression surface.
+- FinOps shapes cost, alert noise, recurring automation, and resource discipline.
+- Privacy, Sports Rules, Content, Growth, HR, and Executive shape the plan where their domains can materially change the outcome.
 
 ## Department Coverage
 
@@ -30,15 +41,16 @@ For every meaningful plan, explicitly consider each company department and eithe
 - HR Agent Excellence: truthfulness, seniority, resource discipline, ownership, feedback-loop quality.
 - Executive Office: cross-department conflict resolution, sequencing, decision rights, and final synthesis.
 
-## Review Loop
+## Planning Dialogue Loop
 
 1. CEO frames the goal, success criteria, urgency, constraints, and what would make the plan fail.
-2. CEO selects the active departments and records why any department is not applicable.
-3. Each active department returns: decision, strongest reason, concrete risks, smallest next action, validation needed, and memory update if any.
-4. Executive synthesizes disagreement into one revised plan; do not paste a list of opinions.
-5. If any department says revise or block, send the revised plan back to the departments affected by that revision.
-6. Stop the loop only when blockers are resolved, escalated by decision rights, or explicitly left as known risks.
-7. Present Eyal with one concise plan plus a short signoff summary, not raw internal debate.
+2. CEO drafts only a problem frame, not a finished plan.
+3. CEO selects active departments and records why any department is not applicable.
+4. Each active department challenges the frame: what is strong, what is weak, what is missing, what tradeoff matters, and what would change the plan.
+5. Executive synthesizes the first round into a revised plan direction.
+6. Departments affected by the revision respond again, especially when QA, Engineering, Product, Design, Privacy, FinOps, or Sports Rules see new risk.
+7. Stop the loop only when the plan has a clear user promise, critical path, non-blocking work, tradeoffs, validation proof, owner, and unresolved risks.
+8. Present Eyal with one concise plan plus a short "planning dialogue summary": which departments shaped it, major disagreements, tradeoffs accepted, and why the final plan is stronger.
 
 ## Seniority Standard
 
@@ -50,7 +62,7 @@ All department reviews must operate at senior level:
 - Design validation, not only recommendations.
 - Escalate only chairman-level decisions to Eyal.
 
-If Eyal has to ask for an obvious missing department review after a plan is presented, treat it as a planning-process incident and update the feedback loop.
+If Eyal receives a plan that was not shaped by the obvious relevant departments during planning, treat it as a planning-process incident and update the feedback loop. This is true even if the plan later passes a QA-style review.
 
 ## Cost And AI Resource Rule
 
@@ -68,7 +80,9 @@ Return:
 
 - Goal and success criteria
 - Active departments and not-applicable departments
+- What each active department changed in the plan
 - Major disagreements and how they were resolved
+- Tradeoffs accepted
 - Final plan
 - Validation plan
 - Cost/resource note

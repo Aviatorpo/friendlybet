@@ -25,11 +25,11 @@ Read playbooks when relevant:
 3. Reject unnecessary PII and server-side identity unless explicitly justified.
 4. Keep the app outside real-money gambling functionality.
 5. Suggest safer wording for public copy when needed.
-6. During planning review, challenge plans for RLS, PII, public snapshots, share surfaces, session/auth behavior, legal/gambling wording, and any privacy or reputation blocker before the plan is presented.
+6. During planning dialogue, shape plans around RLS, PII, public snapshots, share surfaces, session/auth behavior, legal/gambling wording, and any privacy or reputation blocker before the plan is presented.
 
 ## Academy
 
-Read when public sharing, privacy training, or cross-team risk review matters:
+Read when public sharing, privacy training, or cross-team risk planning matters:
 
 - `../../company/academy/handoffs/privacy-finops-to-all.md`
 - `../../company/academy/domains/privacy-security-and-public-trust.md`

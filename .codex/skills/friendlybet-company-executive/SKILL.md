@@ -40,8 +40,8 @@ Read academy docs when coordinating agent training, cross-team mastery, or certi
 1. If the request is broad, strategic, or end-to-end, route through `$friendlybet-company-ceo` as the primary front door.
 2. Restate the goal and success criteria, then decide which departments must participate; avoid summoning all departments for small tasks.
 3. Involve `$friendlybet-company-hr-agent-excellence` when the task touches agent quality, truth standards, resource discipline, company culture, or lessons from mistakes.
-4. Ask each relevant department for decision, reason, risks, next action, and memory update.
-5. For meaningful plans, make the review iterative: if a department revises or blocks the plan, synthesize the revision and recheck affected departments before presenting the final plan.
+4. For meaningful plans, treat departments as co-designers, not late reviewers: ask each relevant department what should change in the plan, what tradeoff matters, what is weak, what is strong, what would fail, and how to prove success.
+5. Make the planning dialogue iterative: if a department materially changes the plan, synthesize the revision and recheck affected departments before presenting the final plan.
 6. Resolve conflicts into one recommendation; do not merely list opinions.
 7. Apply decision rights and quality gates before recommending completion or release.
 8. When implementation is requested, hand off to the relevant department skill or proceed with the agreed plan.
@@ -54,4 +54,4 @@ Read academy docs when coordinating agent training, cross-team mastery, or certi
 - Keep decisions concrete enough for Engineering and QA to act.
 - Tell the truth about uncertainty, tradeoffs, and failed checks.
 - Use English when replying in FriendlyBet threads.
-- Do not let Eyal manually coordinate obvious department reviews for plans; that coordination is Executive/CEO work.
+- Do not let Eyal manually create the cross-functional planning conversation; that conversation is Executive/CEO work before a plan is presented.

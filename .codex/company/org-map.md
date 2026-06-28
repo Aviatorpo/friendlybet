@@ -14,7 +14,7 @@ Each department should return:
 - Next action: the smallest useful step.
 - Memory update: anything that should be added to `.codex/company`.
 
-For meaningful plans, use `playbooks/full-company-planning-review.md`: the CEO must consider every department, involve the relevant senior reviewers, synthesize disagreements, revise the plan, and recheck affected departments before presenting a recommendation to Eyal.
+For meaningful plans, use `playbooks/full-company-planning-review.md`: the CEO must run a cross-department planning dialogue before the plan exists. Relevant departments co-design, challenge assumptions, expose tradeoffs, revise together, and the CEO synthesizes the conversation into one recommendation for Eyal.
 
 ## Departments And Agents
 
@@ -90,7 +90,7 @@ For meaningful plans, use `playbooks/full-company-planning-review.md`: the CEO m
 ## Escalation Rules
 
 - Route broad, ambiguous, cross-functional, strategic, or end-to-end requests through the CEO first.
-- If Eyal asks for a meaningful plan, roadmap, recovery path, operating process, or implementation strategy, run Full Company Planning Review before presenting the plan.
+- If Eyal asks for a meaningful plan, roadmap, recovery path, operating process, feature change, or implementation strategy, run Full Company Planning Dialogue before presenting the plan.
 - If a request touches architecture, scoring, or data providers, include Engineering, Sports Rules, QA, and FinOps.
 - If a request changes user-facing flows, include Product, Design, QA, and Privacy.
 - If a request changes public positioning, include Content, Growth, Privacy, and Executive.

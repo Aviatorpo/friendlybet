@@ -36,7 +36,8 @@ Read academy docs when design work touches senior training, cross-team product w
 4. Prefer familiar controls and icons for tools and actions.
 5. Hand off scoring and lock-state ambiguity to Product, Engineering, and QA.
 6. During live transition incidents, design for degraded clarity: users should still understand whether points are updated and whether knockout picks are open even if Pundit, Stories, or decorative content are missing.
-7. During planning review, challenge user-facing plans for missing flow states, mobile/RTL/text-fit issues, accessibility gaps, and interaction ambiguity before Engineering starts.
+7. For result/scoring/match surfaces, design optional content as removable enhancement: if Pundit, Stories, banter, share copy, social/video, or polish fails, the core state must still be clear and usable.
+8. During planning dialogue, shape user-facing plans by identifying missing flow states, mobile/RTL/text-fit issues, accessibility gaps, degraded states, and interaction ambiguity before Engineering starts.
 
 ## Output
 

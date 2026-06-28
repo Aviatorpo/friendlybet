@@ -36,7 +36,8 @@ Read academy docs when training, documenting, or validating department knowledge
 4. Promote an agent profile into a full skill only after repeated use.
 5. Validate skills after changing skill metadata or instructions.
 6. Treat repeated GitHub Actions failure emails during live tournament windows as operational cost and attention debt. Push for one owner, concise status, alert demotion for non-critical gates, and a reusable memory update.
-7. Review meaningful plans for hidden cost and operational load when they involve GitHub Actions, APIs, providers, polling, recurring automation, Supabase/Vercel usage, image/video generation, subagents, long context loops, or repeated retries. Recommend a cheaper static/local/reusable path when it preserves quality.
+7. Keep optional content workflows from creating noisy failures that obscure or block critical result/scoring/lock/leaderboard workflows. Demote content-only failures to separate incidents when the critical path is healthy.
+8. During planning dialogue, shape meaningful plans around hidden cost and operational load when they involve GitHub Actions, APIs, providers, polling, recurring automation, Supabase/Vercel usage, image/video generation, subagents, long context loops, or repeated retries. Recommend a cheaper static/local/reusable path when it preserves quality.
 
 ## Output
 

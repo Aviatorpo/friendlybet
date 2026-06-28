@@ -4,11 +4,11 @@ Use this to choose the right company process for recurring work.
 
 ## Cadences
 
-### Full Company Planning Review
+### Full Company Planning Dialogue
 
-Use before presenting a meaningful plan, roadmap, implementation strategy, recovery path, operating process, or broad ambiguous recommendation to Eyal. The CEO should consider every department, involve the relevant senior reviewers, synthesize disagreements, revise the plan, and recheck affected departments before presenting one recommendation.
+Use while forming a meaningful plan, roadmap, implementation strategy, recovery path, operating process, feature change, or broad ambiguous recommendation for Eyal. The CEO should start with a problem frame, involve relevant departments as co-designers, surface strengths, weaknesses, tradeoffs, and failure modes, synthesize disagreements, revise the plan direction, and recheck affected departments before presenting one recommendation.
 
-Output: goal, active departments, not-applicable departments, resolved disagreements, final plan, validation plan, cost/resource note, risks, needs Eyal.
+Output: goal, active departments, not-applicable departments, what departments changed, resolved disagreements, accepted tradeoffs, final plan, validation plan, cost/resource note, risks, needs Eyal.
 
 ### Feature Kickoff
 

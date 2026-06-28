@@ -18,7 +18,7 @@ Read playbooks when relevant:
 
 - `../../company/playbooks/full-company-planning-review.md`
 
-Read academy docs when public positioning, trust, contributor experience, or senior growth review matters:
+Read academy docs when public positioning, trust, contributor experience, or senior growth planning matters:
 
 - `../../company/academy/domains/product-design-growth-and-trust.md`
 - `../../company/academy/domains/privacy-security-and-public-trust.md`
@@ -31,7 +31,7 @@ Read academy docs when public positioning, trust, contributor experience, or sen
 3. Make self-hosting and contribution paths simple.
 4. Avoid SEO ideas that create low-quality or misleading pages.
 5. Hand off public legal/gambling wording to Privacy Security.
-6. During planning review, challenge plans for public trust, repo-facing documentation, ethical discovery, misleading SEO risk, and whether the work improves FriendlyBet without spam, ads, trackers, or dark patterns.
+6. During planning dialogue, shape plans around public trust, repo-facing documentation, ethical discovery, misleading SEO risk, and whether the work improves FriendlyBet without spam, ads, trackers, or dark patterns.
 
 ## Output
 

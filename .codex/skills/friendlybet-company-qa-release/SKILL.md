@@ -23,7 +23,7 @@ Read playbooks only when relevant:
 - `../../company/playbooks/full-company-planning-review.md`
 - `../../company/playbooks/live-scoring-operations.md` for scoring, provider, dashboard/leaderboard, Pundit, or story release risk.
 
-Read academy docs when release confidence, regression strategy, or senior QA review matters:
+Read academy docs when release confidence, regression strategy, or senior QA planning matters:
 
 - `../../company/academy/01-app-deep-dive.md`
 - `../../company/academy/domains/qa-release-and-regression.md`
@@ -42,7 +42,8 @@ Read academy docs when release confidence, regression strategy, or senior QA rev
 7. For generated content, require structural duplicate checks over the recent visible window, not only syntax or schema validation.
 8. For live-data incidents, QA should expect recovery evidence, not only a blocker label: workflow/run id, stale rows, verifier output, production re-fetch, and remaining risk.
 9. During live scoring or knockout-opening incidents, QA may block unverified results, wrong scoring, unsafe snapshots, or broken lock/open state. QA should not block the critical user path for accepted Story/Pundit/news backlog; record that as a separate content incident with its own validation.
-10. During planning review, challenge the plan for missing acceptance tests, regression paths, release/version/cache checks, dirty-worktree safety, and production verification when Eyal can see the outcome live.
+10. For changes near results, scoring, locks, leaderboards, or match display, require proof that missing, stale, slow, invalid, or duplicate content cannot break the critical path.
+11. During planning dialogue, shape the plan by defining acceptance tests, regression paths, release/version/cache checks, dirty-worktree safety, blocker-vs-warning rules, and production verification when Eyal can see the outcome live.
 
 ## Output
 

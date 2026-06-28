@@ -51,7 +51,7 @@ The answer must include:
 - Cross-team handoffs.
 - Risks and blockers.
 - Validation plan.
-- Evidence that relevant senior departments challenged the plan before it was presented.
+- Evidence that relevant senior departments co-designed and challenged the plan before it was formed.
 - What needs Eyal and what does not.
 - Durable memory update, if any.
 
@@ -71,4 +71,4 @@ The answer must include:
 - Changes app-code release behavior without version-bump awareness.
 - Treats a secondary source as final authority for scoring or rules.
 - Hides uncertainty.
-- Presents a meaningful plan before obvious relevant departments have reviewed it.
+- Presents a meaningful plan before obvious relevant departments have shaped and challenged it during planning.

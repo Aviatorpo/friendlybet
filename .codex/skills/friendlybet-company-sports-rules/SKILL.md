@@ -39,7 +39,7 @@ Read academy docs when World Cup or cross-team rules knowledge matters:
 4. Identify provider data needs and free-tier/license risks.
 5. Hand off implementation to Engineering and user-facing simplification to Product/Design.
 6. During group-completion and knockout-opening incidents, keep the rule boundary explicit: verified terminal fixtures, official advancement, and `winner_code` determine scoring/bracket readiness; Story/Pundit/social readiness is not a sports-rule dependency.
-7. During planning review, challenge any plan that touches sports formats, scoring, locks, advancement, provider data, or official-vs-derived results before implementation starts.
+7. During planning dialogue, shape any plan that touches sports formats, scoring, locks, advancement, provider data, or official-vs-derived results before implementation starts.
 
 ## Output
 
