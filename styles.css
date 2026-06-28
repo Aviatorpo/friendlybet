@@ -3678,6 +3678,11 @@ body.ltr #next-group-btn svg {
   /* Admin badge handled via JS template */
 }
 
+.member-card.needs-r16-refill {
+  background: linear-gradient(135deg, rgba(232, 168, 90, 0.16), rgba(255, 255, 255, 0.035));
+  border-color: rgba(232, 168, 90, 0.48);
+}
+
 .member-info {
   flex: 1;
   min-width: 0;
@@ -3703,6 +3708,11 @@ body.ltr #next-group-btn svg {
 
 .member-status.partial {
   color: #ecd49a;
+}
+
+.member-status.r16-refill {
+  color: #f3c987;
+  font-weight: 800;
 }
 
 .member-status.not-started {
@@ -3790,6 +3800,40 @@ body.ltr #next-group-btn svg {
 
 .members-picks-notice-text {
   color: rgba(255, 255, 255, 0.68);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.members-r16-incident-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(232, 168, 90, 0.15), rgba(255, 255, 255, 0.035));
+  border: 1px solid rgba(232, 168, 90, 0.38);
+}
+
+.members-r16-incident-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: #f3c987;
+  background: rgba(232, 168, 90, 0.16);
+}
+
+.members-r16-incident-title {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  margin-bottom: 2px;
+}
+
+.members-r16-incident-text {
+  color: rgba(255, 255, 255, 0.72);
   font-size: 12px;
   line-height: 1.45;
 }

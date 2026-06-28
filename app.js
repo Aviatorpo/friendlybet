@@ -1589,8 +1589,8 @@ async function updateTwoPhaseIncidentBanner() {
       if (dlEl) dlEl.textContent = t(showAdminR16Incident ? 'dashboard.tpR16Incident.adminPointsRisk' : 'dashboard.tpR16Incident.pointsRisk');
       if (cta) {
         cta.style.display = '';
-        cta.textContent = t(showUserR16Incident ? 'dashboard.tpR16Incident.cta' : 'dashboard.tpR16Incident.adminCta');
-        cta.onclick = showUserR16Incident ? (() => startKnockoutBetting()) : (() => showMembers());
+        cta.textContent = t(showAdminR16Incident ? 'dashboard.tpR16Incident.adminCta' : 'dashboard.tpR16Incident.cta');
+        cta.onclick = showAdminR16Incident ? (() => showMembers()) : (() => startKnockoutBetting());
       }
     } else {
       if (titleEl) titleEl.textContent = t('dashboard.tpIncident.title');
@@ -4282,14 +4282,15 @@ function showRecoveryCodeAgain() {
 // v2.9.24: fetch ALL rows for a pool, paging past PostgREST's hard 1000-row cap
 // (.range does not lift it on this project). Used by the members list so big
 // pools aren't silently truncated. Stops on a short page or an error.
-async function _fetchAllPoolRows(table, cols, poolId) {
+async function _fetchAllPoolRows(table, cols, poolId, decorateQuery = null) {
   const PAGE = 1000;
   let all = [];
   for (let from = 0, guard = 0; guard < 50; guard++, from += PAGE) {   // 50k-row ceiling
     let data = null, lastError = null;
     for (let attempt = 0; attempt < 3; attempt++) {   // retry a transient page error
-      const res = await supabaseClient
-        .from(table).select(cols).eq('pool_id', poolId).range(from, from + PAGE - 1);
+      let query = supabaseClient.from(table).select(cols).eq('pool_id', poolId);
+      if (typeof decorateQuery === 'function') query = decorateQuery(query);
+      const res = await query.range(from, from + PAGE - 1);
       if (!res.error) { data = res.data || []; lastError = null; break; }
       lastError = res.error;
       await new Promise(r => setTimeout(r, 300 * (attempt + 1)));
@@ -4303,6 +4304,22 @@ async function _fetchAllPoolRows(table, cols, poolId) {
     if (data.length < PAGE) break;
   }
   return all;
+}
+
+async function _loadTwoPhaseR16IncidentUserIdsForAdmin() {
+  if (!state.currentUser || !state.currentUser.is_admin) return new Set();
+  if (!state.currentPool || state.currentPool.betting_mode !== 'two_phase') return new Set();
+  try {
+    const rows = await _fetchAllPoolRows('knockout_picks', 'user_id', state.currentPool.id, query => query
+      .is('bracket_position', null)
+      .gte('created_at', TWO_PHASE_R16_INCIDENT_START_ISO)
+      .lt('created_at', TWO_PHASE_R16_INCIDENT_FIXED_ISO));
+    return new Set((rows || []).map(r => r && r.user_id).filter(Boolean));
+  } catch (err) {
+    console.warn('two-phase R16 incident member flags failed:', err);
+    showToast(t('membersList.r16IncidentLoadError'), 'warning');
+    return new Set();
+  }
 }
 
 async function showMembers() {
@@ -4342,15 +4359,19 @@ async function showMembers() {
   // truncated and most members showed a WRONG status. Page through all rows so
   // the per-member counts (and the ⚠️ "needs knockout" flag) are correct, and
   // agree with the dashboard nudge count.
-  let groupData, koData;
+  let groupData, koData, r16IncidentUserIds;
   try {
     if (isLateKo) {
-      koData = await _fetchAllPoolRows('knockout_picks', 'user_id', state.currentPool.id);
+      [koData, r16IncidentUserIds] = await Promise.all([
+        _fetchAllPoolRows('knockout_picks', 'user_id', state.currentPool.id),
+        _loadTwoPhaseR16IncidentUserIdsForAdmin()
+      ]);
       groupData = [];
     } else {
-      [groupData, koData] = await Promise.all([
+      [groupData, koData, r16IncidentUserIds] = await Promise.all([
         _fetchAllPoolRows(picksTable, 'user_id', state.currentPool.id),
-        _fetchAllPoolRows('knockout_picks', 'user_id', state.currentPool.id)
+        _fetchAllPoolRows('knockout_picks', 'user_id', state.currentPool.id),
+        _loadTwoPhaseR16IncidentUserIdsForAdmin()
       ]);
     }
   } catch (err) {
@@ -4388,11 +4409,22 @@ async function showMembers() {
   const list = document.getElementById('members-list');
   list.innerHTML = '';
   _renderMembersPredictionNotice(list, predictionAccess);
+  _renderMembersR16IncidentNotice(list, r16IncidentUserIds);
 
-  members.forEach(member => {
+  const memberOrder = new Map(members.map((m, index) => [m.id, index]));
+  const displayMembers = [...members].sort((a, b) => {
+    const ar = r16IncidentUserIds && r16IncidentUserIds.has(a.id) ? 1 : 0;
+    const br = r16IncidentUserIds && r16IncidentUserIds.has(b.id) ? 1 : 0;
+    if (ar !== br) return br - ar;
+    return (memberOrder.get(a.id) || 0) - (memberOrder.get(b.id) || 0);
+  });
+
+  displayMembers.forEach(member => {
     const picks = isLateKo ? 0 : (picksPerUser[member.id] || 0);
     const koPicks = koPerUser[member.id] || 0;
-    const card = createMemberCard(member, picks, koPicks, isV2, predictionAccess, isLateKo);
+    const card = createMemberCard(member, picks, koPicks, isV2, predictionAccess, isLateKo, {
+      needsR16Refill: !!(r16IncidentUserIds && r16IncidentUserIds.has(member.id))
+    });
     list.appendChild(card);
   });
 }
@@ -4426,6 +4458,21 @@ function _renderMembersPredictionNotice(list, access) {
   list.appendChild(notice);
 }
 
+function _renderMembersR16IncidentNotice(list, userIds) {
+  const count = userIds && typeof userIds.size === 'number' ? userIds.size : 0;
+  if (!list || count <= 0) return;
+  const notice = document.createElement('div');
+  notice.className = 'members-r16-incident-note';
+  notice.innerHTML = `
+    <div class="members-r16-incident-icon">⚠️</div>
+    <div>
+      <div class="members-r16-incident-title">${t('membersList.r16IncidentTitle')}</div>
+      <div class="members-r16-incident-text">${t('membersList.r16IncidentText', { n: count })}</div>
+    </div>
+  `;
+  list.appendChild(notice);
+}
+
 function _memberPredictionShareUrl(userId) {
   const origin = window.location.origin || 'https://friendlybet.live';
   const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'he');
@@ -4440,13 +4487,15 @@ function _openMemberPredictionShare(userId) {
   if (!opened) window.location.href = url;
 }
 
-function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAccess = { mode: 'prelock' }, isLateKo = false) {
+function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAccess = { mode: 'prelock' }, isLateKo = false, options = {}) {
   const card = document.createElement('div');
   card.className = 'member-card';
 
   const isMe = state.currentUser && member.id === state.currentUser.id;
+  const needsR16Refill = !!options.needsR16Refill;
   if (isMe) card.classList.add('is-me');
   if (member.is_admin) card.classList.add('is-admin');
+  if (needsR16Refill) card.classList.add('needs-r16-refill');
 
   // v2.5.37: precise status reflects groups + knockout (and, for single_phase,
   // the predictions_submitted_at flag). Three states only:
@@ -4464,7 +4513,10 @@ function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAcce
   const allDone = groupComplete && koComplete;
 
   let statusClass, statusText;
-  if (picksCount === 0 && koPicksCount === 0) {
+  if (needsR16Refill) {
+    statusClass = 'r16-refill';
+    statusText = t('membersList.r16IncidentFlag');
+  } else if (picksCount === 0 && koPicksCount === 0) {
     statusClass = 'not-started';
     statusText = t('membersList.noBets');
   } else if (allDone) {
