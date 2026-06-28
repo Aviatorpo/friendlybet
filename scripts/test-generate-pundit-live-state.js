@@ -124,8 +124,10 @@ const HE_FIXTURE_CONSEQUENCE = /(?:בית|בתים|תחזית|תחזיות|הי�
   const items = pundit.build(phaseNow, { matchesPayload: { matches: completeMatches }, newsPayload: { items: [] } });
   const phase = items.find(item => item.id === 'phase-groups-complete-knockout-open');
   assert.ok(phase, 'Feed should include a group-complete knockout-open phase item');
-  assert.ok(phase.en.includes('all 12 groups are finalized'), 'Phase item must say the groups are finalized');
+  assert.ok(phase.en.includes('all 12 groups are final'), 'Phase item must say the groups are final');
   assert.ok(phase.en.includes('July 4') && phase.en.includes('08:00 PM'), 'Phase item must include the exact knockout deadline');
+  assert.ok(items.filter(item => item.type === 'phase').length >= 4, 'Post-groups feed should be a phase-aware desk, not one token line');
+  assert.ok(!items.some(item => item.type === 'result'), 'Post-groups feed must not rotate old group-stage result cards');
 }
 
 console.log('Pundit live-state generation tests passed');
