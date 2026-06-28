@@ -57,6 +57,7 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
         run: node scripts/verify-scoring-snapshots.js
 
       - name: Commit critical result data if changed
@@ -71,6 +72,17 @@ jobs:
           else
             echo "no critical public-data change"
           fi
+
+      - name: Prove public scoring snapshots after manual result
+        if: steps.score_results.outputs.changed_pool_ids != ''
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          SCORING_SNAPSHOT_PUBLIC_BASE_URL: https://friendlybet.live
+          SCORING_SNAPSHOT_PUBLIC_RETRIES: 12
+          SCORING_SNAPSHOT_PUBLIC_RETRY_MS: 10000
+        run: node scripts/verify-scoring-snapshots.js
 
       - name: Generate leaderboard banter after manual results
         continue-on-error: true

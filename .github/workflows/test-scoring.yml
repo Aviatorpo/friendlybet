@@ -40,6 +40,8 @@ on:
       - 'scripts/test-match-display-state.js'
       - 'scripts/export-snapshots.js'
       - 'scripts/test-export-snapshots.js'
+      - 'scripts/verify-scoring-snapshots.js'
+      - 'scripts/test-verify-scoring-snapshots.js'
       - '.github/workflows/live-poller.yml'
       - 'scripts/espn-live-sync.js'
       - 'scripts/test-espn-live-sync.js'
@@ -108,6 +110,8 @@ on:
       - 'scripts/test-match-display-state.js'
       - 'scripts/export-snapshots.js'
       - 'scripts/test-export-snapshots.js'
+      - 'scripts/verify-scoring-snapshots.js'
+      - 'scripts/test-verify-scoring-snapshots.js'
       - '.github/workflows/live-poller.yml'
       - 'scripts/espn-live-sync.js'
       - 'scripts/test-espn-live-sync.js'
@@ -198,6 +202,8 @@ jobs:
         run: node scripts/test-match-display-state.js
       - name: Run snapshot export tests
         run: node scripts/test-export-snapshots.js
+      - name: Run scoring snapshot verifier tests
+        run: node scripts/test-verify-scoring-snapshots.js
       - name: Run ESPN live-sync tests
         run: node scripts/test-espn-live-sync.js
 

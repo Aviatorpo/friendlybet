@@ -1,4 +1,4 @@
-name: Verify Final Results with ESPN and FIFA
+name: Verify Final Results with ESPN, FIFA and football-data
 
 on:
   schedule:
@@ -81,7 +81,8 @@ jobs:
           RESULT_FALLBACK_LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '336' }}
           RESULT_FALLBACK_MIN_SOURCES: 2
           RESULT_FALLBACK_REQUIRED_SOURCES: espn,fifa
-          RESULT_FALLBACK_SOURCES: espn,fifa
+          RESULT_FALLBACK_SOURCES: espn,fifa,football_data
+          FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
           RESULT_CONSENSUS_FALLBACK_MIN_SOURCES: 3
           RESULT_FALLBACK_SOURCE_MODE: ${{ github.event_name == 'schedule' && 'rotate' || 'all' }}
           RESULT_FALLBACK_ROTATION_MINUTES: 15
@@ -155,6 +156,7 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
         run: node scripts/verify-scoring-snapshots.js
 
       - name: Commit critical scoring snapshots if changed
@@ -179,6 +181,17 @@ jobs:
           else
             echo "no scoring snapshot change"
           fi
+
+      - name: Prove public scoring snapshots after verified result
+        if: steps.verify_results.outputs.changed == 'true' && steps.score_results.outputs.changed_pool_ids != ''
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          SCORING_SNAPSHOT_PUBLIC_BASE_URL: https://friendlybet.live
+          SCORING_SNAPSHOT_PUBLIC_RETRIES: 12
+          SCORING_SNAPSHOT_PUBLIC_RETRY_MS: 10000
+        run: node scripts/verify-scoring-snapshots.js
 
       - name: Generate leaderboard banter after critical scoring
         if: steps.verify_results.outputs.changed == 'true'

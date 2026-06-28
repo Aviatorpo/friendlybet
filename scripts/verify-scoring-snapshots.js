@@ -11,6 +11,9 @@ const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 const ROOT = path.resolve(__dirname, '..');
 const LB_DIR = path.join(ROOT, 'public-data', 'leaderboard');
 const REST_PAGE_SIZE = 1000;
+const PUBLIC_BASE_URL = String(process.env.SCORING_SNAPSHOT_PUBLIC_BASE_URL || '').trim().replace(/\/$/, '');
+const PUBLIC_RETRIES = Math.max(1, parseInt(process.env.SCORING_SNAPSHOT_PUBLIC_RETRIES || '', 10) || 1);
+const PUBLIC_RETRY_MS = Math.max(0, parseInt(process.env.SCORING_SNAPSHOT_PUBLIC_RETRY_MS || '', 10) || 0);
 const SAFE_USER_COLS = [
   'id', 'pool_id', 'nickname', 'total_score',
   'group_points', 'knockout_points', 'bonus_points',
@@ -21,6 +24,21 @@ const SAFE_USER_COLS = [
 function scoreNumber(value) {
   const n = Number(value);
   return Number.isFinite(n) ? n : 0;
+}
+
+function csvList(value) {
+  return String(value || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
+}
+
+function requestedLeaderboardPoolIds() {
+  return [...new Set(csvList(process.env.LEADERBOARD_POOL_IDS || process.env.SCORING_SNAPSHOT_POOL_IDS))];
+}
+
+function postgrestInFilter(values) {
+  return `in.(${values.map(v => encodeURIComponent(v)).join(',')})`;
 }
 
 async function sbAll(table, query = '', pageSize = REST_PAGE_SIZE) {
@@ -49,6 +67,10 @@ function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function comparableScoreRow(row) {
   return {
     total_score: scoreNumber(row.total_score),
@@ -67,12 +89,95 @@ function rowsMatch(dbUser, snapshotUser) {
     && db.bonus_points === snap.bonus_points;
 }
 
+function verifyPoolSnapshot(label, poolId, dbUsers, snapshot) {
+  const errors = [];
+  const standings = Array.isArray(snapshot && snapshot.standings) ? snapshot.standings : [];
+  if (standings.length !== dbUsers.length) {
+    errors.push(`${label} pool ${poolId} count mismatch: db=${dbUsers.length} snapshot=${standings.length}`);
+  }
+
+  const byId = new Map(standings.map(user => [user.id, user]));
+  let verifiedUsers = 0;
+  let nonZeroUsers = 0;
+  let poolTotal = 0;
+  for (const dbUser of dbUsers) {
+    const snapUser = byId.get(dbUser.id);
+    if (!snapUser) {
+      errors.push(`${label} pool ${poolId} missing user ${dbUser.id} in snapshot`);
+      continue;
+    }
+    if (!rowsMatch(dbUser, snapUser)) {
+      errors.push(`${label} pool ${poolId} user ${dbUser.id} score mismatch: db=${JSON.stringify(comparableScoreRow(dbUser))} snapshot=${JSON.stringify(comparableScoreRow(snapUser))}`);
+    }
+    const total = scoreNumber(dbUser.total_score);
+    poolTotal += total;
+    if (total > 0) nonZeroUsers++;
+    verifiedUsers++;
+  }
+
+  return {
+    errors,
+    verifiedUsers,
+    nonZeroUsers,
+    nonZeroPool: poolTotal > 0,
+  };
+}
+
+async function fetchJson(url) {
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
+  return await res.json();
+}
+
+function publicLeaderboardUrl(poolId) {
+  const sep = PUBLIC_BASE_URL.includes('?') ? '&' : '?';
+  return `${PUBLIC_BASE_URL}/public-data/leaderboard/${encodeURIComponent(poolId)}.json${sep}cb=${Date.now()}`;
+}
+
+async function verifyPublicSnapshots(pools, usersByPool) {
+  if (!PUBLIC_BASE_URL) return { errors: [], verifiedPools: 0, verifiedUsers: 0 };
+  let lastErrors = [];
+  let lastVerifiedPools = 0;
+  let lastVerifiedUsers = 0;
+
+  for (let attempt = 1; attempt <= PUBLIC_RETRIES; attempt++) {
+    const errors = [];
+    let verifiedPools = 0;
+    let verifiedUsers = 0;
+
+    for (const pool of pools) {
+      const dbUsers = usersByPool.get(pool.id) || [];
+      if (!dbUsers.length) continue;
+      let snapshot;
+      try {
+        snapshot = await fetchJson(publicLeaderboardUrl(pool.id));
+      } catch (err) {
+        errors.push(`public pool ${pool.id} fetch failed: ${err.message}`);
+        continue;
+      }
+      const checked = verifyPoolSnapshot('public', pool.id, dbUsers, snapshot);
+      errors.push(...checked.errors);
+      verifiedPools++;
+      verifiedUsers += checked.verifiedUsers;
+    }
+
+    lastErrors = errors;
+    lastVerifiedPools = verifiedPools;
+    lastVerifiedUsers = verifiedUsers;
+    if (!errors.length) break;
+    if (attempt < PUBLIC_RETRIES && PUBLIC_RETRY_MS > 0) await sleep(PUBLIC_RETRY_MS);
+  }
+
+  return { errors: lastErrors, verifiedPools: lastVerifiedPools, verifiedUsers: lastVerifiedUsers };
+}
+
 async function main() {
   if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY');
+  const poolIds = requestedLeaderboardPoolIds();
 
   const [pools, users] = await Promise.all([
-    sbAll('pools', '?select=id'),
-    sbAll('users', `?select=${SAFE_USER_COLS}&order=total_score.desc.nullslast`)
+    poolIds.length ? Promise.resolve(poolIds.map(id => ({ id }))) : sbAll('pools', '?select=id'),
+    sbAll('users', `?select=${SAFE_USER_COLS}${poolIds.length ? `&pool_id=${postgrestInFilter(poolIds)}` : ''}&order=total_score.desc.nullslast`)
   ]);
 
   const usersByPool = new Map();
@@ -106,36 +211,31 @@ async function main() {
       continue;
     }
 
-    const standings = Array.isArray(snapshot.standings) ? snapshot.standings : [];
-    if (standings.length !== dbUsers.length) {
-      errors.push(`pool ${pool.id} count mismatch: db=${dbUsers.length} snapshot=${standings.length}`);
-    }
-
-    const byId = new Map(standings.map(user => [user.id, user]));
-    let poolTotal = 0;
-    for (const dbUser of dbUsers) {
-      const snapUser = byId.get(dbUser.id);
-      if (!snapUser) {
-        errors.push(`pool ${pool.id} missing user ${dbUser.id} in snapshot`);
-        continue;
-      }
-      if (!rowsMatch(dbUser, snapUser)) {
-        errors.push(`pool ${pool.id} user ${dbUser.id} score mismatch: db=${JSON.stringify(comparableScoreRow(dbUser))} snapshot=${JSON.stringify(comparableScoreRow(snapUser))}`);
-      }
-      const total = scoreNumber(dbUser.total_score);
-      poolTotal += total;
-      if (total > 0) nonZeroUsers++;
-      verifiedUsers++;
-    }
-    if (poolTotal > 0) nonZeroPools++;
+    const checked = verifyPoolSnapshot('local', pool.id, dbUsers, snapshot);
+    errors.push(...checked.errors);
+    verifiedUsers += checked.verifiedUsers;
+    nonZeroUsers += checked.nonZeroUsers;
+    if (checked.nonZeroPool) nonZeroPools++;
     verifiedPools++;
   }
 
+  let publicVerifiedPools = 0;
+  let publicVerifiedUsers = 0;
+  if (!errors.length && PUBLIC_BASE_URL) {
+    const publicResult = await verifyPublicSnapshots(pools, usersByPool);
+    publicVerifiedPools = publicResult.verifiedPools;
+    publicVerifiedUsers = publicResult.verifiedUsers;
+    errors.push(...publicResult.errors);
+  }
+
   console.log(JSON.stringify({
+    requestedPools: poolIds.length ? poolIds.length : 'all',
     verifiedPools,
     verifiedUsers,
     nonZeroPools,
     nonZeroUsers,
+    publicVerifiedPools,
+    publicVerifiedUsers,
     errors: errors.slice(0, 20),
     errorCount: errors.length
   }, null, 2));
@@ -153,6 +253,8 @@ if (require.main === module) {
 } else {
   module.exports = {
     comparableScoreRow,
+    requestedLeaderboardPoolIds,
+    verifyPoolSnapshot,
     rowsMatch,
     scoreNumber,
     sbAll,
