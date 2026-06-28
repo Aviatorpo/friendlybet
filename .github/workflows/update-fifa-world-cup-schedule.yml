@@ -1,0 +1,60 @@
+name: Update FIFA World Cup Schedule
+
+on:
+  # UTC. These are short 15-minute-cadence windows around remaining WC 2026
+  # kickoff/result/update periods; the script also no-ops outside exact windows.
+  schedule:
+    - cron: '4,19,34,49 18-23 28 6 *'
+    - cron: '4,19,34,49 0-6,16-23 29 6 *'
+    - cron: '4,19,34,49 0-7,16-23 30 6 *'
+    - cron: '4,19,34,49 0-7,15-23 1 7 *'
+    - cron: '4,19,34,49 0-7,18-23 2 7 *'
+    - cron: '4,19,34,49 0-9,17-23 3 7 *'
+    - cron: '4,19,34,49 0-7,16-23 4 7 *'
+    - cron: '4,19,34,49 0-7,19-23 5 7 *'
+    - cron: '4,19,34,49 0-7,18-23 6 7 *'
+    - cron: '4,19,34,49 0-7,15-23 7 7 *'
+    - cron: '4,19,34,49 19-23 9 7 *'
+    - cron: '4,19,34,49 0-3,18-23 10 7 *'
+    - cron: '4,19,34,49 0-2,20-23 11 7 *'
+    - cron: '4,19,34,49 0-7 12 7 *'
+    - cron: '4,19,34,49 18-23 14 7 *'
+    - cron: '4,19,34,49 0-2,18-23 15 7 *'
+    - cron: '4,19,34,49 20-23 18 7 *'
+    - cron: '4,19,34,49 0-2,18-23 19 7 *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-fifa-world-cup-schedule
+  cancel-in-progress: false
+
+jobs:
+  update-schedule:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Refresh official FIFA schedule when useful
+        run: node scripts/update-fifa-world-cup-schedule.js --if-window
+
+      - name: Commit schedule snapshot if changed
+        env:
+          REGENERATE_COMMANDS: |
+            node scripts/update-fifa-world-cup-schedule.js --if-window
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain -- public-data/world-cup-schedule.json)" ]; then
+            bash scripts/commit-generated-snapshots.sh "data: refresh FIFA World Cup schedule" public-data/world-cup-schedule.json
+          else
+            echo "no FIFA schedule change"
+          fi

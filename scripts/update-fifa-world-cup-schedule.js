@@ -7,6 +7,102 @@ const ROOT = path.resolve(__dirname, '..');
 const OUT_PATH = path.join(ROOT, 'public-data', 'world-cup-schedule.json');
 const FIFA_SCHEDULE_URL = 'https://api.fifa.com/api/v3/calendar/matches?language=en&count=500&idCompetition=17&from=2026-06-01&to=2026-07-31';
 const FIFA_PAGE_URL = 'https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?country=IL&wtw-filter=ALL';
+const DEFAULT_WINDOW_BEFORE_MINUTES = 60;
+const DEFAULT_WINDOW_AFTER_MINUTES = 360;
+
+function parseArgs(argv) {
+  const options = {
+    ifWindow: false,
+    now: new Date(),
+    windowBeforeMinutes: DEFAULT_WINDOW_BEFORE_MINUTES,
+    windowAfterMinutes: DEFAULT_WINDOW_AFTER_MINUTES
+  };
+
+  for (const arg of argv) {
+    if (arg === '--if-window') {
+      options.ifWindow = true;
+    } else if (arg.startsWith('--now=')) {
+      options.now = parseDateArg('now', arg.slice('--now='.length));
+    } else if (arg.startsWith('--window-before-min=')) {
+      options.windowBeforeMinutes = parsePositiveNumber('window-before-min', arg.slice('--window-before-min='.length));
+    } else if (arg.startsWith('--window-after-min=')) {
+      options.windowAfterMinutes = parsePositiveNumber('window-after-min', arg.slice('--window-after-min='.length));
+    } else {
+      throw new Error(`Unknown argument: ${arg}`);
+    }
+  }
+
+  return options;
+}
+
+function parseDateArg(label, value) {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) throw new Error(`Invalid --${label} value: ${value}`);
+  return parsed;
+}
+
+function parsePositiveNumber(label, value) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0) throw new Error(`Invalid --${label} value: ${value}`);
+  return parsed;
+}
+
+function readExistingSchedule() {
+  try {
+    return JSON.parse(fs.readFileSync(OUT_PATH, 'utf8'));
+  } catch (err) {
+    if (err && err.code === 'ENOENT') return null;
+    throw err;
+  }
+}
+
+function githubOutput(name, value) {
+  if (!process.env.GITHUB_OUTPUT) return;
+  fs.appendFileSync(process.env.GITHUB_OUTPUT, `${name}=${value}\n`);
+}
+
+function scheduleRefreshWindow(existing, now, beforeMs, afterMs) {
+  const matches = existing && Array.isArray(existing.matches) ? existing.matches : [];
+  if (!matches.length) {
+    return { shouldRefresh: true, reason: 'missing local schedule snapshot' };
+  }
+
+  let nextOpenAt = null;
+  for (const match of matches) {
+    const matchTime = Date.parse(match.match_date || '');
+    if (!Number.isFinite(matchTime)) continue;
+
+    const openAt = matchTime - beforeMs;
+    const closeAt = matchTime + afterMs;
+    if (now.getTime() >= openAt && now.getTime() <= closeAt) {
+      return {
+        shouldRefresh: true,
+        reason: `inside refresh window for match ${match.match_number || match.id}`,
+        match
+      };
+    }
+
+    if (now.getTime() < openAt && (nextOpenAt == null || openAt < nextOpenAt)) {
+      nextOpenAt = openAt;
+    }
+  }
+
+  return {
+    shouldRefresh: false,
+    reason: nextOpenAt
+      ? `next refresh window opens at ${new Date(nextOpenAt).toISOString()}`
+      : 'all match refresh windows have passed'
+  };
+}
+
+function stableSnapshot(snapshot) {
+  return JSON.stringify({
+    source: snapshot.source,
+    sourcePage: snapshot.sourcePage,
+    count: snapshot.count,
+    matches: snapshot.matches
+  });
+}
 
 function localized(list, fallback = null) {
   if (!Array.isArray(list)) return fallback;
@@ -83,6 +179,28 @@ function transform(raw) {
 }
 
 async function main() {
+  const options = parseArgs(process.argv.slice(2));
+  const existing = readExistingSchedule();
+
+  if (options.ifWindow) {
+    const window = scheduleRefreshWindow(
+      existing,
+      options.now,
+      options.windowBeforeMinutes * 60 * 1000,
+      options.windowAfterMinutes * 60 * 1000
+    );
+
+    if (!window.shouldRefresh) {
+      githubOutput('within_window', 'false');
+      githubOutput('changed', 'false');
+      console.log(`Outside FIFA schedule refresh window; skipping provider call (${window.reason}).`);
+      return;
+    }
+
+    githubOutput('within_window', 'true');
+    console.log(`Refreshing FIFA schedule: ${window.reason}.`);
+  }
+
   const res = await fetch(FIFA_SCHEDULE_URL, {
     headers: {
       accept: 'application/json',
@@ -98,15 +216,26 @@ async function main() {
   });
   if (rows.length !== 104) throw new Error(`Expected 104 FIFA World Cup matches, got ${rows.length}`);
 
-  const out = {
-    updatedAt: new Date().toISOString(),
+  const stableOut = {
     source: FIFA_SCHEDULE_URL,
     sourcePage: FIFA_PAGE_URL,
     count: rows.length,
     matches: rows
   };
 
+  if (existing && stableSnapshot(existing) === stableSnapshot(stableOut)) {
+    githubOutput('changed', 'false');
+    console.log(`FIFA schedule unchanged; left ${path.relative(ROOT, OUT_PATH)} untouched.`);
+    return;
+  }
+
+  const out = {
+    updatedAt: new Date().toISOString(),
+    ...stableOut
+  };
+
   fs.writeFileSync(OUT_PATH, `${JSON.stringify(out, null, 2)}\n`);
+  githubOutput('changed', 'true');
   console.log(`Wrote ${rows.length} FIFA schedule rows to ${path.relative(ROOT, OUT_PATH)}`);
 }
 
