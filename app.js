@@ -7980,6 +7980,22 @@ function propagateKnockoutBracket() {
   });
 }
 
+function _bracketFeedSourceIds(sourceRound, targetMatchId) {
+  return (knockoutState.matches[sourceRound] || [])
+    .filter(match => match.nextMatch === targetMatchId)
+    .map(match => match.id);
+}
+
+function _bracketAverageSourceY(positions, sourceRound, targetMatchId, fallbackIds) {
+  let sourceIds = _bracketFeedSourceIds(sourceRound, targetMatchId)
+    .filter(id => positions[id]);
+  if (!sourceIds.length && Array.isArray(fallbackIds)) {
+    sourceIds = fallbackIds.filter(id => positions[id]);
+  }
+  if (!sourceIds.length) return null;
+  return sourceIds.reduce((sum, id) => sum + positions[id].y, 0) / sourceIds.length;
+}
+
 function findFirstIncompleteRound() {
   const order = ['R32', 'R16', 'QF', 'SF', 'FINAL'];
   for (const round of order) {
@@ -8583,14 +8599,14 @@ function renderBracketView() {
     };
   }
   
-  // R16 right: each R16 is centered between two R32 matches
+  // R16 right: center each card between the actual FIFA feed matches.
   for (let i = 0; i < 4; i++) {
     const matchId = `R16_M${i + 1}`;
-    const r32a = positions[`R32_M${i * 2 + 1}`];
-    const r32b = positions[`R32_M${i * 2 + 2}`];
+    const fallbackIds = [`R32_M${i * 2 + 1}`, `R32_M${i * 2 + 2}`];
+    const y = _bracketAverageSourceY(positions, 'R32', matchId, fallbackIds);
     positions[matchId] = {
       x: colPositions.R16_right,
-      y: (r32a.y + r32b.y) / 2,
+      y: y === null ? L.topPadding + (i * r32Spacing) : y,
       side: 'right',
       round: 'R16'
     };
@@ -8599,11 +8615,11 @@ function renderBracketView() {
   // QF right
   for (let i = 0; i < 2; i++) {
     const matchId = `QF_M${i + 1}`;
-    const r16a = positions[`R16_M${i * 2 + 1}`];
-    const r16b = positions[`R16_M${i * 2 + 2}`];
+    const fallbackIds = [`R16_M${i * 2 + 1}`, `R16_M${i * 2 + 2}`];
+    const y = _bracketAverageSourceY(positions, 'R16', matchId, fallbackIds);
     positions[matchId] = {
       x: colPositions.QF_right,
-      y: (r16a.y + r16b.y) / 2,
+      y: y === null ? L.topPadding + (i * r32Spacing * 2) : y,
       side: 'right',
       round: 'QF'
     };
@@ -8611,11 +8627,10 @@ function renderBracketView() {
   
   // SF right (SF_M1)
   {
-    const qfa = positions['QF_M1'];
-    const qfb = positions['QF_M2'];
+    const y = _bracketAverageSourceY(positions, 'QF', 'SF_M1', ['QF_M1', 'QF_M2']);
     positions['SF_M1'] = {
       x: colPositions.SF_right,
-      y: (qfa.y + qfb.y) / 2,
+      y: y === null ? L.topPadding : y,
       side: 'right',
       round: 'SF'
     };
@@ -8634,11 +8649,11 @@ function renderBracketView() {
   
   for (let i = 0; i < 4; i++) {
     const matchId = `R16_M${i + 5}`;
-    const r32a = positions[`R32_M${(i * 2) + 9}`];
-    const r32b = positions[`R32_M${(i * 2) + 10}`];
+    const fallbackIds = [`R32_M${(i * 2) + 9}`, `R32_M${(i * 2) + 10}`];
+    const y = _bracketAverageSourceY(positions, 'R32', matchId, fallbackIds);
     positions[matchId] = {
       x: colPositions.R16_left,
-      y: (r32a.y + r32b.y) / 2,
+      y: y === null ? L.topPadding + (i * r32Spacing) : y,
       side: 'left',
       round: 'R16'
     };
@@ -8646,22 +8661,21 @@ function renderBracketView() {
   
   for (let i = 0; i < 2; i++) {
     const matchId = `QF_M${i + 3}`;
-    const r16a = positions[`R16_M${(i * 2) + 5}`];
-    const r16b = positions[`R16_M${(i * 2) + 6}`];
+    const fallbackIds = [`R16_M${(i * 2) + 5}`, `R16_M${(i * 2) + 6}`];
+    const y = _bracketAverageSourceY(positions, 'R16', matchId, fallbackIds);
     positions[matchId] = {
       x: colPositions.QF_left,
-      y: (r16a.y + r16b.y) / 2,
+      y: y === null ? L.topPadding + (i * r32Spacing * 2) : y,
       side: 'left',
       round: 'QF'
     };
   }
   
   {
-    const qfa = positions['QF_M3'];
-    const qfb = positions['QF_M4'];
+    const y = _bracketAverageSourceY(positions, 'QF', 'SF_M2', ['QF_M3', 'QF_M4']);
     positions['SF_M2'] = {
       x: colPositions.SF_left,
-      y: (qfa.y + qfb.y) / 2,
+      y: y === null ? L.topPadding : y,
       side: 'left',
       round: 'SF'
     };
@@ -8669,11 +8683,10 @@ function renderBracketView() {
   
   // FINAL position (centered between SF1 and SF2)
   {
-    const sf1 = positions['SF_M1'];
-    const sf2 = positions['SF_M2'];
+    const y = _bracketAverageSourceY(positions, 'SF', 'FINAL_M1', ['SF_M1', 'SF_M2']);
     positions['FINAL_M1'] = {
       x: colPositions.FINAL,
-      y: (sf1.y + sf2.y) / 2,
+      y: y === null ? L.topPadding : y,
       side: 'center',
       round: 'FINAL'
     };

@@ -33,6 +33,7 @@ Source register: `world-cup-official-source-register.md`
 | --- | --- | --- | --- |
 | Annex C third-place allocation has 495 possible combinations. | `share-assets/fifa-third-place-table.js` | `scripts/test-fifa-bracket.js` | Treat the local file as app authority until official PDF review requires a change. |
 | Third-place allocation behavior is generated consistently. | `third-place-allocation.js`, `lib/third-place-allocation.mjs` | `scripts/test-third-place-allocation.js` | Use tests before any bracket mapping change. |
+| Two-phase knockout reopening must reconstruct and propagate the same FIFA M73-M104 bracket users see in single-phase mode. | `app.js` `buildOfficialTwoPhaseKnockout`, `propagateKnockoutBracket`, `SP_R32_DEF`, `SP_R16_DEF`, `SP_QF_DEF`, `SP_SF_DEF`, `SP_FINAL_DEF` | `scripts/test-two-phase-knockout-wiring.js` | Do not call a bracket/rules change verified unless the exact product mode and reopened user-flow path are tested, not only the shared constants table. |
 | Knockout winner must come from `matches.winner_code`, not score comparison. | `scripts/calculate-scores-v2.js`, app data model | `scripts/test-scoring.js` | Engineering and QA must block score-only winner inference. |
 
 ## Secondary-Corroborated Training Rules

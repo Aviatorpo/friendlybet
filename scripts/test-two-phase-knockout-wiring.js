@@ -28,7 +28,7 @@ vm.runInContext(
   app.slice(constantsStart, constantsEnd) +
     '\n' +
     app.slice(functionsStart, functionsEnd) +
-    '\nthis.__test = { buildOfficialTwoPhaseKnockout, propagateKnockoutBracket, knockoutState };',
+    '\nthis.__test = { buildOfficialTwoPhaseKnockout, propagateKnockoutBracket, _bracketFeedSourceIds, _bracketAverageSourceY, knockoutState };',
   sandbox
 );
 
@@ -65,6 +65,30 @@ eq(
     ['R16_M7', 'W86', 'W88'],
     ['R16_M8', 'W85', 'W87']
   ]
+);
+
+eq(
+  'two-phase R16 visual feeds must use real FIFA source matches',
+  [
+    sandbox.__test._bracketFeedSourceIds('R32', 'R16_M1'),
+    sandbox.__test._bracketFeedSourceIds('R32', 'R16_M2'),
+    sandbox.__test._bracketFeedSourceIds('R32', 'R16_M7'),
+    sandbox.__test._bracketFeedSourceIds('R32', 'R16_M8')
+  ],
+  [
+    ['R32_M2', 'R32_M5'],
+    ['R32_M1', 'R32_M3'],
+    ['R32_M14', 'R32_M16'],
+    ['R32_M13', 'R32_M15']
+  ]
+);
+
+const displayPositions = {};
+for (let pos = 1; pos <= 16; pos++) displayPositions[`R32_M${pos}`] = { y: (pos - 1) * 100 };
+assert.strictEqual(
+  sandbox.__test._bracketAverageSourceY(displayPositions, 'R32', 'R16_M1', ['R32_M1', 'R32_M2']),
+  250,
+  'R16_M1 visual position must center between M74 and M77, not adjacent M73/M74'
 );
 
 eq(
