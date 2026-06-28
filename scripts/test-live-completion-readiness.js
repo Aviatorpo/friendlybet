@@ -116,6 +116,54 @@ const Readiness = require('./live-completion-readiness');
   );
   assert.strictEqual(dbResult.live_db.freshness.stale, 0, 'future DB matches should not be treated as stale live state');
 
+  const storyBacklogSnapshots = {
+    matches: {
+      updatedAt: '2026-06-23T13:00:00Z',
+      matches: [{
+        id: 'story-missing',
+        status: 'FINISHED',
+        match_date: '2026-06-23T11:00:00Z',
+        home_team_code: 'POR',
+        away_team_code: 'UZB',
+        home_score: 2,
+        away_score: 0,
+        winner_code: 'POR',
+        stage: 'GROUP_STAGE',
+        group_letter: 'K',
+      }],
+    },
+    stories: { updated_at: '2026-06-23T13:00:00Z', items: [{ id: 'other-story', match_id: 'other-match' }] },
+    pundit: { updatedAt: '2026-06-23T13:00:00Z', freshUntil: '2026-06-23T17:00:00Z', items: [{ id: 'p1' }] },
+  };
+  const storyBacklogCritical = await Readiness.runReadiness({
+    auditOptions: { nowMs: Date.parse('2026-06-23T13:00:00Z') },
+    publicSnapshots: storyBacklogSnapshots,
+    dbMatches: storyBacklogSnapshots.matches.matches,
+  });
+  assert.strictEqual(storyBacklogCritical.ok, false, 'missing Stories must fail readiness when story backlog is not explicitly demoted');
+  assert.ok(
+    storyBacklogCritical.checks.some(check => check.name === 'production public snapshot audit is green' && !check.ok)
+      || storyBacklogCritical.checks.some(check => check.name === 'live DB match audit is green' && !check.ok),
+    'missing Story backlog should remain visible as a failed production or DB audit check without the demotion flag'
+  );
+
+  const storyBacklogWarningOnly = await Readiness.runReadiness({
+    auditOptions: { nowMs: Date.parse('2026-06-23T13:00:00Z') },
+    publicSnapshots: storyBacklogSnapshots,
+    dbMatches: storyBacklogSnapshots.matches.matches,
+    allowStoryBacklog: true,
+  });
+  assert.strictEqual(storyBacklogWarningOnly.ok, true, JSON.stringify(storyBacklogWarningOnly.checks.filter(check => !check.ok), null, 2));
+  assert.ok(
+    storyBacklogWarningOnly.warnings.some(warning => warning.code === 'production_story_backlog_warning_only')
+      || storyBacklogWarningOnly.warnings.some(warning => warning.code === 'live_db_story_backlog_warning_only'),
+    'demoted Story backlog must stay visible as layer-specific warning evidence'
+  );
+  assert.ok(
+    storyBacklogWarningOnly.production.watchdog.warnings.some(warning => /story backlog/.test(warning)),
+    'production audit should preserve missing Story details as warnings'
+  );
+
   const staleDbResult = await Readiness.runReadiness({
     auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
     dbMatches: [

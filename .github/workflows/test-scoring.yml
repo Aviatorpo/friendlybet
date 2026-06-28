@@ -13,6 +13,9 @@ on:
       - 'service-worker.js'
       - 'scripts/calculate-scores-v2.js'
       - 'scripts/test-scoring.js'
+      - 'scripts/test-fifa-bracket.js'
+      - 'scripts/test-third-place-allocation.js'
+      - 'scripts/test-two-phase-knockout-wiring.js'
       - 'scripts/smart-sync.js'
       - 'scripts/test-smart-sync.js'
       - 'scripts/test-sync-transform.js'
@@ -25,6 +28,9 @@ on:
       - 'scripts/test-live-ops-audit.js'
       - 'scripts/live-completion-readiness.js'
       - 'scripts/test-live-completion-readiness.js'
+      - 'scripts/live-ops-summary.js'
+      - 'scripts/test-live-ops-summary.js'
+      - 'scripts/send-telegram-incident.js'
       - 'scripts/resolve-fair-play.js'
       - 'scripts/test-fair-play-resolver.js'
       - 'public-data/fair-play-resolutions.json'
@@ -75,6 +81,9 @@ on:
       - 'service-worker.js'
       - 'scripts/calculate-scores-v2.js'
       - 'scripts/test-scoring.js'
+      - 'scripts/test-fifa-bracket.js'
+      - 'scripts/test-third-place-allocation.js'
+      - 'scripts/test-two-phase-knockout-wiring.js'
       - 'scripts/smart-sync.js'
       - 'scripts/test-smart-sync.js'
       - 'scripts/test-sync-transform.js'
@@ -87,6 +96,9 @@ on:
       - 'scripts/test-live-ops-audit.js'
       - 'scripts/live-completion-readiness.js'
       - 'scripts/test-live-completion-readiness.js'
+      - 'scripts/live-ops-summary.js'
+      - 'scripts/test-live-ops-summary.js'
+      - 'scripts/send-telegram-incident.js'
       - 'scripts/resolve-fair-play.js'
       - 'scripts/test-fair-play-resolver.js'
       - 'public-data/fair-play-resolutions.json'
@@ -143,6 +155,12 @@ jobs:
         run: node scripts/check-destructive-sql.js
       - name: Run scoring tests
         run: node scripts/test-scoring.js
+      - name: Run FIFA bracket tests
+        run: node scripts/test-fifa-bracket.js
+      - name: Run FIFA third-place allocation tests
+        run: node scripts/test-third-place-allocation.js
+      - name: Run two-phase knockout wiring tests
+        run: node scripts/test-two-phase-knockout-wiring.js
       - name: Run World Cup rules tests
         run: node scripts/test-world-cup-rules.js
       - name: Run fair-play resolver tests
@@ -162,11 +180,18 @@ jobs:
       - name: Run live-ops snapshot audit
         env:
           LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS: '1'
+          # App/scoring hotfix CI must not be blocked by accepted story backlog.
+          # Dedicated content/readiness workflows still report missing Stories.
+          LIVE_OPS_ALLOW_STORY_BACKLOG: '1'
         run: node scripts/live-ops-audit.js
       - name: Run live completion readiness gate
+        env:
+          LIVE_COMPLETION_ALLOW_STORY_BACKLOG: '1'
         run: node scripts/live-completion-readiness.js
       - name: Run live completion readiness tests
         run: node scripts/test-live-completion-readiness.js
+      - name: Run live ops summary tests
+        run: node scripts/test-live-ops-summary.js
       - name: Run live UX state tests
         run: node scripts/test-live-ux-state.js
       - name: Run match display-state tests

@@ -45,6 +45,7 @@ jobs:
         env:
           LIVE_COMPLETION_PUBLIC_BASE_URL: https://friendlybet.live
           LIVE_COMPLETION_GITHUB_WORKFLOWS: '1'
+          LIVE_COMPLETION_ALLOW_STORY_BACKLOG: '1'
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -59,6 +60,7 @@ jobs:
           fi
           status=$?
           cat readiness-before.json
+          node scripts/live-ops-summary.js readiness-before.json >> "$GITHUB_STEP_SUMMARY"
           set -e
           if [ "$status" = "0" ]; then
             exit 0
@@ -83,6 +85,7 @@ jobs:
           fi
           status_after=$?
           cat readiness-after.json
+          node scripts/live-ops-summary.js readiness-after.json >> "$GITHUB_STEP_SUMMARY"
           set -e
           if [ "$status_after" != "0" ]; then
             node scripts/send-telegram-incident.js readiness-after.json || true

@@ -233,7 +233,10 @@ jobs:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           LIVE_WATCHDOG_SOURCE: supabase
-          LIVE_WATCHDOG_REQUIRE_NEWS: '1'
+          # Result/scoring publication is the critical path. Story/news debt is
+          # warned/escalated separately so users still get points and knockout access.
+          LIVE_WATCHDOG_REQUIRE_NEWS: '0'
+          LIVE_WATCHDOG_SKIP_STORIES: '1'
         run: node scripts/live-state-watchdog.js
 
       - name: Escalate unresolved result work

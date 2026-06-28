@@ -323,12 +323,23 @@ check('story asset backlog cannot fail scoring/result workflows', () => {
     '.github/workflows/live-poller.yml',
   ].forEach(file => {
     const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    assert.ok(text.includes("LIVE_WATCHDOG_REQUIRE_NEWS: '0'"), `${file} must not fail result publication on empty editorial news`);
+    assert.ok(text.includes("LIVE_WATCHDOG_SKIP_STORIES: '1'"), `${file} must not fail result publication on missing story assets`);
     assert.ok(text.includes('failed=0'), `${file} must track result failure separately`);
     assert.ok(/needs_attention[\s\S]*failed=1/.test(text), `${file} must still fail on unresolved result verification`);
     assert.ok(/::warning::World Cup story desk/.test(text), `${file} must warn, not fail, on missing story assets`);
     assert.ok(!/::error::World Cup story desk/.test(text), `${file} must not report story backlog as a workflow error`);
     assert.ok(/exit "\$failed"/.test(text), `${file} must exit only on result-verification failure`);
   });
+
+  const ci = fs.readFileSync(path.join(ROOT, '.github/workflows/test-scoring.yml'), 'utf8');
+  assert.ok(ci.includes("LIVE_OPS_ALLOW_STORY_BACKLOG: '1'"), 'app/scoring CI must not block hotfixes on accepted story backlog');
+
+  const scoring = fs.readFileSync(path.join(ROOT, '.github/workflows/calculate-scores-v2.yml'), 'utf8');
+  assert.ok(/Audit World Cup story image quality[\s\S]*continue-on-error:\s*true/.test(scoring), 'scoring workflow story image audit must be non-blocking');
+  assert.ok(/Validate World Cup stories[\s\S]*continue-on-error:\s*true/.test(scoring), 'scoring workflow story validation must be non-blocking');
+  assert.ok(/audit-world-cup-story-images\.py --scope stories \|\| true/.test(scoring), 'scoring regenerate path must not block on story image audit');
+  assert.ok(/test-world-cup-stories\.js \|\| true/.test(scoring), 'scoring regenerate path must not block on story validation');
 });
 
 console.log(`\nLive-ops audit tests passed: ${passed}`);

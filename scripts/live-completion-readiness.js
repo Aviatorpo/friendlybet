@@ -354,16 +354,26 @@ async function runReadiness(options = {}) {
   const checks = [];
   const warnings = [];
   const nowMs = (options.auditOptions && options.auditOptions.nowMs) || Date.now();
+  const allowStoryBacklog = !!options.allowStoryBacklog || process.env.LIVE_COMPLETION_ALLOW_STORY_BACKLOG === '1';
   let fairPlayResolutions = options.fairPlayResolutions || readLocalFairPlayResolutions();
   const baseAuditOptions = {
     ...(options.auditOptions || {}),
+    allowStoryBacklog,
     ignoreSnapshotLiveStatus: (options.auditOptions || {}).ignoreSnapshotLiveStatus !== false,
   };
   const audit = await LiveOpsAudit.audit(baseAuditOptions);
 
   add(checks, 'snapshot live-ops audit is green', audit.ok, `recovery=${audit.result_recovery.candidates}, missingStories=${audit.stories.missing}`);
   add(checks, 'no unresolved result-recovery candidates', audit.result_recovery.candidates === 0, `candidates=${audit.result_recovery.candidates}`);
-  add(checks, 'no missing stories for finished matches', audit.stories.missing === 0, `missing=${audit.stories.missing}`);
+  add(checks, 'no missing stories for finished matches', allowStoryBacklog || audit.stories.missing === 0, `missing=${audit.stories.missing}${allowStoryBacklog ? ', warning-only' : ''}`);
+  if (allowStoryBacklog && audit.stories.missing > 0) {
+    addWarning(
+      warnings,
+      'story_backlog_warning_only',
+      'Finished matches are missing Story of the World Cup cards, but result/scoring readiness is not blocked.',
+      `missing=${audit.stories.missing}`
+    );
+  }
   add(checks, 'Pundit feed is fresh', !!audit.pundit.fresh, `freshUntil=${audit.pundit.freshUntil || 'missing'}`);
   add(checks, 'watchdog has no errors', audit.watchdog.errors.length === 0, `errors=${audit.watchdog.errors.length}`);
 
@@ -448,6 +458,9 @@ async function runReadiness(options = {}) {
 
   [
     'node scripts/test-scoring.js',
+    'node scripts/test-fifa-bracket.js',
+    'node scripts/test-third-place-allocation.js',
+    'node scripts/test-two-phase-knockout-wiring.js',
     'node scripts/test-live-ops-audit.js',
     'node scripts/live-ops-audit.js',
     'node scripts/test-fair-play-resolver.js',
@@ -493,10 +506,21 @@ async function runReadiness(options = {}) {
         ? snapshots.matches.matches
         : workflowContextMatches;
       production = summarizePublicSnapshots(snapshots, nowMs);
-      const productionAudit = await auditPublicSnapshots(snapshots, nowMs, options.auditOptions || {});
+      const productionAudit = await auditPublicSnapshots(snapshots, nowMs, {
+        ...(options.auditOptions || {}),
+        allowStoryBacklog,
+      });
       production.audit_ok = productionAudit.ok;
       production.result_recovery = productionAudit.result_recovery;
       production.watchdog = productionAudit.watchdog;
+      if (allowStoryBacklog && productionAudit.stories && productionAudit.stories.missing > 0) {
+        addWarning(
+          warnings,
+          'production_story_backlog_warning_only',
+          'Production public snapshots are missing Story of the World Cup cards, but result/scoring readiness is not blocked.',
+          `missing=${productionAudit.stories.missing}`
+        );
+      }
       add(checks, 'production public snapshots are readable', production.matches > 0 && production.stories > 0 && production.pundit_items > 0, `matches=${production.matches}, stories=${production.stories}, pundit=${production.pundit_items}`);
       add(checks, 'production Pundit feed is fresh', production.pundit_fresh, `freshUntil=${production.pundit_freshUntil || 'missing'}`);
       add(checks, 'production public snapshot audit is green', productionAudit.ok, `recovery=${productionAudit.result_recovery.candidates}, errors=${productionAudit.watchdog.errors.length}`);
@@ -514,6 +538,7 @@ async function runReadiness(options = {}) {
       const dbAudit = await LiveOpsAudit.audit({
         ...(options.auditOptions || {}),
         matches: dbMatches,
+        allowStoryBacklog,
         ignoreSnapshotLiveStatus: false,
       });
       liveDb = {
@@ -525,6 +550,14 @@ async function runReadiness(options = {}) {
         result_recovery: dbAudit.result_recovery,
         watchdog: dbAudit.watchdog,
       };
+      if (allowStoryBacklog && dbAudit.stories && dbAudit.stories.missing > 0) {
+        addWarning(
+          warnings,
+          'live_db_story_backlog_warning_only',
+          'Live DB audit found finished matches without Story of the World Cup cards, but result/scoring readiness is not blocked.',
+          `missing=${dbAudit.stories.missing}`
+        );
+      }
       add(checks, 'live DB matches are readable', dbMatches.length > 0, `matches=${dbMatches.length}`);
       add(checks, 'live DB match audit is green', dbAudit.ok, `recovery=${dbAudit.result_recovery.candidates}, errors=${dbAudit.watchdog.errors.length}`);
       add(checks, 'live DB active match state is fresh', liveDb.freshness.stale === 0, `active=${liveDb.freshness.active}, stale=${liveDb.freshness.stale}${liveDb.freshness.sample.length ? `, sample=${liveDb.freshness.sample.join('; ')}` : ''}`);

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const fs = require('fs');
+const OpsSummary = require('./live-ops-summary');
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const chatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
@@ -29,24 +30,7 @@ function buildIncidentText(payload) {
   if (!parsed) {
     return 'FriendlyBet live incident\n\nA real-time readiness check failed, but its output was not valid JSON.\n\nWhat to do: open the GitHub Actions run, inspect the failing step, and keep two-phase knockout closed until the failing check is fixed.\n\nRaw output:\n' + short(payload, 1800);
   }
-  const failed = (parsed.checks || []).filter(c => !c.ok);
-  const official = parsed.live_db && parsed.live_db.official_knockout_readiness;
-  const lines = [
-    'FriendlyBet live incident',
-    '',
-    `Checked at: ${parsed.checked_at || new Date().toISOString()}`,
-    `Failed checks: ${failed.length}`,
-  ];
-  if (official) lines.push(`Official knockout readiness: ${official.reason || 'unknown'} (${official.detail || 'no detail'})`);
-  lines.push('');
-  lines.push('What failed:');
-  lines.push(failed.length ? failed.slice(0, 8).map(c => `- ${c.name}: ${c.detail || 'no detail'}`).join('\n') : '- Readiness command failed without a failed check row.');
-  lines.push('');
-  lines.push('What to do:');
-  lines.push('1. Open the failed GitHub Actions run for live-completion-readiness.');
-  lines.push('2. The automated readiness/resolver workflows will keep retrying; keep knockout closed until the official bracket check is green.');
-  lines.push('3. Do not manually tell users knockout is open while fair-play/team-conduct or Annex C readiness is blocked.');
-  return short(lines.join('\n'));
+  return short(OpsSummary.summarize(parsed));
 }
 
 (async () => {
