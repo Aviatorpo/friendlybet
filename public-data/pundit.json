@@ -1,56 +1,61 @@
 {
-  "updatedAt": "2026-06-28T14:28:29.040Z",
-  "freshUntil": "2026-06-28T20:28:29.040Z",
-  "count": 5,
+  "updatedAt": "2026-06-28T17:54:51.004Z",
+  "freshUntil": "2026-06-28T23:54:51.004Z",
+  "count": 6,
   "items": [
     {
-      "id": "phase-groups-complete-knockout-open",
-      "he": "שלב הבתים מאחורינו: כל 12 הבתים נסגרו וניקוד הבתים רשמי. בהימורי two-phase או נוקאאוט, הבראקט ניתן לעריכה עד 28 ביוני בשעה 20:00 GMT‎+3‎; בהימורי one-phase כבר חיים עם הקבלות 🏁",
-      "en": "The group stage is behind us: all 12 groups are final and group points are official. In two-phase or knockout pools, the bracket can still be edited until June 28 at 08:00 PM GMT+3; one-phase pools are already living with the receipts 🏁",
-      "type": "phase",
+      "id": "result-9404e5df-df31-4237-a3fc-9ed17b9bdc57",
+      "type": "result",
       "confidence": "confirmed",
+      "he": "אלג'יריה נגד אוסטריה נגמר 3:3. מי שסימן ניצחון לאחד הצדדים איבד נקודות חשובות 🧾",
+      "en": "Algeria vs Austria finished 3-3. Anyone who picked a winner there lost important points 🧾",
       "sources": [],
-      "expires_at": "2026-06-28T17:00:00.000Z"
+      "expires_at": "2026-06-29T14:00:00.000Z"
     },
     {
-      "id": "phase-knockout-window",
-      "mode_scopes": [
-        "two_phase",
-        "late_knockout"
-      ],
-      "he": "זה כבר לא שלב של חישובי בית. בהימורי two-phase או נוקאאוט, הבחירות הבאות הן 31 משחקי נוקאאוט, מנצחת בכל משחק, וכל זה ננעל ב-28 ביוני בשעה 20:00 GMT‎+3‎ 🏁",
-      "en": "This is no longer group-stage accounting. For two-phase or knockout pools, the next picks are 31 knockout matches, one winner each, locked at June 28 at 08:00 PM GMT+3 🏁",
-      "type": "phase",
+      "id": "result-b22515cc-80c5-46e5-8fd7-2dbf90a86503",
+      "type": "result",
       "confidence": "confirmed",
+      "he": "ארגנטינה ניצחה 3:1 את ירדן. תוצאה צמודה, אבל מספיק חשובה כדי להשפיע על ההימורים 🧾",
+      "en": "Argentina beat Jordan 3-1. A close result, but important enough to affect the predictions 🧾",
       "sources": [],
-      "expires_at": "2026-06-28T17:00:00.000Z"
+      "expires_at": "2026-06-29T14:00:00.000Z"
     },
     {
-      "id": "phase-leaderboard-official",
-      "he": "הלידרבורד עכשיו מספר מי שרד את שלב הבתים. מכאן הטבלה תזוז רק דרך הבראקט, האלופה ומלך השערים 🏁",
-      "en": "The leaderboard now shows who survived the group stage. From here it moves through the bracket, champion pick, and top scorer 🏁",
-      "type": "phase",
+      "id": "result-48674a8f-7c5a-43c9-9f00-e6c1a8a982f9",
+      "type": "result",
       "confidence": "confirmed",
+      "he": "קולומביה ופורטוגל סיימו 0:0. לא נוצץ, אבל נקודה לכל צד עדיין משנה את הבית 🧾",
+      "en": "Colombia and Portugal ended 0-0. Not flashy, but a point each still changes the group 🧾",
       "sources": [],
-      "expires_at": "2026-06-28T17:00:00.000Z"
+      "expires_at": "2026-06-29T11:30:00.000Z"
     },
     {
-      "id": "phase-final-results-recap",
-      "he": "המשחקים האחרונים שסגרו את הבתים: אלג'יריה 3:3 אוסטריה; ארגנטינה 3:1 ירדן; קולומביה 0:0 פורטוגל; קונגו הדמוקרטית 3:1 אוזבקיסטן; אנגליה 2:0 פנמה; קרואטיה 2:1 גאנה. עכשיו אין תיאוריות בית, רק ניקוד רשמי ובראקט 🏁",
-      "en": "The final group results are in: Algeria 3-3 Austria; Argentina 3-1 Jordan; Colombia 0-0 Portugal; Congo DR 3-1 Uzbekistan; England 2-0 Panama; Croatia 2-1 Ghana. No more group theories now, just official points and the bracket 🏁",
-      "type": "phase",
+      "id": "result-651a15a4-261b-41d4-8a9a-74dc490575dc",
+      "type": "result",
       "confidence": "confirmed",
+      "he": "קונגו הדמוקרטית ניצחה 3:1 את אוזבקיסטן. תוצאה צמודה, אבל מספיק חשובה כדי להשפיע על ההימורים 🧾",
+      "en": "Congo DR beat Uzbekistan 3-1. A close result, but important enough to affect the predictions 🧾",
       "sources": [],
-      "expires_at": "2026-06-28T17:00:00.000Z"
+      "expires_at": "2026-06-29T11:30:00.000Z"
     },
     {
-      "id": "phase-bracket-receipts",
-      "he": "מי שפגע בבתים כבר קיבל קבלות. מי שרוצה להפוך את הטבלה צריך עכשיו בראקט חד, לא עוד פרשנות על בתים 🏁",
-      "en": "Group-stage hits already have their receipts. Anyone chasing the table needs a sharp bracket now, not another group-stage take 🏁",
-      "type": "phase",
+      "id": "result-78723131-ae62-4370-b4f4-15fd3df36a3b",
+      "type": "result",
       "confidence": "confirmed",
+      "he": "אנגליה עם 2:0 על פנמה. זה ניצחון שמסדר לה עמדה טובה יותר בבית 🧾",
+      "en": "England beat Panama 2-0. That gives them a stronger position in the group 🧾",
       "sources": [],
-      "expires_at": "2026-06-28T17:00:00.000Z"
+      "expires_at": "2026-06-29T09:00:00.000Z"
+    },
+    {
+      "id": "result-7d45f59c-4702-4143-98ca-f5ae33d81846",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "קרואטיה ניצחה 2:1 את גאנה. תוצאה צמודה, אבל מספיק חשובה כדי להשפיע על ההימורים 🧾",
+      "en": "Croatia beat Ghana 2-1. A close result, but important enough to affect the predictions 🧾",
+      "sources": [],
+      "expires_at": "2026-06-29T09:00:00.000Z"
     }
   ]
 }
