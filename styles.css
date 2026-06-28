@@ -3715,6 +3715,56 @@ body.ltr #next-group-btn svg {
   font-weight: 800;
 }
 
+.member-tp-recovery {
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(243, 201, 135, 0.08);
+  border: 0.5px solid rgba(243, 201, 135, 0.26);
+}
+
+.member-tp-recovery.active {
+  background: rgba(125, 240, 191, 0.08);
+  border-color: rgba(125, 240, 191, 0.26);
+}
+
+.member-tp-recovery-status {
+  font-size: 11px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 7px;
+}
+
+.member-tp-recovery-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.member-tp-recovery-actions button {
+  min-height: 32px;
+  border-radius: 8px;
+  border: 0.5px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.88);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 9px;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.member-tp-recovery-grant {
+  border-color: rgba(125, 240, 191, 0.36) !important;
+  color: #b9f8d7 !important;
+}
+
+.member-tp-recovery-revoke {
+  border-color: rgba(255, 130, 130, 0.3) !important;
+  color: #ffb9b9 !important;
+}
+
 .member-status.not-started {
   color: rgba(255, 255, 255, 0.4);
 }
@@ -5688,6 +5738,11 @@ body.ltr #next-group-btn svg {
   gap: 10px;
 }
 
+.ko-match-card.recovery-locked {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.025);
+}
+
 .ko-match-header {
   display: flex;
   justify-content: space-between;
@@ -5736,6 +5791,27 @@ body.ltr #next-group-btn svg {
 .ko-team.tbd {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.ko-team.locked {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+.ko-team.locked:hover,
+.ko-team.locked:active {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ko-recovery-lock-note,
+.ko-single-locked-note {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  line-height: 1.4;
+  padding: 7px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 0.5px solid rgba(255, 255, 255, 0.08);
 }
 
 .ko-team-flag {
@@ -9611,6 +9687,18 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
 .ko-single-team.tbd {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+.ko-single-team.locked {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+.ko-single-team.locked:hover,
+.ko-single-team.locked:active {
+  border-color: rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.25);
+  transform: none;
 }
 .ko-single-team .ko-single-flag {
   font-size: 32px;

@@ -20,6 +20,7 @@ const SCORING_CRITICAL =
 const fs = require('fs');
 const path = require('path');
 const WCR = require('../share-assets/world-cup-rules.js');
+const FIFA_THIRD_PLACE = require('../share-assets/fifa-third-place-table.js');
 
 function scoringDetail(...args) {
   if (SCORING_VERBOSE) console.log(...args);
@@ -440,6 +441,113 @@ function stageRuleKey(stage) {
   }
 }
 
+const TP_R32_DEF = {
+  1:  [{type:'gp',g:'A',p:2}, {type:'gp',g:'B',p:2}],
+  2:  [{type:'gp',g:'E',p:1}, {type:'third'}],
+  3:  [{type:'gp',g:'F',p:1}, {type:'gp',g:'C',p:2}],
+  4:  [{type:'gp',g:'C',p:1}, {type:'gp',g:'F',p:2}],
+  5:  [{type:'gp',g:'I',p:1}, {type:'third'}],
+  6:  [{type:'gp',g:'E',p:2}, {type:'gp',g:'I',p:2}],
+  7:  [{type:'gp',g:'A',p:1}, {type:'third'}],
+  8:  [{type:'gp',g:'L',p:1}, {type:'third'}],
+  9:  [{type:'gp',g:'D',p:1}, {type:'third'}],
+  10: [{type:'gp',g:'G',p:1}, {type:'third'}],
+  11: [{type:'gp',g:'K',p:2}, {type:'gp',g:'L',p:2}],
+  12: [{type:'gp',g:'H',p:1}, {type:'gp',g:'J',p:2}],
+  13: [{type:'gp',g:'B',p:1}, {type:'third'}],
+  14: [{type:'gp',g:'J',p:1}, {type:'gp',g:'H',p:2}],
+  15: [{type:'gp',g:'K',p:1}, {type:'third'}],
+  16: [{type:'gp',g:'D',p:2}, {type:'gp',g:'G',p:2}]
+};
+const TP_R16_DEF = { 17:[2,5], 18:[1,3], 19:[4,6], 20:[7,8], 21:[11,12], 22:[9,10], 23:[14,16], 24:[13,15] };
+const TP_QF_DEF = { 25:[17,18], 26:[21,22], 27:[19,20], 28:[23,24] };
+const TP_SF_DEF = { 29:[25,26], 30:[27,28] };
+const TP_FINAL_DEF = { 31:[29,30] };
+
+function tpPickIdFromPos(pos) {
+  if (pos >= 1 && pos <= 16) return `R32_M${pos}`;
+  if (pos >= 17 && pos <= 24) return `R16_M${pos - 16}`;
+  if (pos >= 25 && pos <= 28) return `QF_M${pos - 24}`;
+  if (pos >= 29 && pos <= 30) return `SF_M${pos - 28}`;
+  if (pos === 31) return 'FINAL_M1';
+  return null;
+}
+
+function tpStageAliasesForPos(pos) {
+  if (pos >= 1 && pos <= 16) return ['ROUND_OF_32', 'LAST_32', 'R32'];
+  if (pos >= 17 && pos <= 24) return ['LAST_16', 'ROUND_OF_16', 'R16'];
+  if (pos >= 25 && pos <= 28) return ['QUARTER_FINALS', 'QF'];
+  if (pos >= 29 && pos <= 30) return ['SEMI_FINALS', 'SF'];
+  if (pos === 31) return ['FINAL'];
+  return [];
+}
+
+function tpTeamPairKey(a, b) {
+  if (!a || !b) return null;
+  return [String(a), String(b)].sort().join('|');
+}
+
+function tpResolveFeed(feed, seed, thirdAssignment, pos) {
+  if (!feed || !seed) return null;
+  if (feed.type === 'gp') {
+    const arr = seed.groupPositions && seed.groupPositions[feed.g];
+    return arr ? arr[feed.p - 1] : null;
+  }
+  if (feed.type === 'third') {
+    const group = thirdAssignment && thirdAssignment[pos];
+    const arr = group && seed.groupPositions && seed.groupPositions[group];
+    return arr ? arr[2] : null;
+  }
+  return null;
+}
+
+function buildTwoPhaseSlotMatches(finishedMatches, groupState = null) {
+  const seedState = groupState && groupState.status === 'ready'
+    ? { ok: true, groupPositions: groupState.groupPositions, thirdPlaceAdvancers: groupState.thirdPlaceGroups }
+    : WCR.lateKnockoutSeedFromMatches(finishedMatches || [], { strict: true });
+  if (!seedState || !seedState.ok) return new Map();
+  const thirdAssignment = FIFA_THIRD_PLACE.assignment(seedState.thirdPlaceAdvancers || []);
+  if (!thirdAssignment) return new Map();
+
+  const byStagePair = new Map();
+  (finishedMatches || []).forEach(m => {
+    if (!isTerminalMatch(m) || !m.stage || m.stage === 'GROUP_STAGE' || m.stage === 'THIRD_PLACE') return;
+    const pairKey = tpTeamPairKey(m.home_team_code, m.away_team_code);
+    if (!pairKey) return;
+    const stage = String(m.stage).toUpperCase();
+    if (!byStagePair.has(stage)) byStagePair.set(stage, new Map());
+    byStagePair.get(stage).set(pairKey, m);
+  });
+
+  const slot = {};
+  const attachMatch = (pos, teams) => {
+    const id = tpPickIdFromPos(pos);
+    const pairKey = tpTeamPairKey(teams[0], teams[1]);
+    let match = null;
+    if (pairKey) {
+      for (const stage of tpStageAliasesForPos(pos)) {
+        match = byStagePair.get(stage)?.get(pairKey) || null;
+        if (match) break;
+      }
+    }
+    slot[pos] = { id, teams, match, winner: match ? knockoutWinner(match) : null };
+  };
+
+  Object.entries(TP_R32_DEF).forEach(([pos, feeds]) => {
+    const n = Number(pos);
+    attachMatch(n, feeds.map(feed => tpResolveFeed(feed, seedState, thirdAssignment, n)));
+  });
+  [TP_R16_DEF, TP_QF_DEF, TP_SF_DEF, TP_FINAL_DEF].forEach(def => {
+    Object.entries(def).forEach(([pos, sources]) => {
+      attachMatch(Number(pos), sources.map(src => slot[src] && slot[src].winner));
+    });
+  });
+
+  const out = new Map();
+  Object.values(slot).forEach(s => { if (s && s.id && s.match) out.set(s.id, s.match); });
+  return out;
+}
+
 // v2.5.68: bracket position -> rule key for hypothetical bracket scoring.
 // Position numbering (official WC 2026):
 //   1-16  = R32   (16 matches)
@@ -751,6 +859,7 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
   // drawing-but-advancing team would score 0 for).
   const advanced = await computeAdvancedTeams(finishedMatches, opts.groupState || null);
   const pickIndexes = opts.pickIndexes || {};
+  const twoPhaseSlotMatches = buildTwoPhaseSlotMatches(finishedMatches || [], opts.groupState || null);
   let changedUsers = 0;
 
   for (const user of users) {
@@ -778,20 +887,22 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
       });
     }
 
-    // Knockout picks - per-match
+    // Knockout picks - fixture/slot aware. Two-phase rows use synthetic match ids
+    // (R32_M1..FINAL_M1). Score only the pick for the exact official bracket slot,
+    // never "team appears anywhere in the user's bracket"; post-start recovery
+    // depends on this to avoid retroactive points from known results.
     const kp = pickIndexes.knockoutByUser
       ? (pickIndexes.knockoutByUser.get(user.id) || [])
       : await sbAll('knockout_picks', `?user_id=eq.${user.id}&select=*`);
-    finishedMatches.forEach(m => {
-      if (!isTerminalMatch(m)) return;
-      if (!m.stage || m.stage === 'GROUP_STAGE' || m.stage === 'THIRD_PLACE') return;
+    (kp || []).filter(p => p && p.bracket_position == null && p.match_id).forEach(p => {
+      const m = twoPhaseSlotMatches.get(p.match_id);
+      if (!m || !isTerminalMatch(m)) return;
       const winner = knockoutWinner(m);
       if (!winner) return;
-      const pick = (kp || []).find(p => p.predicted_winner === winner || p.team_code === winner);
-      if (!pick) return;
+      if ((p.predicted_winner || p.team_code) !== winner) return;
       const key = stageRuleKey(m.stage);
       if (!key) return;
-      const mult = resolveMult(winner, pick.multiplier_applied);
+      const mult = resolveMult(winner, p.multiplier_applied);
       knockoutPoints += (rules[key] || 0) * mult;
     });
 
@@ -830,7 +941,7 @@ if (require.main === module) {
     computeGroupStandings, groupIsComplete, groupMatchIdentity, isPendingProviderFinal, knockoutWinner,
     buildGroupState, indexRowsBy, userScoresAlreadyCurrent, updateUserScoreIfChanged,
     scoreCalcTimestampFresh,
-    bracketPosRuleKey, stageRuleKey, poolMultResolver,
+    bracketPosRuleKey, stageRuleKey, poolMultResolver, buildTwoPhaseSlotMatches,
     groupScoringMode,
     validateTwoPhaseGroupPickSet, WC2026_GROUPS, TEAM_TO_GROUP,
     DEFAULT_RULES_SINGLE, DEFAULT_RULES_TWO, DEFAULT_CAT_MULT, FIFA_RANK,

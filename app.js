@@ -23,6 +23,8 @@ const state = {
 // run — no temporal-dead-zone risk. Set true ONLY inside spReopenKnockout().
 let spReopenActive = false;
 let _spReopenStatus = null;   // last my_knockout_reopen result {locked,eligible,approved,used,can_reenter,expires_at}
+let tpReopenActive = false;
+let _tpReopenStatus = null;   // last my_two_phase_knockout_reopen result
 const WC2026_CORRECTION_COPY_SWITCH_ISO = '2026-06-11T19:00:00.000Z';
 
 function showScreen(screenId) {
@@ -40,6 +42,9 @@ function showScreen(screenId) {
   // so it can't leak into a normal save. (Flag is declared just above, so no TDZ.)
   if (spReopenActive && screenId !== 'ko-single-screen') {
     spReopenActive = false;
+  }
+  if (tpReopenActive && screenId !== 'ko-single-screen' && screenId !== 'knockout-screen') {
+    tpReopenActive = false;
   }
   // Stop the pundit rotation when leaving the dashboard so its 9s interval can't
   // pile up (re-entering the dashboard restarts it). _punditState is defined
@@ -4333,6 +4338,56 @@ async function _loadTwoPhaseR16IncidentUserIdsForAdmin() {
   }
 }
 
+async function _tpFetchReopenStatus() {
+  try {
+    const code = _currentRecoveryCode();
+    if (!code || !supabaseClient) { _tpReopenStatus = null; return null; }
+    const { data, error } = await supabaseClient.rpc('my_two_phase_knockout_reopen', { p_code: code });
+    _tpReopenStatus = error ? null : data;
+    return _tpReopenStatus;
+  } catch (_) {
+    _tpReopenStatus = null;
+    return null;
+  }
+}
+
+function _tpRecoveryClosed() {
+  return !!(state.currentPool && state.currentPool.betting_mode === 'two_phase' && Date.now() >= _knockoutCutoffMs());
+}
+
+function _tpRecoveryLockedIds() {
+  const ids = _tpReopenStatus && Array.isArray(_tpReopenStatus.locked_match_ids)
+    ? _tpReopenStatus.locked_match_ids : [];
+  return new Set(ids.filter(Boolean));
+}
+
+function _tpRecoveryMatchLocked(matchId) {
+  return !!(tpReopenActive && _tpRecoveryLockedIds().has(matchId));
+}
+
+async function _loadTwoPhaseRecoveryForAdmin() {
+  const userIds = await _loadTwoPhaseR16IncidentUserIdsForAdmin();
+  const byUser = {};
+  userIds.forEach(id => { byUser[id] = { user_id: id, affected: true }; });
+  if (!state.currentUser || !state.currentUser.is_admin) return { userIds, byUser };
+  if (!state.currentPool || state.currentPool.betting_mode !== 'two_phase') return { userIds, byUser };
+  if (!_tpRecoveryClosed()) return { userIds, byUser };
+  try {
+    const code = _currentRecoveryCode();
+    if (!code || !supabaseClient) return { userIds, byUser };
+    const { data, error } = await supabaseClient.rpc('admin_two_phase_knockout_reopen_members', { p_code: code });
+    if (error || !Array.isArray(data)) return { userIds, byUser };
+    data.forEach(row => {
+      if (!row || !row.user_id) return;
+      byUser[row.user_id] = row;
+      if (row.affected) userIds.add(row.user_id);
+    });
+  } catch (err) {
+    console.warn('two-phase recovery grants failed:', err);
+  }
+  return { userIds, byUser };
+}
+
 async function showMembers() {
   closeMenu();
 
@@ -4370,19 +4425,19 @@ async function showMembers() {
   // truncated and most members showed a WRONG status. Page through all rows so
   // the per-member counts (and the ⚠️ "needs knockout" flag) are correct, and
   // agree with the dashboard nudge count.
-  let groupData, koData, r16IncidentUserIds;
+  let groupData, koData, r16Recovery;
   try {
     if (isLateKo) {
-      [koData, r16IncidentUserIds] = await Promise.all([
+      [koData, r16Recovery] = await Promise.all([
         _fetchAllPoolRows('knockout_picks', 'user_id', state.currentPool.id),
-        _loadTwoPhaseR16IncidentUserIdsForAdmin()
+        _loadTwoPhaseRecoveryForAdmin()
       ]);
       groupData = [];
     } else {
-      [groupData, koData, r16IncidentUserIds] = await Promise.all([
+      [groupData, koData, r16Recovery] = await Promise.all([
         _fetchAllPoolRows(picksTable, 'user_id', state.currentPool.id),
         _fetchAllPoolRows('knockout_picks', 'user_id', state.currentPool.id),
-        _loadTwoPhaseR16IncidentUserIdsForAdmin()
+        _loadTwoPhaseRecoveryForAdmin()
       ]);
     }
   } catch (err) {
@@ -4421,6 +4476,8 @@ async function showMembers() {
   list.innerHTML = '';
   _renderMembersPredictionNotice(list, predictionAccess);
   const r16IncidentClosed = Date.now() >= _knockoutCutoffMs();
+  const r16IncidentUserIds = (r16Recovery && r16Recovery.userIds) || new Set();
+  const r16RecoveryByUser = (r16Recovery && r16Recovery.byUser) || {};
   _renderMembersR16IncidentNotice(list, r16IncidentUserIds, r16IncidentClosed);
 
   const memberOrder = new Map(members.map((m, index) => [m.id, index]));
@@ -4436,9 +4493,11 @@ async function showMembers() {
     const koPicks = koPerUser[member.id] || 0;
     const card = createMemberCard(member, picks, koPicks, isV2, predictionAccess, isLateKo, {
       needsR16Refill: !!(r16IncidentUserIds && r16IncidentUserIds.has(member.id)),
-      r16IncidentClosed
+      r16IncidentClosed,
+      twoPhaseRecovery: r16RecoveryByUser[member.id] || null
     });
     list.appendChild(card);
+    _bindTwoPhaseRecoveryMemberCard(card, member, r16RecoveryByUser[member.id] || null);
   });
 }
 
@@ -4487,6 +4546,83 @@ function _renderMembersR16IncidentNotice(list, userIds, closed = false) {
   list.appendChild(notice);
 }
 
+async function _tpApproveRecoveryForMember(targetUserId) {
+  try {
+    const code = _currentRecoveryCode();
+    if (!code) { showToast(t('reopen.admin.noCode'), 'error'); return { ok: false }; }
+    const { data, error } = await supabaseClient.rpc('approve_two_phase_knockout_reopen', {
+      p_code: code,
+      p_target_user: targetUserId,
+      p_reason: 'r16_bracket_incident'
+    });
+    return error ? { ok: false, reason: error.message } : (data || { ok: false });
+  } catch (err) {
+    return { ok: false, reason: err && err.message };
+  }
+}
+
+async function _tpRevokeRecoveryForMember(targetUserId) {
+  try {
+    const code = _currentRecoveryCode();
+    if (!code) { showToast(t('reopen.admin.noCode'), 'error'); return { ok: false }; }
+    const { data, error } = await supabaseClient.rpc('revoke_two_phase_knockout_reopen', {
+      p_code: code,
+      p_target_user: targetUserId
+    });
+    return error ? { ok: false, reason: error.message } : (data || { ok: false });
+  } catch (err) {
+    return { ok: false, reason: err && err.message };
+  }
+}
+
+function _bindTwoPhaseRecoveryMemberCard(card, member, recovery) {
+  if (!card || !member || !recovery) return;
+  const grantBtn = card.querySelector('.member-tp-recovery-grant');
+  const revokeBtn = card.querySelector('.member-tp-recovery-revoke');
+  const copyBtn = card.querySelector('.member-tp-recovery-copy');
+  if (grantBtn) {
+    grantBtn.addEventListener('click', async e => {
+      e.preventDefault();
+      e.stopPropagation();
+      grantBtn.disabled = true;
+      grantBtn.textContent = '...';
+      const res = await _tpApproveRecoveryForMember(member.id);
+      if (res && res.ok) {
+        showToast(t('tpRecovery.admin.granted'), 'success');
+        showMembers();
+      } else {
+        grantBtn.disabled = false;
+        grantBtn.textContent = t('tpRecovery.admin.grant');
+        showToast(t('tpRecovery.admin.notAvailable'), 'error');
+      }
+    });
+  }
+  if (revokeBtn) {
+    revokeBtn.addEventListener('click', async e => {
+      e.preventDefault();
+      e.stopPropagation();
+      revokeBtn.disabled = true;
+      const res = await _tpRevokeRecoveryForMember(member.id);
+      if (res && res.ok) {
+        showToast(t('tpRecovery.admin.revoked'), 'success');
+        showMembers();
+      } else {
+        revokeBtn.disabled = false;
+        showToast(t('tpRecovery.admin.notAvailable'), 'error');
+      }
+    });
+  }
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async e => {
+      e.preventDefault();
+      e.stopPropagation();
+      const msg = t('tpRecovery.admin.personalMsg', { name: member.nickname || '' });
+      try { await navigator.clipboard.writeText(msg); showToast(t('reopen.admin.copied'), 'success'); }
+      catch (_) { showToast(msg, 'info'); }
+    });
+  }
+}
+
 function _memberPredictionShareUrl(userId) {
   const origin = window.location.origin || 'https://friendlybet.live';
   const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'he');
@@ -4508,6 +4644,19 @@ function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAcce
   const isMe = state.currentUser && member.id === state.currentUser.id;
   const needsR16Refill = !!options.needsR16Refill;
   const r16IncidentClosed = !!options.r16IncidentClosed;
+  const tpRecovery = options.twoPhaseRecovery || null;
+  const showTpRecovery = !!(
+    state.currentUser &&
+    state.currentUser.is_admin &&
+    !member.is_admin &&
+    needsR16Refill &&
+    r16IncidentClosed &&
+    state.currentPool &&
+    state.currentPool.betting_mode === 'two_phase'
+  );
+  const tpGrantActive = !!(tpRecovery && tpRecovery.grant_active);
+  const tpGrantUsed = !!(tpRecovery && tpRecovery.used_at);
+  const tpGrantRevoked = !!(tpRecovery && tpRecovery.revoked_at);
   if (isMe) card.classList.add('is-me');
   if (member.is_admin) card.classList.add('is-admin');
   if (needsR16Refill) card.classList.add('needs-r16-refill');
@@ -4568,6 +4717,36 @@ function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAcce
       ? `<button type="button" class="member-picks-btn" data-member-id="${member.id}"><i class="ti ti-eye"></i><span>${t('membersList.viewPicks')}</span></button>`
       : `<div class="member-picks-note">${t('membersList.picksNotSubmitted')}</div>`)
     : '';
+  let tpRecoveryHtml = '';
+  if (showTpRecovery) {
+    let recoveryStatus = t('tpRecovery.admin.notOpened');
+    if (tpGrantActive) {
+      recoveryStatus = tpGrantUsed
+        ? t('tpRecovery.admin.used')
+        : t('tpRecovery.admin.openUntil', { time: _fmtReopenExpiry(tpRecovery.expires_at) });
+    } else if (tpGrantRevoked) {
+      recoveryStatus = t('tpRecovery.admin.revokedStatus');
+    }
+    tpRecoveryHtml = `
+      <div class="member-tp-recovery ${tpGrantActive ? 'active' : ''} ${tpGrantUsed ? 'used' : ''}">
+        <div class="member-tp-recovery-status">${recoveryStatus}</div>
+        <div class="member-tp-recovery-actions">
+          ${tpGrantActive ? `
+            <button type="button" class="member-tp-recovery-copy" data-user-id="${member.id}">
+              <i class="ti ti-copy"></i><span>${t('tpRecovery.admin.copy')}</span>
+            </button>
+            <button type="button" class="member-tp-recovery-revoke" data-user-id="${member.id}">
+              <i class="ti ti-lock"></i><span>${t('tpRecovery.admin.revoke')}</span>
+            </button>
+          ` : `
+            <button type="button" class="member-tp-recovery-grant" data-user-id="${member.id}">
+              <i class="ti ti-lock-open"></i><span>${t('tpRecovery.admin.grant')}</span>
+            </button>
+          `}
+        </div>
+      </div>
+    `;
+  }
 
   card.innerHTML = `
     <div class="lb-avatar-small">${safeInitial}</div>
@@ -4581,6 +4760,7 @@ function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAcce
         <span class="member-status-dot"></span>
         <span>${statusText}</span>
       </div>
+      ${tpRecoveryHtml}
     </div>
     <div class="member-meta">
       <div class="member-joined">${joinedText}</div>
@@ -7765,6 +7945,7 @@ async function updateBettingStatusOnDashboard() {
     if (restoredCount > picksCount) picksCount = restoredCount;
   }
   const twoPhaseAllSet = picksCount >= 32 && koCount >= 31 && (!tsRequired || tsChosen);
+  try { await _updateTwoPhaseReopenBanner(); } catch (_) {}
 
   if (picksCount === 0) {
     titleEl.textContent = t('dashboard.startCta.title');
@@ -8186,6 +8367,7 @@ function createKnockoutPickCard(match) {
   const round = match.round;
   const points = ROUND_INFO[round].points;
   const userPick = knockoutState.picks[match.id];
+  const recoveryLocked = _tpRecoveryMatchLocked(match.id);
   
   const team1Data = match.team1 ? knockoutState.allTeams[match.team1] : null;
   const team2Data = match.team2 ? knockoutState.allTeams[match.team2] : null;
@@ -8210,6 +8392,7 @@ function createKnockoutPickCard(match) {
 
   let resultBadge = '';
   let cardClass = 'ko-match-card';
+  if (recoveryLocked) cardClass += ' recovery-locked';
 
   if (realResult === true) {
     cardClass += ' result-correct';
@@ -8255,6 +8438,7 @@ function createKnockoutPickCard(match) {
       <div class="ko-vs">VS</div>
       ${createTeamButton(match, team2Data, match.team2, userPick === match.team2)}
     </div>
+    ${recoveryLocked ? `<div class="ko-recovery-lock-note">${t('tpRecovery.user.lockedMatch')}</div>` : ''}
     <div class="ko-match-points">
       <span>${t('knockoutEx.equalizer')}</span>
       <span class="ko-match-points-value">${t('knockoutEx.pointsValue', { n: points })}</span>
@@ -8269,6 +8453,10 @@ function createKnockoutPickCard(match) {
   teamButtons.forEach(btn => {
     btn.addEventListener('click', function(e) {
       e.preventDefault();
+      if (this.classList.contains('locked')) {
+        showToast(t('tpRecovery.user.lockedToast'), 'info');
+        return;
+      }
       const teamCode = this.getAttribute('data-team');
       if (!teamCode || teamCode === 'null') return;
       pickKnockoutWinner(match.id, teamCode);
@@ -8279,9 +8467,10 @@ function createKnockoutPickCard(match) {
 }
 
 function createTeamButton(match, teamData, teamCode, isSelected) {
+  const recoveryLocked = match && _tpRecoveryMatchLocked(match.id);
   if (!teamData || !teamCode) {
     return `
-      <div class="ko-team tbd" data-team="null">
+      <div class="ko-team tbd ${recoveryLocked ? 'locked' : ''}" data-team="null">
         <div class="ko-team-flag">⏳</div>
         <div class="ko-team-name">${t('knockoutEx.tbdTeam')}</div>
       </div>
@@ -8293,7 +8482,7 @@ function createTeamButton(match, teamData, teamCode, isSelected) {
   const teamName = lang === 'he' ? (teamData.name_he || teamData.name_en) : (teamData.name_en || teamData.name_he);
 
   return `
-    <div class="ko-team ${isSelected ? 'selected' : ''}" data-team="${teamCode}">
+    <div class="ko-team ${isSelected ? 'selected' : ''} ${recoveryLocked ? 'locked' : ''}" data-team="${teamCode}">
       <div class="ko-team-flag">${flag}</div>
       <div class="ko-team-name">${teamName}</div>
     </div>
@@ -8301,6 +8490,10 @@ function createTeamButton(match, teamData, teamCode, isSelected) {
 }
 
 function pickKnockoutWinner(matchId, teamCode) {
+  if (_tpRecoveryMatchLocked(matchId)) {
+    showToast(t('tpRecovery.user.lockedToast'), 'info');
+    return;
+  }
   // Save pick
   knockoutState.picks[matchId] = teamCode;
   
@@ -8376,8 +8569,22 @@ async function saveKnockoutPicksToDb(showFeedback = true) {
     round: matchId.split('_')[0],
     predicted_winner: knockoutState.picks[matchId]
   }));
-  const res = await _rpcWrite('save_knockout_picks_2p', { p_code: code, p_picks: picks });
+  const rpcName = tpReopenActive ? 'save_knockout_picks_2p_reopen' : 'save_knockout_picks_2p';
+  const res = await _rpcWrite(rpcName, { p_code: code, p_picks: picks });
   if (res.ok) {
+    const payload = res.data || null;
+    if (payload && payload.ok === false) {
+      if (payload.locked_match_ids) _tpReopenStatus = Object.assign({}, _tpReopenStatus || {}, { locked_match_ids: payload.locked_match_ids });
+      const reason = payload.reason || 'rejected';
+      const key = reason === 'locked_changed'
+        ? 'tpRecovery.user.lockedChanged'
+        : 'tpRecovery.user.notAvailable';
+      showToast(t(key), 'error');
+      return { ok: false, reason, data: payload };
+    }
+    if (tpReopenActive && payload && payload.locked_match_ids) {
+      _tpReopenStatus = Object.assign({}, _tpReopenStatus || {}, { locked_match_ids: payload.locked_match_ids, used: true });
+    }
     if (showFeedback) showToast(t('knockoutEx.savedOk'), 'success');
     return { ok: true };
   }
@@ -8388,7 +8595,7 @@ async function saveKnockoutPicksToDb(showFeedback = true) {
   }
   // Still PGRST202 after all retries: don't attempt the dead anon direct write
   // (it would only 401). Be honest so the user retries instead of losing picks.
-  console.error('saveKnockoutPicksToDb: save_knockout_picks_2p unreachable after retries');
+  console.error(`saveKnockoutPicksToDb: ${rpcName} unreachable after retries`);
   showToast(t('bracketSave.retryLater'), 'error');
   return { ok: false, reason: 'unreachable' };
 }
@@ -16704,6 +16911,10 @@ function _koSingleSetPick(teamCode) {
   const step = koSingle.sequence[koSingle.idx];
   if (!step) return;
   if (koSingle.mode === 'two-phase') {
+    if (_tpRecoveryMatchLocked(step.id)) {
+      showToast(t('tpRecovery.user.lockedToast'), 'info');
+      return;
+    }
     knockoutState.picks[step.id] = teamCode;
     propagateKnockoutBracket();
     autoSaveKnockoutPicks();
@@ -16732,6 +16943,9 @@ function koSingleRender() {
     if (note) {
       if (spReopenActive) {
         note.textContent = t('reopen.walkthroughNote');
+        note.style.display = 'block';
+      } else if (tpReopenActive) {
+        note.textContent = t('tpRecovery.user.walkthroughNote');
         note.style.display = 'block';
       } else { note.style.display = 'none'; }
     }
@@ -16787,6 +17001,7 @@ function koSingleRender() {
   }
 
   const card = document.getElementById('ko-single-card');
+  const stepLocked = !!(koSingle.mode === 'two-phase' && step && _tpRecoveryMatchLocked(step.id));
   const teamHtml = (code, side) => {
     if (!code) {
       return `
@@ -16820,7 +17035,7 @@ function koSingleRender() {
     // around depending on badge width (favorite/contender/underdog labels
     // are different lengths). Now the row stays stable: flag · info · check.
     return `
-      <button class="ko-single-team${selected}" data-team="${code}">
+      <button class="ko-single-team${selected}${stepLocked ? ' locked' : ''}" data-team="${code}" ${stepLocked ? 'disabled' : ''}>
         <span class="ko-single-flag">${getCountryFlag(code)}</span>
         <span class="ko-single-info">
           <span class="ko-single-name">${getTeamName(code)}</span>
@@ -16846,6 +17061,7 @@ function koSingleRender() {
       <div class="ko-single-vs">VS</div>
       ${teamHtml(away, 'away')}
     </div>
+    ${stepLocked ? `<div class="ko-single-locked-note">${t('tpRecovery.user.lockedMatch')}</div>` : ''}
   `;
 
   // Bind clicks
@@ -16917,7 +17133,21 @@ async function koSingleFinish() {
   koSingle.mode = null;
 
   if (wasMode === 'two-phase') {
-    try { await saveKnockoutPicksToDb(false); } catch (_) {}
+    let saveRes = { ok: true };
+    try { saveRes = await saveKnockoutPicksToDb(false); } catch (e) { saveRes = { ok: false, error: e }; }
+    if (tpReopenActive) {
+      state.tpInFlow = false;
+      tpReopenActive = false;
+      _tpReopenStatus = null;
+      showToast(saveRes && saveRes.ok ? t('tpRecovery.user.saved') : t('bracketSave.retryLater'), saveRes && saveRes.ok ? 'success' : 'error');
+      goToDashboard();
+      return;
+    }
+    if (!saveRes || !saveRes.ok) {
+      showToast(t('bracketSave.retryLater'), 'error');
+      goToDashboard();
+      return;
+    }
     showToast(t('knockoutFirst.completedToast'), 'success');
     state.tpInFlow = true;
     spStartTopScorerStep();
@@ -17061,6 +17291,35 @@ async function _updateReopenBanner(active, opts = {}) {
   el.style.display = 'flex';
 }
 
+async function _updateTwoPhaseReopenBanner() {
+  const el = document.getElementById('knockout-reopen-banner');
+  if (!el) return false;
+  const hide = () => {
+    state._dashboardKnockoutReviewOpen = false;
+    el.style.display = 'none';
+    return false;
+  };
+  if (!state.currentPool || state.currentPool.betting_mode !== 'two_phase' || !_tpRecoveryClosed()) return hide();
+  const st = await _tpFetchReopenStatus();
+  if (!st || !st.approved || !st.can_reenter) return hide();
+  const titleEl = document.getElementById('kr-title');
+  const subEl = document.getElementById('kr-sub');
+  const ctaEl = document.getElementById('kr-cta');
+  const expEl = document.getElementById('kr-exp');
+  state._dashboardKnockoutReviewOpen = true;
+  el.className = 'knockout-reopen-banner pending';
+  if (titleEl) titleEl.textContent = t('tpRecovery.user.title');
+  if (subEl) subEl.textContent = t('tpRecovery.user.sub');
+  if (ctaEl) {
+    ctaEl.style.display = '';
+    ctaEl.textContent = t('tpRecovery.user.cta');
+    ctaEl.onclick = () => tpReopenKnockout();
+  }
+  if (expEl) expEl.textContent = st.expires_at ? t('tpRecovery.user.expires', { time: _fmtReopenExpiry(st.expires_at) }) : '';
+  el.style.display = 'flex';
+  return true;
+}
+
 // Entry-point overrides ----------------------------------------------------
 
 // Open the modern two-phase single-match walkthrough at a given step.
@@ -17077,10 +17336,37 @@ function _koOpenTwoPhaseWalkthrough(startIdx) {
 function _koFirstIncompleteTwoPhaseIdx() {
   const seq = _koTwoPhaseSequence();
   for (let i = 0; i < seq.length; i++) {
+    if (tpReopenActive && _tpRecoveryMatchLocked(seq[i].id)) continue;
     if (!(knockoutState.picks && knockoutState.picks[seq[i].id])) return i;
+  }
+  if (tpReopenActive) {
+    const firstUnlocked = seq.findIndex(s => !_tpRecoveryMatchLocked(s.id));
+    return firstUnlocked >= 0 ? firstUnlocked : 0;
   }
   return 0;
 }
+
+async function tpReopenKnockout() {
+  if (!state.currentPool || !state.currentUser) { showToast(t('errors.reconnect'), 'error'); return; }
+  const st = await _tpFetchReopenStatus();
+  if (!st || !st.can_reenter || !_tpRecoveryClosed()) {
+    showToast(t('tpRecovery.user.notAvailable'), 'error');
+    goToDashboard();
+    return;
+  }
+  tpReopenActive = true;
+  _tpReopenStatus = st;
+  try {
+    await startKnockoutBetting();
+  } catch (e) {
+    tpReopenActive = false;
+    _tpReopenStatus = null;
+    console.error('[tpReopenKnockout]', e);
+    showToast(t('tpRecovery.user.notAvailable'), 'error');
+    goToDashboard();
+  }
+}
+window.tpReopenKnockout = tpReopenKnockout;
 
 // Wrap startKnockoutBetting so EVERY entry uses the modern single-match
 // walkthrough (ko-single-screen) instead of the old all-on-one-page grid

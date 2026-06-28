@@ -158,6 +158,15 @@ const koMatches = [
 ];
 const finishedMatches = groupMatches.concat(koMatches);
 const fullGroupMatchesSnapshot = groupMatches.slice();
+const twoPhaseKnockoutMatches = [
+  { stage:'LAST_32', home_team_code:'A2', away_team_code:'B2', home_score:2, away_score:0, status:'FINISHED' },
+  { stage:'LAST_32', home_team_code:'E1', away_team_code:'C3', home_score:1, away_score:0, status:'FINISHED' },
+];
+const twoPhaseGroupState = {
+  status: 'ready',
+  groupPositions: Object.fromEntries(LETTERS.map(L => [L, [L+'1', L+'2', L+'3', L+'4']])),
+  thirdPlaceGroups: LETTERS.slice(0, 8)
+};
 
 function setGroupMatchesForMock(rows) {
   groupMatches.length = 0;
@@ -223,12 +232,16 @@ bracket('U2',5,'MEX');                  // 2 * x1.5 = 3
 // accept/reject behaviour is covered exhaustively by the validateTwoPhaseGroupPickSet
 // unit tests below). Knockout + bonus scoring is unaffected.
 const gp3 = [{ group_letter:'A', team_code:'A1' }, { group_letter:'A', team_code:'A2' }, { group_letter:'A', team_code:'A4' }];
-const kp3 = [{ predicted_winner:'KO1' }, { predicted_winner:'KOP2' }];
+const kp3 = [
+  { match_id:'R32_M1', predicted_winner:'A2' }, // correct exact slot
+  { match_id:'R32_M2', predicted_winner:'A2' }, // same winning team, wrong slot -> no points
+];
 kpByUser['U3'] = kp3;                    // wire U3's two-phase knockout picks into the mock
 const groupPicksByUser = { U3: gp3 };
-// KO1 wins LAST_32+LAST_16+QF+SF+FINAL = 2+4+8+16+32=62 ; KOP2 penalty r32 = +2 -> 64
+// A2 wins R32_M1. The duplicate A2 pick in R32_M2 must NOT score now that
+// two-phase scoring is fixture/slot-aware.
 // U3 top scorer correct -> +10
-// expected: group=0 (incomplete set, not a valid 32), knockout=64, bonus=10, total=74
+// expected: group=0 (incomplete set, not a valid 32), knockout=2, bonus=10, total=12
 
 // U4 single-phase, multipliers ON, ALL teams x1.5 -> rounding (sum-then-round) check.
 gpp('U4','C',[null,'C2',null,'C4']);    // pos2=3*1.5=4.5 ; pos4=1*1.5=1.5 ; sum=6.0 -> round 6 (NOT 7)
@@ -301,11 +314,11 @@ S.__setFetch(mockScoringFetch);
 
   console.log('\n== integration: two-phase (U3) ==');
   await S.scoreTwoPhasePool({ id:'P3', code:'P3', use_multipliers:false }, rulesTwo,
-    [{ id:'U3', nickname:'U3' }], finishedMatches, tsMapTwo, 'TS1');
+    [{ id:'U3', nickname:'U3' }], groupMatches.concat(twoPhaseKnockoutMatches), tsMapTwo, 'TS1', { groupState: twoPhaseGroupState });
   eq('U3 group (incomplete set -> 0)', captured.U3.group_points, 0);
-  eq('U3 knockout (62 + 2 penalty)', captured.U3.knockout_points, 64);
+  eq('U3 knockout exact slot only', captured.U3.knockout_points, 2);
   eq('U3 bonus (top scorer)', captured.U3.bonus_points, 10);
-  eq('U3 total', captured.U3.total_score, 74);
+  eq('U3 total', captured.U3.total_score, 12);
 
   console.log('\n== integration: rounding sum-then-round (U4) ==');
   await S.scoreSinglePhasePool({ id:'P4', code:'P4', use_multipliers:true }, rulesAllX15,
