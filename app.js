@@ -7804,37 +7804,46 @@ async function startKnockoutBetting() {
 function _initEmptyKnockoutRounds() {
   knockoutState.matches.R16 = [];
   for (let i = 0; i < 8; i++) {
+    const spPos = 17 + i;
+    const link = TWO_PHASE_R16_TO_QF[spPos] || {};
     knockoutState.matches.R16.push({
       id: `R16_M${i + 1}`,
       round: 'R16',
       number: i + 1,
       team1: null,
       team2: null,
-      nextMatch: `QF_M${Math.floor(i / 2) + 1}`
+      nextMatch: link.match || `QF_M${Math.floor(i / 2) + 1}`,
+      nextSlot: link.slot || ((i % 2) + 1)
     });
   }
 
   knockoutState.matches.QF = [];
   for (let i = 0; i < 4; i++) {
+    const spPos = 25 + i;
+    const link = TWO_PHASE_QF_TO_SF[spPos] || {};
     knockoutState.matches.QF.push({
       id: `QF_M${i + 1}`,
       round: 'QF',
       number: i + 1,
       team1: null,
       team2: null,
-      nextMatch: `SF_M${Math.floor(i / 2) + 1}`
+      nextMatch: link.match || `SF_M${Math.floor(i / 2) + 1}`,
+      nextSlot: link.slot || ((i % 2) + 1)
     });
   }
 
   knockoutState.matches.SF = [];
   for (let i = 0; i < 2; i++) {
+    const spPos = 29 + i;
+    const link = TWO_PHASE_SF_TO_FINAL[spPos] || {};
     knockoutState.matches.SF.push({
       id: `SF_M${i + 1}`,
       round: 'SF',
       number: i + 1,
       team1: null,
       team2: null,
-      nextMatch: 'FINAL_M1'
+      nextMatch: link.match || 'FINAL_M1',
+      nextSlot: link.slot || ((i % 2) + 1)
     });
   }
 
@@ -7868,13 +7877,15 @@ function buildOfficialTwoPhaseKnockout(seed) {
   const matches = [];
   for (let pos = 1; pos <= 16; pos++) {
     const feeds = SP_R32_DEF[pos];
+    const link = TWO_PHASE_R32_TO_R16[pos] || {};
     matches.push({
       id: `R32_M${pos}`,
       round: 'R32',
       number: pos,
       team1: _resolveSeedFeed(feeds[0], seed, thirdAssignment, pos),
       team2: _resolveSeedFeed(feeds[1], seed, thirdAssignment, pos),
-      nextMatch: `R16_M${Math.floor((pos - 1) / 2) + 1}`
+      nextMatch: link.match || `R16_M${Math.floor((pos - 1) / 2) + 1}`,
+      nextSlot: link.slot || ((pos - 1) % 2) + 1
     });
   }
   knockoutState.matches.R32 = matches;
@@ -7929,8 +7940,8 @@ function propagateKnockoutBracket() {
         const nextMatchId = match.nextMatch;
         const nextMatch = knockoutState.matches[nextRound].find(m => m.id === nextMatchId);
         if (nextMatch) {
-          // Even idx fills team1, odd idx fills team2
-          if (idx % 2 === 0) {
+          const nextSlot = match.nextSlot || ((idx % 2 === 0) ? 1 : 2);
+          if (nextSlot === 1) {
             nextMatch.team1 = winner;
           } else {
             nextMatch.team2 = winner;
@@ -7941,7 +7952,8 @@ function propagateKnockoutBracket() {
         const nextMatchId = match.nextMatch;
         const nextMatch = knockoutState.matches[nextRound].find(m => m.id === nextMatchId);
         if (nextMatch) {
-          if (idx % 2 === 0) {
+          const nextSlot = match.nextSlot || ((idx % 2 === 0) ? 1 : 2);
+          if (nextSlot === 1) {
             nextMatch.team1 = null;
           } else {
             nextMatch.team2 = null;
@@ -14057,6 +14069,22 @@ const SP_SF_DEF = {
 const SP_FINAL_DEF = {
   31: [29, 30]  // M104
 };
+
+function _spBuildNextRoundSlotMap(def, targetPrefix, targetOffset) {
+  const out = {};
+  Object.entries(def).forEach(([targetPos, sources]) => {
+    const match = `${targetPrefix}_M${parseInt(targetPos, 10) - targetOffset}`;
+    sources.forEach((sourcePos, index) => {
+      out[sourcePos] = { match, slot: index + 1 };
+    });
+  });
+  return out;
+}
+
+const TWO_PHASE_R32_TO_R16 = _spBuildNextRoundSlotMap(SP_R16_DEF, 'R16', 16);
+const TWO_PHASE_R16_TO_QF = _spBuildNextRoundSlotMap(SP_QF_DEF, 'QF', 24);
+const TWO_PHASE_QF_TO_SF = _spBuildNextRoundSlotMap(SP_SF_DEF, 'SF', 28);
+const TWO_PHASE_SF_TO_FINAL = _spBuildNextRoundSlotMap(SP_FINAL_DEF, 'FINAL', 30);
 
 // Reverse "child of" map (position → next-round position it feeds into).
 // Used by spClearDownstream when a pick changes.
