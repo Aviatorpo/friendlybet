@@ -1496,6 +1496,9 @@ async function updateAdminNudgeOnDashboard() {
 // are still incomplete — apologises, points them to re-enter, and shows the new
 // deadline. The admin additionally gets a one-tap copy of an apology message to
 // paste into the group chat (our only realistic outreach channel).
+const TWO_PHASE_R16_INCIDENT_START_ISO = '2026-06-27T21:00:00Z';
+const TWO_PHASE_R16_INCIDENT_FIXED_ISO = '2026-06-28T10:00:00Z';
+
 function _formatGraceDeadline(iso) {
   try {
     const d = new Date(iso);
@@ -1509,6 +1512,24 @@ function _poolGraceActive(pool) {
   if (!iso) return false;
   const t = Date.parse(iso);
   return Number.isFinite(t) && t > Date.now();
+}
+
+async function _countTwoPhaseR16IncidentRows(userId = null) {
+  if (!supabaseClient || !state.currentUser || !state.currentPool) return 0;
+  let query = supabaseClient
+    .from('knockout_picks')
+    .select('id', { count: 'exact', head: true })
+    .eq('pool_id', state.currentPool.id)
+    .is('bracket_position', null)
+    .gte('created_at', TWO_PHASE_R16_INCIDENT_START_ISO)
+    .lt('created_at', TWO_PHASE_R16_INCIDENT_FIXED_ISO);
+  if (userId) query = query.eq('user_id', userId);
+  const { count, error } = await query;
+  if (error) {
+    console.warn('two-phase R16 incident check failed:', error);
+    return 0;
+  }
+  return Number(count || 0);
 }
 
 function isPoolWriteLocked(pool = state.currentPool) {
@@ -1525,7 +1546,11 @@ async function updateTwoPhaseIncidentBanner() {
   try {
     if (!state.currentUser || !state.currentPool) return hide();
     if (state.currentPool.betting_mode !== 'two_phase') return hide();
-    // Only AFFECTED pools got the grace override; unaffected pools show nothing.
+    const isAdmin = !!state.currentUser.is_admin;
+    const [userR16IncidentRows, poolR16IncidentRows] = await Promise.all([
+      _countTwoPhaseR16IncidentRows(state.currentUser.id),
+      isAdmin ? _countTwoPhaseR16IncidentRows() : Promise.resolve(0)
+    ]);
     let override = state.currentPool.lock_at_override;
     // Defensive: some login paths hydrate currentPool without this column. If it's
     // not present at all (undefined, not an explicit null), read it authoritatively.
@@ -1540,37 +1565,52 @@ async function updateTwoPhaseIncidentBanner() {
         }
       } catch (_) {}
     }
-    if (!_poolGraceActive({ lock_at_override: override })) return hide();
-    // Only nudge users whose group picks are INCOMPLETE (those who lost / never
-    // finished). A user with a full set saved doesn't need the apology.
     const { data: gp } = await supabaseClient.from('group_picks')
       .select('group_letter, team_code')
       .eq('user_id', state.currentUser.id).eq('pool_id', state.currentPool.id);
     const byGroup = {};
     (gp || []).forEach(r => { (byGroup[r.group_letter] = byGroup[r.group_letter] || []).push(r.team_code); });
-    // Hide only when the user's two-phase group stage is genuinely COMPLETE
-    // (exactly 32 with 2-3 per group). 24 (top-2 each group, no thirds) still
-    // needs the 8 best-third picks, so the banner stays up for 24-31 too.
-    if (isTwoPhaseGroupComplete(byGroup)) return hide();
+    const groupComplete = isTwoPhaseGroupComplete(byGroup);
+    const showUserR16Incident = userR16IncidentRows > 0;
+    const showAdminR16Incident = isAdmin && poolR16IncidentRows > 0;
+    const showR16Incident = showUserR16Incident || showAdminR16Incident;
+    const showSaveLossIncident = _poolGraceActive({ lock_at_override: override }) && !groupComplete;
+    if (!showR16Incident && !showSaveLossIncident) return hide();
 
     const deadline = _formatGraceDeadline(override);
-    const isAdmin = !!state.currentUser.is_admin;
     const titleEl = document.getElementById('tpi-title');
     const subEl = document.getElementById('tpi-sub');
     const dlEl = document.getElementById('tpi-deadline');
     const cta = document.getElementById('tpi-cta');
     const copy = document.getElementById('tpi-copy');
-    if (titleEl) titleEl.textContent = t('dashboard.tpIncident.title');
-    if (subEl) subEl.textContent = t('dashboard.tpIncident.sub');
-    if (dlEl) dlEl.textContent = t('dashboard.tpIncident.deadline', { date: deadline });
-    if (cta) { cta.textContent = t('dashboard.tpIncident.cta'); cta.onclick = () => startBettingFromDashboard(); }
+    if (showR16Incident) {
+      if (titleEl) titleEl.textContent = t(showAdminR16Incident ? 'dashboard.tpR16Incident.adminTitle' : 'dashboard.tpR16Incident.title');
+      if (subEl) subEl.textContent = t(showAdminR16Incident ? 'dashboard.tpR16Incident.adminSub' : 'dashboard.tpR16Incident.sub');
+      if (dlEl) dlEl.textContent = t(showAdminR16Incident ? 'dashboard.tpR16Incident.adminPointsRisk' : 'dashboard.tpR16Incident.pointsRisk');
+      if (cta) {
+        cta.style.display = '';
+        cta.textContent = t(showUserR16Incident ? 'dashboard.tpR16Incident.cta' : 'dashboard.tpR16Incident.adminCta');
+        cta.onclick = showUserR16Incident ? (() => startKnockoutBetting()) : (() => showMembers());
+      }
+    } else {
+      if (titleEl) titleEl.textContent = t('dashboard.tpIncident.title');
+      if (subEl) subEl.textContent = t('dashboard.tpIncident.sub');
+      if (dlEl) dlEl.textContent = t('dashboard.tpIncident.deadline', { date: deadline });
+      if (cta) {
+        cta.style.display = '';
+        cta.textContent = t('dashboard.tpIncident.cta');
+        cta.onclick = () => startBettingFromDashboard();
+      }
+    }
     if (copy) {
       if (isAdmin) {
         copy.style.display = '';
-        copy.textContent = t('dashboard.tpIncident.copy');
+        copy.textContent = t(showR16Incident ? 'dashboard.tpR16Incident.copy' : 'dashboard.tpIncident.copy');
         copy.onclick = async () => {
           const link = (window.location.origin || 'https://friendlybet.live') + '/?join=' + state.currentPool.code;
-          const msg = t('dashboard.tpIncident.copyMessage', { date: deadline, link });
+          const msg = showR16Incident
+            ? t('dashboard.tpR16Incident.copyMessage', { link })
+            : t('dashboard.tpIncident.copyMessage', { date: deadline, link });
           try { await navigator.clipboard.writeText(msg); showToast(t('dashboard.tpIncident.copied'), 'success'); }
           catch (_) { showToast(msg, 'info'); }
         };
