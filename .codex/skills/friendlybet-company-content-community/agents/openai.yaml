@@ -1,0 +1,4 @@
+interface:
+  display_name: "FriendlyBet Content Community"
+  short_description: "Shape Pundit, copy, and social moments"
+  default_prompt: "Use $friendlybet-company-content-community to improve FriendlyBet content or community loops."

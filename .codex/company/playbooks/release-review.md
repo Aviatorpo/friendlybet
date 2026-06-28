@@ -12,6 +12,7 @@ Use this before shipping app code or risky data/scoring changes.
 6. Confirm unrelated dirty work is not reverted or mixed into the release.
 7. For live user-visible data/content fixes, verify the deployed production artifact with a cache-busting URL after push. For example: `https://friendlybet.live/public-data/world-cup-stories.json?cb=<timestamp>` or `https://friendlybet.live/public-data/pundit.json?cb=<timestamp>`.
 8. If the production artifact has not updated yet, report "pushed but not live" and keep the incident open.
+9. During a live scoring or knockout-opening incident, ship and verify the minimum user path first: results, scores, leaderboard snapshots, lock/open state, and production proof. Missing Stories, empty editorial news, or weak Pundit copy should warn and open a separate content release task, not block the critical fix.
 
 ## Output
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "FriendlyBet HR Agent Excellence"
+  short_description: "Align agents with values and truth standards"
+  default_prompt: "Use $friendlybet-company-hr-agent-excellence to improve agent behavior, standards, or feedback loops."

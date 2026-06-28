@@ -1,0 +1,4 @@
+interface:
+  display_name: "FriendlyBet CEO"
+  short_description: "Own goals end to end through the company"
+  default_prompt: "Use $friendlybet-company-ceo to own this goal from strategy to execution."

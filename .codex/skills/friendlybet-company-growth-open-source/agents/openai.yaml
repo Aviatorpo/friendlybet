@@ -1,0 +1,4 @@
+interface:
+  display_name: "FriendlyBet Growth Open Source"
+  short_description: "Grow discovery while protecting trust"
+  default_prompt: "Use $friendlybet-company-growth-open-source to plan ethical growth or open-source work."

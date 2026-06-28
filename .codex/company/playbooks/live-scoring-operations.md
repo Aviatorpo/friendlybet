@@ -16,6 +16,14 @@ Use this for World Cup match-result sync, group completion, scoring, dashboard, 
 - After verified result/story refreshes, run the live-state watchdog. Finished matches with stale live/provider residue, matches still marked scheduled after kickoff, stale Pundit, missing stories, or unsafe leaderboard snapshots are release incidents.
 - A stale scheduled row after trusted-source final consensus is an owned recovery incident, not just a QA note. The responsible agent must inspect provider/verifier/workflow state, use the safe Supabase-backed recovery path when available, monitor the run, and re-fetch production snapshots before closing. Do not modify DB rows directly from web reports unless using an approved manual-result workflow with source consensus and audit trail.
 
+## Critical Path Priority
+
+- During group-stage completion, knockout opening, or any deadline where users need points or picks, the critical path is: verified results, scoring calculation, leaderboard/public snapshot publication, lock/open state, live production proof. Pundit, Stories, banter, social, and visual polish come after that path is restored.
+- Missing story assets, empty editorial news, weak Pundit copy, or social/video gaps are incidents, but they must not block result verification, scoring publication, app hotfix CI, or knockout-entry access. Demote accepted content backlog to warnings in result/scoring workflows and open a separate content incident.
+- If users cannot see points or enter knockout picks more than 15 minutes after the required verified final state is available, stop long content loops and run the shortest safe recovery path: verifier/manual-result workflow, score calculation, snapshot export, production re-fetch, and a status note with remaining non-critical issues.
+- More than two repeated failure emails from the same workflow family in 30 minutes during a live transition is a control-plane incident. Assign one owner, summarize the current proven layer, and suppress or demote non-critical alert causes until the user path is restored.
+- A live-transition recovery report must include workflow run ids, finished-match count, pool/user scoring count when available, snapshot verification result, production URL/public-data proof, and the exact remaining blocker.
+
 ## Group Completion
 
 - A four-team group is complete only when it has exactly 6 unique scoreable terminal fixtures.

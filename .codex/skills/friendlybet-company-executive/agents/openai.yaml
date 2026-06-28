@@ -1,0 +1,4 @@
+interface:
+  display_name: "FriendlyBet Executive Office"
+  short_description: "Strategy and operating decisions for FriendlyBet"
+  default_prompt: "Use $friendlybet-company-executive to coordinate a strategic FriendlyBet decision."

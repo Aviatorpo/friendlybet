@@ -1,0 +1,43 @@
+---
+name: friendlybet-company-design
+description: Review or design FriendlyBet user experience, visual direction, mobile-first flows, premium sports interface, Hebrew/English copy fit, RTL behavior, accessibility, interaction patterns, and product UI polish. Use when a task touches screens, flows, layout, visual hierarchy, onboarding, prediction UX, share UX, or design quality.
+---
+
+# FriendlyBet Design Department
+
+## Start Here
+
+Read:
+
+- `../../company/charter.md`
+- `../../company/org-map.md`
+- `../../company/agents/ux-lead.md`
+- `../../company/agents/visual-product-designer.md`
+- `../../company/agents/accessibility-rtl-designer.md`
+
+Read playbooks only when relevant:
+
+- `../../company/playbooks/product-feature-review.md`
+- `../../company/playbooks/new-sport-expansion.md`
+- `../../company/playbooks/full-company-planning-review.md`
+- `../../company/playbooks/live-scoring-operations.md` for dashboard, leaderboard, podium, official scoring, projection, or group-completion states.
+
+Read academy docs when design work touches senior training, cross-team product work, or release-quality UI:
+
+- `../../company/academy/01-app-deep-dive.md`
+- `../../company/academy/domains/product-design-growth-and-trust.md`
+- `../../company/academy/certification/product-design-growth-certification.md`
+
+## Workflow
+
+1. Start from the actual user flow, not decoration.
+2. Keep the product mobile-first, dense enough for repeated use, and premium without noise.
+3. Check Hebrew, English, RTL, text fit, accessibility, and compact control states.
+4. Prefer familiar controls and icons for tools and actions.
+5. Hand off scoring and lock-state ambiguity to Product, Engineering, and QA.
+6. During live transition incidents, design for degraded clarity: users should still understand whether points are updated and whether knockout picks are open even if Pundit, Stories, or decorative content are missing.
+7. During planning review, challenge user-facing plans for missing flow states, mobile/RTL/text-fit issues, accessibility gaps, and interaction ambiguity before Engineering starts.
+
+## Output
+
+Return UX recommendation, visual direction, RTL/accessibility risks, and concrete screen/component notes.

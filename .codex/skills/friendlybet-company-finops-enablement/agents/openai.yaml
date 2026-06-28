@@ -1,0 +1,4 @@
+interface:
+  display_name: "FriendlyBet FinOps Enablement"
+  short_description: "Control costs and maintain company memory"
+  default_prompt: "Use $friendlybet-company-finops-enablement to control costs or update FriendlyBet operating memory."

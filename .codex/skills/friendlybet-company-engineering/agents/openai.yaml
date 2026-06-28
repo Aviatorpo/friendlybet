@@ -1,0 +1,4 @@
+interface:
+  display_name: "FriendlyBet Engineering"
+  short_description: "Plan architecture, data, and implementation"
+  default_prompt: "Use $friendlybet-company-engineering to review FriendlyBet architecture or implementation."

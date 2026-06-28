@@ -1,0 +1,4 @@
+interface:
+  display_name: "FriendlyBet QA and Release"
+  short_description: "Find risks and protect releases"
+  default_prompt: "Use $friendlybet-company-qa-release to test or release-review FriendlyBet changes."

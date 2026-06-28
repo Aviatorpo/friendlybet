@@ -4,6 +4,7 @@ Use this before the CEO or any department calls significant work done.
 
 ## Gates
 
+0. Planning review: for meaningful plans, the CEO ran `full-company-planning-review.md`, considered every department, involved relevant senior reviewers, resolved or escalated disagreements, and did not require Eyal to manually request obvious QA, Design, Engineering, FinOps, or other department review.
 1. Product fit: the change serves a real user job and preserves FriendlyBet values.
 2. Technical correctness: implementation follows repo patterns and avoids hidden coupling.
 3. Scoring/data correctness: scoring, lock rules, snapshots, migrations, and provider behavior are handled when relevant.
@@ -17,6 +18,7 @@ Use this before the CEO or any department calls significant work done.
 11. Content uniqueness: current Pundit, banter, story, and share copy must pass a structural duplicate check across the recent visible window, not only a human skim.
 12. Control-plane hygiene: repeated GitHub Actions failure emails, Vercel preview comments, or deployment-status emails are release incidents during live tournament operations. Verify open PRs, recent workflow failures, Vercel commit status, and whether `vercel.json` keeps GitHub comments silent before calling the control plane stable.
 13. Artifact sync: generated production artifacts must not live only on the local machine. Before a live window, compare local, `origin/main`, Vercel, and cache-busted production public data; if useful generated data is local-only, either ship and verify it or explicitly document why it is safe to leave out.
+14. Critical-path priority: during live scoring or knockout-opening incidents, do not let content/story/news/social defects block verified results, scoring, leaderboard snapshots, app hotfix CI, lock/open state, or production verification. Track those as separate content incidents.
 
 ## Output
 

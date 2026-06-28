@@ -20,6 +20,7 @@ Read playbooks only when relevant:
 
 - `../../company/playbooks/release-review.md`
 - `../../company/playbooks/architecture-review.md`
+- `../../company/playbooks/full-company-planning-review.md`
 - `../../company/playbooks/live-scoring-operations.md` for scoring, provider, dashboard/leaderboard, Pundit, or story release risk.
 
 Read academy docs when release confidence, regression strategy, or senior QA review matters:
@@ -40,6 +41,8 @@ Read academy docs when release confidence, regression strategy, or senior QA rev
 6. For live user-visible bugs, require production verification after push/deploy: cache-busted public-data fetch, live URL check, or screenshot proof as appropriate.
 7. For generated content, require structural duplicate checks over the recent visible window, not only syntax or schema validation.
 8. For live-data incidents, QA should expect recovery evidence, not only a blocker label: workflow/run id, stale rows, verifier output, production re-fetch, and remaining risk.
+9. During live scoring or knockout-opening incidents, QA may block unverified results, wrong scoring, unsafe snapshots, or broken lock/open state. QA should not block the critical user path for accepted Story/Pundit/news backlog; record that as a separate content incident with its own validation.
+10. During planning review, challenge the plan for missing acceptance tests, regression paths, release/version/cache checks, dirty-worktree safety, and production verification when Eyal can see the outcome live.
 
 ## Output
 

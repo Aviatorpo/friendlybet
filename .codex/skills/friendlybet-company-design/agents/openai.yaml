@@ -1,0 +1,4 @@
+interface:
+  display_name: "FriendlyBet Design Department"
+  short_description: "Guide premium mobile UX and visual design"
+  default_prompt: "Use $friendlybet-company-design to review FriendlyBet UX and product design."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "FriendlyBet Product Department"
+  short_description: "Shape FriendlyBet product scope and MVPs"
+  default_prompt: "Use $friendlybet-company-product to shape a FriendlyBet product plan."

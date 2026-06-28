@@ -1,0 +1,4 @@
+interface:
+  display_name: "FriendlyBet Privacy Security"
+  short_description: "Review privacy, RLS, and gambling risk"
+  default_prompt: "Use $friendlybet-company-privacy-security to review FriendlyBet privacy or security risk."

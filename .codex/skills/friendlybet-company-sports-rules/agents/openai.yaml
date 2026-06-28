@@ -1,0 +1,4 @@
+interface:
+  display_name: "FriendlyBet Sports Rules"
+  short_description: "Model sports formats, rules, and scoring"
+  default_prompt: "Use $friendlybet-company-sports-rules to design a sport or event prediction model."
