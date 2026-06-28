@@ -7701,6 +7701,12 @@ async function startKnockoutBetting() {
     return;
   }
 
+  const readiness = await _officialKnockoutReadiness();
+  if (!readiness || !readiness.ok) {
+    showToast(t('knockoutEx.notOpenExact'), 'error');
+    return;
+  }
+
   // v2.4.2: removed "Loading knockout..." toast - the screen change is the
   // feedback. If load is slow, the screen just appears a beat later.
 
