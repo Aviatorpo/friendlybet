@@ -1906,6 +1906,8 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
   const pct = gp.total ? Math.min(100, Math.round((gp.finished / gp.total) * 100)) : 0;
   const lateKo = _isLateKnockoutPool(state.currentPool);
   const lateOpen = !lateKo && _poolLateEntryOpen();
+  const poolMode = state.currentPool && state.currentPool.betting_mode;
+  const onePhase = poolMode === 'single_phase';
   let textKey = lateKo
     ? 'dashboard.liveStatus.lateKnockoutText'
     : lateOpen
@@ -1921,7 +1923,7 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
     zeroKey = 'dashboard.officialStatus.pointsLive';
   } else if (!lateKo && !lateOpen && phase === 'groupsComplete') {
     titleKey = 'dashboard.groupStageComplete.title';
-    textKey = 'dashboard.groupStageComplete.text';
+    textKey = onePhase ? 'dashboard.groupStageComplete.onePhaseText' : 'dashboard.groupStageComplete.text';
     kickerKey = 'dashboard.groupStageComplete.kicker';
     zeroKey = 'dashboard.groupStageComplete.badge';
   }

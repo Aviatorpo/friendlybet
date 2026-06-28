@@ -123,9 +123,10 @@ const dashboardStatusSandbox = {
 vm.createContext(dashboardStatusSandbox);
 vm.runInContext(`${phaseSource}; ${extractFunction(app, '_renderDashboardLiveStatus')}; this.renderDashboardLiveStatus = _renderDashboardLiveStatus;`, dashboardStatusSandbox);
 
-function renderDashboardStatus(progress, tournamentStarted = true, hasScores = false) {
+function renderDashboardStatus(progress, tournamentStarted = true, hasScores = false, poolMode = undefined) {
   dashboardStatusSandbox.progress = progress;
   dashboardStatusSandbox.statusEl = { style: {}, innerHTML: '' };
+  dashboardStatusSandbox.state.currentPool = poolMode ? { betting_mode: poolMode } : {};
   dashboardStatusSandbox.renderDashboardLiveStatus(tournamentStarted, hasScores);
   return dashboardStatusSandbox.statusEl;
 }
@@ -148,6 +149,11 @@ assert(statusEl.innerHTML.includes('dashboard.officialStatus.thirdPlacePending')
 statusEl = renderDashboardStatus({ finished: 72, total: 72, completeGroups: 12, totalGroups: 12 });
 assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.title'), 'All completed groups must use group-stage-complete dashboard copy');
 assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.badge'), 'Group-stage-complete status must show final group-points badge');
+assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.text'), 'Two-phase/default groups-complete status may mention the open knockout window');
+
+statusEl = renderDashboardStatus({ finished: 72, total: 72, completeGroups: 12, totalGroups: 12 }, true, false, 'single_phase');
+assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.onePhaseText'), 'One-phase groups-complete status must not say knockout picks are open');
+assert(!statusEl.innerHTML.includes('dashboard.groupStageComplete.text:'), 'One-phase groups-complete status must use mode-specific locked-bracket copy');
 assert(!statusEl.innerHTML.includes('dashboard.officialStatus.thirdPlacePending'), 'Group-stage-complete status must stop showing third-place pending copy');
 
 statusEl = renderDashboardStatus({ finished: 0, total: 72, completeGroups: 0, totalGroups: 12 }, false, false);
