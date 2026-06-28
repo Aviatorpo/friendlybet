@@ -1595,7 +1595,7 @@ async function updateTwoPhaseIncidentBanner() {
 const FIRST_MATCH_FALLBACK_ISO = '2026-06-11T19:00:00+00:00'; // countdown display fallback
 const POOL_LOCK_KICKOFF_ISO = '2026-06-11T19:00:00.000Z'; // server lock cutoff
 const LATE_ENTRY_CUTOFF_ISO = '2026-06-18T16:00:00.000Z'; // first team second group match
-const KNOCKOUT_LOCK_FALLBACK_ISO = '2026-06-28T19:00:00.000Z'; // first R32 kickoff fallback
+const KNOCKOUT_LOCK_FALLBACK_ISO = '2026-07-04T17:00:00.000Z'; // first R32 kickoff fallback
 let _countdownTimer = null;
 let _countdownKickoffMs = null;
 
@@ -7627,12 +7627,12 @@ async function updateBettingStatusOnDashboard() {
     _fbSetDashboardProgressCard('partial');
   } else if (koCount === 0) {
     titleEl.textContent = t('dashboard.twoPhase.knockoutOpenTitle');
-    subtitleEl.textContent = t('dashboard.twoPhase.knockoutOpenSub');
+    subtitleEl.textContent = t('dashboard.twoPhase.knockoutOpenSub', { time: _knockoutCutoffLabel() });
     ctaEl.classList.remove('done');
     _fbSetDashboardProgressCard('partial');
   } else if (koCount < 31) {
     titleEl.textContent = t('dashboard.continueCta.title');
-    subtitleEl.textContent = t('dashboard.status.partialKo', { n: koCount });
+    subtitleEl.textContent = t('dashboard.status.partialKo', { n: koCount, time: _knockoutCutoffLabel() });
     ctaEl.classList.remove('done');
     _fbSetDashboardProgressCard('partial');
   } else if (tsRequired && !tsChosen) {
@@ -9030,17 +9030,17 @@ async function updateKnockoutStatusOnDashboard() {
   if (koCount === 0) {
     koCard.className = 'bet-status-card pending';
     if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d9b46a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> ' + koLabel;
-    if (subtitleEl) subtitleEl.textContent = t('dashboard.status.koReady');
+    if (subtitleEl) subtitleEl.textContent = t('dashboard.status.koReady', { time: _knockoutCutoffLabel() });
     existingBtn.innerHTML = t('dashboard.action.start') + ' →';
   } else if (koCount < 31) {
     koCard.className = 'bet-status-card pending';
     if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ecd49a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="6" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> ' + koLabel;
-    if (subtitleEl) subtitleEl.textContent = t('dashboard.status.partialKo', { n: koCount });
+    if (subtitleEl) subtitleEl.textContent = t('dashboard.status.partialKo', { n: koCount, time: _knockoutCutoffLabel() });
     existingBtn.innerHTML = t('dashboard.action.continue') + ' →';
   } else {
     koCard.className = 'bet-status-card completed';
     if (titleEl) titleEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3ddc97" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> ' + koLabel;
-    if (subtitleEl) subtitleEl.textContent = t('dashboard.status.completedKo');
+    if (subtitleEl) subtitleEl.textContent = t('dashboard.status.completedKo', { time: _knockoutCutoffLabel() });
     existingBtn.innerHTML = t('dashboard.action.edit') + ' →';
   }
 }

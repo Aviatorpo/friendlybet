@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-06-28T04:41:42.822Z",
-  "freshUntil": "2026-06-28T10:41:42.822Z",
-  "count": 10,
+  "updatedAt": "2026-06-28T05:13:01.567Z",
+  "freshUntil": "2026-06-28T11:13:01.567Z",
+  "count": 11,
   "items": [
+    {
+      "id": "phase-groups-complete-knockout-open",
+      "type": "phase",
+      "confidence": "confirmed",
+      "he": "שלב הבתים הסתיים: כל 12 הבתים נסגרו, הניקוד הרשמי נכנס, וההימור על הנוקאאוט פתוח עד 4 ביולי בשעה 20:00 GMT‎+3‎. עכשיו ממלאים את הבראקט האמיתי 🏁",
+      "en": "The group stage is complete: all 12 groups are finalized, official points are in, and knockout picks are open until July 4 at 08:00 PM GMT+3. Time to fill the real bracket 🏁",
+      "sources": [],
+      "expires_at": "2026-07-04T17:00:00.000Z"
+    },
     {
       "id": "result-9404e5df-df31-4237-a3fc-9ed17b9bdc57",
       "type": "result",

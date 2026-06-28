@@ -34,7 +34,7 @@ const DRY_RUN = process.argv.includes('--dry-run') || process.env.LOCK_DRY_RUN =
 // DB row can't lock every pool early. Override via env if FIFA shifts the opener.
 const CONFIGURED_KICKOFF_ISO = process.env.LOCK_KICKOFF_ISO || '2026-06-11T19:00:00.000Z';
 const LATE_ENTRY_CUTOFF_ISO = process.env.LATE_ENTRY_CUTOFF_ISO || '2026-06-18T16:00:00.000Z';
-const KNOCKOUT_LOCK_ISO = process.env.KNOCKOUT_LOCK_ISO || '2026-06-28T19:00:00.000Z';
+const KNOCKOUT_LOCK_ISO = process.env.KNOCKOUT_LOCK_ISO || '2026-07-04T17:00:00.000Z';
 
 const H = {
   apikey: SUPABASE_KEY,

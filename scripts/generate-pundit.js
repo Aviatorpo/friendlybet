@@ -33,6 +33,8 @@ const OUT_FILE = path.join(DATA_DIR, 'pundit.json');
 // First WC2026 match (UTC). Used as the countdown anchor; overridden by the
 // earliest match in the snapshot when available so we never drift from reality.
 const DEFAULT_KICKOFF = '2026-06-11T19:00:00+00:00';
+const KNOCKOUT_LOCK_ISO = '2026-07-04T17:00:00.000Z';
+const WORLD_CUP_GROUP_COUNT = 12;
 const MAX_ITEMS = 12;
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
@@ -196,6 +198,44 @@ function whenLabel(iso, now) {
   return { he: `${d}/${m} ${a.hm}`, en: `${d}/${m} ${a.hm}` };
 }
 
+function knockoutDeadlineLabel(lang) {
+  const d = new Date(KNOCKOUT_LOCK_ISO);
+  return d.toLocaleString(lang === 'he' ? 'he-IL' : 'en-US', {
+    day: 'numeric',
+    month: 'long',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short',
+    timeZone: 'Asia/Jerusalem',
+  });
+}
+
+function allGroupsComplete(matches) {
+  const byGroup = new Map();
+  for (const match of matches || []) {
+    if (!match || String(match.stage || '').toUpperCase() !== 'GROUP_STAGE') continue;
+    const group = String(match.group_letter || '').trim().toUpperCase();
+    if (!group) continue;
+    if (!FINISHED_STATUSES.has(String(match.status || '').toUpperCase())) continue;
+    if (isPendingProviderFinal(match)) continue;
+    if (match.home_score == null || match.away_score == null) continue;
+    const teams = [match.home_team_code, match.away_team_code].map(code => String(code || '').trim().toUpperCase()).sort();
+    if (!teams[0] || !teams[1]) continue;
+    if (!byGroup.has(group)) byGroup.set(group, new Set());
+    byGroup.get(group).add(teams.join('-'));
+  }
+  return Array.from(byGroup.values()).filter(fixtures => fixtures.size === 6).length >= WORLD_CUP_GROUP_COUNT;
+}
+
+function groupCompleteCommentary() {
+  const heTime = knockoutDeadlineLabel('he');
+  const enTime = knockoutDeadlineLabel('en');
+  return {
+    he: `שלב הבתים הסתיים: כל 12 הבתים נסגרו, הניקוד הרשמי נכנס, וההימור על הנוקאאוט פתוח עד ${heTime}. עכשיו ממלאים את הבראקט האמיתי.`,
+    en: `The group stage is complete: all 12 groups are finalized, official points are in, and knockout picks are open until ${enTime}. Time to fill the real bracket.`,
+  };
+}
+
 function variantFor(match, variants, salt = '') {
   const key = `${String((match && match.id) || (match && match.match_date) || '')}:${salt}`;
   return variants[Math.abs(hash(key)) % variants.length];
@@ -203,6 +243,7 @@ function variantFor(match, variants, salt = '') {
 
 const PUNDIT_EMOJI_BY_TYPE = {
   countdown: '🏆',
+  phase: '🏁',
   live: '🔥',
   verification: '🧐',
   result: '🧾',
@@ -439,6 +480,22 @@ function build(now, options = {}) {
 
   const items = [];
 
+  // ---- 0. Phase desk item ----------------------------------------------------
+  // Once all groups are verified, make the current user job explicit before the
+  // result cards: knockout picks are open, and they close at first R32 kickoff.
+  if (allGroupsComplete(matches) && now.getTime() < Date.parse(KNOCKOUT_LOCK_ISO)) {
+    const text = groupCompleteCommentary();
+    items.push({
+      id: 'phase-groups-complete-knockout-open',
+      type: 'phase',
+      confidence: 'confirmed',
+      he: text.he,
+      en: text.en,
+      sources: [],
+      expires_at: KNOCKOUT_LOCK_ISO,
+    });
+  }
+
   // ---- 1. Countdown (pre-tournament only) -----------------------------------
   const msToKickoff = Date.parse(kickoff) - now.getTime();
   if (msToKickoff > 0) {
@@ -544,7 +601,7 @@ function build(now, options = {}) {
       : independentSourceCount(it.sources) >= 2);
 
   // During the tournament, facts from the match snapshot outrank editorial news.
-  const priority = { live: 0, verification: 1, result: 2, fixture: 3, news: 4, stat: 5, countdown: 6 };
+  const priority = { phase: 0, live: 1, verification: 2, result: 3, fixture: 4, news: 5, stat: 6, countdown: 7 };
   const merged = [...items, ...freshNews]
     .sort((a, b) => (priority[a.type] ?? 9) - (priority[b.type] ?? 9))
     .slice(0, MAX_ITEMS);
@@ -597,4 +654,5 @@ module.exports = {
   shouldTreatAsLive,
   shouldTreatAsVerification,
   isPendingProviderFinal,
+  allGroupsComplete,
 };

@@ -84,4 +84,48 @@ const HE_FIXTURE_CONSEQUENCE = /(?:בית|בתים|תחזית|תחזיות|הי�
   assert.ok(!items.some(item => item.type === 'result' && item.id === 'result-m4'), 'Pending provider final must not become result commentary');
 }
 
+{
+  const groups = {
+    A: ['MEX', 'RSA', 'KOR', 'CZE'],
+    B: ['CAN', 'BIH', 'QAT', 'SUI'],
+    C: ['BRA', 'MAR', 'HAI', 'SCO'],
+    D: ['USA', 'PAR', 'AUS', 'TUR'],
+    E: ['GER', 'CUR', 'CIV', 'ECU'],
+    F: ['NED', 'JPN', 'SWE', 'TUN'],
+    G: ['BEL', 'EGY', 'IRN', 'NZL'],
+    H: ['ESP', 'CPV', 'SAU', 'URU'],
+    I: ['FRA', 'SEN', 'IRQ', 'NOR'],
+    J: ['ARG', 'ALG', 'AUT', 'JOR'],
+    K: ['POR', 'COD', 'UZB', 'COL'],
+    L: ['ENG', 'CRO', 'GHA', 'PAN'],
+  };
+  const completeMatches = [];
+  let idx = 0;
+  for (const [group, teams] of Object.entries(groups)) {
+    for (let i = 0; i < teams.length; i += 1) {
+      for (let j = i + 1; j < teams.length; j += 1) {
+        completeMatches.push(match({
+          id: `complete-${group}-${i}-${j}`,
+          status: 'FINISHED',
+          match_date: `2026-06-27T${String(idx % 24).padStart(2, '0')}:00:00Z`,
+          group_letter: group,
+          home_team_code: teams[i],
+          away_team_code: teams[j],
+          home_score: 1,
+          away_score: 0,
+          winner_code: teams[i],
+        }));
+        idx += 1;
+      }
+    }
+  }
+  const phaseNow = new Date('2026-06-28T06:00:00Z');
+  assert.strictEqual(pundit.allGroupsComplete(completeMatches), true, 'All 12 complete groups must be detected');
+  const items = pundit.build(phaseNow, { matchesPayload: { matches: completeMatches }, newsPayload: { items: [] } });
+  const phase = items.find(item => item.id === 'phase-groups-complete-knockout-open');
+  assert.ok(phase, 'Feed should include a group-complete knockout-open phase item');
+  assert.ok(phase.en.includes('all 12 groups are finalized'), 'Phase item must say the groups are finalized');
+  assert.ok(phase.en.includes('July 4') && phase.en.includes('08:00 PM'), 'Phase item must include the exact knockout deadline');
+}
+
 console.log('Pundit live-state generation tests passed');
