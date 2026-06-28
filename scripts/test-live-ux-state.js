@@ -240,6 +240,9 @@ renderSandbox.renderFullLeaderboard([
   { id: 'u1', nickname: 'Winner', total_score: 5 },
 ], { hasScores: true });
 assert(renderRows[0].innerHTML.includes('<div class="lb-rank">#1</div>'), 'Official score rows must show real rank numbers once points exist');
+assert(/renderLeaderboardBanter\(users,\s*\{\s*phase\s*\}\)/.test(app), 'Leaderboard banter must receive the current tournament phase');
+assert(/function _groupsCompleteLeaderboardBanter\(users\)/.test(app), 'Leaderboard must have a groups-complete Pundit fallback');
+assert(/options\s*&&\s*options\.phase\s*===\s*'groupsComplete'/.test(app), 'Leaderboard Pundit fallback must activate only for groups-complete phase');
 
 const podiumNameCss = /\.podium-name\s*\{[\s\S]*?white-space:\s*nowrap;[\s\S]*?overflow:\s*hidden;[\s\S]*?text-overflow:\s*ellipsis;[\s\S]*?\}/.test(styles);
 assert(podiumNameCss, 'Podium names must keep nowrap/hidden/ellipsis protection');

@@ -2181,6 +2181,10 @@ async function buildPoolPundit() {
   const leader = tournamentStarted
     ? members.slice().sort((a, b) => (b.total_score || 0) - (a.total_score || 0))[0]
     : null;
+  const gp = (typeof _dashboardGroupProgress === 'function') ? _dashboardGroupProgress() : { completeGroups: 0, totalGroups: 12 };
+  const groupStageComplete = gp && gp.totalGroups > 0 && gp.completeGroups >= gp.totalGroups;
+  const knockoutWindowMode = groupStageComplete && (pool.betting_mode === 'two_phase' || pool.betting_mode === 'late_knockout');
+  const knockoutCutoff = (typeof _knockoutCutoffLabel === 'function') ? _knockoutCutoffLabel() : '';
 
   const cand = []; // { id, prio, he, en } - lower prio = more important
   const push = (id, prio, variants) => {
@@ -2195,14 +2199,28 @@ async function buildPoolPundit() {
     } catch (_) {}
   }
 
+  if (groupStageComplete) {
+    push('pool-groups-complete', 0, knockoutWindowMode ? [
+      { he: `ניקוד הבתים כבר רשמי. עכשיו הטבלה מחכה לבראקט הנוקאאוט, ואפשר לעדכן אותו עד ${knockoutCutoff}.`,
+        en: `Group points are official now. The table is waiting for knockout picks, editable until ${knockoutCutoff}.` },
+      { he: `שלב הבתים סגור, הקבלות בטבלה. מי שרוצה לזוז מכאן צריך בראקט חד לפני ${knockoutCutoff}.`,
+        en: `The groups are closed and the receipts are on the table. Moving from here needs a sharp bracket before ${knockoutCutoff}.` },
+    ] : [
+      { he: 'ניקוד הבתים כבר רשמי. מעכשיו הטבלה תזוז דרך הבראקט, האלופה ומלך השערים.',
+        en: 'Group points are official now. From here the table moves through the bracket, champion pick, and top scorer.' },
+      { he: 'שלב הבתים סגור, הקבלות בטבלה. הנוקאאוט הוא המקום שבו רודפים אחרי המוביל.',
+        en: 'The group stage is closed and the receipts are on the table. The knockout bracket is where the chase starts.' },
+    ]);
+  }
+
   if (poolLocked) {
     push('pool-locked-live', 1, [
-      { he: 'ההימור נעול. עכשיו הבחירות שלכם פוגשות את המציאות, וכל משחק יכול להזיז את הטבלה.',
-        en: 'Predictions are locked. Now your picks meet reality, and every match can move the table.' },
-      { he: 'אין יותר עריכות, רק קבלות. הבראקט קפוא והדרמה של ההימור חיה.',
-        en: 'No more edits, only receipts. The bracket is frozen and the pool drama is live.' },
-      { he: 'שתפו את הטבלה, לא לינק הצטרפות. ההימור סגור, הדרמה פתוחה.',
-        en: 'Share the table, not a join link. Predictions are closed, the drama is open.' },
+      { he: groupStageComplete ? 'הבתים נגמרו, אבל ההימור לא נגמר. עכשיו כל בחירת נוקאאוט שווה הרבה יותר בטבלה.' : 'ההימור נעול. עכשיו הבחירות שלכם פוגשות את המציאות, וכל משחק יכול להזיז את הטבלה.',
+        en: groupStageComplete ? 'The groups are done, but the pool is not. Every knockout pick is worth more on the table now.' : 'Predictions are locked. Now your picks meet reality, and every match can move the table.' },
+      { he: groupStageComplete ? 'קבלות הבתים כבר חולקו. מי שמאחור צריך נקודות נוקאאוט, לא עוד הסברים על שלב הבתים.' : 'אין יותר עריכות, רק קבלות. הבראקט קפוא והדרמה של ההימור חיה.',
+        en: groupStageComplete ? 'The group-stage receipts are in. Anyone behind needs knockout points, not another group-stage explanation.' : 'No more edits, only receipts. The bracket is frozen and the pool drama is live.' },
+      { he: groupStageComplete ? 'שתפו את הטבלה: ניקוד הבתים רשמי, והסיפור הבא הוא מי פוגע בבראקט הנוקאאוט.' : 'שתפו את הטבלה, לא לינק הצטרפות. ההימור סגור, הדרמה פתוחה.',
+        en: groupStageComplete ? 'Share the table: group points are official, and the next story is who nails the knockout bracket.' : 'Share the table, not a join link. Predictions are closed, the drama is open.' },
     ]);
   } else if (lateEntryOpen) {
     push('pool-late-entry-open', 1, [
@@ -2252,10 +2270,10 @@ async function buildPoolPundit() {
   if (leader && (leader.total_score || 0) > 0) {
     const n = nameOf(leader), s = leader.total_score || 0;
     push('pool-leader', 2, [
-      { he: `${n} מוביל את ההימור עם ${s} נקודות — מישהו יתפוס אותו? 🏃`,
-        en: `${n} leads the pool with ${s} points — can anyone catch them? 🏃` },
-      { he: `${n} בראש הטבלה עם ${s} נקודות. הפער עוד נסגר 😏`,
-        en: `${n} tops the table with ${s} points. That gap can still close 😏` },
+      { he: groupStageComplete ? `${n} יוצא משלב הבתים ראשון עם ${s} נקודות. עכשיו כולם רודפים אחריו דרך הנוקאאוט 🏃` : `${n} מוביל את ההימור עם ${s} נקודות — מישהו יתפוס אותו? 🏃`,
+        en: groupStageComplete ? `${n} leaves the group stage first with ${s} points. Now everyone has to chase through the knockouts 🏃` : `${n} leads the pool with ${s} points — can anyone catch them? 🏃` },
+      { he: groupStageComplete ? `${n} בראש אחרי הבתים עם ${s} נקודות. היתרון אמיתי, אבל הנוקאאוט עוד יכול להפוך הכול 😏` : `${n} בראש הטבלה עם ${s} נקודות. הפער עוד נסגר 😏`,
+        en: groupStageComplete ? `${n} leads after the groups with ${s} points. The gap is real, but the knockouts can still flip it 😏` : `${n} tops the table with ${s} points. That gap can still close 😏` },
     ]);
   }
 
@@ -9180,7 +9198,7 @@ async function showLeaderboard(options = {}) {
   }
 
   // Pool Pundit: live banter about what the latest results did to the board
-  renderLeaderboardBanter(users);
+  renderLeaderboardBanter(users, { phase });
 
   // Render full list
   const fullListTitle = document.querySelector('#leaderboard-screen .section-title-small[data-i18n="leaderboard.fullRanking"]');
@@ -9477,18 +9495,64 @@ function _stripTrailingEmoji(s) {
   return String(s || '').replace(/[\s\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{2190}-\u{21FF}️‍]+$/u, '');
 }
 
-async function renderLeaderboardBanter(users) {
+function _groupsCompleteLeaderboardBanter(users) {
+  const leader = (users || [])[0] || null;
+  const pts = leader ? (leader.total_score || 0) : 0;
+  const name = leader && leader.nickname ? leader.nickname : null;
+  const headline = name && pts > 0
+    ? {
+        id: 'leaderboard-groups-complete-leader',
+        type: 'groups-complete',
+        emoji: '🏁',
+        he: `${name} מוביל אחרי שלב הבתים עם ${pts} נקודות. עכשיו המרדף עובר לנוקאאוט.`,
+        en: `${name} leads after the group stage with ${pts} points. Now the chase moves to the knockouts.`,
+        featuredUserId: leader.id,
+        featuredNickname: name,
+      }
+    : {
+        id: 'leaderboard-groups-complete',
+        type: 'groups-complete',
+        emoji: '🏁',
+        he: 'שלב הבתים הסתיים והניקוד הרשמי נכנס. מכאן הלידרבורד יזוז דרך הבראקט, האלופה ומלך השערים.',
+        en: 'The group stage is complete and official points are in. From here the leaderboard moves through the bracket, champion pick, and top scorer.',
+      };
+  return {
+    updatedAt: new Date().toISOString(),
+    headline,
+    items: [
+      headline,
+      {
+        id: 'leaderboard-groups-complete-next',
+        type: 'groups-complete-next',
+        emoji: '🎯',
+        he: 'אין יותר טבלה תיאורטית של בתים. מי שמאחור צריך פגיעות נוקאאוט, לא עוד תירוצים.',
+        en: 'No more theoretical group table. Anyone behind needs knockout hits, not excuses.',
+      },
+    ],
+  };
+}
+
+async function renderLeaderboardBanter(users, options = {}) {
   const box = document.getElementById('lb-banter');
   if (!box) return;
   _lbBanter = null;
   box.style.display = 'none';
   try {
     if (!state.currentPool || !state.currentPool.id) return;
+    const phaseFallback = options && options.phase === 'groupsComplete'
+      ? _groupsCompleteLeaderboardBanter(users)
+      : null;
     const res = await fetch(`/public-data/banter/${state.currentPool.id}.json`, { cache: 'no-store' });
-    if (!res.ok) return;
-    const data = await res.json();
+    let data = null;
+    if (res.ok) data = await res.json();
     const updatedAt = Date.parse(data && data.updatedAt);
-    if (!updatedAt || (Date.now() - updatedAt) > LB_BANTER_MAX_AGE_MS) return;
+    if (!data || !updatedAt || (Date.now() - updatedAt) > LB_BANTER_MAX_AGE_MS) {
+      if (!phaseFallback) return;
+      data = phaseFallback;
+    } else if (phaseFallback && phaseFallback.headline) {
+      const generatedItems = Array.isArray(data.items) ? data.items.filter(it => it && it.id !== phaseFallback.headline.id) : [];
+      data = { ...data, headline: phaseFallback.headline, items: [phaseFallback.headline].concat(generatedItems) };
+    }
     const items = Array.isArray(data.items) ? data.items.filter(it => it && (it.he || it.en)) : [];
     const headline = data.headline || items[0];
     if (!headline) return;

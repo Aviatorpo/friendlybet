@@ -231,9 +231,74 @@ function groupCompleteCommentary() {
   const heTime = knockoutDeadlineLabel('he');
   const enTime = knockoutDeadlineLabel('en');
   return {
-    he: `שלב הבתים הסתיים: כל 12 הבתים נסגרו, הניקוד הרשמי נכנס, וההימור על הנוקאאוט פתוח עד ${heTime}. עכשיו ממלאים את הבראקט האמיתי.`,
-    en: `The group stage is complete: all 12 groups are finalized, official points are in, and knockout picks are open until ${enTime}. Time to fill the real bracket.`,
+    he: `שלב הבתים מאחורינו: כל 12 הבתים נסגרו, ניקוד הבתים רשמי, וההימור על הנוקאאוט פתוח עד ${heTime}. עכשיו הבראקט האמיתי קובע.`,
+    en: `The group stage is behind us: all 12 groups are final, group points are official, and knockout picks stay open until ${enTime}. The real bracket is the job now.`,
   };
+}
+
+function resultScoreLine(match) {
+  const hs = Number(match.home_score);
+  const as = Number(match.away_score);
+  if (hs === as) return `${teamName(match.home_team_code)} ${hs}-${as} ${teamName(match.away_team_code)}`;
+  const winner = hs > as ? match.home_team_code : match.away_team_code;
+  const loser = hs > as ? match.away_team_code : match.home_team_code;
+  const winScore = hs > as ? `${hs}-${as}` : `${as}-${hs}`;
+  return `${teamName(winner)} ${winScore} ${teamName(loser)}`;
+}
+
+function resultScoreLineHe(match) {
+  const hs = Number(match.home_score);
+  const as = Number(match.away_score);
+  if (hs === as) return `${teamName(match.home_team_code, 'he')} ${hs}:${as} ${teamName(match.away_team_code, 'he')}`;
+  const winner = hs > as ? match.home_team_code : match.away_team_code;
+  const loser = hs > as ? match.away_team_code : match.home_team_code;
+  const winScore = hs > as ? `${hs}:${as}` : `${as}:${hs}`;
+  return `${teamName(winner, 'he')} ${winScore} ${teamName(loser, 'he')}`;
+}
+
+function groupCompletePhaseItems(matches) {
+  const heTime = knockoutDeadlineLabel('he');
+  const enTime = knockoutDeadlineLabel('en');
+  const latest = (matches || [])
+    .filter(m => FINISHED_STATUSES.has(String(m.status || '').toUpperCase()) && !isPendingProviderFinal(m) && m.home_score != null && m.away_score != null)
+    .sort((x, y) => Date.parse(y.match_date) - Date.parse(x.match_date))
+    .slice(0, 6);
+  const latestHe = latest.map(resultScoreLineHe).join('; ');
+  const latestEn = latest.map(resultScoreLine).join('; ');
+  const base = groupCompleteCommentary();
+  return [
+    {
+      id: 'phase-groups-complete-knockout-open',
+      he: base.he,
+      en: base.en,
+    },
+    {
+      id: 'phase-knockout-window',
+      he: `זה כבר לא שלב של חישובי בית. הבחירות הבאות הן נוקאאוט: 31 משחקים, מנצחת בכל משחק, וכל זה ננעל ב-${heTime}.`,
+      en: `This is no longer group-stage accounting. The next picks are knockout picks: 31 matches, one winner each, locked at ${enTime}.`,
+    },
+    {
+      id: 'phase-leaderboard-official',
+      he: 'הלידרבורד עכשיו מספר מי שרד את שלב הבתים. מכאן הטבלה תזוז רק דרך הבראקט, האלופה ומלך השערים.',
+      en: 'The leaderboard now shows who survived the group stage. From here it moves through the bracket, champion pick, and top scorer.',
+    },
+    {
+      id: 'phase-final-results-recap',
+      he: latestHe ? `המשחקים האחרונים שסגרו את הבתים: ${latestHe}. עכשיו אין תיאוריות בית, רק ניקוד רשמי ובראקט.` : 'כל תוצאות הבתים סגורות. עכשיו אין תיאוריות בית, רק ניקוד רשמי ובראקט.',
+      en: latestEn ? `The final group results are in: ${latestEn}. No more group theories now, just official points and the bracket.` : 'All group results are final. No more group theories now, just official points and the bracket.',
+    },
+    {
+      id: 'phase-bracket-receipts',
+      he: 'מי שפגע בבתים כבר קיבל קבלות. מי שרוצה להפוך את הטבלה צריך עכשיו בראקט חד, לא עוד פרשנות על בתים.',
+      en: 'Group-stage hits already have their receipts. Anyone chasing the table needs a sharp bracket now, not another group-stage take.',
+    },
+  ].map(item => ({
+    ...item,
+    type: 'phase',
+    confidence: 'confirmed',
+    sources: [],
+    expires_at: KNOCKOUT_LOCK_ISO,
+  }));
 }
 
 function variantFor(match, variants, salt = '') {
@@ -479,21 +544,13 @@ function build(now, options = {}) {
     .sort()[0] || DEFAULT_KICKOFF;
 
   const items = [];
+  const groupsCompleteNow = allGroupsComplete(matches) && now.getTime() < Date.parse(KNOCKOUT_LOCK_ISO);
 
   // ---- 0. Phase desk item ----------------------------------------------------
   // Once all groups are verified, make the current user job explicit before the
   // result cards: knockout picks are open, and they close at first R32 kickoff.
-  if (allGroupsComplete(matches) && now.getTime() < Date.parse(KNOCKOUT_LOCK_ISO)) {
-    const text = groupCompleteCommentary();
-    items.push({
-      id: 'phase-groups-complete-knockout-open',
-      type: 'phase',
-      confidence: 'confirmed',
-      he: text.he,
-      en: text.en,
-      sources: [],
-      expires_at: KNOCKOUT_LOCK_ISO,
-    });
+  if (groupsCompleteNow) {
+    items.push(...groupCompletePhaseItems(matches));
   }
 
   // ---- 1. Countdown (pre-tournament only) -----------------------------------
@@ -552,14 +609,16 @@ function build(now, options = {}) {
   }
 
   // ---- 3. Latest results (last 30h) -----------------------------------------
-  const finished = matches
-    .filter(m => FINISHED_STATUSES.has(String(m.status || '').toUpperCase()) && !isPendingProviderFinal(m) && m.home_score != null && m.away_score != null)
-    .filter(m => now.getTime() - Date.parse(m.match_date) < RESULT_WINDOW_MS)
-    .sort((x, y) => Date.parse(y.match_date) - Date.parse(x.match_date))
-    .slice(0, 10);
-  for (const [idx, m] of finished.entries()) {
-    const text = withResultConsequence(resultCommentary(m, idx));
-    items.push({ id: `result-${m.id}`, type: 'result', confidence: 'confirmed', he: text.he, en: text.en, sources: [], expires_at: iso(Date.parse(m.match_date) + RESULT_WINDOW_MS) });
+  if (!groupsCompleteNow) {
+    const finished = matches
+      .filter(m => FINISHED_STATUSES.has(String(m.status || '').toUpperCase()) && !isPendingProviderFinal(m) && m.home_score != null && m.away_score != null)
+      .filter(m => now.getTime() - Date.parse(m.match_date) < RESULT_WINDOW_MS)
+      .sort((x, y) => Date.parse(y.match_date) - Date.parse(x.match_date))
+      .slice(0, 10);
+    for (const [idx, m] of finished.entries()) {
+      const text = withResultConsequence(resultCommentary(m, idx));
+      items.push({ id: `result-${m.id}`, type: 'result', confidence: 'confirmed', he: text.he, en: text.en, sources: [], expires_at: iso(Date.parse(m.match_date) + RESULT_WINDOW_MS) });
+    }
   }
 
   // ---- 4. Upcoming fixtures (next 30h) --------------------------------------
