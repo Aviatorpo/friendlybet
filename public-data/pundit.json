@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-06-28T01:35:15.784Z",
-  "freshUntil": "2026-06-28T07:35:15.784Z",
-  "count": 12,
+  "updatedAt": "2026-06-28T02:22:56.961Z",
+  "freshUntil": "2026-06-28T08:22:56.961Z",
+  "count": 10,
   "items": [
     {
-      "id": "live-48674a8f-7c5a-43c9-9f00-e6c1a8a982f9",
-      "type": "live",
+      "id": "result-48674a8f-7c5a-43c9-9f00-e6c1a8a982f9",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "קולומביה נגד פורטוגל עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
-      "en": "Colombia vs Portugal is live now. Every goal can change the group and the predictions 🔥",
+      "he": "קולומביה ופורטוגל סיימו 0:0. לא נוצץ, אבל נקודה לכל צד עדיין משנה את הבית 🧾",
+      "en": "Colombia and Portugal ended 0-0. Not flashy, but a point each still changes the group 🧾",
       "sources": [],
-      "expires_at": "2026-06-28T04:35:15.784Z"
+      "expires_at": "2026-06-29T11:30:00.000Z"
     },
     {
-      "id": "live-651a15a4-261b-41d4-8a9a-74dc490575dc",
-      "type": "live",
+      "id": "result-651a15a4-261b-41d4-8a9a-74dc490575dc",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "קונגו הדמוקרטית נגד אוזבקיסטן עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
-      "en": "Congo DR vs Uzbekistan is live now. Every goal can change the group and the predictions 🔥",
+      "he": "קונגו הדמוקרטית ניצחה את אוזבקיסטן 3:1. תוצאה חשובה לבית, ועוד נקודות למי שהלך איתה 🧾",
+      "en": "Congo DR beat Uzbekistan 3-1. An important group result, and points for anyone who backed them 🧾",
       "sources": [],
-      "expires_at": "2026-06-28T04:35:15.784Z"
+      "expires_at": "2026-06-29T11:30:00.000Z"
     },
     {
       "id": "result-78723131-ae62-4370-b4f4-15fd3df36a3b",
       "type": "result",
       "confidence": "confirmed",
-      "he": "אנגליה סגרה את פנמה עם 2:0. מי שסימן ניצחון נקי מקבל כאן יתרון יפה. זה משנה נקודות, הימורים ואת תמונת הבית 🧾",
-      "en": "England shut out Panama 2-0. Anyone who called a clean win gets a useful edge here. It still matters for table places, picks, and pool points 🧾",
+      "he": "אנגליה ניצחה את פנמה 2:0. שלוש נקודות חשובות לבית ולכל מי שבחר בה 🧾",
+      "en": "England beat Panama 2-0. Three important points for the group and for anyone who picked them 🧾",
       "sources": [],
       "expires_at": "2026-06-29T09:00:00.000Z"
     },
@@ -34,8 +34,8 @@
       "id": "result-7d45f59c-4702-4143-98ca-f5ae33d81846",
       "type": "result",
       "confidence": "confirmed",
-      "he": "קרואטיה ניצחה את גאנה 2:1. תוצאה חשובה לבית, ועוד נקודות למי שהלך איתה 🧾",
-      "en": "Croatia beat Ghana 2-1. An important group result, and points for anyone who backed them 🧾",
+      "he": "קרואטיה עברה את גאנה 2:1, והבית מתחיל לקבל צורה ברורה יותר 🧾",
+      "en": "Croatia got past Ghana 2-1, and the group is starting to take clearer shape 🧾",
       "sources": [],
       "expires_at": "2026-06-29T09:00:00.000Z"
     },
@@ -43,8 +43,8 @@
       "id": "result-54c87aab-40ae-4966-a6d9-ea7a07b34811",
       "type": "result",
       "confidence": "confirmed",
-      "he": "מצרים ואיראן התחלקו ב-1:1. אין מנצחת, והבית נשאר פתוח יותר 🧾",
-      "en": "Egypt and Iran split it 1-1. No winner, and the group stays more open 🧾",
+      "he": "מצרים נגד איראן נגמר 1:1. מי שסימן ניצחון לאחד הצדדים איבד נקודות חשובות 🧾",
+      "en": "Egypt vs Iran finished 1-1. Anyone who picked a winner there lost important points 🧾",
       "sources": [],
       "expires_at": "2026-06-28T15:00:00.000Z"
     },
@@ -70,8 +70,8 @@
       "id": "result-1773f1fe-63f0-4079-91b5-55dd5e817fc3",
       "type": "result",
       "confidence": "confirmed",
-      "he": "ספרד עם 1:0 על אורוגוואי. זה ניצחון שמסדר לה עמדה טובה יותר בבית 🧾",
-      "en": "Spain beat Uruguay 1-0. That gives them a stronger position in the group 🧾",
+      "he": "ספרד סגרה את אורוגוואי עם 1:0. מי שסימן ניצחון נקי מקבל כאן יתרון יפה. זה משנה נקודות, הימורים ואת תמונת הבית 🧾",
+      "en": "Spain shut out Uruguay 1-0. Anyone who called a clean win gets a useful edge here. It still matters for table places, picks, and pool points 🧾",
       "sources": [],
       "expires_at": "2026-06-28T12:00:00.000Z"
     },
@@ -92,24 +92,6 @@
       "en": "France beat Norway 4-1 in an open match. That result changes the group and a lot of predictions 🧾",
       "sources": [],
       "expires_at": "2026-06-28T07:00:00.000Z"
-    },
-    {
-      "id": "fixture-9404e5df-df31-4237-a3fc-9ed17b9bdc57",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "אלג'יריה נגד אוסטריה, היום 05:00. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות ⏰",
-      "en": "Algeria vs Austria, today 05:00. Not the biggest match, but the points here can be crucial ⏰",
-      "sources": [],
-      "expires_at": "2026-06-28T01:45:00.000Z"
-    },
-    {
-      "id": "fixture-b22515cc-80c5-46e5-8fd7-2dbf90a86503",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "ירדן נגד ארגנטינה, היום 05:00. משחק שהרבה אנשים יסמנו כבטוח, וזה בדיוק הסיכון. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית ⏰",
-      "en": "Jordan vs Argentina, today 05:00. Many people will mark this as safe, and that is exactly the risk ⏰",
-      "sources": [],
-      "expires_at": "2026-06-28T01:45:00.000Z"
     }
   ]
 }
