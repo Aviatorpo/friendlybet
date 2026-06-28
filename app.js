@@ -1574,6 +1574,7 @@ async function updateTwoPhaseIncidentBanner() {
     const showUserR16Incident = userR16IncidentRows > 0;
     const showAdminR16Incident = isAdmin && poolR16IncidentRows > 0;
     const showR16Incident = showUserR16Incident || showAdminR16Incident;
+    const r16IncidentClosed = Date.now() >= _knockoutCutoffMs();
     const showSaveLossIncident = _poolGraceActive({ lock_at_override: override }) && !groupComplete;
     if (!showR16Incident && !showSaveLossIncident) return hide();
 
@@ -1584,13 +1585,23 @@ async function updateTwoPhaseIncidentBanner() {
     const cta = document.getElementById('tpi-cta');
     const copy = document.getElementById('tpi-copy');
     if (showR16Incident) {
-      if (titleEl) titleEl.textContent = t(showAdminR16Incident ? 'dashboard.tpR16Incident.adminTitle' : 'dashboard.tpR16Incident.title');
-      if (subEl) subEl.textContent = t(showAdminR16Incident ? 'dashboard.tpR16Incident.adminSub' : 'dashboard.tpR16Incident.sub');
-      if (dlEl) dlEl.textContent = t(showAdminR16Incident ? 'dashboard.tpR16Incident.adminPointsRisk' : 'dashboard.tpR16Incident.pointsRisk');
+      const keyPrefix = r16IncidentClosed ? 'dashboard.tpR16IncidentClosed' : 'dashboard.tpR16Incident';
+      if (titleEl) titleEl.textContent = t(showAdminR16Incident ? `${keyPrefix}.adminTitle` : `${keyPrefix}.title`);
+      if (subEl) subEl.textContent = t(showAdminR16Incident ? `${keyPrefix}.adminSub` : `${keyPrefix}.sub`);
+      if (dlEl) dlEl.textContent = t(showAdminR16Incident ? `${keyPrefix}.adminPointsRisk` : `${keyPrefix}.pointsRisk`);
       if (cta) {
-        cta.style.display = '';
-        cta.textContent = t(showAdminR16Incident ? 'dashboard.tpR16Incident.adminCta' : 'dashboard.tpR16Incident.cta');
-        cta.onclick = showAdminR16Incident ? (() => showMembers()) : (() => startKnockoutBetting());
+        if (showAdminR16Incident) {
+          cta.style.display = '';
+          cta.textContent = t('dashboard.tpR16Incident.adminCta');
+          cta.onclick = () => showMembers();
+        } else if (r16IncidentClosed) {
+          cta.style.display = 'none';
+          cta.onclick = null;
+        } else {
+          cta.style.display = '';
+          cta.textContent = t('dashboard.tpR16Incident.cta');
+          cta.onclick = () => startKnockoutBetting();
+        }
       }
     } else {
       if (titleEl) titleEl.textContent = t('dashboard.tpIncident.title');
@@ -1609,7 +1620,7 @@ async function updateTwoPhaseIncidentBanner() {
         copy.onclick = async () => {
           const link = (window.location.origin || 'https://friendlybet.live') + '/?join=' + state.currentPool.code;
           const msg = showR16Incident
-            ? t('dashboard.tpR16Incident.copyMessage', { link })
+            ? t(r16IncidentClosed ? 'dashboard.tpR16IncidentClosed.copyMessage' : 'dashboard.tpR16Incident.copyMessage', { link })
             : t('dashboard.tpIncident.copyMessage', { date: deadline, link });
           try { await navigator.clipboard.writeText(msg); showToast(t('dashboard.tpIncident.copied'), 'success'); }
           catch (_) { showToast(msg, 'info'); }
@@ -4409,7 +4420,8 @@ async function showMembers() {
   const list = document.getElementById('members-list');
   list.innerHTML = '';
   _renderMembersPredictionNotice(list, predictionAccess);
-  _renderMembersR16IncidentNotice(list, r16IncidentUserIds);
+  const r16IncidentClosed = Date.now() >= _knockoutCutoffMs();
+  _renderMembersR16IncidentNotice(list, r16IncidentUserIds, r16IncidentClosed);
 
   const memberOrder = new Map(members.map((m, index) => [m.id, index]));
   const displayMembers = [...members].sort((a, b) => {
@@ -4423,7 +4435,8 @@ async function showMembers() {
     const picks = isLateKo ? 0 : (picksPerUser[member.id] || 0);
     const koPicks = koPerUser[member.id] || 0;
     const card = createMemberCard(member, picks, koPicks, isV2, predictionAccess, isLateKo, {
-      needsR16Refill: !!(r16IncidentUserIds && r16IncidentUserIds.has(member.id))
+      needsR16Refill: !!(r16IncidentUserIds && r16IncidentUserIds.has(member.id)),
+      r16IncidentClosed
     });
     list.appendChild(card);
   });
@@ -4458,16 +4471,17 @@ function _renderMembersPredictionNotice(list, access) {
   list.appendChild(notice);
 }
 
-function _renderMembersR16IncidentNotice(list, userIds) {
+function _renderMembersR16IncidentNotice(list, userIds, closed = false) {
   const count = userIds && typeof userIds.size === 'number' ? userIds.size : 0;
   if (!list || count <= 0) return;
+  const prefix = closed ? 'membersList.r16IncidentClosed' : 'membersList.r16Incident';
   const notice = document.createElement('div');
   notice.className = 'members-r16-incident-note';
   notice.innerHTML = `
     <div class="members-r16-incident-icon">⚠️</div>
     <div>
-      <div class="members-r16-incident-title">${t('membersList.r16IncidentTitle')}</div>
-      <div class="members-r16-incident-text">${t('membersList.r16IncidentText', { n: count })}</div>
+      <div class="members-r16-incident-title">${t(`${prefix}Title`)}</div>
+      <div class="members-r16-incident-text">${t(`${prefix}Text`, { n: count })}</div>
     </div>
   `;
   list.appendChild(notice);
@@ -4493,6 +4507,7 @@ function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAcce
 
   const isMe = state.currentUser && member.id === state.currentUser.id;
   const needsR16Refill = !!options.needsR16Refill;
+  const r16IncidentClosed = !!options.r16IncidentClosed;
   if (isMe) card.classList.add('is-me');
   if (member.is_admin) card.classList.add('is-admin');
   if (needsR16Refill) card.classList.add('needs-r16-refill');
@@ -4515,7 +4530,7 @@ function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAcce
   let statusClass, statusText;
   if (needsR16Refill) {
     statusClass = 'r16-refill';
-    statusText = t('membersList.r16IncidentFlag');
+    statusText = t(r16IncidentClosed ? 'membersList.r16IncidentClosedFlag' : 'membersList.r16IncidentFlag');
   } else if (picksCount === 0 && koPicksCount === 0) {
     statusClass = 'not-started';
     statusText = t('membersList.noBets');
