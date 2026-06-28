@@ -243,6 +243,9 @@ assert(renderRows[0].innerHTML.includes('<div class="lb-rank">#1</div>'), 'Offic
 assert(/renderLeaderboardBanter\(users,\s*\{\s*phase\s*\}\)/.test(app), 'Leaderboard banter must receive the current tournament phase');
 assert(/function _groupsCompleteLeaderboardBanter\(users\)/.test(app), 'Leaderboard must have a groups-complete Pundit fallback');
 assert(/options\s*&&\s*options\.phase\s*===\s*'groupsComplete'/.test(app), 'Leaderboard Pundit fallback must activate only for groups-complete phase');
+assert(/function _punditItemAllowedForPoolMode\(item,\s*poolMode\)/.test(app), 'Pundit feed must have a pool-mode filter');
+assert(/globalItems\s*=\s*globalItems\.filter\(item\s*=>\s*_punditItemAllowedForPoolMode\(item,\s*poolMode\)\)/.test(app), 'Global Pundit items must be filtered by pool betting mode before rotation');
+assert(/mode_scopes/.test(app) && /poolMode === 'one_phase'/.test(app), 'One-phase pools must not render mode-specific knockout-open Pundit cards');
 
 const podiumNameCss = /\.podium-name\s*\{[\s\S]*?white-space:\s*nowrap;[\s\S]*?overflow:\s*hidden;[\s\S]*?text-overflow:\s*ellipsis;[\s\S]*?\}/.test(styles);
 assert(podiumNameCss, 'Podium names must keep nowrap/hidden/ellipsis protection');

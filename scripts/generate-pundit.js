@@ -231,8 +231,8 @@ function groupCompleteCommentary() {
   const heTime = knockoutDeadlineLabel('he');
   const enTime = knockoutDeadlineLabel('en');
   return {
-    he: `שלב הבתים מאחורינו: כל 12 הבתים נסגרו, ניקוד הבתים רשמי, וההימור על הנוקאאוט פתוח עד ${heTime}. עכשיו הבראקט האמיתי קובע.`,
-    en: `The group stage is behind us: all 12 groups are final, group points are official, and knockout picks stay open until ${enTime}. The real bracket is the job now.`,
+    he: `שלב הבתים מאחורינו: כל 12 הבתים נסגרו וניקוד הבתים רשמי. בהימורי two-phase או נוקאאוט, הבראקט ניתן לעריכה עד ${heTime}; בהימורי one-phase כבר חיים עם הקבלות.`,
+    en: `The group stage is behind us: all 12 groups are final and group points are official. In two-phase or knockout pools, the bracket can still be edited until ${enTime}; one-phase pools are already living with the receipts.`,
   };
 }
 
@@ -274,8 +274,9 @@ function groupCompletePhaseItems(matches) {
     },
     {
       id: 'phase-knockout-window',
-      he: `זה כבר לא שלב של חישובי בית. הבחירות הבאות הן נוקאאוט: 31 משחקים, מנצחת בכל משחק, וכל זה ננעל ב-${heTime}.`,
-      en: `This is no longer group-stage accounting. The next picks are knockout picks: 31 matches, one winner each, locked at ${enTime}.`,
+      mode_scopes: ['two_phase', 'late_knockout'],
+      he: `זה כבר לא שלב של חישובי בית. בהימורי two-phase או נוקאאוט, הבחירות הבאות הן 31 משחקי נוקאאוט, מנצחת בכל משחק, וכל זה ננעל ב-${heTime}.`,
+      en: `This is no longer group-stage accounting. For two-phase or knockout pools, the next picks are 31 knockout matches, one winner each, locked at ${enTime}.`,
     },
     {
       id: 'phase-leaderboard-official',

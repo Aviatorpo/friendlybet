@@ -14,6 +14,20 @@ const byId = new Map(matches.map(match => [match.id, match]));
 const seenFallbacks = new Map();
 const teamNames = Object.values(TEAM_NAMES || {}).flatMap(item => [item.en, item.he]).filter(Boolean);
 teamNames.sort((a, b) => b.length - a.length);
+function allGroupsComplete(rows) {
+  const byGroup = new Map();
+  for (const match of rows || []) {
+    if (!match || match.stage !== 'GROUP_STAGE') continue;
+    const group = String(match.group_letter || '').trim().toUpperCase();
+    if (!group || match.status !== 'FINISHED' || match.home_score == null || match.away_score == null) continue;
+    const teams = [match.home_team_code, match.away_team_code].map(code => String(code || '').trim().toUpperCase()).sort();
+    if (!teams[0] || !teams[1]) continue;
+    if (!byGroup.has(group)) byGroup.set(group, new Set());
+    byGroup.get(group).add(teams.join('-'));
+  }
+  return Array.from(byGroup.values()).filter(fixtures => fixtures.size === 6).length >= 12;
+}
+const groupStageComplete = allGroupsComplete(matches);
 const bannedHeadlineFragments = [
   /Statement made!?/i,
   /No winner, all drama/i,
@@ -29,6 +43,14 @@ const bannedFallbackFragments = [
 const bannedFocusFragments = [
   /already need[s]? a defense speech/i,
   /\u05db\u05d1\u05e8 \u05e6\u05e8\u05d9\u05da(?:\u05d9\u05dd)? \u05e0\u05d0\u05d5\u05dd \u05d4\u05d2\u05e0\u05d4/u,
+];
+const stalePostGroupFragments = [
+  /\b(Group [A-L] )?(stays open|opens up|is still open|leave[s]? the group open|just getting started|needs? a recovery match|waiting for another group match)\b/i,
+  /\b(still alive|route still exists|still possible)\b/i,
+  /\u05e0\u05e9\u05d0\u05e8 \u05e4\u05ea\u05d5\u05d7/u,
+  /\u05e0\u05e4\u05ea\u05d7 \u05de\u05d7\u05d3\u05e9/u,
+  /\u05e2\u05d3\u05d9\u05d9\u05df \u05d7/u,
+  /\u05de\u05e9\u05d7\u05e7 \u05d4\u05d1\u05d0/u,
 ];
 const endingEmojiPattern = /[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?$/u;
 const RECENT_STORY_COPY_WINDOW = 10;
@@ -113,6 +135,29 @@ for (const story of stories) {
     story.he && story.he.caption,
     story.en && story.en.caption
   ].join(' ');
+  const storyText = [
+    story.he && story.he.headline,
+    story.he && story.he.caption,
+    story.en && story.en.headline,
+    story.en && story.en.caption,
+    ...(Array.isArray(story.pool_focuses) ? story.pool_focuses : [])
+      .filter(focus => focus && focus.table === 'group_position_picks')
+      .flatMap(focus => [
+      focus && focus.he_name,
+      focus && focus.he_names,
+      focus && focus.he_count,
+      focus && focus.en_name,
+      focus && focus.en_names,
+      focus && focus.en_count,
+    ]),
+  ].filter(Boolean).join(' ');
+  if (groupStageComplete && match.stage === 'GROUP_STAGE') {
+    stalePostGroupFragments.forEach(pattern => {
+      if (pattern.test(storyText)) {
+        fail(`${story.id}: post-group-stage story copy still implies future/open group-stage context (${pattern})`);
+      }
+    });
+  }
   bannedFallbackFragments.forEach(pattern => {
     if (pattern.test(copyText)) {
       fail(`${story.id}: fallback caption uses banned generic story phrasing`);
