@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-06-28T06:12:45.245Z",
-  "freshUntil": "2026-06-28T12:12:45.245Z",
+  "updatedAt": "2026-06-28T07:10:42.839Z",
+  "freshUntil": "2026-06-28T13:10:42.839Z",
   "count": 5,
   "items": [
     {
       "id": "phase-groups-complete-knockout-open",
-      "he": "שלב הבתים מאחורינו: כל 12 הבתים נסגרו וניקוד הבתים רשמי. בהימורי two-phase או נוקאאוט, הבראקט ניתן לעריכה עד 4 ביולי בשעה 20:00 GMT‎+3‎; בהימורי one-phase כבר חיים עם הקבלות 🏁",
-      "en": "The group stage is behind us: all 12 groups are final and group points are official. In two-phase or knockout pools, the bracket can still be edited until July 4 at 08:00 PM GMT+3; one-phase pools are already living with the receipts 🏁",
+      "he": "שלב הבתים מאחורינו: כל 12 הבתים נסגרו וניקוד הבתים רשמי. בהימורי two-phase או נוקאאוט, הבראקט ניתן לעריכה עד 28 ביוני בשעה 20:00 GMT‎+3‎; בהימורי one-phase כבר חיים עם הקבלות 🏁",
+      "en": "The group stage is behind us: all 12 groups are final and group points are official. In two-phase or knockout pools, the bracket can still be edited until June 28 at 08:00 PM GMT+3; one-phase pools are already living with the receipts 🏁",
       "type": "phase",
       "confidence": "confirmed",
       "sources": [],
-      "expires_at": "2026-07-04T17:00:00.000Z"
+      "expires_at": "2026-06-28T17:00:00.000Z"
     },
     {
       "id": "phase-knockout-window",
@@ -18,12 +18,12 @@
         "two_phase",
         "late_knockout"
       ],
-      "he": "זה כבר לא שלב של חישובי בית. בהימורי two-phase או נוקאאוט, הבחירות הבאות הן 31 משחקי נוקאאוט, מנצחת בכל משחק, וכל זה ננעל ב-4 ביולי בשעה 20:00 GMT‎+3‎ 🏁",
-      "en": "This is no longer group-stage accounting. For two-phase or knockout pools, the next picks are 31 knockout matches, one winner each, locked at July 4 at 08:00 PM GMT+3 🏁",
+      "he": "זה כבר לא שלב של חישובי בית. בהימורי two-phase או נוקאאוט, הבחירות הבאות הן 31 משחקי נוקאאוט, מנצחת בכל משחק, וכל זה ננעל ב-28 ביוני בשעה 20:00 GMT‎+3‎ 🏁",
+      "en": "This is no longer group-stage accounting. For two-phase or knockout pools, the next picks are 31 knockout matches, one winner each, locked at June 28 at 08:00 PM GMT+3 🏁",
       "type": "phase",
       "confidence": "confirmed",
       "sources": [],
-      "expires_at": "2026-07-04T17:00:00.000Z"
+      "expires_at": "2026-06-28T17:00:00.000Z"
     },
     {
       "id": "phase-leaderboard-official",
@@ -32,7 +32,7 @@
       "type": "phase",
       "confidence": "confirmed",
       "sources": [],
-      "expires_at": "2026-07-04T17:00:00.000Z"
+      "expires_at": "2026-06-28T17:00:00.000Z"
     },
     {
       "id": "phase-final-results-recap",
@@ -41,7 +41,7 @@
       "type": "phase",
       "confidence": "confirmed",
       "sources": [],
-      "expires_at": "2026-07-04T17:00:00.000Z"
+      "expires_at": "2026-06-28T17:00:00.000Z"
     },
     {
       "id": "phase-bracket-receipts",
@@ -50,7 +50,7 @@
       "type": "phase",
       "confidence": "confirmed",
       "sources": [],
-      "expires_at": "2026-07-04T17:00:00.000Z"
+      "expires_at": "2026-06-28T17:00:00.000Z"
     }
   ]
 }
