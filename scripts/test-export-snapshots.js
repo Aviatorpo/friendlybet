@@ -77,6 +77,17 @@ check('scheduled match remains unchanged', () => {
   assert.deepStrictEqual(sanitizeMatchForSnapshot(scheduled), scheduled);
 });
 
+check('leaderboard pool filter parses CLI and env safely', () => {
+  assert.deepStrictEqual(Export.requestedLeaderboardPoolIds(['leaderboards', '--pool-ids=p1,p2'], {}), ['p1', 'p2']);
+  assert.deepStrictEqual(Export.requestedLeaderboardPoolIds(['leaderboards'], { LEADERBOARD_POOL_IDS: 'p3, p4' }), ['p3', 'p4']);
+  assert.strictEqual(Export.requestedLeaderboardPoolIds(['leaderboards'], {}), null);
+  assert.deepStrictEqual(Export.requestedLeaderboardPoolIds(['leaderboards', '--pool-ids='], {}), []);
+});
+
+check('leaderboard pool filter uses PostgREST in syntax', () => {
+  assert.strictEqual(Export.postgrestInFilter('pool_id', ['p1', 'p2']), 'pool_id=in.(p1,p2)');
+});
+
 (async () => {
   console.log('\n== integration: export sbAll paginates beyond 100 pages ==');
   const ranges = [];

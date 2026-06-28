@@ -15,7 +15,7 @@ Turn FriendlyBet from a World Cup 2026 prediction pool into a free, privacy-firs
 - Keep the app mobile-first, premium, bilingual in Hebrew and English, and native-feeling in RTL.
 - Prefer clear, auditable code over framework churn or hidden complexity.
 - Update both Hebrew and English for user-facing copy.
-- Protect prediction state and scoring correctness before visual polish.
+- Protect prediction state, verified results, scoring correctness, lock/open state, leaderboard publication, and match display before content, social features, or visual polish.
 - Tell the truth about uncertainty, risks, tradeoffs, and failed validation.
 
 ## Product Direction
@@ -31,6 +31,7 @@ For every significant idea, answer:
 3. Can it be built and operated cheaply by a tiny team?
 4. Does it improve the current product without making World Cup 2026 worse?
 5. Can QA explain the scoring, locking, and failure modes clearly?
+6. Can optional content fail without blocking results, scoring, locks, leaderboards, or match display?
 
 ## Agent Culture Standard
 

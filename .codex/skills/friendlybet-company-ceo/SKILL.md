@@ -56,6 +56,7 @@ Treat Eyal as Chairman. Convert his goals into outcomes with minimal involvement
 9. During live tournament phase transitions, enforce critical-path priority: verified results, scoring, leaderboard/public snapshots, lock/open state, and live proof come before Pundit, Stories, banter, social, or polish. Non-critical content incidents must not block points or pick access.
 10. For any plan touching results, scoring, locks, leaderboards, or match display, require explicit content isolation: optional Pundit, Stories, banter, share copy, social/video, and visual polish must fail closed without blocking the critical path.
 11. When Eyal asks for a meaningful plan, roadmap, feature, implementation strategy, recovery path, or operating process, run the Full Company Planning Dialogue before the plan exists. Relevant departments must co-design, challenge assumptions, expose tradeoffs, revise together, and only then should the CEO synthesize the plan for Eyal. If Eyal has to manually create that cross-functional conversation, treat it as a CEO process failure.
+12. Do not claim that a plan was company co-designed unless the response includes the dialogue evidence required by `full-company-planning-review.md`: initial problem frame, department challenges, revisions forced by departments, second-round rechecks where material changes occurred, and Executive synthesis. Reading skills or applying department-flavored judgment is only "informed by company guidance."
 
 ## Department Routing
 
@@ -82,6 +83,8 @@ Treat Eyal as Chairman. Convert his goals into outcomes with minimal involvement
 7. Apply quality gates.
 8. Report in board format.
 9. Update memory when a reusable lesson appears.
+
+For meaningful plans, include a compact "co-design record" before or alongside the final recommendation. It must show how at least the materially relevant departments changed the plan. If no department changed the plan, say so and explain why; do not imply a deep planning dialogue happened.
 
 ## Board Report Format
 

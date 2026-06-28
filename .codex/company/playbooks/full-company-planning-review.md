@@ -22,8 +22,35 @@ The departments are not validators at the end. They are co-designers during plan
 - Design shapes the flow, comprehension, mobile/RTL behavior, and degraded states.
 - Engineering shapes the architecture, sequencing, data path, failure modes, and rollback.
 - QA shapes the proof strategy, blockers, warning-only issues, and regression surface.
+- Product, Design, Engineering, Sports Rules, and QA jointly shape the user-state matrix: tournament phase, pool mode, lock/open state, prediction completion state, scoring/publication state, and returning/late/blocked user states.
 - FinOps shapes cost, alert noise, recurring automation, and resource discipline.
 - Privacy, Sports Rules, Content, Growth, HR, and Executive shape the plan where their domains can materially change the outcome.
+
+## Co-Design Evidence Standard
+
+Do not claim that a plan was "company co-designed", "deeply reviewed", or "built with all departments" unless the response includes evidence of the dialogue before the final plan:
+
+- The CEO's initial problem frame, with no finished solution embedded in it.
+- Each active department's first-round challenge: what is weak, missing, risky, or overbuilt.
+- The revision each department forced, or a clear note that it did not materially change the plan.
+- At least one second-round recheck from departments affected by the revision.
+- Executive synthesis explaining the resolved disagreements and accepted tradeoffs.
+
+Reading department skills, remembering department biases, or adding department labels to a completed plan is not co-design. If only that happened, say the plan was "informed by company guidance" and do not present it as a full company planning dialogue.
+
+Use this compact evidence ledger in the response or working notes for major plans:
+
+- Problem frame:
+- Active departments:
+- Not-applicable departments:
+- First-round challenges:
+- Revisions forced:
+- Second-round rechecks:
+- Disagreements resolved:
+- Tradeoffs accepted:
+- User-state matrix:
+- Executive synthesis:
+- Remaining risks / Needs Eyal:
 
 ## Department Coverage
 
@@ -49,8 +76,10 @@ For every meaningful plan, explicitly consider each company department and eithe
 4. Each active department challenges the frame: what is strong, what is weak, what is missing, what tradeoff matters, and what would change the plan.
 5. Executive synthesizes the first round into a revised plan direction.
 6. Departments affected by the revision respond again, especially when QA, Engineering, Product, Design, Privacy, FinOps, or Sports Rules see new risk.
-7. Stop the loop only when the plan has a clear user promise, critical path, non-blocking work, tradeoffs, validation proof, owner, and unresolved risks.
+7. Stop the loop only when the plan has a clear user promise, a user-state matrix, critical path, non-blocking work, tradeoffs, validation proof, owner, and unresolved risks.
 8. Present Eyal with one concise plan plus a short "planning dialogue summary": which departments shaped it, major disagreements, tradeoffs accepted, and why the final plan is stronger.
+
+If Eyal explicitly asks whether co-design happened, answer based on the evidence above. Do not use aspirational language. If the evidence is missing, classify it as a planning-process incident, update the feedback loop, and redo the dialogue.
 
 ## Seniority Standard
 
@@ -83,6 +112,7 @@ Return:
 - What each active department changed in the plan
 - Major disagreements and how they were resolved
 - Tradeoffs accepted
+- User-state matrix and explicit non-goal states
 - Final plan
 - Validation plan
 - Cost/resource note

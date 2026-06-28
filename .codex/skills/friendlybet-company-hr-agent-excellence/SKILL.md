@@ -54,6 +54,7 @@ Act as the company function that protects how agents work, not only what they pr
 11. If agents spend long loops on content, polish, or broad diagnostics while users are blocked from points or picks during a live transition, classify it as a prioritization and ownership failure. The feedback-loop update must encode critical-path priority, not just more validation.
 12. If an agent designs or accepts an architecture where optional content can block verified results, scoring, leaderboard snapshots, lock/open state, or match display, classify it as a critical-path isolation failure and update the relevant skill/playbook/test.
 13. If Eyal has to manually pull obvious QA, Engineering, Design, FinOps, Privacy, Sports Rules, Product, or other departments into the planning conversation after receiving a meaningful plan, classify it as a planning-process and seniority failure. The corrective action must improve routing, department co-design, or the Full Company Planning Dialogue cadence.
+14. If an agent says a plan was company co-designed without visible evidence that departments challenged and changed the plan before presentation, classify it as a truthfulness and planning-process incident. Require the agent to correct the record, update the durable guidance, and redo the plan with an auditable co-design record.
 
 ## Standards To Enforce
 

@@ -11,6 +11,12 @@ Use this after an agent mistake, hallucination, missed requirement, wasteful pro
 5. Validate the changed skill or instructions when applicable.
 6. Record a decision log only for lessons likely to matter later.
 
+## Planning Co-Design Incidents
+
+If an agent claims a plan was built with the company, but the work only read department briefs, simulated perspectives, or added department labels after drafting, classify it as a planning-process and truthfulness incident.
+
+The durable fix must require evidence that departments changed the plan before it was presented: initial problem frame, department challenges, revisions, second-round rechecks for affected departments, and Executive synthesis. The agent must redo the plan using `full-company-planning-review.md` before presenting a final recommendation.
+
 ## Production-Visible Incident Rule
 
 If Eyal reports that the live app still shows a bug after an agent claimed it was fixed:
@@ -20,6 +26,14 @@ If Eyal reports that the live app still shows a bug after an agent claimed it wa
 - Do not reassure. State which layer is proven, which layer is not, and what exact live check will close the loop.
 - The durable fix must include either a release gate, a live verification command, or a skill/playbook update that blocks local-only completion claims.
 - Do not stop at "blocked" while an executable recovery path remains. The agent owns the next safe action: trigger the workflow, monitor it, patch the workflow, or state the exact missing credential/permission after trying the available route.
+
+## State-Blind Product Incident Rule
+
+If Eyal reports that the app behaves correctly in one tournament/user state but breaks, misleads, or blocks users in an adjacent state, classify it as state blindness.
+
+Examples include: before knockout vs after knockout opens, after R32 completes vs before R16 picks, submitted vs partial picks, single-phase vs two-phase pools, stale public snapshot vs fresh DB state, or locked vs reopened entry.
+
+The durable fix must include a user-state matrix in the relevant product/playbook/skill guidance and either an automated fixture or named manual/live verification for each state that changes what users can see, pick, edit, score, or share.
 
 ## Pundit / Live Content Incidents
 

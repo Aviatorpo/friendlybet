@@ -39,6 +39,8 @@ const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || ''
 const MAX_KICKOFF_DELTA_MS = (parseInt(process.env.RESULT_FALLBACK_MAX_KICKOFF_DELTA_HOURS || '', 10) || 12) * 60 * 60 * 1000;
 const MIN_SOURCES = parseInt(process.env.RESULT_FALLBACK_MIN_SOURCES || '', 10) || 1;
 const REQUIRED_SOURCES = csvList(process.env.RESULT_FALLBACK_REQUIRED_SOURCES, 'espn,fifa');
+const CONSENSUS_FALLBACK_MIN_SOURCES = parseInt(process.env.RESULT_CONSENSUS_FALLBACK_MIN_SOURCES || '', 10) || 0;
+const CONSENSUS_FALLBACK_BLOCK_SOURCES = csvList(process.env.RESULT_CONSENSUS_FALLBACK_BLOCK_SOURCES, 'fifa');
 const ENABLED_SOURCES = csvList(process.env.RESULT_FALLBACK_SOURCES, 'espn,fifa');
 const SOURCE_MODE = String(process.env.RESULT_FALLBACK_SOURCE_MODE || 'all').trim().toLowerCase();
 const SOURCE_ROTATION_MINUTES = parseInt(process.env.RESULT_FALLBACK_ROTATION_MINUTES || '', 10) || 15;
@@ -465,6 +467,10 @@ function uniqueSourceFamilyCount(sourceUpdates) {
 function consensusUpdate(sourceUpdates, opts = {}) {
   const options = typeof opts === 'number' ? { minSources: opts, requiredSources: [] } : (opts || {});
   const requiredSources = Array.isArray(options.requiredSources) ? options.requiredSources : REQUIRED_SOURCES;
+  const fallbackMinSources = Number(options.fallbackMinSources == null ? CONSENSUS_FALLBACK_MIN_SOURCES : options.fallbackMinSources) || 0;
+  const fallbackBlockSources = Array.isArray(options.fallbackBlockSources)
+    ? options.fallbackBlockSources
+    : CONSENSUS_FALLBACK_BLOCK_SOURCES;
   const minSources = Math.max(
     options.minSources == null ? MIN_SOURCES : options.minSources,
     requiredSources.length || 0
@@ -484,10 +490,29 @@ function consensusUpdate(sourceUpdates, opts = {}) {
     return requiredSources.every(source => names.has(source));
   }) || (requiredSources.length ? null : winners[0]);
   if (!best || best.familyCount < minSources) {
+    const fallbackBest = winners[0] || null;
+    const fallbackTie = fallbackBest && winners[1] && winners[1].familyCount === fallbackBest.familyCount && winners[1].key !== fallbackBest.key;
+    const blockFamilies = new Set((fallbackBlockSources || []).map(sourceFamily));
+    const blockedByExplicitSource = fallbackBest && (sourceUpdates || []).some(su => {
+      if (!su || !su.source || !su.update) return false;
+      return blockFamilies.has(sourceFamily(su.source)) && resultKey(su.update) !== fallbackBest.key;
+    });
+    if (requiredSources.length && fallbackMinSources > 0 && fallbackBest && fallbackBest.familyCount >= fallbackMinSources && !fallbackTie && !blockedByExplicitSource) {
+      return {
+        update: fallbackBest.sources[0].update,
+        sources: fallbackBest.sources,
+        familyCount: fallbackBest.familyCount,
+        groups: winners,
+        fallback: true,
+      };
+    }
     const req = requiredSources.length ? `; requires agreeing ${requiredSources.join('+')}` : '';
+    const fallback = fallbackMinSources > 0
+      ? `; fallback requires ${fallbackMinSources} independent agreeing families${blockedByExplicitSource ? ' and no explicit blocked-source disagreement' : ''}`
+      : '';
     return {
       update: null,
-      reason: `${uniqueSourceFamilyCount(sourceUpdates)} independent final source family/families, ${minSources} required${req}`,
+      reason: `${uniqueSourceFamilyCount(sourceUpdates)} independent final source family/families, ${minSources} required${req}${fallback}`,
       groups: winners,
     };
   }

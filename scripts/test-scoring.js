@@ -401,6 +401,12 @@ S.__setFetch(mockScoringFetch);
   }, 0, 0, 0, 0);
   eq('fresh unchanged score skips write', freshSkipped, false);
   eq('fresh unchanged score has no patch', captured.U12, undefined);
+  const criticalSkipped = await S.updateUserScoreIfChanged({
+    ...unchangedZero,
+    id: 'U13',
+  }, 0, 0, 0, 0, { heartbeat: false });
+  eq('critical unchanged score skips stale heartbeat write', criticalSkipped, false);
+  eq('critical unchanged score has no patch', captured.U13, undefined);
 
   console.log('\n== integration: two-phase partial group completion scores only confirmed advancers ==');
   const validTwoPhase32 = [];

@@ -18,12 +18,29 @@ Use this for World Cup match-result sync, group completion, scoring, dashboard, 
 
 ## Critical Path Priority
 
+- Doctrine: critical path first, content never blocks. The critical path is verified results, scoring, leaderboard/public snapshots, lock/open state, and match display. Optional content is Pundit, Stories, banter, share copy, social/video, and visual polish. Content may enrich the product only after the critical path is healthy.
 - During group-stage completion, knockout opening, or any deadline where users need points or picks, the critical path is: verified results, scoring calculation, leaderboard/public snapshot publication, lock/open state, live production proof. Pundit, Stories, banter, social, and visual polish come after that path is restored.
 - Missing story assets, empty editorial news, weak Pundit copy, or social/video gaps are incidents, but they must not block result verification, scoring publication, app hotfix CI, or knockout-entry access. Demote accepted content backlog to warnings in result/scoring workflows and open a separate content incident.
+- Match, scoring, lock, and leaderboard code must render or complete from core match/pick/result data first. Optional content should load after core state, with timeout/fallback behavior, and should disappear quietly or create a separate content incident if unavailable.
 - If users cannot see points or enter knockout picks more than 15 minutes after the required verified final state is available, stop long content loops and run the shortest safe recovery path: verifier/manual-result workflow, score calculation, snapshot export, production re-fetch, and a status note with remaining non-critical issues.
 - Before opening knockout entry after group completion, verify the actual user-visible product mode, not just the official rule constants: single-phase bracket, two-phase reopened bracket, R32 seed display, R16 propagation, QF/SF/final propagation, saved-pick persistence, and live/cache-busted production version. The minimum local gate is `node scripts/test-fifa-bracket.js`, `node scripts/test-third-place-allocation.js`, and `node scripts/test-two-phase-knockout-wiring.js`.
 - More than two repeated failure emails from the same workflow family in 30 minutes during a live transition is a control-plane incident. Assign one owner, summarize the current proven layer, and suppress or demote non-critical alert causes until the user path is restored.
 - A live-transition recovery report must include workflow run ids, finished-match count, pool/user scoring count when available, snapshot verification result, production URL/public-data proof, and the exact remaining blocker.
+
+## Fast Scoring Planning Checklist
+
+Use this checklist before proposing or changing any post-final scoring plan:
+
+- User promise: define the maximum time from verified final result to visible leaderboard.
+- Verification boundary: distinguish provisional provider-final, verification pending, verified result, consensus fallback, and manual review.
+- Source policy: name which sources can auto-score, how many agreeing sources are required, and what blocks auto-scoring.
+- Scoring scope: explain whether the path recomputes all pools/users or only affected pools/users, and why.
+- Write path: identify one-by-one writes, batch writes, RPCs, and unchanged heartbeat writes.
+- Snapshot path: prove how DB scores and public leaderboard snapshots become visible without waiting on optional content.
+- Cost guard: name preflight/backoff/rate-limit controls for provider calls and workflows.
+- QA proof: require timing metrics, source-disagreement tests, score correctness tests, and cache-busted production proof.
+- Rollback/recovery: define how the full scorer/audit path detects and repairs fast-path mistakes.
+- Content isolation: prove Pundit, Stories, banter, share copy, and social work cannot block results, scoring, locks, leaderboards, or match display.
 
 ## Group Completion
 
@@ -42,6 +59,18 @@ Use this for World Cup match-result sync, group completion, scoring, dashboard, 
 - First completed group: show official rank/points plus group-progress context, even if every user still has 0 points.
 - Several completed groups: keep official podium primary and keep group-progress context visible.
 - All groups complete: hide the theoretical group table; move focus to official standings and knockout readiness. Do not show pre-tournament empty copy when complete groups exist but visible points are still 0.
+
+## Tournament State Matrix
+
+For any feature or incident touching predictions, scoring, leaderboards, brackets, matches, dashboard, or navigation, define the state matrix before implementation:
+
+- Tournament phase: pre-tournament, group live with no completed groups, partial group completion, all groups complete/knockout opening, R32 active/complete, R16 active/complete, QF active/complete, SF active/complete, final complete.
+- Pool mode: single-phase, two-phase, late-knockout, admin/test, and any pool with locked or reopened entry.
+- User state: new user, returning user, submitted all required picks, partial picks, no picks, blocked by lock, eligible to pick next phase, scored but not yet published, public snapshot stale.
+- Screen obligation: dashboard, predictions, bracket, leaderboard, matches, share/OG, Pundit, and admin surfaces must each show the correct state or intentionally hide/degrade.
+- QA obligation: every state that can materially change what a user may see, pick, edit, score, or share needs either an automated fixture or a named manual/live verification step.
+
+State-blind work is not release-ready. If a feature only proves one phase, the release note must say which adjacent phases are unverified and why that is safe.
 
 ## Pundit And Banter
 

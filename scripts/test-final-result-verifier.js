@@ -182,6 +182,18 @@ ok('three independent non-official families can produce consensus when explicitl
   { source: 'guardian', update: espnUpdate },
   { source: 'fox', update: { ...espnUpdate, status_detail: null } },
 ], { minSources: 3, requiredSources: [] }).update);
+const fallbackConsensus = F.consensusUpdate([
+  { source: 'espn', update: espnUpdate },
+  { source: 'bbc', update: espnUpdate },
+  { source: 'guardian', update: espnUpdate },
+], { minSources: 2, requiredSources: ['espn', 'fifa'], fallbackMinSources: 3 });
+ok('three independent families can fallback when FIFA is unavailable', !!fallbackConsensus.update && fallbackConsensus.fallback === true);
+ok('fallback consensus does not overrule explicit FIFA disagreement', !F.consensusUpdate([
+  { source: 'espn', update: espnUpdate },
+  { source: 'bbc', update: espnUpdate },
+  { source: 'guardian', update: espnUpdate },
+  { source: 'fifa', update: { ...fifaUpdate, away_score: 2 } },
+], { minSources: 2, requiredSources: ['espn', 'fifa'], fallbackMinSources: 3 }).update);
 ok('conflicting sources do not produce consensus', !F.consensusUpdate([
   { source: 'fifa', update: fifaUpdate },
   { source: 'espn', update: { ...espnUpdate, away_score: 2 } }

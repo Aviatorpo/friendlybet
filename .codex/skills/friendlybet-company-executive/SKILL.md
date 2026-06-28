@@ -45,6 +45,7 @@ Read academy docs when coordinating agent training, cross-team mastery, or certi
 6. Resolve conflicts into one recommendation; do not merely list opinions.
 7. Apply decision rights and quality gates before recommending completion or release.
 8. When implementation is requested, hand off to the relevant department skill or proceed with the agreed plan.
+9. Police provenance language. "Company co-designed" means the plan contains evidence of pre-plan department challenges, revisions, rechecks, and Executive synthesis. If the work only used remembered department perspectives, label it as a synthesized plan, not a co-designed plan.
 
 ## Executive Defaults
 

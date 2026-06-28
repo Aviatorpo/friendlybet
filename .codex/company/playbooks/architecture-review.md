@@ -12,6 +12,8 @@ Use this for schema, scoring, app architecture, data provider, automation, or pe
 6. Avoid wiping in-memory prediction state before DB operations finish.
 7. Keep RLS and privacy constraints explicit.
 8. Prefer small reversible changes with clear tests.
+9. Keep the critical path isolated: verified results, scoring, leaderboard snapshots, lock/open state, and match display must not await, import, validate, deploy, or depend on optional Pundit, Stories, banter, share copy, social, or visual-polish work.
+10. For tournament-aware UI, prefer one explicit state resolver or shared state model over screen-local assumptions. The model must cover tournament phase, pool mode, lock/open state, prediction completion, scoring/publication, and stale snapshot/provider states.
 
 ## Output
 

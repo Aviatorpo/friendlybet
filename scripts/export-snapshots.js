@@ -36,6 +36,26 @@ const SAFE_USER_COLS = [
 ].join(',');
 
 const REST_PAGE_SIZE = 1000;
+
+function csvList(value) {
+  if (value == null) return null;
+  if (Array.isArray(value)) return value.map(String).map(s => s.trim()).filter(Boolean);
+  return String(value).split(',').map(s => s.trim()).filter(Boolean);
+}
+
+function requestedLeaderboardPoolIds(args = process.argv.slice(2), env = process.env) {
+  const arg = args.find(a => String(a || '').startsWith('--pool-ids='));
+  if (arg) return csvList(arg.slice('--pool-ids='.length)) || [];
+  if (Object.prototype.hasOwnProperty.call(env, 'LEADERBOARD_POOL_IDS')) {
+    return csvList(env.LEADERBOARD_POOL_IDS) || [];
+  }
+  return null;
+}
+
+function postgrestInFilter(column, values) {
+  return `${column}=in.(${values.map(v => encodeURIComponent(v)).join(',')})`;
+}
+
 async function sbAll(table, query = '', pageSize = REST_PAGE_SIZE) {
   const all = [];
   for (let from = 0, guard = 0; ; guard++, from += pageSize) {
@@ -134,12 +154,19 @@ async function exportMatches() {
   return wrote ? 1 : 0;
 }
 
-async function exportLeaderboards() {
+async function exportLeaderboards(opts = {}) {
   if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY');
+  const poolIds = csvList(opts.poolIds);
+  if (Array.isArray(poolIds) && poolIds.length === 0) {
+    console.log('leaderboards: skipped (no changed pool ids).');
+    return 0;
+  }
+  const poolFilter = Array.isArray(poolIds) ? postgrestInFilter('id', poolIds) : '';
+  const userFilter = Array.isArray(poolIds) ? postgrestInFilter('pool_id', poolIds) : '';
   let pools, users;
   try {
-    pools = await sbAll('pools', '?select=id');
-    users = await sbAll('users', `?select=${SAFE_USER_COLS}&order=total_score.desc.nullslast`);
+    pools = await sbAll('pools', `?select=id${poolFilter ? `&${poolFilter}` : ''}`);
+    users = await sbAll('users', `?select=${SAFE_USER_COLS}${userFilter ? `&${userFilter}` : ''}&order=total_score.desc.nullslast`);
   } catch (e) {
     console.error('leaderboard fetch failed, keeping last-good snapshots:', e.message);
     return 0;
@@ -155,7 +182,7 @@ async function exportLeaderboards() {
       { updatedAt: new Date().toISOString(), pool_id: pool.id, count: standings.length, standings });
     if (wrote) changed++;
   }
-  console.log(`leaderboards: ${changed} pool file(s) updated of ${pools.length}.`);
+  console.log(`leaderboards: ${changed} pool file(s) updated of ${pools.length}${Array.isArray(poolIds) ? ' requested' : ''}.`);
   return changed;
 }
 
@@ -163,10 +190,11 @@ async function main() {
   if (!SUPABASE_KEY) { console.error('Missing SUPABASE_SECRET_KEY'); process.exit(1); }
   // mode: 'matches' | 'leaderboards' | 'all' (default). Lets the 10-min match cron skip the
   // all-users read and the 30-min score cron do both.
-  const MODE = (process.argv[2] || 'all').toLowerCase();
+  const MODE = (process.argv.slice(2).find(arg => !String(arg).startsWith('--')) || 'all').toLowerCase();
+  const leaderboardPoolIds = requestedLeaderboardPoolIds();
   fs.mkdirSync(LB_DIR, { recursive: true });
   const m = MODE === 'leaderboards' ? 0 : await exportMatches();
-  const l = MODE === 'matches' ? 0 : await exportLeaderboards();
+  const l = MODE === 'matches' ? 0 : await exportLeaderboards({ poolIds: leaderboardPoolIds });
   console.log(`snapshot export done (mode=${MODE}). matches changed=${m}, leaderboards changed=${l}.`);
 }
 
@@ -176,6 +204,8 @@ if (require.main === module) {
   module.exports = {
     exportMatches,
     exportLeaderboards,
+    requestedLeaderboardPoolIds,
+    postgrestInFilter,
     isPendingProviderFinal,
     sanitizeMatchForSnapshot,
     writeIfChanged,

@@ -54,6 +54,7 @@ jobs:
           RESULT_FALLBACK_MIN_SOURCES: 2
           RESULT_FALLBACK_REQUIRED_SOURCES: espn,fifa
           RESULT_FALLBACK_SOURCES: espn,fifa
+          RESULT_CONSENSUS_FALLBACK_MIN_SOURCES: 3
           RESULT_FALLBACK_SOURCE_MODE: all
           RESULT_FALLBACK_OBSERVATION_TTL_MINUTES: 180
           RESULT_VERIFICATION_REPORT_PATH: artifacts/live-final-verification-report.json
@@ -76,30 +77,55 @@ jobs:
         run: node scripts/export-snapshots.js matches
 
       - name: Calculate scores after verified final
+        id: score_results
         if: steps.verify_results.outputs.changed == 'true'
-        timeout-minutes: 35
+        timeout-minutes: 12
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
           SCORING_VERBOSE: '0'
-        run: node scripts/calculate-scores-v2.js
+        run: node scripts/calculate-scores-v2.js --critical
 
       - name: Export leaderboard snapshots after scoring
-        if: steps.verify_results.outputs.changed == 'true'
+        if: steps.verify_results.outputs.changed == 'true' && steps.score_results.outputs.changed_pool_ids != ''
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
         run: node scripts/export-snapshots.js leaderboards
 
       - name: Verify scoring snapshots after scoring
-        if: steps.verify_results.outputs.changed == 'true'
+        if: steps.verify_results.outputs.changed == 'true' && steps.score_results.outputs.changed_pool_ids != ''
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/verify-scoring-snapshots.js
 
-      - name: Generate leaderboard banter after scoring
+      - name: Commit critical live final snapshots if changed
+        if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
+          SCORING_VERBOSE: '0'
+          REGENERATE_COMMANDS: |
+            node scripts/export-snapshots.js matches
+            node scripts/calculate-scores-v2.js --critical
+            node scripts/export-snapshots.js leaderboards
+            node scripts/verify-scoring-snapshots.js
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data/matches.json public-data/leaderboard)" ]; then
+            bash scripts/commit-generated-snapshots.sh "data: refresh live final result" public-data/matches.json public-data/leaderboard
+          else
+            echo "no live final snapshot change"
+          fi
+
+      - name: Generate leaderboard banter after critical scoring
         if: steps.verify_results.outputs.changed == 'true'
         continue-on-error: true
         env:
@@ -107,37 +133,32 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/generate-banter.js
 
-      - name: Build Pundit feed after verified final
+      - name: Build Pundit feed after critical scoring
         if: steps.verify_results.outputs.changed == 'true'
+        continue-on-error: true
         run: node scripts/generate-pundit.js
 
-      - name: Validate Pundit feed after verified final
+      - name: Validate Pundit feed after critical scoring
         if: steps.verify_results.outputs.changed == 'true'
+        continue-on-error: true
         run: node scripts/test-pundit-feed.js
 
-      - name: Commit live final snapshots if changed
+      - name: Commit post-final content if changed
         if: steps.verify_results.outputs.changed == 'true'
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          FORCE_MATCH_SNAPSHOT: '1'
-          SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
-          SCORING_VERBOSE: '0'
           REGENERATE_COMMANDS: |
-            node scripts/export-snapshots.js matches
-            node scripts/calculate-scores-v2.js
-            node scripts/export-snapshots.js leaderboards
-            node scripts/verify-scoring-snapshots.js
             node scripts/generate-banter.js || true
             node scripts/generate-pundit.js
             node scripts/test-pundit-feed.js
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
-          if [ -n "$(git status --porcelain public-data/matches.json public-data/leaderboard public-data/banter public-data/banter-state.json public-data/pundit.json)" ]; then
-            bash scripts/commit-generated-snapshots.sh "data: refresh live final result" public-data/matches.json public-data/leaderboard public-data/banter public-data/banter-state.json public-data/pundit.json
+          if [ -n "$(git status --porcelain public-data/banter public-data/banter-state.json public-data/pundit.json)" ]; then
+            bash scripts/commit-generated-snapshots.sh "content: refresh post-final feed" public-data/banter public-data/banter-state.json public-data/pundit.json
           else
-            echo "no live final snapshot change"
+            echo "no post-final content change"
           fi
 
       - name: Validate existing World Cup stories

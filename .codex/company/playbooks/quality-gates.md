@@ -4,8 +4,9 @@ Use this before the CEO or any department calls significant work done.
 
 ## Gates
 
-0. Planning dialogue: for meaningful plans, the CEO ran `full-company-planning-review.md` before the plan existed. Relevant departments co-designed the plan, challenged assumptions, exposed tradeoffs, revised together, resolved or escalated disagreements, and did not require Eyal to manually create the cross-functional conversation.
+0. Planning dialogue: for meaningful plans, the CEO ran `full-company-planning-review.md` before the plan existed. Relevant departments co-designed the plan, challenged assumptions, exposed tradeoffs, revised together, resolved or escalated disagreements, and did not require Eyal to manually create the cross-functional conversation. This gate passes only with visible co-design evidence: initial problem frame, department challenges, revisions forced by departments, second-round recheck where material changes occurred, and Executive synthesis. Reading briefs or labeling a completed plan with departments is not enough.
 1. Product fit: the change serves a real user job and preserves FriendlyBet values.
+1a. User-state coverage: user-facing product work defines and validates the relevant tournament phase, pool mode, lock/open state, prediction completion state, scoring/publication state, and returning/late/blocked user states. A feature is not done if it only works for one happy-path phase while adjacent phases show stale, misleading, or blocked UI.
 2. Technical correctness: implementation follows repo patterns and avoids hidden coupling.
 3. Scoring/data correctness: scoring, lock rules, snapshots, migrations, and provider behavior are handled when relevant.
 4. Privacy/security: RLS, data minimization, public sharing, and auth/session behavior are safe.

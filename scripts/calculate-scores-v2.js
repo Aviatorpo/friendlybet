@@ -13,6 +13,10 @@ const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.s
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 const SUPABASE_FETCH_TIMEOUT_MS = Number(process.env.SCORING_SUPABASE_FETCH_TIMEOUT_MS || 30000);
 const SCORING_VERBOSE = process.env.SCORING_VERBOSE !== '0';
+const SCORING_CRITICAL =
+  process.argv.includes('--critical') ||
+  process.env.SCORING_CRITICAL === '1' ||
+  process.env.SCORING_CRITICAL === 'true';
 const fs = require('fs');
 const path = require('path');
 const WCR = require('../share-assets/world-cup-rules.js');
@@ -23,6 +27,12 @@ function scoringDetail(...args) {
 
 function scoringWarn(...args) {
   if (SCORING_VERBOSE) console.warn(...args);
+}
+
+function setGithubOutput(name, value) {
+  const file = process.env.GITHUB_OUTPUT;
+  if (!file) return;
+  fs.appendFileSync(file, `${name}=${String(value == null ? '' : value)}\n`);
 }
 
 if (!SUPABASE_KEY && require.main === module) {
@@ -361,10 +371,12 @@ function userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints
     && scoreNumber(user.total_score) === total;
 }
 
-async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total) {
+async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, opts = {}) {
+  const heartbeat = opts.heartbeat !== false;
   const now = new Date();
   const nowIso = now.toISOString();
   if (userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints, total)) {
+    if (!heartbeat) return false;
     if (scoreCalcTimestampFresh(user.last_score_calc, now.getTime())) return false;
     if (!canPatchScoreHeartbeat()) return false;
     await sb('PATCH', 'users', {
@@ -447,13 +459,22 @@ function bracketPosRuleKey(pos) {
 }
 
 // ---- Main ----
-async function main() {
-  console.log('FriendlyBet v2 scoring start');
+async function main(options = {}) {
+  const critical = options.critical == null ? SCORING_CRITICAL : !!options.critical;
+  console.log(`FriendlyBet v2 scoring start${critical ? ' (critical mode)' : ''}`);
   const startedAt = Date.now();
 
   // 1. Load pools
   const pools = await sbAll('pools', '?select=*');
-  if (!pools || !pools.length) { console.log('No pools'); return; }
+  if (!pools || !pools.length) {
+    console.log('No pools');
+    setGithubOutput('score_ms', Date.now() - startedAt);
+    setGithubOutput('changed_pool_ids', '');
+    setGithubOutput('changed_users', 0);
+    setGithubOutput('scored_users', 0);
+    setGithubOutput('scored_pools', 0);
+    return { changedPoolIds: [], changedUsers: 0, scoredUsers: 0, scoredPools: 0 };
+  }
 
   // 2. Load matches (for groups + knockout outcomes)
   const matches = await sbAll('matches', '?select=*');
@@ -495,9 +516,20 @@ async function main() {
     if (settings && settings[0] && settings[0].value) realTopScorer = settings[0].value;
   } catch (e) { /* ignore */ }
 
+  let usersByPool = null;
+  if (critical) {
+    const allUsers = await sbAll('users', '?select=*');
+    usersByPool = indexRowsBy(allUsers, 'pool_id');
+    console.log(`critical mode loaded ${allUsers.length} users in one read`);
+  }
+
   // 4. Per-pool processing. Each pool is isolated in a try/catch so one bad
   // pool (e.g. a transient fetch error) can't abort scoring for everyone else.
   let poolFailures = 0;
+  let scoredPools = 0;
+  let scoredUsers = 0;
+  let changedUsers = 0;
+  const changedPoolIds = new Set();
   for (const pool of pools) {
     try {
       const mode = pool.betting_mode || 'two_phase';
@@ -506,25 +538,34 @@ async function main() {
 
       scoringDetail(`\nPool ${pool.code} - ${pool.name} (${mode})`);
 
-      const users = await sbAll('users', `?pool_id=eq.${pool.id}&select=*`);
+      const users = usersByPool
+        ? (usersByPool.get(pool.id) || [])
+        : await sbAll('users', `?pool_id=eq.${pool.id}&select=*`);
       if (!users || !users.length) { scoringDetail('  no users'); continue; }
 
       // Get all top_scorer_picks for users in this pool
       const tsPicks = pickIndexes.topScorerByPool.get(pool.id) || [];
       const tsMap = new Map((tsPicks || []).map(t => [t.user_id, t]));
 
+      let result;
       if (mode === 'single_phase' || mode === 'late_knockout') {
-        await scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, {
+        result = await scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, {
           lateKnockout: mode === 'late_knockout',
           groupState,
           pickIndexes,
+          heartbeat: !critical,
         });
       } else {
-        await scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, {
+        result = await scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, {
           groupState,
           pickIndexes,
+          heartbeat: !critical,
         });
       }
+      scoredPools++;
+      scoredUsers += result.totalUsers || users.length;
+      changedUsers += result.changedUsers || 0;
+      if ((result.changedUsers || 0) > 0) changedPoolIds.add(pool.id);
     } catch (e) {
       poolFailures++;
       console.error(`  ✖ pool ${pool.code} failed, skipping:`, e.message);
@@ -534,7 +575,16 @@ async function main() {
     throw new Error(`${poolFailures} pool(s) failed during scoring`);
   }
 
-  console.log(`\nDone in ${((Date.now() - startedAt) / 1000).toFixed(1)}s`);
+  const elapsedMs = Date.now() - startedAt;
+  const changedPoolList = Array.from(changedPoolIds);
+  setGithubOutput('score_ms', elapsedMs);
+  setGithubOutput('changed_pool_ids', changedPoolList.join(','));
+  setGithubOutput('changed_users', changedUsers);
+  setGithubOutput('scored_users', scoredUsers);
+  setGithubOutput('scored_pools', scoredPools);
+  setGithubOutput('critical', critical ? 'true' : 'false');
+  console.log(`\nDone in ${(elapsedMs / 1000).toFixed(1)}s (${changedUsers}/${scoredUsers} users changed; ${changedPoolList.length} pool leaderboard(s) affected)`);
+  return { changedPoolIds: changedPoolList, changedUsers, scoredUsers, scoredPools, scoreMs: elapsedMs, critical };
 }
 
 // ---- SINGLE PHASE scoring ----
@@ -546,6 +596,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
   const realBest8Thirds = groupState.realBest8Thirds || null;
   const pickIndexes = opts.pickIndexes || {};
   const groupMode = groupScoringMode(rules);
+  let changedUsers = 0;
 
   // Knockout results (real-world) - by stage
   // For hypothetical bracket: we check whether the team the user picked as
@@ -668,10 +719,14 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     bonusPoints = Math.round(bonusPoints);
     const total = groupPoints + knockoutPoints + bonusPoints;
 
-    await updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total);
+    const wrote = await updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, {
+      heartbeat: opts.heartbeat !== false,
+    });
+    if (wrote) changedUsers++;
 
     if (total > 0) scoringDetail(`  ${user.nickname}: ${total} (g${groupPoints}+k${knockoutPoints}+b${bonusPoints})`);
   }
+  return { changedUsers, totalUsers: users.length };
 }
 
 // Which teams ADVANCED to the knockout: top-2 of each completed group, plus the
@@ -696,6 +751,7 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
   // drawing-but-advancing team would score 0 for).
   const advanced = await computeAdvancedTeams(finishedMatches, opts.groupState || null);
   const pickIndexes = opts.pickIndexes || {};
+  let changedUsers = 0;
 
   for (const user of users) {
     let groupPoints = 0;
@@ -753,9 +809,13 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     bonusPoints = Math.round(bonusPoints);
 
     const total = groupPoints + knockoutPoints + bonusPoints;
-    await updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total);
+    const wrote = await updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, {
+      heartbeat: opts.heartbeat !== false,
+    });
+    if (wrote) changedUsers++;
     if (total > 0) scoringDetail(`  ${user.nickname}: ${total} (g${groupPoints}+k${knockoutPoints}+b${bonusPoints})`);
   }
+  return { changedUsers, totalUsers: users.length };
 }
 
 // Run only when executed directly; when required (tests) expose the internals.

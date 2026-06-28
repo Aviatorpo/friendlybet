@@ -46,22 +46,26 @@ jobs:
           node-version: '20'
 
       - name: Calculate scores (v2)
-        timeout-minutes: 35
+        id: score_results
+        timeout-minutes: 12
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
           SCORING_VERBOSE: '0'
-        run: node scripts/calculate-scores-v2.js
+        run: node scripts/calculate-scores-v2.js --critical
       # Pillar 1: refresh CDN snapshots (matches + per-pool leaderboards) after scoring,
       # so clients read standings from the edge instead of full-table reads of `users`.
       - name: Export CDN snapshots
+        if: steps.score_results.outputs.changed_pool_ids != ''
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
         run: node scripts/export-snapshots.js leaderboards
 
       - name: Verify scoring snapshots
+        if: steps.score_results.outputs.changed_pool_ids != ''
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
@@ -102,10 +106,11 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
           BACKUP_FORCE: ${{ inputs.force_backup == 'true' && '1' || '' }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
           SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
           SCORING_VERBOSE: '0'
           REGENERATE_COMMANDS: |
-            node scripts/calculate-scores-v2.js
+            node scripts/calculate-scores-v2.js --critical
             node scripts/export-snapshots.js leaderboards
             node scripts/verify-scoring-snapshots.js
             node scripts/backup-critical-data.js
