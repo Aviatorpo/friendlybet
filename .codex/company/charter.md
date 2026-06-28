@@ -32,6 +32,7 @@ For every significant idea, answer:
 4. Does it improve the current product without making World Cup 2026 worse?
 5. Can QA explain the scoring, locking, and failure modes clearly?
 6. Can optional content fail without blocking results, scoring, locks, leaderboards, or match display?
+7. Does it behave correctly across the relevant user-state matrix: tournament phase, pool mode, lock/open state, prediction completion, scoring/publication state, stale/fresh data, and returning/late/blocked users?
 
 ## Agent Culture Standard
 

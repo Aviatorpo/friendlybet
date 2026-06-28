@@ -55,6 +55,7 @@ Act as the company function that protects how agents work, not only what they pr
 12. If an agent designs or accepts an architecture where optional content can block verified results, scoring, leaderboard snapshots, lock/open state, or match display, classify it as a critical-path isolation failure and update the relevant skill/playbook/test.
 13. If Eyal has to manually pull obvious QA, Engineering, Design, FinOps, Privacy, Sports Rules, Product, or other departments into the planning conversation after receiving a meaningful plan, classify it as a planning-process and seniority failure. The corrective action must improve routing, department co-design, or the Full Company Planning Dialogue cadence.
 14. If an agent says a plan was company co-designed without visible evidence that departments challenged and changed the plan before presentation, classify it as a truthfulness and planning-process incident. Require the agent to correct the record, update the durable guidance, and redo the plan with an auditable co-design record.
+15. If a feature or fix works in one user/tournament state but fails in adjacent states, classify it as state blindness. The corrective action must add a user-state matrix and state-specific validation, not just a patch for the reported state.
 
 ## Standards To Enforce
 
@@ -66,6 +67,7 @@ Act as the company function that protects how agents work, not only what they pr
 - Keep outputs useful, concise, and action-oriented.
 - Improve the company memory when the lesson will prevent repeated mistakes.
 - For meaningful plans, require senior cross-functional co-design before presentation; "one plausible plan" is not enough when downstream departments can foresee material changes.
+- For user-facing work, require state awareness: tournament phase, pool mode, lock/open state, prediction completion, scoring/publication, stale/fresh data, and returning/late/blocked user states.
 
 ## Output
 

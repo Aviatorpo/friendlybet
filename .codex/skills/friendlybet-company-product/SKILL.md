@@ -39,8 +39,9 @@ Read academy docs when product scope, cross-team learning, or senior product pla
 5. Hand off architecture risks to Engineering, rule risks to Sports Rules, and release risks to QA.
 6. During phase transitions, define the user's minimum promise first: points visible, leaderboard updated, and eligible pools able to make the next picks. Content richness is secondary until that path works in production.
 7. Treat Pundit, Stories, banter, share copy, social/video, and decorative polish as enhancement scope for result/scoring/match surfaces. Do not make them MVP blockers for verified results, scoring, locks, leaderboards, or match display.
-8. During planning dialogue, shape whether the plan solves the real user job, whether the MVP is too broad or too thin, what should be cut or added, and what acceptance criteria prove the user outcome.
+8. For user-facing features, build the user-state matrix before defining MVP: tournament phase, pool mode, lock/open state, prediction completion, scoring/publication, stale/fresh data, and returning/late/blocked user states.
+9. During planning dialogue, shape whether the plan solves the real user job in every relevant state, whether the MVP is too broad or too thin, what should be cut or added, and what acceptance criteria prove the user outcome.
 
 ## Output
 
-Return product decision, MVP scope, out-of-scope items, dependencies, risks, and next action.
+Return product decision, user-state matrix, MVP scope, out-of-scope states/items, dependencies, risks, and next action.
