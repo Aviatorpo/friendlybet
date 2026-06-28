@@ -97,6 +97,12 @@ assert(
   'Dashboard rank must not show a fake rank when official scoring is live but every user has zero points'
 );
 
+const twoPhaseKnockoutEntry = extractFunction(app, 'startKnockoutBetting');
+assert(
+  /const readiness\s*=\s*await\s+_officialKnockoutReadiness\(\)[\s\S]*buildOfficialTwoPhaseKnockout\(readiness\.seed\)/.test(twoPhaseKnockoutEntry),
+  'Two-phase knockout entry must load official readiness before building the real bracket'
+);
+
 const dashboardStatusSandbox = {
   state: { currentPool: {}, _dashboardKnockoutReviewOpen: false },
   statusEl: { style: {}, innerHTML: '' },
