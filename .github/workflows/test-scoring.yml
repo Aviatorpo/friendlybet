@@ -18,6 +18,8 @@ on:
       - 'scripts/test-two-phase-knockout-wiring.js'
       - 'scripts/smart-sync.js'
       - 'scripts/test-smart-sync.js'
+      - 'scripts/sync-fifa-schedule-to-matches.js'
+      - 'scripts/test-sync-fifa-schedule-to-matches.js'
       - 'scripts/test-sync-transform.js'
       - 'scripts/test-team-mapping.js'
       - 'scripts/live-poller.js'
@@ -67,6 +69,7 @@ on:
       - 'public-data/world-cup-stories.json'
       - '.github/workflows/calculate-scores-v2.yml'
       - '.github/workflows/final-result-verifier.yml'
+      - '.github/workflows/update-fifa-world-cup-schedule.yml'
       - '.github/workflows/generate-pundit.yml'
       - '.github/workflows/live-completion-readiness.yml'
       - '.github/workflows/manual-match-results.yml'
@@ -88,6 +91,8 @@ on:
       - 'scripts/test-two-phase-knockout-wiring.js'
       - 'scripts/smart-sync.js'
       - 'scripts/test-smart-sync.js'
+      - 'scripts/sync-fifa-schedule-to-matches.js'
+      - 'scripts/test-sync-fifa-schedule-to-matches.js'
       - 'scripts/test-sync-transform.js'
       - 'scripts/test-team-mapping.js'
       - 'scripts/live-poller.js'
@@ -137,6 +142,7 @@ on:
       - 'public-data/world-cup-stories.json'
       - '.github/workflows/calculate-scores-v2.yml'
       - '.github/workflows/final-result-verifier.yml'
+      - '.github/workflows/update-fifa-world-cup-schedule.yml'
       - '.github/workflows/generate-pundit.yml'
       - '.github/workflows/live-completion-readiness.yml'
       - '.github/workflows/manual-match-results.yml'
@@ -171,6 +177,8 @@ jobs:
         run: node scripts/test-fair-play-resolver.js
       - name: Run smart-sync window tests
         run: node scripts/test-smart-sync.js
+      - name: Run FIFA schedule-to-scoring bridge tests
+        run: node scripts/test-sync-fifa-schedule-to-matches.js
       - name: Run sync transform tests
         run: node scripts/test-sync-transform.js
       - name: Run team-mapping tests

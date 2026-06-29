@@ -163,6 +163,8 @@ check('verified-result workflows force match snapshot export before dependent co
 check('final-result verifier has continuous 15-minute recovery schedule', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/final-result-verifier.yml'), 'utf8');
   assert.ok(text.includes("cron: '4,19,34,49 * 11-28 6 *'"), 'final verifier must not have group-stage recovery gaps');
+  assert.ok(text.includes("cron: '4,19,34,49 16-23 29 6 *'"), 'final verifier must cover first knockout match day');
+  assert.ok(text.includes("cron: '4,19,34,49 0-2,18-23 19 7 *'"), 'final verifier must cover final match day');
 });
 
 check('final-result verifier uploads an audit report artifact', () => {
@@ -182,11 +184,30 @@ check('scheduled final-result verifier rotates sources through the ledger', () =
 check('live poller has continuous 5-minute group-stage coverage', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/live-poller.yml'), 'utf8');
   assert.ok(text.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 11-28 6 *'"), 'live poller must not rely on narrow precomputed match windows');
+  assert.ok(text.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 16-23 29 6 *'"), 'live poller must cover first knockout match day');
+  assert.ok(text.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 0-2,18-23 19 7 *'"), 'live poller must cover final match day');
   assert.ok(/preflights first[\s\S]*calls providers only/.test(text), 'live poller workflow must document preflight as the cost control');
   assert.ok(/permissions:\s*\n\s+contents:\s*write/.test(text), 'live poller must be able to push refreshed match/Pundit/leaderboard snapshots after a verified final');
   assert.ok(text.includes('RESULT_VERIFICATION_REPORT_PATH'), 'live poller must write a structured final-verification report');
   assert.ok(text.includes('live-final-verification-report.json'), 'live poller must use a stable final-verification report path');
   assert.ok(/RESULT_FALLBACK_SOURCE_MODE:\s*all/.test(text), 'live full-time handoff must check all supported sources immediately');
+});
+
+check('FIFA schedule workflow bridges official schedule into scoring DB', () => {
+  const file = '.github/workflows/update-fifa-world-cup-schedule.yml';
+  const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
+  assert.ok(text.includes('node scripts/update-fifa-world-cup-schedule.js --if-window'), 'schedule workflow must refresh official FIFA schedule');
+  assert.ok(text.includes('node scripts/sync-fifa-schedule-to-matches.js --include-placeholders'), 'schedule workflow must bridge schedule rows into Supabase matches');
+  assert.ok(text.includes('SUPABASE_SECRET_KEY'), 'schedule bridge must use the service key from GitHub secrets');
+  assert.ok(text.includes('node scripts/export-snapshots.js matches'), 'schedule bridge must export public match snapshot after DB upsert');
+  assertOrdered(text, file,
+    'node scripts/update-fifa-world-cup-schedule.js --if-window',
+    'node scripts/sync-fifa-schedule-to-matches.js --include-placeholders',
+    'schedule refresh must happen before schedule-to-matches bridge');
+  assertOrdered(text, file,
+    'node scripts/sync-fifa-schedule-to-matches.js --include-placeholders',
+    'node scripts/export-snapshots.js matches',
+    'match snapshot export must happen after schedule bridge');
 });
 
 check('scheduled scoring/export failures fail loudly', () => {
@@ -214,6 +235,7 @@ check('main scoring workflow runs the live snapshot audit on data changes', () =
     '.github/workflows/live-poller.yml',
     '.github/workflows/manual-match-results.yml',
     '.github/workflows/publish-world-cup-stories-prepared.yml',
+    '.github/workflows/update-fifa-world-cup-schedule.yml',
     '.github/workflows/test-scoring.yml',
   ].forEach(file => {
     assert.ok(text.includes(file), `test workflow must trigger when ${file} changes`);

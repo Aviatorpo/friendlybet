@@ -46,15 +46,34 @@ jobs:
       - name: Refresh official FIFA schedule when useful
         run: node scripts/update-fifa-world-cup-schedule.js --if-window
 
+      - name: Bridge FIFA schedule into scoring matches table
+        id: schedule_bridge
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36
+
+      - name: Export match snapshot after schedule bridge
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+        run: node scripts/export-snapshots.js matches
+
       - name: Commit schedule snapshot if changed
         env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
           REGENERATE_COMMANDS: |
             node scripts/update-fifa-world-cup-schedule.js --if-window
+            node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36
+            node scripts/export-snapshots.js matches
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
-          if [ -n "$(git status --porcelain -- public-data/world-cup-schedule.json)" ]; then
-            bash scripts/commit-generated-snapshots.sh "data: refresh FIFA World Cup schedule" public-data/world-cup-schedule.json
+          if [ -n "$(git status --porcelain -- public-data/world-cup-schedule.json public-data/matches.json)" ]; then
+            bash scripts/commit-generated-snapshots.sh "data: refresh FIFA schedule and match bridge" public-data/world-cup-schedule.json public-data/matches.json
           else
-            echo "no FIFA schedule change"
+            echo "no FIFA schedule or match snapshot change"
           fi

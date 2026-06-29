@@ -35,6 +35,14 @@ Examples include: before knockout vs after knockout opens, after R32 completes v
 
 The durable fix must include a user-state matrix in the relevant product/playbook/skill guidance and either an automated fixture or named manual/live verification for each state that changes what users can see, pick, edit, score, or share.
 
+## False End-To-End Verification Incident Rule
+
+If an agent verifies one narrow layer and presents the result as end-to-end ownership, classify it as false end-to-end verification.
+
+For live scoring and fixture work, this includes verifying any one of these without the others: official schedule/provider result, Supabase `matches`, live poller/verifier candidacy, scoring run, leaderboard/public snapshots, app display, deployment/cache state, or production proof.
+
+The durable fix must add a source-bridge proof and a layer checklist. The agent must state exactly which layers are proven, which are unproven, and which owner is responsible for every unproven layer. Generic "more QA" language is not an acceptable corrective action.
+
 ## Pundit / Live Content Incidents
 
 For stale, dry, wrong, or weak live sports content, also classify:
