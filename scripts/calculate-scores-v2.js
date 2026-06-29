@@ -9,6 +9,8 @@
 // Runs every 30 minutes via GitHub Actions.
 // ============================================================
 
+const { assertQaIfRequested } = require('./qa-env');
+
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 const SUPABASE_FETCH_TIMEOUT_MS = Number(process.env.SCORING_SUPABASE_FETCH_TIMEOUT_MS || 30000);
@@ -22,6 +24,8 @@ const fs = require('fs');
 const path = require('path');
 const WCR = require('../share-assets/world-cup-rules.js');
 const FIFA_THIRD_PLACE = require('../share-assets/fifa-third-place-table.js');
+
+assertQaIfRequested();
 
 function scoringDetail(...args) {
   if (SCORING_VERBOSE) console.log(...args);

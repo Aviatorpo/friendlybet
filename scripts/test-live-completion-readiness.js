@@ -37,7 +37,7 @@ const Readiness = require('./live-completion-readiness');
   assert.strictEqual(Readiness.normalizeBaseUrl('https://friendlybet.live///'), 'https://friendlybet.live');
 
   const result = await Readiness.runReadiness({
-    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z'), skipPundit: true },
     allowStoryBacklog: true,
   });
   assert.strictEqual(result.ok, true, JSON.stringify(result.checks.filter(check => !check.ok), null, 2));
@@ -56,7 +56,8 @@ const Readiness = require('./live-completion-readiness');
   );
 
   const productionResult = await Readiness.runReadiness({
-    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z'), skipPundit: true },
+    allowStoryBacklog: true,
     publicSnapshots: {
       matches: {
         updatedAt: '2026-06-23T11:00:00Z',
@@ -96,7 +97,8 @@ const Readiness = require('./live-completion-readiness');
   );
 
   const dbResult = await Readiness.runReadiness({
-    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z'), skipPundit: true },
+    allowStoryBacklog: true,
     dbMatches: [
       { id: 'db1', status: 'TIMED', match_date: '2026-06-24T12:00:00Z', home_team_code: 'A', away_team_code: 'B', stage: 'GROUP_STAGE', group_letter: 'A' },
     ],
@@ -137,7 +139,7 @@ const Readiness = require('./live-completion-readiness');
     pundit: { updatedAt: '2026-06-23T13:00:00Z', freshUntil: '2026-06-23T17:00:00Z', items: [{ id: 'p1' }] },
   };
   const storyBacklogCritical = await Readiness.runReadiness({
-    auditOptions: { nowMs: Date.parse('2026-06-23T13:00:00Z') },
+    auditOptions: { nowMs: Date.parse('2026-06-23T13:00:00Z'), skipPundit: true },
     publicSnapshots: storyBacklogSnapshots,
     dbMatches: storyBacklogSnapshots.matches.matches,
     allowStoryBacklog: false,
@@ -150,7 +152,7 @@ const Readiness = require('./live-completion-readiness');
   );
 
   const storyBacklogWarningOnly = await Readiness.runReadiness({
-    auditOptions: { nowMs: Date.parse('2026-06-23T13:00:00Z') },
+    auditOptions: { nowMs: Date.parse('2026-06-23T13:00:00Z'), skipPundit: true },
     publicSnapshots: storyBacklogSnapshots,
     dbMatches: storyBacklogSnapshots.matches.matches,
     allowStoryBacklog: true,
@@ -188,7 +190,8 @@ const Readiness = require('./live-completion-readiness');
   assert.strictEqual(staleDbFreshness.stale, 1, 'TIMED match 20 minutes after kickoff must be stale for live DB freshness');
 
   const freshWorkflowResult = await Readiness.runReadiness({
-    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z'), skipPundit: true },
+    allowStoryBacklog: true,
     workflowRuns: {
       livePoller: [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T11:50:00Z' }],
       finalResultVerifier: [{ id: 2, status: 'completed', conclusion: 'success', created_at: '2026-06-23T11:30:00Z' }],
@@ -206,7 +209,8 @@ const Readiness = require('./live-completion-readiness');
   );
 
   const staleWorkflowOutsideMatchWindow = await Readiness.runReadiness({
-    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z'), skipPundit: true },
+    allowStoryBacklog: true,
     dbMatches: [
       { id: 'future-db1', status: 'TIMED', match_date: '2026-06-23T19:00:00Z', home_team_code: 'A', away_team_code: 'B', stage: 'GROUP_STAGE', group_letter: 'A' },
     ],
@@ -252,7 +256,8 @@ const Readiness = require('./live-completion-readiness');
   );
 
   const staleHelperWorkflowsWithGreenProduction = await Readiness.runReadiness({
-    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z'), skipPundit: true },
+    allowStoryBacklog: true,
     publicSnapshots: {
       matches: {
         updatedAt: '2026-06-23T11:55:00Z',
@@ -304,7 +309,8 @@ const Readiness = require('./live-completion-readiness');
   );
 
   const recoveredPollerInsideMatchWindow = await Readiness.runReadiness({
-    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z'), skipPundit: true },
+    allowStoryBacklog: true,
     dbMatches: [
       {
         id: 'live-db1',

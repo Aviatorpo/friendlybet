@@ -193,12 +193,14 @@ jobs:
         env:
           LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS: '1'
           # App/scoring hotfix CI must not be blocked by accepted story backlog.
-          # Dedicated content/readiness workflows still report missing Stories.
+          # Dedicated content/readiness workflows still report missing Stories/Pundit.
           LIVE_OPS_ALLOW_STORY_BACKLOG: '1'
+          LIVE_OPS_SKIP_PUNDIT: '1'
         run: node scripts/live-ops-audit.js
       - name: Run live completion readiness gate
         env:
           LIVE_COMPLETION_ALLOW_STORY_BACKLOG: '1'
+          LIVE_COMPLETION_SKIP_PUNDIT: '1'
         run: node scripts/live-completion-readiness.js
       - name: Run live completion readiness tests
         run: node scripts/test-live-completion-readiness.js

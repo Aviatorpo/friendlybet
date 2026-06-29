@@ -19,12 +19,16 @@
 // ============================================================
 const fs = require('fs');
 const path = require('path');
+const { assertQaIfRequested } = require('./qa-env');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
+assertQaIfRequested();
 
 const ROOT = path.resolve(__dirname, '..');
-const OUT_DIR = path.join(ROOT, 'public-data');
+const OUT_DIR = process.env.PUBLIC_DATA_DIR
+  ? path.resolve(ROOT, process.env.PUBLIC_DATA_DIR)
+  : path.join(ROOT, 'public-data');
 const LB_DIR = path.join(OUT_DIR, 'leaderboard');
 
 // Columns safe to expose publicly on the leaderboard. NEVER include recovery_code_hash.

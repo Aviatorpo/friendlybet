@@ -1,6 +1,6 @@
 // FriendlyBet ops: inspect encrypted critical backups for historical group_picks.
-// Read-only by default. Set CRITICAL_BACKUP_RESTORE=1 to restore valid 32-pick
-// two-phase group snapshots for the requested users/pools.
+// Read-only. Restore work must go through an audited database RPC/migration path,
+// not raw REST deletes against protected pick tables.
 
 const fs = require('fs');
 const path = require('path');
@@ -11,7 +11,6 @@ const BACKUP_DIR = path.resolve(process.env.CRITICAL_BACKUP_DIR || path.join(ROO
 const SECRET = process.env.BACKUP_ENCRYPTION_KEY;
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
-const RESTORE = process.env.CRITICAL_BACKUP_RESTORE === '1';
 
 const TEAM_GROUPS = {
   MEX:'A', RSA:'A', KOR:'A', CZE:'A',
@@ -71,30 +70,11 @@ function validFullGroupRows(rows) {
   return out.sort((a, b) => a.group_letter.localeCompare(b.group_letter) || a.team_code.localeCompare(b.team_code));
 }
 
-async function sb(method, table, query, body) {
-  if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY');
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}${query || ''}`, {
-    method,
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      'Content-Type': 'application/json',
-      Prefer: 'return=minimal',
-    },
-    body: body == null ? undefined : JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`Supabase ${method} ${table} ${res.status}: ${(await res.text()).slice(0, 500)}`);
-  return res;
-}
-
-async function restoreRows(rows) {
-  const first = rows[0];
-  await sb('DELETE', 'group_picks', `?pool_id=eq.${encodeURIComponent(first.pool_id)}&user_id=eq.${encodeURIComponent(first.user_id)}`);
-  await sb('POST', 'group_picks', '', rows);
-}
-
 async function main() {
   if (!SECRET) throw new Error('Missing BACKUP_ENCRYPTION_KEY');
+  if (process.env.CRITICAL_BACKUP_RESTORE === '1') {
+    throw new Error('CRITICAL_BACKUP_RESTORE is retired. Use the audited heal_two_phase_group_picks_from_backup RPC/migration path.');
+  }
   const poolIds = csvSet('CRITICAL_BACKUP_POOL_IDS');
   const userIds = csvSet('CRITICAL_BACKUP_USER_IDS');
   const files = fs.readdirSync(BACKUP_DIR)
@@ -136,7 +116,6 @@ async function main() {
     usersWithGroupRowsInBackups: history.size,
   }, null, 2));
 
-  let restored = 0;
   for (const [k, entries] of history.entries()) {
     const best = entries.filter(e => e.validRows).sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)))[0] || null;
     console.log(JSON.stringify({
@@ -146,14 +125,7 @@ async function main() {
       latestWithRows: entries[entries.length - 1],
       bestValid32: best && { file: best.file, createdAt: best.createdAt, count: best.validRows.length },
     }, null, 2));
-    if (RESTORE && best) {
-      await restoreRows(best.validRows);
-      restored += 1;
-      console.log(`restored ${k} from ${best.file}`);
-    }
   }
-
-  if (RESTORE) console.log(`restore complete: ${restored} user(s)`);
 }
 
 main().catch(err => {

@@ -361,6 +361,7 @@ async function runReadiness(options = {}) {
   const baseAuditOptions = {
     ...(options.auditOptions || {}),
     allowStoryBacklog,
+    skipPundit: !!(options.auditOptions || {}).skipPundit || process.env.LIVE_COMPLETION_SKIP_PUNDIT === '1',
     ignoreSnapshotLiveStatus: (options.auditOptions || {}).ignoreSnapshotLiveStatus !== false,
   };
   const audit = await LiveOpsAudit.audit(baseAuditOptions);
@@ -376,7 +377,16 @@ async function runReadiness(options = {}) {
       `missing=${audit.stories.missing}`
     );
   }
-  add(checks, 'Pundit feed is fresh', !!audit.pundit.fresh, `freshUntil=${audit.pundit.freshUntil || 'missing'}`);
+  const skipPundit = !!baseAuditOptions.skipPundit;
+  add(checks, 'Pundit feed is fresh', skipPundit || !!audit.pundit.fresh, `freshUntil=${audit.pundit.freshUntil || 'missing'}${skipPundit ? ', warning-only' : ''}`);
+  if (skipPundit && !audit.pundit.fresh) {
+    addWarning(
+      warnings,
+      'pundit_stale_warning_only',
+      'Pundit content is stale, but result/scoring readiness is not blocked.',
+      `freshUntil=${audit.pundit.freshUntil || 'missing'}`
+    );
+  }
   add(checks, 'watchdog has no errors', audit.watchdog.errors.length === 0, `errors=${audit.watchdog.errors.length}`);
 
   const config = read('config.js');
