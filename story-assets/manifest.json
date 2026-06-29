@@ -260,6 +260,16 @@
       "outcomes": {
         "RSA": "story-assets/south-africa-wins-south-korea-v2.png"
       }
+    },
+    {
+      "match_id": "1e63c58a-b2fb-40ca-a18d-e2fe729b0774",
+      "teams": [
+        "RSA",
+        "CAN"
+      ],
+      "outcomes": {
+        "CAN": "story-assets/canada-wins-south-africa.png"
+      }
     }
   ]
 }

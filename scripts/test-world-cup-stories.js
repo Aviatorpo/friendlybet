@@ -199,7 +199,7 @@ for (const story of stories) {
         fail(`${story.id}: pool_focuses[${idx}] uses banned repeated defense-speech phrasing`);
       }
     });
-    if (!/picked \{team\} (to (win the World Cup|top the group)|first in the group)/i.test(enFocus)) {
+    if (!/picked \{team\} (to (win the World Cup|top the group|win this knockout match)|first in the group)/i.test(enFocus)) {
       fail(`${story.id}: pool_focuses[${idx}] English text must name the exact pick type`);
     }
     if (focus.table === 'tournament_winner_picks' && !/picked \{team\} to win the World Cup/i.test(enFocus)) {
@@ -208,7 +208,10 @@ for (const story of stories) {
     if (focus.table === 'group_position_picks' && !/picked \{team\} (to top the group|first in the group)/i.test(enFocus)) {
       fail(`${story.id}: pool_focuses[${idx}] group-position text must say "{team} to top the group"`);
     }
-    const hasHebrewPickType = /(\u05d2\u05d1\u05d9\u05e2 \u05d4\u05e2\u05d5\u05dc\u05dd|\u05de\u05d5\u05e0\u05d3\u05d9\u05d0\u05dc|\u05d1\u05e8\u05d0\u05e9 \u05d4\u05d1\u05d9\u05ea|\u05e8\u05d0\u05e9\u05d5\u05e0\u05d4 \u05d1\u05d1\u05d9\u05ea)/u.test(heFocus);
+    if (focus.table === 'knockout_picks' && !/picked \{team\} to win this knockout match/i.test(enFocus)) {
+      fail(`${story.id}: pool_focuses[${idx}] knockout text must say "{team} to win this knockout match"`);
+    }
+    const hasHebrewPickType = /(\u05d2\u05d1\u05d9\u05e2 \u05d4\u05e2\u05d5\u05dc\u05dd|\u05de\u05d5\u05e0\u05d3\u05d9\u05d0\u05dc|\u05d1\u05e8\u05d0\u05e9 \u05d4\u05d1\u05d9\u05ea|\u05e8\u05d0\u05e9\u05d5\u05e0\u05d4 \u05d1\u05d1\u05d9\u05ea|\u05de\u05e9\u05d7\u05e7 \u05d4\u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8|\u05d1\u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8)/u.test(heFocus);
     if (heFocus && (!heFocus.includes('{team}') || !hasHebrewPickType)) {
       fail(`${story.id}: pool_focuses[${idx}] Hebrew text must name the exact pick type`);
     }
@@ -257,10 +260,14 @@ latest.forEach(story => {
   }
   if (outcome && outcome !== 'DRAW') {
     const first = focuses[0] || {};
-    if (first.table !== 'tournament_winner_picks' || first.team_code !== outcome) {
+    const isGroupStory = String(match && match.stage || '').toUpperCase() === 'GROUP_STAGE';
+    if (!isGroupStory && (first.table !== 'knockout_picks' || first.team_code !== outcome)) {
+      fail(`${story.id}: latest knockout winning stories must try the winner's knockout pick first`);
+    }
+    if (isGroupStory && (first.table !== 'tournament_winner_picks' || first.team_code !== outcome)) {
       fail(`${story.id}: latest winning stories must try the winner's tournament-winner picks first`);
     }
-    if (!focuses.some(focus => focus.table === 'group_position_picks' && focus.team_code === outcome && Number(focus.position || 1) === 1)) {
+    if (isGroupStory && !focuses.some(focus => focus.table === 'group_position_picks' && focus.team_code === outcome && Number(focus.position || 1) === 1)) {
       fail(`${story.id}: latest winning stories must include the winner's first-in-group focus`);
     }
   }

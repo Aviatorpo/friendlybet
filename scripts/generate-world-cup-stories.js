@@ -1099,6 +1099,33 @@ function storyOverride(match) {
   return STORY_COPY_OVERRIDES[matchKey(match)] || null;
 }
 
+function isGroupStageMatch(match) {
+  return String(match && match.stage || '').toUpperCase() === 'GROUP_STAGE';
+}
+
+function isKnockoutMatch(match) {
+  return match && !isGroupStageMatch(match);
+}
+
+function stageLabel(match, lang = 'en') {
+  const stage = String(match && match.stage || '').toUpperCase();
+  const labels = {
+    ROUND_OF_32: { en: 'Round of 32', he: 'שמינית-מוקדמת' },
+    LAST_32: { en: 'Round of 32', he: 'שמינית-מוקדמת' },
+    R32: { en: 'Round of 32', he: 'שמינית-מוקדמת' },
+    ROUND_OF_16: { en: 'Round of 16', he: 'שמינית הגמר' },
+    LAST_16: { en: 'Round of 16', he: 'שמינית הגמר' },
+    R16: { en: 'Round of 16', he: 'שמינית הגמר' },
+    QUARTER_FINALS: { en: 'quarterfinal', he: 'רבע הגמר' },
+    QF: { en: 'quarterfinal', he: 'רבע הגמר' },
+    SEMI_FINALS: { en: 'semifinal', he: 'חצי הגמר' },
+    SF: { en: 'semifinal', he: 'חצי הגמר' },
+    THIRD_PLACE: { en: 'third-place match', he: 'המשחק על המקום השלישי' },
+    FINAL: { en: 'final', he: 'הגמר' },
+  };
+  return (labels[stage] && labels[stage][lang]) || (lang === 'he' ? 'הנוקאאוט' : 'knockout');
+}
+
 function storyId(match) {
   const date = String(match.match_date || '').slice(0, 10) || new Date().toISOString().slice(0, 10);
   return `${match.home_team_code}-${match.away_team_code}-${date}`.toLowerCase();
@@ -1239,6 +1266,24 @@ function titleCopy(match, outcome) {
   const homeEn = teamName(match.home_team_code, 'en');
   const awayEn = teamName(match.away_team_code, 'en');
   const group = match && match.group_letter ? match.group_letter : 'WC';
+  if (isKnockoutMatch(match)) {
+    if (outcome === 'DRAW') {
+      return {
+        he: `${homeHe} ו${awayHe} נפרדו ב-${score}: הנוקאאוט הלך לקצה`,
+        en: `${homeEn} and ${awayEn} draw ${score}: knockout nerves everywhere`,
+      };
+    }
+    const winner = outcome;
+    const loser = winner === match.home_team_code ? match.away_team_code : match.home_team_code;
+    const winnerHe = teamName(winner, 'he');
+    const loserHe = teamName(loser, 'he');
+    const winnerEn = teamName(winner, 'en');
+    const loserEn = teamName(loser, 'en');
+    return {
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: ${stageLabel(match, 'he')} קיבל קבלה`,
+      en: `${winnerEn} beat ${loserEn} ${score}: ${stageLabel(match, 'en')} receipts are live`,
+    };
+  }
   if (outcome === 'DRAW') {
     return storyCopyChoice(match, 'title-draw', [
       {
@@ -1439,6 +1484,40 @@ function groupPositionFocus(match, outcome, teamCode) {
   };
 }
 
+function knockoutFocus(match, outcome, teamCode) {
+  const score = scoreForOutcome(match, outcome);
+  const opponent = opponentForTeam(match, teamCode);
+  const opponentHe = teamName(opponent, 'he');
+  const opponentEn = teamName(opponent, 'en');
+  const stageHe = stageLabel(match, 'he');
+  const stageEn = stageLabel(match, 'en');
+  const won = teamCode === outcome;
+  const copy = won ? {
+    heName: `{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי ${score} מול ${opponentHe}, זה כבר לא טופס - זו קבלה חיה ⚽`,
+    heNames: `{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי ${score} מול ${opponentHe}, אלה כבר לא טפסים - אלה קבלות חיות ⚽`,
+    enName: `{names} picked {team} to win this knockout match. After ${score} against ${opponentEn}, that form is a live receipt ⚽`,
+    enNames: `{names} picked {team} to win this knockout match. After ${score} against ${opponentEn}, those forms are live receipts ⚽`,
+  } : {
+    heName: `{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי ${score} ב${stageHe}, ההימור הזה כבר עומד מול המציאות ⚽`,
+    heNames: `{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי ${score} ב${stageHe}, ההימורים האלה כבר עומדים מול המציאות ⚽`,
+    enName: `{names} picked {team} to win this knockout match. After ${score} in the ${stageEn}, that pick is staring at reality now ⚽`,
+    enNames: `{names} picked {team} to win this knockout match. After ${score} in the ${stageEn}, those picks are staring at reality now ⚽`,
+  };
+  return {
+    table: 'knockout_picks',
+    team_code: teamCode,
+    team_he: teamName(teamCode, 'he'),
+    team_en: teamName(teamCode, 'en'),
+    match_id: match.id,
+    he_name: copy.heName,
+    he_names: copy.heNames,
+    he_count: copy.heNames,
+    en_name: copy.enName,
+    en_names: copy.enNames,
+    en_count: copy.enNames,
+  };
+}
+
 function uniquePoolFocuses(focuses) {
   const seen = new Set();
   return focuses.filter(focus => {
@@ -1475,6 +1554,14 @@ function poolFocuses(match, outcome) {
     ]);
   }
   const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
+  if (isKnockoutMatch(match)) {
+    return uniquePoolFocuses([
+      knockoutFocus(match, outcome, outcome),
+      tournamentWinnerFocus(match, outcome, outcome),
+      knockoutFocus(match, outcome, loser),
+      tournamentWinnerFocus(match, outcome, loser),
+    ]);
+  }
   return uniquePoolFocuses([
     tournamentWinnerFocus(match, outcome, outcome),
     groupPositionFocus(match, outcome, outcome),
@@ -1570,6 +1657,23 @@ function fallbackEditorialCaption(match, outcome) {
   const awayHe = teamName(match.away_team_code, 'he');
   const homeEn = teamName(match.home_team_code, 'en');
   const awayEn = teamName(match.away_team_code, 'en');
+  if (isKnockoutMatch(match)) {
+    if (outcome === 'DRAW') {
+      return {
+        he: `${homeHe} ו${awayHe} השאירו ${score} על הלוח בנוקאאוט. זה משחק שמכריח את כל ההימור לנשום עמוק.`,
+        en: `${homeEn} and ${awayEn} left ${score} on the knockout board. That is the kind of match that makes every pool breathe twice.`,
+      };
+    }
+    const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
+    const winnerHe = teamName(outcome, 'he');
+    const loserHe = teamName(loser, 'he');
+    const winnerEn = teamName(outcome, 'en');
+    const loserEn = teamName(loser, 'en');
+    return {
+      he: `${winnerHe} עברה את ${loserHe} עם ${score} ב${stageLabel(match, 'he')}. מי שסימן אותה בנוקאאוט קיבל קבלה, ומי שבנה על ${loserHe} צריך מסלול מחדש.`,
+      en: `${winnerEn} got past ${loserEn} ${score} in the ${stageLabel(match, 'en')}. Anyone who had them in the knockout path gets a receipt; ${loserEn} believers need a new route.`,
+    };
+  }
   if (outcome === 'DRAW') {
     return storyCopyChoice(match, 'caption-draw', [
       {
@@ -1947,6 +2051,19 @@ function captionCopy(match, outcome) {
   if (override && override.caption) return override.caption;
   const focus = focusTeam(match, outcome);
   const score = scoreForOutcome(match, outcome);
+  if (isKnockoutMatch(match)) {
+    if (outcome === 'DRAW') {
+      return {
+        he: `${teamName(match.home_team_code, 'he')} ו${teamName(match.away_team_code, 'he')} השאירו ${score} על לוח הנוקאאוט. אין כאן טבלת בית, רק עצבים של הדחה`,
+        en: `${teamName(match.home_team_code)} and ${teamName(match.away_team_code)} left ${score} on the knockout board. No group table now, just elimination nerves`,
+      };
+    }
+    const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
+    return {
+      he: `${teamName(outcome, 'he')} עברה את ${teamName(loser, 'he')} ${score}, והבראקטים מרגישים את זה מיד.`,
+      en: `${teamName(outcome)} got past ${teamName(loser)} ${score}, and the brackets feel it immediately.`,
+    };
+  }
   if (outcome === 'DRAW') {
     return {
       he: `${teamName(match.home_team_code, 'he')} ו${teamName(match.away_team_code, 'he')} משאירות את הבית פתוח אחרי ${score}. הדרמה בטבלה רק התחילה 👀`,
