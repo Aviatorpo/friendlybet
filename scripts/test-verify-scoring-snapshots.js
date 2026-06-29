@@ -51,6 +51,13 @@ eq('pool snapshot verifier reports exact mismatch', V.verifyPoolSnapshot('local'
   'local pool pool-1 user user-1 score mismatch: db={"total_score":8,"group_points":5,"knockout_points":2,"bonus_points":1} snapshot={"total_score":9,"group_points":5,"knockout_points":2,"bonus_points":1}'
 ]);
 
+eq('pool snapshot verifier rejects duplicate users', V.verifyPoolSnapshot('local', 'pool-1', [dbUser], {
+  standings: [dbUser, dbUser]
+}).errors, [
+  'local pool pool-1 count mismatch: db=1 snapshot=2',
+  'local pool pool-1 duplicate user user-1 in snapshot'
+]);
+
 process.env.LEADERBOARD_POOL_IDS = ' pool-a,pool-b,pool-a ';
 eq('requested pool ids are deduplicated and trimmed', V.requestedLeaderboardPoolIds(), ['pool-a', 'pool-b']);
 

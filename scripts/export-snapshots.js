@@ -166,7 +166,7 @@ async function exportLeaderboards(opts = {}) {
   let pools, users;
   try {
     pools = await sbAll('pools', `?select=id${poolFilter ? `&${poolFilter}` : ''}`);
-    users = await sbAll('users', `?select=${SAFE_USER_COLS}${userFilter ? `&${userFilter}` : ''}&order=total_score.desc.nullslast`);
+    users = await sbAll('users', `?select=${SAFE_USER_COLS}${userFilter ? `&${userFilter}` : ''}&order=total_score.desc.nullslast,id.asc`);
   } catch (e) {
     console.error('leaderboard fetch failed, keeping last-good snapshots:', e.message);
     return 0;

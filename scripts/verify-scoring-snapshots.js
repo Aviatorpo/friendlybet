@@ -96,7 +96,17 @@ function verifyPoolSnapshot(label, poolId, dbUsers, snapshot) {
     errors.push(`${label} pool ${poolId} count mismatch: db=${dbUsers.length} snapshot=${standings.length}`);
   }
 
-  const byId = new Map(standings.map(user => [user.id, user]));
+  const byId = new Map();
+  const seenSnapshotIds = new Set();
+  for (const user of standings) {
+    if (!user || !user.id) continue;
+    if (seenSnapshotIds.has(user.id)) {
+      errors.push(`${label} pool ${poolId} duplicate user ${user.id} in snapshot`);
+      continue;
+    }
+    seenSnapshotIds.add(user.id);
+    byId.set(user.id, user);
+  }
   let verifiedUsers = 0;
   let nonZeroUsers = 0;
   let poolTotal = 0;
@@ -177,7 +187,7 @@ async function main() {
 
   const [pools, users] = await Promise.all([
     poolIds.length ? Promise.resolve(poolIds.map(id => ({ id }))) : sbAll('pools', '?select=id'),
-    sbAll('users', `?select=${SAFE_USER_COLS}${poolIds.length ? `&pool_id=${postgrestInFilter(poolIds)}` : ''}&order=total_score.desc.nullslast`)
+    sbAll('users', `?select=${SAFE_USER_COLS}${poolIds.length ? `&pool_id=${postgrestInFilter(poolIds)}` : ''}&order=total_score.desc.nullslast,id.asc`)
   ]);
 
   const usersByPool = new Map();
