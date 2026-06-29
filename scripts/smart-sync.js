@@ -101,6 +101,7 @@ async function callFootballAPI(endpoint) {
 const TERMINAL_STATUSES = new Set(['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED']);
 
 async function shouldSync() {
+  shouldSync.lastReason = 'unknown';
   console.log('🧠 Smart sync: checking if sync is needed...');
 
   const now = new Date();
@@ -123,6 +124,7 @@ async function shouldSync() {
 
     if (!matches || matches.length === 0) {
       console.log('⏭️  No matches in the live window - skipping sync');
+      shouldSync.lastReason = 'no_matches';
       return false;
     }
 
@@ -133,6 +135,7 @@ async function shouldSync() {
 
     if (active.length === 0) {
       console.log(`⏭️  ${matches.length} match(es) in window, all finished - skipping sync`);
+      shouldSync.lastReason = 'all_finished';
       return false;
     }
 
@@ -141,6 +144,7 @@ async function shouldSync() {
       const mins = Math.round((new Date(m.match_date) - now) / 60000);
       console.log(`   - ${m.home_team_code} vs ${m.away_team_code} (${m.status}, kickoff ${mins >= 0 ? 'in ' + mins : Math.abs(mins) + ' min ago'})`);
     });
+    shouldSync.lastReason = 'active';
     return true;
 
   } catch (err) {
@@ -148,6 +152,7 @@ async function shouldSync() {
     // On error, sync anyway to be safe (never miss a live match because the
     // schedule probe blipped).
     console.log('🔄 Syncing anyway to be safe');
+    shouldSync.lastReason = 'probe_error';
     return true;
   }
 }

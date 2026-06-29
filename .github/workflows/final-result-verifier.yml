@@ -307,6 +307,7 @@ jobs:
 
       - name: Publish prepared World Cup stories
         if: steps.story_work.outputs.publishable == 'true'
+        continue-on-error: true
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}

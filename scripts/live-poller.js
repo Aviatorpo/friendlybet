@@ -31,11 +31,15 @@ async function runLivePoller(opts = {}) {
   const sleep      = opts.sleep || ((ms) => new Promise(r => setTimeout(r, ms)));
 
   if (!(await sync.shouldSync())) {
+    const allFinishedInWindow = sync.shouldSync && sync.shouldSync.lastReason === 'all_finished';
+    if (allFinishedInWindow) {
+      console.log('Live window has only finished matches - handing off to final-result verifier.');
+    }
     console.log('No active match right now - live-poller exiting.');
     setGithubOutput('polls', '0');
-    setGithubOutput('final_detected', 'false');
-    setGithubOutput('final_detections', '0');
-    return { polls: 0, finalDetected: false, finalDetections: 0 };
+    setGithubOutput('final_detected', allFinishedInWindow ? 'true' : 'false');
+    setGithubOutput('final_detections', allFinishedInWindow ? '1' : '0');
+    return { polls: 0, finalDetected: allFinishedInWindow, finalDetections: allFinishedInWindow ? 1 : 0 };
   }
 
   const end = now() + runMs;
