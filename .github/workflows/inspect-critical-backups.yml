@@ -1,0 +1,46 @@
+name: Inspect Critical Backups
+
+on:
+  workflow_dispatch:
+    inputs:
+      pool_ids:
+        description: 'Comma-separated pool UUIDs to inspect'
+        required: true
+        type: string
+      user_ids:
+        description: 'Comma-separated user UUIDs to inspect'
+        required: true
+        type: string
+      restore:
+        description: 'Restore valid 32-row group_picks snapshots'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Inspect encrypted backups
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+          CRITICAL_BACKUP_POOL_IDS: ${{ inputs.pool_ids }}
+          CRITICAL_BACKUP_USER_IDS: ${{ inputs.user_ids }}
+          CRITICAL_BACKUP_RESTORE: ${{ inputs.restore == 'true' && '1' || '' }}
+        run: node scripts/inspect-critical-backups.js
