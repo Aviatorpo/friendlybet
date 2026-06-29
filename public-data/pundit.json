@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-06-29T19:40:10.780Z",
-  "freshUntil": "2026-06-30T01:40:10.780Z",
+  "updatedAt": "2026-06-29T21:52:31.062Z",
+  "freshUntil": "2026-06-30T03:52:31.062Z",
   "count": 7,
   "items": [
+    {
+      "id": "live-fd6b2190-6ec4-400d-bd94-868d225ee3f7",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "גרמניה נגד פרגוואי עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
+      "en": "Germany vs Paraguay is live now. Every goal can change the group and the predictions 🔥",
+      "sources": [],
+      "expires_at": "2026-06-30T00:52:31.062Z"
+    },
     {
       "id": "result-6ccd037c-6910-43ef-8818-d23358c8c791",
       "type": "result",
@@ -22,20 +31,11 @@
       "expires_at": "2026-06-30T07:00:00.000Z"
     },
     {
-      "id": "fixture-fd6b2190-6ec4-400d-bd94-868d225ee3f7",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "גרמניה נגד פרגוואי, היום 23:30. אם גרמניה לא מנצחת, הרבה הימורים ייפגעו מוקדם ⏰",
-      "en": "Germany vs Paraguay, today 23:30. If Germany do not win, a lot of picks take an early hit ⏰",
-      "sources": [],
-      "expires_at": "2026-06-29T20:15:00.000Z"
-    },
-    {
       "id": "fixture-fa62c45a-4862-411d-89d4-195f03787da6",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "הולנד נגד מרוקו, מחר 04:00. משחק שהרבה אנשים יסמנו כבטוח, וזה בדיוק הסיכון. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית ⏰",
-      "en": "Netherlands vs Morocco, tomorrow 04:00. Many people will mark this as safe, and that is exactly the risk ⏰",
+      "he": "הולנד נגד מרוקו, היום 04:00. הולנד פייבוריטית, אבל היא עדיין צריכה לעשות את העבודה על הדשא. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית ⏰",
+      "en": "Netherlands vs Morocco, today 04:00. Netherlands are the favorite, but they still have to prove it on the pitch. It still matters for table places, picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-06-30T00:45:00.000Z"
     },
@@ -43,8 +43,8 @@
       "id": "fixture-36f8071c-c9b0-4581-8953-242c240da988",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "חוף השנהב נגד נורווגיה, מחר 20:00. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות ⏰",
-      "en": "Ivory Coast vs Norway, tomorrow 20:00. Not the biggest match, but the points here can be crucial ⏰",
+      "he": "חוף השנהב נגד נורווגיה, היום 20:00. מי שפוגע במשחקים האלה בדרך כלל מתקדם יפה בטבלה ⏰",
+      "en": "Ivory Coast vs Norway, today 20:00. People who get these matches right usually move well in the table ⏰",
       "sources": [],
       "expires_at": "2026-06-30T16:45:00.000Z"
     },
@@ -52,8 +52,8 @@
       "id": "fixture-1bcff6f2-4ccf-4a93-8558-8d4da01fad5e",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "צרפת נגד שבדיה, 01/07 24:00. הרבה תחזיות ילכו עם צרפת; איבוד נקודות כאן יכאב ⏰",
-      "en": "France vs Sweden, 01/07 24:00. A lot of predictions will back France; dropped points here would hurt ⏰",
+      "he": "צרפת נגד שבדיה, מחר 24:00. צרפת פייבוריטית, אבל היא עדיין צריכה לעשות את העבודה על הדשא. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית ⏰",
+      "en": "France vs Sweden, tomorrow 24:00. France are the favorite, but they still have to prove it on the pitch. It still matters for table places, picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-06-30T20:45:00.000Z"
     },
@@ -61,8 +61,8 @@
       "id": "fixture-3c2bf70e-e807-4f02-b41c-ddcefc4c849e",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "מקסיקו נגד אקוודור, 01/07 04:00. משחק כזה יכול להכריע מקומות בבית בלי הרבה כותרות ⏰",
-      "en": "Mexico vs Ecuador, 01/07 04:00. This kind of match can decide group places without making many headlines ⏰",
+      "he": "מקסיקו נגד אקוודור, מחר 04:00. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות ⏰",
+      "en": "Mexico vs Ecuador, tomorrow 04:00. Not the biggest match, but the points here can be crucial ⏰",
       "sources": [],
       "expires_at": "2026-07-01T00:45:00.000Z"
     }
