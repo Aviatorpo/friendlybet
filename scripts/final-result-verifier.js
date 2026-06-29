@@ -38,10 +38,13 @@ function csvList(value, fallback = '') {
 
 const TERMINAL = new Set(['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED']);
 const RESULT_TERMINAL = new Set(['FINISHED', 'AWARDED']);
+const LIVE_STATUSES = new Set(['IN_PLAY', 'LIVE', 'PAUSED']);
 const FINAL_STATUSES = new Set(['FT', 'AET', 'PEN', 'AWD', 'WO']);
 const TEAM_CODE_RE = /^[A-Z]{3}$/;
 
 const MIN_AGE_MINUTES = parseInt(process.env.RESULT_FALLBACK_MIN_AGE_MINUTES || '', 10) || 95;
+const STALE_LIVE_MIN_AGE_MINUTES = parseInt(process.env.RESULT_STALE_LIVE_MIN_AGE_MINUTES || '', 10) || 70;
+const STALE_LIVE_SOURCE_MINUTES = parseInt(process.env.RESULT_STALE_LIVE_SOURCE_MINUTES || '', 10) || 10;
 const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 336;
 const MAX_KICKOFF_DELTA_MS = (parseInt(process.env.RESULT_FALLBACK_MAX_KICKOFF_DELTA_HOURS || '', 10) || 12) * 60 * 60 * 1000;
 const MIN_SOURCES = parseInt(process.env.RESULT_FALLBACK_MIN_SOURCES || '', 10) || 1;
@@ -107,6 +110,23 @@ function needsFinalVerification(m) {
   return !hasNumericScore(m) || hasLiveResidue(m);
 }
 
+function parseOptionalTime(value) {
+  const ms = Date.parse(value || '');
+  return Number.isFinite(ms) ? ms : NaN;
+}
+
+function isStaleLiveCandidate(m, nowMs = Date.now()) {
+  if (!m || !LIVE_STATUSES.has(_status(m))) return false;
+  const ko = parseOptionalTime(m.match_date);
+  if (!Number.isFinite(ko)) return false;
+  const ageMs = nowMs - ko;
+  if (ageMs < STALE_LIVE_MIN_AGE_MINUTES * 60 * 1000) return false;
+  if (ageMs > LOOKBACK_HOURS * 60 * 60 * 1000) return false;
+  const sourceUpdated = parseOptionalTime(m.source_updated_at || m.last_updated);
+  if (!Number.isFinite(sourceUpdated)) return true;
+  return nowMs - sourceUpdated >= STALE_LIVE_SOURCE_MINUTES * 60 * 1000;
+}
+
 async function fetchWithTimeout(url, options = {}, timeoutMs = 25000) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -122,6 +142,7 @@ function isStuckCandidate(m, nowMs = Date.now()) {
   if (!m.home_team_code || !m.away_team_code || !m.match_date) return false;
   const ko = Date.parse(m.match_date);
   if (isNaN(ko)) return false;
+  if (isStaleLiveCandidate(m, nowMs)) return true;
   return nowMs - ko >= MIN_AGE_MINUTES * 60 * 1000;
 }
 
@@ -380,9 +401,9 @@ function buildUpdateFromVerifiedFixture(sourceMatch, nowIso = new Date().toISOSt
 }
 
 async function loadStuckMatches(now = new Date()) {
-  const end = new Date(now.getTime() - MIN_AGE_MINUTES * 60 * 1000);
+  const end = now;
   const start = new Date(now.getTime() - LOOKBACK_HOURS * 60 * 60 * 1000);
-  const q = `?select=external_id,status,match_date,home_team_code,away_team_code,home_score,away_score,winner_code,live_clock,live_period,status_detail,live_source&match_date=gte.${start.toISOString()}&match_date=lte.${end.toISOString()}&order=match_date.asc`;
+  const q = `?select=external_id,status,match_date,home_team_code,away_team_code,home_score,away_score,winner_code,live_clock,live_period,status_detail,live_source,source_updated_at,last_updated&match_date=gte.${start.toISOString()}&match_date=lte.${end.toISOString()}&order=match_date.asc`;
   const rows = await callSupabase('GET', 'matches', null, q);
   return (rows || []).filter(m => isStuckCandidate(m, now.getTime()));
 }
@@ -938,6 +959,7 @@ if (require.main === module) {
 } else {
   module.exports = {
     isStuckCandidate,
+    isStaleLiveCandidate,
     needsFinalVerification,
     transformEspnEvent,
     transformFifaMatch,

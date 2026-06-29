@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// One-command readiness gate for group-stage completion. By default it can run
+// One-command readiness gate for live tournament completion. By default it can run
 // from local public snapshots and repo wiring; production and live DB proof are
 // enabled explicitly with environment variables.
 
@@ -14,8 +14,6 @@ const LiveOpsAudit = require('./live-ops-audit');
 const WCR = require('../share-assets/world-cup-rules.js');
 
 const ROOT = path.resolve(__dirname, '..');
-const GROUP_STAGE_START_MS = Date.parse('2026-06-11T00:00:00Z');
-const GROUP_STAGE_END_MS = Date.parse('2026-06-29T00:00:00Z');
 const LIVE_DB_SCHEDULED_GRACE_MS = 12 * 60 * 1000;
 const LIVE_DB_SOURCE_STALE_MS = 10 * 60 * 1000;
 const LIVE_DB_ACTIVE_WINDOW_MS = 4 * 60 * 60 * 1000;
@@ -173,10 +171,6 @@ async function fetchSupabaseMatches(config, fetchImpl = globalThis.fetch) {
   return matches;
 }
 
-function isGroupStageWindow(nowMs) {
-  return nowMs >= GROUP_STAGE_START_MS && nowMs < GROUP_STAGE_END_MS;
-}
-
 function summarizeLiveDbFreshness(matches, nowMs) {
   const stale = [];
   const active = [];
@@ -207,15 +201,8 @@ function summarizeLiveDbFreshness(matches, nowMs) {
   };
 }
 
-function isGroupStageMatch(match) {
-  return String(match && match.stage || '').toUpperCase() === 'GROUP_STAGE'
-    || !!(match && match.group_letter);
-}
-
 function isWorkflowLivenessRequired(matches, nowMs) {
-  if (!isGroupStageWindow(nowMs)) return false;
   return (Array.isArray(matches) ? matches : []).some(match => {
-    if (!isGroupStageMatch(match)) return false;
     const kickoff = parseTime(match && match.match_date);
     if (!Number.isFinite(kickoff)) return false;
     return nowMs >= kickoff - WORKFLOW_LIVENESS_PRE_MATCH_MS
@@ -242,7 +229,7 @@ async function fetchGitHubWorkflowRuns(workflowFile, options = {}) {
 }
 
 function summarizeWorkflowLiveness(runs, nowMs, maxAgeMs, options = {}) {
-  const required = options.required !== false && isGroupStageWindow(nowMs);
+  const required = options.required == null ? true : !!options.required;
   const latest = (runs || [])
     .map(run => ({
       id: run.id || run.databaseId || null,
@@ -419,17 +406,33 @@ async function runReadiness(options = {}) {
   const generatePundit = read('.github/workflows/generate-pundit.yml');
   const readinessMonitor = read('.github/workflows/live-completion-readiness.yml');
 
-  add(checks, 'live poller covers all group-stage match days', livePoller.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 11-28 6 *'"), '5-minute offset June 11-28 schedule required');
-  add(checks, 'live poller can push refreshed snapshots', /permissions:\s*\n\s+contents:\s*write/.test(livePoller), 'verified-final path must commit match, leaderboard, banter, and Pundit snapshots');
-  add(checks, 'final verifier covers all group-stage match days', verifier.includes("cron: '4,19,34,49 * 11-28 6 *'"), '15-minute offset June 11-28 schedule required');
   add(
     checks,
-    'readiness monitor covers production during group-stage match days',
+    'live poller covers group and knockout match days',
+    livePoller.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 11-28 6 *'")
+      && livePoller.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 16-23 29 6 *'")
+      && livePoller.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 0-2,18-23 19 7 *'"),
+    '5-minute offset schedule required for group stage and knockout windows'
+  );
+  add(checks, 'live poller can push refreshed snapshots', /permissions:\s*\n\s+contents:\s*write/.test(livePoller), 'verified-final path must commit match, leaderboard, banter, and Pundit snapshots');
+  add(
+    checks,
+    'final verifier covers group and knockout match days',
+    verifier.includes("cron: '4,19,34,49 * 11-28 6 *'")
+      && verifier.includes("cron: '4,19,34,49 16-23 29 6 *'")
+      && verifier.includes("cron: '4,19,34,49 0-2,18-23 19 7 *'"),
+    '15-minute offset schedule required for group stage and knockout windows'
+  );
+  add(
+    checks,
+    'readiness monitor covers production during group and knockout match days',
     readinessMonitor.includes("cron: '6,16,26,36,46,56 * 11-28 6 *'")
+      && readinessMonitor.includes("cron: '6,16,26,36,46,56 16-23 29 6 *'")
+      && readinessMonitor.includes("cron: '6,16,26,36,46,56 0-2,18-23 19 7 *'")
       && readinessMonitor.includes('LIVE_COMPLETION_PUBLIC_BASE_URL: https://friendlybet.live')
       && readinessMonitor.includes("LIVE_COMPLETION_GITHUB_WORKFLOWS: '1'")
       && readinessMonitor.includes('node scripts/live-completion-readiness.js'),
-    'scheduled monitor must audit production public snapshots every 10 minutes during June 11-28'
+    'scheduled monitor must audit production public snapshots every 10 minutes during live tournament windows'
   );
   add(
     checks,

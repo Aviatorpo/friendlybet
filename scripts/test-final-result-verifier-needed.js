@@ -5,6 +5,7 @@ const {
   isCandidate,
   isBackoffDue,
   backoffIntervalMinutes,
+  isStaleLiveCandidate,
 } = require('./final-result-verifier-needed.js');
 
 let failures = 0;
@@ -37,6 +38,36 @@ check('candidate is outside bounded recovery after 337 hours', !isCandidate(matc
 check('complete finished match is not a candidate', !isCandidate({ ...match, status: 'FINISHED', home_score: 1, away_score: 0 }, minutesAfterKickoff(180)));
 check('finished match missing score is a candidate', isCandidate({ ...match, status: 'FINISHED', home_score: null, away_score: null }, minutesAfterKickoff(180)));
 check('finished match with live residue is a candidate', isCandidate({ ...match, status: 'FINISHED', home_score: 1, away_score: 0, live_clock: "90'+4'" }, minutesAfterKickoff(180)));
+
+const staleKnockoutLive = {
+  status: 'PAUSED',
+  stage: 'ROUND_OF_32',
+  match_date: '2026-06-29T17:00:00Z',
+  home_team_code: 'BRA',
+  away_team_code: 'JPN',
+  home_score: 1,
+  away_score: 1,
+  status_detail: "59'",
+  live_source: 'espn',
+  source_updated_at: '2026-06-29T18:21:21Z',
+};
+check('stale knockout live state is a verifier candidate before normal 95 minute fallback', isCandidate(
+  staleKnockoutLive,
+  Date.parse('2026-06-29T18:40:00Z')
+));
+check('stale knockout live state is due immediately despite fallback backoff', isBackoffDue(
+  staleKnockoutLive,
+  Date.parse('2026-06-29T18:40:00Z'),
+  { enabled: true, minAgeMinutes: 95, runEveryMinutes: 15 }
+));
+check('fresh paused live state is not an early stale-live candidate', !isStaleLiveCandidate(
+  { ...staleKnockoutLive, source_updated_at: '2026-06-29T18:35:00Z' },
+  Date.parse('2026-06-29T18:40:00Z')
+));
+check('normal 60 minute halftime-ish live state is not an early stale-live candidate', !isCandidate(
+  { ...staleKnockoutLive, source_updated_at: '2026-06-29T17:59:00Z' },
+  Date.parse('2026-06-29T18:00:00Z')
+));
 check('early overdue interval is 15 minutes', backoffIntervalMinutes(120) === 15);
 check('mid overdue interval is 30 minutes', backoffIntervalMinutes(180) === 30);
 check('late overdue interval is 60 minutes', backoffIntervalMinutes(360) === 60);
