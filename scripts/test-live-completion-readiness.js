@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Deterministic tests for the group-stage completion readiness gate.
+// Deterministic tests for the live tournament completion readiness gate.
 
 const assert = require('assert');
 
@@ -254,6 +254,14 @@ const Readiness = require('./live-completion-readiness');
     ),
     false
   );
+  assert.strictEqual(
+    Readiness.isWorkflowLivenessRequired(
+      [{ id: 'ko-db1', match_date: '2026-06-29T17:00:00Z', stage: 'ROUND_OF_32', home_team_code: 'BRA', away_team_code: 'JPN' }],
+      Date.parse('2026-06-29T18:40:00Z')
+    ),
+    true,
+    'workflow liveness must be required for knockout match windows, not only group stage'
+  );
 
   const staleHelperWorkflowsWithGreenProduction = await Readiness.runReadiness({
     auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z'), skipPundit: true },
@@ -357,10 +365,10 @@ const Readiness = require('./live-completion-readiness');
     'scoring excludes provider-pending finals',
     'group completion requires exactly six unique fixtures',
     'pool Pundit invite buzz is gated by effective open state',
-    'live poller covers all group-stage match days',
+    'live poller covers group and knockout match days',
     'live poller can push refreshed snapshots',
-    'final verifier covers all group-stage match days',
-    'readiness monitor covers production during group-stage match days',
+    'final verifier covers group and knockout match days',
+    'readiness monitor covers production during group and knockout match days',
     'readiness monitor audits live DB by default',
     'readiness monitor self-heals stale active live DB',
     'standalone Pundit workflow covers live group-stage transitions',

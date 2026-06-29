@@ -1,14 +1,31 @@
 name: Live Completion Readiness Monitor
 
-# Production-facing safety net for group-stage completion. This does not write
+# Production-facing safety net for live tournament completion. This does not write
 # data unless stale active-match state is detected. It checks the public
 # snapshots users see and, by default, audits live Supabase match state so stale
 # finals, missing stories, stale Pundit, or broken scoring/UX guards fail loudly
-# during match days. If the dedicated live-poller cron was delayed or dropped,
+# during match days, including knockouts. If the dedicated live-poller cron was delayed or dropped,
 # this monitor runs the live poller once and then re-runs the gate.
 on:
   schedule:
     - cron: '6,16,26,36,46,56 * 11-28 6 *'
+    - cron: '6,16,26,36,46,56 16-23 29 6 *'
+    - cron: '6,16,26,36,46,56 0-7,16-23 30 6 *'
+    - cron: '6,16,26,36,46,56 0-7,15-23 1 7 *'
+    - cron: '6,16,26,36,46,56 0-7,18-23 2 7 *'
+    - cron: '6,16,26,36,46,56 0-9,17-23 3 7 *'
+    - cron: '6,16,26,36,46,56 0-7,16-23 4 7 *'
+    - cron: '6,16,26,36,46,56 0-7,19-23 5 7 *'
+    - cron: '6,16,26,36,46,56 0-7,18-23 6 7 *'
+    - cron: '6,16,26,36,46,56 0-7,15-23 7 7 *'
+    - cron: '6,16,26,36,46,56 19-23 9 7 *'
+    - cron: '6,16,26,36,46,56 0-3,18-23 10 7 *'
+    - cron: '6,16,26,36,46,56 0-2,20-23 11 7 *'
+    - cron: '6,16,26,36,46,56 0-7 12 7 *'
+    - cron: '6,16,26,36,46,56 18-23 14 7 *'
+    - cron: '6,16,26,36,46,56 0-2,18-23 15 7 *'
+    - cron: '6,16,26,36,46,56 20-23 18 7 *'
+    - cron: '6,16,26,36,46,56 0-2,18-23 19 7 *'
   workflow_dispatch:
     inputs:
       check_db:

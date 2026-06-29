@@ -83,6 +83,30 @@ ok('finished match missing score is still recoverable',
   F.isStuckCandidate({ ...db, status: 'FINISHED', home_score: null, away_score: null }, Date.parse('2026-06-11T21:10:00Z')));
 ok('finished match with live residue is still recoverable',
   F.isStuckCandidate({ ...db, status: 'FINISHED', home_score: 1, away_score: 1, live_clock: "90'+4'" }, Date.parse('2026-06-11T21:10:00Z')));
+ok('stale knockout paused state is recoverable before normal age threshold',
+  F.isStuckCandidate({
+    external_id: '400021516',
+    home_team_code: 'BRA',
+    away_team_code: 'JPN',
+    status: 'PAUSED',
+    stage: 'ROUND_OF_32',
+    match_date: '2026-06-29T17:00:00Z',
+    home_score: 1,
+    away_score: 1,
+    status_detail: "59'",
+    live_source: 'espn',
+    source_updated_at: '2026-06-29T18:21:21Z',
+  }, Date.parse('2026-06-29T18:40:00Z')));
+ok('fresh paused state is not stale-live recoverable',
+  !F.isStaleLiveCandidate({
+    external_id: '400021516',
+    home_team_code: 'BRA',
+    away_team_code: 'JPN',
+    status: 'PAUSED',
+    stage: 'ROUND_OF_32',
+    match_date: '2026-06-29T17:00:00Z',
+    source_updated_at: '2026-06-29T18:35:00Z',
+  }, Date.parse('2026-06-29T18:40:00Z')));
 
 const espnTransformed = F.transformEspnEvent(espnFinal);
 eq('transform ESPN final event', {
