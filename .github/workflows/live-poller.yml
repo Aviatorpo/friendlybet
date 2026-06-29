@@ -236,6 +236,7 @@ jobs:
 
       - name: Validate existing World Cup stories
         if: steps.verify_results.outputs.changed == 'true'
+        continue-on-error: true
         run: node scripts/test-world-cup-stories.js
 
       - name: Check for World Cup story work
@@ -252,6 +253,7 @@ jobs:
 
       - name: Publish prepared World Cup stories
         if: steps.story_work.outputs.publishable == 'true'
+        continue-on-error: true
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}

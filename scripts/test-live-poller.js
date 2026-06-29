@@ -43,6 +43,7 @@ const ESPN_FINAL_PAYLOAD = { events: [{
 }] };
 
 let LIVE = true;
+let WINDOW_MODE = 'live';
 let upserts = 0;
 let patches = 0;
 const okJson = (data) => ({
@@ -57,8 +58,15 @@ sync.__setFetch(async (url, opts) => {
   if (url.includes('/rest/v1/matches') && url.includes('select=winner_code')) return okJson([]);
   if (url.includes('/rest/v1/matches') && url.includes('select=live_clock')) return okJson([]);
   if (url.includes('/rest/v1/matches') && url.includes('match_date=gte')) {
-    // shouldSync's window probe: a live match is present iff LIVE
-    return okJson(LIVE ? [{ external_id: '201', status: 'IN_PLAY', match_date: '2026-06-11T16:00:00Z', home_team_code: 'MEX', away_team_code: 'KOR' }] : []);
+    // shouldSync's window probe: live/finished/empty windows are tested.
+    if (!LIVE) return okJson([]);
+    return okJson([{
+      external_id: '201',
+      status: WINDOW_MODE === 'finished' ? 'FINISHED' : 'IN_PLAY',
+      match_date: '2026-06-11T16:00:00Z',
+      home_team_code: 'MEX',
+      away_team_code: 'KOR'
+    }]);
   }
   if (url.includes('/rest/v1/matches') && method === 'PATCH') { patches++; return okJson([]); }
   if (url.includes('/rest/v1/matches') && method === 'POST') { upserts += JSON.parse(opts.body).length; return okJson([]); }
@@ -68,7 +76,7 @@ sync.__setFetch(async (url, opts) => {
 (async () => {
   console.log('\n== live-poller ==');
   // Live: should loop several times in ~18ms at a 5ms cadence.
-  LIVE = true; upserts = 0; patches = 0;
+  LIVE = true; WINDOW_MODE = 'live'; upserts = 0; patches = 0;
   ESPN_PAYLOAD = ESPN_LIVE_PAYLOAD;
   const result = await runLivePoller({ intervalMs: 5, runMs: 18, sleep: (ms) => new Promise(r => setTimeout(r, ms)) });
   ok('polls performSync repeatedly while live (>=2)', result.polls >= 2);
@@ -77,19 +85,26 @@ sync.__setFetch(async (url, opts) => {
   ok('legacy sync upsert path is not used when ESPN matches', upserts === 0);
 
   // Not live: exits immediately, no work.
-  LIVE = false; upserts = 0; patches = 0;
+  LIVE = false; WINDOW_MODE = 'live'; upserts = 0; patches = 0;
   const result2 = await runLivePoller({ intervalMs: 5, runMs: 18 });
   ok('exits immediately when nothing is live (0 polls)', result2.polls === 0);
   ok('no DB writes when nothing is live', upserts === 0 && patches === 0);
+  ok('empty live window does not hand off to final verifier', result2.finalDetected === false);
+
+  // Finished in live window: no ESPN polling, but hand off to verifier.
+  LIVE = true; WINDOW_MODE = 'finished'; upserts = 0; patches = 0;
+  const result2b = await runLivePoller({ intervalMs: 5, runMs: 18 });
+  ok('all-finished live window does not poll ESPN', result2b.polls === 0);
+  ok('all-finished live window hands off to final verifier', result2b.finalDetected === true && result2b.finalDetections === 1);
 
   // Live ends mid-run: stops early on the next check.
-  LIVE = true; upserts = 0; patches = 0; ESPN_PAYLOAD = ESPN_LIVE_PAYLOAD;
+  LIVE = true; WINDOW_MODE = 'live'; upserts = 0; patches = 0; ESPN_PAYLOAD = ESPN_LIVE_PAYLOAD;
   let n = 0;
   const result3 = await runLivePoller({ intervalMs: 2, runMs: 10000, sleep: async () => { if (++n >= 2) LIVE = false; } });
   ok('stops early once matches finish', result3.polls >= 1 && result3.polls <= 4);
 
   // ESPN full-time: hand off immediately to the final-result verifier workflow.
-  LIVE = true; upserts = 0; patches = 0; ESPN_PAYLOAD = ESPN_FINAL_PAYLOAD;
+  LIVE = true; WINDOW_MODE = 'live'; upserts = 0; patches = 0; ESPN_PAYLOAD = ESPN_FINAL_PAYLOAD;
   const result4 = await runLivePoller({ intervalMs: 5, runMs: 5 });
   ok('ESPN final sets verifier handoff flag', result4.finalDetected === true && result4.finalDetections >= 1);
 
