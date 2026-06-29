@@ -61,4 +61,20 @@ eq('pool snapshot verifier rejects duplicate users', V.verifyPoolSnapshot('local
 process.env.LEADERBOARD_POOL_IDS = ' pool-a,pool-b,pool-a ';
 eq('requested pool ids are deduplicated and trimmed', V.requestedLeaderboardPoolIds(), ['pool-a', 'pool-b']);
 
-console.log('\nScoring snapshot verifier tests passed');
+(async () => {
+  const urls = [];
+  V.__setFetch(async (url) => {
+    urls.push(url);
+    return { ok: true, json: async () => [] };
+  });
+  await V.loadRequestedPoolsAndUsers(Array.from({ length: 55 }, (_, i) => `pool-${i}`));
+  const userUrls = urls.filter(url => url.includes('/rest/v1/users?'));
+  eq('large pool verification fetches users in batches', userUrls.length, 2);
+  ok('first user batch excludes pool 50', userUrls[0].includes('pool-49') && !userUrls[0].includes('pool-50'));
+  ok('second user batch starts at pool 50', userUrls[1].includes('pool-50'));
+
+  console.log('\nScoring snapshot verifier tests passed');
+})().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
