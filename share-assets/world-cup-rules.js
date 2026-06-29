@@ -20,9 +20,27 @@
     NZL:55, SAU:57, COD:58, BIH:59, HAI:60, CPV:65, QAT:66, CUR:85
   };
   const TERMINAL_MATCH_STATUS = new Set(['FINISHED', 'AWARDED']);
+  const TEAM_CODE_ALIASES = {
+    CUW: 'CUR',
+    KSA: 'SAU'
+  };
+
+  function normalizeTeamCode(code) {
+    const s = String(code || '').trim().toUpperCase();
+    return TEAM_CODE_ALIASES[s] || s;
+  }
+
+  function normalizeMatchTeamCodes(match) {
+    if (!match || typeof match !== 'object') return match;
+    const clean = { ...match };
+    if (clean.home_team_code) clean.home_team_code = normalizeTeamCode(clean.home_team_code);
+    if (clean.away_team_code) clean.away_team_code = normalizeTeamCode(clean.away_team_code);
+    if (clean.winner_code) clean.winner_code = normalizeTeamCode(clean.winner_code);
+    return clean;
+  }
 
   function fifaRankOf(code) {
-    const n = FIFA_RANKINGS[code];
+    const n = FIFA_RANKINGS[normalizeTeamCode(code)];
     return Number.isFinite(n) ? n : 999;
   }
 
@@ -39,12 +57,53 @@
   function groupMatchIdentity(m) {
     if (!m) return '';
     const group = String(m.group_letter || m.group || '');
-    const home = String(m.home_team_code || '');
-    const away = String(m.away_team_code || '');
+    const home = normalizeTeamCode(m.home_team_code);
+    const away = normalizeTeamCode(m.away_team_code);
     if (home && away) return `group:${group}|teams:${[home, away].sort().join('|')}`;
     if (m.external_id != null) return `external:${m.external_id}`;
     if (m.id != null) return `id:${m.id}`;
     return `${group}|${String(m.match_date || '')}|${home}|${away}`;
+  }
+
+  function _matchOutcomeSignature(m) {
+    const home = normalizeTeamCode(m && m.home_team_code);
+    const away = normalizeTeamCode(m && m.away_team_code);
+    const teams = [home, away].sort();
+    const scoreByTeam = {};
+    if (home) scoreByTeam[home] = m && m.home_score;
+    if (away) scoreByTeam[away] = m && m.away_score;
+    return JSON.stringify({
+      status: String((m && m.status) || '').toUpperCase(),
+      pending: isPendingProviderFinal(m),
+      a: teams[0] || '',
+      b: teams[1] || '',
+      as: teams[0] ? scoreByTeam[teams[0]] : null,
+      bs: teams[1] ? scoreByTeam[teams[1]] : null,
+      winner: normalizeTeamCode(m && m.winner_code)
+    });
+  }
+
+  function dedupeEquivalentGroupMatches(matches) {
+    const buckets = new Map();
+    (matches || []).forEach(m => {
+      const normalized = normalizeMatchTeamCodes(m);
+      const key = groupMatchIdentity(normalized);
+      if (!key) return;
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key).push(normalized);
+    });
+
+    const out = [];
+    buckets.forEach(rows => {
+      if (rows.length <= 1) {
+        out.push(...rows);
+        return;
+      }
+      const signatures = new Set(rows.map(_matchOutcomeSignature));
+      if (signatures.size === 1) out.push(rows[0]);
+      else out.push(...rows);
+    });
+    return out;
   }
 
   function groupIsComplete(matches) {
@@ -111,13 +170,16 @@
     const conductScores = _resolvedConductScores(options);
     const stats = {};
     (groupTeams || []).forEach((code, seed) => {
-      const conduct = conductScores[code];
-      stats[code] = { code, played:0, wins:0, draws:0, losses:0, gf:0, ga:0, gd:0, points:0, seed, fifa_rank:fifaRankOf(code) };
-      if (conduct != null && Number.isFinite(Number(conduct))) stats[code].team_conduct_score = Number(conduct);
+      const normalizedCode = normalizeTeamCode(code);
+      const conduct = conductScores[normalizedCode];
+      stats[normalizedCode] = { code: normalizedCode, played:0, wins:0, draws:0, losses:0, gf:0, ga:0, gd:0, points:0, seed, fifa_rank:fifaRankOf(normalizedCode) };
+      if (conduct != null && Number.isFinite(Number(conduct))) stats[normalizedCode].team_conduct_score = Number(conduct);
     });
     (matches || []).forEach(m => {
-      const h = stats[m && m.home_team_code];
-      const a = stats[m && m.away_team_code];
+      const homeCode = normalizeTeamCode(m && m.home_team_code);
+      const awayCode = normalizeTeamCode(m && m.away_team_code);
+      const h = stats[homeCode];
+      const a = stats[awayCode];
       const hs = Number(m && m.home_score);
       const as = Number(m && m.away_score);
       if (!h || !a || !Number.isFinite(hs) || !Number.isFinite(as)) return;
@@ -136,12 +198,14 @@
     const table = {};
     codes.forEach(code => { table[code] = { pts:0, gd:0, gf:0 }; });
     (matches || []).forEach(m => {
-      if (!set.has(m && m.home_team_code) || !set.has(m && m.away_team_code)) return;
+      const homeCode = normalizeTeamCode(m && m.home_team_code);
+      const awayCode = normalizeTeamCode(m && m.away_team_code);
+      if (!set.has(homeCode) || !set.has(awayCode)) return;
       const hs = Number(m.home_score);
       const as = Number(m.away_score);
       if (!Number.isFinite(hs) || !Number.isFinite(as)) return;
-      const h = table[m.home_team_code];
-      const a = table[m.away_team_code];
+      const h = table[homeCode];
+      const a = table[awayCode];
       h.gf += hs; h.gd += hs - as;
       a.gf += as; a.gd += as - hs;
       if (hs > as) h.pts += 3;
@@ -237,10 +301,11 @@
 
   function buildGroupState(matches, options = {}) {
     const strict = options.strict !== false;
-    const allGroupMatchesAny = (matches || []).filter(m => {
+    const rawGroupMatches = (matches || []).filter(m => {
       const stage = String((m && m.stage) || '').toUpperCase();
       return stage === 'GROUP_STAGE' || !!(m && (m.group_letter || m.group));
     });
+    const allGroupMatchesAny = dedupeEquivalentGroupMatches(rawGroupMatches);
     const standings = {};
     const groupPositions = {};
     const thirdStats = {};
@@ -254,8 +319,8 @@
       const terminal = groupMatches.filter(isTerminalMatch);
       const fromMatches = new Set();
       groupMatches.forEach(m => {
-        if (m.home_team_code) fromMatches.add(m.home_team_code);
-        if (m.away_team_code) fromMatches.add(m.away_team_code);
+        if (m.home_team_code) fromMatches.add(normalizeTeamCode(m.home_team_code));
+        if (m.away_team_code) fromMatches.add(normalizeTeamCode(m.away_team_code));
       });
       const officialTeams = WC2026_GROUPS[letter] || [];
       const groupTeams = officialTeams.every(code => fromMatches.has(code)) ? officialTeams : Array.from(fromMatches);
@@ -312,6 +377,9 @@
     FIFA_RANKINGS,
     TERMINAL_MATCH_STATUS,
     fifaRankOf,
+    normalizeTeamCode,
+    normalizeMatchTeamCodes,
+    dedupeEquivalentGroupMatches,
     isPendingProviderFinal,
     isTerminalMatch,
     groupMatchIdentity,

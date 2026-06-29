@@ -436,6 +436,35 @@ S.__setFetch(mockScoringFetch);
     [{ id:'U7', nickname:'U7' }], groupMatches.slice(), new Map(), null);
   eq('U7 scores only Group A top-two advancers', captured.U7.group_points, 2);
   eq('U7 total excludes Group A third and incomplete Group B', captured.U7.total_score, 2);
+
+  console.log('\n== integration: duplicate provider group rows do not wipe scoring ==');
+  groupPicksByUser.U17 = validTwoPhase32;
+  setGroupMatchesForMock([
+    ...actualGroupRows('A'),
+    ...actualGroupRows('A').map((m, idx) => ({ ...m, id: 'dup-A-' + idx, external_id: 'fifa-A-' + idx, live_source: 'fifa-schedule' })),
+    ...actualGroupRows('B', 5),
+  ]);
+  await S.scoreTwoPhasePool({ id:'P17', code:'P17', use_multipliers:false }, rulesTwo,
+    [{ id:'U17', nickname:'U17' }], groupMatches.slice(), new Map(), null);
+  eq('U17 duplicate equivalent rows still score Group A top-two advancers', captured.U17.group_points, 2);
+  eq('U17 duplicate equivalent rows do not unlock incomplete Group B', captured.U17.total_score, 2);
+
+  console.log('\n== unit: FIFA alias duplicate rows normalize before group completion ==');
+  const groupEAliasDupes = actualGroupRows('E').flatMap((m, idx) => ([
+    m,
+    {
+      ...m,
+      id: 'dup-E-' + idx,
+      external_id: 'fifa-E-' + idx,
+      live_source: 'fifa-schedule',
+      home_team_code: m.home_team_code === 'CUR' ? 'CUW' : m.home_team_code,
+      away_team_code: m.away_team_code === 'CUR' ? 'CUW' : m.away_team_code,
+      winner_code: m.winner_code === 'CUR' ? 'CUW' : m.winner_code,
+    }
+  ]));
+  const aliasState = S.buildGroupState(groupEAliasDupes);
+  eq('Group E completes with CUR/CUW duplicate aliases', aliasState.standings.E && aliasState.standings.E.length, 4);
+
   setGroupMatchesForMock(fullGroupMatchesSnapshot);
 
   console.log('\n== integration: single-phase advancement mode ignores exact position ==');
