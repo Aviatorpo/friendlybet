@@ -1277,7 +1277,7 @@ async function goToDashboard() {
   _recordActivityOncePerDay();
 
   // Load real-world results data
-  await loadResultsData();
+  await loadResultsData({ force: true, preferDb: true });
 
   // v2.4: auto-lock pool when first match starts (both single_phase and two_phase)
   if (typeof spAutoLockPoolIfNeeded === 'function') {
@@ -1308,6 +1308,7 @@ async function goToDashboard() {
   try {
     allUsers = await _fetchAllPoolRows('users', 'id,nickname,total_score,joined_at', state.currentPool.id);
     allUsers = _sortLeaderboardUsers(allUsers);
+    allUsers = await _applyVerifiedKnockoutScenarioUsers(state.currentPool.id, allUsers);
   } catch (e) {
     console.warn('Dashboard score summary load failed:', e);
   }
@@ -3280,6 +3281,7 @@ state.results = {
   matchesByTeam: {},   // team_code -> [matches]
   finishedMatches: [],
   pendingVerificationMatches: [],
+  allMatches: [],
   myScores: {},        // match_id -> score earned
   groupAdvancers: {},  // group letter -> [team_codes that advanced]
   knockoutWinners: {}, // match_id -> winning_team_code
@@ -3778,6 +3780,7 @@ async function loadResultsData(options = {}) {
     }
     matches = (matches || []).filter(_matchIsFinishedStatus);
 
+    state.results.allMatches = allRows || [];
     state.results.finishedMatches = matches || [];
     state.results.pendingVerificationMatches = (allRows || []).filter(m => _matchNeedsStatusVerification(m));
     state.results.groupStandings = computeCurrentGroupStandings(matches || []);
@@ -9462,6 +9465,106 @@ function _sortLeaderboardUsers(users) {
     String(a.id || '').localeCompare(String(b.id || '')));
 }
 
+let _knockoutScenarioManifestCache = { at: 0, data: null };
+
+function _scenarioSafeSegment(value) {
+  return String(value == null ? '' : value).replace(/[^a-zA-Z0-9._-]+/g, '_') || 'unknown';
+}
+
+function _scenarioMatchIdentity(match) {
+  if (!match) return '';
+  if (match.external_id != null) return `external:${match.external_id}`;
+  if (match.id != null) return `id:${match.id}`;
+  return `teams:${match.home_team_code}-${match.away_team_code}|${match.stage || ''}|${match.match_date || ''}`;
+}
+
+function _scenarioMatchSameFixture(a, b) {
+  if (!a || !b) return false;
+  if (a.external_id != null && b.external_id != null && String(a.external_id) === String(b.external_id)) return true;
+  if (a.id != null && b.id != null && String(a.id) === String(b.id)) return true;
+  return String(a.stage || '') === String(b.stage || '')
+    && String(a.home_team_code || '') === String(b.home_team_code || '')
+    && String(a.away_team_code || '') === String(b.away_team_code || '');
+}
+
+function _scenarioFinishedMatchIds() {
+  return (state.results && Array.isArray(state.results.finishedMatches) ? state.results.finishedMatches : [])
+    .filter(_matchIsFinishedStatus)
+    .map(_scenarioMatchIdentity)
+    .filter(Boolean)
+    .sort();
+}
+
+function _sameStringSet(a, b) {
+  const left = (a || []).map(String).sort();
+  const right = (b || []).map(String).sort();
+  if (left.length !== right.length) return false;
+  return left.every((value, idx) => value === right[idx]);
+}
+
+async function _fetchKnockoutScenarioManifest(maxAgeMs = 60000) {
+  try {
+    if (_knockoutScenarioManifestCache.data && (Date.now() - _knockoutScenarioManifestCache.at) < maxAgeMs) {
+      return _knockoutScenarioManifestCache.data;
+    }
+    const res = await fetch('/public-data/knockout-scenarios/manifest.json', { cache: 'no-store' });
+    if (!res.ok) return null;
+    const json = await res.json();
+    if (!json || !Array.isArray(json.matches)) return null;
+    _knockoutScenarioManifestCache = { at: Date.now(), data: json };
+    return json;
+  } catch (_) {
+    return null;
+  }
+}
+
+function _findVerifiedKnockoutScenarioEntry(manifest) {
+  const finished = (state.results && Array.isArray(state.results.finishedMatches) ? state.results.finishedMatches : [])
+    .filter(m => _matchIsFinishedStatus(m) && m.winner_code && String(m.stage || '').toUpperCase() !== 'GROUP_STAGE');
+  for (const entry of (manifest && manifest.matches) || []) {
+    for (const match of finished) {
+      if (!_scenarioMatchSameFixture(entry.match, match)) continue;
+      if (!Array.isArray(entry.winners) || !entry.winners.includes(match.winner_code)) continue;
+      const expected = (entry.base_finished_match_ids || []).concat([_scenarioMatchIdentity(match)]);
+      if (!_sameStringSet(expected, _scenarioFinishedMatchIds())) continue;
+      return { entry, match, winnerCode: match.winner_code };
+    }
+  }
+  return null;
+}
+
+function _scenarioStandingsMatchCurrentUsers(standings, currentUsers) {
+  const currentIds = new Set((currentUsers || []).map(u => String(u.id)));
+  if (!Array.isArray(standings) || standings.length !== currentIds.size) return false;
+  for (const row of standings) {
+    if (!row || !currentIds.has(String(row.id))) return false;
+  }
+  return true;
+}
+
+async function _applyVerifiedKnockoutScenarioUsers(poolId, currentUsers) {
+  if (!poolId || !Array.isArray(currentUsers) || !currentUsers.length) return currentUsers;
+  const manifest = await _fetchKnockoutScenarioManifest();
+  const candidate = _findVerifiedKnockoutScenarioEntry(manifest);
+  if (!candidate) return currentUsers;
+  try {
+    const url = `/public-data/knockout-scenarios/${_scenarioSafeSegment(candidate.entry.scenario_key)}/${_scenarioSafeSegment(candidate.winnerCode)}/${_scenarioSafeSegment(poolId)}.json`;
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) return currentUsers;
+    const payload = await res.json();
+    if (!payload || payload.type !== 'knockout_scenario_leaderboard') return currentUsers;
+    if (String(payload.pool_id || '') !== String(poolId)) return currentUsers;
+    if (String(payload.winner_code || '') !== String(candidate.winnerCode)) return currentUsers;
+    if (!_scenarioMatchSameFixture(payload.match, candidate.match)) return currentUsers;
+    const expected = (payload.base_finished_match_ids || []).concat([_scenarioMatchIdentity(candidate.match)]);
+    if (!_sameStringSet(expected, _scenarioFinishedMatchIds())) return currentUsers;
+    if (!_scenarioStandingsMatchCurrentUsers(payload.standings, currentUsers)) return currentUsers;
+    return _sortLeaderboardUsers(payload.standings);
+  } catch (_) {
+    return currentUsers;
+  }
+}
+
 let _scoreSurfaceRefreshTimer = null;
 let _scoreSurfaceRefreshInFlight = false;
 
@@ -9484,7 +9587,9 @@ async function refreshScoreSurfaces(reason = 'auto') {
       return;
     }
 
-    const users = _sortLeaderboardUsers(await _fetchAllPoolRows('users', 'id,nickname,total_score,joined_at', state.currentPool.id));
+    await loadResultsData({ force: true, preferDb: true }).catch(() => {});
+    let users = _sortLeaderboardUsers(await _fetchAllPoolRows('users', 'id,nickname,total_score,joined_at', state.currentPool.id));
+    users = await _applyVerifiedKnockoutScenarioUsers(state.currentPool.id, users);
     const totalAcrossPool = users.reduce((sum, user) => sum + (user.total_score || 0), 0);
     const hasScores = totalAcrossPool > 0;
     const me = users.find(user => state.currentUser && user.id === state.currentUser.id);
@@ -9558,9 +9663,10 @@ async function showLeaderboard(options = {}) {
 
   document.getElementById('lb-members-count').textContent = t('leaderboard.participantsCount', { n: users.length });
 
+  await loadResultsData({ force: true, preferDb: true }).catch(() => {});
+  users = await _applyVerifiedKnockoutScenarioUsers(state.currentPool.id, users);
   const totalScores = users.reduce((sum, u) => sum + (u.total_score || 0), 0);
   const hasScores = totalScores > 0;
-  await loadResultsData().catch(() => {});
   const progress = _dashboardGroupProgress();
   const tournamentStarted = await _dashboardTournamentStarted(hasScores);
   const phase = _groupStagePhase(tournamentStarted, hasScores, progress);

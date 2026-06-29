@@ -12,7 +12,9 @@ on:
       - 'config.js'
       - 'service-worker.js'
       - 'scripts/calculate-scores-v2.js'
+      - 'scripts/generate-knockout-scenarios.js'
       - 'scripts/test-scoring.js'
+      - 'scripts/test-knockout-scenarios.js'
       - 'scripts/test-fifa-bracket.js'
       - 'scripts/test-third-place-allocation.js'
       - 'scripts/test-two-phase-knockout-wiring.js'
@@ -85,7 +87,9 @@ on:
       - 'config.js'
       - 'service-worker.js'
       - 'scripts/calculate-scores-v2.js'
+      - 'scripts/generate-knockout-scenarios.js'
       - 'scripts/test-scoring.js'
+      - 'scripts/test-knockout-scenarios.js'
       - 'scripts/test-fifa-bracket.js'
       - 'scripts/test-third-place-allocation.js'
       - 'scripts/test-two-phase-knockout-wiring.js'
@@ -165,6 +169,8 @@ jobs:
         run: node scripts/check-destructive-sql.js
       - name: Run scoring tests
         run: node scripts/test-scoring.js
+      - name: Run knockout scenario tests
+        run: node scripts/test-knockout-scenarios.js
       - name: Run FIFA bracket tests
         run: node scripts/test-fifa-bracket.js
       - name: Run FIFA third-place allocation tests

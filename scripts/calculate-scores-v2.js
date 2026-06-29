@@ -410,6 +410,29 @@ function userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints
     && scoreNumber(user.total_score) === total;
 }
 
+const SAFE_SCORE_ROW_FIELDS = [
+  'id', 'pool_id', 'nickname', 'is_admin', 'is_approved', 'is_late_joiner',
+  'whatsapp_url', 'telegram_url', 'predictions_submitted_at', 'joined_at',
+  'last_active_at', 'approval_status', 'approved_at', 'approved_by',
+  'predictions_locked'
+];
+
+function publicScoreRow(user, groupPoints, knockoutPoints, bonusPoints, total, nowIso = new Date().toISOString()) {
+  const row = {};
+  for (const field of SAFE_SCORE_ROW_FIELDS) {
+    if (Object.prototype.hasOwnProperty.call(user || {}, field)) row[field] = user[field];
+  }
+  row.total_score = total;
+  row.group_points = groupPoints;
+  row.knockout_points = knockoutPoints;
+  row.bonus_points = bonusPoints;
+  row.groups_score = groupPoints;
+  row.knockout_score = knockoutPoints;
+  row.bonus_score = bonusPoints;
+  row.last_score_calc = nowIso;
+  return row;
+}
+
 async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, opts = {}) {
   const heartbeat = opts.heartbeat !== false;
   const now = new Date();
@@ -452,6 +475,14 @@ async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonus
     }
   }
   return true;
+}
+
+async function recordUserScore(user, groupPoints, knockoutPoints, bonusPoints, total, opts = {}) {
+  if (Array.isArray(opts.collectScores)) {
+    opts.collectScores.push(publicScoreRow(user, groupPoints, knockoutPoints, bonusPoints, total, opts.scenarioTimestamp));
+    return !userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints, total);
+  }
+  return updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, opts);
 }
 
 // Knockout winner. Prefer the explicit winner_code (from football-data
@@ -874,8 +905,10 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     bonusPoints = Math.round(bonusPoints);
     const total = groupPoints + knockoutPoints + bonusPoints;
 
-    const wrote = await updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, {
+    const wrote = await recordUserScore(user, groupPoints, knockoutPoints, bonusPoints, total, {
       heartbeat: opts.heartbeat !== false,
+      collectScores: opts.collectScores,
+      scenarioTimestamp: opts.scenarioTimestamp,
     });
     if (wrote) changedUsers++;
 
@@ -969,8 +1002,10 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     bonusPoints = Math.round(bonusPoints);
 
     const total = groupPoints + knockoutPoints + bonusPoints;
-    const wrote = await updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, {
+    const wrote = await recordUserScore(user, groupPoints, knockoutPoints, bonusPoints, total, {
       heartbeat: opts.heartbeat !== false,
+      collectScores: opts.collectScores,
+      scenarioTimestamp: opts.scenarioTimestamp,
     });
     if (wrote) changedUsers++;
     if (total > 0) scoringDetail(`  ${user.nickname}: ${total} (g${groupPoints}+k${knockoutPoints}+b${bonusPoints})`);
@@ -987,13 +1022,14 @@ if (require.main === module) {
 } else {
   module.exports = {
     main, scoreSinglePhasePool, scoreTwoPhasePool,
-    computeGroupStandings, groupIsComplete, groupMatchIdentity, isPendingProviderFinal, knockoutWinner,
+    computeGroupStandings, groupIsComplete, groupMatchIdentity, isTerminalMatch, isPendingProviderFinal, knockoutWinner,
     buildGroupState, indexRowsBy, userScoresAlreadyCurrent, updateUserScoreIfChanged,
+    recordUserScore, publicScoreRow,
     scoreCalcTimestampFresh,
     bracketPosRuleKey, stageRuleKey, poolMultResolver, buildTwoPhaseSlotMatches,
     groupScoringMode,
     validateTwoPhaseGroupPickSet, WC2026_GROUPS, TEAM_TO_GROUP,
-    DEFAULT_RULES_SINGLE, DEFAULT_RULES_TWO, DEFAULT_CAT_MULT, FIFA_RANK,
+    DEFAULT_RULES_SINGLE, DEFAULT_RULES_TWO, DEFAULT_RULES_LATE_KNOCKOUT, DEFAULT_CAT_MULT, FIFA_RANK,
     sbAll,
     // allow tests to inject a fake Supabase transport
     __setFetch: (fn) => { globalThis.fetch = fn; },
