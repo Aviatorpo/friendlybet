@@ -45,6 +45,13 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Repair persisted pick multipliers
+        timeout-minutes: 10
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/repair-pick-multipliers.js
+
       - name: Calculate scores (v2)
         id: score_results
         timeout-minutes: 12
@@ -111,6 +118,7 @@ jobs:
           SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
           SCORING_VERBOSE: '0'
           REGENERATE_COMMANDS: |
+            node scripts/repair-pick-multipliers.js
             node scripts/calculate-scores-v2.js --critical
             node scripts/export-snapshots.js leaderboards
             node scripts/verify-scoring-snapshots.js

@@ -119,17 +119,24 @@ function validateTwoPhaseGroupPickSet(rows) {
 }
 
 const DEFAULT_CAT_MULT = { favorite: 1.0, contender: 1.5, underdog: 2.0 };
+// Pool configuration wins over multiplier_applied. The persisted value is only
+// a legacy fallback; it must not suppress custom pool risk multipliers.
 function poolMultResolver(pool, rules) {
   const enabled = pool.use_multipliers !== false;
   const cat = rules.multipliers || DEFAULT_CAT_MULT;
   const overrides = rules.team_multipliers || {};
-  return (teamCode, persisted) => {
-    if (!enabled) return 1.0;
-    if (persisted != null && !isNaN(parseFloat(persisted))) return parseFloat(persisted);
+  const configured = (teamCode) => {
     if (overrides[teamCode] != null) return parseFloat(overrides[teamCode]) || 1.0;
     const rank = FIFA_RANK[teamCode] || 999;
     const tier = rank <= 10 ? 'favorite' : rank <= 30 ? 'contender' : 'underdog';
     return parseFloat(cat[tier]) || DEFAULT_CAT_MULT[tier];
+  };
+  return (teamCode, persisted) => {
+    if (!enabled) return 1.0;
+    const m = configured(teamCode);
+    if (Number.isFinite(m)) return m;
+    if (persisted != null && !isNaN(parseFloat(persisted))) return parseFloat(persisted);
+    return 1.0;
   };
 }
 

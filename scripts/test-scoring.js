@@ -93,13 +93,14 @@ console.log('\n== unit: computeGroupStandings (tie-break pts>gd>gf>code) ==');
   eq('head-to-head Z>A (not alphabetical A>Z)', order, ['Z','A','M','N']);
 })();
 
-console.log('\n== unit: poolMultResolver (precedence / disabled / NaN) ==');
+console.log('\n== unit: poolMultResolver (pool config precedence / disabled / NaN) ==');
 (() => {
   const rules = { multipliers: { favorite:1, contender:1.5, underdog:2 }, team_multipliers: { ARG: 3 } };
   const on  = S.poolMultResolver({ use_multipliers:true }, rules);
   const off = S.poolMultResolver({ use_multipliers:false }, rules);
   eq('disabled -> 1', off('ARG', null), 1);
-  eq('persisted snapshot wins', on('ARG', 2.5), 2.5);
+  eq('per-team override beats stale persisted snapshot', on('ARG', 1), 3);
+  eq('category multiplier beats stale persisted snapshot', on('CUR', 1), 2);
   eq('per-team override', on('ARG', null), 3);
   eq('category by rank (ARG=favorite=1)', on('FRA', null), 1);          // FRA rank3
   eq('category underdog (CUR=85)', on('CUR', null), 2);                 // underdog
