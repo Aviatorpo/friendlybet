@@ -138,6 +138,9 @@ jobs:
       - name: Commit match snapshot if changed
         if: steps.verify_results.outputs.changed == 'true'
         env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
           REGENERATE_COMMANDS: |
             node scripts/export-snapshots.js matches
         run: |
