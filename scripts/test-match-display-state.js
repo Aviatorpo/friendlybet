@@ -33,15 +33,22 @@ function sliceBetween(source, startNeedle, endNeedle) {
 
 const fnNames = [
   '_matchStatus',
+  '_matchIdentityKey',
+  '_matchFifaIdKey',
+  '_matchNumberKey',
+  '_matchIdentityKeys',
   '_matchIsScheduledStatus',
   '_matchIsLiveStatus',
   '_matchElapsedMs',
   '_matchIsStaleLive',
   '_matchIsStaleScheduled',
   '_matchIsPendingProviderFinal',
+  '_matchIsFinishedStatus',
   '_matchIsTerminalStatus',
   '_matchNeedsStatusVerification',
   '_matchIsLiveish',
+  '_matchShouldOverlayOfficial',
+  'mergeOfficialScheduleWithLiveMatches',
   '_snapshotHasStaleScheduled',
 ];
 
@@ -50,6 +57,7 @@ vm.createContext(sandbox);
 vm.runInContext(`
 const _LIVE_MATCH_STATUSES = ['IN_PLAY', 'PAUSED', 'LIVE'];
 const _TERMINAL_MATCH_STATUSES = ['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED'];
+const _FINISHED_MATCH_STATUSES = ['FINISHED', 'AWARDED'];
 const _MAX_MATCH_MS = 3.5 * 60 * 60 * 1000;
 const _SCHEDULED_MATCH_STATUSES = ['TIMED', 'SCHEDULED'];
 const _STALE_SCHEDULED_MATCH_MS = 35 * 60 * 1000;
@@ -99,6 +107,32 @@ assert(/needsStatusVerification\s*=\s*_matchNeedsStatusVerification\(match\)/.te
 assert(/card\.classList\.add\('verifying'\)/.test(cardSource), 'Verification state must use the verifying card style');
 assert(/matchesEx\.statusBeingVerified/.test(cardSource), 'Verification note must avoid overclaiming a final score');
 assert(/if \(needsStatusVerification\)[\s\S]*statusText\s*=\s*t\('matchesEx\.verifyingResult'\)/.test(cardSource), 'Verification state must display verifying result status text');
+
+const mergedByNumber = api.mergeOfficialScheduleWithLiveMatches([
+  {
+    match_number: 73,
+    match_date: '2026-06-28T19:00:00Z',
+    status: 'SCHEDULED',
+    home_team_code: 'RSA',
+    away_team_code: 'CAN'
+  }
+], [
+  {
+    match_number: 73,
+    match_date: '2026-06-28T19:00:00Z',
+    status: 'FINISHED',
+    home_score: 2,
+    away_score: 1,
+    home_team_code: 'RSA',
+    away_team_code: 'CAN',
+    winner_code: 'RSA'
+  }
+]);
+assert(mergedByNumber[0].status === 'FINISHED', 'Verified DB result must overlay FIFA schedule by match_number');
+assert(mergedByNumber[0].home_score === 2 && mergedByNumber[0].away_score === 1, 'Overlay must carry final score into match display');
+
+const loadMatchesSource = sliceBetween(app, 'async function loadMatches', 'function _matchIdentityKey');
+assert(!/loadPundit|renderPundit|loadWorldCupStories|worldCupStories|pundit|banter/i.test(loadMatchesSource), 'Match loading must not depend on optional content systems');
 
 const snapshotSource = sliceBetween(app, 'function _snapshotShouldReadDb', 'function _matchCountsForGroupProjection');
 assert(/_snapshotHasStaleScheduled\(matches\)/.test(snapshotSource), 'Stale scheduled CDN snapshots must force a DB read');

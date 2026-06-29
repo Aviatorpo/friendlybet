@@ -15,9 +15,13 @@
  * ]
  */
 
+const { assertQaIfRequested } = require('./qa-env');
+
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 const RAW = process.env.MANUAL_MATCH_RESULTS_JSON;
+
+assertQaIfRequested();
 
 if (!SUPABASE_KEY) {
   console.error('Missing SUPABASE_SECRET_KEY');

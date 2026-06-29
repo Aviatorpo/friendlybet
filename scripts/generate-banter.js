@@ -30,15 +30,19 @@
 // ============================================================
 const fs = require('fs');
 const path = require('path');
+const { assertQaIfRequested } = require('./qa-env');
 const { teamName } = require('./team-names');
 const { computeGroupStandings, groupIsComplete, knockoutWinner } = require('./calculate-scores-v2');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
+assertQaIfRequested();
 if (!SUPABASE_KEY && require.main === module) { console.error('Missing SUPABASE_SECRET_KEY'); process.exit(1); }
 
 const ROOT = path.resolve(__dirname, '..');
-const OUT_DIR = path.join(ROOT, 'public-data');
+const OUT_DIR = process.env.PUBLIC_DATA_DIR
+  ? path.resolve(ROOT, process.env.PUBLIC_DATA_DIR)
+  : path.join(ROOT, 'public-data');
 const BANTER_DIR = path.join(OUT_DIR, 'banter');
 const STATE_FILE = path.join(OUT_DIR, 'banter-state.json');
 

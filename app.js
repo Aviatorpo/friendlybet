@@ -1882,6 +1882,13 @@ function _groupStagePhase(tournamentStarted, hasScores, progress) {
   return 'liveNoOfficial';
 }
 
+function _hasPendingResultVerification() {
+  const rows = state.results && Array.isArray(state.results.pendingVerificationMatches)
+    ? state.results.pendingVerificationMatches
+    : [];
+  return rows.length > 0;
+}
+
 async function _dashboardTournamentStarted(hasScores) {
   if (hasScores || (state.results.finishedMatches || []).length > 0) return true;
   try {
@@ -1897,6 +1904,8 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
   if (!el) return;
   const gp = _dashboardGroupProgress();
   const phase = _groupStagePhase(tournamentStarted, hasScores, gp);
+  const dataPending = _hasPendingResultVerification();
+  el.classList.toggle('is-finalizing', dataPending);
   if (!tournamentStarted) {
     el.style.display = 'none';
     el.innerHTML = '';
@@ -1916,7 +1925,12 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
   let titleKey = lateKo ? 'dashboard.liveStatus.lateKnockoutTitle' : (lateOpen ? 'dashboard.liveStatus.lateTitle' : 'dashboard.liveStatus.title');
   let kickerKey = lateKo ? 'dashboard.liveStatus.lateKnockoutKicker' : (lateOpen ? 'dashboard.liveStatus.lateKicker' : 'dashboard.liveStatus.kicker');
   let zeroKey = lateKo ? 'dashboard.liveStatus.lateKnockoutDeadline' : (lateOpen ? 'dashboard.liveStatus.lateDeadline' : 'dashboard.liveStatus.zeroPoints');
-  if (!lateKo && !lateOpen && (phase === 'officialFirst' || phase === 'officialSeveral')) {
+  if (dataPending && !lateKo && !lateOpen) {
+    titleKey = 'dashboard.dataPending.title';
+    textKey = 'dashboard.dataPending.text';
+    kickerKey = 'dashboard.dataPending.kicker';
+    zeroKey = 'dashboard.dataPending.badge';
+  } else if (!lateKo && !lateOpen && (phase === 'officialFirst' || phase === 'officialSeveral')) {
     titleKey = phase === 'officialFirst' ? 'dashboard.officialStatus.firstGroupTitle' : 'dashboard.officialStatus.severalGroupsTitle';
     textKey = phase === 'officialFirst' ? 'dashboard.officialStatus.firstGroupText' : 'dashboard.officialStatus.severalGroupsText';
     kickerKey = 'dashboard.officialStatus.kicker';
@@ -1928,7 +1942,7 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
     zeroKey = 'dashboard.groupStageComplete.badge';
   }
   const deadline = lateKo ? _knockoutCutoffLabel() : _lateEntryCutoffLabel();
-  const showThirdPlacePending = !lateKo && !lateOpen && (phase === 'officialFirst' || phase === 'officialSeveral');
+  const showThirdPlacePending = !dataPending && !lateKo && !lateOpen && (phase === 'officialFirst' || phase === 'officialSeveral');
   el.innerHTML = `
     <div class="dls-head">
       <span class="dls-live"><span class="dls-dot"></span>${t(kickerKey)}</span>
@@ -1943,6 +1957,7 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
       <span>${t('dashboard.liveStatus.progress', { done: gp.finished, total: gp.total })}</span>
       <span>${t('dashboard.liveStatus.groups', { done: gp.completeGroups, total: gp.totalGroups })}</span>
     </div>
+    ${dataPending && !lateKo && !lateOpen ? `<div class="dls-note">${t('dashboard.dataPending.note')}</div>` : ''}
     ${showThirdPlacePending ? `<div class="dls-note">${t('dashboard.officialStatus.thirdPlacePending')}</div>` : ''}
   `;
   el.style.display = '';
@@ -3264,6 +3279,7 @@ state.results = {
   // Per match: { match_id, status, winner_code, home_team, away_team, scores, stage, group }
   matchesByTeam: {},   // team_code -> [matches]
   finishedMatches: [],
+  pendingVerificationMatches: [],
   myScores: {},        // match_id -> score earned
   groupAdvancers: {},  // group letter -> [team_codes that advanced]
   knockoutWinners: {}, // match_id -> winning_team_code
@@ -3741,24 +3757,29 @@ async function loadResultsData(options = {}) {
   }
 
   try {
-    // Load finished matches — prefer the CDN snapshot, filter locally; fall back to the DB.
+    // Load match rows — prefer the CDN snapshot, fall back to the DB when the
+    // snapshot is stale so pending verification can suppress stale score UI.
+    let allRows = null;
     let matches = null;
     if (!preferDb) {
       const snapshot = await fetchMatchesFromCDN(force ? 0 : undefined);
       if (snapshot && !_snapshotShouldReadDb(snapshot)) {
+        allRows = snapshot;
         matches = snapshot.filter(_matchIsFinishedStatus);
       }
     }
-    if (!matches) {
+    if (!allRows) {
       const { data } = await supabaseClient
         .from('matches')
         .select('*')
-        .in('status', _FINISHED_MATCH_STATUSES);
-      matches = data || [];
+        .order('match_date', { ascending: true });
+      allRows = data || [];
+      matches = allRows.filter(_matchIsFinishedStatus);
     }
     matches = (matches || []).filter(_matchIsFinishedStatus);
 
     state.results.finishedMatches = matches || [];
+    state.results.pendingVerificationMatches = (allRows || []).filter(m => _matchNeedsStatusVerification(m));
     state.results.groupStandings = computeCurrentGroupStandings(matches || []);
     
     // Build per-team match list
@@ -4650,9 +4671,8 @@ function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAcce
   const showTpRecovery = !!(
     state.currentUser &&
     state.currentUser.is_admin &&
-    !member.is_admin &&
-    needsR16Refill &&
     r16IncidentClosed &&
+    tpRecovery &&
     state.currentPool &&
     state.currentPool.betting_mode === 'two_phase'
   );
@@ -9545,8 +9565,10 @@ async function showLeaderboard(options = {}) {
   const tournamentStarted = await _dashboardTournamentStarted(hasScores);
   const phase = _groupStagePhase(tournamentStarted, hasScores, progress);
   const officialStarted = _phaseHasOfficialScoring(phase);
+  const dataPending = _hasPendingResultVerification();
 
-  const statusKey = phase === 'pre' ? 'leaderboard.statusBefore'
+  const statusKey = dataPending ? 'leaderboard.statusDataPending'
+    : phase === 'pre' ? 'leaderboard.statusBefore'
     : phase === 'liveNoOfficial' ? 'leaderboard.statusLiveNoOfficial'
     : phase === 'groupsComplete' ? 'leaderboard.statusGroupsComplete'
     : 'leaderboard.statusOfficialStarted';
@@ -9554,7 +9576,7 @@ async function showLeaderboard(options = {}) {
     t(statusKey, { groups: progress.completeGroups, total: progress.totalGroups });
   const thirdPlaceNoteEl = document.getElementById('lb-third-place-note');
   if (thirdPlaceNoteEl) {
-    const showThirdPlaceNote = (phase === 'officialFirst' || phase === 'officialSeveral')
+    const showThirdPlaceNote = !dataPending && (phase === 'officialFirst' || phase === 'officialSeveral')
       && !(state.currentPool && state.currentPool.betting_mode === 'late_knockout');
     thirdPlaceNoteEl.textContent = t('leaderboard.thirdPlacePending');
     thirdPlaceNoteEl.style.display = showThirdPlaceNote ? 'block' : 'none';
@@ -9570,21 +9592,23 @@ async function showLeaderboard(options = {}) {
   }
 
   // Pool Pundit: live banter about what the latest results did to the board
-  renderLeaderboardBanter(users, { phase });
+  renderLeaderboardBanter(users, { phase, dataPending });
 
   // Render full list
   const fullListTitle = document.querySelector('#leaderboard-screen .section-title-small[data-i18n="leaderboard.fullRanking"]');
   if (fullListTitle) fullListTitle.textContent = t(hasScores ? 'leaderboard.fullRanking' : 'leaderboard.participantsList');
-  renderFullLeaderboard(users, { hasScores, phase });
+  renderFullLeaderboard(users, { hasScores, phase, dataPending });
 
   // Empty state
   const emptyEl = document.getElementById('lb-empty');
   if (!hasScores) {
     const emptyTitle = emptyEl && emptyEl.querySelector('.lb-empty-title');
     const emptyText = emptyEl && emptyEl.querySelector('.lb-empty-text');
-    const emptyTitleKey = officialStarted ? 'leaderboard.emptyOfficialZeroTitle'
+    const emptyTitleKey = dataPending ? 'leaderboard.emptyDataPendingTitle'
+      : officialStarted ? 'leaderboard.emptyOfficialZeroTitle'
       : (phase === 'liveNoOfficial' ? 'leaderboard.emptyLiveNoOfficialTitle' : 'leaderboard.emptyTitle');
-    const emptyTextKey = officialStarted ? 'leaderboard.emptyOfficialZeroText'
+    const emptyTextKey = dataPending ? 'leaderboard.emptyDataPendingText'
+      : officialStarted ? 'leaderboard.emptyOfficialZeroText'
       : (phase === 'liveNoOfficial' ? 'leaderboard.emptyLiveNoOfficialText' : 'leaderboard.emptyText');
     if (emptyTitle) emptyTitle.textContent = t(emptyTitleKey);
     if (emptyText) emptyText.textContent = t(emptyTextKey, {
@@ -9596,7 +9620,7 @@ async function showLeaderboard(options = {}) {
     emptyEl.style.display = 'none';
   }
 
-  renderTheoreticalLeaderboard(users, { ...options, hasScores, phase });
+  renderTheoreticalLeaderboard(users, { ...options, hasScores, phase, dataPending });
 }
 
 function showTheoreticalLeaderboard() {
@@ -9693,7 +9717,7 @@ function renderProjectionList(users) {
 
 async function renderTheoreticalLeaderboard(users, options = {}) {
   _hideTheoreticalLeaderboard();
-  if (options && (options.hasScores || _phaseHasOfficialScoring(options.phase))) return;
+  if (options && (options.dataPending || options.hasScores || _phaseHasOfficialScoring(options.phase))) return;
   try {
     const projection = await buildTheoreticalGroupLeaderboard(users || []);
     if (!projection || !projection.users || !projection.users.length) return;
@@ -9808,6 +9832,20 @@ function renderFullLeaderboard(users, options = {}) {
     const bonusPts = (user.bonus_points ?? user.bonus_score) || 0;
     const isSinglePhase = state.currentPool && state.currentPool.betting_mode === 'single_phase';
     const rankLabel = options.hasScores ? `#${rank}` : '-';
+    const dataPending = !!options.dataPending;
+    const pendingWithoutScores = dataPending && !options.hasScores;
+    if (dataPending) row.classList.add('data-pending');
+    const scoreLabel = pendingWithoutScores ? t('leaderboard.calculatingShort') : (user.total_score || 0);
+    const pointsLabel = pendingWithoutScores
+      ? t('leaderboard.calculatingLabel')
+      : (dataPending ? t('leaderboard.lastOfficialLabel') : t('leaderboard.points'));
+    const breakdownHtml = pendingWithoutScores
+      ? `<span>${t('leaderboard.calculatingBreakdown')}</span>`
+      : `
+          <span>${t('leaderboard.breakdown.group')}: <span class="lb-bd-gold">${groupPts}</span></span>
+          <span>${t('leaderboard.breakdown.knockout')}: <span class="lb-bd-gold">${knockoutPts}</span></span>
+          <span>${t('leaderboard.breakdown.bonus')}: <span class="lb-bd-gold">${bonusPts}</span></span>
+        `;
 
     row.innerHTML = `
       <div class="lb-rank">${rankLabel}</div>
@@ -9819,14 +9857,12 @@ function renderFullLeaderboard(users, options = {}) {
           ${isMe ? `<span class="lb-badge">${t('common.you')}</span>` : ''}
         </div>
         <div class="lb-breakdown">
-          <span>${t('leaderboard.breakdown.group')}: <span class="lb-bd-gold">${groupPts}</span></span>
-          <span>${t('leaderboard.breakdown.knockout')}: <span class="lb-bd-gold">${knockoutPts}</span></span>
-          <span>${t('leaderboard.breakdown.bonus')}: <span class="lb-bd-gold">${bonusPts}</span></span>
+          ${breakdownHtml}
         </div>
       </div>
       <div>
-        <div class="lb-points">${user.total_score || 0}</div>
-        <div class="lb-points-label">${t('leaderboard.points')}</div>
+        <div class="lb-points">${scoreLabel}</div>
+        <div class="lb-points-label">${pointsLabel}</div>
       </div>
     `;
 
@@ -9910,6 +9946,7 @@ async function renderLeaderboardBanter(users, options = {}) {
   _lbBanter = null;
   box.style.display = 'none';
   try {
+    if (options && options.dataPending) return;
     if (!state.currentPool || !state.currentPool.id) return;
     const phaseFallback = options && options.phase === 'groupsComplete'
       ? _groupsCompleteLeaderboardBanter(users)
@@ -10449,6 +10486,7 @@ const matchesState = {
   loading: false,
   lastSync: null,
   lastScheduleSync: null,
+  timelineSummary: null,
   shouldAnchor: false,
   // v2.5.37: auto-refresh handles. refreshTimer pulls fresh rows from
   // Supabase every 60s; tickTimer re-renders cards every 20s so the
@@ -10588,27 +10626,53 @@ function _matchIdentityKey(m) {
   return `${new Date(ts).toISOString()}|${m.home_team_code}|${m.away_team_code}`;
 }
 
+function _matchNumberKey(m) {
+  const n = Number(m && m.match_number);
+  return Number.isFinite(n) && n > 0 ? `match:${n}` : null;
+}
+
+function _matchFifaIdKey(m) {
+  const id = m && m.fifa_match_id;
+  return id ? `fifa:${id}` : null;
+}
+
+function _matchIdentityKeys(m) {
+  return [_matchFifaIdKey(m), _matchNumberKey(m), _matchIdentityKey(m)].filter(Boolean);
+}
+
+function _matchShouldOverlayOfficial(row) {
+  const status = _matchStatus(row);
+  return _matchIsLiveStatus(row)
+    || _matchNeedsStatusVerification(row)
+    || _matchIsFinishedStatus(row)
+    || status === 'CANCELLED'
+    || status === 'POSTPONED';
+}
+
 function mergeOfficialScheduleWithLiveMatches(scheduleRows, liveRows) {
   const official = Array.isArray(scheduleRows) ? scheduleRows.map(m => ({ ...m, display_source: 'fifa' })) : [];
   if (!official.length) return liveRows || [];
 
   const byKey = new Map();
   official.forEach((m, index) => {
-    const key = _matchIdentityKey(m);
-    if (key) byKey.set(key, index);
+    _matchIdentityKeys(m).forEach(key => byKey.set(key, index));
   });
 
   (liveRows || []).forEach(row => {
-    const key = _matchIdentityKey(row);
-    if (!key || !byKey.has(key)) return;
+    const key = _matchIdentityKeys(row).find(k => byKey.has(k));
+    if (!key) return;
     const index = byKey.get(key);
-    const liveish = _matchIsLiveStatus(row) || _matchNeedsStatusVerification(row);
-    if (!liveish) return;
+    if (!_matchShouldOverlayOfficial(row)) return;
     official[index] = {
       ...official[index],
       status: row.status,
       home_score: row.home_score,
       away_score: row.away_score,
+      home_team_code: row.home_team_code || official[index].home_team_code,
+      away_team_code: row.away_team_code || official[index].away_team_code,
+      home_team_name: row.home_team_name || official[index].home_team_name,
+      away_team_name: row.away_team_name || official[index].away_team_name,
+      winner_code: row.winner_code || official[index].winner_code,
       live_clock: row.live_clock,
       live_period: row.live_period,
       live_source: row.live_source,
@@ -10624,6 +10688,13 @@ function mergeOfficialScheduleWithLiveMatches(scheduleRows, liveRows) {
     const bt = Date.parse(b.match_date || '') || 0;
     return at - bt || (a.match_number || 0) - (b.match_number || 0);
   });
+}
+
+function _matchDomId(match) {
+  const n = Number(match && match.match_number);
+  if (Number.isFinite(n) && n > 0) return `match-card-${n}`;
+  const key = _matchIdentityKey(match);
+  return key ? `match-card-${key.replace(/[^a-z0-9]+/gi, '-')}` : '';
 }
 
 function _localDayKey(date) {
@@ -10662,6 +10733,93 @@ function _matchTimelineAnchorIndex(matches, now = Date.now()) {
   return 0;
 }
 
+function _matchesTimelineSummary(matches, now = Date.now()) {
+  const list = Array.isArray(matches) ? matches : [];
+  const live = list.filter(m => _matchIsLiveish(m, now));
+  const verifying = list.filter(m => _matchNeedsStatusVerification(m, now));
+  const finished = list.filter(m => _matchIsFinishedStatus(m))
+    .sort((a, b) => (Date.parse(a.match_date || '') || 0) - (Date.parse(b.match_date || '') || 0));
+  const next = list.find(m => {
+    const ts = Date.parse(m.match_date || '');
+    return Number.isFinite(ts) && ts >= now - (20 * 60 * 1000) && !_matchIsFinishedStatus(m) && !_matchNeedsStatusVerification(m, now);
+  }) || null;
+  const latestFinished = finished.length ? finished[finished.length - 1] : null;
+  const upcoming = list.filter(m => !_matchIsFinishedStatus(m) && !_matchNeedsStatusVerification(m, now));
+  return {
+    total: list.length,
+    live,
+    verifying,
+    finished,
+    upcoming,
+    next,
+    latestFinished,
+    anchorIndex: _matchTimelineAnchorIndex(list, now)
+  };
+}
+
+function _matchPairLabel(match) {
+  if (!match) return t('matchesEx.noneShort');
+  const home = match.home_team_code ? getTeamName(match.home_team_code) : (match.home_team_name || getTeamName(null));
+  const away = match.away_team_code ? getTeamName(match.away_team_code) : (match.away_team_name || getTeamName(null));
+  return `${home} - ${away}`;
+}
+
+function _matchShortTimeLabel(match) {
+  if (!match || !match.match_date) return t('matchesEx.dateUnknown');
+  const date = new Date(match.match_date);
+  const lang = (typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en');
+  return date.toLocaleDateString(lang === 'he' ? 'he-IL' : 'en-US', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: lang === 'en'
+  });
+}
+
+function renderMatchesNowStrip(matches) {
+  const strip = document.getElementById('matches-now-strip');
+  if (!strip) return;
+  const summary = _matchesTimelineSummary(matches);
+  matchesState.timelineSummary = summary;
+  if (!summary.total) {
+    strip.style.display = 'none';
+    return;
+  }
+
+  const title = document.getElementById('matches-now-title');
+  const subtitle = document.getElementById('matches-now-subtitle');
+  const nextLabel = document.getElementById('matches-now-next-label');
+  const nextValue = document.getElementById('matches-now-next-value');
+  const latestLabel = document.getElementById('matches-now-latest-label');
+  const latestValue = document.getElementById('matches-now-latest-value');
+  const countLabel = document.getElementById('matches-now-count-label');
+  const countValue = document.getElementById('matches-now-count-value');
+
+  if (summary.verifying.length) {
+    title.textContent = t('matchesEx.nowChecking');
+    subtitle.textContent = t('matchesEx.nowCheckingSub');
+  } else if (summary.live.length) {
+    title.textContent = t('matchesEx.nowLive', { n: summary.live.length });
+    subtitle.textContent = _matchPairLabel(summary.live[0]);
+  } else if (summary.next) {
+    title.textContent = t('matchesEx.nowNext');
+    subtitle.textContent = `${_matchPairLabel(summary.next)} · ${_matchShortTimeLabel(summary.next)}`;
+  } else {
+    title.textContent = t('matchesEx.nowComplete');
+    subtitle.textContent = summary.latestFinished ? _matchPairLabel(summary.latestFinished) : t('matchesEx.noInCategory');
+  }
+
+  nextLabel.textContent = summary.verifying.length ? t('matchesEx.checkingMatchLabel') : t('matchesEx.nextMatchLabel');
+  nextValue.textContent = summary.verifying.length ? _matchPairLabel(summary.verifying[0]) : (summary.next ? _matchShortTimeLabel(summary.next) : t('matchesEx.noneShort'));
+  latestLabel.textContent = summary.verifying.length ? t('matchesEx.statusLabel') : t('matchesEx.latestResultLabel');
+  latestValue.textContent = summary.verifying.length ? t('matchesEx.finalizingShort') : (summary.latestFinished ? _matchPairLabel(summary.latestFinished) : t('matchesEx.noneShort'));
+  countLabel.textContent = t('matchesEx.tournamentProgressLabel');
+  countValue.textContent = t('matchesEx.tournamentProgressValue', { finished: summary.finished.length, total: summary.total });
+  strip.style.display = 'block';
+}
+
 function renderMatches() {
   const list = document.getElementById('matches-list');
   const empty = document.getElementById('matches-empty');
@@ -10677,6 +10835,8 @@ function renderMatches() {
   } else {
     updatedText.textContent = t('matchesEx.notSynced');
   }
+
+  renderMatchesNowStrip(matchesState.allMatches);
   
   // Filter matches
   const filtered = matchesState.allMatches.filter(m => {
@@ -10729,6 +10889,7 @@ function renderMatchesTimeline(list, matches) {
       currentDay = dayKey;
       const header = document.createElement('div');
       header.className = 'matches-day-header';
+      header.dataset.dayKey = dayKey;
       header.innerHTML = `
         <span>${date && !isNaN(date) ? formatMatchDayHeader(date) : t('matchesEx.dateUnknown')}</span>
         <span>${date && !isNaN(date) ? date.toLocaleDateString((typeof getCurrentLanguage === 'function' && getCurrentLanguage() === 'he') ? 'he-IL' : 'en-US', { day: 'numeric', month: 'short' }) : ''}</span>
@@ -10744,7 +10905,10 @@ function renderMatchesTimeline(list, matches) {
       list.appendChild(anchor);
     }
 
-    list.appendChild(createMatchCard(match));
+    const card = createMatchCard(match);
+    const id = _matchDomId(match);
+    if (id) card.id = id;
+    list.appendChild(card);
   });
 
   if (matchesState.shouldAnchor) {
@@ -10756,8 +10920,16 @@ function renderMatchesTimeline(list, matches) {
   }
 }
 
+function _setMatchesFilterUi(filter) {
+  document.querySelectorAll('.matches-filter-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.filter === filter);
+  });
+}
+
 function createMatchCard(match) {
   const card = document.createElement('div');
+  const domId = _matchDomId(match);
+  if (domId) card.id = domId;
   
   // PAUSED (halftime / breaks) counts as live too - otherwise the score would
   // vanish and the match would show as "upcoming" for ~15 min every half-time.
@@ -10976,13 +11148,41 @@ function formatRelativeTime(date) {
 
 function filterMatches(filter) {
   matchesState.currentFilter = filter;
-  
-  // Update active tab
-  document.querySelectorAll('.matches-filter-tab').forEach(tab => {
-    tab.classList.toggle('active', tab.dataset.filter === filter);
-  });
-  
+  matchesState.shouldAnchor = filter === 'all';
+  _setMatchesFilterUi(filter);
   renderMatches();
+}
+
+function _scrollMatchCard(match) {
+  if (!match) return false;
+  const id = _matchDomId(match);
+  const el = id ? document.getElementById(id) : null;
+  if (!el) return false;
+  el.scrollIntoView({ block: 'center' });
+  return true;
+}
+
+function jumpMatchesTimeline(target) {
+  if (matchesState.currentFilter !== 'all') {
+    matchesState.currentFilter = 'all';
+    _setMatchesFilterUi('all');
+    renderMatches();
+  }
+  requestAnimationFrame(() => {
+    const summary = matchesState.timelineSummary || _matchesTimelineSummary(matchesState.allMatches);
+    if (target === 'next' && _scrollMatchCard(summary.next)) return;
+    if (target === 'results' && _scrollMatchCard(summary.latestFinished)) return;
+    if (target === 'today') {
+      const key = _localDayKey(new Date());
+      const header = document.querySelector(`.matches-day-header[data-day-key="${key}"]`);
+      if (header) {
+        header.scrollIntoView({ block: 'start' });
+        return;
+      }
+    }
+    const anchor = document.getElementById('matches-current-anchor');
+    if (anchor) anchor.scrollIntoView({ block: 'center' });
+  });
 }
 
 async function refreshMatches() {

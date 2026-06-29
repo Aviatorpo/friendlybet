@@ -25,7 +25,9 @@ const path = require('path');
 const { teamName } = require('./team-names');
 
 const ROOT = path.resolve(__dirname, '..');
-const DATA_DIR = path.join(ROOT, 'public-data');
+const DATA_DIR = process.env.PUBLIC_DATA_DIR
+  ? path.resolve(ROOT, process.env.PUBLIC_DATA_DIR)
+  : path.join(ROOT, 'public-data');
 const MATCHES_FILE = path.join(DATA_DIR, 'matches.json');
 const NEWS_FILE = path.join(DATA_DIR, 'pundit-news.json');
 const OUT_FILE = path.join(DATA_DIR, 'pundit.json');

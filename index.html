@@ -2089,13 +2089,40 @@ function loadTablerFallback() {
 
     <!-- Filter tabs -->
     <div class="matches-filter-tabs">
-      <button class="matches-filter-tab active" data-filter="all" onclick="filterMatches('all')" data-i18n="matches.filter.all">הכל</button>
+      <button class="matches-filter-tab active" data-filter="all" onclick="filterMatches('all')" data-i18n="matchesEx.filterTimeline">ציר זמן</button>
       <button class="matches-filter-tab" data-filter="live" onclick="filterMatches('live')" data-i18n="matchesEx.filterLive">🔴 חי</button>
-      <button class="matches-filter-tab" data-filter="upcoming" onclick="filterMatches('upcoming')" data-i18n="matchesEx.filterUpcoming">קרובים</button>
-      <button class="matches-filter-tab" data-filter="finished" onclick="filterMatches('finished')" data-i18n="matchesEx.filterFinished">הסתיימו</button>
+      <button class="matches-filter-tab" data-filter="upcoming" onclick="filterMatches('upcoming')" data-i18n="matchesEx.filterNext">הבא</button>
+      <button class="matches-filter-tab" data-filter="finished" onclick="filterMatches('finished')" data-i18n="matchesEx.filterResults">תוצאות</button>
     </div>
 
     <div class="container">
+      <div id="matches-now-strip" class="matches-now-strip" style="display: none;">
+        <div class="matches-now-main">
+          <div id="matches-now-title" class="matches-now-title"></div>
+          <div id="matches-now-subtitle" class="matches-now-subtitle"></div>
+        </div>
+        <div class="matches-now-metrics">
+          <div class="matches-now-metric">
+            <span id="matches-now-next-label"></span>
+            <strong id="matches-now-next-value"></strong>
+          </div>
+          <div class="matches-now-metric">
+            <span id="matches-now-latest-label"></span>
+            <strong id="matches-now-latest-value"></strong>
+          </div>
+          <div class="matches-now-metric">
+            <span id="matches-now-count-label"></span>
+            <strong id="matches-now-count-value"></strong>
+          </div>
+        </div>
+        <div class="matches-jump-controls" aria-label="Timeline navigation">
+          <button type="button" onclick="jumpMatchesTimeline('now')" data-i18n="matchesEx.jumpNow">עכשיו</button>
+          <button type="button" onclick="jumpMatchesTimeline('today')" data-i18n="matchesEx.jumpToday">היום</button>
+          <button type="button" onclick="jumpMatchesTimeline('next')" data-i18n="matchesEx.jumpNext">המשחק הבא</button>
+          <button type="button" onclick="jumpMatchesTimeline('results')" data-i18n="matchesEx.jumpResults">תוצאות</button>
+        </div>
+      </div>
+
       <!-- Last updated indicator -->
       <div class="matches-last-updated" id="matches-last-updated">
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-inline-end: 4px;">
@@ -3146,7 +3173,7 @@ function loadTablerFallback() {
       <span>FriendlyBet</span>
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
-      <span class="menu-version">v2.10.110</span>
+      <span class="menu-version">v2.10.111</span>
     </div>
   </div>
 

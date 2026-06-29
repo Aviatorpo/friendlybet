@@ -11,14 +11,6 @@ on:
         description: 'Comma-separated user UUIDs to inspect'
         required: true
         type: string
-      restore:
-        description: 'Restore valid 32-row group_picks snapshots'
-        required: false
-        default: 'false'
-        type: choice
-        options:
-          - 'false'
-          - 'true'
 
 permissions:
   contents: read
@@ -42,5 +34,4 @@ jobs:
           BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
           CRITICAL_BACKUP_POOL_IDS: ${{ inputs.pool_ids }}
           CRITICAL_BACKUP_USER_IDS: ${{ inputs.user_ids }}
-          CRITICAL_BACKUP_RESTORE: ${{ inputs.restore == 'true' && '1' || '' }}
         run: node scripts/inspect-critical-backups.js
