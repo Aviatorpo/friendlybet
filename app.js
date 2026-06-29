@@ -4650,9 +4650,8 @@ function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAcce
   const showTpRecovery = !!(
     state.currentUser &&
     state.currentUser.is_admin &&
-    !member.is_admin &&
-    needsR16Refill &&
     r16IncidentClosed &&
+    tpRecovery &&
     state.currentPool &&
     state.currentPool.betting_mode === 'two_phase'
   );
