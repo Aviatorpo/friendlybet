@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-06-29T21:52:31.062Z",
-  "freshUntil": "2026-06-30T03:52:31.062Z",
+  "updatedAt": "2026-06-29T23:39:41.084Z",
+  "freshUntil": "2026-06-30T05:39:41.084Z",
   "count": 7,
   "items": [
     {
-      "id": "live-fd6b2190-6ec4-400d-bd94-868d225ee3f7",
-      "type": "live",
+      "id": "result-fd6b2190-6ec4-400d-bd94-868d225ee3f7",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "גרמניה נגד פרגוואי עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים 🔥",
-      "en": "Germany vs Paraguay is live now. Every goal can change the group and the predictions 🔥",
+      "he": "גרמניה ופרגוואי סיימו 1:1. בנוקאאוט זה לא סוגר סיפור, זה רק מעביר את כל ההימור לדופק גבוה יותר 🧾",
+      "en": "Germany and Paraguay finished 1-1. In the knockout rounds, that does not settle the story; it just raises the pulse. It still matters for brackets, knockout picks, and pool points 🧾",
       "sources": [],
-      "expires_at": "2026-06-30T00:52:31.062Z"
+      "expires_at": "2026-07-01T08:30:00.000Z"
     },
     {
       "id": "result-6ccd037c-6910-43ef-8818-d23358c8c791",
       "type": "result",
       "confidence": "confirmed",
-      "he": "2:1 לברזיל על יפן. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
-      "en": "2-1 for Brazil over Japan. Anyone who picked them in this knockout match can open the receipts 🧾",
+      "he": "ברזיל ניצחה את יפן 2:1 בנוקאאוט. זה כבר לא חישוב בית, זה רגע שמזיז בראקטים 🧾",
+      "en": "Brazil beat Japan 2-1 in the knockout rounds. No group math now, just a bracket-moving result 🧾",
       "sources": [],
       "expires_at": "2026-07-01T05:00:00.000Z"
     },
@@ -25,8 +25,8 @@
       "id": "result-1e63c58a-b2fb-40ca-a18d-e2fe729b0774",
       "type": "result",
       "confidence": "confirmed",
-      "he": "1:0 לקנדה על דרום אפריקה. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
-      "en": "1-0 for Canada over South Africa. Anyone who picked them in this knockout match can open the receipts 🧾",
+      "he": "קנדה ניצחה את דרום אפריקה 1:0 בנוקאאוט. זה כבר לא חישוב בית, זה רגע שמזיז בראקטים 🧾",
+      "en": "Canada beat South Africa 1-0 in the knockout rounds. No group math now, just a bracket-moving result 🧾",
       "sources": [],
       "expires_at": "2026-06-30T07:00:00.000Z"
     },
