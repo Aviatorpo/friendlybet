@@ -5,6 +5,10 @@ Use this for World Cup match-result sync, group completion, scoring, dashboard, 
 ## Source Of Truth
 
 - Live display may use a fresh provider score, but official points require verified final results.
+- Visible result is not scoreable proof. A match is scoreable only when the same event exists in Supabase `matches` as a terminal, non-pending row with correct `external_id`, `stage`, teams, score, and `winner_code`.
+- FIFA `world-cup-schedule.json`, provider responses, Pundit, Stories, and match-card display are not scoring inputs unless their rows have been bridged into Supabase `matches`.
+- Before every knockout match window, the scoring database must already contain every known fixture from the official FIFA schedule. Future-round placeholders should be carried as soon as FIFA exposes their match ids/times/stages, and updated when teams are known.
+- When a finished match determines a next-round participant, the next-round fixture bridge is part of the same critical path: update/verify current result, score/publish, then verify the newly known next fixture exists in Supabase `matches`.
 - ESPN-only final rows must stay audit-pending with `live_source='espn-final'` or pending `status_detail`; group and knockout scoring must ignore them.
 - The final-result verifier clears pending residue only after the required sources agree.
 - Do not publish stories or official scoring from an unverified provider-final row.
@@ -23,6 +27,7 @@ Use this for World Cup match-result sync, group completion, scoring, dashboard, 
 - Missing story assets, empty editorial news, weak Pundit copy, or social/video gaps are incidents, but they must not block result verification, scoring publication, app hotfix CI, or knockout-entry access. Demote accepted content backlog to warnings in result/scoring workflows and open a separate content incident.
 - Match, scoring, lock, and leaderboard code must render or complete from core match/pick/result data first. Optional content should load after core state, with timeout/fallback behavior, and should disappear quietly or create a separate content incident if unavailable.
 - If users cannot see points or enter knockout picks more than 15 minutes after the required verified final state is available, stop long content loops and run the shortest safe recovery path: verifier/manual-result workflow, score calculation, snapshot export, production re-fetch, and a status note with remaining non-critical issues.
+- For knockout rounds, the shortest safe recovery path must begin with the schedule-to-scoring bridge: official FIFA schedule row -> Supabase `matches` row -> live poller/verifier candidate -> score calculation -> leaderboard snapshot -> production proof.
 - Before opening knockout entry after group completion, verify the actual user-visible product mode, not just the official rule constants: single-phase bracket, two-phase reopened bracket, R32 seed display, R16 propagation, QF/SF/final propagation, saved-pick persistence, and live/cache-busted production version. The minimum local gate is `node scripts/test-fifa-bracket.js`, `node scripts/test-third-place-allocation.js`, and `node scripts/test-two-phase-knockout-wiring.js`.
 - More than two repeated failure emails from the same workflow family in 30 minutes during a live transition is a control-plane incident. Assign one owner, summarize the current proven layer, and suppress or demote non-critical alert causes until the user path is restored.
 - A live-transition recovery report must include workflow run ids, finished-match count, pool/user scoring count when available, snapshot verification result, production URL/public-data proof, and the exact remaining blocker.
@@ -33,6 +38,8 @@ Use this checklist before proposing or changing any post-final scoring plan:
 
 - User promise: define the maximum time from verified final result to visible leaderboard.
 - Verification boundary: distinguish provisional provider-final, verification pending, verified result, consensus fallback, and manual review.
+- Source bridge: prove which source the user display reads and which source the scorer reads. If they differ, prove the bridge row exists before discussing scoring correctness.
+- Fixture coverage: compare official schedule fixture ids against Supabase `matches` for the next match window and all known knockout fixtures. Missing known fixtures are blockers, not warnings.
 - Source policy: name which sources can auto-score, how many agreeing sources are required, and what blocks auto-scoring.
 - Scoring scope: explain whether the path recomputes all pools/users or only affected pools/users, and why.
 - Write path: identify one-by-one writes, batch writes, RPCs, and unchanged heartbeat writes.
@@ -85,6 +92,7 @@ State-blind work is not release-ready. If a feature only proves one phase, the r
 
 ## Release Gates
 
+- Run the schedule bridge audit before and during knockout windows. The gate must compare production `world-cup-schedule.json` against live Supabase `matches`, fail on any known fixture missing inside the next 36 hours, and report unresolved placeholders separately.
 - Run `node scripts/live-ops-audit.js` for a one-command local snapshot audit of result recovery candidates, completed groups, story coverage, Pundit freshness, and watchdog errors. The main scoring/sync CI workflow must run this real snapshot audit, not only its unit tests, and must trigger on `public-data/matches.json`, `public-data/pundit.json`, and `public-data/world-cup-stories.json` changes. In static public-snapshot CI, set `LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS=1` so active-match snapshot freeze is warning evidence instead of a false blocker; do not use that setting for live DB audits.
 - Run `node scripts/live-completion-readiness.js` before release or during live incidents to verify result recovery, stories, Pundit freshness, scoring guards, workflow schedules, snapshot ordering, CI coverage, version alignment, and visual-fallback proof in one place. Add `LIVE_COMPLETION_PUBLIC_BASE_URL=https://friendlybet.live` when production public snapshots should be checked without Supabase secrets. Add `LIVE_COMPLETION_DB_SOURCE=supabase` and workflow liveness proof during match windows so public snapshot live-status warnings are backed by fresh live DB/provider truth. Treat `warnings` as explicit missing evidence, especially screenshot, production public snapshot, and live DB/provider proof.
 - For content fixes that are already visible to users, run a direct cache-busted production public-data fetch after deploy and inspect the exact latest items that the dashboard will render. Local snapshot validation alone is not release evidence.

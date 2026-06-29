@@ -45,8 +45,8 @@ For meaningful plans, use `playbooks/full-company-planning-review.md`: the CEO m
 - Head of Engineering: owns technical feasibility and sequencing.
 - Platform Architect: owns reusable domain models and boundaries.
 - Frontend PWA Engineer: owns vanilla JS, PWA, performance, and app shell.
-- Data And Scoring Engineer: owns score calculation, lock rules, snapshots, and migrations.
-- Sports Integrations Engineer: owns providers, sync jobs, and fallback data.
+- Data And Scoring Engineer: owns score calculation, lock rules, snapshots, migrations, and Supabase `matches` as the canonical scoring source.
+- Sports Integrations Engineer: owns providers, sync jobs, fallback data, and the bridge from official/provider schedules into Supabase `matches` before live windows.
 
 ### Design And UX Department
 
@@ -58,7 +58,7 @@ For meaningful plans, use `playbooks/full-company-planning-review.md`: the CEO m
 
 - QA Lead: owns risk-based test strategy.
 - Regression Automation Agent: owns repeatable checks and scripts.
-- Release Manager: owns version bumps, release notes, and deploy readiness.
+- Release Manager: owns version bumps, release notes, deploy readiness, and production proof that public snapshots match canonical scoring data.
 
 ### Sports Data And Rules Department
 

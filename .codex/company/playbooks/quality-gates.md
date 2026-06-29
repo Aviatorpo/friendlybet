@@ -9,6 +9,8 @@ Use this before the CEO or any department calls significant work done.
 1a. User-state coverage: user-facing product work defines and validates the relevant tournament phase, pool mode, lock/open state, prediction completion state, scoring/publication state, and returning/late/blocked user states. A feature is not done if it only works for one happy-path phase while adjacent phases show stale, misleading, or blocked UI.
 2. Technical correctness: implementation follows repo patterns and avoids hidden coupling.
 3. Scoring/data correctness: scoring, lock rules, snapshots, migrations, and provider behavior are handled when relevant.
+3a. Canonical scoring-source bridge: for any result, match, scoring, or live-data claim, prove the exact bridge from user-visible source to canonical scoring source. For FriendlyBet WC2026 this means official/provider/schedule display data must exist in Supabase `matches` with matching `external_id`, `stage`, teams, status, score, and `winner_code` before scoring is considered covered.
+3b. Future fixture coverage: before live match windows, compare official schedule fixtures against Supabase `matches`. Missing known fixtures inside the next 36 hours are blockers. Missing unresolved placeholders for later rounds must be reported with owner and recovery path.
 4. Privacy/security: RLS, data minimization, public sharing, and auth/session behavior are safe.
 5. Cost: provider, hosting, GitHub Actions, Supabase, Vercel, and AI/tool costs are acceptable.
 6. Design/i18n: mobile, RTL, Hebrew, English, accessibility, and text fit are handled for user-facing changes.
@@ -21,6 +23,7 @@ Use this before the CEO or any department calls significant work done.
 13. Artifact sync: generated production artifacts must not live only on the local machine. Before a live window, compare local, `origin/main`, Vercel, and cache-busted production public data; if useful generated data is local-only, either ship and verify it or explicitly document why it is safe to leave out.
 14. Critical-path priority: during live scoring or knockout-opening incidents, do not let content/story/news/social defects block verified results, scoring, leaderboard snapshots, app hotfix CI, lock/open state, or production verification. Track those as separate content incidents.
 15. Content isolation: any plan or implementation touching results, scoring, locks, leaderboards, or match display must prove optional content fails closed. Missing, stale, slow, invalid, or duplicate Pundit/Stories/banter/share/social content must not block the critical path.
+16. End-to-end ownership: do not call a live tournament plan, fix, or recovery "end to end" unless every relevant layer was checked: official schedule/provider, Supabase canonical tables, workflows, scoring scripts, public snapshots, app display, cache/deploy state, and user-facing proof. A narrow local or DB check must be labeled narrow.
 
 ## Output
 
