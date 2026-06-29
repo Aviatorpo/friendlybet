@@ -1850,23 +1850,24 @@ function _dashboardGroupProgress() {
   const finishedMatches = (state.results && Array.isArray(state.results.finishedMatches)) ? state.results.finishedMatches : [];
   const groupMatches = finishedMatches.filter(m => String(m.stage || '').toLowerCase().includes('group'));
   const byGroup = {};
-  const allFinished = new Set();
   groupMatches.forEach(m => {
     const g = m.group_letter || m.group || m.group_name || m.groupName || '';
     const key = String(g).replace(/^Group\s+/i, '').trim().charAt(0).toUpperCase();
     if (!key) return;
     const matchKey = _dashboardMatchIdentity(m);
     if (!matchKey) return;
-    allFinished.add(`${key}:${matchKey}`);
     if (!byGroup[key]) byGroup[key] = new Set();
     byGroup[key].add(matchKey);
   });
-  const completeGroups = Object.values(byGroup).filter(g => g.size === 6).length;
+  const groupSets = Object.values(byGroup);
+  const matchesPerGroup = 6;
+  const totalGroups = 12;
+  const completeGroups = groupSets.filter(g => g.size >= matchesPerGroup).length;
   return {
-    finished: allFinished.size,
-    total: 72,
+    finished: groupSets.reduce((sum, g) => sum + Math.min(g.size, matchesPerGroup), 0),
+    total: totalGroups * matchesPerGroup,
     completeGroups,
-    totalGroups: 12
+    totalGroups
   };
 }
 

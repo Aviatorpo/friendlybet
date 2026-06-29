@@ -82,9 +82,29 @@ const progressWithDuplicate = sandbox.dashboardGroupProgress();
 assert(progressWithDuplicate.completeGroups === 1, 'Dashboard group progress must not count duplicate logical fixtures as a completed group');
 assert(progressWithDuplicate.finished === 11, 'Dashboard finished match count must be unique-fixture safe');
 
+sandbox.state.results.finishedMatches = [];
+for (const group of 'ABCDEFGHIJKL'.split('')) {
+  sandbox.state.results.finishedMatches.push(
+    { stage: 'GROUP_STAGE', group_letter: group, home_team_code: `${group}1`, away_team_code: `${group}2` },
+    { stage: 'GROUP_STAGE', group_letter: group, home_team_code: `${group}1`, away_team_code: `${group}3` },
+    { stage: 'GROUP_STAGE', group_letter: group, home_team_code: `${group}1`, away_team_code: `${group}4` },
+    { stage: 'GROUP_STAGE', group_letter: group, home_team_code: `${group}2`, away_team_code: `${group}3` },
+    { stage: 'GROUP_STAGE', group_letter: group, home_team_code: `${group}2`, away_team_code: `${group}4` },
+    { stage: 'GROUP_STAGE', group_letter: group, home_team_code: `${group}3`, away_team_code: `${group}4` },
+  );
+}
+sandbox.state.results.finishedMatches.push(
+  { stage: 'GROUP_STAGE', group_letter: 'H', home_team_code: 'H2_ALIAS', away_team_code: 'H4' },
+  { stage: 'GROUP_STAGE', group_letter: 'E', home_team_code: 'E1', away_team_code: 'E4_ALIAS' },
+);
+const progressWithProviderAliases = sandbox.dashboardGroupProgress();
+assert(progressWithProviderAliases.completeGroups === 12, 'Dashboard group progress must treat six-or-more unique group fixtures as complete');
+assert(progressWithProviderAliases.finished === 72, 'Dashboard finished match count must cap provider duplicate or alias rows at official group capacity');
+assert(phase(true, false, progressWithProviderAliases) === 'groupsComplete', 'Provider duplicate or alias rows must not keep the dashboard in group-stage projection mode');
+
 assert(
-  /g\.size\s*===\s*6/.test(groupProgressSource),
-  'Dashboard group completion must require exactly six unique completed fixtures'
+  /g\.size\s*>=\s*matchesPerGroup/.test(groupProgressSource),
+  'Dashboard group completion must allow provider duplicate or alias rows after six unique completed fixtures'
 );
 
 const dashboardProjection = extractFunction(app, 'updateDashboardProjectionTeaser');
