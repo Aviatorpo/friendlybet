@@ -26,6 +26,13 @@ const MIGRATION_ALLOWLIST = new Set([
   // (none needed: the two historical destructive migrations now carry the replay guard)
 ]);
 
+const QA_DESTRUCTIVE_SCRIPT_ALLOWLIST = new Set([
+  // Staging-only seed/reset scripts. They must import and execute assertQaSupabaseEnv()
+  // before destructive writes, which refuses production Supabase refs.
+  'qa-randomize-finished-world-cup.js',
+  'qa-reset-staging-data.js',
+]);
+
 // Strip SQL comments so patterns inside `-- …` / `/* … */` (e.g. an incident note that
 // quotes "DELETE FROM knockout_picks") are not mistaken for real statements.
 function stripSqlComments(s) {
@@ -70,6 +77,8 @@ for (const f of fs.existsSync(scrDir) ? fs.readdirSync(scrDir) : []) {
   if (!f.endsWith('.js')) continue;
   if (f === path.basename(__filename) || f.startsWith('test-')) continue;
   const src = fs.readFileSync(path.join(scrDir, f), 'utf8');
+  const qaDestructiveAllowed = QA_DESTRUCTIVE_SCRIPT_ALLOWLIST.has(f) && /assertQaSupabaseEnv\s*\(/.test(src);
+  if (qaDestructiveAllowed) continue;
   for (const tbl of PROT) {
     // REST helper blanket delete: callSupabase('DELETE','<protected>'  / sb('DELETE','<protected>'
     const restRe = new RegExp(`\\(\\s*['"]DELETE['"]\\s*,\\s*['"]${tbl}['"]`, 'i');
