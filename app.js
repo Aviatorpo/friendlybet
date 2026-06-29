@@ -4862,6 +4862,7 @@ async function loadAdminMembers() {
     // is shared across both modes (bracket_position column was added in the
     // 2026-05-17 migration for the v2 flow).
     const isV2 = pool.betting_mode === 'single_phase';
+    const isTwoPhase = pool.betting_mode === 'two_phase';
     const groupTable = isV2 ? 'group_position_picks' : 'group_picks';
 
     // Load picks stats for each user
@@ -4913,11 +4914,12 @@ async function loadAdminMembers() {
     (topScorerPicksRes.data || []).forEach(p => { hasTopScorerByUser[p.user_id] = true; });
 
     const reopenByUser = {};
-    if (isV2) {
+    if (isV2 || (isTwoPhase && _tpRecoveryClosed())) {
       try {
         const code = _currentRecoveryCode();
         if (code && supabaseClient) {
-          const { data, error } = await supabaseClient.rpc('admin_knockout_reopen_members', { p_code: code });
+          const rpcName = isTwoPhase ? 'admin_two_phase_knockout_reopen_members' : 'admin_knockout_reopen_members';
+          const { data, error } = await supabaseClient.rpc(rpcName, { p_code: code });
           if (!error && Array.isArray(data)) {
             data.forEach(r => { if (r && r.user_id) reopenByUser[r.user_id] = r; });
           }
@@ -4936,6 +4938,7 @@ async function loadAdminMembers() {
       isAdmin: u.is_admin === true
     }));
     adminState.isV2 = isV2;
+    adminState.isTwoPhase = isTwoPhase;
     
     renderAdminMembers();
     
@@ -5116,7 +5119,8 @@ function renderAdminMembers() {
 
     const grant = member.reopenGrant || {};
     const reopenActive = !!grant.grant_active;
-    const showReopenControl = (spIsLocked() || annexReview) && adminState.isV2 && !member.isAdmin;
+    const showTwoPhaseReopenControl = !!(adminState.isTwoPhase && _tpRecoveryClosed() && member.reopenGrant);
+    const showReopenControl = ((spIsLocked() || annexReview) && adminState.isV2 && !member.isAdmin) || showTwoPhaseReopenControl;
     const reopenHtml = showReopenControl
       ? `<div class="admin-member-reopen" data-member-id="${member.id}">` +
         (reopenActive
@@ -5214,14 +5218,14 @@ function renderAdminMembers() {
           rec.innerHTML = `<div class="amr-ok">${res.expires_at ? t('reopen.admin.grantedUntil', { time: _fmtReopenExpiry(res.expires_at) }) : t('reopen.admin.granted')}</div>` +
             `<div class="amr-actions"><button type="button" class="amr-copy">${t('reopen.admin.copyBtn', { name: member.nickname || '' })}</button></div>`;
           const cp = rec.querySelector('.amr-copy');
-          cp.addEventListener('click', (ev) => { ev.stopPropagation(); _adminCopyReopenMsg(member.nickname); });
+          cp.addEventListener('click', (ev) => { ev.stopPropagation(); _adminCopyReopenMsg(member.nickname, adminState.isTwoPhase); });
         } else {
           allowBtn.disabled = false; allowBtn.textContent = t('reopen.admin.allowBtn');
           showToast(t('reopen.admin.notEligible'), 'error');
         }
       });
       const cp = rec.querySelector('.amr-copy');
-      if (cp) cp.addEventListener('click', (ev) => { ev.stopPropagation(); _adminCopyReopenMsg(member.nickname); });
+      if (cp) cp.addEventListener('click', (ev) => { ev.stopPropagation(); _adminCopyReopenMsg(member.nickname, adminState.isTwoPhase); });
     }
   });
 }
@@ -5246,14 +5250,18 @@ async function _adminApproveReopen(targetUserId) {
   try {
     const code = _currentRecoveryCode();
     if (!code) { showToast(t('reopen.admin.noCode'), 'error'); return { ok: false }; }
-    const { data, error } = await supabaseClient.rpc('approve_knockout_reopen', { p_code: code, p_target_user: targetUserId });
+    const rpcName = adminState.isTwoPhase ? 'approve_two_phase_knockout_reopen' : 'approve_knockout_reopen';
+    const args = adminState.isTwoPhase
+      ? { p_code: code, p_target_user: targetUserId, p_reason: 'admin_manual_reopen' }
+      : { p_code: code, p_target_user: targetUserId };
+    const { data, error } = await supabaseClient.rpc(rpcName, args);
     return error ? { ok: false } : (data || { ok: false });
   } catch (_) { return { ok: false }; }
 }
 
 // Copy a ready, personalized re-entry reminder the admin can DM to that member.
-function _adminCopyReopenMsg(name) {
-  const msg = t('reopen.admin.personalMsg', { name: name || '' });
+function _adminCopyReopenMsg(name, isTwoPhase = false) {
+  const msg = t(isTwoPhase ? 'tpRecovery.admin.personalMsg' : 'reopen.admin.personalMsg', { name: name || '' });
   try { navigator.clipboard.writeText(msg); showToast(t('reopen.admin.copied'), 'success'); }
   catch (_) { showToast(msg, 'info'); }
 }
