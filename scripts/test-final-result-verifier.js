@@ -136,6 +136,13 @@ eq('fetches adjacent ESPN scoreboard dates for late UTC kickoff',
 eq('accepts ESPN abbreviation fallback when display name is missing',
   F.normalizeTeamCode(null, 'KOR'),
   'KOR');
+eq('normalizes provider aliases through shared World Cup rules', [
+  F.normalizeTeamCode(null, 'KSA'),
+  F.normalizeTeamCode(null, 'CUW'),
+], [
+  'SAU',
+  'CUR',
+]);
 
 const fifaTransformed = F.transformFifaMatch(fifaFinal);
 eq('transform FIFA final match', {
@@ -171,6 +178,34 @@ eq('transform football-data final match', {
   winnerCode: null
 });
 ok('finds exact football-data fixture', !!F.findMatchingFixture(db, [footballDataFinal], F.transformFootballDataMatch).match);
+ok('matches KSA provider alias against SAU db code', !!F.findMatchingFixture({
+  ...db,
+  home_team_code: 'SAU',
+  away_team_code: 'URU',
+  match_date: '2026-06-15T22:00:00Z',
+}, [{
+  ...fifaFinal,
+  IdMatch: '400021486',
+  Date: '2026-06-15T22:00:00Z',
+  Home: { IdCountry: 'KSA', IdTeam: '1', Score: 1, TeamName: [{ Locale: 'en-GB', Description: 'Saudi Arabia' }] },
+  Away: { IdCountry: 'URU', IdTeam: '2', Score: 1, TeamName: [{ Locale: 'en-GB', Description: 'Uruguay' }] },
+}], F.transformFifaMatch).match);
+ok('matches CUW provider alias against CUR db code', !!F.findMatchingFixture({
+  ...db,
+  home_team_code: 'ECU',
+  away_team_code: 'CUR',
+  match_date: '2026-06-21T00:00:00Z',
+}, [{
+  ...footballDataFinal,
+  utcDate: '2026-06-21T00:00:00Z',
+  homeTeam: { name: 'Ecuador', shortName: 'Ecuador', tla: 'ECU' },
+  awayTeam: { name: 'Curacao', shortName: 'Curacao', tla: 'CUW' },
+  score: {
+    winner: 'DRAW',
+    fullTime: { home: 1, away: 1 },
+    regularTime: { home: 1, away: 1 }
+  }
+}], F.transformFootballDataMatch).match);
 
 const espnUpdate = F.buildUpdateFromVerifiedFixture(espnTransformed, '2026-06-11T21:00:00Z').update;
 const fifaUpdate = F.buildUpdateFromVerifiedFixture(fifaTransformed, '2026-06-11T21:00:00Z').update;

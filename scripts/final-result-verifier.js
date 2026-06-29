@@ -17,6 +17,7 @@ const fs = require('fs');
 const path = require('path');
 const { fbGuardDelete } = require('./lib-guard');
 const { getTeamCode } = require('./smart-sync.js');
+const WCR = require('../share-assets/world-cup-rules.js');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY || process.env.PROD_ANON_KEY;
@@ -330,15 +331,19 @@ function transformFootballDataMatch(match) {
 
 function normalizeTeamCode(name, fallbackCode) {
   const mapped = getTeamCode(name);
-  if (mapped) return mapped;
+  if (mapped) return WCR.normalizeTeamCode(mapped);
   const raw = String(fallbackCode || name || '').trim().toUpperCase();
-  return TEAM_CODE_RE.test(raw) ? raw : null;
+  return TEAM_CODE_RE.test(raw) ? WCR.normalizeTeamCode(raw) : null;
+}
+
+function canonicalTeamCode(code) {
+  return WCR.normalizeTeamCode(code);
 }
 
 function fixtureMatchesDbMatch(dbMatch, sourceMatch) {
   if (!dbMatch || !sourceMatch) return false;
-  if (dbMatch.home_team_code !== sourceMatch.homeCode) return false;
-  if (dbMatch.away_team_code !== sourceMatch.awayCode) return false;
+  if (canonicalTeamCode(dbMatch.home_team_code) !== canonicalTeamCode(sourceMatch.homeCode)) return false;
+  if (canonicalTeamCode(dbMatch.away_team_code) !== canonicalTeamCode(sourceMatch.awayCode)) return false;
   const a = Date.parse(dbMatch.match_date);
   const b = Date.parse(sourceMatch.fixtureDate);
   if (isNaN(a) || isNaN(b)) return false;
