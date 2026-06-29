@@ -17,6 +17,7 @@ const SCORING_CRITICAL =
   process.argv.includes('--critical') ||
   process.env.SCORING_CRITICAL === '1' ||
   process.env.SCORING_CRITICAL === 'true';
+const SCORING_POOL_IDS = csvList(process.env.SCORING_POOL_IDS || '');
 const fs = require('fs');
 const path = require('path');
 const WCR = require('../share-assets/world-cup-rules.js');
@@ -34,6 +35,13 @@ function setGithubOutput(name, value) {
   const file = process.env.GITHUB_OUTPUT;
   if (!file) return;
   fs.appendFileSync(file, `${name}=${String(value == null ? '' : value)}\n`);
+}
+
+function csvList(value) {
+  return String(value || '')
+    .split(',')
+    .map(s => s.trim())
+    .filter(Boolean);
 }
 
 if (!SUPABASE_KEY && require.main === module) {
@@ -580,7 +588,14 @@ async function main(options = {}) {
   const startedAt = Date.now();
 
   // 1. Load pools
-  const pools = await sbAll('pools', '?select=*');
+  const poolFilter = new Set(csvList(options.poolIds || SCORING_POOL_IDS));
+  const allPools = await sbAll('pools', '?select=*');
+  const pools = poolFilter.size
+    ? allPools.filter(pool => poolFilter.has(pool.id) || poolFilter.has(pool.code))
+    : allPools;
+  if (poolFilter.size) {
+    console.log(`SCORING_POOL_IDS filter requested ${poolFilter.size}; scoring ${pools.length} matching pool(s)`);
+  }
   if (!pools || !pools.length) {
     console.log('No pools');
     setGithubOutput('score_ms', Date.now() - startedAt);
