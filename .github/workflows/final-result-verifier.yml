@@ -176,6 +176,28 @@ jobs:
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
         run: node scripts/verify-scoring-snapshots.js
 
+      - name: Refresh FIFA schedule after verified result
+        if: steps.verify_results.outputs.changed == 'true'
+        continue-on-error: true
+        run: node scripts/update-fifa-world-cup-schedule.js
+
+      - name: Bridge next knockout fixtures after verified result
+        if: steps.verify_results.outputs.changed == 'true'
+        continue-on-error: true
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36
+
+      - name: Export match snapshot after fixture bridge
+        if: steps.verify_results.outputs.changed == 'true'
+        continue-on-error: true
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+        run: node scripts/export-snapshots.js matches
+
       - name: Generate knockout scoring scenarios
         if: steps.verify_results.outputs.changed == 'true'
         continue-on-error: true
@@ -183,7 +205,6 @@ jobs:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           SCORING_VERBOSE: '0'
-          KNOCKOUT_SCENARIO_TARGETS: BRA-JPN
         run: node scripts/generate-knockout-scenarios.js
 
       - name: Commit critical scoring snapshots if changed
@@ -196,6 +217,8 @@ jobs:
           SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
           SCORING_VERBOSE: '0'
           REGENERATE_COMMANDS: |
+            node scripts/update-fifa-world-cup-schedule.js || true
+            node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36 || true
             node scripts/export-snapshots.js matches
             node scripts/calculate-scores-v2.js --critical
             node scripts/export-snapshots.js leaderboards
@@ -204,11 +227,19 @@ jobs:
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
-          if [ -n "$(git status --porcelain public-data/matches.json public-data/leaderboard public-data/knockout-scenarios)" ]; then
-            bash scripts/commit-generated-snapshots.sh "data: refresh scores after verified result" public-data/matches.json public-data/leaderboard public-data/knockout-scenarios
+          if [ -n "$(git status --porcelain public-data/world-cup-schedule.json public-data/matches.json public-data/leaderboard public-data/knockout-scenarios)" ]; then
+            bash scripts/commit-generated-snapshots.sh "data: refresh scores after verified result" public-data/world-cup-schedule.json public-data/matches.json public-data/leaderboard public-data/knockout-scenarios
           else
             echo "no scoring snapshot change"
           fi
+
+      - name: Check knockout scenario readiness
+        if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          KNOCKOUT_SCENARIO_FAIL_WITHIN_HOURS: 24
+        run: node scripts/knockout-scenario-readiness.js
 
       - name: Prove public scoring snapshots after verified result
         if: steps.verify_results.outputs.changed == 'true' && steps.score_results.outputs.changed_pool_ids != ''

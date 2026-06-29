@@ -193,6 +193,41 @@ check('live poller has continuous 5-minute group-stage coverage', () => {
   assert.ok(/RESULT_FALLBACK_SOURCE_MODE:\s*all/.test(text), 'live full-time handoff must check all supported sources immediately');
 });
 
+check('verified-result workflows refresh next hidden knockout scenarios', () => {
+  [
+    '.github/workflows/calculate-scores-v2.yml',
+    '.github/workflows/final-result-verifier.yml',
+    '.github/workflows/live-poller.yml',
+    '.github/workflows/manual-match-results.yml',
+  ].forEach(file => {
+    const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    assert.ok(text.includes('node scripts/sync-fifa-schedule-to-matches.js --include-placeholders'), `${file} must bridge known knockout fixtures before scenario generation`);
+    assertOrdered(text, file,
+      'node scripts/sync-fifa-schedule-to-matches.js --include-placeholders',
+      'node scripts/generate-knockout-scenarios.js',
+      `${file} must bridge fixtures before generating hidden scenarios`);
+    assert.ok(text.includes('node scripts/generate-knockout-scenarios.js'), `${file} must generate next knockout scenario files`);
+    assert.ok(text.includes('node scripts/knockout-scenario-readiness.js'), `${file} must check next knockout scenario readiness`);
+    assert.ok(
+      text.includes('public-data/knockout-scenarios') ||
+        /commit-generated-snapshots\.sh[\s\S]*public-data/.test(text),
+      `${file} must commit next knockout scenario files`
+    );
+  });
+});
+
+check('manual knockout scenario repair workflow is strict and self-contained', () => {
+  const file = '.github/workflows/repair-knockout-scenarios.yml';
+  const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
+  assert.ok(/workflow_dispatch:/.test(text), 'repair workflow must be manually runnable');
+  assert.ok(text.includes('node scripts/update-fifa-world-cup-schedule.js'), 'repair workflow must refresh FIFA schedule');
+  assert.ok(text.includes('node scripts/sync-fifa-schedule-to-matches.js --include-placeholders'), 'repair workflow must bridge schedule into matches');
+  assert.ok(text.includes('node scripts/export-snapshots.js matches'), 'repair workflow must export match snapshot');
+  assert.ok(text.includes('node scripts/generate-knockout-scenarios.js'), 'repair workflow must regenerate hidden scenarios');
+  assert.ok(text.includes('node scripts/knockout-scenario-readiness.js'), 'repair workflow must enforce scenario readiness');
+  assert.ok(text.includes('public-data/world-cup-schedule.json public-data/matches.json public-data/knockout-scenarios'), 'repair workflow must commit schedule, matches, and scenarios together');
+});
+
 check('FIFA schedule workflow bridges official schedule into scoring DB', () => {
   const file = '.github/workflows/update-fifa-world-cup-schedule.yml';
   const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -235,6 +270,7 @@ check('main scoring workflow runs the live snapshot audit on data changes', () =
     '.github/workflows/live-poller.yml',
     '.github/workflows/manual-match-results.yml',
     '.github/workflows/publish-world-cup-stories-prepared.yml',
+    '.github/workflows/repair-knockout-scenarios.yml',
     '.github/workflows/update-fifa-world-cup-schedule.yml',
     '.github/workflows/test-scoring.yml',
   ].forEach(file => {
@@ -334,8 +370,8 @@ check('readiness monitor can recover stale active live DB state', () => {
 check('final-result verifier commits exported match snapshot with Pundit', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/final-result-verifier.yml'), 'utf8');
   assert.ok(text.includes('node scripts/export-snapshots.js matches'), 'final verifier must export match snapshot after verified results');
-  assert.ok(/git status --porcelain public-data\/matches\.json public-data\/leaderboard/.test(text), 'final verifier must include matches in changed snapshot check');
-  assert.ok(/commit-generated-snapshots\.sh[\s\S]*public-data\/matches\.json public-data\/leaderboard/.test(text), 'final verifier must stage matches with scoring/Pundit snapshots');
+  assert.ok(/git status --porcelain[\s\S]*public-data\/matches\.json[\s\S]*public-data\/leaderboard/.test(text), 'final verifier must include matches in changed snapshot check');
+  assert.ok(/commit-generated-snapshots\.sh[\s\S]*public-data\/matches\.json[\s\S]*public-data\/leaderboard/.test(text), 'final verifier must stage matches with scoring/Pundit snapshots');
   assert.ok(/REGENERATE_COMMANDS:[\s\S]*node scripts\/calculate-scores-v2\.js[\s\S]*node scripts\/generate-pundit\.js/.test(text), 'final verifier must regenerate scoring and Pundit snapshots after generated-data push conflicts');
 });
 

@@ -1,0 +1,77 @@
+name: Repair Knockout Scenario Readiness
+
+on:
+  workflow_dispatch:
+    inputs:
+      fail_within_hours:
+        description: 'Fail if the next hidden scenario is not ready within this many hours'
+        required: true
+        default: '72'
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repair-knockout-scenarios
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Refresh FIFA schedule
+        run: node scripts/update-fifa-world-cup-schedule.js
+
+      - name: Bridge schedule into scoring matches
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=72
+
+      - name: Export match snapshot after fixture bridge
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+        run: node scripts/export-snapshots.js matches
+
+      - name: Generate hidden knockout scoring scenarios
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          SCORING_VERBOSE: '0'
+        run: node scripts/generate-knockout-scenarios.js
+
+      - name: Check knockout scenario readiness
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          KNOCKOUT_SCENARIO_FAIL_WITHIN_HOURS: ${{ inputs.fail_within_hours }}
+        run: node scripts/knockout-scenario-readiness.js
+
+      - name: Commit repaired scenario readiness data
+        env:
+          REGENERATE_COMMANDS: |
+            node scripts/update-fifa-world-cup-schedule.js
+            node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=72
+            FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches
+            node scripts/generate-knockout-scenarios.js
+            node scripts/knockout-scenario-readiness.js --fail-within-hours=${{ inputs.fail_within_hours }}
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data/world-cup-schedule.json public-data/matches.json public-data/knockout-scenarios)" ]; then
+            bash scripts/commit-generated-snapshots.sh "data: repair knockout scenario readiness" public-data/world-cup-schedule.json public-data/matches.json public-data/knockout-scenarios
+          else
+            echo "no scenario readiness data change"
+          fi
