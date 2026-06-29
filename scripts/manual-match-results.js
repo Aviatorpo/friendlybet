@@ -10,6 +10,8 @@
  * JSON shape:
  * [
  *   { "home": "ENG", "away": "CRO", "home_score": 4, "away_score": 2, "winner": "ENG" }
+ *   { "home": "RSA", "away": "CAN", "home_score": 0, "away_score": 1, "winner": "CAN",
+ *     "stage": "ROUND_OF_32", "external_id": "400021518", "match_date": "2026-06-28T19:00:00Z" }
  * ]
  */
 
@@ -58,6 +60,34 @@ function score(value, field) {
   return n;
 }
 
+function stage(value) {
+  const code = String(value || 'GROUP_STAGE').trim().toUpperCase();
+  const allowed = new Set([
+    'GROUP_STAGE',
+    'ROUND_OF_32',
+    'LAST_32',
+    'R32',
+    'ROUND_OF_16',
+    'LAST_16',
+    'R16',
+    'QUARTER_FINALS',
+    'QF',
+    'SEMI_FINALS',
+    'SF',
+    'FINAL',
+    'THIRD_PLACE'
+  ]);
+  if (!allowed.has(code)) throw new Error(`Invalid stage: ${value}`);
+  return code;
+}
+
+function optionalIsoDate(value, field) {
+  if (value == null || value === '') return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) throw new Error(`Invalid ${field}: ${value}`);
+  return date.toISOString();
+}
+
 function normalize(item) {
   const home = teamCode(item.home, 'home');
   const away = teamCode(item.away, 'away');
@@ -69,7 +99,17 @@ function normalize(item) {
   if (homeScore > awayScore && winner !== home) throw new Error(`${home}-${away}: winner must be ${home}`);
   if (awayScore > homeScore && winner !== away) throw new Error(`${home}-${away}: winner must be ${away}`);
   if (homeScore === awayScore && winner !== null) throw new Error(`${home}-${away}: tied match winner must be null`);
-  return { home, away, homeScore, awayScore, winner };
+  return {
+    home,
+    away,
+    homeScore,
+    awayScore,
+    winner,
+    stage: stage(item.stage),
+    externalId: item.external_id == null || item.external_id === '' ? null : String(item.external_id).trim(),
+    matchDate: optionalIsoDate(item.match_date, 'match_date'),
+    venue: item.venue == null || item.venue === '' ? null : String(item.venue).trim()
+  };
 }
 
 async function sb(method, table, query, data) {
@@ -92,11 +132,14 @@ async function sb(method, table, query, data) {
   const normalized = results.map(normalize);
   const now = new Date().toISOString();
   for (const item of normalized) {
-    const query = [
+    const query = item.externalId ? [
+      `?external_id=eq.${encodeURIComponent(item.externalId)}`,
+      '&select=id,external_id,stage,home_team_code,away_team_code,home_score,away_score,status,winner_code'
+    ].join('') : [
       `?home_team_code=eq.${encodeURIComponent(item.home)}`,
       `&away_team_code=eq.${encodeURIComponent(item.away)}`,
-      '&stage=eq.GROUP_STAGE',
-      '&select=id,home_team_code,away_team_code,home_score,away_score,status,winner_code'
+      `&stage=eq.${encodeURIComponent(item.stage)}`,
+      '&select=id,external_id,stage,home_team_code,away_team_code,home_score,away_score,status,winner_code'
     ].join('');
     const rows = await sb('PATCH', 'matches', query, {
       home_score: item.homeScore,
@@ -110,11 +153,43 @@ async function sb(method, table, query, data) {
       live_source: 'manual',
       source_updated_at: now
     });
-    if (!Array.isArray(rows) || rows.length !== 1) {
-      throw new Error(`${item.home}-${item.away}: expected one updated row, got ${Array.isArray(rows) ? rows.length : 'non-array'}`);
+    if (!Array.isArray(rows)) {
+      throw new Error(`${item.home}-${item.away}: expected updated rows array, got non-array`);
     }
-    const row = rows[0];
-    console.log(`${row.home_team_code}-${row.away_team_code}: ${row.home_score}-${row.away_score}, status=${row.status}, winner=${row.winner_code || 'DRAW'}`);
+    if (rows.length > 1) {
+      throw new Error(`${item.home}-${item.away}: expected at most one updated row, got ${rows.length}`);
+    }
+    let row = rows[0];
+    if (!row) {
+      if (!item.externalId || !item.matchDate) {
+        throw new Error(`${item.home}-${item.away}: no existing row; external_id and match_date are required for insert`);
+      }
+      const inserted = await sb('POST', 'matches', '', [{
+        external_id: item.externalId,
+        stage: item.stage,
+        group_letter: null,
+        home_team_code: item.home,
+        away_team_code: item.away,
+        home_score: item.homeScore,
+        away_score: item.awayScore,
+        status: 'FINISHED',
+        match_date: item.matchDate,
+        venue: item.venue,
+        winner_code: item.winner,
+        scorers: [],
+        live_clock: null,
+        live_period: null,
+        status_detail: 'FT',
+        live_source: 'manual',
+        source_updated_at: now,
+        last_updated: now
+      }]);
+      if (!Array.isArray(inserted) || inserted.length !== 1) {
+        throw new Error(`${item.home}-${item.away}: expected one inserted row, got ${Array.isArray(inserted) ? inserted.length : 'non-array'}`);
+      }
+      row = inserted[0];
+    }
+    console.log(`${row.stage} ${row.home_team_code}-${row.away_team_code}: ${row.home_score}-${row.away_score}, status=${row.status}, winner=${row.winner_code || 'DRAW'}`);
   }
 })().catch(err => {
   console.error(err);
