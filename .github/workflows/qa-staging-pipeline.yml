@@ -1,0 +1,122 @@
+name: QA Staging Result Pipeline
+
+run-name: QA staging ${{ inputs.mode }} ${{ inputs.qa_run_id }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'QA action to run'
+        required: true
+        default: 'simulate_future'
+        type: choice
+        options:
+          - seed_current
+          - simulate_future
+      qa_run_id:
+        description: 'Caller token used by the local QA server to find this run'
+        required: true
+        type: string
+      external_id:
+        description: 'Future match external_id for simulate_future'
+        required: false
+        default: ''
+        type: string
+      home_score:
+        description: 'Home score for simulate_future'
+        required: false
+        default: ''
+        type: string
+      away_score:
+        description: 'Away score for simulate_future'
+        required: false
+        default: ''
+        type: string
+      winner:
+        description: 'Winner team code for simulate_future'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qa-staging-result-pipeline
+  cancel-in-progress: false
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment: qa-staging
+    env:
+      TARGET_ENV: qa
+      FRIENDLYBET_TARGET_ENV: qa
+      SUPABASE_URL: ${{ secrets.QA_SUPABASE_URL }}
+      SUPABASE_SECRET_KEY: ${{ secrets.QA_SUPABASE_SERVICE_ROLE_KEY }}
+      QA_SUPABASE_PROJECT_REF: ${{ secrets.QA_SUPABASE_PROJECT_REF }}
+      PUBLIC_DATA_DIR: _qa-artifacts/public-data
+      FORCE_MATCH_SNAPSHOT: '1'
+      SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
+      SCORING_VERBOSE: '0'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Assert QA environment
+        run: node scripts/qa-env.js
+
+      - name: Seed current QA World Cup state
+        if: inputs.mode == 'seed_current'
+        run: node scripts/qa-randomize-finished-world-cup.js
+
+      - name: Apply QA future result
+        if: inputs.mode == 'simulate_future'
+        env:
+          QA_MATCH_EXTERNAL_ID: ${{ inputs.external_id }}
+          QA_HOME_SCORE: ${{ inputs.home_score }}
+          QA_AWAY_SCORE: ${{ inputs.away_score }}
+          QA_WINNER: ${{ inputs.winner }}
+        run: node scripts/qa-simulate-future-result.js
+
+      - name: Calculate QA scores
+        id: score_results
+        run: node scripts/calculate-scores-v2.js --critical
+
+      - name: Export QA snapshots
+        env:
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+        run: node scripts/export-snapshots.js all
+
+      - name: Verify QA scoring snapshots
+        run: node scripts/verify-scoring-snapshots.js
+
+      - name: Generate QA leaderboard banter
+        continue-on-error: true
+        run: node scripts/generate-banter.js
+
+      - name: Generate QA Pundit feed
+        continue-on-error: true
+        run: node scripts/generate-pundit.js
+
+      - name: Verify current QA world
+        if: inputs.mode == 'seed_current'
+        run: node scripts/qa-verify-random-finished-world-cup.js
+
+      - name: Verify QA future simulation
+        if: inputs.mode == 'simulate_future'
+        run: node scripts/qa-verify-future-world-cup.js
+
+      - name: Upload QA proof artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-staging-proof-${{ inputs.qa_run_id }}
+          path: _qa-artifacts
+          retention-days: 7

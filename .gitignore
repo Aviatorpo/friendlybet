@@ -80,6 +80,7 @@ _story_review_created.json
 
 # scratch / preview artifacts (champion card work)
 _live_test/
+_qa-artifacts/
 /card-*.png
 /card-b64*.txt
 /champ-card*.png
