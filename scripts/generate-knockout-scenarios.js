@@ -16,7 +16,8 @@ const OUT_DIR = process.env.PUBLIC_DATA_DIR
 const SCENARIO_DIR = path.join(OUT_DIR, 'knockout-scenarios');
 const MANIFEST_PATH = path.join(SCENARIO_DIR, 'manifest.json');
 
-const DEFAULT_TARGETS = ['BRA-JPN'];
+const AUTO_NEXT_TARGET = 'auto-next';
+const DEFAULT_TARGETS = [AUTO_NEXT_TARGET];
 const TARGETS = csvList(process.env.KNOCKOUT_SCENARIO_TARGETS || process.argv.find(a => a.startsWith('--targets='))?.slice('--targets='.length) || DEFAULT_TARGETS.join(','));
 
 function csvList(value) {
@@ -72,12 +73,51 @@ function isTargetPair(match, pair) {
   return teams.includes(a) && teams.includes(b);
 }
 
-function isKnockoutMatch(match) {
+function isKnockoutStage(match) {
   const stage = String((match && match.stage) || '').toUpperCase();
-  return !!match && stage && stage !== 'GROUP_STAGE' && match.home_team_code && match.away_team_code;
+  return !!match && stage && stage !== 'GROUP_STAGE' && stage !== 'THIRD_PLACE';
+}
+
+function isKnockoutMatch(match) {
+  return isKnockoutStage(match) && match.home_team_code && match.away_team_code;
+}
+
+function matchTimeValue(match) {
+  const t = Date.parse(match && match.match_date);
+  return Number.isFinite(t) ? t : Number.MAX_SAFE_INTEGER;
+}
+
+function isScenarioCandidate(match) {
+  if (!isKnockoutMatch(match)) return false;
+  if (match.winner_code) return false;
+  if (S.isTerminalMatch(match)) return false;
+  return true;
+}
+
+function isResolvedForScenarioTimeline(match) {
+  return isKnockoutStage(match) && S.isTerminalMatch(match) && !!match.winner_code;
+}
+
+function findNextScenarioMatch(matches) {
+  const nextUnresolved = (matches || [])
+    .filter(match => isKnockoutStage(match) && !isResolvedForScenarioTimeline(match))
+    .sort((a, b) =>
+      matchTimeValue(a) - matchTimeValue(b) ||
+      String(a.external_id || a.id || '').localeCompare(String(b.external_id || b.id || '')))[0] || null;
+  return isScenarioCandidate(nextUnresolved) ? nextUnresolved : null;
+}
+
+function shouldAutoSelectNext(targets) {
+  return !(targets || []).length ||
+    (targets || []).some(t => ['auto', AUTO_NEXT_TARGET, 'next'].includes(String(t || '').toLowerCase()));
 }
 
 function findTargetMatches(matches, targets) {
+  if (shouldAutoSelectNext(targets)) {
+    const next = findNextScenarioMatch(matches);
+    return next ? [next] : [];
+  }
+
   const out = [];
   const seen = new Set();
   for (const target of targets || []) {
@@ -211,6 +251,7 @@ async function main() {
   const manifest = {
     updatedAt: scenarioTimestamp,
     type: 'knockout_scenario_manifest',
+    selection_mode: shouldAutoSelectNext(TARGETS) ? AUTO_NEXT_TARGET : 'explicit',
     targets: TARGETS,
     matches: [],
   };
@@ -286,7 +327,13 @@ if (require.main === module) {
     matchIdentity,
     isTargetPair,
     isKnockoutMatch,
+    isKnockoutStage,
     sortStandings,
     rulesForPool,
+    isScenarioCandidate,
+    isResolvedForScenarioTimeline,
+    findNextScenarioMatch,
+    shouldAutoSelectNext,
+    AUTO_NEXT_TARGET,
   };
 }
