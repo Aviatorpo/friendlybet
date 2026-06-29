@@ -1,6 +1,91 @@
 {
-  "updated_at": "2026-06-28T06:15:25.655Z",
+  "updated_at": "2026-06-29T05:02:08.436Z",
   "items": [
+    {
+      "id": "rsa-can-2026-06-28",
+      "match_id": "1e63c58a-b2fb-40ca-a18d-e2fe729b0774",
+      "image": "story-assets/canada-wins-south-africa.png",
+      "teams": [
+        "RSA",
+        "CAN"
+      ],
+      "outcome": "CAN",
+      "result": "CAN 1-0 RSA",
+      "top_label": "CANADA WINS!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "CAN",
+        "team_he": "קנדה",
+        "team_en": "Canada",
+        "match_id": "1e63c58a-b2fb-40ca-a18d-e2fe729b0774",
+        "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול דרום אפריקה, זה כבר לא טופס - זו קבלה חיה ⚽",
+        "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול דרום אפריקה, אלה כבר לא טפסים - אלה קבלות חיות ⚽",
+        "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול דרום אפריקה, אלה כבר לא טפסים - אלה קבלות חיות ⚽",
+        "en_name": "{names} picked {team} to win this knockout match. After 1-0 against South Africa, that form is a live receipt ⚽",
+        "en_names": "{names} picked {team} to win this knockout match. After 1-0 against South Africa, those forms are live receipts ⚽",
+        "en_count": "{names} picked {team} to win this knockout match. After 1-0 against South Africa, those forms are live receipts ⚽"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "CAN",
+          "team_he": "קנדה",
+          "team_en": "Canada",
+          "match_id": "1e63c58a-b2fb-40ca-a18d-e2fe729b0774",
+          "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול דרום אפריקה, זה כבר לא טופס - זו קבלה חיה ⚽",
+          "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול דרום אפריקה, אלה כבר לא טפסים - אלה קבלות חיות ⚽",
+          "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול דרום אפריקה, אלה כבר לא טפסים - אלה קבלות חיות ⚽",
+          "en_name": "{names} picked {team} to win this knockout match. After 1-0 against South Africa, that form is a live receipt ⚽",
+          "en_names": "{names} picked {team} to win this knockout match. After 1-0 against South Africa, those forms are live receipts ⚽",
+          "en_count": "{names} picked {team} to win this knockout match. After 1-0 against South Africa, those forms are live receipts ⚽"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "CAN",
+          "team_he": "קנדה",
+          "team_en": "Canada",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 1-0 על דרום אפריקה בנוקאאוט, החלום הזה כבר קיבל הוכחת חיים 🔥",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-0 על דרום אפריקה בנוקאאוט, החלום הזה כבר קיבל הוכחת חיים 🔥",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-0 על דרום אפריקה בנוקאאוט, החלום הזה כבר קיבל הוכחת חיים 🔥",
+          "en_name": "{names} picked {team} to win the World Cup. After 1-0 over South Africa in the knockouts, that dream just got proof of life 🔥",
+          "en_names": "{names} picked {team} to win the World Cup. After 1-0 over South Africa in the knockouts, those dreams just got proof of life 🔥",
+          "en_count": "{names} picked {team} to win the World Cup. After 1-0 over South Africa in the knockouts, those dreams just got proof of life 🔥"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "RSA",
+          "team_he": "דרום אפריקה",
+          "team_en": "South Africa",
+          "match_id": "1e63c58a-b2fb-40ca-a18d-e2fe729b0774",
+          "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול קנדה, ההימור הזה כבר עומד מול המציאות 😬",
+          "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול קנדה, ההימורים האלה כבר עומדים מול המציאות 😬",
+          "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול קנדה, ההימורים האלה כבר עומדים מול המציאות 😬",
+          "en_name": "{names} picked {team} to win this knockout match. After 1-0 against Canada, that pick is staring at reality now 😬",
+          "en_names": "{names} picked {team} to win this knockout match. After 1-0 against Canada, those picks are staring at reality now 😬",
+          "en_count": "{names} picked {team} to win this knockout match. After 1-0 against Canada, those picks are staring at reality now 😬"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "RSA",
+          "team_he": "דרום אפריקה",
+          "team_en": "South Africa",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 1-0 מול קנדה, הצ'אט קיבל שאלה הוגנת מאוד 😬",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-0 מול קנדה, הצ'אט קיבל שאלה הוגנת מאוד 😬",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-0 מול קנדה, הצ'אט קיבל שאלה הוגנת מאוד 😬",
+          "en_name": "{names} picked {team} to win the World Cup. After 1-0 against Canada, the chat has a very fair question now 😬",
+          "en_names": "{names} picked {team} to win the World Cup. After 1-0 against Canada, the chat has a very fair question now 😬",
+          "en_count": "{names} picked {team} to win the World Cup. After 1-0 against Canada, the chat has a very fair question now 😬"
+        }
+      ],
+      "he": {
+        "headline": "קנדה ניצחה את דרום אפריקה 1-0: קבלות נוקאאוט ראשונות ⚽",
+        "caption": "ה-1-0 של קנדה על דרום אפריקה שלח אותה הלאה בשלב ה-32 ונתן לבראקט קבלה ראשונה של נוקאאוט ⚽"
+      },
+      "en": {
+        "headline": "Canada beat South Africa 1-0: knockout receipts are live ⚽",
+        "caption": "Canada's 1-0 over South Africa sends them through the Round of 32 and gives the bracket its first hard knockout receipt ⚽"
+      }
+    },
     {
       "id": "alg-aut-2026-06-28",
       "match_id": "9404e5df-df31-4237-a3fc-9ed17b9bdc57",

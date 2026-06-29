@@ -350,8 +350,15 @@ function resultCommentary(match, salt = '') {
   const awayFav = FAVORITES.has(match.away_team_code);
   const upset = (hs > as && awayFav && !homeFav) || (as > hs && homeFav && !awayFav);
   const totalGoals = hs + as;
+  const isKnockout = String(match.stage || '').toUpperCase() !== 'GROUP_STAGE';
 
   if (hs === as) {
+    if (isKnockout) {
+      return {
+        he: `${homeHe} ו${awayHe} סיימו ${hs}:${as}. בנוקאאוט זה לא סוגר סיפור, זה רק מעביר את כל ההימור לדופק גבוה יותר.`,
+        en: `${homeEn} and ${awayEn} finished ${hs}-${as}. In the knockout rounds, that does not settle the story; it just raises the pulse.`,
+      };
+    }
     if (hs === 0) {
       return variantFor(match, [
         {
@@ -386,6 +393,22 @@ function resultCommentary(match, salt = '') {
   const loserEn = hs > as ? awayEn : homeEn;
   const scoreHe = hs > as ? `${hs}:${as}` : `${as}:${hs}`;
   const scoreEn = hs > as ? `${hs}-${as}` : `${as}-${hs}`;
+  if (isKnockout) {
+    return variantFor(match, [
+      {
+        he: `${winnerHe} עברה את ${loserHe} ${scoreHe}. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על ${loserHe} צריך מסלול חדש.`,
+        en: `${winnerEn} got past ${loserEn} ${scoreEn}. Brackets that picked them get a receipt; ${loserEn} believers need a new route.`,
+      },
+      {
+        he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe} בנוקאאוט. זה כבר לא חישוב בית, זה רגע שמזיז בראקטים.`,
+        en: `${winnerEn} beat ${loserEn} ${scoreEn} in the knockout rounds. No group math now, just a bracket-moving result.`,
+      },
+      {
+        he: `${scoreHe} ל${winnerHe} על ${loserHe}. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות.`,
+        en: `${scoreEn} for ${winnerEn} over ${loserEn}. Anyone who picked them in this knockout match can open the receipts.`,
+      },
+    ], salt);
+  }
 
   if (upset) {
     return {
@@ -434,16 +457,21 @@ function resultCommentary(match, salt = '') {
 const FIXTURE_CONSEQUENCE_EN = /\b(table|tables|group|prediction|predictions|predictors|pool|pools|pick|picks|picked|safe|sweating|points|qualify|qualification|places)\b/i;
 const FIXTURE_CONSEQUENCE_HE = /(?:בית|בתים|תחזית|תחזיות|הימור|הימורים|נקודות|מקום|מקומות|עלייה|טבלה)/u;
 
-function withResultConsequence(text) {
+function withResultConsequence(text, match = null) {
   const he = String((text && text.he) || '').trim();
   const en = String((text && text.en) || '').trim();
+  const isKnockout = String(match && match.stage || '').toUpperCase() !== 'GROUP_STAGE';
   return {
     he: FIXTURE_CONSEQUENCE_HE.test(he)
       ? he
-      : `${he.replace(/[.。]\s*$/, '')}. זה משנה נקודות, הימורים ואת תמונת הבית.`,
+      : isKnockout
+        ? `${he.replace(/[.。]\s*$/, '')}. זה משנה בראקטים, הימורי נוקאאוט ונקודות.`
+        : `${he.replace(/[.。]\s*$/, '')}. זה משנה נקודות, הימורים ואת תמונת הבית.`,
     en: FIXTURE_CONSEQUENCE_EN.test(en)
       ? en
-      : `${en.replace(/[.。]\s*$/, '')}. It still matters for table places, picks, and pool points.`,
+      : isKnockout
+        ? `${en.replace(/[.。]\s*$/, '')}. It still matters for brackets, knockout picks, and pool points.`
+        : `${en.replace(/[.。]\s*$/, '')}. It still matters for table places, picks, and pool points.`,
   };
 }
 
@@ -617,7 +645,7 @@ function build(now, options = {}) {
       .sort((x, y) => Date.parse(y.match_date) - Date.parse(x.match_date))
       .slice(0, 10);
     for (const [idx, m] of finished.entries()) {
-      const text = withResultConsequence(resultCommentary(m, idx));
+      const text = withResultConsequence(resultCommentary(m, idx), m);
       items.push({ id: `result-${m.id}`, type: 'result', confidence: 'confirmed', he: text.he, en: text.en, sources: [], expires_at: iso(Date.parse(m.match_date) + RESULT_WINDOW_MS) });
     }
   }
