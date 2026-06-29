@@ -2292,15 +2292,15 @@ async function buildPoolPundit() {
 
   if (groupStageComplete) {
     push('pool-groups-complete', 0, knockoutWindowMode ? [
-      { he: `ניקוד הבתים כבר רשמי. עכשיו הטבלה מחכה לבראקט הנוקאאוט, ואפשר לעדכן אותו עד ${knockoutCutoff}.`,
-        en: `Group points are official now. The table is waiting for knockout picks, editable until ${knockoutCutoff}.` },
-      { he: `שלב הבתים סגור, הקבלות בטבלה. מי שרוצה לזוז מכאן צריך בראקט חד לפני ${knockoutCutoff}.`,
-        en: `The groups are closed and the receipts are on the table. Moving from here needs a sharp bracket before ${knockoutCutoff}.` },
+      { he: 'ניקוד הבתים כבר רשמי והנוקאאוט רץ. הבראקטים נעולים עכשיו, וכל משחק יכול להפוך את הטבלה.',
+        en: 'Group points are official and the knockouts are underway. Brackets are locked now, and every match can flip the table.' },
+      { he: 'שלב הבתים מאחורינו. מי שרוצה לזוז מכאן צריך פגיעות נוקאאוט, לא עוד זמן לעריכות.',
+        en: 'The group stage is behind us. Moving from here takes knockout hits, not more editing time.' },
     ] : [
-      { he: 'ניקוד הבתים כבר רשמי. מעכשיו הטבלה תזוז דרך הבראקט, האלופה ומלך השערים.',
-        en: 'Group points are official now. From here the table moves through the bracket, champion pick, and top scorer.' },
-      { he: 'שלב הבתים סגור, הקבלות בטבלה. הנוקאאוט הוא המקום שבו רודפים אחרי המוביל.',
-        en: 'The group stage is closed and the receipts are on the table. The knockout bracket is where the chase starts.' },
+      { he: 'ניקוד הבתים כבר רשמי והנוקאאוט כבר התחיל. מכאן הטבלה זזה דרך הבראקט, האלופה ומלך השערים.',
+        en: 'Group points are official and the knockouts are already underway. From here the table moves through the bracket, champion pick, and top scorer.' },
+      { he: 'הבתים מאחורינו, הקבלות בטבלה. עכשיו רודפים אחרי המוביל דרך משחקי הנוקאאוט.',
+        en: 'The groups are behind us and the receipts are on the table. Now the chase runs through the knockout matches.' },
     ]);
   }
 
@@ -10027,8 +10027,8 @@ function _groupsCompleteLeaderboardBanter(users) {
         id: 'leaderboard-groups-complete-leader',
         type: 'groups-complete',
         emoji: '🏁',
-        he: `${name} מוביל אחרי שלב הבתים עם ${pts} נקודות. עכשיו המרדף עובר לנוקאאוט.`,
-        en: `${name} leads after the group stage with ${pts} points. Now the chase moves to the knockouts.`,
+        he: `${name} מוביל עם ${pts} נקודות כשהנוקאאוט כבר רץ. עכשיו כל משחק יכול לשנות את המרדף.`,
+        en: `${name} leads with ${pts} points as the knockouts are already underway. Every match can change the chase now.`,
         featuredUserId: leader.id,
         featuredNickname: name,
       }
@@ -10036,8 +10036,8 @@ function _groupsCompleteLeaderboardBanter(users) {
         id: 'leaderboard-groups-complete',
         type: 'groups-complete',
         emoji: '🏁',
-        he: 'שלב הבתים הסתיים והניקוד הרשמי נכנס. מכאן הלידרבורד יזוז דרך הבראקט, האלופה ומלך השערים.',
-        en: 'The group stage is complete and official points are in. From here the leaderboard moves through the bracket, champion pick, and top scorer.',
+        he: 'ניקוד הבתים רשמי והנוקאאוט כבר התחיל. מכאן הלידרבורד זז דרך הבראקט, האלופה ומלך השערים.',
+        en: 'Group points are official and the knockouts are underway. From here the leaderboard moves through the bracket, champion pick, and top scorer.',
       };
   return {
     updatedAt: new Date().toISOString(),

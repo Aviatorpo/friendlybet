@@ -179,7 +179,7 @@ assert(!statusEl.innerHTML.includes('dashboard.officialStatus.thirdPlacePending'
 statusEl = renderDashboardStatus({ finished: 72, total: 72, completeGroups: 12, totalGroups: 12 });
 assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.title'), 'All completed groups must use group-stage-complete dashboard copy');
 assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.badge'), 'Group-stage-complete status must show final group-points badge');
-assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.text'), 'Two-phase/default groups-complete status may mention the open knockout window');
+assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.text'), 'Two-phase/default groups-complete status must use knockout-underway copy');
 
 statusEl = renderDashboardStatus({ finished: 72, total: 72, completeGroups: 12, totalGroups: 12 }, true, false, 'single_phase');
 assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.onePhaseText'), 'One-phase groups-complete status must not say knockout picks are open');
@@ -341,6 +341,8 @@ assert(/\.admin-badge\s*\{[\s\S]*?flex-shrink:\s*0;[\s\S]*?\}/.test(styles), 'Ad
   const hits = (i18n.match(new RegExp(`'${key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}'`, 'g')) || []).length;
   assert(hits >= 2, `${key} must exist in both Hebrew and English`);
 });
+assert(!/first knockout match starts|תחילת משחק הנוקאאוט הראשון/.test(i18n), 'Knockout-started copy must not say picks are open until the first knockout match');
+assert(/Knockouts underway/.test(i18n) && /הנוקאאוט כבר התחיל/.test(i18n), 'Group-complete copy must say the knockout stage is already underway');
 
 assert(workflow.includes("scripts/test-live-ux-state.js"), 'CI workflow must watch and run live UX state tests');
 assert(/run:\s*node scripts\/test-live-ux-state\.js/.test(workflow), 'CI workflow must run live UX state tests');
