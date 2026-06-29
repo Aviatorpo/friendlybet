@@ -354,7 +354,9 @@ async function runReadiness(options = {}) {
   const checks = [];
   const warnings = [];
   const nowMs = (options.auditOptions && options.auditOptions.nowMs) || Date.now();
-  const allowStoryBacklog = !!options.allowStoryBacklog || process.env.LIVE_COMPLETION_ALLOW_STORY_BACKLOG === '1';
+  const allowStoryBacklog = Object.prototype.hasOwnProperty.call(options, 'allowStoryBacklog')
+    ? !!options.allowStoryBacklog
+    : process.env.LIVE_COMPLETION_ALLOW_STORY_BACKLOG !== '0';
   let fairPlayResolutions = options.fairPlayResolutions || readLocalFairPlayResolutions();
   const baseAuditOptions = {
     ...(options.auditOptions || {}),

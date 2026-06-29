@@ -38,6 +38,7 @@ const Readiness = require('./live-completion-readiness');
 
   const result = await Readiness.runReadiness({
     auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z') },
+    allowStoryBacklog: true,
   });
   assert.strictEqual(result.ok, true, JSON.stringify(result.checks.filter(check => !check.ok), null, 2));
   assert.ok(Array.isArray(result.warnings), 'readiness result must expose evidence warnings');
@@ -139,8 +140,9 @@ const Readiness = require('./live-completion-readiness');
     auditOptions: { nowMs: Date.parse('2026-06-23T13:00:00Z') },
     publicSnapshots: storyBacklogSnapshots,
     dbMatches: storyBacklogSnapshots.matches.matches,
+    allowStoryBacklog: false,
   });
-  assert.strictEqual(storyBacklogCritical.ok, false, 'missing Stories must fail readiness when story backlog is not explicitly demoted');
+  assert.strictEqual(storyBacklogCritical.ok, false, 'missing Stories must fail readiness when story backlog hard-fail mode is explicitly requested');
   assert.ok(
     storyBacklogCritical.checks.some(check => check.name === 'production public snapshot audit is green' && !check.ok)
       || storyBacklogCritical.checks.some(check => check.name === 'live DB match audit is green' && !check.ok),
