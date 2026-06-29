@@ -14,7 +14,7 @@ const PUBLIC_DATA_DIR = path.join(ROOT, '_qa-artifacts', 'public-data');
 const ARTIFACT_DIR = path.join(ROOT, '_qa-artifacts');
 const PROD_REF = 'kovhuahdoluxyqqwqohw';
 const QA_WORKFLOW = process.env.QA_GITHUB_WORKFLOW || 'qa-staging-pipeline.yml';
-const QA_WORKFLOW_REF = process.env.QA_GITHUB_REF || currentGitRef();
+const QA_WORKFLOW_REF = process.env.QA_GITHUB_REF || 'main';
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -52,16 +52,6 @@ function resolveQaKeys() {
 const QA_KEYS = resolveQaKeys();
 if (!QA_KEYS.publishable || !QA_KEYS.service) throw new Error('Missing QA Supabase publishable or service key.');
 if (QA_URL.includes(PROD_REF) || QA_REF === PROD_REF) throw new Error('Refusing to start QA server against production Supabase.');
-
-function currentGitRef() {
-  const result = spawnSync('git', ['branch', '--show-current'], {
-    cwd: ROOT,
-    encoding: 'utf8',
-    windowsHide: true
-  });
-  const branch = result.status === 0 ? String(result.stdout || '').trim() : '';
-  return branch || 'main';
-}
 
 function send(res, status, body, type = 'text/plain; charset=utf-8') {
   res.writeHead(status, {
