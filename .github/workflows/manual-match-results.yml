@@ -34,9 +34,32 @@ jobs:
           MANUAL_MATCH_RESULTS_JSON: ${{ inputs.results_json }}
         run: node scripts/manual-match-results.js
 
+      - name: Export match snapshot immediately after manual result
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+        run: node scripts/export-snapshots.js matches
+
+      - name: Commit match snapshot before scoring
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+          REGENERATE_COMMANDS: |
+            node scripts/export-snapshots.js matches
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data/matches.json)" ]; then
+            bash scripts/commit-generated-snapshots.sh "data: publish manual match result" public-data/matches.json
+          else
+            echo "no immediate match snapshot change"
+          fi
+
       - name: Calculate scores (v2)
         id: score_results
-        timeout-minutes: 12
+        timeout-minutes: 25
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
@@ -60,12 +83,21 @@ jobs:
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
         run: node scripts/verify-scoring-snapshots.js
 
+      - name: Generate knockout scoring scenarios
+        continue-on-error: true
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          SCORING_VERBOSE: '0'
+          KNOCKOUT_SCENARIO_TARGETS: BRA-JPN
+        run: node scripts/generate-knockout-scenarios.js
+
       - name: Commit critical result data if changed
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
-          if [ -n "$(git status --porcelain public-data/matches.json public-data/leaderboard)" ]; then
-            git add public-data/matches.json public-data/leaderboard
+          if [ -n "$(git status --porcelain public-data/matches.json public-data/leaderboard public-data/knockout-scenarios)" ]; then
+            git add public-data/matches.json public-data/leaderboard public-data/knockout-scenarios
             git commit -q -m "data: apply manual match results"
             git pull --rebase --autostash
             git push

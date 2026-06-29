@@ -18,7 +18,10 @@ const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY
   || 'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU';
 
 const TERMINAL = new Set(['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED']);
+const LIVE_STATUSES = new Set(['IN_PLAY', 'LIVE', 'PAUSED']);
 const MIN_AGE_MINUTES = parseInt(process.env.RESULT_FALLBACK_MIN_AGE_MINUTES || '', 10) || 95;
+const STALE_LIVE_MIN_AGE_MINUTES = parseInt(process.env.RESULT_STALE_LIVE_MIN_AGE_MINUTES || '', 10) || 70;
+const STALE_LIVE_SOURCE_MINUTES = parseInt(process.env.RESULT_STALE_LIVE_SOURCE_MINUTES || '', 10) || 10;
 const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 336;
 const BACKOFF_ENABLED = process.env.RESULT_FALLBACK_BACKOFF === '1';
 const RUN_EVERY_MINUTES = parseInt(process.env.RESULT_FALLBACK_RUN_EVERY_MINUTES || '', 10) || 15;
@@ -39,7 +42,7 @@ function readJson(file, fallback) {
 }
 
 async function fetchMatchesFromSupabase() {
-  const endpoint = `${SUPABASE_URL.replace(/\/+$/, '')}/rest/v1/matches?select=id,external_id,status,match_date,home_team_code,away_team_code,home_score,away_score,winner_code,live_clock,live_period,status_detail,live_source&order=match_date.asc,id.asc`;
+  const endpoint = `${SUPABASE_URL.replace(/\/+$/, '')}/rest/v1/matches?select=id,external_id,status,match_date,home_team_code,away_team_code,home_score,away_score,winner_code,live_clock,live_period,status_detail,live_source,source_updated_at,last_updated&order=match_date.asc,id.asc`;
   const res = await fetch(endpoint, {
     headers: {
       apikey: SUPABASE_KEY,
@@ -74,6 +77,7 @@ function isCandidate(match, nowMs, options = {}) {
   const ageMs = nowMs - kickoff;
   const minAgeMinutes = options.minAgeMinutes || MIN_AGE_MINUTES;
   const lookbackHours = options.lookbackHours || LOOKBACK_HOURS;
+  if (isStaleLiveCandidate(match, nowMs, options)) return true;
   return ageMs >= minAgeMinutes * 60 * 1000
     && ageMs <= lookbackHours * 60 * 60 * 1000;
 }
@@ -95,6 +99,24 @@ function hasLiveResidue(match) {
   ));
 }
 
+function parseOptionalTime(value) {
+  const ms = Date.parse(value || '');
+  return Number.isFinite(ms) ? ms : NaN;
+}
+
+function isStaleLiveCandidate(match, nowMs, options = {}) {
+  if (!match || !LIVE_STATUSES.has(_status(match))) return false;
+  const kickoff = parseOptionalTime(match.match_date);
+  if (!Number.isFinite(kickoff)) return false;
+  const ageMs = nowMs - kickoff;
+  const lookbackHours = options.lookbackHours || LOOKBACK_HOURS;
+  if (ageMs < (options.staleLiveMinAgeMinutes || STALE_LIVE_MIN_AGE_MINUTES) * 60 * 1000) return false;
+  if (ageMs > lookbackHours * 60 * 60 * 1000) return false;
+  const sourceUpdated = parseOptionalTime(match.source_updated_at || match.last_updated);
+  if (!Number.isFinite(sourceUpdated)) return true;
+  return nowMs - sourceUpdated >= (options.staleLiveSourceMinutes || STALE_LIVE_SOURCE_MINUTES) * 60 * 1000;
+}
+
 function needsFinalVerification(match) {
   const status = _status(match);
   if (!TERMINAL.has(status)) return true;
@@ -110,6 +132,7 @@ function backoffIntervalMinutes(ageMinutes) {
 
 function isBackoffDue(match, nowMs, options = {}) {
   if (!isCandidate(match, nowMs, options)) return false;
+  if (isStaleLiveCandidate(match, nowMs, options)) return true;
   if (!options.enabled) return true;
   const kickoff = Date.parse(match.match_date || '');
   const ageMinutes = Math.floor((nowMs - kickoff) / 60000);
@@ -149,7 +172,8 @@ async function main() {
     console.log('Final-result verifier candidates:');
     for (const match of candidates.slice(0, 10)) {
       const due = dueCandidates.includes(match) ? 'due' : 'waiting';
-      console.log(`- ${match.home_team_code}-${match.away_team_code} ${match.status} ${match.match_date} (${due})`);
+      const staleLive = isStaleLiveCandidate(match, nowMs) ? ', stale-live' : '';
+      console.log(`- ${match.home_team_code}-${match.away_team_code} ${match.status} ${match.match_date} (${due}${staleLive})`);
     }
   } else {
     console.log('No final-result verifier candidates in the current match window.');
@@ -166,6 +190,7 @@ if (require.main === module) {
     isCandidate,
     isBackoffDue,
     backoffIntervalMinutes,
+    isStaleLiveCandidate,
     needsFinalVerification,
   };
 }
