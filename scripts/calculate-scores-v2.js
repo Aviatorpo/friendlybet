@@ -361,6 +361,25 @@ function scoreNumber(value) {
   return Number.isFinite(n) ? n : 0;
 }
 
+function groupStateFullyReady(groupState) {
+  return !!(
+    groupState &&
+    groupState.realBest8Thirds &&
+    groupState.advanced &&
+    groupState.advanced.size >= 32
+  );
+}
+
+function preserveExistingGroupScoresIfSourceNotReady(user, groupPoints, bonusPoints, groupState) {
+  if (groupStateFullyReady(groupState)) return { groupPoints, bonusPoints };
+  const existingGroup = scoreNumber(user.group_points ?? user.groups_score);
+  const existingBonus = scoreNumber(user.bonus_points ?? user.bonus_score);
+  return {
+    groupPoints: groupPoints === 0 && existingGroup > 0 ? existingGroup : groupPoints,
+    bonusPoints: bonusPoints === 0 && existingBonus > 0 ? existingBonus : bonusPoints
+  };
+}
+
 const SCORE_HEARTBEAT_MAX_AGE_MS = 5 * 60 * 60 * 1000;
 const SCORE_HEARTBEAT_MAX_PATCHES_PER_RUN = 250;
 let scoreHeartbeatPatchesThisRun = 0;
@@ -843,6 +862,8 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
       bonusPoints += rules.top_scorer || 0;
     }
 
+    ({ groupPoints, bonusPoints } = preserveExistingGroupScoresIfSourceNotReady(user, groupPoints, bonusPoints, groupState));
+
     // v2.5.36: round multiplied totals to integers for clean leaderboard display
     groupPoints = Math.round(groupPoints);
     knockoutPoints = Math.round(knockoutPoints);
@@ -936,6 +957,8 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     if (tsp && realTopScorer && String(tsp.player_id) === String(realTopScorer)) {
       bonusPoints += rules.top_scorer || 0;
     }
+
+    ({ groupPoints, bonusPoints } = preserveExistingGroupScoresIfSourceNotReady(user, groupPoints, bonusPoints, opts.groupState || null));
 
     groupPoints = Math.round(groupPoints);
     knockoutPoints = Math.round(knockoutPoints);

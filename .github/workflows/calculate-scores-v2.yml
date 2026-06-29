@@ -27,6 +27,14 @@ on:
         required: false
         default: ''
         type: string
+      restore_from_snapshot:
+        description: 'Restore group/bonus components from public snapshots before scoring pool_ids'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
 
 permissions:
   contents: write
@@ -57,6 +65,16 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/repair-pick-multipliers.js
 
+      - name: Restore group score components from public snapshots
+        if: inputs.restore_from_snapshot == 'true'
+        timeout-minutes: 8
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          RESTORE_POOL_IDS: ${{ inputs.pool_ids }}
+          PUBLIC_BASE_URL: https://friendlybet.live
+        run: node scripts/restore-score-components-from-snapshots.js
+
       - name: Calculate scores (v2)
         id: score_results
         timeout-minutes: 12
@@ -70,19 +88,19 @@ jobs:
       # Pillar 1: refresh CDN snapshots (matches + per-pool leaderboards) after scoring,
       # so clients read standings from the edge instead of full-table reads of `users`.
       - name: Export CDN snapshots
-        if: steps.score_results.outputs.changed_pool_ids != ''
+        if: steps.score_results.outputs.changed_pool_ids != '' || inputs.pool_ids != ''
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids || inputs.pool_ids }}
         run: node scripts/export-snapshots.js leaderboards
 
       - name: Verify scoring snapshots
-        if: steps.score_results.outputs.changed_pool_ids != ''
+        if: steps.score_results.outputs.changed_pool_ids != '' || inputs.pool_ids != ''
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids || inputs.pool_ids }}
         run: node scripts/verify-scoring-snapshots.js
 
       - name: Encrypted critical-data backup after finished matches
@@ -120,11 +138,12 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
           BACKUP_FORCE: ${{ inputs.force_backup == 'true' && '1' || '' }}
-          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids || inputs.pool_ids }}
           SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
           SCORING_VERBOSE: '0'
           REGENERATE_COMMANDS: |
             node scripts/repair-pick-multipliers.js
+            if [ "${{ inputs.restore_from_snapshot }}" = "true" ]; then RESTORE_POOL_IDS="${{ inputs.pool_ids }}" node scripts/restore-score-components-from-snapshots.js; fi
             SCORING_POOL_IDS="${{ inputs.pool_ids }}" node scripts/calculate-scores-v2.js --critical
             node scripts/export-snapshots.js leaderboards
             node scripts/verify-scoring-snapshots.js
@@ -142,11 +161,11 @@ jobs:
           fi
 
       - name: Prove public scoring snapshots
-        if: steps.score_results.outputs.changed_pool_ids != ''
+        if: steps.score_results.outputs.changed_pool_ids != '' || inputs.pool_ids != ''
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids || inputs.pool_ids }}
           SCORING_SNAPSHOT_PUBLIC_BASE_URL: https://friendlybet.live
           SCORING_SNAPSHOT_PUBLIC_RETRIES: 12
           SCORING_SNAPSHOT_PUBLIC_RETRY_MS: 10000
