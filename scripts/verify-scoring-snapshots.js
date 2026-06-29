@@ -14,6 +14,7 @@ const REST_PAGE_SIZE = 1000;
 const PUBLIC_BASE_URL = String(process.env.SCORING_SNAPSHOT_PUBLIC_BASE_URL || '').trim().replace(/\/$/, '');
 const PUBLIC_RETRIES = Math.max(1, parseInt(process.env.SCORING_SNAPSHOT_PUBLIC_RETRIES || '', 10) || 1);
 const PUBLIC_RETRY_MS = Math.max(0, parseInt(process.env.SCORING_SNAPSHOT_PUBLIC_RETRY_MS || '', 10) || 0);
+const POOL_QUERY_BATCH_SIZE = Math.max(1, parseInt(process.env.SCORING_SNAPSHOT_POOL_QUERY_BATCH_SIZE || '', 10) || 50);
 const SAFE_USER_COLS = [
   'id', 'pool_id', 'nickname', 'total_score',
   'group_points', 'knockout_points', 'bonus_points',
@@ -41,6 +42,12 @@ function postgrestInFilter(values) {
   return `in.(${values.map(v => encodeURIComponent(v)).join(',')})`;
 }
 
+function chunks(values, size = POOL_QUERY_BATCH_SIZE) {
+  const out = [];
+  for (let i = 0; i < values.length; i += size) out.push(values.slice(i, i + size));
+  return out;
+}
+
 async function sbAll(table, query = '', pageSize = REST_PAGE_SIZE) {
   const all = [];
   for (let from = 0, guard = 0; ; guard++, from += pageSize) {
@@ -61,6 +68,26 @@ async function sbAll(table, query = '', pageSize = REST_PAGE_SIZE) {
     if (page.length < pageSize) break;
   }
   return all;
+}
+
+async function loadRequestedPoolsAndUsers(poolIds) {
+  if (!poolIds.length) {
+    const [pools, users] = await Promise.all([
+      sbAll('pools', '?select=id'),
+      sbAll('users', `?select=${SAFE_USER_COLS}&order=total_score.desc.nullslast,id.asc`)
+    ]);
+    return { pools, users };
+  }
+
+  const pools = poolIds.map(id => ({ id }));
+  const users = [];
+  for (const batch of chunks(poolIds)) {
+    users.push(...await sbAll(
+      'users',
+      `?select=${SAFE_USER_COLS}&pool_id=${postgrestInFilter(batch)}&order=total_score.desc.nullslast,id.asc`
+    ));
+  }
+  return { pools, users };
 }
 
 function readJson(file) {
@@ -185,10 +212,7 @@ async function main() {
   if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY');
   const poolIds = requestedLeaderboardPoolIds();
 
-  const [pools, users] = await Promise.all([
-    poolIds.length ? Promise.resolve(poolIds.map(id => ({ id }))) : sbAll('pools', '?select=id'),
-    sbAll('users', `?select=${SAFE_USER_COLS}${poolIds.length ? `&pool_id=${postgrestInFilter(poolIds)}` : ''}&order=total_score.desc.nullslast,id.asc`)
-  ]);
+  const { pools, users } = await loadRequestedPoolsAndUsers(poolIds);
 
   const usersByPool = new Map();
   for (const user of users) {
@@ -268,6 +292,8 @@ if (require.main === module) {
     rowsMatch,
     scoreNumber,
     sbAll,
+    chunks,
+    loadRequestedPoolsAndUsers,
     __setFetch: (fn) => { globalThis.fetch = fn; },
   };
 }
