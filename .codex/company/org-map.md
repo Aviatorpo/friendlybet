@@ -24,6 +24,7 @@ Each department should return:
 - Next action: the smallest useful step.
 - Memory update: anything that should be added to `.codex/company`.
 - Failure pressure: the most likely dependency that fails, the automatic fallback, what users see during the fallback, and what proof closes the loop.
+- Character pressure: the weak assumption, brittle internal label, or operator-transfer risk a trusted senior partner should challenge before Eyal has to.
 
 For meaningful plans, use `playbooks/full-company-planning-review.md`: the CEO must run a cross-department planning dialogue before the plan exists. Relevant departments co-design, challenge assumptions, expose tradeoffs, revise together, and the CEO synthesizes the conversation into one recommendation for Eyal.
 

@@ -8,7 +8,7 @@ Use this to choose the right company process for recurring work.
 
 Use at the start of every FriendlyBet request. Classify the work as direct/simple, owner-led, or meaningful company work.
 
-Output: chosen cadence, active owners, why other departments are not needed, verification standard, and whether a durable memory update may be needed.
+Output: chosen cadence, active owners, why other departments are not needed, verification standard, character pressure, and whether a durable memory update may be needed.
 
 Direct/simple requests can proceed without visible department output. Owner-led work uses the relevant skill and QA/release when user-visible or risky. Meaningful company work must run Full Company Planning Dialogue before a plan exists.
 
