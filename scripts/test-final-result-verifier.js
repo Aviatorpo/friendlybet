@@ -86,8 +86,8 @@ ok('finished tied knockout with advancer is clean',
   !F.isStuckCandidate({ ...db, stage: 'ROUND_OF_32', status: 'FINISHED', home_score: 1, away_score: 1, winner_code: 'MEX' }, Date.parse('2026-06-11T21:10:00Z')));
 ok('finished match missing score is still recoverable',
   F.isStuckCandidate({ ...db, status: 'FINISHED', home_score: null, away_score: null }, Date.parse('2026-06-11T21:10:00Z')));
-ok('finished match with live residue is still recoverable',
-  F.isStuckCandidate({ ...db, status: 'FINISHED', home_score: 1, away_score: 1, live_clock: "90'+4'" }, Date.parse('2026-06-11T21:10:00Z')));
+ok('finished scored match with live residue is not final-result recovery work',
+  !F.isStuckCandidate({ ...db, status: 'FINISHED', home_score: 1, away_score: 1, live_clock: "90'+4'" }, Date.parse('2026-06-11T21:10:00Z')));
 ok('stale knockout paused state is recoverable before normal age threshold',
   F.isStuckCandidate({
     external_id: '400021516',
