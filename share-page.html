@@ -212,6 +212,17 @@
     margin-inline-end:calc((100% - min(1180px,calc(100vw - 32px))) / 2)}
   .share-bracket-card{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:18px;
     padding:14px 12px 16px;overflow:hidden;box-shadow:0 20px 64px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.03)}
+  .share-top-scorer-card{width:min(680px,calc(100vw - 32px));margin:0 auto;display:flex;align-items:center;gap:14px;
+    padding:14px 16px;border:1px solid rgba(217,180,106,.28);border-radius:14px;background:rgba(255,255,255,.045);
+    box-shadow:0 12px 30px rgba(0,0,0,.2)}
+  .share-top-scorer-card.empty{border-color:rgba(255,255,255,.13);background:rgba(255,255,255,.028)}
+  .share-top-scorer-flag{width:48px;height:34px;display:flex;align-items:center;justify-content:center;flex:none}
+  .share-top-scorer-flag .fb-flag,.share-top-scorer-flag img{width:44px;height:30px;border-radius:7px;object-fit:cover}
+  .share-top-scorer-flag .fb-flag-none{width:38px;height:26px;border-radius:7px;border:1px solid rgba(255,255,255,.15);
+    display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.42);background:rgba(0,0,0,.18)}
+  .share-top-scorer-main{min-width:0}
+  .share-top-scorer-name{font-family:'Sora',sans-serif;font-size:18px;font-weight:850;color:#fff;line-height:1.2}
+  .share-top-scorer-team{margin-top:3px;color:var(--muted);font-size:12.5px;line-height:1.35}
   .sp-scroll-chip{font-size:10.5px;font-weight:700;color:var(--gold);background:rgba(217,180,106,.11);
     border:1px solid rgba(217,180,106,.24);border-radius:999px;padding:4px 10px}
   .bracket-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-color:rgba(217,180,106,.55) transparent;
@@ -265,6 +276,8 @@
       margin-inline-start:calc((100% - (100vw - 20px)) / 2);
       margin-inline-end:calc((100% - (100vw - 20px)) / 2)}
     .share-bracket-card{padding:12px 8px 14px}
+    .share-top-scorer-card{width:calc(100vw - 20px);padding:13px 12px}
+    .share-top-scorer-name{font-size:16px}
   }
   @media(max-height:780px) and (min-width:700px){
     .wrap{padding-top:14px}
@@ -305,7 +318,9 @@ Object.assign(I18N.he, {
   knockoutLockedBody:'\u05e0\u05d9\u05ea\u05df \u05d9\u05d4\u05d9\u05d4 \u05dc\u05e6\u05e4\u05d5\u05ea \u05d1\u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05d4\u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8 \u05d0\u05d7\u05e8\u05d9 \u05e9\u05d7\u05dc\u05d5\u05df \u05d4\u05d4\u05d9\u05de\u05d5\u05e8\u05d9\u05dd \u05dc\u05e9\u05dc\u05d1 \u05d4\u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8 \u05d9\u05d9\u05e1\u05d2\u05e8.',
   pickedAdvancers:'{n} \u05d1\u05d7\u05d9\u05e8\u05d5\u05ea',
   noGroupPicks:'\u05d0\u05d9\u05df \u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05e9\u05de\u05d5\u05e8\u05d5\u05ea',
-  groupWord:'\u05d1\u05d9\u05ea'
+  groupWord:'\u05d1\u05d9\u05ea',
+  topScorerMissing:'\u05dc\u05d0 \u05e0\u05d1\u05d7\u05e8 \u05de\u05dc\u05da \u05e9\u05e2\u05e8\u05d9\u05dd',
+  topScorerNoPickDetail:'\u05dc\u05de\u05e9\u05ea\u05ea\u05e3 \u05d0\u05d9\u05df \u05d1\u05d7\u05d9\u05e8\u05d4 \u05e9\u05de\u05d5\u05e8\u05d4'
 });
 Object.assign(I18N.en, {
   twoPhaseSub:'This is a two-phase pool. Group-stage advancing picks are visible now; knockout picks will appear later.',
@@ -316,7 +331,9 @@ Object.assign(I18N.en, {
   knockoutLockedBody:'Knockout picks will be available after the knockout prediction window closes.',
   pickedAdvancers:'{n} picks',
   noGroupPicks:'No saved picks',
-  groupWord:'Group'
+  groupWord:'Group',
+  topScorerMissing:'No top scorer pick',
+  topScorerNoPickDetail:'No saved pick for this participant'
 });
 Object.assign(I18N.he, {
   heroKicker:'MY ROAD TO VICTORY',
@@ -408,6 +425,16 @@ function render(picks){
   const finRoad = isTwoPhase ? [] : S.teamRoad(picks, finalist, bracket);
   const hasRoads = !isTwoPhase && !!(champ && finalist);
   const ts = picks.topScorer;
+  const topScorerEnabled = picks.mode !== 'late_knockout' && picks.topScorerEnabled !== false;
+  const topScorerHtml = topScorerEnabled ? `
+    <div class="section-label">${L.scorerLabel}</div>
+    <div class="share-top-scorer-card ${ts ? '' : 'empty'}">
+      <div class="share-top-scorer-flag">${ts && ts.team_code ? fl(ts.team_code) : '<span class="fb-flag-none">-</span>'}</div>
+      <div class="share-top-scorer-main">
+        <div class="share-top-scorer-name">${ts && ts.player_name ? esc(ts.player_name) : L.topScorerMissing}</div>
+        <div class="share-top-scorer-team">${ts && ts.team_code ? tn(ts.team_code) : L.topScorerNoPickDetail}</div>
+      </div>
+    </div>` : '';
 
   // Two self-contained lanes (one per finalist) + a central round axis. Each
   // lane runs top→bottom from semi-final down to the last 32, and every step
@@ -570,6 +597,8 @@ function render(picks){
       <div class="bracket-scroll" dir="ltr"><div class="sp-bracket-tree share-bracket-tree">${bracketTree}</div></div>
     </div>` : ''}
 
+    ${topScorerHtml}
+
     <div class="section-label">${isTwoPhase ? L.advancersLabel : L.groupsLabel}</div>
     <div class="groups">${phaseGroupsHtml}</div>
 
@@ -681,7 +710,7 @@ async function fetchRealPicksPhaseAware(userId, poolId, lang){
   );
   const [usr, pool, gp, g2p, kp, kp2pRpc, kp2pDirect, tw, ts, tp, matches] = await Promise.all([
     sb.from('users').select('nickname').eq('id', userId).maybeSingle(),
-    sb.from('pools').select('betting_mode').eq('id', poolId).maybeSingle(),
+    sb.from('pools').select('betting_mode,top_scorer_enabled').eq('id', poolId).maybeSingle(),
     sb.from('group_position_picks').select('group_letter,position,team_code').eq('pool_id',poolId).eq('user_id',userId),
     sb.from('group_picks').select('group_letter,team_code').eq('pool_id',poolId).eq('user_id',userId),
     sb.rpc('get_public_bracket', { p_user_id: userId, p_pool_id: poolId }),
@@ -696,6 +725,7 @@ async function fetchRealPicksPhaseAware(userId, poolId, lang){
   const singleRows = gp.data || [];
   const twoPhaseRows = g2p.data || [];
   const mode = (pool.data && pool.data.betting_mode) || 'single_phase';
+  const topScorerEnabled = mode !== 'late_knockout' && (!pool.data || pool.data.top_scorer_enabled !== false);
 
   const bracketPicks = {};
   (kp.data||[]).forEach(r => { bracketPicks[r.bracket_position] = r.predicted_winner; });
@@ -709,7 +739,8 @@ async function fetchRealPicksPhaseAware(userId, poolId, lang){
         bracketPicks,
         thirdPlaceAdvancers: seed.thirdPlaceAdvancers,
         tournamentWinner: (tw.data && tw.data.team_code) || bracketPicks[31],
-        topScorer: null
+        topScorer: null,
+        topScorerEnabled: false
       };
     }
   }
@@ -742,10 +773,11 @@ async function fetchRealPicksPhaseAware(userId, poolId, lang){
         bracketPicks: twoPhaseBracketPicks,
         thirdPlaceAdvancers: seed.thirdPlaceAdvancers,
         tournamentWinner: twoPhaseBracketPicks[31],
-        topScorer: null
+        topScorer: ts.data || null,
+        topScorerEnabled
       };
     }
-    return { nickname, lang, mode:'two_phase', groupAdvancers };
+    return { nickname, lang, mode:'two_phase', groupAdvancers, topScorer: ts.data || null, topScorerEnabled };
   }
 
   const groupPositions = {};
@@ -756,7 +788,8 @@ async function fetchRealPicksPhaseAware(userId, poolId, lang){
     nickname, lang, mode:'single_phase', groupPositions, bracketPicks,
     thirdPlaceAdvancers: (tp.data||[]).map(r => r.group_letter),
     tournamentWinner: (tw.data && tw.data.team_code) || bracketPicks[31],
-    topScorer: ts.data || null
+    topScorer: ts.data || null,
+    topScorerEnabled
   };
 }
 
