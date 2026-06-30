@@ -56,6 +56,7 @@ rg -n "FIFA_RANKINGS|FIFA_RANK" app.js scripts/calculate-scores-v2.js
 
 - Start with this file plus `AGENTS.md`.
 - Use `git status --short --untracked-files=no` for quick checks.
+- For live result, scoring, leaderboard, fixture, or Action-noise incidents, read `.codex/company/playbooks/live-scoring-operations.md` and `.codex/company/playbooks/quality-gates.md` before planning or patching.
 - Do not load full `CHANGELOG.md` unless release history is directly relevant.
 - Avoid full reads of `app.js`, `styles.css`, `index.html`, or `i18n.js`; jump by anchor/search.
 
@@ -90,6 +91,10 @@ The service-worker cache key gates PWA updates.
 8. New screens must go inside `<div id="app">`; outside it they bypass the mobile width shell.
 9. Static fallback text in `index.html` should match `i18n.js` because it shows before `applyLanguage()`.
 10. Knockout advancement is verified from result sources/rules and stored in `matches.winner_code`; do not trust a raw or contradictory `winner_code` by itself.
+10a. Penalties are a normal knockout state. A tied final score can still be scoreable when the advancing team is verified; missing penalty shootout numbers should not block points.
+10b. Eyal-provided match truth is not a product fallback. If Eyal has to tell the system who advanced, classify it as a live-result automation incident and repair the automatic source path.
+10c. Precompute per-match scoring deltas or scenario snapshots tied to a current baseline. Do not precompute future total user scores across unresolved earlier matches.
+10d. Public scoring proof must allow bounded Vercel/CDN propagation after generated-data commits. Local snapshot-vs-DB mismatches fail immediately; just-pushed public staleness gets cache-busted retries before alerting.
 11. `knockout_picks` has no `team_code`; single-phase bracket picks are stored in `predicted_winner`.
 12. `group_position_picks` has no `multiplier_applied`; single-phase scoring uses live multipliers.
 13. Keep frontend `FIFA_RANKINGS` and backend `FIFA_RANK` in sync.

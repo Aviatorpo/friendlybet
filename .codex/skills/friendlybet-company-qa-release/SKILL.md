@@ -49,6 +49,8 @@ Read academy docs when release confidence, regression strategy, or senior QA pla
 11. For user-facing features, require a state matrix test plan. Each state that changes what users can see, pick, edit, score, or share needs an automated fixture or named manual/live verification.
 12. During planning dialogue, shape the plan by defining acceptance tests, regression paths, state-matrix coverage, release/version/cache checks, dirty-worktree safety, blocker-vs-warning rules, and production verification when Eyal can see the outcome live.
 13. Fail release readiness when speed or context-saving caused missing state coverage, weak validation, or shallow cross-department review. Concise plans still need testable depth.
+14. For live scoring, require adversarial cases: penalty-decided knockout, delayed/incomplete official source, provider disagreement, missing/contradictory advancer, failed runner, stale public snapshot, slow Vercel/CDN propagation, one stale pool, optional content failure, and correction rollback.
+15. Treat false failures as bugs. If a workflow fails because proof ran too early, alert severity was wrong, or cleanup metadata was misclassified as result truth, QA should require a workflow/test fix and a fresh green run.
 
 ## Output
 

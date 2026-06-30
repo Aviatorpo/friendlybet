@@ -44,6 +44,8 @@ Read academy docs when product scope, cross-team learning, or senior product pla
 10. Reject internal engineering/ops language in user-facing product states. Users should never see labels like failed, error, timeout, workflow, provider disagreement, or cache mismatch; translate them into calm, honest user promises and separate ops alerts.
 11. During company planning, do not provide a standalone opinion only. Challenge Engineering, Design, QA, Content, Privacy, and FinOps where their assumptions weaken the user promise.
 12. Reject plans that are short because they skipped user-state analysis, acceptance criteria, or cross-department challenge. Product can ask for concise presentation, but not shallow planning.
+13. For live sports, define the user truth before the implementation truth: what happened, who advanced, whether points are verified, when the leaderboard should update, and what the user can do while confirmation is pending.
+14. Reject product designs where `winner_code`, Action status, provider names, or manual Eyal input become the user promise. Those are internal mechanisms or incidents, not product states.
 
 ## Output
 

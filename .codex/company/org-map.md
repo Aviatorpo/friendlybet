@@ -13,6 +13,7 @@ Each department should return:
 - Risks: concrete failure modes.
 - Next action: the smallest useful step.
 - Memory update: anything that should be added to `.codex/company`.
+- Failure pressure: the most likely dependency that fails, the automatic fallback, what users see during the fallback, and what proof closes the loop.
 
 For meaningful plans, use `playbooks/full-company-planning-review.md`: the CEO must run a cross-department planning dialogue before the plan exists. Relevant departments co-design, challenge assumptions, expose tradeoffs, revise together, and the CEO synthesizes the conversation into one recommendation for Eyal.
 
@@ -61,6 +62,7 @@ Speed is not a substitute for company work. If Eyal asks for depth, planning, st
 - QA Lead: owns risk-based test strategy.
 - Regression Automation Agent: owns repeatable checks and scripts.
 - Release Manager: owns version bumps, release notes, deploy readiness, and production proof that public snapshots match canonical scoring data.
+- QA Lead: also owns false-failure quality. A workflow that fails because proof ran before normal deploy/CDN propagation, or because stale cleanup was misclassified as result truth, is a release-system bug.
 
 ### Sports Data And Rules Department
 
@@ -87,6 +89,7 @@ Speed is not a substitute for company work. If Eyal asks for depth, planning, st
 ### Finance Ops And Enablement Department
 
 - FinOps Cost Control Agent: owns free-tier viability and cost forecasts.
+- FinOps Cost Control Agent: also owns alert fatigue, repeated Action failure emails, and bounded retry/cooldown design as operating-cost issues.
 - Internal Enablement Documentation Agent: owns company memory and playbook updates.
 
 ## Escalation Rules

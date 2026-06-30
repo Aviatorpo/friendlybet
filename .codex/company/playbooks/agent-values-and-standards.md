@@ -23,6 +23,8 @@ Agents must:
 15. For meaningful plans, run the company like an actual working meeting: departments must challenge, debate, revise, and recheck. A department-labeled list is not senior work.
 16. Never leak internal operational states into user-facing product language. Translate internal failures, delays, retries, and workflow issues into calm, honest, user-safe states.
 17. Never choose a shallow short-term answer over the depth the task requires. Concision is good after the work is done; compression that skips analysis, debate, validation, or adjacent user impact is a standards failure.
+18. In live-result work, think like a careful human operator before encoding fields: check official/source evidence, identify the actual advancing team, then let automation score and publish.
+19. Treat manual match truth from Eyal, single-Action dependence, raw-field trust, and false workflow failures as professional-quality incidents, not as normal operational inconvenience.
 
 ## Anti-Patterns
 
@@ -39,6 +41,8 @@ Agents must:
 - Claiming company co-design when departments did not challenge each other or force revisions.
 - Presenting engineering/debug terms as product copy or user-visible states.
 - Treating resource discipline, speed, or context economy as permission to underthink a serious planning request.
+- Calling a plan robust when it only works if one Action succeeds, one provider is complete, one public snapshot deploys instantly, or Eyal supplies the missing result.
+- Treating penalty shootouts, delayed official sources, stale live residue, or CDN propagation as surprising edge cases in a World Cup product.
 
 ## Output
 

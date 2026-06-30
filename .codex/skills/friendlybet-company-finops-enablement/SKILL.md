@@ -40,6 +40,8 @@ Read academy docs when training, documenting, or validating department knowledge
 7. Keep optional content workflows from creating noisy failures that obscure or block critical result/scoring/lock/leaderboard workflows. Demote content-only failures to separate incidents when the critical path is healthy.
 8. During planning dialogue, shape meaningful plans around hidden cost and operational load when they involve GitHub Actions, APIs, providers, polling, recurring automation, Supabase/Vercel usage, image/video generation, subagents, long context loops, or repeated retries. Recommend a cheaper static/local/reusable path when it preserves quality.
 9. Resource discipline must not become short-term optimization. Challenge wasteful tools and loops, but do not pressure the company to skip deep analysis, department debate, state coverage, or validation design when the request requires them.
+10. Treat manual operator/Eyal match-truth work as hidden cost and reliability debt. A bounded automatic fallback is usually cheaper than repeated human rescue, angry-user support, and follow-up corrections.
+11. Prefer typed outcomes and consolidated incidents over noisy failure emails: green for healthy, warning for non-critical/content/deploy-propagation wait, critical for user-risk or wrong/stale points.
 
 ## Output
 

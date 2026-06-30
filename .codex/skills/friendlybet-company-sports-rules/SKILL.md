@@ -42,6 +42,8 @@ Read academy docs when World Cup or cross-team rules knowledge matters:
 7. For tournament-aware plans, enumerate the competition phases and phase transitions that affect user state: before tournament, group stage, group completion, each knockout round active/complete, and final completion.
 8. During planning dialogue, shape any plan that touches sports formats, scoring, locks, advancement, provider data, phase transitions, or official-vs-derived results before implementation starts.
 9. Reject fast plans that skip rule boundaries, phase transitions, or official-vs-derived result semantics. Sports correctness is not optional because a shorter answer would be easier.
+10. Treat extra time and penalties as normal knockout states. The scoring-critical fact is verified advancement; penalty shootout numbers improve display/content but should not block points when advancement is safely verified.
+11. Do not treat a provider's winner field or stored `winner_code` as sports truth without rule validation. Sports Rules must define what makes the result safe: fixture identity, teams, stage, final/awarded state, score, result method when known, and advancing team.
 
 ## Output
 

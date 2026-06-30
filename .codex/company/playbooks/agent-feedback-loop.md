@@ -73,6 +73,19 @@ For live scoring and fixture work, this includes verifying any one of these with
 
 The durable fix must add a source-bridge proof and a layer checklist. The agent must state exactly which layers are proven, which are unproven, and which owner is responsible for every unproven layer. Generic "more QA" language is not an acceptable corrective action.
 
+## Live Result Reliability Incident Rule
+
+If Eyal has to supply a match result, advancing team, or penalty outcome manually, classify it as a live-result autonomy failure. The correction must repair the automatic source-verification path, not normalize manual winner entry.
+
+Also classify and correct:
+
+- Single-control-plane failure: one GitHub Action, runner, deploy, cache, or public snapshot is required for users to get points.
+- Fragile-field failure: raw `winner_code`, provider `winner`, status string, or score comparison is trusted without rule/source validation.
+- Scenario-baseline failure: future total scores are precomputed across unresolved earlier matches instead of deltas or baseline-fingerprinted snapshots.
+- False-alert failure: a workflow fails because of expected deploy/CDN propagation, warning-only content debt, or cleanup metadata misclassified as result truth.
+
+The durable fix must update the relevant skill/playbook/test/workflow, rerun the current production path when possible, and report live proof or the exact remaining blocker.
+
 ## Pundit / Live Content Incidents
 
 For stale, dry, wrong, or weak live sports content, also classify:
