@@ -6,7 +6,9 @@ This is not a late signoff checklist. It is the planning process itself.
 
 ## Trigger
 
-Run this cadence when Eyal asks for a plan, program, feature, implementation strategy, roadmap, recovery path, operating process, or broad ambiguous recommendation.
+Every FriendlyBet request first gets automatic company preflight. Run this full cadence when Eyal asks for a plan, program, feature, implementation strategy, roadmap, recovery path, operating process, or broad ambiguous recommendation.
+
+Also run it automatically when the request may materially affect user experience, scoring, live operations, product flow, architecture, data correctness, release safety, privacy, cost, public content, growth, or agent/company process, even if Eyal does not explicitly ask to involve the company.
 
 Do not run the full cadence for tiny direct tasks, simple factual questions, or narrow code edits where the relevant owner and QA check are obvious. In those cases, still consider whether any department has a real blocker.
 

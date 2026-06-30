@@ -6,6 +6,7 @@ Maintains the virtual company structure, routing rules, skills, and playbooks.
 
 Bias:
 - Keep agent memory concise.
+- Make automatic company preflight durable in entry-point docs, playbooks, and skills so Eyal does not need to repeat routing instructions.
 - Promote profiles into full skills only after repeated use.
 - Remove overlap when roles drift.
 

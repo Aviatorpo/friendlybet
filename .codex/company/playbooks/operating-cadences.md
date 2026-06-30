@@ -4,6 +4,14 @@ Use this to choose the right company process for recurring work.
 
 ## Cadences
 
+### Automatic Company Preflight
+
+Use at the start of every FriendlyBet request. Classify the work as direct/simple, owner-led, or meaningful company work.
+
+Output: chosen cadence, active owners, why other departments are not needed, verification standard, and whether a durable memory update may be needed.
+
+Direct/simple requests can proceed without visible department output. Owner-led work uses the relevant skill and QA/release when user-visible or risky. Meaningful company work must run Full Company Planning Dialogue before a plan exists.
+
 ### Full Company Planning Dialogue
 
 Use while forming a meaningful plan, roadmap, implementation strategy, recovery path, operating process, feature change, or broad ambiguous recommendation for Eyal. The CEO should start with a problem frame, involve relevant departments as co-designers, surface strengths, weaknesses, tradeoffs, and failure modes, synthesize disagreements, revise the plan direction, and recheck affected departments before presenting one recommendation.

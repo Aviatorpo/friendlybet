@@ -21,4 +21,4 @@ Recent work showed a repeated process failure: Eyal received a plan, then had to
 
 ## Future Trigger
 
-Use `.codex/company/playbooks/full-company-planning-review.md` for plan requests, roadmaps, recovery plans, implementation strategies, operating processes, and broad ambiguous recommendations.
+Use `.codex/company/playbooks/full-company-planning-review.md` for plan requests, roadmaps, recovery plans, implementation strategies, operating processes, and broad ambiguous recommendations. This decision is extended by `2026-06-30-automatic-company-preflight.md`, which requires every FriendlyBet request to be classified before action so Eyal does not need to manually invoke this process.
