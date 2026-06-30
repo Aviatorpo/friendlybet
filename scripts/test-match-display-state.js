@@ -58,6 +58,7 @@ const fnNames = [
   '_matchIsTerminalStatus',
   '_matchNeedsStatusVerification',
   '_matchIsLiveish',
+  '_matchUxState',
   '_matchShouldOverlayOfficial',
   'mergeOfficialScheduleWithLiveMatches',
   '_snapshotHasStaleScheduled',
@@ -97,11 +98,20 @@ assert(api._matchNeedsStatusVerification(match({
   live_source: 'espn-final',
   status_detail: 'ESPN final pending verification',
 }), now), 'Provider-pending finals must render as verification, not final/scheduled');
+assert(api._matchUxState(match({
+  status: 'FINISHED',
+  live_source: 'espn-final',
+  status_detail: 'ESPN final pending verification',
+}), now).kind === 'final_confirming', 'Provider-pending finals must use final confirmation UX');
 
 assert(api._matchNeedsStatusVerification(match({
   status: 'IN_PLAY',
   match_date: '2026-06-23T07:00:00Z',
 }), now), 'Very old live status must render as verification');
+assert(api._matchUxState(match({
+  status: 'IN_PLAY',
+  match_date: '2026-06-23T07:00:00Z',
+}), now).noteKey === 'matchesEx.liveStatusUpdatingNote', 'Stale live rows must use live-status updating copy');
 
 assert(api._matchIsHalftimeBreak(match({
   status: 'PAUSED',
@@ -132,6 +142,17 @@ assert(api._matchIsLiveish(match({
   home_score: 0,
   away_score: 1,
 }), now), 'PAUSED row with a second-half clock must stay live-ish');
+assert(api._matchUxState(match({
+  status: 'PAUSED',
+  match_date: '2026-06-23T10:50:00Z',
+  live_period: 2,
+  live_clock: "51'",
+  status_detail: "51'",
+  live_source: 'espn',
+  source_updated_at: '2026-06-23T11:59:00Z',
+  home_score: 0,
+  away_score: 1,
+}), now).kind === 'live', 'PAUSED row with a second-half clock must use live UX');
 assert(api._matchLiveScoreTrusted(match({
   status: 'PAUSED',
   match_date: '2026-06-23T10:50:00Z',
@@ -152,6 +173,23 @@ assert(api._matchNeedsStatusVerification(match({
   live_source: 'espn',
   source_updated_at: '2026-06-23T11:35:00Z',
 }), now), 'Stale PAUSED/HT row must require verification instead of sticking on half-time');
+assert(api._matchUxState(match({
+  status: 'PAUSED',
+  match_date: '2026-06-23T11:10:00Z',
+  live_period: 1,
+  live_clock: "45'+3'",
+  status_detail: 'HT',
+  live_source: 'espn',
+  source_updated_at: '2026-06-23T11:35:00Z',
+}), now).kind === 'live_updating', 'Stale PAUSED/HT row must use live-updating UX');
+assert(api._matchUxState(match({
+  status: 'IN_PLAY',
+  match_date: '2026-06-23T11:40:00Z',
+  live_source: 'espn',
+  source_updated_at: '2026-06-23T11:59:00Z',
+  home_score: 0,
+  away_score: 0,
+}), now).noteKey === 'matchesEx.liveScoreUpdatingNote', 'Live rows without a trusted clock must not promise only a full-time update');
 assert(api._matchResolvedWinner({
   status: 'FINISHED',
   stage: 'ROUND_OF_32',
@@ -179,18 +217,25 @@ assert(!api._matchNeedsStatusVerification(match({
   status_detail: null,
   live_source: null,
 }), now), 'Verified finished match must not render as verification');
+assert(api._matchUxState(match({
+  status: 'FINISHED',
+  match_date: '2026-06-23T09:00:00Z',
+  status_detail: null,
+  live_source: null,
+}), now).kind === 'final_confirming', 'Finished rows without scores must use final confirmation UX');
 
 assert(api._snapshotHasStaleScheduled([match()], now), 'Snapshot stale detection must include stale scheduled rows');
 
 const cardSource = sliceBetween(app, 'function createMatchCard', 'function getTeamName');
-assert(/needsStatusVerification\s*=\s*_matchNeedsStatusVerification\(match\)/.test(cardSource), 'Match cards must use the shared verification state');
-assert(/isHalftimeBreak\s*=\s*!needsStatusVerification\s*&&\s*_matchIsHalftimeBreak\(match\)/.test(cardSource), 'Match cards must not treat every PAUSED row as half-time');
+assert(/uxState\s*=\s*_matchUxState\(match\)/.test(cardSource), 'Match cards must use the shared UX state resolver');
+assert(/isHalftimeBreak\s*=\s*uxState\.kind\s*===\s*'halftime'/.test(cardSource), 'Match cards must derive half-time from the shared UX state');
 assert(!/else if \(status === 'PAUSED'\)/.test(cardSource), 'Match cards must not render PAUSED blindly as half-time');
 assert(/card\.classList\.add\('verifying'\)/.test(cardSource), 'Verification state must use the verifying card style');
-assert(/matchesEx\.statusBeingVerified/.test(cardSource), 'Verification note must avoid overclaiming a final score');
+assert(/uxState\.noteKey/.test(cardSource), 'Verification notes must come from the UX state');
+assert(/matchesEx\.liveScoreUpdatingNote/.test(cardSource), 'Live score gaps must not say only to wait for full time');
 assert(/matchesEx\.advancedOnPenalties/.test(cardSource), 'Penalty-decided knockout cards must show who advanced');
 assert(/_matchResolvedWinner\(match\)/.test(cardSource), 'Match cards must use resolved winner helper for penalty decisions');
-assert(/if \(needsStatusVerification\)[\s\S]*statusText\s*=\s*t\('matchesEx\.verifyingResult'\)/.test(cardSource), 'Verification state must display verifying result status text');
+assert(/if \(uxState\.statusKey\)[\s\S]*statusText\s*=\s*t\(uxState\.statusKey\)/.test(cardSource), 'Status badges must use UX-state copy keys');
 
 const resultsLoadSource = sliceBetween(app, '// Build knockout winners map', '// Build group advancers map');
 assert(/_matchResolvedWinner\(m\)/.test(resultsLoadSource), 'Results knockout winner map must use resolved winner helper');
@@ -225,6 +270,9 @@ assert(mergedByNumber[0].home_score === 2 && mergedByNumber[0].away_score === 1,
 
 const loadMatchesSource = sliceBetween(app, 'async function loadMatches', 'function _matchIdentityKey');
 assert(!/loadPundit|renderPundit|loadWorldCupStories|worldCupStories|pundit|banter/i.test(loadMatchesSource), 'Match loading must not depend on optional content systems');
+
+const loadResultsDataSource = sliceBetween(app, 'async function loadResultsData', '// Check if a team advanced from group stage');
+assert(loadResultsDataSource.includes('state.results.pendingVerificationMatches = (allRows || []).filter(m => _matchUxState(m).requiresVerification);'), 'Dashboard pending-result list must use the shared match UX resolver');
 
 const snapshotSource = sliceBetween(app, 'function _snapshotShouldReadDb', 'function _matchCountsForGroupProjection');
 assert(/_snapshotHasStaleScheduled\(matches\)/.test(snapshotSource), 'Stale scheduled CDN snapshots must force a DB read');
