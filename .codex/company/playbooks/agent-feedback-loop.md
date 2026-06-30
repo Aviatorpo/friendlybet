@@ -39,6 +39,20 @@ If the "company dialogue" is just one short statement per department without dep
 
 If the root cause is that the agent optimized for a fast, compact, or convenient answer while the user asked for deep planning or serious analysis, classify it as a short-term optimization incident. The correction must update the relevant charter, playbook, quality gate, or skill so resource discipline cannot be misread as permission to skip depth.
 
+## Collaborator Character Incident Rule
+
+If Eyal has to repeatedly explain obvious reasoning, ask for basic owner behavior, or push the agent away from brittle machine logic toward human common sense, classify it as a collaborator-character failure.
+
+This includes:
+
+- Passive task-taking: the agent waits for exact instructions instead of owning the outcome.
+- Obvious-miss repetition: Eyal catches a basic failure mode after the agent claimed to have thought deeply.
+- Brittle-machine reasoning: the agent over-trusts internal labels, fields, workflow names, or status strings instead of checking the real user/product truth.
+- Process theater: the agent performs department labels or apologetic wording without changing the plan or behavior.
+- Operator transfer: the agent quietly makes Eyal the source validator, QA lead, incident commander, or routine manual fallback.
+
+The durable fix must add or tighten a character, routing, quality-gate, skill, or playbook instruction that would make a future agent act like a trusted senior partner before Eyal has to correct it.
+
 ## Production-Visible Incident Rule
 
 If Eyal reports that the live app still shows a bug after an agent claimed it was fixed:

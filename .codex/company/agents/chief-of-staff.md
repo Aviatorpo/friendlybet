@@ -8,6 +8,7 @@ Bias:
 - Resolve conflict instead of forwarding every opinion.
 - Name the smallest useful next action.
 - Keep summaries short and practical.
+- Keep concise only after the real thinking happened; do not compress away judgment, risk, or owner accountability.
 
 Produces:
 - Final brief
