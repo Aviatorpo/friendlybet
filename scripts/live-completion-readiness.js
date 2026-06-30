@@ -277,13 +277,14 @@ function applyLocalPollerRecovery(liveness, nowMs, context = {}) {
   };
 }
 
-function isGreenProductionSurface(context = {}) {
+function isGreenProductionSurface(context = {}, options = {}) {
   const production = context.production || null;
   const liveDb = context.liveDb || null;
+  const skipPundit = !!options.skipPundit;
   return !!(
     production
     && production.audit_ok === true
-    && production.pundit_fresh === true
+    && (skipPundit || production.pundit_fresh === true)
     && production.result_recovery
     && production.result_recovery.candidates === 0
     && liveDb
@@ -405,6 +406,7 @@ async function runReadiness(options = {}) {
   const testWorkflow = read('.github/workflows/test-scoring.yml');
   const generatePundit = read('.github/workflows/generate-pundit.yml');
   const readinessMonitor = read('.github/workflows/live-completion-readiness.yml');
+  const liveController = read('.github/workflows/live-match-controller.yml');
 
   add(
     checks,
@@ -475,6 +477,22 @@ async function runReadiness(options = {}) {
       && readinessMonitor.includes('node scripts/live-poller.js')
       && readinessMonitor.includes('running one live-poller recovery pass'),
     'stale active match state should trigger one direct live-poller pass before the monitor fails'
+  );
+  add(
+    checks,
+    'readiness monitor keeps Pundit warning-only for critical result readiness',
+    readinessMonitor.includes("LIVE_COMPLETION_SKIP_PUNDIT: '1'"),
+    'content freshness must not block result/scoring readiness'
+  );
+  add(
+    checks,
+    'live match controller backs up dropped short poller cron',
+    liveController.includes('node scripts/live-controller-needed.js')
+      && liveController.includes('node scripts/live-poller.js')
+      && liveController.includes('LIVE_POLL_CONTROLLER_MS')
+      && liveController.includes('gh workflow run final-result-verifier.yml')
+      && /actions:\s*write/.test(liveController),
+    'long controller must preflight, poll, and dispatch the verified final scoring pipeline'
   );
 
   [
@@ -550,6 +568,7 @@ async function runReadiness(options = {}) {
       const productionAudit = await auditPublicSnapshots(snapshots, nowMs, {
         ...(options.auditOptions || {}),
         allowStoryBacklog,
+        skipPundit,
       });
       production.audit_ok = productionAudit.ok;
       production.result_recovery = productionAudit.result_recovery;
@@ -563,7 +582,15 @@ async function runReadiness(options = {}) {
         );
       }
       add(checks, 'production public snapshots are readable', production.matches > 0 && production.stories > 0 && production.pundit_items > 0, `matches=${production.matches}, stories=${production.stories}, pundit=${production.pundit_items}`);
-      add(checks, 'production Pundit feed is fresh', production.pundit_fresh, `freshUntil=${production.pundit_freshUntil || 'missing'}`);
+      add(checks, 'production Pundit feed is fresh', skipPundit || production.pundit_fresh, `freshUntil=${production.pundit_freshUntil || 'missing'}${skipPundit ? ', warning-only' : ''}`);
+      if (skipPundit && !production.pundit_fresh) {
+        addWarning(
+          warnings,
+          'production_pundit_stale_warning_only',
+          'Production Pundit content is stale, but result/scoring readiness is not blocked.',
+          `freshUntil=${production.pundit_freshUntil || 'missing'}`
+        );
+      }
       add(checks, 'production public snapshot audit is green', productionAudit.ok, `recovery=${productionAudit.result_recovery.candidates}, errors=${productionAudit.watchdog.errors.length}`);
     } catch (err) {
       add(checks, 'production public snapshots are readable', false, err.message);
@@ -580,6 +607,7 @@ async function runReadiness(options = {}) {
         ...(options.auditOptions || {}),
         matches: dbMatches,
         allowStoryBacklog,
+        skipPundit,
         ignoreSnapshotLiveStatus: false,
       });
       liveDb = {
@@ -628,14 +656,14 @@ async function runReadiness(options = {}) {
         required: workflowRequired,
         live_poller: summarizeWorkflowLiveness(livePollerRuns, nowMs, LIVE_POLLER_STALE_MS, { required: workflowRequired }),
         final_result_verifier: summarizeWorkflowLiveness(finalVerifierRuns, nowMs, FINAL_VERIFIER_STALE_MS, { required: workflowRequired }),
-        pundit: summarizeWorkflowLiveness(punditRuns, nowMs, PUNDIT_WORKFLOW_STALE_MS, { required: workflowRequired }),
+        pundit: summarizeWorkflowLiveness(punditRuns, nowMs, PUNDIT_WORKFLOW_STALE_MS, { required: workflowRequired && !skipPundit }),
       };
       workflowLiveness.live_poller = applyLocalPollerRecovery(workflowLiveness.live_poller, nowMs, {
         liveDb,
         production,
         recoveryAt: options.localPollerRecoveryAt,
       });
-      const greenSurface = isGreenProductionSurface({ production, liveDb });
+      const greenSurface = isGreenProductionSurface({ production, liveDb }, { skipPundit });
       if (greenSurface) {
         workflowLiveness.final_result_verifier = downgradeStaleWorkflowLiveness(
           workflowLiveness.final_result_verifier,
