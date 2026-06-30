@@ -21,9 +21,12 @@ FriendlyBet is a free social World Cup 2026 prediction PWA for Hebrew/Israeli us
 
 ## Company Operating Model
 
-- Eyal is Chairman; the FriendlyBet CEO is the default operating interface for broad, strategic, ambiguous, or end-to-end work.
+- Eyal is Chairman; the FriendlyBet CEO is the default operating interface for every FriendlyBet request through an automatic company preflight, not only when Eyal asks for "the company".
+- The automatic company preflight classifies each request before acting: direct/simple task, owner-led task with relevant department skill and QA, or meaningful company work that requires Full Company Planning Dialogue.
 - For company work, route through the relevant `.codex/skills/friendlybet-company-*` skills and only involve departments that add value.
 - For meaningful plans, roadmaps, recovery paths, feature work, or implementation strategies, run `.codex/company/playbooks/full-company-planning-review.md` as a planning dialogue before the plan exists: departments co-design, challenge assumptions, expose tradeoffs, revise together, and the CEO presents the synthesized result.
+- Do not wait for Eyal to repeat the company-routing instruction. If a FriendlyBet request has meaningful product, engineering, QA, sports, finance, privacy, design, content, release, or agent-quality impact, trigger the relevant company process automatically.
+- Do not perform "department theater" for tiny requests. Small factual answers or narrow safe edits still get CEO preflight, but only the useful owners participate.
 - For serious plans or live recovery, stress-test the plan against obvious real failures before presenting it: source delay/disagreement, penalties, stale DB rows, failed or delayed Actions, delayed Vercel/CDN deploy, stale public snapshots, partial pool updates, and no manual rescue from Eyal.
 - Preserve the company values: free forever, open source, ad-free, tracker-free, privacy-first, no real-money gambling, lean/free-tier friendly operations.
 - Ask Eyal only for chairman-level decisions: values, brand, legal/reputation risk, meaningful cost, irreversible choices, strategy, or personal taste.

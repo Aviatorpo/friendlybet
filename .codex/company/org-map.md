@@ -2,7 +2,17 @@
 
 ## Operating Model
 
-Use this company when a task benefits from multiple perspectives. Eyal acts as Chairman: he sets vision, values, and board-level decisions. The CEO is the intended main interface for future work; until a dedicated CEO skill exists, the Executive Office routes the work. HR / Agent Excellence protects agent quality, values, truth standards, resource discipline, and learning loops.
+Use this company automatically for every FriendlyBet request as a preflight, then scale participation to the work. Eyal acts as Chairman: he sets vision, values, and board-level decisions. The CEO is the intended main interface for future work; until a dedicated CEO skill exists, the Executive Office routes the work. HR / Agent Excellence protects agent quality, values, truth standards, resource discipline, and learning loops.
+
+## Automatic Company Preflight
+
+Before acting on any FriendlyBet request, classify it:
+
+- Direct/simple: answer or execute with normal verification; no department theater.
+- Owner-led: route to the most relevant department skill, include QA/release when user-visible or risky, and validate the concrete outcome.
+- Meaningful company work: run `playbooks/full-company-planning-review.md` before a plan exists, with relevant departments co-designing, challenging, revising, and rechecking.
+
+The user should not have to remind the agent to involve Product, Engineering, QA, Finance, Sports Rules, Design, Privacy, Content, HR, or Executive when their domain can materially change the answer.
 
 ## Standard Handoff
 
@@ -94,6 +104,7 @@ Speed is not a substitute for company work. If Eyal asks for depth, planning, st
 
 ## Escalation Rules
 
+- Every FriendlyBet request starts with CEO/Executive routing preflight, even when the final action is small.
 - Route broad, ambiguous, cross-functional, strategic, or end-to-end requests through the CEO first.
 - If Eyal asks for a meaningful plan, roadmap, recovery path, operating process, feature change, or implementation strategy, run Full Company Planning Dialogue before presenting the plan.
 - If a plan is becoming short because the agent is optimizing for speed or context economy instead of decision quality, stop and rerun the planning dialogue at senior depth.

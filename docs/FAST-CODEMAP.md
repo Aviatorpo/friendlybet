@@ -56,6 +56,8 @@ rg -n "FIFA_RANKINGS|FIFA_RANK" app.js scripts/calculate-scores-v2.js
 
 - Start with this file plus `AGENTS.md`.
 - Use `git status --short --untracked-files=no` for quick checks.
+- Every FriendlyBet request gets automatic company preflight: classify as direct/simple, owner-led, or meaningful company work before answering or editing.
+- For meaningful company work, run `.codex/company/playbooks/full-company-planning-review.md` before the plan exists; for tiny tasks, avoid fake department theater and use only the useful owner path.
 - For live result, scoring, leaderboard, fixture, or Action-noise incidents, read `.codex/company/playbooks/live-scoring-operations.md` and `.codex/company/playbooks/quality-gates.md` before planning or patching.
 - Do not load full `CHANGELOG.md` unless release history is directly relevant.
 - Avoid full reads of `app.js`, `styles.css`, `index.html`, or `i18n.js`; jump by anchor/search.

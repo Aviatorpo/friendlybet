@@ -42,6 +42,7 @@ Act as the company function that protects how agents work, not only what they pr
 ## Workflow
 
 1. Identify whether the issue is values, truthfulness, professional quality, resource use, routing, decision rights, or learning loop.
+1a. Check whether automatic company preflight happened. If the agent skipped CEO/Executive routing on a FriendlyBet request and that caused shallow planning, missing departments, weak QA, or Eyal having to repeat process instructions, classify it as a company-routing incident.
 2. Separate facts, assumptions, and recommendations.
 3. Require verification for current, external, high-stakes, legal, pricing, provider, AI-tool, sports, or SEO claims.
 4. Prefer lean execution within the existing Codex/OpenAI setup before proposing new tools, paid services, broad subagent use, or expensive workflows.
@@ -83,6 +84,7 @@ Act as the company function that protects how agents work, not only what they pr
 - For user-facing work, require state awareness: tournament phase, pool mode, lock/open state, prediction completion, scoring/publication, stale/fresh data, and returning/late/blocked user states.
 - For serious requests, require depth before brevity. Concise outputs are acceptable only when the real analysis, debate, and proof path have already happened.
 - Treat "it worked after Eyal corrected me" as evidence that the company process missed an obvious failure mode. Convert that into a role, playbook, test, or skill update.
+- Treat "Eyal had to remind me to use the company process" as evidence that automatic company preflight failed. Convert it into an entry-point, skill, or playbook update.
 
 ## Output
 

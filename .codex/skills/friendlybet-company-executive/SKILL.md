@@ -37,7 +37,7 @@ Read academy docs when coordinating agent training, cross-team mastery, or certi
 
 ## Workflow
 
-1. If the request is broad, strategic, or end-to-end, route through `$friendlybet-company-ceo` as the primary front door.
+1. Treat every FriendlyBet request as requiring company preflight. Route through `$friendlybet-company-ceo` as the primary front door, then classify the work as direct/simple, owner-led, or meaningful company work.
 2. Restate the goal and success criteria, then decide which departments must participate; avoid summoning all departments for small tasks.
 3. Involve `$friendlybet-company-hr-agent-excellence` when the task touches agent quality, truth standards, resource discipline, company culture, or lessons from mistakes.
 4. For meaningful plans, treat departments as co-designers, not late reviewers: ask each relevant department what should change in the plan, what tradeoff matters, what is weak, what is strong, what would fail, and how to prove success.
@@ -52,6 +52,7 @@ Read academy docs when coordinating agent training, cross-team mastery, or certi
 ## Executive Defaults
 
 - Treat Eyal as Chairman and the CEO as the default operating interface for broad work.
+- Ensure the CEO/front-door process activates automatically in FriendlyBet threads; Eyal should not have to repeat company-routing instructions.
 - Protect FriendlyBet's philanthropic, free, private, ad-free, tracker-free, open-source identity.
 - Prefer a narrow MVP over platform sprawl.
 - Keep decisions concrete enough for Engineering and QA to act.
