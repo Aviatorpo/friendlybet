@@ -71,6 +71,8 @@ function testSimulationAndBaseline() {
   const simTarget = simulated.find(m => m.id === 'm1');
   assert.strictEqual(simTarget.status, 'FINISHED');
   assert.strictEqual(simTarget.winner_code, 'BRA');
+  assert.strictEqual(simTarget.home_score, 1);
+  assert.strictEqual(simTarget.away_score, 0);
   assert.deepStrictEqual(G.finishedIdsExcluding(simulated, simTarget), ['id:old']);
 }
 
@@ -86,7 +88,8 @@ async function testDryRunScoringUsesPoolRulesAndMultipliers() {
     },
   };
   const users = [{ id: 'u1', pool_id: 'pool-1', nickname: 'Ana', joined_at: '2026-01-01T00:00:00Z', total_score: 0 }];
-  const matches = [{ id: 'm1', stage: 'R16', status: 'FINISHED', home_team_code: 'BRA', away_team_code: 'JPN', winner_code: 'BRA' }];
+  const target = { id: 'm1', stage: 'R16', status: 'TIMED', home_team_code: 'BRA', away_team_code: 'JPN', winner_code: null };
+  const matches = G.simulateWinner([target], target, 'BRA');
   const collectScores = [];
   await S.scoreSinglePhasePool(pool, pool.scoring_rules, users, matches, new Map(), null, {
     groupState: S.buildGroupState(matches),
@@ -112,7 +115,7 @@ function testClientGuardSource() {
   const app = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
   const i18n = fs.readFileSync(path.join(__dirname, '..', 'i18n.js'), 'utf8');
   assert.ok(app.includes('async function _applyVerifiedKnockoutScenarioUsers'), 'client must have scenario overlay helper');
-  assert.ok(/_matchIsFinishedStatus\(m\) && m\.winner_code/.test(app), 'client scenario must require a verified winner_code');
+  assert.ok(/_matchIsFinishedStatus\(m\) && _matchResolvedWinner\(m\)/.test(app), 'client scenario must require a resolved winner');
   assert.ok(app.includes('base_finished_match_ids'), 'client scenario must validate the generated finished-match baseline');
   assert.ok(app.includes("fetch('/public-data/knockout-scenarios/manifest.json', { cache: 'no-store' })"), 'client must not use cached scenario manifest data');
   assert.ok(app.includes("fetch(url, { cache: 'no-store' })"), 'client must not use cached scenario leaderboard data');

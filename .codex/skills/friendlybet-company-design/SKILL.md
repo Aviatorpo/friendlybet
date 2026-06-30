@@ -39,6 +39,9 @@ Read academy docs when design work touches senior training, cross-team product w
 7. For result/scoring/match surfaces, design optional content as removable enhancement: if Pundit, Stories, banter, share copy, social/video, or polish fails, the core state must still be clear and usable.
 8. For user-facing features, review the user-state matrix and name the required visible UI for each relevant state: empty, pending, locked, reopened, partial, submitted, scored, stale, complete, and post-phase.
 9. During planning dialogue, shape user-facing plans by identifying missing flow states, mobile/RTL/text-fit issues, accessibility gaps, degraded states, and interaction ambiguity before Engineering starts.
+10. Reject internal engineering/ops labels in the interface. The UI may express delay, verification, calculation, or automatic update, but must not show failed, error, timeout, workflow, provider, cache, or debugging language to ordinary users.
+11. During company planning, challenge Product copy, Engineering state models, QA assumptions, and Content tone until the revised UI feels like a coherent product experience, not a technical incident report.
+12. Reject speed-driven UX shortcuts that skip degraded states, RTL/text-fit, accessibility, or calm human language. A compact UI plan is valid only after these checks are done.
 
 ## Output
 

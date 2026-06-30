@@ -89,6 +89,14 @@ check('leaderboard pool filter uses PostgREST in syntax', () => {
   assert.strictEqual(Export.postgrestInFilter('pool_id', ['p1', 'p2']), 'pool_id=in.(p1,p2)');
 });
 
+check('match export uses public allowlist, not select=*', () => {
+  assert.ok(Export.SAFE_MATCH_COLS.includes('winner_code'));
+  assert.ok(Export.SAFE_MATCH_COLS.includes('stage'));
+  assert.ok(!Export.SAFE_MATCH_COLS.includes('*'));
+  assert.ok(!Export.SAFE_MATCH_COLS.includes('latest_consensus'));
+  assert.ok(!Export.SAFE_MATCH_COLS.includes('raw_payload'));
+});
+
 (async () => {
   console.log('\n== integration: export sbAll paginates beyond 100 pages ==');
   const ranges = [];

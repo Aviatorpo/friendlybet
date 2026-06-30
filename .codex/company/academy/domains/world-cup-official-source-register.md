@@ -45,9 +45,9 @@ Retrieved: 2026-06-28
   - Article 14: knockout matches level after normal time go to extra time and then penalties if still level.
   - Annexe C: FIFA provides the 495 possible best-third combinations and next match-ups for the round of 32.
 - Applies to: Sports Rules, Engineering, QA, Product, Content, Pundit, Social Video.
-- Local code/data impacted: confirms `app.js` `SP_R32_DEF`/round wiring, `third-place-allocation.js`, `lib/third-place-allocation.mjs`, `share-assets/fifa-third-place-table.js`, `share-assets/world-cup-rules.js`, and scoring use of `winner_code`.
+- Local code/data impacted: confirms `app.js` `SP_R32_DEF`/round wiring, `third-place-allocation.js`, `lib/third-place-allocation.mjs`, `share-assets/fifa-third-place-table.js`, `share-assets/world-cup-rules.js`, and scoring use of verified advancement stored as resolved `winner_code`.
 - Content implication: agents may now explain the official 48-team format, R32/R16 bracket wiring, best-third tie-break order, and extra-time/penalty rule with this source attached.
-- QA cases: verify 495 Annex C rows, exact R32 slots, M89-M104 wiring, current live bracket seed, fair-play/team-conduct tie fallback, FIFA-ranking fallback, and knockout `winner_code` behavior.
+- QA cases: verify 495 Annex C rows, exact R32 slots, M89-M104 wiring, current live bracket seed, fair-play/team-conduct tie fallback, FIFA-ranking fallback, and knockout advancement/`winner_code` behavior.
 - FinOps/provider implication: no paid provider needed for bracket rules; current match/result feeds still need official/fresh verification for live team placement and winners.
 
 Retrieved: 2026-06-23

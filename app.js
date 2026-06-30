@@ -3382,6 +3382,20 @@ function _matchLiveClockLabel(m, now = Date.now()) {
 function _matchHasNumericScore(m) {
   return m && m.home_score != null && m.away_score != null;
 }
+function _matchIsKnockoutStage(m) {
+  const stage = String((m && m.stage) || '').toUpperCase();
+  return !!stage && stage !== 'GROUP_STAGE';
+}
+function _matchResolvedWinner(m) {
+  if (!_matchHasNumericScore(m)) return null;
+  const hs = Number(m.home_score);
+  const as = Number(m.away_score);
+  if (hs > as) return m.home_team_code || null;
+  if (as > hs) return m.away_team_code || null;
+  const winner = String((m && m.winner_code) || '').toUpperCase();
+  if (winner && (winner === m.home_team_code || winner === m.away_team_code)) return winner;
+  return null;
+}
 function _matchIsPendingProviderFinal(m) {
   const source = String((m && m.live_source) || '').toLowerCase();
   const detail = String((m && m.status_detail) || '').toLowerCase();
@@ -3807,17 +3821,8 @@ async function loadResultsData(options = {}) {
     state.results.knockoutWinners = {};
     (matches || []).forEach(m => {
       if (!m.stage || m.stage === 'GROUP_STAGE') return;
-      // Prefer winner_code (accounts for extra time / penalty shootouts, where
-      // home_score == away_score); fall back to the score comparison.
-      if (m.winner_code) {
-        state.results.knockoutWinners[m.id] = m.winner_code;
-      } else if (m.home_score !== null && m.away_score !== null) {
-        if (m.home_score > m.away_score) {
-          state.results.knockoutWinners[m.id] = m.home_team_code;
-        } else if (m.away_score > m.home_score) {
-          state.results.knockoutWinners[m.id] = m.away_team_code;
-        }
-      }
+      const winner = _matchResolvedWinner(m);
+      if (winner) state.results.knockoutWinners[m.id] = winner;
     });
     
     // Build group advancers map (top 2 of each group)
@@ -9529,14 +9534,15 @@ async function _fetchKnockoutScenarioManifest(maxAgeMs = 60000) {
 
 function _findVerifiedKnockoutScenarioEntry(manifest) {
   const finished = (state.results && Array.isArray(state.results.finishedMatches) ? state.results.finishedMatches : [])
-    .filter(m => _matchIsFinishedStatus(m) && m.winner_code && String(m.stage || '').toUpperCase() !== 'GROUP_STAGE');
+    .filter(m => _matchIsFinishedStatus(m) && _matchResolvedWinner(m) && String(m.stage || '').toUpperCase() !== 'GROUP_STAGE');
   for (const entry of (manifest && manifest.matches) || []) {
     for (const match of finished) {
       if (!_scenarioMatchSameFixture(entry.match, match)) continue;
-      if (!Array.isArray(entry.winners) || !entry.winners.includes(match.winner_code)) continue;
+      const resolvedWinner = _matchResolvedWinner(match);
+      if (!Array.isArray(entry.winners) || !entry.winners.includes(resolvedWinner)) continue;
       const expected = (entry.base_finished_match_ids || []).concat([_scenarioMatchIdentity(match)]);
       if (!_sameStringSet(expected, _scenarioFinishedMatchIds())) continue;
-      return { entry, match, winnerCode: match.winner_code };
+      return { entry, match, winnerCode: resolvedWinner };
     }
   }
   return null;
@@ -11100,11 +11106,12 @@ function createMatchCard(match) {
   // Determine winner styling
   let homeClass = '';
   let awayClass = '';
+  const resolvedWinner = isFinished ? _matchResolvedWinner(match) : null;
   if (isFinished && match.home_score !== null && match.away_score !== null) {
-    if (match.home_score > match.away_score) {
+    if (resolvedWinner && resolvedWinner === match.home_team_code) {
       homeClass = 'match-team-winner';
       awayClass = 'match-team-loser';
-    } else if (match.away_score > match.home_score) {
+    } else if (resolvedWinner && resolvedWinner === match.away_team_code) {
       awayClass = 'match-team-winner';
       homeClass = 'match-team-loser';
     }
@@ -11113,6 +11120,7 @@ function createMatchCard(match) {
   // Score display
   let scoreHtml;
   let pendingScoreNote = '';
+  let advancementNote = '';
   if (needsStatusVerification) {
     scoreHtml = `<div class="match-score no-score">VS</div>`;
     pendingScoreNote = `<div class="match-score-pending-note">${t('matchesEx.statusBeingVerified')}</div>`;
@@ -11127,6 +11135,9 @@ function createMatchCard(match) {
     ` : `<div class="match-score no-score">VS</div>`;
     if (!hasScore) {
       pendingScoreNote = `<div class="match-score-pending-note">${isLive ? t('matchesEx.liveResultAfterFinal') : t('matchesEx.scoreAfterFinal')}</div>`;
+    }
+    if (isFinished && resolvedWinner && _matchIsKnockoutStage(match) && Number(match.home_score) === Number(match.away_score)) {
+      advancementNote = `<div class="match-score-pending-note">${t('matchesEx.advancedOnPenalties', { team: getTeamName(resolvedWinner) })}</div>`;
     }
   } else {
     const time = match.match_date ? new Date(match.match_date) : null;
@@ -11162,6 +11173,7 @@ function createMatchCard(match) {
       </div>
     </div>
     ${pendingScoreNote}
+    ${advancementNote}
     ${infoParts ? `<div class="match-info">${infoParts}</div>` : ''}
   `;
   

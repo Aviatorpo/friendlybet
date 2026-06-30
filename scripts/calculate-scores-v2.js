@@ -485,16 +485,25 @@ async function recordUserScore(user, groupPoints, knockoutPoints, bonusPoints, t
   return updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, opts);
 }
 
-// Knockout winner. Prefer the explicit winner_code (from football-data
-// score.winner) because a penalty shootout / extra-time win leaves
-// home_score == away_score, which the raw score comparison would read as "no
-// winner" and award zero points. Fall back to the score comparison for rows
-// synced before winner_code existed.
+// Knockout winner. Decisive scores stand on their own; an explicit
+// winner_code is only allowed to resolve tied knockout finals (penalties).
+// A winner_code that contradicts a decisive score is treated as unsafe data and
+// the match is left unscored until the verifier repairs the canonical row.
 function knockoutWinner(m) {
-  if (m.winner_code) return m.winner_code;
   if (m.home_score == null || m.away_score == null) return null;
-  if (m.home_score > m.away_score) return m.home_team_code;
-  if (m.away_score > m.home_score) return m.away_team_code;
+  const scoreWinner = Number(m.home_score) > Number(m.away_score)
+    ? m.home_team_code
+    : (Number(m.away_score) > Number(m.home_score) ? m.away_team_code : null);
+  const explicitWinner = m.winner_code || null;
+  if (scoreWinner) {
+    if (explicitWinner && explicitWinner !== scoreWinner) {
+      scoringWarn(`unsafe knockout winner_code ignored for ${m.home_team_code}-${m.away_team_code}: score winner=${scoreWinner}, winner_code=${explicitWinner}`);
+      return null;
+    }
+    return scoreWinner;
+  }
+  if (explicitWinner && (explicitWinner === m.home_team_code || explicitWinner === m.away_team_code)) return explicitWinner;
+  if (explicitWinner) scoringWarn(`unsafe knockout winner_code ignored for ${m.home_team_code}-${m.away_team_code}: winner_code=${explicitWinner}`);
   return null; // tied with no winner_code (e.g. penalties not yet captured)
 }
 

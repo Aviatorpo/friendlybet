@@ -11,11 +11,33 @@ Use this after an agent mistake, hallucination, missed requirement, wasteful pro
 5. Validate the changed skill or instructions when applicable.
 6. Record a decision log only for lessons likely to matter later.
 
+## Chairman Frustration Trigger
+
+If Eyal expresses anger, frustration, disappointment, loss of trust, or explicitly says he is angry or upset, presume he wants a correction loop.
+
+The agent must:
+
+1. Stop normal forward motion unless there is an urgent live-user incident that would worsen by pausing.
+2. Acknowledge the signal and apologize plainly without defending tone or minimizing the issue.
+3. Inspect the agent's own recent actions, claims, skipped checks, routing, validation, and memory usage.
+4. Classify the failure using this playbook, or create the smallest precise incident class if none fits.
+5. Correct the immediate issue or execute the next safe recovery action.
+6. Update the smallest durable instruction, skill, playbook, test, release gate, or decision log when the lesson is reusable.
+7. Validate the fix or state exactly what remains unproven and who owns it.
+
+Do not answer only the surface question when the emotional signal is about agent reliability. Do not offer generic reassurance. The output should include: apology, incident, root cause, immediate correction, process correction, validation, and remaining risk.
+
 ## Planning Co-Design Incidents
 
 If an agent claims a plan was built with the company, but the work only read department briefs, simulated perspectives, or added department labels after drafting, classify it as a planning-process and truthfulness incident.
 
 The durable fix must require evidence that departments changed the plan before it was presented: initial problem frame, department challenges, revisions, second-round rechecks for affected departments, and Executive synthesis. The agent must redo the plan using `full-company-planning-review.md` before presenting a final recommendation.
+
+If a plan includes a user-facing decision that a real Product or Design review should have rejected, such as leaking internal operational states (`failed`, `error`, `timeout`, workflow names, provider names, or debugging language) into the user experience, classify it as both a planning-process incident and a product/design judgment incident. The correction must explicitly separate internal ops states from user-facing states, rerun Product and Design as active challengers, and update the plan before continuing.
+
+If the "company dialogue" is just one short statement per department without departments challenging each other, classify it as a label-only planning incident. The agent must redo the dialogue with cross-department objections, revisions forced by those objections, and second-round rechecks.
+
+If the root cause is that the agent optimized for a fast, compact, or convenient answer while the user asked for deep planning or serious analysis, classify it as a short-term optimization incident. The correction must update the relevant charter, playbook, quality gate, or skill so resource discipline cannot be misread as permission to skip depth.
 
 ## Production-Visible Incident Rule
 
@@ -34,6 +56,14 @@ If Eyal reports that the app behaves correctly in one tournament/user state but 
 Examples include: before knockout vs after knockout opens, after R32 completes vs before R16 picks, submitted vs partial picks, single-phase vs two-phase pools, stale public snapshot vs fresh DB state, or locked vs reopened entry.
 
 The durable fix must include a user-state matrix in the relevant product/playbook/skill guidance and either an automated fixture or named manual/live verification for each state that changes what users can see, pick, edit, score, or share.
+
+## Small-Head Ownership Incident Rule
+
+If an agent completes the narrow literal task while ignoring predictable adjacent impact, classify it as a small-head ownership incident.
+
+This includes failing to check obvious user states, downstream data/snapshot/deploy layers, bilingual copy, release/version requirements, privacy/cost/legal implications, or the department owner who should have been involved.
+
+The durable fix must add an ownership-perimeter check to the relevant skill, playbook, test, or release gate. The agent must state what it owned directly, what it delegated or routed, what remains unproven, and why any skipped adjacent area was truly not applicable.
 
 ## False End-To-End Verification Incident Rule
 

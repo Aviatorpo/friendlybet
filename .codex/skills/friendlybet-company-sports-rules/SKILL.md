@@ -38,9 +38,10 @@ Read academy docs when World Cup or cross-team rules knowledge matters:
 3. Keep FIFA/football-specific rules out of generic sport templates unless named.
 4. Identify provider data needs and free-tier/license risks.
 5. Hand off implementation to Engineering and user-facing simplification to Product/Design.
-6. During group-completion and knockout-opening incidents, keep the rule boundary explicit: verified terminal fixtures, official advancement, and `winner_code` determine scoring/bracket readiness; Story/Pundit/social readiness is not a sports-rule dependency.
+6. During group-completion and knockout-opening incidents, keep the rule boundary explicit: verified terminal fixtures and official advancement determine scoring/bracket readiness, with `winner_code` only as the resolved stored output; Story/Pundit/social readiness is not a sports-rule dependency.
 7. For tournament-aware plans, enumerate the competition phases and phase transitions that affect user state: before tournament, group stage, group completion, each knockout round active/complete, and final completion.
 8. During planning dialogue, shape any plan that touches sports formats, scoring, locks, advancement, provider data, phase transitions, or official-vs-derived results before implementation starts.
+9. Reject fast plans that skip rule boundaries, phase transitions, or official-vs-derived result semantics. Sports correctness is not optional because a shorter answer would be easier.
 
 ## Output
 

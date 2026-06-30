@@ -32,7 +32,7 @@ When Sports Rules or Content raises a tournament rule:
 - Do not wipe in-memory prediction state before DB operations finish.
 - Load into temp objects and commit only successful slices.
 - Use `predicted_winner` for `knockout_picks`.
-- Use `winner_code` for knockout results.
+- Use verified advancement for knockout results and store it as resolved `winner_code`; reject raw, stale, or contradictory values.
 - Avoid provider calls in user request paths; prefer scheduled sync and cached snapshots.
 - Treat Supabase 1000-row defaults as a real risk.
 

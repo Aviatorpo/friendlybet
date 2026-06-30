@@ -48,6 +48,7 @@ Read academy docs when app mastery, sports-rule encoding, or senior engineering 
 8. For results, scoring, locks, leaderboards, and match display, never make core code await, import, validate, deploy, or depend on optional Pundit, Stories, banter, share copy, social/video, or visual-polish artifacts. Add timeout/fallback behavior and tests when optional content is adjacent.
 9. For tournament-aware UI, identify or create the shared state resolver/source of truth before editing screens. Avoid screen-local assumptions about phase, lock/open state, submitted picks, scoring publication, or stale snapshots.
 10. During planning dialogue, shape feasibility, data ownership, cache/deploy layers, migration/RLS impact, state model, failure modes, rollback, and the smallest testable implementation sequence before a plan is presented.
+11. Do not let a fast implementation path replace deep architecture review when scoring, results, locks, public snapshots, or user-visible state are involved. Engineering should reduce waste, not reduce analysis.
 
 ## Output
 

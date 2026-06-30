@@ -47,7 +47,7 @@ eq('normal away win', S.knockoutWinner({home_score:0,away_score:3,home_team_code
 eq('penalty: winner_code used', S.knockoutWinner({home_score:1,away_score:1,winner_code:'A',home_team_code:'H',away_team_code:'A'}), 'A');
 eq('0-0 penalty winner_code', S.knockoutWinner({home_score:0,away_score:0,winner_code:'H',home_team_code:'H',away_team_code:'A'}), 'H');
 eq('tied, no winner_code -> null', S.knockoutWinner({home_score:1,away_score:1,home_team_code:'H',away_team_code:'A'}), null);
-eq('winner_code overrides score', S.knockoutWinner({home_score:2,away_score:1,winner_code:'A',home_team_code:'H',away_team_code:'A'}), 'A');
+eq('winner_code contradicting decisive score is unsafe', S.knockoutWinner({home_score:2,away_score:1,winner_code:'A',home_team_code:'H',away_team_code:'A'}), null);
 
 console.log('\n== unit: computeGroupStandings (tie-break pts>gd>gf>code) ==');
 (() => {

@@ -2,7 +2,7 @@
 //
 // Builds public-safe leaderboard snapshots for both possible advancing teams in
 // selected knockout fixtures. The app may use a scenario only after the real
-// match row is verified terminal and its winner_code matches the scenario.
+// match row is verified terminal and its resolved winner matches the scenario.
 
 const fs = require('fs');
 const path = require('path');
@@ -134,13 +134,36 @@ function findTargetMatches(matches, targets) {
   return out;
 }
 
+function scenarioScoresForWinner(match, winnerCode) {
+  const home = match && match.home_team_code;
+  const away = match && match.away_team_code;
+  const winnerIsHome = winnerCode === home;
+  const winnerIsAway = winnerCode === away;
+  const hs = match && match.home_score;
+  const as = match && match.away_score;
+  const hasNumericScore = hs != null && as != null && !Number.isNaN(Number(hs)) && !Number.isNaN(Number(as));
+
+  if (hasNumericScore) {
+    if (Number(hs) === Number(as)) return { home_score: Number(hs), away_score: Number(as) };
+    if ((Number(hs) > Number(as) && winnerIsHome) || (Number(as) > Number(hs) && winnerIsAway)) {
+      return { home_score: Number(hs), away_score: Number(as) };
+    }
+  }
+
+  if (winnerIsHome) return { home_score: 1, away_score: 0 };
+  if (winnerIsAway) return { home_score: 0, away_score: 1 };
+  return { home_score: null, away_score: null };
+}
+
 function simulateWinner(matches, targetMatch, winnerCode) {
   const targetId = matchIdentity(targetMatch);
   return (matches || []).map(match => {
     if (matchIdentity(match) !== targetId) return { ...match };
+    const scores = scenarioScoresForWinner(match, winnerCode);
     return {
       ...match,
       status: 'FINISHED',
+      ...scores,
       winner_code: winnerCode,
       live_clock: null,
       live_period: null,
@@ -252,6 +275,7 @@ async function main() {
     updatedAt: scenarioTimestamp,
     type: 'knockout_scenario_manifest',
     selection_mode: shouldAutoSelectNext(TARGETS) ? AUTO_NEXT_TARGET : 'explicit',
+    target_strategy: shouldAutoSelectNext(TARGETS) ? 'auto_next_unresolved_knockout' : 'explicit',
     targets: TARGETS,
     matches: [],
   };
@@ -322,6 +346,7 @@ if (require.main === module) {
   module.exports = {
     findTargetMatches,
     simulateWinner,
+    scenarioScoresForWinner,
     finishedIdsExcluding,
     safeSegment,
     matchIdentity,

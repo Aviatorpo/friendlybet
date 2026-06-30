@@ -1010,6 +1010,7 @@ const TRANSLATIONS = {
     'matchesEx.verifyingResult': 'מעדכנים נתונים רשמיים',
     'matchesEx.resultBeingVerified': 'הנתונים הרשמיים מתעדכנים עכשיו',
     'matchesEx.statusBeingVerified': 'אנחנו מאמתים את מצב המשחק ומחשבים את הניקוד. עד שזה מסתיים לא נציג תוצאה ישנה או לא סופית.',
+    'matchesEx.advancedOnPenalties': '{team} העפילה בפנדלים',
     // v2.5.37: live minute labels (client-computed from match_date)
     'matchesEx.minute': "דקה {n}'",
     'matchesEx.halftime': 'הפסקת מחצית',
@@ -2573,6 +2574,7 @@ const TRANSLATIONS = {
     'matchesEx.verifyingResult': 'Finalizing official data',
     'matchesEx.resultBeingVerified': 'Official data is being finalized now',
     'matchesEx.statusBeingVerified': 'We’re verifying the match state and recalculating points. Until that finishes, we won’t show a stale or unfinished result.',
+    'matchesEx.advancedOnPenalties': '{team} advanced on penalties',
     // v2.5.37: live minute labels (client-computed from match_date)
     'matchesEx.minute': "{n}'",
     'matchesEx.halftime': 'Half-time',

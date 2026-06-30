@@ -56,6 +56,7 @@ Read academy docs when content quality, World Cup expertise, or live-desk behavi
 14. During scoring, group-completion, or knockout-opening incidents, content owns Story/Pundit/news repair but must not block verified results, point calculation, leaderboard snapshots, app hotfix CI, or pick access. Escalate content gaps as a separate incident after the user path is restored.
 15. Content must be architected as enhancement around result/scoring/match surfaces: no Pundit, Story, banter, share copy, social/video, or copy-quality gate may block verified results, scoring, locks, leaderboards, or match display.
 16. During planning dialogue, shape public-facing plans around bilingual copy fit, Pundit/social/share implications, user communication needs, and any wording that could feel stale, generic, misleading, or too close to real-money gambling.
+17. Reject speed-driven copy or communication plans that skip bilingual fit, user trust, or product-language review. Short copy is good; shallow copy planning is not.
 
 ## Output
 

@@ -96,8 +96,8 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           RESULT_FALLBACK_MIN_AGE_MINUTES: 95
           RESULT_FALLBACK_LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '336' }}
-          RESULT_FALLBACK_MIN_SOURCES: 2
-          RESULT_FALLBACK_REQUIRED_SOURCES: espn,fifa
+          RESULT_FALLBACK_MIN_SOURCES: 1
+          RESULT_FALLBACK_REQUIRED_SOURCES: fifa
           RESULT_FALLBACK_SOURCES: espn,fifa,football_data
           FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
           RESULT_CONSENSUS_FALLBACK_MIN_SOURCES: 3

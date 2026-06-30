@@ -39,7 +39,7 @@ This is the minimum app context every senior agent must know.
 - Do not wipe in-memory prediction state before DB reads/writes finish.
 - New screens must live inside `<div id="app">`.
 - Static fallback text in `index.html` should match `i18n.js`.
-- Knockout results use `matches.winner_code`, not score comparison.
+- Knockout advancement is verified from result sources/rules and stored in `matches.winner_code`; raw or contradictory `winner_code` values are not trusted by themselves.
 - `knockout_picks` stores picks in `predicted_winner`, not `team_code`.
 - `group_position_picks` has no `multiplier_applied`; single-phase scoring uses live multipliers.
 - Keep frontend `FIFA_RANKINGS` and backend `FIFA_RANK` in sync.
