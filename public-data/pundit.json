@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-06-29T23:39:41.084Z",
-  "freshUntil": "2026-06-30T05:39:41.084Z",
+  "updatedAt": "2026-06-30T04:33:10.891Z",
+  "freshUntil": "2026-06-30T10:33:10.891Z",
   "count": 7,
   "items": [
+    {
+      "id": "result-fa62c45a-4862-411d-89d4-195f03787da6",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "הולנד ומרוקו סיימו 1:1. בנוקאאוט זה לא סוגר סיפור, זה רק מעביר את כל ההימור לדופק גבוה יותר 🧾",
+      "en": "Netherlands and Morocco finished 1-1. In the knockout rounds, that does not settle the story; it just raises the pulse. It still matters for brackets, knockout picks, and pool points 🧾",
+      "sources": [],
+      "expires_at": "2026-07-01T13:00:00.000Z"
+    },
     {
       "id": "result-fd6b2190-6ec4-400d-bd94-868d225ee3f7",
       "type": "result",
@@ -16,8 +25,8 @@
       "id": "result-6ccd037c-6910-43ef-8818-d23358c8c791",
       "type": "result",
       "confidence": "confirmed",
-      "he": "ברזיל ניצחה את יפן 2:1 בנוקאאוט. זה כבר לא חישוב בית, זה רגע שמזיז בראקטים 🧾",
-      "en": "Brazil beat Japan 2-1 in the knockout rounds. No group math now, just a bracket-moving result 🧾",
+      "he": "ברזיל עברה את יפן 2:1. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על יפן צריך מסלול חדש. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
+      "en": "Brazil got past Japan 2-1. Brackets that picked them get a receipt; Japan believers need a new route 🧾",
       "sources": [],
       "expires_at": "2026-07-01T05:00:00.000Z"
     },
@@ -25,26 +34,17 @@
       "id": "result-1e63c58a-b2fb-40ca-a18d-e2fe729b0774",
       "type": "result",
       "confidence": "confirmed",
-      "he": "קנדה ניצחה את דרום אפריקה 1:0 בנוקאאוט. זה כבר לא חישוב בית, זה רגע שמזיז בראקטים 🧾",
-      "en": "Canada beat South Africa 1-0 in the knockout rounds. No group math now, just a bracket-moving result 🧾",
+      "he": "קנדה עברה את דרום אפריקה 1:0. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על דרום אפריקה צריך מסלול חדש. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
+      "en": "Canada got past South Africa 1-0. Brackets that picked them get a receipt; South Africa believers need a new route 🧾",
       "sources": [],
       "expires_at": "2026-06-30T07:00:00.000Z"
-    },
-    {
-      "id": "fixture-fa62c45a-4862-411d-89d4-195f03787da6",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "הולנד נגד מרוקו, היום 04:00. הולנד פייבוריטית, אבל היא עדיין צריכה לעשות את העבודה על הדשא. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית ⏰",
-      "en": "Netherlands vs Morocco, today 04:00. Netherlands are the favorite, but they still have to prove it on the pitch. It still matters for table places, picks, and pool points ⏰",
-      "sources": [],
-      "expires_at": "2026-06-30T00:45:00.000Z"
     },
     {
       "id": "fixture-36f8071c-c9b0-4581-8953-242c240da988",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "חוף השנהב נגד נורווגיה, היום 20:00. מי שפוגע במשחקים האלה בדרך כלל מתקדם יפה בטבלה ⏰",
-      "en": "Ivory Coast vs Norway, today 20:00. People who get these matches right usually move well in the table ⏰",
+      "he": "חוף השנהב נגד נורווגיה, היום 20:00. משחק כזה יכול להכריע מקומות בבית בלי הרבה כותרות ⏰",
+      "en": "Ivory Coast vs Norway, today 20:00. This kind of match can decide group places without making many headlines ⏰",
       "sources": [],
       "expires_at": "2026-06-30T16:45:00.000Z"
     },
@@ -52,8 +52,8 @@
       "id": "fixture-1bcff6f2-4ccf-4a93-8558-8d4da01fad5e",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "צרפת נגד שבדיה, מחר 24:00. צרפת פייבוריטית, אבל היא עדיין צריכה לעשות את העבודה על הדשא. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית ⏰",
-      "en": "France vs Sweden, tomorrow 24:00. France are the favorite, but they still have to prove it on the pitch. It still matters for table places, picks, and pool points ⏰",
+      "he": "צרפת נגד שבדיה, מחר 24:00. משחק שהרבה אנשים יסמנו כבטוח, וזה בדיוק הסיכון. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית ⏰",
+      "en": "France vs Sweden, tomorrow 24:00. Many people will mark this as safe, and that is exactly the risk ⏰",
       "sources": [],
       "expires_at": "2026-06-30T20:45:00.000Z"
     },
@@ -61,8 +61,8 @@
       "id": "fixture-3c2bf70e-e807-4f02-b41c-ddcefc4c849e",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "מקסיקו נגד אקוודור, מחר 04:00. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות ⏰",
-      "en": "Mexico vs Ecuador, tomorrow 04:00. Not the biggest match, but the points here can be crucial ⏰",
+      "he": "מקסיקו נגד אקוודור, מחר 04:00. מי שפוגע במשחקים האלה בדרך כלל מתקדם יפה בטבלה ⏰",
+      "en": "Mexico vs Ecuador, tomorrow 04:00. People who get these matches right usually move well in the table ⏰",
       "sources": [],
       "expires_at": "2026-07-01T00:45:00.000Z"
     }
