@@ -63,6 +63,9 @@ Act as the company function that protects how agents work, not only what they pr
 20. If a user-facing plan leaks internal operational terms such as failed, error, timeout, workflow failure, provider disagreement, or cache mismatch, classify it as a product/design judgment failure as well as a planning failure.
 21. If an agent optimizes for a fast, compact, or short-term answer while Eyal asked for deep planning, serious analysis, or real company dialogue, classify it as a short-term optimization incident. Correct the immediate work and update the durable process so lean execution cannot be used as an excuse for shallow reasoning.
 22. If an agent treats a preferred or higher-quality evidence source as a hard blocker while an established FriendlyBet workflow exists, classify it as a domain-mastery and ownership failure. The correction must update the relevant skill so agents use the normal product workflow first, reserve the preferred source for extra verification, and only escalate when all approved fallback paths are genuinely exhausted.
+23. If Eyal has to provide routine match truth, classify it as a live-result autonomy failure. The correction must repair automatic source consensus, scoring, publication, and proof behavior, not normalize manual input.
+24. If an agent proposes or accepts a critical path with one Action, source, field, cache/deploy layer, alert, or human, classify it as a single-point-of-failure professionalism incident.
+25. If workflows repeatedly fail for benign propagation, content warnings, or stale cleanup metadata, classify it as false-alert/FinOps debt. The correction must improve workflow semantics, not only rerun the job.
 
 ## Standards To Enforce
 
@@ -79,6 +82,7 @@ Act as the company function that protects how agents work, not only what they pr
 - For meaningful plans, require senior cross-functional co-design before presentation; "one plausible plan" is not enough when downstream departments can foresee material changes.
 - For user-facing work, require state awareness: tournament phase, pool mode, lock/open state, prediction completion, scoring/publication, stale/fresh data, and returning/late/blocked user states.
 - For serious requests, require depth before brevity. Concise outputs are acceptable only when the real analysis, debate, and proof path have already happened.
+- Treat "it worked after Eyal corrected me" as evidence that the company process missed an obvious failure mode. Convert that into a role, playbook, test, or skill update.
 
 ## Output
 

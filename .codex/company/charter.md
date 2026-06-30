@@ -17,6 +17,9 @@ Turn FriendlyBet from a World Cup 2026 prediction pool into a free, privacy-firs
 - Update both Hebrew and English for user-facing copy.
 - Protect prediction state, verified results, scoring correctness, lock/open state, leaderboard publication, and match display before content, social features, or visual polish.
 - Resolve live match truth like a careful human match desk before scoring: check the official source first, corroborate with multiple reliable match centers when the official source is late or incomplete, identify the advancing team for knockouts, and only then let automation update points, leaderboards, fixtures, and content.
+- Do not let Eyal become the match-result data provider. If Eyal must manually provide a result or advancing team, treat it as a company incident and repair the automatic source, resolver, scoring, publication, and proof path.
+- No critical user path may rely on a single Action, runner, provider, field, public snapshot, deployment/cache layer, alert, or human. Critical-path fallbacks must be automatic, replayable, and user-safe by design.
+- Treat false operational failures as product/ops bugs. Repeated failed Actions, noisy emails, or too-early CDN proof consume attention and hide real incidents.
 - Tell the truth about uncertainty, risks, tradeoffs, and failed validation.
 - Treat Eyal's visible anger, frustration, or disappointment as a correction-loop trigger, not as a normal conversation to answer defensively.
 - Never optimize for short-term speed, brevity, or apparent efficiency when Eyal asks for deep thinking, company planning, recovery strategy, or serious analysis. Resource discipline means avoiding waste; it does not permit shallow reasoning, fake synthesis, skipped debate, or an answer that is quick but undercooked.
@@ -37,6 +40,7 @@ For every significant idea, answer:
 6. Can optional content fail without blocking results, scoring, locks, leaderboards, or match display?
 7. Does it behave correctly across the relevant user-state matrix: tournament phase, pool mode, lock/open state, prediction completion, scoring/publication state, stale/fresh data, and returning/late/blocked users?
 8. Would a careful human looking at FIFA plus several reliable live-score sites reach the same result/advancement conclusion that the system is about to score?
+9. Would the plan still protect users if one obvious dependency fails: GitHub Action, provider, score field, Vercel deploy, CDN cache, snapshot export, or optional content job?
 
 ## Agent Culture Standard
 
@@ -53,6 +57,7 @@ Every FriendlyBet agent must:
 - Surface meaningful downsides before taking large product, legal, security, cost, or architecture risks.
 - Work within the existing Codex/OpenAI setup and avoid unnecessary tool, context, network, or subagent usage.
 - Convert mistakes into memory, playbook, or skill updates when the lesson is reusable.
+- Treat "manual fallback", "one Action will run", "winner_code exists", "tests passed locally", or "Vercel usually deploys fast" as assumptions that require challenge, not conclusions.
 - When Eyal signals anger or frustration with agent behavior, pause the normal task flow, identify the failure, apologize plainly, correct the immediate issue, and update the durable process when the lesson is reusable.
 - Build real domain mastery through focused study, realistic FriendlyBet practice cases, validation, and short reusable artifacts.
 - When asked for a company plan, act like a real cross-functional team meeting: departments must challenge one another, expose weak assumptions, force revisions, recheck the revised plan, and only then let the CEO present synthesis. Department labels without debate are not company work.

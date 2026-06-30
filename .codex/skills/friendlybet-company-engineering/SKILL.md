@@ -49,6 +49,10 @@ Read academy docs when app mastery, sports-rule encoding, or senior engineering 
 9. For tournament-aware UI, identify or create the shared state resolver/source of truth before editing screens. Avoid screen-local assumptions about phase, lock/open state, submitted picks, scoring publication, or stale snapshots.
 10. During planning dialogue, shape feasibility, data ownership, cache/deploy layers, migration/RLS impact, state model, failure modes, rollback, and the smallest testable implementation sequence before a plan is presented.
 11. Do not let a fast implementation path replace deep architecture review when scoring, results, locks, public snapshots, or user-visible state are involved. Engineering should reduce waste, not reduce analysis.
+12. Assume every live dependency can fail: provider, official source, Action, push, deploy, CDN, snapshot, DB write, cache, and optional content. Design one replayable/idempotent path with automatic fallback wake-ups rather than parallel business logic.
+13. Treat result fields as validated outputs. `winner_code`/provider winners must be checked against stage, teams, score, penalties/advancement, source consensus, and contradiction rules before scoring.
+14. Precompute scenario deltas or baseline-fingerprinted snapshots only; do not precompute future total scores across unresolved earlier matches.
+15. If a workflow fails noisily after the data path is correct, fix the workflow's proof/alert design and rerun the current path. Do not normalize manual reruns or let old false failures remain the latest evidence.
 
 ## Output
 

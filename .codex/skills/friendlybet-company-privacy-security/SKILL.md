@@ -27,6 +27,8 @@ Read playbooks when relevant:
 5. Suggest safer wording for public copy when needed.
 6. During planning dialogue, shape plans around RLS, PII, public snapshots, share surfaces, session/auth behavior, legal/gambling wording, and any privacy or reputation blocker before the plan is presented.
 7. Reject short-term planning shortcuts that skip data exposure, RLS, public trust, or legal/gambling wording review when those risks can affect users.
+8. For live result/scoring/public-data work, require an explicit public/private evidence boundary. Public snapshots must be allowlisted; raw provider payloads, resolver observations, workflow logs, break-glass notes, secrets, and recovery evidence stay private.
+9. Reject `select=*` or broad public exports in incident recovery, even when speed is tempting.
 
 ## Academy
 

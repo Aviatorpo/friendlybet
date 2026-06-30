@@ -57,6 +57,8 @@ Read academy docs when content quality, World Cup expertise, or live-desk behavi
 15. Content must be architected as enhancement around result/scoring/match surfaces: no Pundit, Story, banter, share copy, social/video, or copy-quality gate may block verified results, scoring, locks, leaderboards, or match display.
 16. During planning dialogue, shape public-facing plans around bilingual copy fit, Pundit/social/share implications, user communication needs, and any wording that could feel stale, generic, misleading, or too close to real-money gambling.
 17. Reject speed-driven copy or communication plans that skip bilingual fit, user trust, or product-language review. Short copy is good; shallow copy planning is not.
+18. Do not publish result-driven content from incomplete result truth. If advancement is verified but penalty details are missing, content may state advancement accurately and leave richer shootout details for backfill.
+19. During live-result incidents, content should help users feel the product is calm and current, but must not convert internal workflow/provider/cache language into public copy.
 
 ## Output
 

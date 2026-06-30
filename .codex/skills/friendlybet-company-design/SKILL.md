@@ -42,6 +42,8 @@ Read academy docs when design work touches senior training, cross-team product w
 10. Reject internal engineering/ops labels in the interface. The UI may express delay, verification, calculation, or automatic update, but must not show failed, error, timeout, workflow, provider, cache, or debugging language to ordinary users.
 11. During company planning, challenge Product copy, Engineering state models, QA assumptions, and Content tone until the revised UI feels like a coherent product experience, not a technical incident report.
 12. Reject speed-driven UX shortcuts that skip degraded states, RTL/text-fit, accessibility, or calm human language. A compact UI plan is valid only after these checks are done.
+13. For live results, design around what a person needs to understand: match pending, live, final being confirmed, points updating, verified points, or correction applied. Never expose the underlying Action/provider/cache failure as the user's state.
+14. Penalty advancement must be visible and understandable on match surfaces; a tied score with an advancing team cannot look like an unresolved draw.
 
 ## Output
 

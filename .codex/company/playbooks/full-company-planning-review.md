@@ -30,6 +30,8 @@ The departments are not validators at the end. They are co-designers during plan
 - FinOps shapes cost, alert noise, recurring automation, and resource discipline.
 - Privacy, Sports Rules, Content, Growth, HR, and Executive shape the plan where their domains can materially change the outcome.
 
+For live-result, scoring, fixture, leaderboard, or production-recovery plans, the dialogue must explicitly pressure-test: one GitHub Action fails, one provider is stale or incomplete, official FIFA is late, the match goes to extra time or penalties, `winner_code` is missing or contradictory, Supabase has stale live residue, snapshot export succeeds but Vercel/CDN is slow, one pool remains stale, optional content fails, and Eyal is not available to provide match truth.
+
 ## Co-Design Evidence Standard
 
 Do not claim that a plan was "company co-designed", "deeply reviewed", or "built with all departments" unless the response includes evidence of the dialogue before the final plan:
@@ -96,6 +98,9 @@ Reject the plan and redo the dialogue if any of these appear:
 - Internal-status leak: engineering terms such as failed, error, exception, timeout, stale cache, or workflow failure appear as user-facing product states.
 - Premature synthesis: the CEO presents a polished plan before departments have challenged it.
 - Happy-path tunnel: the plan works only when every workflow succeeds quickly.
+- Manual-truth tunnel: the plan depends on Eyal, QA, or an operator supplying match truth instead of automatic official/source-family resolution.
+- Single-control-plane tunnel: the plan treats GitHub Actions, Vercel deployment, or one static snapshot as the reliability layer rather than a replaceable runner/publication mechanism.
+- Future-total tunnel: the plan precomputes future user totals across unresolved earlier matches instead of per-match deltas or baseline-fingerprinted snapshots.
 - QA-afterthought: tests are attached after the plan instead of shaping the plan.
 - No second round: material revisions are not rechecked by the departments whose risks caused them.
 - Short-term optimization: the agent knowingly gives a smaller, faster, or cleaner-looking answer while leaving the deep analysis, objections, or state matrix undone.
