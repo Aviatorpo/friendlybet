@@ -111,7 +111,11 @@ assert(api._matchNeedsStatusVerification(match({
 assert(api._matchUxState(match({
   status: 'IN_PLAY',
   match_date: '2026-06-23T07:00:00Z',
-}), now).noteKey === 'matchesEx.liveStatusUpdatingNote', 'Stale live rows must use live-status updating copy');
+}), now).noteKey === 'matchesEx.liveResultAfterFinal', 'Stale live rows must keep the simple post-full-time update copy');
+assert(api._matchUxState(match({
+  status: 'IN_PLAY',
+  match_date: '2026-06-23T07:00:00Z',
+}), now).statusKey === 'matchesEx.live', 'Stale live rows must not show the stuck Updating match state badge');
 
 assert(api._matchIsHalftimeBreak(match({
   status: 'PAUSED',
@@ -183,13 +187,22 @@ assert(api._matchUxState(match({
   source_updated_at: '2026-06-23T11:35:00Z',
 }), now).kind === 'live_updating', 'Stale PAUSED/HT row must use live-updating UX');
 assert(api._matchUxState(match({
+  status: 'PAUSED',
+  match_date: '2026-06-23T11:10:00Z',
+  live_period: 1,
+  live_clock: "45'+3'",
+  status_detail: 'HT',
+  live_source: 'espn',
+  source_updated_at: '2026-06-23T11:35:00Z',
+}), now).statusKey === 'matchesEx.live', 'Stale PAUSED/HT row must not show Updating match state');
+assert(api._matchUxState(match({
   status: 'IN_PLAY',
   match_date: '2026-06-23T11:40:00Z',
   live_source: 'espn',
   source_updated_at: '2026-06-23T11:59:00Z',
   home_score: 0,
   away_score: 0,
-}), now).noteKey === 'matchesEx.liveScoreUpdatingNote', 'Live rows without a trusted clock must not promise only a full-time update');
+}), now).noteKey === 'matchesEx.liveResultAfterFinal', 'Live rows without a trusted clock must use the simple post-full-time update copy');
 assert(api._matchResolvedWinner({
   status: 'FINISHED',
   stage: 'ROUND_OF_32',
@@ -227,12 +240,13 @@ assert(api._matchUxState(match({
 assert(api._snapshotHasStaleScheduled([match()], now), 'Snapshot stale detection must include stale scheduled rows');
 
 const cardSource = sliceBetween(app, 'function createMatchCard', 'function getTeamName');
+const matchUxStateSource = extractFunction(app, '_matchUxState');
 assert(/uxState\s*=\s*_matchUxState\(match\)/.test(cardSource), 'Match cards must use the shared UX state resolver');
 assert(/isHalftimeBreak\s*=\s*uxState\.kind\s*===\s*'halftime'/.test(cardSource), 'Match cards must derive half-time from the shared UX state');
 assert(!/else if \(status === 'PAUSED'\)/.test(cardSource), 'Match cards must not render PAUSED blindly as half-time');
 assert(/card\.classList\.add\('verifying'\)/.test(cardSource), 'Verification state must use the verifying card style');
 assert(/uxState\.noteKey/.test(cardSource), 'Verification notes must come from the UX state');
-assert(/matchesEx\.liveScoreUpdatingNote/.test(cardSource), 'Live score gaps must not say only to wait for full time');
+assert(/noteKey:\s*'matchesEx\.liveResultAfterFinal'/.test(matchUxStateSource), 'Live score gaps must use the simple full-time update copy');
 assert(/matchesEx\.advancedOnPenalties/.test(cardSource), 'Penalty-decided knockout cards must show who advanced');
 assert(/_matchResolvedWinner\(match\)/.test(cardSource), 'Match cards must use resolved winner helper for penalty decisions');
 assert(/if \(uxState\.statusKey\)[\s\S]*statusText\s*=\s*t\(uxState\.statusKey\)/.test(cardSource), 'Status badges must use UX-state copy keys');
