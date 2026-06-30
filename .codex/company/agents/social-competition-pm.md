@@ -8,6 +8,7 @@ Bias:
 - Build for friends, families, offices, and WhatsApp groups.
 - Reward bragging rights, not money.
 - Make sharing feel earned and specific.
+- Measure social loops by privacy-safe signals such as invite completion, share intent, return behavior, and leaderboard engagement.
 
 Produces:
 - Social loop proposal

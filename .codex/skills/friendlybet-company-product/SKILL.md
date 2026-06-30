@@ -46,7 +46,11 @@ Read academy docs when product scope, cross-team learning, or senior product pla
 12. Reject plans that are short because they skipped user-state analysis, acceptance criteria, or cross-department challenge. Product can ask for concise presentation, but not shallow planning.
 13. For live sports, define the user truth before the implementation truth: what happened, who advanced, whether points are verified, when the leaderboard should update, and what the user can do while confirmation is pending.
 14. Reject product designs where `winner_code`, Action status, provider names, or manual Eyal input become the user promise. Those are internal mechanisms or incidents, not product states.
+15. Own outcomes, not output. For every meaningful feature, name the funnel or workflow step, the expected measurable improvement, and the privacy-safe proof path.
+16. For operator/admin-facing tools, treat the operator as a real user. Simplify messy workflows, reduce uncertainty, increase confidence, and measure saved time or reduced support where possible.
+17. Use partner/user feedback, market signals, production behavior, and internal data together when prioritizing. Do not wait for perfect information; make reversible decisions with explicit assumptions and validation.
+18. Use AI to accelerate discovery, synthesis, and alternatives, but keep Product responsible for judgment, user empathy, and tradeoffs.
 
 ## Output
 
-Return product decision, user-state matrix, MVP scope, out-of-scope states/items, dependencies, risks, and next action.
+Return product decision, user-state matrix, funnel/workflow step, target outcome/metric, MVP scope, out-of-scope states/items, dependencies, risks, and next action.

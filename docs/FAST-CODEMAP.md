@@ -81,6 +81,7 @@ The service-worker cache key gates PWA updates.
 - Visual style: minimal, elegant, premium sports feel, close to Golazo.us.
 - Eyal prefers autonomy, but active tool/sandbox safety rules still apply.
 - Eyal expects trusted-senior-partner behavior: direct truth, human common sense, independent ownership, early challenge of weak assumptions, and concise reporting after real thinking.
+- Product work should own outcomes, not output: completion, activation, return, share, scoring trust, leaderboard freshness, and reduced operator/admin friction when relevant.
 
 ## Critical Gotchas
 
