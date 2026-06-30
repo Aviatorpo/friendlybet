@@ -9,6 +9,9 @@ Use this before shipping app code, scoring changes, generated data, public copy,
 - Tests run.
 - Tests not run.
 - Manual checks.
+- Shift-left/spec gaps found, or why none were material.
+- Automation level used: domain/unit, integration/data, UI/visual, or manual, with reason.
+- Grey-box evidence checked: code, logs, DB rows, snapshots, browser/network, workflows, or production artifact.
 - Remaining risk.
 - Version bump status.
 - Dirty-worktree caveat, if relevant.
@@ -49,5 +52,7 @@ Use this before shipping app code, scoring changes, generated data, public copy,
 
 - Vague concern without reproduction.
 - Test list with no risk mapping.
+- Automation list with no testing-pyramid rationale.
+- Ship/block decision without grey-box evidence when deeper evidence was available.
 - Ship decision without version/cache status.
 - Ignoring unrelated dirty work that confuses validation.

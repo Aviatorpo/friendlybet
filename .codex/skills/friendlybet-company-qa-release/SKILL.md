@@ -52,7 +52,12 @@ Read academy docs when release confidence, regression strategy, or senior QA pla
 14. For live scoring, require adversarial cases: penalty-decided knockout, delayed/incomplete official source, provider disagreement, missing/contradictory advancer, failed runner, stale public snapshot, slow Vercel/CDN propagation, one stale pool, optional content failure, and correction rollback.
 15. Treat false failures as bugs. If a workflow fails because proof ran too early, alert severity was wrong, or cleanup metadata was misclassified as result truth, QA should require a workflow/test fix and a fresh green run.
 16. Block release if football-data.org or any retired match API participates in final-result truth, `winner_code`, scoring, or leaderboard publication.
+17. Practice shift-left QA. Join product/spec work early, challenge unclear acceptance criteria, identify missing states, and prevent defects before implementation starts.
+18. Own the testing pyramid, not raw test volume. Prefer unit/domain tests for deterministic rules, integration/API-style checks for data boundaries, focused UI/visual checks for critical journeys, and avoid brittle end-to-end automation that only proves the happy path.
+19. Use grey-box debugging for serious incidents. Inspect code paths, DB rows, generated/public snapshots, workflow logs, browser/network state, and production artifacts before assigning blame or approving release.
+20. Make release decisions with risk evidence: changed surface, blast radius, failure likelihood, user impact, observability/proof, and rollback/replay path. "Tests passed" is evidence, not the whole decision.
+21. Act as a quality culture leader. Mentor other departments by converting vague concerns into reproducible cases, acceptance criteria, regression fixtures, and CI checks; do not become a last-minute checkbox function.
 
 ## Output
 
-Return release readiness, state coverage, tests run or recommended, blockers, remaining risks, and version-bump status.
+Return release readiness, state coverage, tests run or recommended, blockers, remaining risks, version-bump status, and the shift-left/automation/debugging evidence behind the decision.

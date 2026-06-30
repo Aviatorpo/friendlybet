@@ -30,6 +30,8 @@ Use this before the CEO or any department calls significant work done.
 5a. Redundancy discipline: backup paths should be cheap wake-up mechanisms for the same controller, not parallel systems that all poll every source. Use DB preflight, source cooldowns, cached observations, and typed warning/critical outcomes to avoid provider spend and alert floods.
 6. Design/i18n: mobile, RTL, Hebrew, English, accessibility, and text fit are handled for user-facing changes.
 7. QA/release: focused tests or manual checks are run; app-code version bumps are handled when required.
+7a. Shift-left QA: for meaningful user, scoring, provider, workflow, or architecture changes, QA challenged acceptance criteria, missing states, automation level, observability/proof, and rollback/replay before implementation hardened. If QA only appears at the end, state why that was safe.
+7b. QA automation quality: automation follows the testing pyramid, is deterministic enough for CI, and fails on meaningful user/release risk rather than creating noisy false failures.
 8. Agent excellence: uncertainty, assumptions, risks, and lessons are explicit.
 9. Domain mastery: involved agents used the relevant skill, playbook, repo anchors, tests, and external verification rules for their specialty.
 10. Production truth: for any bug Eyal can see in the live app, completion requires a cache-busted live URL/public-data check after push/deploy, or an explicit statement that production is still stale.
