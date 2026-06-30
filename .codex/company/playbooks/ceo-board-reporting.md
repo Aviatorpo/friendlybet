@@ -8,6 +8,7 @@ Keep reports concise. Include only sections that matter.
 
 - Decision: the current recommendation or outcome.
 - Progress: what was done.
+- Outcome: the user/operator result or metric moved, when product or operations work is meaningful.
 - Risks: meaningful product, technical, privacy, cost, legal, or quality risks.
 - Validation: checks run or still missing.
 - Needs Eyal: chairman-level decision, if any.

@@ -71,6 +71,20 @@ Examples include: before knockout vs after knockout opens, after R32 completes v
 
 The durable fix must include a user-state matrix in the relevant product/playbook/skill guidance and either an automated fixture or named manual/live verification for each state that changes what users can see, pick, edit, score, or share.
 
+## Outcome-Ownership Product Incident Rule
+
+If meaningful product or operations work ships without a named funnel/workflow step, target outcome, metric/proof path, or workflow simplification, classify it as an outcome-ownership failure.
+
+This includes:
+
+- Output-only shipping: the artifact exists, but nobody can say what improved.
+- Metric theater: a metric is named but cannot be measured privacy-safely or does not prove the user/operator outcome.
+- Speed-without-standards: the team moved quickly by weakening correctness, trust, privacy, accessibility, cost discipline, or validation.
+- AI-without-judgment: AI output or partial dashboards replace source verification, tradeoff thinking, or user empathy.
+- Operator-workflow neglect: the user-facing feature exists but admin/operator work remains tangled, manual, or confidence-draining.
+
+The durable fix must update Product, HR, Quality Gates, or the relevant owner skill so future work names the workflow step, target outcome, proof path, owner, and validation before it is considered done.
+
 ## Small-Head Ownership Incident Rule
 
 If an agent completes the narrow literal task while ignoring predictable adjacent impact, classify it as a small-head ownership incident.

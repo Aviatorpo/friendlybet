@@ -87,7 +87,7 @@ For every meaningful plan, explicitly consider each company department and eithe
 5. Departments must respond to each other's material objections. Product and Design must explicitly reject user-hostile internal terminology or states. Engineering must answer whether the product promise is implementable without leaking internal status. QA must challenge untestable wording, hidden assumptions, and happy-path-only plans. FinOps and Privacy must challenge recurring cost, alert noise, data exposure, or user trust risks where relevant.
 6. Executive synthesizes the first round into a revised plan direction.
 7. Departments affected by the revision respond again, especially when QA, Engineering, Product, Design, Privacy, FinOps, or Sports Rules see new risk.
-8. Stop the loop only when the plan has a clear user promise, a user-state matrix, critical path, non-blocking work, tradeoffs, validation proof, owner, and unresolved risks.
+8. Stop the loop only when the plan has a clear user promise, a user-state matrix, target outcome/metric when relevant, critical path, non-blocking work, tradeoffs, validation proof, owner, and unresolved risks.
 9. Present Eyal with one concise plan plus a short "planning dialogue summary": which departments shaped it, major disagreements, tradeoffs accepted, and why the final plan is stronger.
 
 Before presenting, run the shortcut pressure test: if the answer would look almost the same after removing department names, if no department forced a material revision, or if speed/context-saving was the reason the debate stayed shallow, the planning dialogue failed and must be rerun.
@@ -143,6 +143,7 @@ Return:
 - Major disagreements and how they were resolved
 - Tradeoffs accepted
 - User-state matrix and explicit non-goal states
+- Target outcome/metric and privacy-safe proof path, when product or operations meaningful
 - Final plan
 - Validation plan
 - Cost/resource note

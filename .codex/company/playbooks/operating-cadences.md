@@ -8,7 +8,7 @@ Use this to choose the right company process for recurring work.
 
 Use at the start of every FriendlyBet request. Classify the work as direct/simple, owner-led, or meaningful company work.
 
-Output: chosen cadence, active owners, why other departments are not needed, verification standard, character pressure, and whether a durable memory update may be needed.
+Output: chosen cadence, active owners, why other departments are not needed, verification standard, character pressure, outcome pressure, and whether a durable memory update may be needed.
 
 Direct/simple requests can proceed without visible department output. Owner-led work uses the relevant skill and QA/release when user-visible or risky. Meaningful company work must run Full Company Planning Dialogue before a plan exists.
 
@@ -16,7 +16,7 @@ Direct/simple requests can proceed without visible department output. Owner-led 
 
 Use while forming a meaningful plan, roadmap, implementation strategy, recovery path, operating process, feature change, or broad ambiguous recommendation for Eyal. The CEO should start with a problem frame, involve relevant departments as co-designers, surface strengths, weaknesses, tradeoffs, and failure modes, synthesize disagreements, revise the plan direction, and recheck affected departments before presenting one recommendation.
 
-Output: goal, active departments, not-applicable departments, what departments changed, resolved disagreements, accepted tradeoffs, final plan, validation plan, cost/resource note, risks, needs Eyal.
+Output: goal, active departments, not-applicable departments, what departments changed, resolved disagreements, accepted tradeoffs, target outcome/metric, final plan, validation plan, cost/resource note, risks, needs Eyal.
 
 ### Feature Kickoff
 
