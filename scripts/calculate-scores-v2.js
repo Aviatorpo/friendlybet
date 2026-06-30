@@ -410,6 +410,29 @@ function userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints
     && scoreNumber(user.total_score) === total;
 }
 
+const SAFE_SCORE_ROW_FIELDS = [
+  'id', 'pool_id', 'nickname', 'is_admin', 'is_approved', 'is_late_joiner',
+  'whatsapp_url', 'telegram_url', 'predictions_submitted_at', 'joined_at',
+  'last_active_at', 'approval_status', 'approved_at', 'approved_by',
+  'predictions_locked'
+];
+
+function publicScoreRow(user, groupPoints, knockoutPoints, bonusPoints, total, nowIso = new Date().toISOString()) {
+  const row = {};
+  for (const field of SAFE_SCORE_ROW_FIELDS) {
+    if (Object.prototype.hasOwnProperty.call(user || {}, field)) row[field] = user[field];
+  }
+  row.total_score = total;
+  row.group_points = groupPoints;
+  row.knockout_points = knockoutPoints;
+  row.bonus_points = bonusPoints;
+  row.groups_score = groupPoints;
+  row.knockout_score = knockoutPoints;
+  row.bonus_score = bonusPoints;
+  row.last_score_calc = nowIso;
+  return row;
+}
+
 async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, opts = {}) {
   const heartbeat = opts.heartbeat !== false;
   const now = new Date();
@@ -454,16 +477,33 @@ async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonus
   return true;
 }
 
-// Knockout winner. Prefer the explicit winner_code (from football-data
-// score.winner) because a penalty shootout / extra-time win leaves
-// home_score == away_score, which the raw score comparison would read as "no
-// winner" and award zero points. Fall back to the score comparison for rows
-// synced before winner_code existed.
+async function recordUserScore(user, groupPoints, knockoutPoints, bonusPoints, total, opts = {}) {
+  if (Array.isArray(opts.collectScores)) {
+    opts.collectScores.push(publicScoreRow(user, groupPoints, knockoutPoints, bonusPoints, total, opts.scenarioTimestamp));
+    return !userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints, total);
+  }
+  return updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, opts);
+}
+
+// Knockout winner. Decisive scores stand on their own; an explicit
+// winner_code is only allowed to resolve tied knockout finals (penalties).
+// A winner_code that contradicts a decisive score is treated as unsafe data and
+// the match is left unscored until the verifier repairs the canonical row.
 function knockoutWinner(m) {
-  if (m.winner_code) return m.winner_code;
   if (m.home_score == null || m.away_score == null) return null;
-  if (m.home_score > m.away_score) return m.home_team_code;
-  if (m.away_score > m.home_score) return m.away_team_code;
+  const scoreWinner = Number(m.home_score) > Number(m.away_score)
+    ? m.home_team_code
+    : (Number(m.away_score) > Number(m.home_score) ? m.away_team_code : null);
+  const explicitWinner = m.winner_code || null;
+  if (scoreWinner) {
+    if (explicitWinner && explicitWinner !== scoreWinner) {
+      scoringWarn(`unsafe knockout winner_code ignored for ${m.home_team_code}-${m.away_team_code}: score winner=${scoreWinner}, winner_code=${explicitWinner}`);
+      return null;
+    }
+    return scoreWinner;
+  }
+  if (explicitWinner && (explicitWinner === m.home_team_code || explicitWinner === m.away_team_code)) return explicitWinner;
+  if (explicitWinner) scoringWarn(`unsafe knockout winner_code ignored for ${m.home_team_code}-${m.away_team_code}: winner_code=${explicitWinner}`);
   return null; // tied with no winner_code (e.g. penalties not yet captured)
 }
 
@@ -874,8 +914,10 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     bonusPoints = Math.round(bonusPoints);
     const total = groupPoints + knockoutPoints + bonusPoints;
 
-    const wrote = await updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, {
+    const wrote = await recordUserScore(user, groupPoints, knockoutPoints, bonusPoints, total, {
       heartbeat: opts.heartbeat !== false,
+      collectScores: opts.collectScores,
+      scenarioTimestamp: opts.scenarioTimestamp,
     });
     if (wrote) changedUsers++;
 
@@ -969,8 +1011,10 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     bonusPoints = Math.round(bonusPoints);
 
     const total = groupPoints + knockoutPoints + bonusPoints;
-    const wrote = await updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, {
+    const wrote = await recordUserScore(user, groupPoints, knockoutPoints, bonusPoints, total, {
       heartbeat: opts.heartbeat !== false,
+      collectScores: opts.collectScores,
+      scenarioTimestamp: opts.scenarioTimestamp,
     });
     if (wrote) changedUsers++;
     if (total > 0) scoringDetail(`  ${user.nickname}: ${total} (g${groupPoints}+k${knockoutPoints}+b${bonusPoints})`);
@@ -987,13 +1031,14 @@ if (require.main === module) {
 } else {
   module.exports = {
     main, scoreSinglePhasePool, scoreTwoPhasePool,
-    computeGroupStandings, groupIsComplete, groupMatchIdentity, isPendingProviderFinal, knockoutWinner,
+    computeGroupStandings, groupIsComplete, groupMatchIdentity, isTerminalMatch, isPendingProviderFinal, knockoutWinner,
     buildGroupState, indexRowsBy, userScoresAlreadyCurrent, updateUserScoreIfChanged,
+    recordUserScore, publicScoreRow,
     scoreCalcTimestampFresh,
     bracketPosRuleKey, stageRuleKey, poolMultResolver, buildTwoPhaseSlotMatches,
     groupScoringMode,
     validateTwoPhaseGroupPickSet, WC2026_GROUPS, TEAM_TO_GROUP,
-    DEFAULT_RULES_SINGLE, DEFAULT_RULES_TWO, DEFAULT_CAT_MULT, FIFA_RANK,
+    DEFAULT_RULES_SINGLE, DEFAULT_RULES_TWO, DEFAULT_RULES_LATE_KNOCKOUT, DEFAULT_CAT_MULT, FIFA_RANK,
     sbAll,
     // allow tests to inject a fake Supabase transport
     __setFetch: (fn) => { globalThis.fetch = fn; },

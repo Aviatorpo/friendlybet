@@ -89,7 +89,7 @@ The service-worker cache key gates PWA updates.
 7. Do not wipe in-memory prediction state before DB reads/writes finish. Load into temp objects and commit only successful slices.
 8. New screens must go inside `<div id="app">`; outside it they bypass the mobile width shell.
 9. Static fallback text in `index.html` should match `i18n.js` because it shows before `applyLanguage()`.
-10. Knockout winner is `matches.winner_code`, not score comparison.
+10. Knockout advancement is verified from result sources/rules and stored in `matches.winner_code`; do not trust a raw or contradictory `winner_code` by itself.
 11. `knockout_picks` has no `team_code`; single-phase bracket picks are stored in `predicted_winner`.
 12. `group_position_picks` has no `multiplier_applied`; single-phase scoring uses live multipliers.
 13. Keep frontend `FIFA_RANKINGS` and backend `FIFA_RANK` in sync.

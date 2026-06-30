@@ -5,7 +5,7 @@
 // public-data/ so the browser can fetch them from Vercel's edge CDN instead of
 // hammering Postgres on every refresh during a kickoff/goal spike.
 //
-//   public-data/matches.json                -> all matches (public-safe, select=*)
+//   public-data/matches.json                -> all matches (public-safe allowlist)
 //   public-data/leaderboard/<poolId>.json   -> per-pool standings (SAFE columns only)
 //
 // Safety:
@@ -37,6 +37,28 @@ const SAFE_USER_COLS = [
   'total_score', 'group_points', 'knockout_points', 'bonus_points',
   'groups_score', 'knockout_score', 'bonus_score',
   'predictions_submitted_at', 'joined_at', 'last_score_calc'
+].join(',');
+
+const SAFE_MATCH_COLS = [
+  'id',
+  'external_id',
+  'stage',
+  'group_letter',
+  'home_team_code',
+  'away_team_code',
+  'home_score',
+  'away_score',
+  'status',
+  'match_date',
+  'venue',
+  'winner_code',
+  'scorers',
+  'live_clock',
+  'live_period',
+  'status_detail',
+  'live_source',
+  'source_updated_at',
+  'last_updated'
 ].join(',');
 
 const REST_PAGE_SIZE = 1000;
@@ -128,7 +150,7 @@ async function exportMatches() {
   if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY');
   let matches;
   try {
-    matches = await sbAll('matches', '?select=*&order=match_date.asc,id.asc');
+    matches = await sbAll('matches', `?select=${SAFE_MATCH_COLS}&order=match_date.asc,id.asc`);
   } catch (e) {
     console.error('matches fetch failed, keeping last-good snapshot:', e.message);
     return 0;
@@ -215,6 +237,7 @@ if (require.main === module) {
     sanitizeMatchForSnapshot,
     writeIfChanged,
     sbAll,
+    SAFE_MATCH_COLS,
     __setFetch: (fn) => { globalThis.fetch = fn; },
   };
 }

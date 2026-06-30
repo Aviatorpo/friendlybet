@@ -42,8 +42,14 @@ check('finished non-draw without winner is an error', () => {
 
 check('finished draw may have null winner', () => {
   const errors = [];
-  W.auditMatches([{ id: 'm3', status: 'FINISHED', match_date: oldKickoff, home_score: 1, away_score: 1, winner_code: null }], nowMs, errors, []);
+  W.auditMatches([{ id: 'm3', status: 'FINISHED', stage: 'GROUP_STAGE', match_date: oldKickoff, home_score: 1, away_score: 1, winner_code: null }], nowMs, errors, []);
   assert.deepStrictEqual(errors, []);
+});
+
+check('finished tied knockout without winner is an error', () => {
+  const errors = [];
+  W.auditMatches([{ id: 'm3b', status: 'FINISHED', stage: 'ROUND_OF_32', match_date: oldKickoff, home_score: 1, away_score: 1, winner_code: null }], nowMs, errors, []);
+  assert.ok(errors.some(e => /tied knockout without verified advancing team/.test(e)));
 });
 
 check('finished ESPN residue is an error after grace period', () => {

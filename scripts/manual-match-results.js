@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 /*
- * Apply reviewed match results to Supabase.
+ * Break-glass match-result repair for system incidents.
+ *
+ * This is not the normal match-truth path. Ordinary results must be resolved by
+ * final-result-verifier.js from FIFA/approved automated source-family consensus.
  *
  * Env:
  *   SUPABASE_URL
@@ -15,7 +18,7 @@
  * ]
  */
 
-const { assertQaIfRequested } = require('./qa-env');
+const { assertQaIfRequested, isQaTarget } = require('./qa-env');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
@@ -97,19 +100,23 @@ function normalize(item) {
   const away = teamCode(item.away, 'away');
   const homeScore = score(item.home_score, 'home_score');
   const awayScore = score(item.away_score, 'away_score');
+  const normalizedStage = stage(item.stage);
   const winner = item.winner == null || item.winner === ''
     ? null
     : teamCode(item.winner, 'winner');
+  if (winner && winner !== home && winner !== away) throw new Error(`${home}-${away}: winner must be ${home} or ${away}`);
   if (homeScore > awayScore && winner !== home) throw new Error(`${home}-${away}: winner must be ${home}`);
   if (awayScore > homeScore && winner !== away) throw new Error(`${home}-${away}: winner must be ${away}`);
-  if (homeScore === awayScore && winner !== null) throw new Error(`${home}-${away}: tied match winner must be null`);
+  if (homeScore === awayScore && winner !== null && normalizedStage === 'GROUP_STAGE') {
+    throw new Error(`${home}-${away}: tied group-stage match winner must be null`);
+  }
   return {
     home,
     away,
     homeScore,
     awayScore,
     winner,
-    stage: stage(item.stage),
+    stage: normalizedStage,
     externalId: item.external_id == null || item.external_id === '' ? null : String(item.external_id).trim(),
     matchDate: optionalIsoDate(item.match_date, 'match_date'),
     venue: item.venue == null || item.venue === '' ? null : String(item.venue).trim()
@@ -154,7 +161,7 @@ async function sb(method, table, query, data) {
       live_clock: null,
       live_period: null,
       status_detail: 'FT',
-      live_source: 'manual',
+      live_source: isQaTarget() ? 'qa-break-glass' : 'break-glass',
       source_updated_at: now
     });
     if (!Array.isArray(rows)) {
@@ -184,7 +191,7 @@ async function sb(method, table, query, data) {
         live_clock: null,
         live_period: null,
         status_detail: 'FT',
-        live_source: 'manual',
+        live_source: isQaTarget() ? 'qa-break-glass' : 'break-glass',
         source_updated_at: now,
         last_updated: now
       }]);

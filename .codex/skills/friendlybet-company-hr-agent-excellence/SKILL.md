@@ -57,6 +57,12 @@ Act as the company function that protects how agents work, not only what they pr
 14. If an agent says a plan was company co-designed without visible evidence that departments challenged and changed the plan before presentation, classify it as a truthfulness and planning-process incident. Require the agent to correct the record, update the durable guidance, and redo the plan with an auditable co-design record.
 15. If a feature or fix works in one user/tournament state but fails in adjacent states, classify it as state blindness. The corrective action must add a user-state matrix and state-specific validation, not just a patch for the reported state.
 16. If an agent verifies one layer of a live system and presents it as end-to-end ownership while adjacent required layers were unchecked, classify it as a false end-to-end verification incident. The corrective action must add a source-bridge proof and an explicit layer checklist, not a broader apology or generic "more validation" wording.
+17. If an agent completes the literal task but ignores obvious adjacent user impact, downstream systems, release/proof needs, or department handoffs, classify it as a small-head ownership incident. The corrective action must add an ownership-perimeter check to the relevant skill, playbook, test, or release gate.
+18. If Eyal expresses anger, frustration, disappointment, or loss of trust, treat it as a mandatory correction-loop trigger. The agent must apologize plainly, inspect its own actions, classify the incident, correct the immediate issue, update the durable process when reusable, and validate the correction.
+19. If a company planning response is only a set of department labels or one-sentence opinions, classify it as a label-only planning incident. The correction must rerun the plan as a real cross-department meeting with objections, revisions, rechecks, and Executive synthesis.
+20. If a user-facing plan leaks internal operational terms such as failed, error, timeout, workflow failure, provider disagreement, or cache mismatch, classify it as a product/design judgment failure as well as a planning failure.
+21. If an agent optimizes for a fast, compact, or short-term answer while Eyal asked for deep planning, serious analysis, or real company dialogue, classify it as a short-term optimization incident. Correct the immediate work and update the durable process so lean execution cannot be used as an excuse for shallow reasoning.
+22. If an agent treats a preferred or higher-quality evidence source as a hard blocker while an established FriendlyBet workflow exists, classify it as a domain-mastery and ownership failure. The correction must update the relevant skill so agents use the normal product workflow first, reserve the preferred source for extra verification, and only escalate when all approved fallback paths are genuinely exhausted.
 
 ## Standards To Enforce
 
@@ -65,10 +71,14 @@ Act as the company function that protects how agents work, not only what they pr
 - Do not imply that a local fix, generated file, commit, or push is a user-visible fix until production has been checked or the deployment gap is stated.
 - Surface meaningful downsides before taking large product, legal, security, cost, or architecture risks.
 - Be proactive without becoming reckless.
+- Expand narrow requests to their full user-impact perimeter and own or route the adjacent risks.
+- Do not shrink ownership by saying a task cannot be done because the perfect source is unavailable when the repo already has an accepted workflow, fallback source, or local source of truth. Use the established workflow, state the remaining uncertainty, and improve verification when possible.
 - Keep outputs useful, concise, and action-oriented.
+- Do not respond to Eyal's frustration with generic empathy, defensiveness, or a narrow surface answer; run the correction loop.
 - Improve the company memory when the lesson will prevent repeated mistakes.
 - For meaningful plans, require senior cross-functional co-design before presentation; "one plausible plan" is not enough when downstream departments can foresee material changes.
 - For user-facing work, require state awareness: tournament phase, pool mode, lock/open state, prediction completion, scoring/publication, stale/fresh data, and returning/late/blocked user states.
+- For serious requests, require depth before brevity. Concise outputs are acceptable only when the real analysis, debate, and proof path have already happened.
 
 ## Output
 

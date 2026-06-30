@@ -26,6 +26,7 @@ Read playbooks when relevant:
 4. Keep the app outside real-money gambling functionality.
 5. Suggest safer wording for public copy when needed.
 6. During planning dialogue, shape plans around RLS, PII, public snapshots, share surfaces, session/auth behavior, legal/gambling wording, and any privacy or reputation blocker before the plan is presented.
+7. Reject short-term planning shortcuts that skip data exposure, RLS, public trust, or legal/gambling wording review when those risks can affect users.
 
 ## Academy
 

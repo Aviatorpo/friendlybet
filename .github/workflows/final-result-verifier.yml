@@ -96,8 +96,8 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           RESULT_FALLBACK_MIN_AGE_MINUTES: 95
           RESULT_FALLBACK_LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '336' }}
-          RESULT_FALLBACK_MIN_SOURCES: 2
-          RESULT_FALLBACK_REQUIRED_SOURCES: espn,fifa
+          RESULT_FALLBACK_MIN_SOURCES: 1
+          RESULT_FALLBACK_REQUIRED_SOURCES: fifa
           RESULT_FALLBACK_SOURCES: espn,fifa,football_data
           FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
           RESULT_CONSENSUS_FALLBACK_MIN_SOURCES: 3
@@ -176,6 +176,15 @@ jobs:
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
         run: node scripts/verify-scoring-snapshots.js
 
+      - name: Generate knockout scoring scenarios
+        if: steps.verify_results.outputs.changed == 'true'
+        continue-on-error: true
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          SCORING_VERBOSE: '0'
+        run: node scripts/generate-knockout-scenarios.js
+
       - name: Commit critical scoring snapshots if changed
         if: steps.verify_results.outputs.changed == 'true'
         env:
@@ -190,11 +199,12 @@ jobs:
             node scripts/calculate-scores-v2.js --critical
             node scripts/export-snapshots.js leaderboards
             node scripts/verify-scoring-snapshots.js
+            node scripts/generate-knockout-scenarios.js || true
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
-          if [ -n "$(git status --porcelain public-data/matches.json public-data/leaderboard)" ]; then
-            bash scripts/commit-generated-snapshots.sh "data: refresh scores after verified result" public-data/matches.json public-data/leaderboard
+          if [ -n "$(git status --porcelain public-data/matches.json public-data/leaderboard public-data/knockout-scenarios)" ]; then
+            bash scripts/commit-generated-snapshots.sh "data: refresh scores after verified result" public-data/matches.json public-data/leaderboard public-data/knockout-scenarios
           else
             echo "no scoring snapshot change"
           fi

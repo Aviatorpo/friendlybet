@@ -38,15 +38,20 @@ Create premium share-story assets for FriendlyBet that look like the approved Wo
 - Do not let the watermark enter the caption safe zone, cover faces, or sit low enough that WhatsApp previews crop it.
 - Do not request or accept photorealistic player portraits. The target is a clearly cartooned version of the real player: similar enough to identify, stylized enough to avoid looking like an exact photo.
 - Never create or accept a story image with a generic, invented, anonymous, unnamed, or placeholder footballer. Every visible player must be a named real footballer whose team, shirt number, and match relevance have been verified. If no named player can be verified, stop and require a non-player design or manual review instead of using a generic player.
+- Never downgrade a normal finished-match Story to a non-player/flags/stadium-only design merely because a post-match lineup PDF is unavailable. FriendlyBet's established default for a match that needs a Story is: two biggest/approved stars, real national kits, real shirt numbers, result-aware title/caption, and pool-aware copy.
+- Do not treat "we do not have the official post-match lineup PDF" as a blocker by itself. Use the existing story workflow and local sources first: `STAR_PROFILES`, `story-assets/world-cup-squad-shirt-numbers.json`, `Codex\SquadLists-English.pdf` when present, and existing approved assets/prompts.
+- For knockout matches, the story is qualification/advancement, not only the final score. The baked English title should use `QUALIFIES!` for the team that goes through, especially when the score is level and the match is decided by penalties or another tiebreaker.
+- For knockout matches decided after a draw/penalties, make the emotional direction visible in the artwork: the qualifying team's player should look joyful, relieved, or triumphant, and the eliminated team's player should look disappointed, hurt, or stunned.
 
 ## Player Selection And Match Availability
 
-- For match-result stories, visible players must be selected from named players who actually started or appeared as substitutes in that match whenever post-match data is available.
-- Primary no-API source: the FIFA Training Centre FIFA World Cup 2026 Match Report Hub. Each finished match has a public Post Match Summary Report PDF. Parse page 1 `STARTING` and `SUBSTITUTES` sections for each team; shirt numbers, player names, positions, goals/cards/substitution minutes, and participation are present there.
-- Treat a player as match-available when they appear in the PDF starting XI or have a substitution minute in the substitutes section. A listed substitute with no substitution minute is squad/bench context only and should not be used as a match-result hero unless the story is specifically about the bench or squad.
-- Prefer the scorer, captain, player of the match, or most recognizable participating star. If the most famous candidate did not play, skip them for match-result art.
-- Captain is useful but not required if match participation is known. When captain data is needed, prefer a `(C)` marker in official FIFA match data or the post-match PDF if present; otherwise use the most relevant confirmed participant and note that captain was not verified.
-- If the FIFA post-match PDF is not yet published or cannot be parsed, do not invent a player. Use a non-player design with flags, stadium, score, and team colors, or send the item to manual review.
+- Default player choice for a finished match that needs a Story: use the two biggest/approved stars for the two teams, as represented by the established local story profile data, with verified World Cup shirt numbers. This is the normal FriendlyBet workflow, including knockout stories.
+- Use `scripts/generate-world-cup-stories.js` `STAR_PROFILES` and `story-assets/world-cup-squad-shirt-numbers.json` as the first local sources for star identity and shirt numbers. When `Codex\SquadLists-English.pdf` exists, use it as the shirt-number source of truth.
+- Prefer the scorer, captain, player of the match, or most recognizable participating star when that information is already available without delaying the story; otherwise do not block the Story. Use the approved star profile for each team.
+- Use the FIFA Training Centre FIFA World Cup 2026 Match Report Hub post-match PDF as preferred extra verification when available, especially to avoid featuring a famous player known not to have played. Parse page 1 `STARTING` and `SUBSTITUTES` sections when using it.
+- Treat a player as match-available when they appear in the PDF starting XI or have a substitution minute in the substitutes section. A listed substitute with no substitution minute is squad/bench context only and should not be used as a match-result hero when the PDF is being used.
+- If a post-match PDF or external lineup source proves the default star did not play, pick the next most recognizable named participating player with a verified shirt number.
+- If the post-match PDF is unavailable, continue with the established star-vs-star workflow. Do not invent a player, do not use generic/current-player wording, and do not switch to non-player artwork unless the user explicitly asks for it or no named player plus verified shirt number can be established from any local/primary source.
 - Existing pre-generated assets containing phrases like `biggest current star`, `current star`, `#current`, or unnamed team players must not be reused for new final stories until replaced with named, verified real players.
 
 ## Required FriendlyBet Watermark
@@ -159,6 +164,7 @@ Before shipping:
 
 - Confirm every visible shirt number against `SquadLists-English.pdf` when that PDF is available, including cases where the image number identifies a different valid player than the default profile.
 - Confirm every visible player is a named real footballer verified from the official match post-summary PDF when available; fail the story if any prompt or asset uses a generic/anonymous player, `biggest current star`, `current star`, `#current`, or a placeholder instead of a verified name and shirt number.
+- For knockout stories, confirm the baked title communicates advancement with `QUALIFIES!`; when a tied knockout score is resolved by penalties or another tiebreaker, confirm the qualifying player is visibly happy and the eliminated player is visibly sad/disappointed.
 - Create a contact sheet of all story images with the caption safe-zone rectangle overlaid.
 - Visually confirm no caption safe-zone rectangle crosses any player face.
 - Check the caption is not so low that WhatsApp preview crops it.

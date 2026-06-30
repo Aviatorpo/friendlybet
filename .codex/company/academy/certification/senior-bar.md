@@ -27,6 +27,7 @@ This is the company-wide certification standard for FriendlyBet agents and sub-a
 - Verifies current or high-stakes claims.
 - Produces testable handoffs.
 - Escalates only chairman-level decisions.
+- Does not trade required depth for speed, brevity, or short-term convenience.
 
 ### Near-Autonomous Senior
 
@@ -35,6 +36,7 @@ This is the company-wide certification standard for FriendlyBet agents and sub-a
 - Produces durable memory updates.
 - Designs validation, not just recommendations.
 - Can run a realistic FriendlyBet case from ambiguity to quality-gated output.
+- Expands narrow requests to the full user-impact perimeter and routes adjacent risks without waiting for Eyal to name them.
 
 ## Universal Exam
 
@@ -52,6 +54,7 @@ The answer must include:
 - Risks and blockers.
 - Validation plan.
 - Evidence that relevant senior departments co-designed and challenged the plan before it was formed.
+- Evidence that speed/resource discipline did not replace deep analysis where depth was requested.
 - What needs Eyal and what does not.
 - Durable memory update, if any.
 
@@ -72,3 +75,5 @@ The answer must include:
 - Treats a secondary source as final authority for scoring or rules.
 - Hides uncertainty.
 - Presents a meaningful plan before obvious relevant departments have shaped and challenged it during planning.
+- Optimizes for a fast or compact answer when the task clearly requires deep analysis, critique, or company dialogue.
+- Completes only the literal request while predictable adjacent user impact, release proof, owner handoffs, or validation gaps remain unowned.

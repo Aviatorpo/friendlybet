@@ -1,10 +1,18 @@
-name: Manual Match Results
+name: Break-glass Match Result Repair
 
 on:
   workflow_dispatch:
     inputs:
+      break_glass_ack:
+        description: 'Break-glass only: normal results must come from automated verifier'
+        required: true
+        default: 'NO'
+        type: choice
+        options:
+          - 'NO'
+          - 'I_UNDERSTAND_THIS_IS_BREAK_GLASS'
       results_json:
-        description: 'JSON array: [{"home":"ENG","away":"CRO","home_score":4,"away_score":2,"winner":"ENG"}]'
+        description: 'Break-glass JSON array: [{"home":"ENG","away":"CRO","home_score":4,"away_score":2,"winner":"ENG"}]'
         required: true
         type: string
 
@@ -27,14 +35,21 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Apply manual match results
+      - name: Validate break-glass acknowledgement
+        run: |
+          if [ "${{ inputs.break_glass_ack }}" != "I_UNDERSTAND_THIS_IS_BREAK_GLASS" ]; then
+            echo "This workflow is not a normal result path. Use the automated final-result verifier."
+            exit 1
+          fi
+
+      - name: Apply break-glass match repair
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           MANUAL_MATCH_RESULTS_JSON: ${{ inputs.results_json }}
         run: node scripts/manual-match-results.js
 
-      - name: Export match snapshot immediately after manual result
+      - name: Export match snapshot immediately after break-glass repair
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
@@ -52,7 +67,7 @@ jobs:
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
           if [ -n "$(git status --porcelain public-data/matches.json)" ]; then
-            bash scripts/commit-generated-snapshots.sh "data: publish manual match result" public-data/matches.json
+            bash scripts/commit-generated-snapshots.sh "data: publish break-glass match repair" public-data/matches.json
           else
             echo "no immediate match snapshot change"
           fi
@@ -89,23 +104,32 @@ jobs:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           SCORING_VERBOSE: '0'
-          KNOCKOUT_SCENARIO_TARGETS: BRA-JPN
         run: node scripts/generate-knockout-scenarios.js
 
       - name: Commit critical result data if changed
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
+          SCORING_VERBOSE: '0'
+          REGENERATE_COMMANDS: |
+            node scripts/export-snapshots.js matches
+            node scripts/calculate-scores-v2.js --critical
+            node scripts/export-snapshots.js all
+            node scripts/verify-scoring-snapshots.js
+            node scripts/generate-knockout-scenarios.js || true
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
           if [ -n "$(git status --porcelain public-data/matches.json public-data/leaderboard public-data/knockout-scenarios)" ]; then
-            git add public-data/matches.json public-data/leaderboard public-data/knockout-scenarios
-            git commit -q -m "data: apply manual match results"
-            git pull --rebase --autostash
-            git push
+            bash scripts/commit-generated-snapshots.sh "data: publish break-glass result repair" public-data/matches.json public-data/leaderboard public-data/knockout-scenarios
           else
             echo "no critical public-data change"
           fi
 
-      - name: Prove public scoring snapshots after manual result
+      - name: Prove public scoring snapshots after break-glass repair
         if: steps.score_results.outputs.changed_pool_ids != ''
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
@@ -116,18 +140,18 @@ jobs:
           SCORING_SNAPSHOT_PUBLIC_RETRY_MS: 10000
         run: node scripts/verify-scoring-snapshots.js
 
-      - name: Generate leaderboard banter after manual results
+      - name: Generate leaderboard banter after break-glass repair
         continue-on-error: true
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/generate-banter.js
 
-      - name: Build Pundit feed after manual results
+      - name: Build Pundit feed after break-glass repair
         continue-on-error: true
         run: node scripts/generate-pundit.js
 
-      - name: Validate Pundit feed after manual results
+      - name: Validate Pundit feed after break-glass repair
         continue-on-error: true
         run: node scripts/test-pundit-feed.js
 
@@ -135,17 +159,19 @@ jobs:
         continue-on-error: true
         run: node scripts/test-world-cup-stories.js
 
-      - name: Commit post-manual content if changed
+      - name: Commit post-break-glass content if changed
+        env:
+          REGENERATE_COMMANDS: |
+            node scripts/generate-banter.js || true
+            node scripts/generate-pundit.js
+            node scripts/test-pundit-feed.js
         run: |
           git config user.name "Aviatorpo"
           git config user.email "283137823+Aviatorpo@users.noreply.github.com"
           if [ -n "$(git status --porcelain public-data/banter public-data/banter-state.json public-data/pundit.json)" ]; then
-            git add public-data/banter public-data/banter-state.json public-data/pundit.json
-            git commit -q -m "content: refresh manual-result feed"
-            git pull --rebase --autostash
-            git push
+            bash scripts/commit-generated-snapshots.sh "content: refresh break-glass result feed" public-data/banter public-data/banter-state.json public-data/pundit.json
           else
-            echo "no post-manual content change"
+            echo "no post-break-glass content change"
           fi
 
       - name: Check for World Cup story work

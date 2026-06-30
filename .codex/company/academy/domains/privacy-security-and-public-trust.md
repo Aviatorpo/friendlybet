@@ -16,6 +16,8 @@ Agents must know:
 - RLS is the real backend security boundary.
 - Public snapshots and share pages must expose only intended data.
 - Pool-specific personalization must not leak beyond the intended context.
+- Live result/scoring evidence has two privacy classes. Public result facts may include fixture, teams, kickoff, display status, score, result method, advancing team, penalty score if known, points state, result version, and publish timestamp. Private evidence includes raw source observations, resolver reasoning, provider errors, runner/checkpoint logs, break-glass operator notes, incident records, secrets, recovery data, private pool/user dumps, and full payloads.
+- Public result and leaderboard snapshots must be allowlisted. Do not generate public snapshots with `select=*` once operational, resolver, or evidence fields exist anywhere near the queried table.
 
 ## Public Sharing Risk
 
@@ -62,6 +64,8 @@ For data changes:
 - Confirm anon-client exposure.
 - Check public snapshots.
 - Require migrations to be paired with RLS review.
+- For live result/scoring pipelines, separate public-safe publication tables/views/RPCs from private operational/evidence tables. Browser code may read only public-safe data; service-role writes must stay server-side.
+- External runners should receive the smallest useful authority, preferably a signed trigger/wake-up secret rather than broad database write privileges. Service-role keys must never be exposed to browser code, public logs, or generated public files.
 
 ## QA Review
 
@@ -80,3 +84,6 @@ QA must test:
 - RLS policy change without tests or review.
 - Public data generated from private pool state without intent.
 - Blocking without safer wording or product alternative.
+- Resolver/private evidence leaking through broad public exports.
+- Logs or workflow artifacts printing raw provider payloads, secrets, recovery codes, private pool/user rows, or break-glass operator notes.
+- Treating a degraded live-scoring state as permission to expose internal diagnostics to ordinary users.

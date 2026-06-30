@@ -32,6 +32,24 @@ const DAY_MS = 24 * HOUR_MS;
 const TERMINAL_SCORE_STATUSES = new Set(['FINISHED', 'AWARDED']);
 const LIVE_STATUSES = new Set(['IN_PLAY', 'LIVE', 'PAUSED']);
 const SCHEDULED_STATUSES = new Set(['TIMED', 'SCHEDULED']);
+const WATCHDOG_MATCH_COLS = [
+  'id',
+  'external_id',
+  'status',
+  'stage',
+  'match_date',
+  'home_team_code',
+  'away_team_code',
+  'home_score',
+  'away_score',
+  'winner_code',
+  'live_clock',
+  'live_period',
+  'status_detail',
+  'live_source',
+  'source_updated_at',
+  'last_updated'
+].join(',');
 
 function readJson(file, fallback) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { return fallback; }
@@ -66,6 +84,11 @@ function isDraw(match) {
   return match && match.home_score != null && match.away_score != null && Number(match.home_score) === Number(match.away_score);
 }
 
+function isKnockoutStage(stage) {
+  const value = String(stage || '').trim().toUpperCase();
+  return !!value && !['GROUP_STAGE', 'GROUP', 'LEAGUE'].includes(value);
+}
+
 function tournamentWindow(matches, nowMs) {
   const times = (matches || []).map(m => parseTime(m && m.match_date)).filter(Number.isFinite);
   if (!times.length) return false;
@@ -76,7 +99,7 @@ function tournamentWindow(matches, nowMs) {
 
 async function fetchSupabaseMatches() {
   if (!SUPABASE_KEY) throw new Error('LIVE_WATCHDOG_SOURCE=supabase requires a Supabase key');
-  const endpoint = `${SUPABASE_URL.replace(/\/+$/, '')}/rest/v1/matches?select=*&order=match_date.asc,id.asc`;
+  const endpoint = `${SUPABASE_URL.replace(/\/+$/, '')}/rest/v1/matches?select=${WATCHDOG_MATCH_COLS}&order=match_date.asc,id.asc`;
   const res = await fetch(endpoint, {
     headers: {
       apikey: SUPABASE_KEY,
@@ -113,6 +136,9 @@ function auditMatches(matches, nowMs, errors, warnings) {
       }
       if (!isDraw(match) && !match.winner_code) {
         errors.push(`${key}: ${status} non-draw without winner_code`);
+      }
+      if (isDraw(match) && isKnockoutStage(match.stage) && !match.winner_code) {
+        errors.push(`${key}: ${status} tied knockout without verified advancing team`);
       }
       if (nowMs - kickoff >= residueGraceMs && hasProblematicLiveResidue(match)) {
         errors.push(`${key}: finished match still has live/provider residue (${match.live_source || '-'} / ${match.status_detail || '-'} / ${match.live_clock || '-'})`);
@@ -262,6 +288,7 @@ if (require.main === module) {
     auditPunditItemMatchState,
     hasProblematicLiveResidue,
     isPendingProviderFinal,
+    isKnockoutStage,
     tournamentWindow,
   };
 }

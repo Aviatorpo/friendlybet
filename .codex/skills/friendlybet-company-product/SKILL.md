@@ -41,6 +41,9 @@ Read academy docs when product scope, cross-team learning, or senior product pla
 7. Treat Pundit, Stories, banter, share copy, social/video, and decorative polish as enhancement scope for result/scoring/match surfaces. Do not make them MVP blockers for verified results, scoring, locks, leaderboards, or match display.
 8. For user-facing features, build the user-state matrix before defining MVP: tournament phase, pool mode, lock/open state, prediction completion, scoring/publication, stale/fresh data, and returning/late/blocked user states.
 9. During planning dialogue, shape whether the plan solves the real user job in every relevant state, whether the MVP is too broad or too thin, what should be cut or added, and what acceptance criteria prove the user outcome.
+10. Reject internal engineering/ops language in user-facing product states. Users should never see labels like failed, error, timeout, workflow, provider disagreement, or cache mismatch; translate them into calm, honest user promises and separate ops alerts.
+11. During company planning, do not provide a standalone opinion only. Challenge Engineering, Design, QA, Content, Privacy, and FinOps where their assumptions weaken the user promise.
+12. Reject plans that are short because they skipped user-state analysis, acceptance criteria, or cross-department challenge. Product can ask for concise presentation, but not shallow planning.
 
 ## Output
 

@@ -104,6 +104,14 @@ jobs:
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids || inputs.pool_ids }}
         run: node scripts/verify-scoring-snapshots.js
 
+      - name: Generate knockout scoring scenarios
+        continue-on-error: true
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          SCORING_VERBOSE: '0'
+        run: node scripts/generate-knockout-scenarios.js
+
       - name: Encrypted critical-data backup after finished matches
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
@@ -148,6 +156,7 @@ jobs:
             SCORING_POOL_IDS="${{ inputs.pool_ids }}" node scripts/calculate-scores-v2.js --critical
             node scripts/export-snapshots.js leaderboards
             node scripts/verify-scoring-snapshots.js
+            node scripts/generate-knockout-scenarios.js || true
             node scripts/backup-critical-data.js
             node scripts/generate-banter.js || true
             python3 scripts/audit-world-cup-story-images.py --scope stories || true

@@ -47,7 +47,7 @@ const STALE_LIVE_SOURCE_MINUTES = parseInt(process.env.RESULT_STALE_LIVE_SOURCE_
 const LOOKBACK_HOURS = parseInt(process.env.RESULT_FALLBACK_LOOKBACK_HOURS || '', 10) || 336;
 const MAX_KICKOFF_DELTA_MS = (parseInt(process.env.RESULT_FALLBACK_MAX_KICKOFF_DELTA_HOURS || '', 10) || 12) * 60 * 60 * 1000;
 const MIN_SOURCES = parseInt(process.env.RESULT_FALLBACK_MIN_SOURCES || '', 10) || 1;
-const REQUIRED_SOURCES = csvList(process.env.RESULT_FALLBACK_REQUIRED_SOURCES, 'espn,fifa');
+const REQUIRED_SOURCES = csvList(process.env.RESULT_FALLBACK_REQUIRED_SOURCES, 'fifa');
 const CONSENSUS_FALLBACK_MIN_SOURCES = parseInt(process.env.RESULT_CONSENSUS_FALLBACK_MIN_SOURCES || '', 10) || 0;
 const CONSENSUS_FALLBACK_BLOCK_SOURCES = csvList(process.env.RESULT_CONSENSUS_FALLBACK_BLOCK_SOURCES, 'fifa');
 const ENABLED_SOURCES = csvList(process.env.RESULT_FALLBACK_SOURCES, 'espn,fifa');
@@ -93,6 +93,15 @@ function hasNumericScore(m) {
   return m && m.home_score != null && m.away_score != null;
 }
 
+function isKnockoutStage(stage) {
+  const value = String(stage || '').trim().toUpperCase();
+  return !!value && !['GROUP_STAGE', 'GROUP', 'LEAGUE'].includes(value);
+}
+
+function tiedScore(homeScore, awayScore) {
+  return homeScore != null && awayScore != null && Number(homeScore) === Number(awayScore);
+}
+
 function hasLiveResidue(m) {
   return !!(m && (
     m.live_clock != null ||
@@ -106,7 +115,8 @@ function needsFinalVerification(m) {
   const status = _status(m);
   if (!TERMINAL.has(status)) return true;
   if (!RESULT_TERMINAL.has(status)) return false;
-  return !hasNumericScore(m) || hasLiveResidue(m);
+  if (!hasNumericScore(m) || hasLiveResidue(m)) return true;
+  return isKnockoutStage(m.stage) && tiedScore(m.home_score, m.away_score) && !m.winner_code;
 }
 
 function parseOptionalTime(value) {
@@ -374,16 +384,29 @@ function findMatchingFixture(dbMatch, sourceMatches, transform = x => x) {
   return { match: matches[0], reason: null };
 }
 
-function buildUpdateFromVerifiedFixture(sourceMatch, nowIso = new Date().toISOString()) {
+function buildUpdateFromVerifiedFixture(sourceMatch, nowIso = new Date().toISOString(), dbMatch = null) {
   if (!sourceMatch) return { update: null, reason: 'missing source match' };
   if (!FINAL_STATUSES.has(sourceMatch.statusShort)) return { update: null, reason: `not final (${sourceMatch.statusShort || 'unknown'})` };
   if (sourceMatch.homeScore == null || sourceMatch.awayScore == null) return { update: null, reason: 'final status without numeric score' };
+  const winner = sourceMatch.winnerCode || null;
+  if (winner && winner !== sourceMatch.homeCode && winner !== sourceMatch.awayCode) {
+    return { update: null, reason: `winner ${winner} is not one of ${sourceMatch.homeCode}/${sourceMatch.awayCode}` };
+  }
+  if (sourceMatch.homeScore > sourceMatch.awayScore && winner && winner !== sourceMatch.homeCode) {
+    return { update: null, reason: `winner ${winner} contradicts decisive home score` };
+  }
+  if (sourceMatch.awayScore > sourceMatch.homeScore && winner && winner !== sourceMatch.awayCode) {
+    return { update: null, reason: `winner ${winner} contradicts decisive away score` };
+  }
+  if (isKnockoutStage(dbMatch && dbMatch.stage) && tiedScore(sourceMatch.homeScore, sourceMatch.awayScore) && !winner) {
+    return { update: null, reason: 'knockout final draw without verified advancing team' };
+  }
   return {
     update: {
       home_score: sourceMatch.homeScore,
       away_score: sourceMatch.awayScore,
       status: (sourceMatch.statusShort === 'AWD' || sourceMatch.statusShort === 'WO') ? 'AWARDED' : 'FINISHED',
-      winner_code: sourceMatch.winnerCode,
+      winner_code: winner,
       live_clock: null,
       live_period: null,
       status_detail: null,
@@ -395,10 +418,26 @@ function buildUpdateFromVerifiedFixture(sourceMatch, nowIso = new Date().toISOSt
   };
 }
 
+function validateUpdateForDbMatch(update, dbMatch = {}) {
+  if (!update) return 'missing update';
+  if (!FINAL_STATUSES.has(String(update.status_detail || '').toUpperCase()) && !RESULT_TERMINAL.has(String(update.status || '').toUpperCase())) {
+    return `not final (${update.status || update.status_detail || 'unknown'})`;
+  }
+  if (update.home_score == null || update.away_score == null) return 'final status without numeric score';
+  const home = dbMatch.home_team_code || null;
+  const away = dbMatch.away_team_code || null;
+  const winner = update.winner_code || null;
+  if (winner && winner !== home && winner !== away) return `winner ${winner} is not one of ${home}/${away}`;
+  if (Number(update.home_score) > Number(update.away_score) && winner && winner !== home) return `winner ${winner} contradicts decisive home score`;
+  if (Number(update.away_score) > Number(update.home_score) && winner && winner !== away) return `winner ${winner} contradicts decisive away score`;
+  if (isKnockoutStage(dbMatch.stage) && tiedScore(update.home_score, update.away_score) && !winner) return 'knockout final draw without verified advancing team';
+  return null;
+}
+
 async function loadStuckMatches(now = new Date()) {
   const end = now;
   const start = new Date(now.getTime() - LOOKBACK_HOURS * 60 * 60 * 1000);
-  const q = `?select=external_id,status,match_date,home_team_code,away_team_code,home_score,away_score,winner_code,live_clock,live_period,status_detail,live_source,source_updated_at,last_updated&match_date=gte.${start.toISOString()}&match_date=lte.${end.toISOString()}&order=match_date.asc`;
+  const q = `?select=external_id,status,stage,match_date,home_team_code,away_team_code,home_score,away_score,winner_code,live_clock,live_period,status_detail,live_source,source_updated_at,last_updated&match_date=gte.${start.toISOString()}&match_date=lte.${end.toISOString()}&order=match_date.asc`;
   const rows = await callSupabase('GET', 'matches', null, q);
   return (rows || []).filter(m => isStuckCandidate(m, now.getTime()));
 }
@@ -835,6 +874,18 @@ async function verifyFinalResults(opts = {}) {
     for (const row of ledgerRows) {
       const ledgerUpdate = ledgerRowToSourceUpdate(row);
       if (!ledgerUpdate) continue;
+      const ledgerInvalid = validateUpdateForDbMatch(ledgerUpdate.update, dbMatch);
+      if (ledgerInvalid) {
+        decision.observations.push({
+          source: row.source,
+          state: 'ledger_rejected',
+          source_id: row.source_id || null,
+          observed_at: row.observed_at || null,
+          reason: ledgerInvalid,
+          from_ledger: true,
+        });
+        continue;
+      }
       addSourceUpdateBySource(sourceUpdatesBySource, ledgerUpdate, 'ledger');
       decision.observations.push({
         source: row.source,
@@ -852,7 +903,7 @@ async function verifyFinalResults(opts = {}) {
       const loader = registry[source];
       const found = findMatchingFixture(dbMatch, rows, loader.transform);
       if (found.match) {
-        const built = buildUpdateFromVerifiedFixture(found.match);
+        const built = buildUpdateFromVerifiedFixture(found.match, new Date().toISOString(), dbMatch);
         if (built.update) {
           const sourceUpdate = { source, update: built.update, sourceId: found.match.api_id };
           addSourceUpdateBySource(sourceUpdatesBySource, sourceUpdate, 'current');
@@ -963,8 +1014,10 @@ if (require.main === module) {
     espnScoreboardDatesFor,
     findMatchingFixture,
     buildUpdateFromVerifiedFixture,
+    validateUpdateForDbMatch,
     consensusUpdate,
     sourceFamily,
+    isKnockoutStage,
     uniqueSourceFamilyCount,
     sourcesForRun,
     ledgerRowToSourceUpdate,

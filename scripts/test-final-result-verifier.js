@@ -29,6 +29,7 @@ const db = {
   home_team_code: 'MEX',
   away_team_code: 'RSA',
   status: 'TIMED',
+  stage: 'GROUP_STAGE',
   match_date: '2026-06-11T19:00:00Z'
 };
 
@@ -79,6 +80,10 @@ ok('stuck candidate after age threshold', F.isStuckCandidate(db, Date.parse('202
 ok('not stuck before age threshold', !F.isStuckCandidate(db, Date.parse('2026-06-11T20:00:00Z')));
 ok('finished match with complete clean result is not stuck',
   !F.isStuckCandidate({ ...db, status: 'FINISHED', home_score: 1, away_score: 1 }, Date.parse('2026-06-11T21:10:00Z')));
+ok('finished tied knockout without advancer is still recoverable',
+  F.isStuckCandidate({ ...db, stage: 'ROUND_OF_32', status: 'FINISHED', home_score: 1, away_score: 1, winner_code: null }, Date.parse('2026-06-11T21:10:00Z')));
+ok('finished tied knockout with advancer is clean',
+  !F.isStuckCandidate({ ...db, stage: 'ROUND_OF_32', status: 'FINISHED', home_score: 1, away_score: 1, winner_code: 'MEX' }, Date.parse('2026-06-11T21:10:00Z')));
 ok('finished match missing score is still recoverable',
   F.isStuckCandidate({ ...db, status: 'FINISHED', home_score: null, away_score: null }, Date.parse('2026-06-11T21:10:00Z')));
 ok('finished match with live residue is still recoverable',
@@ -152,6 +157,12 @@ eq('builds final update', F.buildUpdateFromVerifiedFixture(espnTransformed, '202
 
 ok('does not build update from ESPN live event',
   !F.buildUpdateFromVerifiedFixture(F.transformEspnEvent(espnLive)).update);
+ok('does not build knockout update from tied final without advancer',
+  !F.buildUpdateFromVerifiedFixture(espnTransformed, '2026-06-11T21:00:00Z', { stage: 'ROUND_OF_32' }).update);
+ok('builds knockout penalty update from tied final with advancer',
+  !!F.buildUpdateFromVerifiedFixture({ ...espnTransformed, winnerCode: 'MEX' }, '2026-06-11T21:00:00Z', { stage: 'ROUND_OF_32' }).update);
+ok('rejects winner that contradicts decisive score',
+  !F.buildUpdateFromVerifiedFixture({ ...espnTransformed, homeScore: 2, awayScore: 1, winnerCode: 'RSA' }, '2026-06-11T21:00:00Z', { stage: 'ROUND_OF_32' }).update);
 
 eq('fetches adjacent ESPN scoreboard dates for late UTC kickoff',
   F.espnScoreboardDatesFor([{ match_date: '2026-06-12T02:00:00.000Z' }]),
@@ -200,6 +211,7 @@ const espnUpdate = F.buildUpdateFromVerifiedFixture(espnTransformed, '2026-06-11
 const fifaUpdate = F.buildUpdateFromVerifiedFixture(fifaTransformed, '2026-06-11T21:00:00Z').update;
 const footballDataUpdate = F.buildUpdateFromVerifiedFixture(footballDataTransformed, '2026-06-11T21:00:00Z').update;
 ok('ESPN alone is not enough by default', !F.consensusUpdate([{ source: 'espn', update: espnUpdate }]).update);
+ok('FIFA official source is enough by default', !!F.consensusUpdate([{ source: 'fifa', update: fifaUpdate }]).update);
 ok('ESPN alone is enough only with explicit emergency override', !!F.consensusUpdate([
   { source: 'espn', update: espnUpdate }
 ], { minSources: 1, requiredSources: [] }).update);

@@ -46,6 +46,7 @@ Read academy docs when coordinating agent training, cross-team mastery, or certi
 7. Apply decision rights and quality gates before recommending completion or release.
 8. When implementation is requested, hand off to the relevant department skill or proceed with the agreed plan.
 9. Police provenance language. "Company co-designed" means the plan contains evidence of pre-plan department challenges, revisions, rechecks, and Executive synthesis. If the work only used remembered department perspectives, label it as a synthesized plan, not a co-designed plan.
+10. Reject short-term optimization when depth is requested. Fast synthesis is useful only after the planning dialogue has produced real objections, revisions, and validation design.
 
 ## Executive Defaults
 
@@ -56,3 +57,4 @@ Read academy docs when coordinating agent training, cross-team mastery, or certi
 - Tell the truth about uncertainty, tradeoffs, and failed checks.
 - Use English when replying in FriendlyBet threads.
 - Do not let Eyal manually create the cross-functional planning conversation; that conversation is Executive/CEO work before a plan is presented.
+- Resource discipline must remove waste, not remove senior analysis.
