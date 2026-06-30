@@ -58,6 +58,22 @@ eq('pool snapshot verifier rejects duplicate users', V.verifyPoolSnapshot('local
   'local pool pool-1 duplicate user user-1 in snapshot'
 ]);
 
+eq('pool snapshot verifier rejects stale result version metadata', V.verifyPoolSnapshot('local', 'pool-1', [dbUser], {
+  result_version: 'rv_old',
+  points_state: 'current_for_result_version',
+  standings: [dbUser]
+}, { resultVersion: 'rv_new', requirePointsState: true }).errors, [
+  'local pool pool-1 result_version mismatch: expected=rv_new snapshot=rv_old'
+]);
+
+eq('pool snapshot verifier requires current points state when versioned', V.verifyPoolSnapshot('local', 'pool-1', [dbUser], {
+  result_version: 'rv_new',
+  points_state: 'updating',
+  standings: [dbUser]
+}, { resultVersion: 'rv_new', requirePointsState: true }).errors, [
+  'local pool pool-1 points_state mismatch: expected=current_for_result_version snapshot=updating'
+]);
+
 process.env.LEADERBOARD_POOL_IDS = ' pool-a,pool-b,pool-a ';
 eq('requested pool ids are deduplicated and trimmed', V.requestedLeaderboardPoolIds(), ['pool-a', 'pool-b']);
 

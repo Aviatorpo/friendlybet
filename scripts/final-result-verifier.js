@@ -56,6 +56,10 @@ const REQUIRED_SOURCES = csvList(process.env.RESULT_FALLBACK_REQUIRED_SOURCES, '
 const CONSENSUS_FALLBACK_MIN_SOURCES = parseInt(process.env.RESULT_CONSENSUS_FALLBACK_MIN_SOURCES || '', 10) || 0;
 const CONSENSUS_FALLBACK_BLOCK_SOURCES = csvList(process.env.RESULT_CONSENSUS_FALLBACK_BLOCK_SOURCES, 'fifa');
 const ENABLED_SOURCES = csvList(process.env.RESULT_FALLBACK_SOURCES, 'espn,fifa');
+const EMERGENCY_SOURCE_KEYS = ['livescore', 'fox', 'yahoo', 'guardian', 'ap', 'houston_chronicle', 'nypost'];
+const AUTO_EMERGENCY_SOURCES = process.env.RESULT_AUTO_EMERGENCY_SOURCES === '1';
+const AUTO_EMERGENCY_AFTER_MINUTES = parseInt(process.env.RESULT_AUTO_EMERGENCY_AFTER_MINUTES || '', 10) || 105;
+const AUTO_EMERGENCY_SOURCE_MODE = String(process.env.RESULT_AUTO_EMERGENCY_SOURCE_MODE || 'all').trim().toLowerCase();
 const SOURCE_MODE = String(process.env.RESULT_FALLBACK_SOURCE_MODE || 'all').trim().toLowerCase();
 const SOURCE_ROTATION_MINUTES = parseInt(process.env.RESULT_FALLBACK_ROTATION_MINUTES || '', 10) || 15;
 const OBSERVATION_TTL_MINUTES = parseInt(process.env.RESULT_FALLBACK_OBSERVATION_TTL_MINUTES || '', 10) || 180;
@@ -287,8 +291,37 @@ function firstScoreFromText(text) {
   return { homeScore: parseInt(match[1], 10), awayScore: parseInt(match[2], 10) };
 }
 
-function emergencySourcesEnabled() {
-  return process.env.RESULT_EMERGENCY_SOURCES === '1';
+function emergencySourcesEnabled(options = {}) {
+  return process.env.RESULT_EMERGENCY_SOURCES === '1' || options.emergencySources === true;
+}
+
+function candidateAgeMinutes(match, now = new Date()) {
+  const ko = Date.parse(match && match.match_date);
+  const nowMs = now instanceof Date ? now.getTime() : Number(now);
+  if (!Number.isFinite(ko) || !Number.isFinite(nowMs)) return null;
+  return Math.floor((nowMs - ko) / (60 * 1000));
+}
+
+function oldestCandidateAgeMinutes(matches, now = new Date()) {
+  const ages = (matches || [])
+    .map(match => candidateAgeMinutes(match, now))
+    .filter(age => Number.isFinite(age));
+  return ages.length ? Math.max(...ages) : null;
+}
+
+function shouldAutoEmergencyEscalate(matches, now = new Date(), options = {}) {
+  const enabled = options.enabled == null ? AUTO_EMERGENCY_SOURCES : !!options.enabled;
+  if (!enabled) return false;
+  const afterMinutes = Math.max(1, Number(options.afterMinutes || AUTO_EMERGENCY_AFTER_MINUTES) || AUTO_EMERGENCY_AFTER_MINUTES);
+  const nowMs = now instanceof Date ? now.getTime() : Number(now);
+  return (matches || []).some(match => {
+    const age = candidateAgeMinutes(match, now);
+    return (Number.isFinite(age) && age >= afterMinutes) || isStaleLiveCandidate(match, nowMs);
+  });
+}
+
+function sourcesWithEmergency(sources = ENABLED_SOURCES) {
+  return [...new Set([...(sources || []), ...EMERGENCY_SOURCE_KEYS])];
 }
 
 function isStuckCandidate(m, nowMs = Date.now()) {
@@ -985,7 +1018,7 @@ async function loadHintArticlesFor(source, matches) {
   return rows;
 }
 
-function sourceRegistry() {
+function sourceRegistry(options = {}) {
   const registry = {
     espn: {
       load: loadEspnEventsFor,
@@ -996,7 +1029,7 @@ function sourceRegistry() {
       transform: transformFifaMatch,
     },
   };
-  if (emergencySourcesEnabled()) {
+  if (emergencySourcesEnabled(options)) {
     Object.assign(registry, {
       livescore: {
         load: loadLiveScoreEventsFor,
@@ -1031,13 +1064,13 @@ function sourceRegistry() {
   return registry;
 }
 
-function supportedSources(sources = ENABLED_SOURCES) {
-  const registry = sourceRegistry();
+function supportedSources(sources = ENABLED_SOURCES, options = {}) {
+  const registry = sourceRegistry(options);
   return (sources || []).filter(source => registry[source]);
 }
 
 function sourcesForRun(now = new Date(), options = {}) {
-  const sources = supportedSources(options.sources || ENABLED_SOURCES);
+  const sources = supportedSources(options.sources || ENABLED_SOURCES, options);
   const mode = String(options.mode || SOURCE_MODE || 'all').toLowerCase();
   if (mode !== 'rotate') return sources;
   if (sources.length <= 1) return sources;
@@ -1335,6 +1368,13 @@ async function verifyFinalResults(opts = {}) {
     required_sources: REQUIRED_SOURCES,
     enabled_sources: supportedSources(),
     source_mode: SOURCE_MODE,
+    source_profile: process.env.RESULT_EMERGENCY_SOURCES === '1' ? 'manual_emergency' : 'normal',
+    auto_emergency: {
+      enabled: AUTO_EMERGENCY_SOURCES,
+      after_minutes: AUTO_EMERGENCY_AFTER_MINUTES,
+      active: false,
+      oldest_candidate_age_minutes: null,
+    },
     selected_sources: [],
     source_statuses: {},
     ledger: {
@@ -1363,15 +1403,27 @@ async function verifyFinalResults(opts = {}) {
   }
 
   const ledger = await loadRecentLedgerObservations(stuck, now, report);
-  let selectedSources = sourcesForRun(now);
-  if (SOURCE_MODE === 'rotate' && !ledger.available) {
-    selectedSources = supportedSources();
+  const autoEmergencyActive = shouldAutoEmergencyEscalate(stuck, now);
+  const sourceOptions = { emergencySources: autoEmergencyActive };
+  const runSources = autoEmergencyActive ? sourcesWithEmergency(ENABLED_SOURCES) : ENABLED_SOURCES;
+  const runSourceMode = autoEmergencyActive ? AUTO_EMERGENCY_SOURCE_MODE : SOURCE_MODE;
+  report.source_profile = autoEmergencyActive
+    ? 'auto_emergency'
+    : (process.env.RESULT_EMERGENCY_SOURCES === '1' ? 'manual_emergency' : 'normal');
+  report.source_mode = runSourceMode;
+  report.auto_emergency.active = autoEmergencyActive;
+  report.auto_emergency.oldest_candidate_age_minutes = oldestCandidateAgeMinutes(stuck, now);
+  report.enabled_sources = supportedSources(runSources, sourceOptions);
+
+  let selectedSources = sourcesForRun(now, { sources: runSources, mode: runSourceMode, emergencySources: autoEmergencyActive });
+  if (runSourceMode === 'rotate' && !ledger.available) {
+    selectedSources = supportedSources(runSources, sourceOptions);
     report.ledger.rotation_fallback = 'ledger unavailable, checking all supported sources this run';
   }
   report.selected_sources = selectedSources;
-  Object.assign(report.source_statuses, sourceStatusSkippedByRotation(supportedSources(), selectedSources));
+  Object.assign(report.source_statuses, sourceStatusSkippedByRotation(supportedSources(runSources, sourceOptions), selectedSources));
 
-  const registry = sourceRegistry();
+  const registry = sourceRegistry(sourceOptions);
   const sourceFixtures = new Map();
   for (const source of selectedSources) {
     const loader = registry[source];
@@ -1568,6 +1620,10 @@ if (require.main === module) {
     isKnockoutStage,
     uniqueSourceFamilyCount,
     sourcesForRun,
+    sourcesWithEmergency,
+    shouldAutoEmergencyEscalate,
+    candidateAgeMinutes,
+    oldestCandidateAgeMinutes,
     ledgerRowToSourceUpdate,
     addSourceUpdateBySource,
     sourceUpdatesFromMap,

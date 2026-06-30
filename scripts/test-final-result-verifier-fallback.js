@@ -64,6 +64,30 @@ const fifaFinal = {
   Winner: null
 };
 
+eq('auto emergency waits before the escalation threshold',
+  F.shouldAutoEmergencyEscalate([stuckMatch], new Date('2026-06-11T20:40:00Z'), { enabled: true, afterMinutes: 105 }),
+  false);
+eq('auto emergency activates after the escalation threshold',
+  F.shouldAutoEmergencyEscalate([stuckMatch], new Date('2026-06-11T20:46:00Z'), { enabled: true, afterMinutes: 105 }),
+  true);
+eq('auto emergency source shelf appends approved fallback sources',
+  F.sourcesWithEmergency(['espn', 'fifa']),
+  ['espn', 'fifa', 'livescore', 'fox', 'yahoo', 'guardian', 'ap', 'houston_chronicle', 'nypost']);
+eq('emergency sources stay filtered out when the emergency registry is closed',
+  F.sourcesForRun(new Date('2026-06-11T20:46:00Z'), {
+    mode: 'all',
+    sources: F.sourcesWithEmergency(['espn', 'fifa']),
+    emergencySources: false
+  }),
+  ['espn', 'fifa']);
+eq('auto emergency opens the approved source registry without manual workflow input',
+  F.sourcesForRun(new Date('2026-06-11T20:46:00Z'), {
+    mode: 'all',
+    sources: F.sourcesWithEmergency(['espn', 'fifa']),
+    emergencySources: true
+  }),
+  ['espn', 'fifa', 'livescore', 'fox', 'yahoo', 'guardian', 'ap', 'houston_chronicle', 'nypost']);
+
 async function runLedgerUnavailableFallback() {
   const calls = [];
   F.__setFetch(async (url, options = {}) => {

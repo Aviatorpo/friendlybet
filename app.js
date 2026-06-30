@@ -9642,7 +9642,7 @@ async function _fetchLeaderboardSnapshot(poolId) {
     if (!res.ok) return null;
     const j = await res.json();
     if (!j || !Array.isArray(j.standings)) return null;
-    return j.standings;
+    return j;
   } catch (_) {
     return null;
   }
@@ -9662,13 +9662,17 @@ async function showLeaderboard(options = {}) {
   document.getElementById('lb-pool-name').textContent = state.currentPool.name;
 
   let users = null;
+  let usedLeaderboardSnapshot = false;
   try {
     users = await _fetchAllPoolRows('users', USER_PUBLIC_COLS, state.currentPool.id);
     users = _sortLeaderboardUsers(users);
   } catch (error) {
     console.error('Leaderboard live load error:', error);
-    users = await _fetchLeaderboardSnapshot(state.currentPool.id);
-    if (users) users = _sortLeaderboardUsers(users);
+    const snapshot = await _fetchLeaderboardSnapshot(state.currentPool.id);
+    if (snapshot && Array.isArray(snapshot.standings)) {
+      usedLeaderboardSnapshot = true;
+      users = _sortLeaderboardUsers(snapshot.standings);
+    }
   }
 
   if (!users) {
@@ -9686,7 +9690,7 @@ async function showLeaderboard(options = {}) {
   const tournamentStarted = await _dashboardTournamentStarted(hasScores);
   const phase = _groupStagePhase(tournamentStarted, hasScores, progress);
   const officialStarted = _phaseHasOfficialScoring(phase);
-  const dataPending = _hasPendingResultVerification();
+  const dataPending = _hasPendingResultVerification() || usedLeaderboardSnapshot;
 
   const statusKey = dataPending ? 'leaderboard.statusDataPending'
     : phase === 'pre' ? 'leaderboard.statusBefore'

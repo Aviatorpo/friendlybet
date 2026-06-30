@@ -99,6 +99,9 @@ The service-worker cache key gates PWA updates.
 10b. Eyal-provided match truth is not a product fallback. If Eyal has to tell the system who advanced, classify it as a live-result automation incident and repair the automatic source path.
 10c. Precompute per-match scoring deltas or scenario snapshots tied to a current baseline. Do not precompute future total user scores across unresolved earlier matches.
 10d. Public scoring proof must allow bounded Vercel/CDN propagation after generated-data commits. Local snapshot-vs-DB mismatches fail immediately; just-pushed public staleness gets cache-busted retries before alerting.
+10e. Final-result emergency sources must escalate automatically from stuck-match age/stale-live state. Manual emergency workflow input is diagnostic only, not the normal fallback.
+10f. Public `matches.json` and `leaderboard/*.json` must carry `result_version`, `published_at`, `source_state`, and `points_state`; `verify-scoring-snapshots` should reject leaderboards that do not match the match snapshot version.
+10g. Public match snapshots must de-duplicate logical fixtures and prefer official/FIFA enriched rows over stale legacy provider rows.
 11. `knockout_picks` has no `team_code`; single-phase bracket picks are stored in `predicted_winner`.
 12. `group_position_picks` has no `multiplier_applied`; single-phase scoring uses live multipliers.
 13. Keep frontend `FIFA_RANKINGS` and backend `FIFA_RANK` in sync.

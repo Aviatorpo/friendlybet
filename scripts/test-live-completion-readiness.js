@@ -368,6 +368,8 @@ const Readiness = require('./live-completion-readiness');
     'live poller covers group and knockout match days',
     'live poller can push refreshed snapshots',
     'final verifier covers group and knockout match days',
+    'final verifier auto-escalates approved emergency sources',
+    'live poller final handoff can auto-escalate approved emergency sources',
     'readiness monitor covers production during group and knockout match days',
     'readiness monitor audits live DB by default',
     'readiness monitor self-heals stale active live DB',
