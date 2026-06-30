@@ -251,7 +251,7 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
           SCORING_SNAPSHOT_PUBLIC_BASE_URL: https://friendlybet.live
-          SCORING_SNAPSHOT_PUBLIC_RETRIES: 12
+          SCORING_SNAPSHOT_PUBLIC_RETRIES: 60
           SCORING_SNAPSHOT_PUBLIC_RETRY_MS: 10000
         run: node scripts/verify-scoring-snapshots.js
 

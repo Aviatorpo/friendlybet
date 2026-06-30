@@ -39,6 +39,7 @@ Read academy docs when release confidence, regression strategy, or senior QA pla
 4. For app code, verify the three-place version bump rule.
 5. Never revert unrelated dirty work.
 6. For live user-visible bugs, require production verification after push/deploy: cache-busted public-data fetch, live URL check, or screenshot proof as appropriate.
+6a. For generated scoring/public-data commits, separate local correctness from deploy propagation. Local snapshot-vs-DB mismatches fail immediately; cache-busted production proof must wait through the approved Vercel/CDN propagation window before declaring the workflow failed.
 7. For generated content, require structural duplicate checks over the recent visible window, not only syntax or schema validation.
 8. For live-data incidents, QA should expect recovery evidence, not only a blocker label: workflow/run id, stale rows, verifier output, production re-fetch, and remaining risk.
 8a. For live-data and scoring incidents, QA must reject "end to end" evidence that does not compare the user-visible source to the canonical scoring source. For WC2026, a finished or scheduled fixture visible in `world-cup-schedule.json` is not enough; QA needs the matching Supabase `matches` row and the resulting public snapshot/scoring proof.
