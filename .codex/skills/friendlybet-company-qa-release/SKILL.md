@@ -46,6 +46,7 @@ Read academy docs when release confidence, regression strategy, or senior QA pla
 10. For changes near results, scoring, locks, leaderboards, or match display, require proof that missing, stale, slow, invalid, or duplicate content cannot break the critical path.
 11. For user-facing features, require a state matrix test plan. Each state that changes what users can see, pick, edit, score, or share needs an automated fixture or named manual/live verification.
 12. During planning dialogue, shape the plan by defining acceptance tests, regression paths, state-matrix coverage, release/version/cache checks, dirty-worktree safety, blocker-vs-warning rules, and production verification when Eyal can see the outcome live.
+13. Fail release readiness when speed or context-saving caused missing state coverage, weak validation, or shallow cross-department review. Concise plans still need testable depth.
 
 ## Output
 

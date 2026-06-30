@@ -77,7 +77,7 @@ Required participants:
 Pass output:
 
 - Provider team: freshness status, fields missing, fallback source.
-- Engineering: cache/snapshot/manual override path.
+- Engineering: cache/snapshot/automatic fallback path plus break-glass repair boundary.
 - Content: safe fallback copy or block decision.
 - QA: stale/disagreement/missing-field test plan.
 - FinOps: cost/rate-limit impact of any proposed new calls.
@@ -86,7 +86,7 @@ Automatic fail:
 
 - Publishes current fact from stale data.
 - Adds live provider calls to user request path.
-- No manual fallback for final result.
+- No automatic approved-source fallback/safe-wait path for final result.
 
 ## Case 4: New Social Prediction Feature
 

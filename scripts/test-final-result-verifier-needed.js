@@ -25,6 +25,7 @@ function minutesAfterKickoff(minutes) {
 
 const match = {
   status: 'TIMED',
+  stage: 'GROUP_STAGE',
   match_date: '2026-06-20T03:00:00Z',
   home_team_code: 'TUR',
   away_team_code: 'PAR',
@@ -36,6 +37,9 @@ check('candidate is still covered after 72 hours', isCandidate(match, minutesAft
 check('candidate is still covered after 10 days', isCandidate(match, minutesAfterKickoff(10 * 24 * 60)));
 check('candidate is outside bounded recovery after 337 hours', !isCandidate(match, minutesAfterKickoff(337 * 60)));
 check('complete finished match is not a candidate', !isCandidate({ ...match, status: 'FINISHED', home_score: 1, away_score: 0 }, minutesAfterKickoff(180)));
+check('complete finished group draw is not a candidate', !isCandidate({ ...match, status: 'FINISHED', home_score: 1, away_score: 1, winner_code: null }, minutesAfterKickoff(180)));
+check('finished tied knockout without advancer is a candidate', isCandidate({ ...match, stage: 'ROUND_OF_32', status: 'FINISHED', home_score: 1, away_score: 1, winner_code: null }, minutesAfterKickoff(180)));
+check('finished tied knockout with advancer is not a candidate', !isCandidate({ ...match, stage: 'ROUND_OF_32', status: 'FINISHED', home_score: 1, away_score: 1, winner_code: 'TUR' }, minutesAfterKickoff(180)));
 check('finished match missing score is a candidate', isCandidate({ ...match, status: 'FINISHED', home_score: null, away_score: null }, minutesAfterKickoff(180)));
 check('finished match with live residue is a candidate', isCandidate({ ...match, status: 'FINISHED', home_score: 1, away_score: 0, live_clock: "90'+4'" }, minutesAfterKickoff(180)));
 

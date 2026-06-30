@@ -43,6 +43,9 @@ const fnNames = [
   '_matchIsStaleLive',
   '_matchIsStaleScheduled',
   '_matchIsPendingProviderFinal',
+  '_matchHasNumericScore',
+  '_matchIsKnockoutStage',
+  '_matchResolvedWinner',
   '_matchIsFinishedStatus',
   '_matchIsTerminalStatus',
   '_matchNeedsStatusVerification',
@@ -90,6 +93,24 @@ assert(api._matchNeedsStatusVerification(match({
   status: 'IN_PLAY',
   match_date: '2026-06-23T07:00:00Z',
 }), now), 'Very old live status must render as verification');
+assert(api._matchResolvedWinner({
+  status: 'FINISHED',
+  stage: 'ROUND_OF_32',
+  home_team_code: 'NED',
+  away_team_code: 'MAR',
+  home_score: 1,
+  away_score: 1,
+  winner_code: 'MAR',
+}) === 'MAR', 'Penalty-decided knockout draw must resolve winner from winner_code');
+assert(api._matchResolvedWinner({
+  status: 'FINISHED',
+  stage: 'ROUND_OF_32',
+  home_team_code: 'NED',
+  away_team_code: 'MAR',
+  home_score: 2,
+  away_score: 1,
+  winner_code: 'MAR',
+}) === 'NED', 'Decisive score should not let stale winner_code override match display winner');
 
 assert(!api._matchNeedsStatusVerification(match({
   status: 'FINISHED',
@@ -106,7 +127,17 @@ const cardSource = sliceBetween(app, 'function createMatchCard', 'function getTe
 assert(/needsStatusVerification\s*=\s*_matchNeedsStatusVerification\(match\)/.test(cardSource), 'Match cards must use the shared verification state');
 assert(/card\.classList\.add\('verifying'\)/.test(cardSource), 'Verification state must use the verifying card style');
 assert(/matchesEx\.statusBeingVerified/.test(cardSource), 'Verification note must avoid overclaiming a final score');
+assert(/matchesEx\.advancedOnPenalties/.test(cardSource), 'Penalty-decided knockout cards must show who advanced');
+assert(/_matchResolvedWinner\(match\)/.test(cardSource), 'Match cards must use resolved winner helper for penalty decisions');
 assert(/if \(needsStatusVerification\)[\s\S]*statusText\s*=\s*t\('matchesEx\.verifyingResult'\)/.test(cardSource), 'Verification state must display verifying result status text');
+
+const resultsLoadSource = sliceBetween(app, '// Build knockout winners map', '// Build group advancers map');
+assert(/_matchResolvedWinner\(m\)/.test(resultsLoadSource), 'Results knockout winner map must use resolved winner helper');
+assert(!/if \(m\.winner_code\)[\s\S]*knockoutWinners/.test(resultsLoadSource), 'Results knockout winner map must not prefer raw winner_code');
+
+const scenarioSource = sliceBetween(app, 'function _findVerifiedKnockoutScenarioEntry', 'function _scenarioStandingsMatchCurrentUsers');
+assert(/_matchResolvedWinner\(m\)/.test(scenarioSource), 'Scenario overlay must filter finished knockouts by resolved winner');
+assert(/const resolvedWinner = _matchResolvedWinner\(match\)/.test(scenarioSource), 'Scenario overlay must not apply raw winner_code');
 
 const mergedByNumber = api.mergeOfficialScheduleWithLiveMatches([
   {

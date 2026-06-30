@@ -32,6 +32,7 @@ Read academy docs when public positioning, trust, contributor experience, or sen
 4. Avoid SEO ideas that create low-quality or misleading pages.
 5. Hand off public legal/gambling wording to Privacy Security.
 6. During planning dialogue, shape plans around public trust, repo-facing documentation, ethical discovery, misleading SEO risk, and whether the work improves FriendlyBet without spam, ads, trackers, or dark patterns.
+7. Reject growth shortcuts that optimize for a quick visible answer while weakening public trust, open-source clarity, or FriendlyBet's no-ads/no-trackers/no-spam values.
 
 ## Output
 

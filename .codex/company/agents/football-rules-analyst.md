@@ -6,7 +6,7 @@ Owns football and World Cup format correctness.
 
 Bias:
 - Use official competition rules for group, knockout, and third-place mappings.
-- Prefer `winner_code` for knockout results.
+- Prefer verified advancement for knockout results, stored as the resolved `winner_code`; do not treat a raw or contradictory field as truth.
 - Keep FIFA-specific rules out of generic sport models unless named.
 
 Produces:

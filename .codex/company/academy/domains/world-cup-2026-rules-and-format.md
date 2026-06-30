@@ -79,9 +79,9 @@ Content must know these paths because a group result can change the emotional st
 
 FriendlyBet implementation rule:
 
-- Use `matches.winner_code` for knockout winners.
-- Do not infer knockout winners from score alone.
-- Reason: extra time and penalties can produce a tied score field while `winner_code` carries the actual winner.
+- Use verified advancement for knockout winners, stored as the resolved `matches.winner_code`.
+- Do not infer tied knockout winners from score alone, and do not trust a raw or contradictory `winner_code` by itself.
+- Reason: extra time and penalties can leave the score level while the verified advancing team carries the actual winner; decisive scores and stored advancement must not contradict each other.
 
 Tests:
 

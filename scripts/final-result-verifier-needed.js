@@ -42,7 +42,7 @@ function readJson(file, fallback) {
 }
 
 async function fetchMatchesFromSupabase() {
-  const endpoint = `${SUPABASE_URL.replace(/\/+$/, '')}/rest/v1/matches?select=id,external_id,status,match_date,home_team_code,away_team_code,home_score,away_score,winner_code,live_clock,live_period,status_detail,live_source,source_updated_at,last_updated&order=match_date.asc,id.asc`;
+  const endpoint = `${SUPABASE_URL.replace(/\/+$/, '')}/rest/v1/matches?select=id,external_id,status,stage,match_date,home_team_code,away_team_code,home_score,away_score,winner_code,live_clock,live_period,status_detail,live_source,source_updated_at,last_updated&order=match_date.asc,id.asc`;
   const res = await fetch(endpoint, {
     headers: {
       apikey: SUPABASE_KEY,
@@ -90,6 +90,15 @@ function hasNumericScore(match) {
   return match && match.home_score != null && match.away_score != null;
 }
 
+function isKnockoutStage(stage) {
+  const value = String(stage || '').trim().toUpperCase();
+  return !!value && !['GROUP_STAGE', 'GROUP', 'LEAGUE'].includes(value);
+}
+
+function tiedScore(match) {
+  return hasNumericScore(match) && Number(match.home_score) === Number(match.away_score);
+}
+
 function hasLiveResidue(match) {
   return !!(match && (
     match.live_clock != null ||
@@ -121,7 +130,8 @@ function needsFinalVerification(match) {
   const status = _status(match);
   if (!TERMINAL.has(status)) return true;
   if (status !== 'FINISHED' && status !== 'AWARDED') return false;
-  return !hasNumericScore(match) || hasLiveResidue(match);
+  if (!hasNumericScore(match) || hasLiveResidue(match)) return true;
+  return isKnockoutStage(match.stage) && tiedScore(match) && !match.winner_code;
 }
 
 function backoffIntervalMinutes(ageMinutes) {
@@ -192,5 +202,6 @@ if (require.main === module) {
     backoffIntervalMinutes,
     isStaleLiveCandidate,
     needsFinalVerification,
+    isKnockoutStage,
   };
 }

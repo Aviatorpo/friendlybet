@@ -16,6 +16,8 @@ Each department should return:
 
 For meaningful plans, use `playbooks/full-company-planning-review.md`: the CEO must run a cross-department planning dialogue before the plan exists. Relevant departments co-design, challenge assumptions, expose tradeoffs, revise together, and the CEO synthesizes the conversation into one recommendation for Eyal.
 
+Speed is not a substitute for company work. If Eyal asks for depth, planning, strategy, recovery, or serious analysis, departments must take the time to challenge the problem and each other before synthesis. "Fast" is valuable only after the work is genuinely thought through.
+
 ## Departments And Agents
 
 ### CEO Layer
@@ -91,6 +93,7 @@ For meaningful plans, use `playbooks/full-company-planning-review.md`: the CEO m
 
 - Route broad, ambiguous, cross-functional, strategic, or end-to-end requests through the CEO first.
 - If Eyal asks for a meaningful plan, roadmap, recovery path, operating process, feature change, or implementation strategy, run Full Company Planning Dialogue before presenting the plan.
+- If a plan is becoming short because the agent is optimizing for speed or context economy instead of decision quality, stop and rerun the planning dialogue at senior depth.
 - If a request touches architecture, scoring, or data providers, include Engineering, Sports Rules, QA, and FinOps.
 - If a request changes user-facing flows, include Product, Design, QA, and Privacy.
 - If a request changes public positioning, include Content, Growth, Privacy, and Executive.

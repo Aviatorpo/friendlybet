@@ -11,7 +11,7 @@ Use this when live/current sports data is needed or changed.
 - Cost.
 - License/terms concern.
 - Failure modes.
-- Manual fallback.
+- Automatic fallback and break-glass repair boundary.
 - Freshness guarantee, or explicit lack of guarantee.
 
 ## Content Needs
@@ -35,7 +35,7 @@ Use this when live/current sports data is needed or changed.
 - Disagreement case.
 - Missing field case.
 - Rate-limit case.
-- Manual override case.
+- Break-glass repair case, without manual result truth as the normal path.
 
 ## FinOps Needs
 
@@ -48,6 +48,6 @@ Use this when live/current sports data is needed or changed.
 ## Bad Handoff
 
 - "Use API X" with no terms or rate limit review.
-- No manual fallback for live match finalization.
+- No automatic approved-source fallback/safe-wait path for live match finalization.
 - Content assumes data is real-time when it is cached.
 - Engineering stores fields the product does not need.
