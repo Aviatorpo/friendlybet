@@ -1,6 +1,261 @@
 {
-  "updated_at": "2026-06-29T05:02:08.436Z",
+  "updated_at": "2026-06-30T05:34:20.944Z",
   "items": [
+    {
+      "id": "ned-mar-2026-06-30",
+      "match_id": "fa62c45a-4862-411d-89d4-195f03787da6",
+      "image": "story-assets/morocco-wins-netherlands.png",
+      "teams": [
+        "NED",
+        "MAR"
+      ],
+      "outcome": "MAR",
+      "result": "MAR 1-1 NED",
+      "top_label": "MOROCCO QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "MAR",
+        "team_he": "מרוקו",
+        "team_en": "Morocco",
+        "match_id": "fa62c45a-4862-411d-89d4-195f03787da6",
+        "he_name": "{names} סימן את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-1 ופנדלים, הבחירה הזאת עלתה לשלב הבא 🔥",
+        "he_names": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-1 ופנדלים, הבחירות האלה עלו לשלב הבא 🔥",
+        "he_count": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-1 ופנדלים, המחנה הזה עלה לשלב הבא 🔥",
+        "en_name": "{names} picked {team} to win this knockout match. After 1-1 and penalties, that bracket call walked into the next round 🔥",
+        "en_names": "{names} picked {team} to win this knockout match. After 1-1 and penalties, those bracket calls walked into the next round 🔥",
+        "en_count": "{names} picked {team} to win this knockout match. After 1-1 and penalties, that whole corner walked into the next round 🔥"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "MAR",
+          "team_he": "מרוקו",
+          "team_en": "Morocco",
+          "match_id": "fa62c45a-4862-411d-89d4-195f03787da6",
+          "he_name": "{names} סימן את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-1 ופנדלים, הבחירה הזאת עלתה לשלב הבא 🔥",
+          "he_names": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-1 ופנדלים, הבחירות האלה עלו לשלב הבא 🔥",
+          "he_count": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-1 ופנדלים, המחנה הזה עלה לשלב הבא 🔥",
+          "en_name": "{names} picked {team} to win this knockout match. After 1-1 and penalties, that bracket call walked into the next round 🔥",
+          "en_names": "{names} picked {team} to win this knockout match. After 1-1 and penalties, those bracket calls walked into the next round 🔥",
+          "en_count": "{names} picked {team} to win this knockout match. After 1-1 and penalties, that whole corner walked into the next round 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "MAR",
+          "team_he": "מרוקו",
+          "team_en": "Morocco",
+          "he_name": "{names} שם את {team} לזכות במונדיאל. הפנדלים מול הולנד נתנו לחלום הזה עוד נשימה ✨",
+          "he_names": "{names} שמו את {team} לזכות במונדיאל. הפנדלים מול הולנד נתנו לחלומות האלה עוד נשימה ✨",
+          "he_count": "{names} שמו את {team} לזכות במונדיאל. הפנדלים מול הולנד נתנו למחנה הזה עוד נשימה ✨",
+          "en_name": "{names} picked {team} to win the World Cup. A penalty escape against Netherlands made that dream breathe again ✨",
+          "en_names": "{names} picked {team} to win the World Cup. A penalty escape against Netherlands made those dreams breathe again ✨",
+          "en_count": "{names} picked {team} to win the World Cup. A penalty escape against Netherlands made that group dream breathe again ✨"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "NED",
+          "team_he": "הולנד",
+          "team_en": "Netherlands",
+          "match_id": "fa62c45a-4862-411d-89d4-195f03787da6",
+          "he_name": "{names} סימן את {team} לנצח במשחק הנוקאאוט הזה. ה-1-1 הלך לפנדלים, מרוקו עלתה, והבראקט נשבר 💔",
+          "he_names": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. ה-1-1 הלך לפנדלים, מרוקו עלתה, והבראקטים נשברו 💔",
+          "he_count": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. ה-1-1 הלך לפנדלים, מרוקו עלתה, והפינה הזאת נשברה 💔",
+          "en_name": "{names} picked {team} to win this knockout match. The 1-1 went to penalties, Morocco advanced, and that bracket line broke 💔",
+          "en_names": "{names} picked {team} to win this knockout match. The 1-1 went to penalties, Morocco advanced, and those bracket lines broke 💔",
+          "en_count": "{names} picked {team} to win this knockout match. The 1-1 went to penalties, Morocco advanced, and that side of the pool broke 💔"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "NED",
+          "team_he": "הולנד",
+          "team_en": "Netherlands",
+          "he_name": "{names} שם את {team} לזכות במונדיאל. מרוקו עלתה אחרי 1-1, והחלום הזה עבר לבקרת נזקים 😬",
+          "he_names": "{names} שמו את {team} לזכות במונדיאל. מרוקו עלתה אחרי 1-1, והחלומות האלה עברו לבקרת נזקים 😬",
+          "he_count": "{names} שמו את {team} לזכות במונדיאל. מרוקו עלתה אחרי 1-1, והמחנה הזה עבר לבקרת נזקים 😬",
+          "en_name": "{names} picked {team} to win the World Cup. Morocco moving on after 1-1 turned that dream into damage control 😬",
+          "en_names": "{names} picked {team} to win the World Cup. Morocco moving on after 1-1 turned those dreams into damage control 😬",
+          "en_count": "{names} picked {team} to win the World Cup. Morocco moving on after 1-1 put that whole corner into damage control 😬"
+        }
+      ],
+      "he": {
+        "headline": "מרוקו ניצחה את הולנד בפנדלים ועלתה אחרי 1-1: הכרטיס לשלב הבא שלה 🔥",
+        "caption": "הולנד ומרוקו נשארו על 1-1, ואז מרוקו יצאה עם הכרטיס לשלב הבא בפנדלים. ערב גדול לנוקאאוט שלה 🔥"
+      },
+      "en": {
+        "headline": "Morocco qualify and beat Netherlands on penalties after 1-1: last-16 ticket claimed 🔥",
+        "caption": "Netherlands and Morocco ended 1-1, then Morocco walked out with the next-round ticket. Morocco knockout picks have fresh life 🔥"
+      }
+    },
+    {
+      "id": "ger-par-2026-06-29",
+      "match_id": "fd6b2190-6ec4-400d-bd94-868d225ee3f7",
+      "image": "story-assets/paraguay-wins-germany.png",
+      "teams": [
+        "GER",
+        "PAR"
+      ],
+      "outcome": "PAR",
+      "result": "PAR 1-1 GER",
+      "top_label": "PARAGUAY QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "PAR",
+        "team_he": "פרגוואי",
+        "team_en": "Paraguay",
+        "match_id": "fd6b2190-6ec4-400d-bd94-868d225ee3f7",
+        "he_name": "{names} סימן את {team} לנצח במשחק הנוקאאוט הזה. גרמניה גררה ל-1-1, ואז הפנדלים הפכו את הבחירה לכותרת 🔥",
+        "he_names": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. גרמניה גררה ל-1-1, ואז הפנדלים הפכו את הבחירות לכותרת 🔥",
+        "he_count": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. גרמניה גררה ל-1-1, ואז הפנדלים הפכו את המחנה לכותרת 🔥",
+        "en_name": "{names} picked {team} to win this knockout match. Germany dragged it to 1-1, then penalties turned that pick into a headline 🔥",
+        "en_names": "{names} picked {team} to win this knockout match. Germany dragged it to 1-1, then penalties turned those picks into a headline 🔥",
+        "en_count": "{names} picked {team} to win this knockout match. Germany dragged it to 1-1, then penalties turned that side into a headline 🔥"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "PAR",
+          "team_he": "פרגוואי",
+          "team_en": "Paraguay",
+          "match_id": "fd6b2190-6ec4-400d-bd94-868d225ee3f7",
+          "he_name": "{names} סימן את {team} לנצח במשחק הנוקאאוט הזה. גרמניה גררה ל-1-1, ואז הפנדלים הפכו את הבחירה לכותרת 🔥",
+          "he_names": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. גרמניה גררה ל-1-1, ואז הפנדלים הפכו את הבחירות לכותרת 🔥",
+          "he_count": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. גרמניה גררה ל-1-1, ואז הפנדלים הפכו את המחנה לכותרת 🔥",
+          "en_name": "{names} picked {team} to win this knockout match. Germany dragged it to 1-1, then penalties turned that pick into a headline 🔥",
+          "en_names": "{names} picked {team} to win this knockout match. Germany dragged it to 1-1, then penalties turned those picks into a headline 🔥",
+          "en_count": "{names} picked {team} to win this knockout match. Germany dragged it to 1-1, then penalties turned that side into a headline 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "PAR",
+          "team_he": "פרגוואי",
+          "team_en": "Paraguay",
+          "he_name": "{names} שם את {team} לזכות במונדיאל. 1-1 מול גרמניה ופנדלים קירבו את החלום למסיבה 🌶️",
+          "he_names": "{names} שמו את {team} לזכות במונדיאל. 1-1 מול גרמניה ופנדלים קירבו את החלומות למסיבה 🌶️",
+          "he_count": "{names} שמו את {team} לזכות במונדיאל. 1-1 מול גרמניה ופנדלים קירבו את המחנה למסיבה 🌶️",
+          "en_name": "{names} picked {team} to win the World Cup. A 1-1 escape past Germany pushed that dream into party mode 🌶️",
+          "en_names": "{names} picked {team} to win the World Cup. A 1-1 escape past Germany pushed those dreams into party mode 🌶️",
+          "en_count": "{names} picked {team} to win the World Cup. A 1-1 escape past Germany pushed that camp into party mode 🌶️"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "GER",
+          "team_he": "גרמניה",
+          "team_en": "Germany",
+          "match_id": "fd6b2190-6ec4-400d-bd94-868d225ee3f7",
+          "he_name": "{names} סימן את {team} לנצח במשחק הנוקאאוט הזה. פרגוואי עלתה מהנקודה, והטופס קיבל מכה קשה 😬",
+          "he_names": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. פרגוואי עלתה מהנקודה, והטפסים קיבלו מכה קשה 😬",
+          "he_count": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. פרגוואי עלתה מהנקודה, והצד הזה קיבל מכה קשה 😬",
+          "en_name": "{names} picked {team} to win this knockout match. Paraguay advanced from the spot, and that form took a heavy hit 😬",
+          "en_names": "{names} picked {team} to win this knockout match. Paraguay advanced from the spot, and those forms took a heavy hit 😬",
+          "en_count": "{names} picked {team} to win this knockout match. Paraguay advanced from the spot, and that bracket side took a heavy hit 😬"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "GER",
+          "team_he": "גרמניה",
+          "team_en": "Germany",
+          "he_name": "{names} שם את {team} לזכות במונדיאל. 1-1 ופרגוואי בשלב הבא הפכו את החלום לשיחת ניחומים 💔",
+          "he_names": "{names} שמו את {team} לזכות במונדיאל. 1-1 ופרגוואי בשלב הבא הפכו את החלומות לשיחת ניחומים 💔",
+          "he_count": "{names} שמו את {team} לזכות במונדיאל. 1-1 ופרגוואי בשלב הבא הפכו את המחנה לשיחת ניחומים 💔",
+          "en_name": "{names} picked {team} to win the World Cup. The 1-1 and Paraguay ticket turned that dream into a condolence chat 💔",
+          "en_names": "{names} picked {team} to win the World Cup. The 1-1 and Paraguay ticket turned those dreams into a condolence chat 💔",
+          "en_count": "{names} picked {team} to win the World Cup. The 1-1 and Paraguay ticket turned that camp into a condolence chat 💔"
+        }
+      ],
+      "he": {
+        "headline": "פרגוואי ניצחה את גרמניה בפנדלים ועלתה אחרי 1-1: הבראקט התהפך 🔥",
+        "caption": "גרמניה ופרגוואי סיימו 1-1, אבל פרגוואי עלתה מהנקודה הלבנה. כל בחירה בפרגוואי קיבלה רגע נוקאאוט ענק 🔥"
+      },
+      "en": {
+        "headline": "Paraguay qualify and beat Germany on penalties after 1-1: bracket shock confirmed 🔥",
+        "caption": "Germany and Paraguay finished 1-1, then Paraguay took the next-round ticket. Paraguay picks just landed a huge knockout receipt 🔥"
+      }
+    },
+    {
+      "id": "bra-jpn-2026-06-29",
+      "match_id": "6ccd037c-6910-43ef-8818-d23358c8c791",
+      "image": "story-assets/brazil-wins-japan.png",
+      "teams": [
+        "BRA",
+        "JPN"
+      ],
+      "outcome": "BRA",
+      "result": "BRA 2-1 JPN",
+      "top_label": "BRAZIL QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "BRA",
+        "team_he": "ברזיל",
+        "team_en": "Brazil",
+        "match_id": "6ccd037c-6910-43ef-8818-d23358c8c791",
+        "he_name": "{names} סימן את {team} לנצח במשחק הנוקאאוט הזה. ה-2-1 על יפן הפך את הבחירה לקבלה חמה 👏",
+        "he_names": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. ה-2-1 על יפן הפך את הבחירות לקבלות חמות 👏",
+        "he_count": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. ה-2-1 על יפן הפך את המחנה לקבלה חמה 👏",
+        "en_name": "{names} picked {team} to win this knockout match. Brazil handled Japan 2-1, and that bracket pick suddenly has receipts 👏",
+        "en_names": "{names} picked {team} to win this knockout match. Brazil handled Japan 2-1, and those bracket picks suddenly have receipts 👏",
+        "en_count": "{names} picked {team} to win this knockout match. Brazil handled Japan 2-1, and that pool corner suddenly has receipts 👏"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "BRA",
+          "team_he": "ברזיל",
+          "team_en": "Brazil",
+          "match_id": "6ccd037c-6910-43ef-8818-d23358c8c791",
+          "he_name": "{names} סימן את {team} לנצח במשחק הנוקאאוט הזה. ה-2-1 על יפן הפך את הבחירה לקבלה חמה 👏",
+          "he_names": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. ה-2-1 על יפן הפך את הבחירות לקבלות חמות 👏",
+          "he_count": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. ה-2-1 על יפן הפך את המחנה לקבלה חמה 👏",
+          "en_name": "{names} picked {team} to win this knockout match. Brazil handled Japan 2-1, and that bracket pick suddenly has receipts 👏",
+          "en_names": "{names} picked {team} to win this knockout match. Brazil handled Japan 2-1, and those bracket picks suddenly have receipts 👏",
+          "en_count": "{names} picked {team} to win this knockout match. Brazil handled Japan 2-1, and that pool corner suddenly has receipts 👏"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "BRA",
+          "team_he": "ברזיל",
+          "team_en": "Brazil",
+          "he_name": "{names} שם את {team} לזכות במונדיאל. הניצחון 2-1 על יפן השאיר את החלום בוער 🔥",
+          "he_names": "{names} שמו את {team} לזכות במונדיאל. הניצחון 2-1 על יפן השאיר את החלומות בוערים 🔥",
+          "he_count": "{names} שמו את {team} לזכות במונדיאל. הניצחון 2-1 על יפן השאיר את המחנה בוער 🔥",
+          "en_name": "{names} picked {team} to win the World Cup. The 2-1 over Japan kept that World Cup ticket burning 🔥",
+          "en_names": "{names} picked {team} to win the World Cup. The 2-1 over Japan kept those World Cup tickets burning 🔥",
+          "en_count": "{names} picked {team} to win the World Cup. The 2-1 over Japan kept that group ticket burning 🔥"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "JPN",
+          "team_he": "יפן",
+          "team_en": "Japan",
+          "match_id": "6ccd037c-6910-43ef-8818-d23358c8c791",
+          "he_name": "{names} סימן את {team} לנצח במשחק הנוקאאוט הזה. ברזיל סגרה 2-1, והבראקט קיבל שיעור כואב 💔",
+          "he_names": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. ברזיל סגרה 2-1, והבראקטים קיבלו שיעור כואב 💔",
+          "he_count": "{names} סימנו את {team} לנצח במשחק הנוקאאוט הזה. ברזיל סגרה 2-1, והצד הזה קיבל שיעור כואב 💔",
+          "en_name": "{names} picked {team} to win this knockout match. Brazil closed it 2-1, and that bracket learned a painful lesson 💔",
+          "en_names": "{names} picked {team} to win this knockout match. Brazil closed it 2-1, and those brackets learned a painful lesson 💔",
+          "en_count": "{names} picked {team} to win this knockout match. Brazil closed it 2-1, and that pool side learned a painful lesson 💔"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "JPN",
+          "team_he": "יפן",
+          "team_en": "Japan",
+          "he_name": "{names} שם את {team} לזכות במונדיאל. יפן נתקלה ב-2-1 של ברזיל, והחלום נעצר מוקדם 😬",
+          "he_names": "{names} שמו את {team} לזכות במונדיאל. יפן נתקלה ב-2-1 של ברזיל, והחלומות נעצרו מוקדם 😬",
+          "he_count": "{names} שמו את {team} לזכות במונדיאל. יפן נתקלה ב-2-1 של ברזיל, והמחנה נעצר מוקדם 😬",
+          "en_name": "{names} picked {team} to win the World Cup. Japan hit Brazil's 2-1 wall, and that dream stopped early 😬",
+          "en_names": "{names} picked {team} to win the World Cup. Japan hit Brazil's 2-1 wall, and those dreams stopped early 😬",
+          "en_count": "{names} picked {team} to win the World Cup. Japan hit Brazil's 2-1 wall, and that camp stopped early 😬"
+        }
+      ],
+      "he": {
+        "headline": "ברזיל ניצחה את יפן 2-1 ועלתה: ויניסיוס והבראקט חיים 🔥",
+        "caption": "ברזיל עברה את יפן 2-1 ועלתה לשלב הבא. הבחירה בברזיל בנוקאאוט קיבלה קבלה חמה 🔥"
+      },
+      "en": {
+        "headline": "Brazil qualify and beat Japan 2-1: Vinicius keeps the bracket alive 🔥",
+        "caption": "Brazil are through after 2-1 over Japan. The Brazil knockout pick now has a clean receipt 🔥"
+      }
+    },
     {
       "id": "rsa-can-2026-06-28",
       "match_id": "1e63c58a-b2fb-40ca-a18d-e2fe729b0774",
