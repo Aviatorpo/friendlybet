@@ -78,6 +78,31 @@ eq('build patch includes live display fields', E.buildPatch(transformed, {
   source_updated_at: '2026-06-12T19:21:00.000Z'
 });
 
+const pausedSecondHalfEvent = {
+  ...liveEvent,
+  competitions: [{
+    ...liveEvent.competitions[0],
+    status: {
+      clock: 3060,
+      displayClock: "51'",
+      period: 2,
+      type: { name: 'STATUS_HALFTIME', state: 'in', completed: false, shortDetail: "51'" }
+    }
+  }]
+};
+const pausedSecondHalf = E.transformEspnEvent(pausedSecondHalfEvent);
+eq('ESPN PAUSED-looking row with second-half clock normalizes to live', {
+  status: pausedSecondHalf.status,
+  liveClock: pausedSecondHalf.liveClock,
+  period: pausedSecondHalf.period,
+  statusDetail: pausedSecondHalf.statusDetail
+}, {
+  status: 'IN_PLAY',
+  liveClock: "51'",
+  period: 2,
+  statusDetail: "51'"
+});
+
 const finalEvent = {
   ...liveEvent,
   competitions: [{

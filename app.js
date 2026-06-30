@@ -3349,6 +3349,7 @@ const _FINISHED_MATCH_STATUSES = ['FINISHED', 'AWARDED'];
 const _MAX_MATCH_MS = 3.5 * 60 * 60 * 1000; // longest plausible match incl. ET + pens
 const _SCHEDULED_MATCH_STATUSES = ['TIMED', 'SCHEDULED'];
 const _STALE_SCHEDULED_MATCH_MS = 35 * 60 * 1000;
+const _HALFTIME_SOURCE_MAX_AGE_MS = 18 * 60 * 1000;
 function _matchStatus(m) {
   return String((m && m.status) || '').toUpperCase();
 }
@@ -3373,6 +3374,33 @@ function _matchIsStaleScheduled(m, now = Date.now()) {
 function _matchSourceFresh(m, now = Date.now(), maxAgeMs = 3 * 60 * 1000) {
   const ts = Date.parse((m && (m.source_updated_at || m.last_updated)) || '');
   return !isNaN(ts) && (now - ts) <= maxAgeMs;
+}
+function _matchDetailIndicatesHalftime(m) {
+  const text = `${String((m && m.live_clock) || '')} ${String((m && m.status_detail) || '')}`.toLowerCase();
+  return /\b(ht|half[-\s]?time|halftime)\b/.test(text);
+}
+function _matchHasSecondHalfClock(m) {
+  const period = Number(m && m.live_period);
+  if (Number.isFinite(period) && period >= 2) return true;
+  if (_matchDetailIndicatesHalftime(m)) return false;
+  const text = `${String((m && m.live_clock) || '')} ${String((m && m.status_detail) || '')}`;
+  const minute = Number(((text.match(/\b(\d{1,3})\s*'?/) || [])[1]));
+  return Number.isFinite(minute) && minute >= 46;
+}
+function _matchIsHalftimeBreak(m, now = Date.now()) {
+  if (_matchStatus(m) !== 'PAUSED') return false;
+  if (_matchHasSecondHalfClock(m)) return false;
+  if (!_matchSourceFresh(m, now, _HALFTIME_SOURCE_MAX_AGE_MS)) return false;
+  if (_matchDetailIndicatesHalftime(m)) return true;
+  const elapsed = _matchElapsedMs(m, now);
+  const period = Number(m && m.live_period);
+  const firstPeriodish = !Number.isFinite(period) || period <= 1;
+  return firstPeriodish && elapsed != null && elapsed >= 40 * 60 * 1000 && elapsed <= 75 * 60 * 1000;
+}
+function _matchIsStalePausedBreak(m, now = Date.now()) {
+  return _matchStatus(m) === 'PAUSED'
+    && !_matchHasSecondHalfClock(m)
+    && !_matchSourceFresh(m, now, _HALFTIME_SOURCE_MAX_AGE_MS);
 }
 function _matchLiveClockLabel(m, now = Date.now()) {
   const clock = String((m && m.live_clock) || '').trim();
@@ -3418,7 +3446,10 @@ function _matchIsTerminalStatus(m) {
   return _TERMINAL_MATCH_STATUSES.includes(_matchStatus(m));
 }
 function _matchNeedsStatusVerification(m, now = Date.now()) {
-  return _matchIsPendingProviderFinal(m) || _matchIsStaleLive(m, now) || (_matchIsStaleScheduled(m, now) && !_matchIsTerminalStatus(m));
+  return _matchIsPendingProviderFinal(m)
+    || _matchIsStaleLive(m, now)
+    || _matchIsStalePausedBreak(m, now)
+    || (_matchIsStaleScheduled(m, now) && !_matchIsTerminalStatus(m));
 }
 function _matchIsLiveish(m, now = Date.now()) {
   if (!m) return false;
@@ -3429,6 +3460,9 @@ function _matchIsLiveish(m, now = Date.now()) {
 }
 function _snapshotHasStaleScheduled(matches, now = Date.now()) {
   return (matches || []).some(m => _matchIsStaleScheduled(m, now) && !_matchIsTerminalStatus(m));
+}
+function _snapshotHasStalePausedBreak(matches, now = Date.now()) {
+  return (matches || []).some(m => _matchIsStalePausedBreak(m, now) && !_matchIsTerminalStatus(m));
 }
 function _snapshotHasPastNonTerminal(matches, now = Date.now()) {
   return (matches || []).some(m => {
@@ -3444,7 +3478,10 @@ function _snapshotStaleDuringLive(matches, maxAgeMs = 60000) {
 }
 function _snapshotShouldReadDb(matches, maxAgeMs = 60000) {
   if (!matches) return true;
-  return _snapshotStaleDuringLive(matches, maxAgeMs) || _snapshotHasStaleScheduled(matches) || _snapshotHasPastNonTerminal(matches);
+  return _snapshotStaleDuringLive(matches, maxAgeMs)
+    || _snapshotHasStaleScheduled(matches)
+    || _snapshotHasStalePausedBreak(matches)
+    || _snapshotHasPastNonTerminal(matches);
 }
 
 function _matchCountsForGroupProjection(m, now = Date.now()) {
@@ -11056,10 +11093,11 @@ function createMatchCard(match) {
   const domId = _matchDomId(match);
   if (domId) card.id = domId;
   
-  // PAUSED (halftime / breaks) counts as live too - otherwise the score would
-  // vanish and the match would show as "upcoming" for ~15 min every half-time.
+  // PAUSED can mean a real break, but some feeds also keep PAUSED while sending
+  // a second-half clock. Only render Half-time when the detail actually says so.
   const status = _matchStatus(match);
   const needsStatusVerification = _matchNeedsStatusVerification(match);
+  const isHalftimeBreak = !needsStatusVerification && _matchIsHalftimeBreak(match);
   const isLive = _matchIsLiveish(match);
   const isFinished = _matchIsFinishedStatus(match);
   const isScheduled = !isLive && !isFinished;
@@ -11067,7 +11105,7 @@ function createMatchCard(match) {
   
   card.className = 'match-card';
   if (needsStatusVerification) card.classList.add('verifying');
-  else if (status === 'PAUSED') card.classList.add('halftime'); // calm break look, not pulsing-live
+  else if (isHalftimeBreak) card.classList.add('halftime'); // calm break look, not pulsing-live
   else if (isLive) card.classList.add('live');
   if (isFinished) card.classList.add('finished');
   
@@ -11090,7 +11128,7 @@ function createMatchCard(match) {
   if (needsStatusVerification) {
     statusText = t('matchesEx.verifyingResult');
     statusClass = 'verifying';
-  } else if (status === 'PAUSED') {
+  } else if (isHalftimeBreak) {
     // Half-time (or any break): show the score with an explicit half-time badge,
     // driven by the real API status - not the elapsed-time guess.
     statusText = t('matchesEx.halftime');
