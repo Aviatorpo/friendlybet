@@ -27,6 +27,8 @@ on:
       - 'scripts/test-team-mapping.js'
       - 'scripts/live-poller.js'
       - 'scripts/test-live-poller.js'
+      - 'scripts/live-controller-needed.js'
+      - 'scripts/test-live-controller-needed.js'
       - 'scripts/live-state-watchdog.js'
       - 'scripts/test-live-state-watchdog.js'
       - 'scripts/live-ops-audit.js'
@@ -48,6 +50,7 @@ on:
       - 'scripts/verify-scoring-snapshots.js'
       - 'scripts/test-verify-scoring-snapshots.js'
       - '.github/workflows/live-poller.yml'
+      - '.github/workflows/live-match-controller.yml'
       - 'scripts/espn-live-sync.js'
       - 'scripts/test-espn-live-sync.js'
       - 'scripts/final-result-verifier.js'
@@ -105,6 +108,8 @@ on:
       - 'scripts/test-team-mapping.js'
       - 'scripts/live-poller.js'
       - 'scripts/test-live-poller.js'
+      - 'scripts/live-controller-needed.js'
+      - 'scripts/test-live-controller-needed.js'
       - 'scripts/live-state-watchdog.js'
       - 'scripts/test-live-state-watchdog.js'
       - 'scripts/live-ops-audit.js'
@@ -126,6 +131,7 @@ on:
       - 'scripts/verify-scoring-snapshots.js'
       - 'scripts/test-verify-scoring-snapshots.js'
       - '.github/workflows/live-poller.yml'
+      - '.github/workflows/live-match-controller.yml'
       - 'scripts/espn-live-sync.js'
       - 'scripts/test-espn-live-sync.js'
       - 'scripts/final-result-verifier.js'
@@ -197,6 +203,8 @@ jobs:
         run: node scripts/test-team-mapping.js
       - name: Run live-poller tests
         run: node scripts/test-live-poller.js
+      - name: Run live-controller preflight tests
+        run: node scripts/test-live-controller-needed.js
       - name: Run live-state watchdog tests
         run: node scripts/test-live-state-watchdog.js
       - name: Run live-ops audit tests

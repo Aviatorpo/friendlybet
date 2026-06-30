@@ -1,0 +1,96 @@
+name: Live Match Controller
+
+# Backup lane for live match completion. The 5-minute live poller remains the
+# fast path; this controller is a long-running watcher with its own concurrency
+# group, so a dropped short cron does not leave users waiting for Eyal to notice.
+on:
+  schedule:
+    - cron: '1 * 11-28 6 *'
+    - cron: '1 16-23 29 6 *'
+    - cron: '1 0-7,16-23 30 6 *'
+    - cron: '1 0-7,15-23 1 7 *'
+    - cron: '1 0-7,18-23 2 7 *'
+    - cron: '1 0-9,17-23 3 7 *'
+    - cron: '1 0-7,16-23 4 7 *'
+    - cron: '1 0-7,19-23 5 7 *'
+    - cron: '1 0-7,18-23 6 7 *'
+    - cron: '1 0-7,15-23 7 7 *'
+    - cron: '1 19-23 9 7 *'
+    - cron: '1 0-3,18-23 10 7 *'
+    - cron: '1 0-2,20-23 11 7 *'
+    - cron: '1 0-7 12 7 *'
+    - cron: '1 18-23 14 7 *'
+    - cron: '1 0-2,18-23 15 7 *'
+    - cron: '1 20-23 18 7 *'
+    - cron: '1 0-2,18-23 19 7 *'
+  workflow_dispatch:
+    inputs:
+      controller_minutes:
+        description: 'How long the controller should stay awake'
+        required: true
+        default: '80'
+        type: choice
+        options:
+          - '40'
+          - '80'
+          - '120'
+
+concurrency:
+  group: live-match-controller
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  controller:
+    runs-on: ubuntu-latest
+    timeout-minutes: 140
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Check whether a live controller is needed
+        id: controller_needed
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LIVE_CONTROLLER_LEAD_MINUTES: '90'
+          LIVE_CONTROLLER_LOOKBACK_MINUTES: '240'
+        run: node scripts/live-controller-needed.js
+
+      - name: Watch live match window
+        id: live_poll
+        if: steps.controller_needed.outputs.needed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          CONTROLLER_MINUTES: ${{ inputs.controller_minutes || '80' }}
+          LIVE_POLL_INTERVAL_MS: '60000'
+          LIVE_POLL_RUN_MS: '270000'
+          LIVE_POLL_CONTROLLER_SLEEP_MS: '30000'
+          LIVE_POLL_CONTROLLER_IDLE_SLEEP_MS: '120000'
+        run: |
+          LIVE_POLL_CONTROLLER_MS=$((CONTROLLER_MINUTES * 60 * 1000)) node scripts/live-poller.js
+
+      - name: Dispatch verified final scoring pipeline
+        if: steps.live_poll.outputs.final_detected == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run final-result-verifier.yml \
+            --ref main \
+            -f apply=true \
+            -f lookback_hours=336 \
+            -f backoff=0 \
+            -f emergency_sources=true
+
+      - name: Report controller idle
+        if: steps.controller_needed.outputs.needed != 'true'
+        run: echo "No live/upcoming non-terminal match needs the controller. detail=${{ steps.controller_needed.outputs.detail }}"

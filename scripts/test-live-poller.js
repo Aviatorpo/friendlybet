@@ -78,7 +78,8 @@ sync.__setFetch(async (url, opts) => {
   // Live: should loop several times in ~18ms at a 5ms cadence.
   LIVE = true; WINDOW_MODE = 'live'; upserts = 0; patches = 0;
   ESPN_PAYLOAD = ESPN_LIVE_PAYLOAD;
-  const result = await runLivePoller({ intervalMs: 5, runMs: 18, sleep: (ms) => new Promise(r => setTimeout(r, ms)) });
+  let liveNow = 0;
+  const result = await runLivePoller({ intervalMs: 5, runMs: 18, now: () => liveNow, sleep: async (ms) => { liveNow += ms; } });
   ok('polls performSync repeatedly while live (>=2)', result.polls >= 2);
   ok('ESPN patches the live match on each poll', patches >= result.polls);
   ok('live polling does not set final handoff', result.finalDetected === false);
@@ -107,6 +108,25 @@ sync.__setFetch(async (url, opts) => {
   LIVE = true; WINDOW_MODE = 'live'; upserts = 0; patches = 0; ESPN_PAYLOAD = ESPN_FINAL_PAYLOAD;
   const result4 = await runLivePoller({ intervalMs: 5, runMs: 5 });
   ok('ESPN final sets verifier handoff flag', result4.finalDetected === true && result4.finalDetections >= 1);
+
+  // Controller mode: stays awake across an idle probe and then catches the live window.
+  LIVE = false; WINDOW_MODE = 'live'; upserts = 0; patches = 0; ESPN_PAYLOAD = ESPN_FINAL_PAYLOAD;
+  let fakeNow = 0;
+  let sleeps = 0;
+  const result5 = await runLivePoller({
+    intervalMs: 5,
+    runMs: 15,
+    controllerMs: 70,
+    controllerSleepMs: 5,
+    controllerIdleSleepMs: 20,
+    now: () => fakeNow,
+    sleep: async (ms) => {
+      fakeNow += ms;
+      sleeps++;
+      if (sleeps >= 1) LIVE = true;
+    },
+  });
+  ok('controller stays awake until a later live/final window', result5.windows >= 2 && result5.finalDetected === true);
 
   console.log(`\n==== ${pass} passed, ${fail} failed ====`);
   process.exit(fail ? 1 : 0);

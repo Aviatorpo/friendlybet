@@ -63,6 +63,7 @@ jobs:
           LIVE_COMPLETION_PUBLIC_BASE_URL: https://friendlybet.live
           LIVE_COMPLETION_GITHUB_WORKFLOWS: '1'
           LIVE_COMPLETION_ALLOW_STORY_BACKLOG: '1'
+          LIVE_COMPLETION_SKIP_PUNDIT: '1'
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

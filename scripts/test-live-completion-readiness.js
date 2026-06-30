@@ -96,6 +96,30 @@ const Readiness = require('./live-completion-readiness');
     'frozen public snapshot live status must be preserved as warning evidence'
   );
 
+  const staleProductionPunditWarningOnly = await Readiness.runReadiness({
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z'), skipPundit: true },
+    allowStoryBacklog: true,
+    publicSnapshots: {
+      matches: {
+        updatedAt: '2026-06-23T11:00:00Z',
+        matches: [{
+          id: 1,
+          status: 'TIMED',
+          match_date: '2026-06-23T11:20:00Z',
+          home_team_code: 'POR',
+          away_team_code: 'UZB',
+        }],
+      },
+      stories: { updated_at: '2026-06-23T11:00:00Z', items: [{ id: 's1' }] },
+      pundit: { updatedAt: '2026-06-22T11:00:00Z', freshUntil: '2026-06-22T17:00:00Z', items: [{ id: 'p1' }] },
+    },
+  });
+  assert.strictEqual(staleProductionPunditWarningOnly.ok, true, JSON.stringify(staleProductionPunditWarningOnly.checks.filter(check => !check.ok), null, 2));
+  assert.ok(
+    staleProductionPunditWarningOnly.warnings.some(warning => warning.code === 'production_pundit_stale_warning_only'),
+    'stale production Pundit must be warning-only for critical result/scoring readiness'
+  );
+
   const dbResult = await Readiness.runReadiness({
     auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z'), skipPundit: true },
     allowStoryBacklog: true,
@@ -307,9 +331,9 @@ const Readiness = require('./live-completion-readiness');
     'stale final verifier liveness should become warning-only after green production and DB proof'
   );
   assert.strictEqual(
-    staleHelperWorkflowsWithGreenProduction.workflow_liveness.pundit.downgraded_after_green_surface,
-    true,
-    'stale Pundit liveness should become warning-only after green production and DB proof'
+    staleHelperWorkflowsWithGreenProduction.workflow_liveness.pundit.required,
+    false,
+    'Pundit workflow liveness should be warning-only when critical readiness skips Pundit'
   );
   assert.ok(
     staleHelperWorkflowsWithGreenProduction.warnings.some(warning => warning.code === 'helper_workflow_liveness_downgraded_after_green_surface'),
@@ -374,6 +398,8 @@ const Readiness = require('./live-completion-readiness');
     'readiness monitor covers production during group and knockout match days',
     'readiness monitor audits live DB by default',
     'readiness monitor self-heals stale active live DB',
+    'readiness monitor keeps Pundit warning-only for critical result readiness',
+    'live match controller backs up dropped short poller cron',
     'standalone Pundit workflow covers live group-stage transitions',
     'playbook records screenshot fallback rule',
     'visual proof harness covers official scoring states',
