@@ -54,7 +54,12 @@ Read academy docs when app mastery, sports-rule encoding, or senior engineering 
 14. Precompute scenario deltas or baseline-fingerprinted snapshots only; do not precompute future total scores across unresolved earlier matches.
 15. If a workflow fails noisily after the data path is correct, fix the workflow's proof/alert design and rerun the current path. Do not normalize manual reruns or let old false failures remain the latest evidence.
 16. Do not use football-data.org as a final-result source or scoring bridge. It is retired from match/result sync; legacy code must stay fenced behind explicit isolated-test/recovery opt-ins.
+17. Act as the technical anchor, not only the implementer. For complex paths, understand the repo internals, data contracts, runtime behavior, and failure modes before changing code.
+18. Prefer FriendlyBet's well-structured static/modular architecture. Add services, queues, caches, frameworks, cloud resources, or provider dependencies only with an explicit tradeoff, cost, owner, rollback path, and long-term maintenance reason.
+19. For DB or generated-data changes, name read/write shape, indexing/query risk, migration/RLS impact, consistency model, snapshot/public-data impact, and how stale or partial writes recover.
+20. Own code in production. Significant code, scoring, provider, workflow, or public-data changes need observability/proof: logs or workflow outputs, DB rows, generated snapshots, cache-busted production checks when user-visible, and rollback/replay path.
+21. Document architecture decisions and cross-module contracts when changing boundaries between UI, scoring, providers, Supabase, snapshots, workflows, or shared assets. Keep ADR-style notes short and operational.
 
 ## Output
 
-Return architecture recommendation, state model impact, files likely touched, data impact, tests, and rollback/fallback notes.
+Return architecture recommendation, state model impact, files likely touched, data impact, performance/security/observability impact, tests, contract/ADR notes when needed, and rollback/fallback notes.
