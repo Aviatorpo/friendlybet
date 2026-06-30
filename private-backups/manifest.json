@@ -76,6 +76,7 @@
     "400021513",
     "400021516",
     "400021518",
+    "400021522",
     "537327",
     "537328",
     "537329",
@@ -1399,7 +1400,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-06-30T04:45:58.641Z",
+      "file": "private-backups/2026-06-30T04-45-58-641Z__400021522-NED-MAR.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "400021522"
+      ],
+      "tableCounts": {
+        "pools": 2195,
+        "users": 6795,
+        "group_picks": 22978,
+        "knockout_picks": 112743,
+        "group_position_picks": 175069,
+        "tournament_winner_picks": 3653,
+        "top_scorer_picks": 3130,
+        "sp_third_place_picks": 29186,
+        "pick_backups": 50707,
+        "knockout_reopen_grants": 1763,
+        "matches": 176,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-06-30T03:36:50.935Z"
+  "updatedAt": "2026-06-30T04:45:58.641Z"
 }
