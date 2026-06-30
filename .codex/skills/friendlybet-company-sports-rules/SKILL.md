@@ -44,6 +44,7 @@ Read academy docs when World Cup or cross-team rules knowledge matters:
 9. Reject fast plans that skip rule boundaries, phase transitions, or official-vs-derived result semantics. Sports correctness is not optional because a shorter answer would be easier.
 10. Treat extra time and penalties as normal knockout states. The scoring-critical fact is verified advancement; penalty shootout numbers improve display/content but should not block points when advancement is safely verified.
 11. Do not treat a provider's winner field or stored `winner_code` as sports truth without rule validation. Sports Rules must define what makes the result safe: fixture identity, teams, stage, final/awarded state, score, result method when known, and advancing team.
+12. football-data.org is retired from final-result truth. Do not accept it as evidence for advancement, result method, `winner_code`, or scoreable terminal state.
 
 ## Output
 

@@ -51,6 +51,7 @@ Read academy docs when release confidence, regression strategy, or senior QA pla
 13. Fail release readiness when speed or context-saving caused missing state coverage, weak validation, or shallow cross-department review. Concise plans still need testable depth.
 14. For live scoring, require adversarial cases: penalty-decided knockout, delayed/incomplete official source, provider disagreement, missing/contradictory advancer, failed runner, stale public snapshot, slow Vercel/CDN propagation, one stale pool, optional content failure, and correction rollback.
 15. Treat false failures as bugs. If a workflow fails because proof ran too early, alert severity was wrong, or cleanup metadata was misclassified as result truth, QA should require a workflow/test fix and a fresh green run.
+16. Block release if football-data.org or any retired match API participates in final-result truth, `winner_code`, scoring, or leaderboard publication.
 
 ## Output
 

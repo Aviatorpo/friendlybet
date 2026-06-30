@@ -1,9 +1,9 @@
 // ============================================================
-// FriendlyBet - ESPN + FIFA + football-data.org final-result verifier
+// FriendlyBet - ESPN + FIFA final-result verifier
 // ============================================================
 // Conservative multi-source recovery for matches that should be over but are
 // still missing a final result. It reads ESPN's public scoreboard JSON and
-// FIFA's official calendar feed and football-data.org when a token is present.
+// FIFA's official calendar feed.
 // A normal final write requires ESPN + FIFA to agree; if FIFA is unavailable,
 // the fallback path can use three independent source families without overruling
 // an explicit FIFA disagreement.
@@ -25,9 +25,6 @@ const HAS_SERVICE_KEY = !!process.env.SUPABASE_SECRET_KEY;
 const ESPN_SCOREBOARD_BASE = process.env.ESPN_SCOREBOARD_BASE || 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
 const FIFA_CALENDAR_BASE = process.env.FIFA_CALENDAR_BASE || 'https://api.fifa.com/api/v3/calendar/matches';
 const FIFA_COMPETITION_ID = process.env.FIFA_COMPETITION_ID || '17';
-const FOOTBALL_DATA_BASE = process.env.FOOTBALL_DATA_BASE || 'https://api.football-data.org/v4';
-const FOOTBALL_DATA_COMPETITION = process.env.FOOTBALL_DATA_COMPETITION || 'WC';
-const FOOTBALL_DATA_TOKEN = process.env.FOOTBALL_DATA_TOKEN || '';
 
 function csvList(value, fallback = '') {
   return String(value || fallback)
@@ -64,7 +61,6 @@ const SOURCE_FAMILIES = {
   fifa: 'official:fifa',
   fifa_calendar: 'official:fifa',
   fifa_report: 'official:fifa',
-  football_data: 'scoreboard:football-data',
   bbc: 'scoreboard:bbc',
   guardian: 'media:guardian',
   fox: 'scoreboard:fox',
@@ -217,24 +213,6 @@ async function callFifaCalendar(fromYmd, toYmd) {
   return await res.json();
 }
 
-async function callFootballDataMatches() {
-  if (!FOOTBALL_DATA_TOKEN) {
-    throw new Error('Missing FOOTBALL_DATA_TOKEN');
-  }
-  const url = `${FOOTBALL_DATA_BASE.replace(/\/$/, '')}/competitions/${encodeURIComponent(FOOTBALL_DATA_COMPETITION)}/matches`;
-  const res = await fetchWithTimeout(url, {
-    headers: {
-      'X-Auth-Token': FOOTBALL_DATA_TOKEN,
-      'User-Agent': 'FriendlyBet result verifier (+https://friendlybet.live)'
-    }
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`football-data matches failed: ${res.status} - ${text.slice(0, 180)}`);
-  }
-  return await res.json();
-}
-
 function transformEspnEvent(event) {
   const comp = event && event.competitions && event.competitions[0];
   const competitors = (comp && comp.competitors) || [];
@@ -307,47 +285,6 @@ function transformFifaMatch(match) {
     winnerCode,
     rawHome: localizedName(home && home.TeamName) || (home && home.IdCountry),
     rawAway: localizedName(away && away.TeamName) || (away && away.IdCountry)
-  };
-}
-
-function footballDataScoreValue(score, side) {
-  const value = score && score.fullTime && score.fullTime[side];
-  if (typeof value === 'number') return value;
-  const regular = score && score.regularTime && score.regularTime[side];
-  return typeof regular === 'number' ? regular : null;
-}
-
-function transformFootballDataMatch(match) {
-  const home = match && match.homeTeam;
-  const away = match && match.awayTeam;
-  const homeCode = normalizeTeamCode(home && (home.name || home.shortName || home.tla), home && home.tla);
-  const awayCode = normalizeTeamCode(away && (away.name || away.shortName || away.tla), away && away.tla);
-  const homeScore = footballDataScoreValue(match && match.score, 'home');
-  const awayScore = footballDataScoreValue(match && match.score, 'away');
-  const status = String((match && match.status) || '').toUpperCase();
-  const statusShort = status === 'FINISHED' ? 'FT' : (status === 'AWARDED' ? 'AWD' : status);
-
-  let winnerCode = null;
-  const winner = String((match && match.score && match.score.winner) || '').toUpperCase();
-  if (winner === 'HOME_TEAM') winnerCode = homeCode;
-  else if (winner === 'AWAY_TEAM') winnerCode = awayCode;
-  else if (Number.isFinite(homeScore) && Number.isFinite(awayScore)) {
-    if (homeScore > awayScore) winnerCode = homeCode;
-    else if (awayScore > homeScore) winnerCode = awayCode;
-  }
-
-  return {
-    source: 'football_data',
-    api_id: match && match.id,
-    homeCode,
-    awayCode,
-    statusShort,
-    fixtureDate: match && match.utcDate,
-    homeScore,
-    awayScore,
-    winnerCode,
-    rawHome: home && (home.name || home.shortName || home.tla),
-    rawAway: away && (away.name || away.shortName || away.tla)
   };
 }
 
@@ -464,12 +401,6 @@ async function loadFifaMatchesFor(matches) {
   return Array.isArray(json.Results) ? json.Results : [];
 }
 
-async function loadFootballDataMatchesFor(matches) {
-  if (!matches.length) return [];
-  const json = await callFootballDataMatches();
-  return Array.isArray(json.matches) ? json.matches : [];
-}
-
 function sourceRegistry() {
   return {
     espn: {
@@ -479,10 +410,6 @@ function sourceRegistry() {
     fifa: {
       load: loadFifaMatchesFor,
       transform: transformFifaMatch,
-    },
-    football_data: {
-      load: loadFootballDataMatchesFor,
-      transform: transformFootballDataMatch,
     },
   };
 }
@@ -1005,7 +932,6 @@ if (require.main === module) {
     needsFinalVerification,
     transformEspnEvent,
     transformFifaMatch,
-    transformFootballDataMatch,
     normalizeTeamCode,
     espnScoreboardDatesFor,
     findMatchingFixture,

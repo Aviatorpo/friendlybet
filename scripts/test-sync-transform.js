@@ -10,6 +10,7 @@
 
 process.env.SUPABASE_SECRET_KEY = 'test';
 process.env.FOOTBALL_DATA_TOKEN = 'test';
+process.env.ALLOW_RETIRED_FOOTBALL_DATA_SYNC = '1';
 const S = require('./smart-sync.js');
 
 let pass = 0, fail = 0;

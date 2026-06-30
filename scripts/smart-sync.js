@@ -15,9 +15,10 @@ const WORLD_CUP_ID = 'WC';
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 const FOOTBALL_TOKEN = process.env.FOOTBALL_DATA_TOKEN;
+const ALLOW_RETIRED_FOOTBALL_DATA_SYNC = process.env.ALLOW_RETIRED_FOOTBALL_DATA_SYNC === '1';
 
-if ((!SUPABASE_KEY || !FOOTBALL_TOKEN) && require.main === module) {
-  console.error('❌ Missing environment variables');
+if (!SUPABASE_KEY && require.main === module) {
+  console.error('Missing SUPABASE_SECRET_KEY environment variable');
   process.exit(1);
 }
 
@@ -236,7 +237,16 @@ function resolveWinnerCode(m, homeCode, awayCode) {
 
 // ===== Sync Logic =====
 
+function assertRetiredFootballDataSyncAllowed() {
+  if (!ALLOW_RETIRED_FOOTBALL_DATA_SYNC) {
+    throw new Error('Retired football-data match sync is disabled. Use the FIFA schedule bridge plus final-result verifier; set ALLOW_RETIRED_FOOTBALL_DATA_SYNC=1 only for isolated legacy tests.');
+  }
+  if (!FOOTBALL_TOKEN) throw new Error('Missing FOOTBALL_DATA_TOKEN');
+  if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY');
+}
+
 async function performSync() {
+  assertRetiredFootballDataSyncAllowed();
   console.log('🚀 Performing sync...');
   
   const data = await callFootballAPI(`/competitions/${WORLD_CUP_ID}/matches`);
@@ -338,6 +348,7 @@ async function main() {
   console.log('');
   
   try {
+    assertRetiredFootballDataSyncAllowed();
     const needsSync = await shouldSync();
     
     if (!needsSync) {

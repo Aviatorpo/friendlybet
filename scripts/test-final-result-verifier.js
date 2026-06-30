@@ -63,19 +63,6 @@ const fifaFinal = {
   Winner: null
 };
 
-const footballDataFinal = {
-  id: 400021443,
-  utcDate: '2026-06-11T19:00:00Z',
-  status: 'FINISHED',
-  homeTeam: { name: 'Mexico', shortName: 'Mexico', tla: 'MEX' },
-  awayTeam: { name: 'South Africa', shortName: 'South Africa', tla: 'RSA' },
-  score: {
-    winner: 'DRAW',
-    fullTime: { home: 1, away: 1 },
-    regularTime: { home: 1, away: 1 }
-  }
-};
-
 ok('stuck candidate after age threshold', F.isStuckCandidate(db, Date.parse('2026-06-11T21:10:00Z')));
 ok('not stuck before age threshold', !F.isStuckCandidate(db, Date.parse('2026-06-11T20:00:00Z')));
 ok('finished match with complete clean result is not stuck',
@@ -196,23 +183,6 @@ eq('transform FIFA final match', {
   winnerCode: null
 });
 
-const footballDataTransformed = F.transformFootballDataMatch(footballDataFinal);
-eq('transform football-data final match', {
-  homeCode: footballDataTransformed.homeCode,
-  awayCode: footballDataTransformed.awayCode,
-  statusShort: footballDataTransformed.statusShort,
-  homeScore: footballDataTransformed.homeScore,
-  awayScore: footballDataTransformed.awayScore,
-  winnerCode: footballDataTransformed.winnerCode
-}, {
-  homeCode: 'MEX',
-  awayCode: 'RSA',
-  statusShort: 'FT',
-  homeScore: 1,
-  awayScore: 1,
-  winnerCode: null
-});
-ok('finds exact football-data fixture', !!F.findMatchingFixture(db, [footballDataFinal], F.transformFootballDataMatch).match);
 ok('matches KSA provider alias against SAU db code', !!F.findMatchingFixture({
   ...db,
   home_team_code: 'SAU',
@@ -231,20 +201,15 @@ ok('matches CUW provider alias against CUR db code', !!F.findMatchingFixture({
   away_team_code: 'CUR',
   match_date: '2026-06-21T00:00:00Z',
 }, [{
-  ...footballDataFinal,
-  utcDate: '2026-06-21T00:00:00Z',
-  homeTeam: { name: 'Ecuador', shortName: 'Ecuador', tla: 'ECU' },
-  awayTeam: { name: 'Curacao', shortName: 'Curacao', tla: 'CUW' },
-  score: {
-    winner: 'DRAW',
-    fullTime: { home: 1, away: 1 },
-    regularTime: { home: 1, away: 1 }
-  }
-}], F.transformFootballDataMatch).match);
+  ...fifaFinal,
+  IdMatch: '400021501',
+  Date: '2026-06-21T00:00:00Z',
+  Home: { IdCountry: 'ECU', IdTeam: '1', Score: 1, TeamName: [{ Locale: 'en-GB', Description: 'Ecuador' }] },
+  Away: { IdCountry: 'CUW', IdTeam: '2', Score: 1, TeamName: [{ Locale: 'en-GB', Description: 'Curacao' }] },
+}], F.transformFifaMatch).match);
 
 const espnUpdate = F.buildUpdateFromVerifiedFixture(espnTransformed, '2026-06-11T21:00:00Z').update;
 const fifaUpdate = F.buildUpdateFromVerifiedFixture(fifaTransformed, '2026-06-11T21:00:00Z').update;
-const footballDataUpdate = F.buildUpdateFromVerifiedFixture(footballDataTransformed, '2026-06-11T21:00:00Z').update;
 ok('ESPN alone is not enough by default', !F.consensusUpdate([{ source: 'espn', update: espnUpdate }]).update);
 ok('FIFA official source is enough by default', !!F.consensusUpdate([{ source: 'fifa', update: fifaUpdate }]).update);
 ok('ESPN alone is enough only with explicit emergency override', !!F.consensusUpdate([
@@ -275,19 +240,22 @@ eq('source rotation selects one source per bucket', [
   ['fifa'],
   ['espn']
 ]);
+eq('retired football-data source is not selectable for final-result verification',
+  F.sourcesForRun(new Date('2026-06-11T19:00:00Z'), { mode: 'all', sources: ['espn', 'fifa', 'football_data'] }),
+  ['espn', 'fifa']);
 ok('duplicate ESPN-family confirmations do not count as independent consensus', !F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
   { source: 'espn', update: espnUpdate }
 ], { minSources: 2, requiredSources: [] }).update);
 ok('three independent non-official families can produce consensus when explicitly allowed', !!F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
-  { source: 'football_data', update: footballDataUpdate },
+  { source: 'bbc', update: espnUpdate },
   { source: 'guardian', update: espnUpdate },
   { source: 'fox', update: { ...espnUpdate, status_detail: null } },
 ], { minSources: 3, requiredSources: [] }).update);
 const fallbackConsensus = F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
-  { source: 'football_data', update: footballDataUpdate },
+  { source: 'bbc', update: espnUpdate },
   { source: 'guardian', update: espnUpdate },
 ], { minSources: 2, requiredSources: ['espn', 'fifa'], fallbackMinSources: 3 });
 ok('three independent families can fallback when FIFA is unavailable', !!fallbackConsensus.update && fallbackConsensus.fallback === true);
