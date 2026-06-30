@@ -47,6 +47,7 @@ Use this for World Cup match-result sync, group completion, scoring, dashboard, 
 - Before opening knockout entry after group completion, verify the actual user-visible product mode, not just the official rule constants: single-phase bracket, two-phase reopened bracket, R32 seed display, R16 propagation, QF/SF/final propagation, saved-pick persistence, and live/cache-busted production version. The minimum local gate is `node scripts/test-fifa-bracket.js`, `node scripts/test-third-place-allocation.js`, and `node scripts/test-two-phase-knockout-wiring.js`.
 - More than two repeated failure emails from the same workflow family in 30 minutes during a live transition is a control-plane incident. Assign one owner, summarize the current proven layer, and suppress or demote non-critical alert causes until the user path is restored.
 - A live-transition recovery report must include workflow run ids, finished-match count, pool/user scoring count when available, snapshot verification result, production URL/public-data proof, and the exact remaining blocker.
+- Public proof must be deployment-aware: after a workflow pushes generated scoring snapshots to `main`, give Vercel/CDN a bounded cache-busted propagation window before failing the run. A two-minute proof window is too brittle for generated data commits; use a roughly 10-minute window for live leaderboard proof, while local snapshot-vs-DB verification remains fail-fast before commit.
 
 ## Fast Scoring Planning Checklist
 
@@ -65,6 +66,7 @@ Use this checklist before proposing or changing any post-final scoring plan:
 - Fallback ladder: define Plan A/B/C/D for source verification, runner wake-up, leases/checkpoints, scoring, public publication, PWA cache, autonomous safe-wait/retry, and rollback. Each level must say what the user sees and what operator alert is raised. Normal recovery must not require Eyal or an operator to provide the match result.
 - Publication guard: the app may say "points updated" only when canonical result, scoring run, public snapshot, and production-visible proof all match the same `result_version`.
 - Safe staleness contract: every public match/leaderboard snapshot needs `result_version`, `published_at`, `source_state`, and `points_state`, so stale data cannot masquerade as fresh final points.
+- Propagation guard: distinguish "local exported snapshot mismatches DB" from "production CDN has not deployed the just-pushed snapshot yet." The first blocks immediately; the second retries with bounded patience and only becomes an incident after the deployment window expires.
 - Kill switches: operators must be able to disable one provider, one runner, live snapshot overlay, content jobs, or fast-delta scoring independently without taking down the whole matchday path.
 - Cost guard: name preflight/backoff/rate-limit controls for provider calls and workflows.
 - QA proof: require timing metrics, source-disagreement tests, score correctness tests, and cache-busted production proof.
