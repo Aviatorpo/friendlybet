@@ -104,6 +104,7 @@ for (const story of stories) {
   if (match.status !== 'FINISHED') continue;
   const draw = Number(match.home_score) === Number(match.away_score);
   const outcome = match.winner_code || (draw ? 'DRAW' : null);
+  const isKnockout = String(match.stage || '').toUpperCase() !== 'GROUP_STAGE';
   const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
   const winnerScore = outcome === 'DRAW' ? Number(match.home_score) : (outcome === match.home_team_code ? Number(match.home_score) : Number(match.away_score));
   const loserScore = outcome === 'DRAW' ? Number(match.away_score) : (outcome === match.home_team_code ? Number(match.away_score) : Number(match.home_score));
@@ -112,7 +113,14 @@ for (const story of stories) {
   if (story.outcome !== outcome) fail(`${story.id}: outcome ${story.outcome} does not match ${outcome}`);
   if (!story.top_label) fail(`${story.id}: missing top_label`);
   if (outcome === 'DRAW' && story.top_label !== 'DRAW!') fail(`${story.id}: draw top_label must be DRAW!`);
-  if (outcome !== 'DRAW' && !story.top_label.endsWith(' WINS!')) fail(`${story.id}: win top_label must end with WINS!`);
+  if (outcome !== 'DRAW') {
+    const validTopLabel = isKnockout
+      ? story.top_label.endsWith(' QUALIFIES!') || story.top_label.endsWith(' WINS!')
+      : story.top_label.endsWith(' WINS!');
+    if (!validTopLabel) {
+      fail(`${story.id}: winner top_label must end with ${isKnockout ? 'QUALIFIES! or WINS!' : 'WINS!'}`);
+    }
+  }
   if (outcome !== 'DRAW' && story.result !== `${outcome} ${score} ${loser}`) {
     fail(`${story.id}: result must be winner-first, got "${story.result}"`);
   }

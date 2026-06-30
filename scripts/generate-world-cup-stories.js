@@ -1328,7 +1328,8 @@ function titleCopy(match, outcome) {
 
 function topLabel(match, outcome) {
   if (outcome === 'DRAW') return 'DRAW!';
-  return `${teamName(outcome, 'en').toUpperCase()} WINS!`;
+  const suffix = isKnockoutMatch(match) ? 'QUALIFIES!' : 'WINS!';
+  return `${teamName(outcome, 'en').toUpperCase()} ${suffix}`;
 }
 
 function hydratePoolFocus(focus, fallbackTeamCode) {
@@ -2328,9 +2329,18 @@ function imagePrompt(match, outcome) {
   const loser = winner ? (winner === home ? away : home) : null;
   const left = approvedStarProfile(winner || home);
   const right = approvedStarProfile(loser || away);
-  const topText = outcome === 'DRAW' ? 'DRAW!' : `${teamName(winner).toUpperCase()} WINS!`;
-  const leftMood = outcome === 'DRAW' ? 'disappointed but proud after a draw' : 'celebrating the win in a fresh dynamic pose';
-  const rightMood = outcome === 'DRAW' ? 'frustrated but composed after a draw' : 'sad after the loss, head down or hands on face';
+  const tiedKnockout = winner && isKnockoutMatch(match) && Number(match.home_score) === Number(match.away_score);
+  const topText = topLabel(match, outcome);
+  const leftMood = outcome === 'DRAW'
+    ? 'disappointed but proud after a draw'
+    : tiedKnockout
+      ? 'joyful, relieved, and triumphant after qualifying from a tied knockout match'
+      : 'celebrating the win in a fresh dynamic pose';
+  const rightMood = outcome === 'DRAW'
+    ? 'frustrated but composed after a draw'
+    : tiedKnockout
+      ? 'visibly disappointed, hurt, and stunned after being eliminated from a tied knockout match'
+      : 'sad after the loss, head down or hands on face';
   return [
     'Create a vertical 9:16 premium sports meme-card cartoon image for FriendlyBet.',
     `Match result context: ${teamName(home)} ${scoreDash(match)} ${teamName(away)} at FIFA World Cup 2026.`,
@@ -2353,9 +2363,22 @@ function outcomeBasePrompt(match, outcome) {
   const loser = winner ? (winner === home ? away : home) : null;
   const left = approvedStarProfile(winner || home);
   const right = approvedStarProfile(loser || away);
-  const outcomeText = outcome === 'DRAW' ? 'draw outcome' : `${teamName(winner)} win outcome`;
-  const leftMood = outcome === 'DRAW' ? 'tense and defiant after a draw' : 'celebrating the win in a fresh dynamic pose';
-  const rightMood = outcome === 'DRAW' ? 'tired but proud after a draw' : 'sad after the loss, head down or hands on face';
+  const tiedKnockout = winner && isKnockoutMatch(match) && Number(match.home_score) === Number(match.away_score);
+  const outcomeText = outcome === 'DRAW'
+    ? 'draw outcome'
+    : tiedKnockout
+      ? `${teamName(winner)} qualification outcome after a tied knockout match`
+      : `${teamName(winner)} win outcome`;
+  const leftMood = outcome === 'DRAW'
+    ? 'tense and defiant after a draw'
+    : tiedKnockout
+      ? 'joyful, relieved, and triumphant after qualifying from a tied knockout match'
+      : 'celebrating the win in a fresh dynamic pose';
+  const rightMood = outcome === 'DRAW'
+    ? 'tired but proud after a draw'
+    : tiedKnockout
+      ? 'visibly disappointed, hurt, and stunned after being eliminated from a tied knockout match'
+      : 'sad after the loss, head down or hands on face';
   return [
     'Create a vertical 9:16 premium sports meme-card base image for FriendlyBet.',
     `Match context: ${teamName(home)} vs ${teamName(away)} at FIFA World Cup 2026, ${outcomeText}.`,

@@ -270,6 +270,36 @@
       "outcomes": {
         "CAN": "story-assets/canada-wins-south-africa.png"
       }
+    },
+    {
+      "match_id": "6ccd037c-6910-43ef-8818-d23358c8c791",
+      "teams": [
+        "BRA",
+        "JPN"
+      ],
+      "outcomes": {
+        "BRA": "story-assets/brazil-wins-japan.png"
+      }
+    },
+    {
+      "match_id": "fd6b2190-6ec4-400d-bd94-868d225ee3f7",
+      "teams": [
+        "GER",
+        "PAR"
+      ],
+      "outcomes": {
+        "PAR": "story-assets/paraguay-wins-germany.png"
+      }
+    },
+    {
+      "match_id": "fa62c45a-4862-411d-89d4-195f03787da6",
+      "teams": [
+        "NED",
+        "MAR"
+      ],
+      "outcomes": {
+        "MAR": "story-assets/morocco-wins-netherlands.png"
+      }
     }
   ]
 }
