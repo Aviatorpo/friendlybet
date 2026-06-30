@@ -35,6 +35,8 @@ Never rely on model memory for current match state.
 
 For knockout finals, use a human-match-desk consensus model: check FIFA first; when FIFA is late, incomplete, or missing penalty/advancement detail, corroborate with multiple independent reliable match centers. Automatic scoring may proceed from FIFA final/advancement alone, or from strong multi-source agreement on final status and advancing team. Missing penalty shootout numbers should be backfilled later rather than blocking scoring when advancement is verified.
 
+football-data.org is retired from final-result truth. Do not use it as a finished-match source, `winner_code` source, scoring input, or leaderboard-publication trigger.
+
 ## Architecture Preference
 
 - Scheduled sync jobs.

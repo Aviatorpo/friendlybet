@@ -17,6 +17,12 @@ const WORLD_CUP_ID = 'WC';  // World Cup competition code
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY;
 const FOOTBALL_TOKEN = process.env.FOOTBALL_DATA_TOKEN;
+const ALLOW_RETIRED_FOOTBALL_DATA_SYNC = process.env.ALLOW_RETIRED_FOOTBALL_DATA_SYNC === '1';
+
+if (!ALLOW_RETIRED_FOOTBALL_DATA_SYNC) {
+  console.error('Retired football-data match sync is disabled. Use the FIFA schedule bridge plus final-result verifier; set ALLOW_RETIRED_FOOTBALL_DATA_SYNC=1 only for isolated legacy recovery/testing.');
+  process.exit(2);
+}
 
 if (!SUPABASE_KEY) {
   console.error('❌ Missing SUPABASE_SECRET_KEY environment variable');

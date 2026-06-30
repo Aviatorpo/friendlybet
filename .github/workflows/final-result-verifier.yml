@@ -1,4 +1,4 @@
-name: Verify Final Results with ESPN, FIFA and football-data
+name: Verify Final Results with ESPN and FIFA
 
 on:
   schedule:
@@ -98,8 +98,7 @@ jobs:
           RESULT_FALLBACK_LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '336' }}
           RESULT_FALLBACK_MIN_SOURCES: 1
           RESULT_FALLBACK_REQUIRED_SOURCES: fifa
-          RESULT_FALLBACK_SOURCES: espn,fifa,football_data
-          FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
+          RESULT_FALLBACK_SOURCES: espn,fifa
           RESULT_CONSENSUS_FALLBACK_MIN_SOURCES: 3
           RESULT_FALLBACK_SOURCE_MODE: ${{ github.event_name == 'schedule' && 'rotate' || 'all' }}
           RESULT_FALLBACK_ROTATION_MINUTES: 15

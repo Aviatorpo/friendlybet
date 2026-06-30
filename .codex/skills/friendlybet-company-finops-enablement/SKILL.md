@@ -45,6 +45,7 @@ Read academy docs when training, documenting, or validating department knowledge
 12. Treat passive task-taking and repeated obvious misses as operational waste. A senior collaborator who catches the issue early is cheaper than repeated retries, long correction loops, and Eyal acting as unpaid QA or operator.
 13. Treat unclear metrics and output-only work as cost risk. Work that cannot name the outcome it improves is harder to prioritize, validate, or stop.
 14. AI use should reduce cycle time or improve quality without adding hidden subscription, context, review, or verification cost. AI-generated direction still needs human-quality gates.
+15. Retired provider paths are cost and reliability debt. football-data.org must stay out of final-result automation unless an isolated legacy recovery/test explicitly opts in and documents why.
 
 ## Output
 

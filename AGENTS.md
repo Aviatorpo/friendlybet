@@ -46,5 +46,6 @@ FriendlyBet is a free social World Cup 2026 prediction PWA for Hebrew/Israeli us
 - Do not wipe in-memory prediction state before DB operations finish.
 - `knockout_picks` stores picks in `predicted_winner`, not `team_code`.
 - Knockout results should use verified advancement stored as resolved `matches.winner_code`, not score comparison; do not trust a raw, missing, stale, or contradictory winner field by itself.
+- Do not use football-data.org for finished-match truth; it is retired from result sync and production verifier paths.
 - Use the official FIFA Annex C table in `share-assets/fifa-third-place-table.js`.
 - Do not revert unrelated dirty work.

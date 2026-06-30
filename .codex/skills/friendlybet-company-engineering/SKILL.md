@@ -53,6 +53,7 @@ Read academy docs when app mastery, sports-rule encoding, or senior engineering 
 13. Treat result fields as validated outputs. `winner_code`/provider winners must be checked against stage, teams, score, penalties/advancement, source consensus, and contradiction rules before scoring.
 14. Precompute scenario deltas or baseline-fingerprinted snapshots only; do not precompute future total scores across unresolved earlier matches.
 15. If a workflow fails noisily after the data path is correct, fix the workflow's proof/alert design and rerun the current path. Do not normalize manual reruns or let old false failures remain the latest evidence.
+16. Do not use football-data.org as a final-result source or scoring bridge. It is retired from match/result sync; legacy code must stay fenced behind explicit isolated-test/recovery opt-ins.
 
 ## Output
 

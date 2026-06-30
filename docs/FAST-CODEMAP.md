@@ -36,7 +36,7 @@ Use this map before scanning large files. It is intentionally small and points t
 ## Data / Automation
 
 - Score calculation: `scripts/calculate-scores-v2.js`.
-- Retired API match sync scripts: `scripts/sync-matches.js`, `scripts/smart-sync.js`.
+- Retired football-data API match sync scripts: `scripts/sync-matches.js`, `scripts/smart-sync.js`. They must not be used for final-result truth.
 - World Cup Stories generator: `scripts/generate-world-cup-stories.js`.
 - Story feed: `public-data/world-cup-stories.json`.
 - Story assets and mapping: `story-assets/`.
@@ -87,7 +87,7 @@ The service-worker cache key gates PWA updates.
 
 1. Supabase returns 1000 rows by default. Use `.range(0, 9999)` or DB-side search when needed.
 2. `teams` primary key is `code`, not `id`.
-3. football-data.org rate limit is 10 requests/min; use 7s+ spacing.
+3. football-data.org is retired from match/result sync. Do not use it for finished-match truth; legacy scripts require `ALLOW_RETIRED_FOOTBALL_DATA_SYNC=1` and are for isolated legacy tests/recovery only.
 4. `top_scorer_picks` INSERT needs both `player_name` and `team_code`.
 5. RLS needs both SELECT and write policies/RPCs.
 6. Top scorer search should be DB-side with `.ilike`.
