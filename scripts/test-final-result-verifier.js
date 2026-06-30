@@ -3,6 +3,7 @@
 // Run: node scripts/test-final-result-verifier.js
 
 process.env.PROD_ANON_KEY = 'test';
+process.env.RESULT_EMERGENCY_SOURCES = '1';
 
 const F = require('./final-result-verifier.js');
 
@@ -208,6 +209,102 @@ ok('matches CUW provider alias against CUR db code', !!F.findMatchingFixture({
   Away: { IdCountry: 'CUW', IdTeam: '2', Score: 1, TeamName: [{ Locale: 'en-GB', Description: 'Curacao' }] },
 }], F.transformFifaMatch).match);
 
+const penaltyDb = {
+  ...db,
+  external_id: '400021599',
+  home_team_code: 'GER',
+  away_team_code: 'PAR',
+  stage: 'ROUND_OF_32',
+  match_date: '2026-06-29T20:00:00Z',
+};
+
+const liveScorePenalty = F.transformLiveScoreEvent({
+  id: '1691868',
+  homeTeam: { name: 'Germany', abbreviation: 'GER' },
+  awayTeam: { name: 'Paraguay', abbreviation: 'PAR' },
+  startDateTimeString: '20260629200000',
+  eventStatus: 'PAST',
+  statusDescription: 'FINISHED_AFTER_PENALTIES',
+  homeTeamScore: '1',
+  awayTeamScore: '1',
+  penaltyHomeScore: '3',
+  penaltyAwayScore: '4',
+  isFinishedAfterPenalties: true,
+  winner: 'AWAY',
+});
+eq('transforms LiveScore penalty final with advancing team', {
+  homeCode: liveScorePenalty.homeCode,
+  awayCode: liveScorePenalty.awayCode,
+  statusShort: liveScorePenalty.statusShort,
+  homeScore: liveScorePenalty.homeScore,
+  awayScore: liveScorePenalty.awayScore,
+  winnerCode: liveScorePenalty.winnerCode,
+}, {
+  homeCode: 'GER',
+  awayCode: 'PAR',
+  statusShort: 'PEN',
+  homeScore: 1,
+  awayScore: 1,
+  winnerCode: 'PAR',
+});
+ok('LiveScore penalty final is scoreable for knockout', !!F.buildUpdateFromVerifiedFixture(liveScorePenalty, '2026-06-29T23:00:00Z', penaltyDb).update);
+
+const foxCards = F.parseFoxScoreCards(`
+  <div id="c12d20260629">
+    <a class="score-chip final" href="/soccer/fifa-world-cup-men-germany-vs-paraguay-jun-29-2026-game-boxscore-111">
+      <div class="score-team-row is-loser">
+        <span class="score-team-logo" title="Germany">Germany</span>
+        <span title="GER">GER</span>
+        <div class="score-team-score"><span class="scores-text"><span class="scores-team-pk">3</span> 1</span></div>
+      </div>
+      <div class="score-team-row">
+        <span class="score-team-logo" title="Paraguay">Paraguay</span>
+        <span title="PAR">PAR</span>
+        <div class="score-team-score"><span class="scores-text"><span class="scores-team-pk">4</span> 1</span></div>
+      </div>
+    </a>
+  </div>`);
+eq('parses FOX penalty score card', foxCards.length, 1);
+const foxPenalty = F.transformFoxScoreCard(foxCards[0], penaltyDb);
+eq('transforms FOX final card with penalty winner', {
+  homeCode: foxPenalty.homeCode,
+  awayCode: foxPenalty.awayCode,
+  homeScore: foxPenalty.homeScore,
+  awayScore: foxPenalty.awayScore,
+  winnerCode: foxPenalty.winnerCode,
+}, {
+  homeCode: 'GER',
+  awayCode: 'PAR',
+  homeScore: 1,
+  awayScore: 1,
+  winnerCode: 'PAR',
+});
+
+const yahooRows = F.parseYahooScoreboard(
+  'x name\\":\\"Germany vs. Paraguay (Final: GER 1-1 PAR) y startDate\\":\\"2026-06-29T20:00:00Z\\" Paraguay wins on penalties and advances to the Round of 16',
+  '2026-06-29'
+);
+eq('parses Yahoo scoreboard row and infers penalty advancer from page text', {
+  count: yahooRows.length,
+  winnerCode: yahooRows[0] && yahooRows[0].winnerCode,
+}, {
+  count: 1,
+  winnerCode: 'PAR',
+});
+eq('article score parser ignores penalty shootout score as match score',
+  F.firstScoreFromText('Paraguay beat Germany 4-3 on penalties after a 1-1 draw.'),
+  { homeScore: 1, awayScore: 1 });
+
+const articlePenalty = F.transformArticleResult({
+  source: 'guardian',
+  url: 'https://www.theguardian.com/football/live/example',
+  matchExternalId: penaltyDb.external_id,
+  title: 'Paraguay beat Germany on penalties to reach last 16 of World Cup 2026',
+  trailText: 'Paraguay advanced after a 1-1 draw.',
+  bodyText: 'Paraguay beat Germany after a 1-1 draw and advanced to the Round of 16.',
+}, penaltyDb);
+ok('trusted article source can confirm tied knockout advancer when score is present', !!F.buildUpdateFromVerifiedFixture(articlePenalty, '2026-06-29T23:00:00Z', penaltyDb).update);
+
 const espnUpdate = F.buildUpdateFromVerifiedFixture(espnTransformed, '2026-06-11T21:00:00Z').update;
 const fifaUpdate = F.buildUpdateFromVerifiedFixture(fifaTransformed, '2026-06-11T21:00:00Z').update;
 ok('ESPN alone is not enough by default', !F.consensusUpdate([{ source: 'espn', update: espnUpdate }]).update);
@@ -243,25 +340,31 @@ eq('source rotation selects one source per bucket', [
 eq('retired football-data source is not selectable for final-result verification',
   F.sourcesForRun(new Date('2026-06-11T19:00:00Z'), { mode: 'all', sources: ['espn', 'fifa', 'football_data'] }),
   ['espn', 'fifa']);
+eq('emergency sources are selectable only from the approved registry',
+  F.sourcesForRun(new Date('2026-06-11T19:00:00Z'), { mode: 'all', sources: ['livescore', 'fox', 'yahoo', 'guardian', 'ap', 'houston_chronicle', 'nypost', 'football_data'] }),
+  ['livescore', 'fox', 'yahoo', 'guardian', 'ap', 'houston_chronicle', 'nypost']);
+eq('source hints classify verified emergency article domains',
+  F.parseSourceHints('houston_chronicle=https://www.houstonchronicle.com/world-cup/article/example.php https://nypost.com/2026/06/29/sports/example/').map(h => h.source),
+  ['houston_chronicle', 'nypost']);
 ok('duplicate ESPN-family confirmations do not count as independent consensus', !F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
   { source: 'espn', update: espnUpdate }
 ], { minSources: 2, requiredSources: [] }).update);
 ok('three independent non-official families can produce consensus when explicitly allowed', !!F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
-  { source: 'bbc', update: espnUpdate },
+  { source: 'livescore', update: espnUpdate },
   { source: 'guardian', update: espnUpdate },
   { source: 'fox', update: { ...espnUpdate, status_detail: null } },
 ], { minSources: 3, requiredSources: [] }).update);
 const fallbackConsensus = F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
-  { source: 'bbc', update: espnUpdate },
+  { source: 'livescore', update: espnUpdate },
   { source: 'guardian', update: espnUpdate },
 ], { minSources: 2, requiredSources: ['espn', 'fifa'], fallbackMinSources: 3 });
 ok('three independent families can fallback when FIFA is unavailable', !!fallbackConsensus.update && fallbackConsensus.fallback === true);
 ok('fallback consensus does not overrule explicit FIFA disagreement', !F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
-  { source: 'bbc', update: espnUpdate },
+  { source: 'livescore', update: espnUpdate },
   { source: 'guardian', update: espnUpdate },
   { source: 'fifa', update: { ...fifaUpdate, away_score: 2 } },
 ], { minSources: 2, requiredSources: ['espn', 'fifa'], fallbackMinSources: 3 }).update);

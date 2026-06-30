@@ -25,6 +25,13 @@ const HAS_SERVICE_KEY = !!process.env.SUPABASE_SECRET_KEY;
 const ESPN_SCOREBOARD_BASE = process.env.ESPN_SCOREBOARD_BASE || 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
 const FIFA_CALENDAR_BASE = process.env.FIFA_CALENDAR_BASE || 'https://api.fifa.com/api/v3/calendar/matches';
 const FIFA_COMPETITION_ID = process.env.FIFA_COMPETITION_ID || '17';
+const USER_AGENT = process.env.RESULT_SOURCE_USER_AGENT || 'FriendlyBet result verifier (+https://friendlybet.live)';
+const LIVE_SCORE_COMPETITION_URL = process.env.LIVE_SCORE_COMPETITION_URL || 'https://www.livescore.com/en/football/international/world-cup-2026/';
+const FOX_WORLD_CUP_SCORES_URL = process.env.FOX_WORLD_CUP_SCORES_URL || 'https://www.foxsports.com/soccer/fifa-world-cup-men/scores';
+const YAHOO_SCOREBOARD_BASE = process.env.YAHOO_SCOREBOARD_BASE || 'https://sports.yahoo.com/soccer/scoreboard/';
+const GUARDIAN_SEARCH_BASE = process.env.GUARDIAN_SEARCH_BASE || 'https://content.guardianapis.com/search';
+const AP_SEARCH_BASE = process.env.AP_SEARCH_BASE || 'https://apnews.com/search';
+const GUARDIAN_API_KEY = process.env.GUARDIAN_API_KEY || 'test';
 
 function csvList(value, fallback = '') {
   return String(value || fallback)
@@ -65,6 +72,31 @@ const SOURCE_FAMILIES = {
   guardian: 'media:guardian',
   fox: 'scoreboard:fox',
   cbs: 'scoreboard:cbs',
+  livescore: 'scoreboard:livescore',
+  yahoo: 'scoreboard:yahoo',
+  ap: 'wire:ap',
+  houston_chronicle: 'media:houston-chronicle',
+  nypost: 'media:nypost',
+};
+
+const TEAM_NAMES_BY_CODE = {
+  ARG: 'Argentina', AUS: 'Australia', AUT: 'Austria', BEL: 'Belgium', BRA: 'Brazil', CAN: 'Canada',
+  CHI: 'Chile', CIV: 'Ivory Coast', COL: 'Colombia', CRC: 'Costa Rica', CRO: 'Croatia', CUR: 'Curacao',
+  DEN: 'Denmark', ECU: 'Ecuador', EGY: 'Egypt', ENG: 'England', ESP: 'Spain', FRA: 'France',
+  GER: 'Germany', GHA: 'Ghana', IRN: 'Iran', ITA: 'Italy', JAM: 'Jamaica', JPN: 'Japan',
+  KOR: 'South Korea', MAR: 'Morocco', MEX: 'Mexico', NED: 'Netherlands', NGA: 'Nigeria',
+  NOR: 'Norway', NZL: 'New Zealand', PAN: 'Panama', PAR: 'Paraguay', POL: 'Poland',
+  POR: 'Portugal', QAT: 'Qatar', RSA: 'South Africa', SAU: 'Saudi Arabia', SCO: 'Scotland',
+  SEN: 'Senegal', SRB: 'Serbia', SUI: 'Switzerland', SWE: 'Sweden', TUN: 'Tunisia',
+  URU: 'Uruguay', USA: 'United States', WAL: 'Wales',
+};
+
+const ARTICLE_SOURCE_DOMAINS = {
+  houston_chronicle: ['houstonchronicle.com'],
+  nypost: ['nypost.com'],
+  yahoo: ['sports.yahoo.com'],
+  guardian: ['theguardian.com', 'guardianapis.com'],
+  ap: ['apnews.com'],
 };
 
 function setGithubOutput(name, value) {
@@ -134,6 +166,131 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 25000) {
   }
 }
 
+async function fetchText(url, label, timeoutMs = 25000) {
+  const res = await fetchWithTimeout(url, {
+    headers: {
+      'User-Agent': USER_AGENT,
+      Accept: 'text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8',
+    },
+  }, timeoutMs);
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`${label} failed: ${res.status} - ${String(text).slice(0, 180)}`);
+  }
+  return await res.text();
+}
+
+async function fetchJson(url, label, timeoutMs = 25000) {
+  const res = await fetchWithTimeout(url, {
+    headers: {
+      'User-Agent': USER_AGENT,
+      Accept: 'application/json,text/plain;q=0.9,*/*;q=0.8',
+    },
+  }, timeoutMs);
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`${label} failed: ${res.status} - ${String(text).slice(0, 180)}`);
+  }
+  return await res.json();
+}
+
+function stripTags(value) {
+  return String(value || '')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&#x27;|&#39;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function extractNextData(html) {
+  const match = String(html || '').match(/<script[^>]+id=["']__NEXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/i);
+  if (!match) return null;
+  try {
+    return JSON.parse(match[1]);
+  } catch (_) {
+    return null;
+  }
+}
+
+function displayTeamName(code) {
+  const normalized = canonicalTeamCode(code);
+  return TEAM_NAMES_BY_CODE[normalized] || normalized || String(code || '');
+}
+
+function normalizeSearchText(value) {
+  return stripTags(value)
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
+function teamMentionVariants(code, name) {
+  const normalized = canonicalTeamCode(code);
+  const display = name || displayTeamName(normalized);
+  const variants = new Set([normalized, display]);
+  if (normalized === 'NED') variants.add('Holland');
+  if (normalized === 'USA') variants.add('United States');
+  if (normalized === 'KOR') variants.add('Korea');
+  if (normalized === 'RSA') variants.add('South Africa');
+  if (normalized === 'CIV') variants.add('Ivory Coast');
+  return [...variants].map(normalizeSearchText).filter(Boolean);
+}
+
+function containsTeamMention(text, code, name) {
+  const haystack = normalizeSearchText(text);
+  return teamMentionVariants(code, name).some(variant => {
+    if (TEAM_CODE_RE.test(String(variant || '').toUpperCase())) return new RegExp(`\\b${variant}\\b`, 'i').test(haystack);
+    return haystack.includes(variant);
+  });
+}
+
+function inferWinnerFromText(text, homeCode, awayCode, homeName = null, awayName = null) {
+  const haystack = normalizeSearchText(text);
+  const teams = [
+    { code: canonicalTeamCode(homeCode), variants: teamMentionVariants(homeCode, homeName) },
+    { code: canonicalTeamCode(awayCode), variants: teamMentionVariants(awayCode, awayName) },
+  ];
+  const wins = new Map();
+  for (const team of teams) {
+    let score = 0;
+    for (const name of team.variants) {
+      const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const positive = [
+        `${escaped}\\s+(beat|beats|defeated|defeats|knocked out|knocks out|eliminated|eliminates)\\b`,
+        `${escaped}\\s+(advance|advances|advanced|reach|reaches|reached|through)\\b`,
+        `${escaped}\\s+(win|wins|won)\\b[^.]{0,80}\\b(penalties|penalty|shootout|pk|pks)\\b`,
+        `\\b(penalties|penalty|shootout|pk|pks)\\b[^.]{0,80}${escaped}\\s+(advance|advances|advanced|through|win|wins|won)\\b`,
+      ];
+      for (const pattern of positive) {
+        if (new RegExp(pattern, 'i').test(haystack)) score++;
+      }
+    }
+    wins.set(team.code, score);
+  }
+  const homeWins = wins.get(canonicalTeamCode(homeCode)) || 0;
+  const awayWins = wins.get(canonicalTeamCode(awayCode)) || 0;
+  if (homeWins > 0 && awayWins === 0) return canonicalTeamCode(homeCode);
+  if (awayWins > 0 && homeWins === 0) return canonicalTeamCode(awayCode);
+  return null;
+}
+
+function firstScoreFromText(text) {
+  const cleaned = normalizeSearchText(text)
+    .replace(/\b(\d+)\s*-\s*(\d+)\s*(?:on\s+)?(?:pens?|penalties|pk|pks)\b/g, ' ');
+  const match = cleaned.match(/\b(\d{1,2})\s*-\s*(\d{1,2})\b/);
+  if (!match) return { homeScore: null, awayScore: null };
+  return { homeScore: parseInt(match[1], 10), awayScore: parseInt(match[2], 10) };
+}
+
+function emergencySourcesEnabled() {
+  return process.env.RESULT_EMERGENCY_SOURCES === '1';
+}
+
 function isStuckCandidate(m, nowMs = Date.now()) {
   if (!m || !needsFinalVerification(m)) return false;
   if (!m.home_team_code || !m.away_team_code || !m.match_date) return false;
@@ -186,7 +343,7 @@ async function tryLedgerCall(report, label, fn) {
 
 async function callEspnScoreboard(dateYmd) {
   const res = await fetchWithTimeout(`${ESPN_SCOREBOARD_BASE}?dates=${encodeURIComponent(dateYmd)}`, {
-    headers: { 'User-Agent': 'FriendlyBet result verifier (+https://friendlybet.live)' }
+    headers: { 'User-Agent': USER_AGENT }
   });
   if (!res.ok) {
     const text = await res.text();
@@ -204,7 +361,7 @@ async function callFifaCalendar(fromYmd, toYmd) {
     to: toYmd
   });
   const res = await fetchWithTimeout(`${FIFA_CALENDAR_BASE}?${qs.toString()}`, {
-    headers: { 'User-Agent': 'FriendlyBet result verifier (+https://friendlybet.live)' }
+    headers: { 'User-Agent': USER_AGENT }
   });
   if (!res.ok) {
     const text = await res.text();
@@ -288,6 +445,242 @@ function transformFifaMatch(match) {
   };
 }
 
+function parseLiveScoreDate(value) {
+  const raw = String(value || '').trim();
+  const compact = raw.match(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/);
+  if (compact) {
+    return `${compact[1]}-${compact[2]}-${compact[3]}T${compact[4]}:${compact[5]}:${compact[6]}Z`;
+  }
+  const ms = Date.parse(raw);
+  return Number.isFinite(ms) ? new Date(ms).toISOString() : null;
+}
+
+function extractLiveScoreEventsFromNextData(data) {
+  const sections = data && data.props && data.props.pageProps && data.props.pageProps.initialData && data.props.pageProps.initialData.sections;
+  const events = [];
+  for (const section of Array.isArray(sections) ? sections : []) {
+    for (const event of Array.isArray(section.events) ? section.events : []) events.push(event);
+  }
+  const initialEvent = data && data.props && data.props.pageProps && data.props.pageProps.initialEventData && data.props.pageProps.initialEventData.event;
+  if (initialEvent) events.push(initialEvent);
+  return events;
+}
+
+function transformLiveScoreEvent(event) {
+  const home = event && (event.homeTeam || event.home || event.team1) || {};
+  const away = event && (event.awayTeam || event.away || event.team2) || {};
+  const homeName = home.name || home.teamName || event.homeTeamName || event.homeName;
+  const awayName = away.name || away.teamName || event.awayTeamName || event.awayName;
+  const homeCode = normalizeTeamCode(homeName, home.abbreviation || home.shortName || event.homeTeamCode);
+  const awayCode = normalizeTeamCode(awayName, away.abbreviation || away.shortName || event.awayTeamCode);
+  const homeScore = event && event.homeTeamScore != null ? parseInt(event.homeTeamScore, 10) : null;
+  const awayScore = event && event.awayTeamScore != null ? parseInt(event.awayTeamScore, 10) : null;
+  const penaltyHomeScore = event && event.penaltyHomeScore != null ? parseInt(event.penaltyHomeScore, 10) : null;
+  const penaltyAwayScore = event && event.penaltyAwayScore != null ? parseInt(event.penaltyAwayScore, 10) : null;
+  const statusText = String((event && (event.statusDescription || event.eventStatus || event.status)) || '').toUpperCase();
+  const afterPenalties = event && event.isFinishedAfterPenalties === true || /PENALT/.test(statusText);
+  const isPast = /PAST|FINISHED|FINAL/.test(statusText) || Number(event && event.overallStatusId) === 2;
+  const statusShort = afterPenalties ? 'PEN' : (isPast ? 'FT' : statusText || null);
+
+  let winnerCode = null;
+  const winner = String(event && event.winner || '').toUpperCase();
+  if (winner === 'HOME') winnerCode = homeCode;
+  else if (winner === 'AWAY') winnerCode = awayCode;
+  else if (Number.isFinite(penaltyHomeScore) && Number.isFinite(penaltyAwayScore) && penaltyHomeScore !== penaltyAwayScore) {
+    winnerCode = penaltyHomeScore > penaltyAwayScore ? homeCode : awayCode;
+  } else if (Number.isFinite(homeScore) && Number.isFinite(awayScore) && homeScore !== awayScore) {
+    winnerCode = homeScore > awayScore ? homeCode : awayCode;
+  }
+
+  return {
+    source: 'livescore',
+    api_id: event && (event.id || event.eventId),
+    homeCode,
+    awayCode,
+    statusShort,
+    fixtureDate: parseLiveScoreDate(event && (event.startDateTimeString || event.startDate || event.date)),
+    homeScore: Number.isFinite(homeScore) ? homeScore : null,
+    awayScore: Number.isFinite(awayScore) ? awayScore : null,
+    penaltyHomeScore: Number.isFinite(penaltyHomeScore) ? penaltyHomeScore : null,
+    penaltyAwayScore: Number.isFinite(penaltyAwayScore) ? penaltyAwayScore : null,
+    winnerCode,
+    rawHome: homeName || null,
+    rawAway: awayName || null,
+  };
+}
+
+function parseFoxScoreRow(rowHtml) {
+  const classMatch = String(rowHtml || '').match(/<div class="([^"]*score-team-row[^"]*)"/i);
+  const titleMatches = [...String(rowHtml || '').matchAll(/title="([^"]+)"/g)].map(m => m[1]);
+  const name = titleMatches[0] || null;
+  const abbreviation = titleMatches.find(v => TEAM_CODE_RE.test(String(v || '').toUpperCase())) || null;
+  const scoreHtml = (String(rowHtml || '').match(/<div class="score-team-score">([\s\S]*?)<\/div>/i) || [])[1] || '';
+  const penalty = (scoreHtml.match(/scores-team-pk[^>]*>\s*(\d+)\s*</i) || [])[1];
+  const visibleNumbers = stripTags(scoreHtml).match(/\d+/g) || [];
+  const score = visibleNumbers.length ? parseInt(visibleNumbers[visibleNumbers.length - 1], 10) : null;
+  return {
+    name,
+    abbreviation,
+    score: Number.isFinite(score) ? score : null,
+    penaltyScore: penalty != null ? parseInt(penalty, 10) : null,
+    loser: /is-loser/.test(classMatch && classMatch[1] || ''),
+  };
+}
+
+function parseFoxScoreCards(html) {
+  const cards = [];
+  const sections = String(html || '').split(/(?=<div[^>]+id="c12d\d{8}")/i);
+  for (const section of sections) {
+    const dateId = (section.match(/id="c12d(\d{4})(\d{2})(\d{2})"/i) || []);
+    const fixtureDate = dateId.length ? `${dateId[1]}-${dateId[2]}-${dateId[3]}T12:00:00Z` : null;
+    const links = section.match(/<a\b(?=[^>]*score-chip final)[\s\S]*?<\/a>/gi) || [];
+    for (const block of links) {
+      const rows = block.match(/<div class="[^"]*score-team-row[\s\S]*?(?=<div class="[^"]*score-team-row|<\/a>)/gi) || [];
+      if (rows.length < 2) continue;
+      const home = parseFoxScoreRow(rows[0]);
+      const away = parseFoxScoreRow(rows[1]);
+      const href = (block.match(/href="([^"]+)"/i) || [])[1] || null;
+      cards.push({ fixtureDate, home, away, href });
+    }
+  }
+  return cards;
+}
+
+function transformFoxScoreCard(card, dbMatch = null) {
+  const homeCode = normalizeTeamCode(card && card.home && card.home.name, card && card.home && card.home.abbreviation);
+  const awayCode = normalizeTeamCode(card && card.away && card.away.name, card && card.away && card.away.abbreviation);
+  const homeScore = card && card.home ? card.home.score : null;
+  const awayScore = card && card.away ? card.away.score : null;
+  let winnerCode = null;
+  if (card && card.home && card.away && card.home.loser !== card.away.loser) {
+    winnerCode = card.home.loser ? awayCode : homeCode;
+  } else if (homeScore != null && awayScore != null && homeScore !== awayScore) {
+    winnerCode = homeScore > awayScore ? homeCode : awayCode;
+  } else if (card && card.home && card.away && card.home.penaltyScore != null && card.away.penaltyScore != null && card.home.penaltyScore !== card.away.penaltyScore) {
+    winnerCode = card.home.penaltyScore > card.away.penaltyScore ? homeCode : awayCode;
+  }
+  return {
+    source: 'fox',
+    api_id: card && card.href,
+    homeCode,
+    awayCode,
+    statusShort: 'FT',
+    fixtureDate: dbMatch && dbMatch.match_date || card && card.fixtureDate || null,
+    homeScore,
+    awayScore,
+    penaltyHomeScore: card && card.home ? card.home.penaltyScore : null,
+    penaltyAwayScore: card && card.away ? card.away.penaltyScore : null,
+    winnerCode,
+    rawHome: card && card.home && card.home.name || null,
+    rawAway: card && card.away && card.away.name || null,
+  };
+}
+
+function yahooDatesFor(matches) {
+  const dates = new Set();
+  for (const match of matches || []) {
+    const t = Date.parse(match && match.match_date);
+    if (!Number.isFinite(t)) continue;
+    dates.add(isoDate(t - 12 * 60 * 60 * 1000));
+    dates.add(isoDate(t));
+    dates.add(isoDate(t + 12 * 60 * 60 * 1000));
+  }
+  return [...dates].sort();
+}
+
+function parseYahooScoreboard(html, dateYmd) {
+  const text = String(html || '');
+  const rows = [];
+  const pattern = /name\\?":\\?"([^"\\]+?) vs\. ([^"\\]+?) \(Final: ([A-Z]{2,3}) (\d{1,2})-(\d{1,2}) ([A-Z]{2,3})\)[\s\S]{0,1200}?startDate\\?":\\?"([^"\\]+)/g;
+  let match;
+  while ((match = pattern.exec(text))) {
+    const homeName = match[1];
+    const awayName = match[2];
+    const homeCode = normalizeTeamCode(homeName, match[3]);
+    const awayCode = normalizeTeamCode(awayName, match[6]);
+    const homeScore = parseInt(match[4], 10);
+    const awayScore = parseInt(match[5], 10);
+    const winnerCode = homeScore === awayScore
+      ? inferWinnerFromText(text, homeCode, awayCode, homeName, awayName)
+      : (homeScore > awayScore ? homeCode : awayCode);
+    rows.push({
+      source: 'yahoo',
+      api_id: `yahoo-${dateYmd}-${homeCode}-${awayCode}`,
+      homeCode,
+      awayCode,
+      statusShort: 'FT',
+      fixtureDate: match[7],
+      homeScore,
+      awayScore,
+      winnerCode,
+      rawHome: homeName,
+      rawAway: awayName,
+    });
+  }
+  return rows;
+}
+
+function transformYahooRow(row) {
+  return row || null;
+}
+
+function articleTextFor(row) {
+  return stripTags([
+    row && row.title,
+    row && row.headline,
+    row && row.description,
+    row && row.trailText,
+    row && row.bodyText,
+    row && row.text,
+  ].filter(Boolean).join(' '));
+}
+
+function articlePrimaryTextFor(row) {
+  return stripTags([
+    row && row.title,
+    row && row.headline,
+    row && row.description,
+    row && row.trailText,
+  ].filter(Boolean).join(' '));
+}
+
+function scoreForArticle(row, dbMatch) {
+  if (hasNumericScore(dbMatch)) {
+    return { homeScore: Number(dbMatch.home_score), awayScore: Number(dbMatch.away_score), fromDb: true };
+  }
+  return { ...firstScoreFromText(articlePrimaryTextFor(row)), fromDb: false };
+}
+
+function transformArticleResult(row, dbMatch = null) {
+  if (!row || !dbMatch) return null;
+  if (row.matchExternalId && String(row.matchExternalId) !== String(dbMatch.external_id || '')) return null;
+  const homeCode = canonicalTeamCode(dbMatch.home_team_code);
+  const awayCode = canonicalTeamCode(dbMatch.away_team_code);
+  const homeName = displayTeamName(homeCode);
+  const awayName = displayTeamName(awayCode);
+  const primaryText = articlePrimaryTextFor(row);
+  const text = articleTextFor(row);
+  if (!containsTeamMention(primaryText, homeCode, homeName) || !containsTeamMention(primaryText, awayCode, awayName)) return null;
+  const winnerCode = inferWinnerFromText(primaryText, homeCode, awayCode, homeName, awayName)
+    || inferWinnerFromText(text, homeCode, awayCode, homeName, awayName);
+  const score = scoreForArticle(row, dbMatch);
+  const penaltyFinal = /\b(penalties|penalty shootout|shootout|spot-kicks|pk|pks)\b/i.test(text);
+  const finalish = penaltyFinal || /\b(final|full[- ]time|beat|beats|defeated|defeats|advance|advances|advanced|knocked out|knocks out)\b/i.test(text);
+  return {
+    source: row.source,
+    api_id: row.url || row.id || row.source_id || null,
+    homeCode,
+    awayCode,
+    statusShort: finalish ? (penaltyFinal ? 'PEN' : 'FT') : null,
+    fixtureDate: dbMatch.match_date || row.date || null,
+    homeScore: score.homeScore,
+    awayScore: score.awayScore,
+    winnerCode,
+    rawHome: homeName,
+    rawAway: awayName,
+  };
+}
+
 function normalizeTeamCode(name, fallbackCode) {
   const mapped = getTeamCode(name);
   if (mapped) return WCR.normalizeTeamCode(mapped);
@@ -311,7 +704,7 @@ function fixtureMatchesDbMatch(dbMatch, sourceMatch) {
 
 function findMatchingFixture(dbMatch, sourceMatches, transform = x => x) {
   const matches = (sourceMatches || [])
-    .map(transform)
+    .map(row => transform(row, dbMatch))
     .filter(fx => fixtureMatchesDbMatch(dbMatch, fx));
   if (matches.length !== 1) return { match: null, reason: matches.length === 0 ? 'no exact fixture match' : 'multiple fixture matches' };
   return { match: matches[0], reason: null };
@@ -401,8 +794,199 @@ async function loadFifaMatchesFor(matches) {
   return Array.isArray(json.Results) ? json.Results : [];
 }
 
+async function loadLiveScoreEventsFor(matches) {
+  if (!matches.length) return [];
+  const html = await fetchText(LIVE_SCORE_COMPETITION_URL, 'LiveScore World Cup page');
+  const data = extractNextData(html);
+  if (!data) throw new Error('LiveScore page did not expose __NEXT_DATA__');
+  const events = extractLiveScoreEventsFromNextData(data);
+  const seen = new Set();
+  return events.filter(event => {
+    const key = String(event && (event.id || event.eventId || `${event.homeTeamName}-${event.awayTeamName}-${event.startDateTimeString}`));
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+async function loadFoxScoreCardsFor(matches) {
+  if (!matches.length) return [];
+  const html = await fetchText(FOX_WORLD_CUP_SCORES_URL, 'FOX World Cup scores');
+  return parseFoxScoreCards(html);
+}
+
+async function loadYahooRowsFor(matches) {
+  if (!matches.length) return [];
+  const rows = [];
+  for (const ymd of yahooDatesFor(matches)) {
+    const url = `${YAHOO_SCOREBOARD_BASE}?league=fifa.world_cup&date=${encodeURIComponent(ymd)}`;
+    const html = await fetchText(url, `Yahoo World Cup scoreboard ${ymd}`);
+    rows.push(...parseYahooScoreboard(html, ymd));
+  }
+  const seen = new Set();
+  return rows.filter(row => {
+    const key = row.api_id || `${row.homeCode}-${row.awayCode}-${row.fixtureDate}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function sourceQueryForMatch(match) {
+  const home = displayTeamName(match && match.home_team_code);
+  const away = displayTeamName(match && match.away_team_code);
+  return `${home} ${away} World Cup 2026 penalties advance`;
+}
+
+async function loadGuardianArticlesFor(matches) {
+  const rows = [];
+  for (const match of matches || []) {
+    const qs = new URLSearchParams({
+      q: sourceQueryForMatch(match),
+      'api-key': GUARDIAN_API_KEY,
+      'show-fields': 'headline,trailText,bodyText',
+      'page-size': '5',
+      section: 'football',
+    });
+    const json = await fetchJson(`${GUARDIAN_SEARCH_BASE}?${qs.toString()}`, 'Guardian content search');
+    const results = json && json.response && Array.isArray(json.response.results) ? json.response.results : [];
+    for (const item of results) {
+      rows.push({
+        source: 'guardian',
+        id: item.id || item.webUrl,
+        url: item.webUrl || item.id || null,
+        matchExternalId: match.external_id,
+        title: item.webTitle,
+        headline: item.fields && item.fields.headline,
+        trailText: item.fields && item.fields.trailText,
+        bodyText: item.fields && item.fields.bodyText,
+      });
+    }
+  }
+  return rows;
+}
+
+function htmlAttribute(value) {
+  return String(value || '')
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;|&#39;/g, "'")
+    .replace(/&amp;/g, '&')
+    .trim();
+}
+
+function extractHtmlMetadata(html) {
+  const text = String(html || '');
+  const meta = prop => {
+    const re = new RegExp(`<meta[^>]+(?:property|name)=["']${prop}["'][^>]+content=["']([^"']*)["'][^>]*>`, 'i');
+    const match = text.match(re);
+    return match ? htmlAttribute(match[1]) : null;
+  };
+  const title = meta('og:title') || ((text.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1] && stripTags((text.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1]));
+  const description = meta('og:description') || meta('description');
+  return { title, description };
+}
+
+function articleUrlMatchesTeams(url, match) {
+  if (!match) return true;
+  const normalizedUrl = String(url || '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const teamTokenOptions = code => {
+    const name = displayTeamName(code).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const normalizedCode = String(canonicalTeamCode(code) || '').toLowerCase();
+    return [name, normalizedCode].filter(Boolean);
+  };
+  return teamTokenOptions(match.home_team_code).some(token => normalizedUrl.includes(token))
+    && teamTokenOptions(match.away_team_code).some(token => normalizedUrl.includes(token));
+}
+
+function extractArticleUrls(html, domain, dbMatch = null) {
+  const urls = new Set();
+  const text = String(html || '');
+  const escapedDomain = String(domain || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const hrefRe = /href=["']([^"']+)["']/gi;
+  let hrefMatch;
+  while ((hrefMatch = hrefRe.exec(text))) {
+    let url = htmlAttribute(hrefMatch[1]);
+    if (url.startsWith('/article/')) url = `https://${domain}${url}`;
+    if (!new RegExp(`^https://(?:www\\.)?${escapedDomain}/article/`, 'i').test(url)) continue;
+    if (!articleUrlMatchesTeams(url, dbMatch)) continue;
+    urls.add(url.split('?')[0]);
+    if (urls.size >= 5) break;
+  }
+  return [...urls];
+}
+
+async function loadApArticlesFor(matches) {
+  const rows = [];
+  for (const match of matches || []) {
+    const qs = new URLSearchParams({ q: sourceQueryForMatch(match) });
+    const html = await fetchText(`${AP_SEARCH_BASE}?${qs.toString()}`, 'AP News search');
+    const urls = extractArticleUrls(html, 'apnews.com', match);
+    for (const url of urls) {
+      const articleHtml = await fetchText(url, 'AP News article');
+      const metadata = extractHtmlMetadata(articleHtml);
+      rows.push({
+        source: 'ap',
+        id: url,
+        url,
+        matchExternalId: match.external_id,
+        title: metadata.title,
+        description: metadata.description,
+        text: articleHtml,
+      });
+    }
+  }
+  return rows;
+}
+
+function classifyHintUrl(url) {
+  let host = '';
+  try {
+    host = new URL(url).hostname.replace(/^www\./, '').toLowerCase();
+  } catch (_) {
+    return null;
+  }
+  for (const [source, domains] of Object.entries(ARTICLE_SOURCE_DOMAINS)) {
+    if (domains.some(domain => host === domain || host.endsWith(`.${domain}`))) return source;
+  }
+  return null;
+}
+
+function parseSourceHints(value = process.env.RESULT_EMERGENCY_SOURCE_HINTS || '') {
+  const hints = [];
+  const parts = String(value || '').split(/[\s,]+/).map(s => s.trim()).filter(Boolean);
+  for (const part of parts) {
+    const explicit = part.match(/^([a-z_]+)=(https?:\/\/.+)$/i);
+    const source = explicit ? explicit[1].toLowerCase() : classifyHintUrl(part);
+    const url = explicit ? explicit[2] : part;
+    if (!source || !/^https?:\/\//i.test(url)) continue;
+    hints.push({ source, url });
+  }
+  return hints;
+}
+
+async function loadHintArticlesFor(source, matches) {
+  const hints = parseSourceHints().filter(hint => hint.source === source);
+  const rows = [];
+  for (const hint of hints) {
+    const html = await fetchText(hint.url, `${source} source hint`);
+    const metadata = extractHtmlMetadata(html);
+    for (const match of matches || []) {
+      rows.push({
+        source,
+        id: hint.url,
+        url: hint.url,
+        matchExternalId: match.external_id,
+        title: metadata.title,
+        description: metadata.description,
+        text: html,
+      });
+    }
+  }
+  return rows;
+}
+
 function sourceRegistry() {
-  return {
+  const registry = {
     espn: {
       load: loadEspnEventsFor,
       transform: transformEspnEvent,
@@ -412,6 +996,39 @@ function sourceRegistry() {
       transform: transformFifaMatch,
     },
   };
+  if (emergencySourcesEnabled()) {
+    Object.assign(registry, {
+      livescore: {
+        load: loadLiveScoreEventsFor,
+        transform: transformLiveScoreEvent,
+      },
+      fox: {
+        load: loadFoxScoreCardsFor,
+        transform: transformFoxScoreCard,
+      },
+      yahoo: {
+        load: loadYahooRowsFor,
+        transform: transformYahooRow,
+      },
+      guardian: {
+        load: loadGuardianArticlesFor,
+        transform: transformArticleResult,
+      },
+      ap: {
+        load: loadApArticlesFor,
+        transform: transformArticleResult,
+      },
+      houston_chronicle: {
+        load: matches => loadHintArticlesFor('houston_chronicle', matches),
+        transform: transformArticleResult,
+      },
+      nypost: {
+        load: matches => loadHintArticlesFor('nypost', matches),
+        transform: transformArticleResult,
+      },
+    });
+  }
+  return registry;
 }
 
 function supportedSources(sources = ENABLED_SOURCES) {
@@ -932,6 +1549,15 @@ if (require.main === module) {
     needsFinalVerification,
     transformEspnEvent,
     transformFifaMatch,
+    transformLiveScoreEvent,
+    transformFoxScoreCard,
+    transformYahooRow,
+    transformArticleResult,
+    parseFoxScoreCards,
+    parseYahooScoreboard,
+    parseSourceHints,
+    inferWinnerFromText,
+    firstScoreFromText,
     normalizeTeamCode,
     espnScoreboardDatesFor,
     findMatchingFixture,
