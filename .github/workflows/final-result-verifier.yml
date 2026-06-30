@@ -193,6 +193,13 @@ jobs:
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
         run: node scripts/verify-scoring-snapshots.js
 
+      - name: Audit two-phase knockout scoring after scoring
+        if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/audit-two-phase-knockout-scoring.js
+
       - name: Refresh FIFA schedule after verified result
         if: steps.verify_results.outputs.changed == 'true'
         continue-on-error: true
@@ -240,6 +247,7 @@ jobs:
             node scripts/calculate-scores-v2.js --critical
             node scripts/export-snapshots.js leaderboards
             node scripts/verify-scoring-snapshots.js
+            node scripts/audit-two-phase-knockout-scoring.js
             node scripts/generate-knockout-scenarios.js || true
         run: |
           git config user.name "Aviatorpo"
