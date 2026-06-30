@@ -40,6 +40,13 @@ abort_rebase_if_needed() {
   git rebase --abort >/dev/null 2>&1 || true
 }
 
+clean_untracked_generated_paths() {
+  # Failed rebases can leave generated add/add conflict files as untracked
+  # entries. Resetting to origin/main does not remove them, so clean only the
+  # caller-provided generated paths before regenerating.
+  git clean -fd -- "${paths[@]}" >/dev/null 2>&1 || true
+}
+
 if ! has_changes; then
   echo "no generated snapshot change"
   exit 0
@@ -52,6 +59,7 @@ for attempt in 1 2 3; do
     abort_rebase_if_needed
     git fetch origin main
     git reset --hard origin/main
+    clean_untracked_generated_paths
     run_regenerate_commands
     if ! has_changes; then
       echo "generated snapshots already match origin/main after regeneration"
