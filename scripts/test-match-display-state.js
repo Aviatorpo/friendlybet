@@ -42,7 +42,15 @@ const fnNames = [
   '_matchElapsedMs',
   '_matchIsStaleLive',
   '_matchIsStaleScheduled',
+  '_matchSourceFresh',
+  '_matchDetailIndicatesHalftime',
+  '_matchHasSecondHalfClock',
+  '_matchIsHalftimeBreak',
+  '_matchIsStalePausedBreak',
   '_matchIsPendingProviderFinal',
+  '_matchHasFreshEspnSource',
+  '_matchLiveClockLabel',
+  '_matchLiveScoreTrusted',
   '_matchHasNumericScore',
   '_matchIsKnockoutStage',
   '_matchResolvedWinner',
@@ -64,6 +72,7 @@ const _FINISHED_MATCH_STATUSES = ['FINISHED', 'AWARDED'];
 const _MAX_MATCH_MS = 3.5 * 60 * 60 * 1000;
 const _SCHEDULED_MATCH_STATUSES = ['TIMED', 'SCHEDULED'];
 const _STALE_SCHEDULED_MATCH_MS = 35 * 60 * 1000;
+const _HALFTIME_SOURCE_MAX_AGE_MS = 18 * 60 * 1000;
 ${fnNames.map(name => extractFunction(app, name)).join('\n')}
 this.api = { ${fnNames.join(', ')} };
 `, sandbox);
@@ -93,6 +102,56 @@ assert(api._matchNeedsStatusVerification(match({
   status: 'IN_PLAY',
   match_date: '2026-06-23T07:00:00Z',
 }), now), 'Very old live status must render as verification');
+
+assert(api._matchIsHalftimeBreak(match({
+  status: 'PAUSED',
+  match_date: '2026-06-23T11:10:00Z',
+  live_period: 1,
+  live_clock: "45'+3'",
+  status_detail: 'HT',
+  live_source: 'espn',
+  source_updated_at: '2026-06-23T11:50:00Z',
+}), now), 'Fresh PAUSED/HT row must render as half-time');
+assert(!api._matchIsHalftimeBreak(match({
+  status: 'PAUSED',
+  match_date: '2026-06-23T10:50:00Z',
+  live_period: 2,
+  live_clock: "51'",
+  status_detail: "51'",
+  live_source: 'espn',
+  source_updated_at: '2026-06-23T11:59:00Z',
+}), now), 'PAUSED row with a second-half clock must not render as half-time');
+assert(api._matchIsLiveish(match({
+  status: 'PAUSED',
+  match_date: '2026-06-23T10:50:00Z',
+  live_period: 2,
+  live_clock: "51'",
+  status_detail: "51'",
+  live_source: 'espn',
+  source_updated_at: '2026-06-23T11:59:00Z',
+  home_score: 0,
+  away_score: 1,
+}), now), 'PAUSED row with a second-half clock must stay live-ish');
+assert(api._matchLiveScoreTrusted(match({
+  status: 'PAUSED',
+  match_date: '2026-06-23T10:50:00Z',
+  live_period: 2,
+  live_clock: "51'",
+  status_detail: "51'",
+  live_source: 'espn',
+  source_updated_at: '2026-06-23T11:59:00Z',
+  home_score: 0,
+  away_score: 1,
+}), now), 'Fresh PAUSED second-half row must keep the live score visible');
+assert(api._matchNeedsStatusVerification(match({
+  status: 'PAUSED',
+  match_date: '2026-06-23T11:10:00Z',
+  live_period: 1,
+  live_clock: "45'+3'",
+  status_detail: 'HT',
+  live_source: 'espn',
+  source_updated_at: '2026-06-23T11:35:00Z',
+}), now), 'Stale PAUSED/HT row must require verification instead of sticking on half-time');
 assert(api._matchResolvedWinner({
   status: 'FINISHED',
   stage: 'ROUND_OF_32',
@@ -125,6 +184,8 @@ assert(api._snapshotHasStaleScheduled([match()], now), 'Snapshot stale detection
 
 const cardSource = sliceBetween(app, 'function createMatchCard', 'function getTeamName');
 assert(/needsStatusVerification\s*=\s*_matchNeedsStatusVerification\(match\)/.test(cardSource), 'Match cards must use the shared verification state');
+assert(/isHalftimeBreak\s*=\s*!needsStatusVerification\s*&&\s*_matchIsHalftimeBreak\(match\)/.test(cardSource), 'Match cards must not treat every PAUSED row as half-time');
+assert(!/else if \(status === 'PAUSED'\)/.test(cardSource), 'Match cards must not render PAUSED blindly as half-time');
 assert(/card\.classList\.add\('verifying'\)/.test(cardSource), 'Verification state must use the verifying card style');
 assert(/matchesEx\.statusBeingVerified/.test(cardSource), 'Verification note must avoid overclaiming a final score');
 assert(/matchesEx\.advancedOnPenalties/.test(cardSource), 'Penalty-decided knockout cards must show who advanced');
@@ -167,6 +228,7 @@ assert(!/loadPundit|renderPundit|loadWorldCupStories|worldCupStories|pundit|bant
 
 const snapshotSource = sliceBetween(app, 'function _snapshotShouldReadDb', 'function _matchCountsForGroupProjection');
 assert(/_snapshotHasStaleScheduled\(matches\)/.test(snapshotSource), 'Stale scheduled CDN snapshots must force a DB read');
+assert(/_snapshotHasStalePausedBreak\(matches\)/.test(snapshotSource), 'Stale half-time CDN snapshots must force a DB read');
 
 assert(workflow.includes("scripts/test-match-display-state.js"), 'CI workflow must watch and run match display-state tests');
 assert(/run:\s*node scripts\/test-match-display-state\.js/.test(workflow), 'CI workflow must run match display-state tests');

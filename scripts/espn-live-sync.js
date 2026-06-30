@@ -66,6 +66,16 @@ function normalizeTeamCode(name, fallbackCode) {
   return TEAM_CODE_RE.test(raw) ? raw : null;
 }
 
+function looksLikeRunningClock(eventStatus = {}) {
+  const type = eventStatus.type || {};
+  const text = `${String(eventStatus.displayClock || '')} ${String(type.shortDetail || type.detail || type.description || '')}`.toUpperCase();
+  if (/\b(HT|HALF[-\s]?TIME)\b/.test(text)) return false;
+  const minute = Number(((text.match(/\b(\d{1,3})\s*'?/) || [])[1]));
+  if (Number.isFinite(minute) && minute >= 46) return true;
+  const period = Number(eventStatus.period);
+  return Number.isFinite(period) && period >= 2 && Number.isFinite(minute);
+}
+
 function mapEspnStatus(eventStatus = {}) {
   const type = eventStatus.type || {};
   const state = String(type.state || '').toLowerCase();
@@ -74,6 +84,7 @@ function mapEspnStatus(eventStatus = {}) {
   if (type.completed === true || state === 'post') return 'FINISHED';
   if (name.includes('POSTPONED') || desc.includes('POSTPONED')) return 'POSTPONED';
   if (name.includes('CANCELED') || name.includes('CANCELLED') || desc.includes('CANCELED') || desc.includes('CANCELLED')) return 'CANCELLED';
+  if (state === 'in' && looksLikeRunningClock(eventStatus)) return 'IN_PLAY';
   if (name.includes('HALF') && (name.includes('TIME') || desc.includes('HALF'))) return 'PAUSED';
   if (state === 'in' || name.includes('IN_PROGRESS') || name.includes('FIRST_HALF') || name.includes('SECOND_HALF')) return 'IN_PLAY';
   return 'TIMED';
