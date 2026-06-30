@@ -50,6 +50,19 @@ on:
         options:
           - '1'
           - '0'
+      emergency_sources:
+        description: 'Use approved emergency result sources in addition to ESPN/FIFA'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+      source_hint_urls:
+        description: 'Optional emergency article URLs, separated by spaces or new lines'
+        required: false
+        default: ''
+        type: string
 
 concurrency:
   group: final-result-verifier
@@ -98,11 +111,13 @@ jobs:
           RESULT_FALLBACK_LOOKBACK_HOURS: ${{ github.event.inputs.lookback_hours || '336' }}
           RESULT_FALLBACK_MIN_SOURCES: 1
           RESULT_FALLBACK_REQUIRED_SOURCES: fifa
-          RESULT_FALLBACK_SOURCES: espn,fifa
+          RESULT_FALLBACK_SOURCES: ${{ github.event_name != 'schedule' && inputs.emergency_sources == 'true' && 'espn,fifa,livescore,fox,yahoo,guardian,ap,houston_chronicle,nypost' || 'espn,fifa' }}
           RESULT_CONSENSUS_FALLBACK_MIN_SOURCES: 3
           RESULT_FALLBACK_SOURCE_MODE: ${{ github.event_name == 'schedule' && 'rotate' || 'all' }}
           RESULT_FALLBACK_ROTATION_MINUTES: 15
           RESULT_FALLBACK_OBSERVATION_TTL_MINUTES: 180
+          RESULT_EMERGENCY_SOURCES: ${{ github.event_name != 'schedule' && inputs.emergency_sources == 'true' && '1' || '0' }}
+          RESULT_EMERGENCY_SOURCE_HINTS: ${{ github.event.inputs.source_hint_urls || '' }}
           RESULT_VERIFICATION_REPORT_PATH: artifacts/final-result-verification-report.json
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
