@@ -175,9 +175,9 @@ assert(statusEl.innerHTML.includes('dashboard.officialStatus.severalGroupsText:{
 assert(statusEl.innerHTML.includes('dashboard.officialStatus.thirdPlacePending'), 'Several-groups dashboard status must keep pending third-place explanation');
 
 statusEl = renderDashboardStatus({ finished: 18, total: 72, completeGroups: 3, totalGroups: 12 }, true, true, true);
-assert(statusEl.innerHTML.includes('dashboard.liveUpdating.title'), 'Pending live-state verification must override official dashboard copy');
-assert(statusEl.innerHTML.includes('dashboard.liveUpdating.badge'), 'Pending live-state dashboard state must show a checking badge');
-assert(statusEl.innerHTML.includes('dashboard.liveUpdating.note'), 'Pending live-state dashboard state must explain that scores will return automatically');
+assert(statusEl.innerHTML.includes('dashboard.liveStatus.title'), 'Pending live-state verification must not override dashboard with a stuck updating state');
+assert(statusEl.innerHTML.includes('dashboard.liveStatus.zeroPoints'), 'Pending live-state dashboard state must keep the normal live badge');
+assert(!statusEl.innerHTML.includes('dashboard.liveUpdating.title'), 'Dashboard must not show the stuck live-updating title for stale live rows');
 assert(!statusEl.innerHTML.includes('dashboard.officialStatus.thirdPlacePending'), 'Pending dashboard state must not mix in normal scoring notes');
 
 statusEl = renderDashboardStatus(

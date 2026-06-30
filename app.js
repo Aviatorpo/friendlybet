@@ -1938,12 +1938,13 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
   let pendingNoteKey = null;
   if (dataPending && !lateKo && !lateOpen) {
     const pendingKind = _dashboardPendingMatchUxKind();
-    const pendingPrefix = pendingKind === 'final_confirming' ? 'dashboard.resultConfirming' : 'dashboard.liveUpdating';
-    titleKey = `${pendingPrefix}.title`;
-    textKey = `${pendingPrefix}.text`;
-    kickerKey = `${pendingPrefix}.kicker`;
-    zeroKey = `${pendingPrefix}.badge`;
-    pendingNoteKey = `${pendingPrefix}.note`;
+    if (pendingKind === 'final_confirming') {
+      titleKey = 'dashboard.resultConfirming.title';
+      textKey = 'dashboard.resultConfirming.text';
+      kickerKey = 'dashboard.resultConfirming.kicker';
+      zeroKey = 'dashboard.resultConfirming.badge';
+      pendingNoteKey = 'dashboard.resultConfirming.note';
+    }
   } else if (!lateKo && !lateOpen && (phase === 'officialFirst' || phase === 'officialSeveral')) {
     titleKey = phase === 'officialFirst' ? 'dashboard.officialStatus.firstGroupTitle' : 'dashboard.officialStatus.severalGroupsTitle';
     textKey = phase === 'officialFirst' ? 'dashboard.officialStatus.firstGroupText' : 'dashboard.officialStatus.severalGroupsText';
@@ -3491,9 +3492,9 @@ function _matchUxState(m, now = Date.now()) {
   if (_matchNeedsStatusVerification(m, now)) {
     return {
       kind: 'live_updating',
-      className: 'verifying',
-      statusKey: 'matchesEx.liveUpdating',
-      noteKey: 'matchesEx.liveStatusUpdatingNote',
+      className: 'live',
+      statusKey: 'matchesEx.live',
+      noteKey: 'matchesEx.liveResultAfterFinal',
       requiresVerification: true,
       isLive: false,
       isFinished: false,
@@ -3526,8 +3527,8 @@ function _matchUxState(m, now = Date.now()) {
       return {
         kind: 'live_updating',
         className: 'live',
-        statusKey: 'matchesEx.liveUpdating',
-        noteKey: 'matchesEx.liveScoreUpdatingNote',
+        statusKey: 'matchesEx.live',
+        noteKey: 'matchesEx.liveResultAfterFinal',
         requiresVerification: false,
         isLive: true,
         isFinished: false,
