@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-30T04:21:15.437Z",
+  "updatedAt": "2026-06-30T04:27:24.125Z",
   "source": "https://api.fifa.com/api/v3/calendar/matches?language=en&count=500&idCompetition=17&from=2026-06-01&to=2026-07-31",
   "sourcePage": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?country=IL&wtw-filter=ALL",
   "count": 104,
@@ -2220,9 +2220,9 @@
       "fifa_status": 1,
       "result_type": 0,
       "home_team_code": "CAN",
-      "away_team_code": null,
+      "away_team_code": "MAR",
       "home_team_name": "Canada",
-      "away_team_name": null,
+      "away_team_name": "Morocco",
       "home_score": null,
       "away_score": null,
       "venue": "Houston Stadium",
