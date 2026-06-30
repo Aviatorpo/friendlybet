@@ -169,6 +169,18 @@ const twoPhaseGroupState = {
   thirdPlaceGroups: LETTERS.slice(0, 8)
 };
 
+console.log('\n== unit: two-phase slot mapper accepts scorer group state shape ==');
+(() => {
+  const scorerGroupState = {
+    status: 'ready',
+    standings: Object.fromEntries(LETTERS.map(L => [L, [L+'1', L+'2', L+'3', L+'4']])),
+    realBest8Thirds: new Set(LETTERS.slice(0, 8).map(L => L+'3')),
+  };
+  const slots = S.buildTwoPhaseSlotMatches(groupMatches.concat(twoPhaseKnockoutMatches), scorerGroupState);
+  eq('R32_M1 maps from buildGroupState-style standings', slots.get('R32_M1')?.home_team_code, 'A2');
+  eq('R32_M2 maps from buildGroupState-style best thirds', slots.get('R32_M2')?.away_team_code, 'C3');
+})();
+
 function setGroupMatchesForMock(rows) {
   groupMatches.length = 0;
   groupMatches.push(...rows);
