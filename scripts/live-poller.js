@@ -43,7 +43,12 @@ async function runLivePollerWindow(opts = {}) {
       console.log('Live window has only finished matches - handing off to final-result verifier.');
     }
     console.log('No active match right now - live-poller exiting.');
-    return { polls: 0, finalDetected: allFinishedInWindow, finalDetections: allFinishedInWindow ? 1 : 0 };
+    return {
+      polls: 0,
+      finalDetected: allFinishedInWindow,
+      finalDetections: allFinishedInWindow ? 1 : 0,
+      finalReason: allFinishedInWindow ? 'all_finished_window' : '',
+    };
   }
 
   const end = now() + runMs;
@@ -69,7 +74,7 @@ async function runLivePollerWindow(opts = {}) {
     }
   }
   const finalDetected = finalDetections > 0;
-  return { polls, finalDetected, finalDetections };
+  return { polls, finalDetected, finalDetections, finalReason: finalDetected ? 'espn_final' : '' };
 }
 
 async function runLivePoller(opts = {}) {
@@ -95,9 +100,16 @@ async function runLivePoller(opts = {}) {
     if (windowRunMs <= 0) break;
 
     const result = await runLivePollerWindow({ ...opts, intervalMs, runMs: windowRunMs, now, sleep });
+    const sawLivePollsBeforeWindow = aggregate.polls > 0;
+    const acceptFinal = result.finalDetected
+      && (!controllerActive || result.finalReason !== 'all_finished_window' || sawLivePollsBeforeWindow);
     aggregate.polls += result.polls;
-    aggregate.finalDetections += result.finalDetections;
-    aggregate.finalDetected = aggregate.finalDetected || result.finalDetected;
+    if (acceptFinal) {
+      aggregate.finalDetections += result.finalDetections;
+      aggregate.finalDetected = true;
+    } else if (result.finalDetected) {
+      console.log('controller ignored all-finished handoff before seeing live polls in this run.');
+    }
     aggregate.windows++;
 
     if (aggregate.finalDetected || !controllerActive) break;

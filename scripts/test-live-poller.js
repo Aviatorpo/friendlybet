@@ -128,6 +128,24 @@ sync.__setFetch(async (url, opts) => {
   });
   ok('controller stays awake until a later live/final window', result5.windows >= 2 && result5.finalDetected === true);
 
+  // Controller mode must not stop on an all-finished lookback before this run has seen live polling.
+  LIVE = true; WINDOW_MODE = 'finished'; upserts = 0; patches = 0; ESPN_PAYLOAD = ESPN_FINAL_PAYLOAD;
+  fakeNow = 0; sleeps = 0;
+  const result6 = await runLivePoller({
+    intervalMs: 5,
+    runMs: 15,
+    controllerMs: 70,
+    controllerSleepMs: 5,
+    controllerIdleSleepMs: 20,
+    now: () => fakeNow,
+    sleep: async (ms) => {
+      fakeNow += ms;
+      sleeps++;
+      if (sleeps >= 1) WINDOW_MODE = 'live';
+    },
+  });
+  ok('controller ignores stale all-finished windows before a live poll', result6.windows >= 2 && result6.finalDetected === true);
+
   console.log(`\n==== ${pass} passed, ${fail} failed ====`);
   process.exit(fail ? 1 : 0);
 })().catch(e => { console.error('fatal:', e); process.exit(1); });
