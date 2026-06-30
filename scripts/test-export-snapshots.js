@@ -2,8 +2,17 @@
 // Deterministic tests for public snapshot sanitization. No network, no DB.
 
 const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
 const Export = require('./export-snapshots');
-const { isPendingProviderFinal, sanitizeMatchForSnapshot } = Export;
+const {
+  isPendingProviderFinal,
+  sanitizeMatchForSnapshot,
+  dedupeMatchesForSnapshot,
+  resultPublicationMetadata,
+  resultVersionFromMatches,
+  writeIfChanged,
+} = Export;
 
 let passed = 0;
 function check(name, fn) {
@@ -95,6 +104,87 @@ check('match export uses public allowlist, not select=*', () => {
   assert.ok(!Export.SAFE_MATCH_COLS.includes('*'));
   assert.ok(!Export.SAFE_MATCH_COLS.includes('latest_consensus'));
   assert.ok(!Export.SAFE_MATCH_COLS.includes('raw_payload'));
+});
+
+check('deduped match snapshot prefers official enriched fixture row', () => {
+  const legacy = {
+    id: 'old',
+    external_id: '537327',
+    status: 'FINISHED',
+    match_date: '2026-06-11T19:00:00Z',
+    home_team_code: 'MEX',
+    away_team_code: 'RSA',
+    home_score: 2,
+    away_score: 0,
+    winner_code: 'MEX',
+    last_updated: '2026-06-18T10:13:41Z',
+  };
+  const official = {
+    ...legacy,
+    id: 'new',
+    external_id: '400021443',
+    venue: 'Mexico City Stadium',
+    source_updated_at: '2026-06-30T11:59:48Z',
+  };
+  const rows = dedupeMatchesForSnapshot([legacy, official]);
+  assert.strictEqual(rows.length, 1);
+  assert.strictEqual(rows[0].external_id, '400021443');
+});
+
+check('result version follows scoreable match facts, not volatile timestamps', () => {
+  const base = [{
+    id: 'm1',
+    external_id: '400021443',
+    stage: 'GROUP_STAGE',
+    status: 'FINISHED',
+    match_date: '2026-06-11T19:00:00Z',
+    home_team_code: 'MEX',
+    away_team_code: 'RSA',
+    home_score: 2,
+    away_score: 0,
+    winner_code: 'MEX',
+    last_updated: '2026-06-18T10:13:41Z',
+  }];
+  assert.strictEqual(resultVersionFromMatches(base), resultVersionFromMatches([{ ...base[0], last_updated: '2026-06-30T11:59:48Z' }]));
+  assert.notStrictEqual(resultVersionFromMatches(base), resultVersionFromMatches([{ ...base[0], away_score: 1 }]));
+});
+
+check('publication metadata marks unresolved tied knockout as pending', () => {
+  const meta = resultPublicationMetadata([{
+    external_id: '400021599',
+    stage: 'ROUND_OF_32',
+    status: 'FINISHED',
+    home_team_code: 'GER',
+    away_team_code: 'PAR',
+    home_score: 1,
+    away_score: 1,
+    winner_code: null,
+  }]);
+  assert.strictEqual(meta.source_state, 'verification_pending');
+  assert.ok(/^rv_1_/.test(meta.result_version));
+});
+
+check('writeIfChanged writes metadata-only result-version changes', () => {
+  const tmpDir = fs.mkdtempSync(path.join(require('os').tmpdir(), 'fb-export-'));
+  const file = path.join(tmpDir, 'leaderboard.json');
+  const first = {
+    updatedAt: '2026-06-29T20:00:00Z',
+    published_at: '2026-06-29T20:00:00Z',
+    result_version: 'rv_a',
+    standings: [{ id: 'u1', total_score: 10 }],
+  };
+  const second = {
+    ...first,
+    updatedAt: '2026-06-29T20:01:00Z',
+    published_at: '2026-06-29T20:01:00Z',
+  };
+  const third = {
+    ...second,
+    result_version: 'rv_b',
+  };
+  assert.strictEqual(writeIfChanged(file, 'standings', first), true);
+  assert.strictEqual(writeIfChanged(file, 'standings', second), false);
+  assert.strictEqual(writeIfChanged(file, 'standings', third), true);
 });
 
 (async () => {

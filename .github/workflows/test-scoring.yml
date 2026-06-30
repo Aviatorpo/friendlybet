@@ -55,6 +55,7 @@ on:
       - 'scripts/test-final-result-verifier.js'
       - 'scripts/test-final-result-verifier-ledger.js'
       - 'scripts/test-final-result-verifier-fallback.js'
+      - 'scripts/test-final-result-verifier-auto-emergency.js'
       - 'scripts/test-final-result-verifier-needed.js'
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
@@ -132,6 +133,7 @@ on:
       - 'scripts/test-final-result-verifier.js'
       - 'scripts/test-final-result-verifier-ledger.js'
       - 'scripts/test-final-result-verifier-fallback.js'
+      - 'scripts/test-final-result-verifier-auto-emergency.js'
       - 'scripts/test-final-result-verifier-needed.js'
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
@@ -235,6 +237,8 @@ jobs:
         run: node scripts/test-final-result-verifier-ledger.js
       - name: Run final-result verifier fallback tests
         run: node scripts/test-final-result-verifier-fallback.js
+      - name: Run final-result verifier auto-emergency tests
+        run: node scripts/test-final-result-verifier-auto-emergency.js
       - name: Run banter engine tests
         run: node scripts/test-banter.js
       - name: Run Pundit feed tests

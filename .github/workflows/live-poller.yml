@@ -75,6 +75,9 @@ jobs:
           RESULT_CONSENSUS_FALLBACK_MIN_SOURCES: 3
           RESULT_FALLBACK_SOURCE_MODE: all
           RESULT_FALLBACK_OBSERVATION_TTL_MINUTES: 180
+          RESULT_AUTO_EMERGENCY_SOURCES: '1'
+          RESULT_AUTO_EMERGENCY_AFTER_MINUTES: 105
+          RESULT_AUTO_EMERGENCY_SOURCE_MODE: all
           RESULT_VERIFICATION_REPORT_PATH: artifacts/live-final-verification-report.json
         run: node scripts/final-result-verifier.js --apply
 

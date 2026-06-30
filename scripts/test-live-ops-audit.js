@@ -181,6 +181,17 @@ check('scheduled final-result verifier rotates sources through the ledger', () =
   assert.ok(text.includes('RESULT_FALLBACK_OBSERVATION_TTL_MINUTES'), 'final verifier must bound ledger observation freshness');
 });
 
+check('final-result verifier auto-escalates approved emergency sources without manual input', () => {
+  const verifier = fs.readFileSync(path.join(ROOT, '.github/workflows/final-result-verifier.yml'), 'utf8');
+  const livePoller = fs.readFileSync(path.join(ROOT, '.github/workflows/live-poller.yml'), 'utf8');
+  [verifier, livePoller].forEach((text, idx) => {
+    const label = idx === 0 ? 'final verifier' : 'live poller';
+    assert.ok(text.includes("RESULT_AUTO_EMERGENCY_SOURCES: '1'"), `${label} must enable automatic emergency source escalation`);
+    assert.ok(text.includes('RESULT_AUTO_EMERGENCY_AFTER_MINUTES'), `${label} must bound when emergency escalation starts`);
+    assert.ok(text.includes('RESULT_AUTO_EMERGENCY_SOURCE_MODE: all'), `${label} must check the approved emergency shelf once escalation is active`);
+  });
+});
+
 check('live poller has continuous 5-minute group-stage coverage', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/live-poller.yml'), 'utf8');
   assert.ok(text.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 11-28 6 *'"), 'live poller must not rely on narrow precomputed match windows');

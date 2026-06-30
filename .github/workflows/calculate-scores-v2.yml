@@ -104,6 +104,12 @@ jobs:
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids || inputs.pool_ids }}
         run: node scripts/verify-scoring-snapshots.js
 
+      - name: Audit two-phase knockout scoring
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/audit-two-phase-knockout-scoring.js
+
       - name: Bridge known knockout fixtures before scenarios
         continue-on-error: true
         env:
@@ -171,6 +177,7 @@ jobs:
             SCORING_POOL_IDS="${{ inputs.pool_ids }}" node scripts/calculate-scores-v2.js --critical
             node scripts/export-snapshots.js leaderboards
             node scripts/verify-scoring-snapshots.js
+            node scripts/audit-two-phase-knockout-scoring.js
             node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36 || true
             FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches || true
             node scripts/generate-knockout-scenarios.js || true

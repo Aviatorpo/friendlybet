@@ -425,6 +425,22 @@ async function runReadiness(options = {}) {
   );
   add(
     checks,
+    'final verifier auto-escalates approved emergency sources',
+    verifier.includes('RESULT_AUTO_EMERGENCY_SOURCES')
+      && verifier.includes('RESULT_AUTO_EMERGENCY_AFTER_MINUTES')
+      && verifier.includes('RESULT_AUTO_EMERGENCY_SOURCE_MODE'),
+    'scheduled verifier must automatically widen to approved source-family consensus after official-source delay'
+  );
+  add(
+    checks,
+    'live poller final handoff can auto-escalate approved emergency sources',
+    livePoller.includes('RESULT_AUTO_EMERGENCY_SOURCES')
+      && livePoller.includes('RESULT_AUTO_EMERGENCY_AFTER_MINUTES')
+      && livePoller.includes('RESULT_AUTO_EMERGENCY_SOURCE_MODE'),
+    'immediate post-final verifier handoff must not depend on manual emergency workflow input'
+  );
+  add(
+    checks,
     'readiness monitor covers production during group and knockout match days',
     readinessMonitor.includes("cron: '6,16,26,36,46,56 * 11-28 6 *'")
       && readinessMonitor.includes("cron: '6,16,26,36,46,56 16-23 29 6 *'")
@@ -485,6 +501,7 @@ async function runReadiness(options = {}) {
     'node scripts/test-final-result-verifier.js',
     'node scripts/test-final-result-verifier-ledger.js',
     'node scripts/test-final-result-verifier-fallback.js',
+    'node scripts/test-final-result-verifier-auto-emergency.js',
     'node scripts/test-pundit-client-staleness.js',
     'node scripts/test-generate-pundit-live-state.js',
     'node scripts/test-banter.js',

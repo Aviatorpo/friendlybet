@@ -19,6 +19,7 @@
 // ============================================================
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const { assertQaIfRequested } = require('./qa-env');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co';
@@ -109,11 +110,23 @@ function readJson(file) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { return null; }
 }
 
+function stableComparable(value) {
+  if (Array.isArray(value)) return value.map(stableComparable);
+  if (!value || typeof value !== 'object') return value;
+  return Object.keys(value)
+    .filter(key => key !== 'updatedAt' && key !== 'published_at')
+    .sort()
+    .reduce((out, key) => {
+      out[key] = stableComparable(value[key]);
+      return out;
+    }, {});
+}
+
 // Write only if the meaningful payload changed (ignores the volatile updatedAt stamp), so a
 // no-op run produces no git diff -> no needless Vercel redeploy. Returns true if written.
 function writeIfChanged(file, payloadKey, payload) {
   const prev = readJson(file);
-  const sameData = prev && JSON.stringify(prev[payloadKey]) === JSON.stringify(payload[payloadKey]);
+  const sameData = prev && JSON.stringify(stableComparable(prev)) === JSON.stringify(stableComparable(payload));
   if (sameData) return false;
   fs.mkdirSync(path.dirname(file), { recursive: true });
   fs.writeFileSync(file, JSON.stringify(payload));
@@ -146,11 +159,118 @@ function sanitizeMatchForSnapshot(match) {
   return clean;
 }
 
+function logicalMatchKey(match) {
+  const dateMs = Date.parse(match && match.match_date);
+  const dateKey = Number.isFinite(dateMs) ? new Date(dateMs).toISOString() : String(match && match.match_date || '');
+  return [
+    dateKey,
+    String(match && match.home_team_code || '').toUpperCase(),
+    String(match && match.away_team_code || '').toUpperCase(),
+  ].join('|');
+}
+
+function timestampMs(value) {
+  const ms = Date.parse(value || '');
+  return Number.isFinite(ms) ? ms : 0;
+}
+
+function snapshotMatchRank(match) {
+  const status = String(match && match.status || '').toUpperCase();
+  let rank = 0;
+  if (/^4000/.test(String(match && match.external_id || ''))) rank += 1000; // FIFA WC match ids.
+  if (match && match.venue) rank += 80;
+  if (FINAL_STATUSES.has(status)) rank += 60;
+  if (match && match.home_score != null && match.away_score != null) rank += 40;
+  if (!isPendingProviderFinal(match)) rank += 30;
+  if (match && match.winner_code) rank += 10;
+  if (match && match.scorers && Array.isArray(match.scorers) && match.scorers.length) rank += 5;
+  return rank;
+}
+
+function preferSnapshotMatch(a, b) {
+  const ar = snapshotMatchRank(a);
+  const br = snapshotMatchRank(b);
+  if (ar !== br) return br > ar ? b : a;
+  const at = Math.max(timestampMs(a && a.source_updated_at), timestampMs(a && a.last_updated));
+  const bt = Math.max(timestampMs(b && b.source_updated_at), timestampMs(b && b.last_updated));
+  if (at !== bt) return bt > at ? b : a;
+  return String(b && b.external_id || '').localeCompare(String(a && a.external_id || '')) > 0 ? b : a;
+}
+
+function dedupeMatchesForSnapshot(matches) {
+  const byKey = new Map();
+  for (const match of matches || []) {
+    const key = logicalMatchKey(match);
+    const existing = byKey.get(key);
+    byKey.set(key, existing ? preferSnapshotMatch(existing, match) : match);
+  }
+  return [...byKey.values()].sort((a, b) =>
+    timestampMs(a && a.match_date) - timestampMs(b && b.match_date)
+    || String(a && a.id || '').localeCompare(String(b && b.id || ''))
+  );
+}
+
+function resultFact(match) {
+  return {
+    external_id: String(match.external_id || match.id || ''),
+    stage: match.stage || null,
+    home_team_code: match.home_team_code || null,
+    away_team_code: match.away_team_code || null,
+    home_score: match.home_score == null ? null : Number(match.home_score),
+    away_score: match.away_score == null ? null : Number(match.away_score),
+    status: String(match.status || '').toUpperCase(),
+    winner_code: match.winner_code || null,
+  };
+}
+
+function resultVersionFromMatches(matches) {
+  const facts = (matches || [])
+    .filter(match => {
+      const status = String(match && match.status || '').toUpperCase();
+      return FINAL_STATUSES.has(status)
+        && match.home_score != null
+        && match.away_score != null
+        && !isPendingProviderFinal(match);
+    })
+    .map(resultFact)
+    .sort((a, b) => String(a.external_id).localeCompare(String(b.external_id)));
+  const digest = crypto.createHash('sha256').update(JSON.stringify(facts)).digest('hex').slice(0, 20);
+  return `rv_${facts.length}_${digest}`;
+}
+
+function matchSourceState(matches) {
+  const pending = (matches || []).some(match => {
+    const status = String(match && match.status || '').toUpperCase();
+    const tiedKnockout = match
+      && match.stage
+      && match.stage !== 'GROUP_STAGE'
+      && match.home_score != null
+      && match.away_score != null
+      && Number(match.home_score) === Number(match.away_score)
+      && !match.winner_code;
+    return isPendingProviderFinal(match) || (FINAL_STATUSES.has(status) && tiedKnockout);
+  });
+  return pending ? 'verification_pending' : 'verified_snapshot';
+}
+
+function resultPublicationMetadata(matches) {
+  return {
+    result_version: resultVersionFromMatches(matches),
+    source_state: matchSourceState(matches),
+  };
+}
+
+async function fetchSnapshotMatches() {
+  const rows = await sbAll('matches', `?select=${SAFE_MATCH_COLS}&order=match_date.asc,id.asc`);
+  if (!Array.isArray(rows) || rows.length === 0) throw new Error('matches fetch empty');
+  return dedupeMatchesForSnapshot(rows.map(sanitizeMatchForSnapshot));
+}
+
 async function exportMatches() {
   if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY');
   let matches;
   try {
-    matches = await sbAll('matches', `?select=${SAFE_MATCH_COLS}&order=match_date.asc,id.asc`);
+    matches = await fetchSnapshotMatches();
   } catch (e) {
     console.error('matches fetch failed, keeping last-good snapshot:', e.message);
     return 0;
@@ -173,16 +293,31 @@ async function exportMatches() {
     console.log(`matches.json: frozen - ${liveCount} live match(es); live scores come from the DB, snapshot refreshes once play settles.`);
     return 0;
   }
-  matches = matches.map(sanitizeMatchForSnapshot);
+  const publishedAt = new Date().toISOString();
+  const metadata = resultPublicationMetadata(matches);
 
   const wrote = writeIfChanged(matchesFile, 'matches',
-    { updatedAt: new Date().toISOString(), count: matches.length, matches });
+    {
+      updatedAt: publishedAt,
+      published_at: publishedAt,
+      ...metadata,
+      points_state: 'match_snapshot',
+      count: matches.length,
+      matches
+    });
   console.log(`matches.json: ${wrote ? 'updated' : 'unchanged'} (${matches.length} rows)`);
   return wrote ? 1 : 0;
 }
 
 async function exportLeaderboards(opts = {}) {
   if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY');
+  let resultMetadata;
+  try {
+    resultMetadata = resultPublicationMetadata(await fetchSnapshotMatches());
+  } catch (e) {
+    console.error('leaderboard result metadata failed, keeping last-good snapshots:', e.message);
+    return 0;
+  }
   const poolIds = csvList(opts.poolIds);
   if (Array.isArray(poolIds) && poolIds.length === 0) {
     console.log('leaderboards: skipped (no changed pool ids).');
@@ -205,8 +340,17 @@ async function exportLeaderboards(opts = {}) {
   for (const pool of pools) {
     const standings = (byPool[pool.id] || []).sort((a, b) => (b.total_score || 0) - (a.total_score || 0));
     if (standings.length === 0) continue; // never overwrite a pool's file with an empty board
+    const publishedAt = new Date().toISOString();
     const wrote = writeIfChanged(path.join(LB_DIR, `${pool.id}.json`), 'standings',
-      { updatedAt: new Date().toISOString(), pool_id: pool.id, count: standings.length, standings });
+      {
+        updatedAt: publishedAt,
+        published_at: publishedAt,
+        ...resultMetadata,
+        points_state: 'current_for_result_version',
+        pool_id: pool.id,
+        count: standings.length,
+        standings
+      });
     if (wrote) changed++;
   }
   console.log(`leaderboards: ${changed} pool file(s) updated of ${pools.length}${Array.isArray(poolIds) ? ' requested' : ''}.`);
@@ -235,6 +379,10 @@ if (require.main === module) {
     postgrestInFilter,
     isPendingProviderFinal,
     sanitizeMatchForSnapshot,
+    dedupeMatchesForSnapshot,
+    resultVersionFromMatches,
+    resultPublicationMetadata,
+    logicalMatchKey,
     writeIfChanged,
     sbAll,
     SAFE_MATCH_COLS,

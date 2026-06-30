@@ -99,6 +99,15 @@ function readJson(file) {
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 }
 
+function localMatchesResultVersion() {
+  try {
+    const payload = readJson(path.join(DATA_DIR, 'matches.json'));
+    return payload && payload.result_version || null;
+  } catch (_) {
+    return null;
+  }
+}
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -121,9 +130,15 @@ function rowsMatch(dbUser, snapshotUser) {
     && db.bonus_points === snap.bonus_points;
 }
 
-function verifyPoolSnapshot(label, poolId, dbUsers, snapshot) {
+function verifyPoolSnapshot(label, poolId, dbUsers, snapshot, opts = {}) {
   const errors = [];
   const standings = Array.isArray(snapshot && snapshot.standings) ? snapshot.standings : [];
+  if (opts.resultVersion && snapshot && snapshot.result_version !== opts.resultVersion) {
+    errors.push(`${label} pool ${poolId} result_version mismatch: expected=${opts.resultVersion} snapshot=${snapshot.result_version || 'missing'}`);
+  }
+  if (opts.requirePointsState && snapshot && snapshot.points_state !== 'current_for_result_version') {
+    errors.push(`${label} pool ${poolId} points_state mismatch: expected=current_for_result_version snapshot=${snapshot.points_state || 'missing'}`);
+  }
   if (standings.length !== dbUsers.length) {
     errors.push(`${label} pool ${poolId} count mismatch: db=${dbUsers.length} snapshot=${standings.length}`);
   }
@@ -176,7 +191,12 @@ function publicLeaderboardUrl(poolId) {
   return `${PUBLIC_BASE_URL}/public-data/leaderboard/${encodeURIComponent(poolId)}.json${sep}cb=${Date.now()}`;
 }
 
-async function verifyPublicSnapshots(pools, usersByPool) {
+function publicMatchesUrl() {
+  const sep = PUBLIC_BASE_URL.includes('?') ? '&' : '?';
+  return `${PUBLIC_BASE_URL}/public-data/matches.json${sep}cb=${Date.now()}`;
+}
+
+async function verifyPublicSnapshots(pools, usersByPool, expectedResultVersion = null) {
   if (!PUBLIC_BASE_URL) return { errors: [], verifiedPools: 0, verifiedUsers: 0 };
   let lastErrors = [];
   let lastVerifiedPools = 0;
@@ -186,6 +206,16 @@ async function verifyPublicSnapshots(pools, usersByPool) {
     const errors = [];
     let verifiedPools = 0;
     let verifiedUsers = 0;
+    let publicResultVersion = null;
+    try {
+      const publicMatches = await fetchJson(publicMatchesUrl());
+      publicResultVersion = publicMatches && publicMatches.result_version || null;
+      if (expectedResultVersion && publicResultVersion !== expectedResultVersion) {
+        errors.push(`public matches result_version mismatch: expected=${expectedResultVersion} snapshot=${publicResultVersion || 'missing'}`);
+      }
+    } catch (err) {
+      errors.push(`public matches fetch failed: ${err.message}`);
+    }
 
     for (const pool of pools) {
       const dbUsers = usersByPool.get(pool.id) || [];
@@ -197,7 +227,10 @@ async function verifyPublicSnapshots(pools, usersByPool) {
         errors.push(`public pool ${pool.id} fetch failed: ${err.message}`);
         continue;
       }
-      const checked = verifyPoolSnapshot('public', pool.id, dbUsers, snapshot);
+      const checked = verifyPoolSnapshot('public', pool.id, dbUsers, snapshot, {
+        resultVersion: publicResultVersion || expectedResultVersion,
+        requirePointsState: !!(publicResultVersion || expectedResultVersion),
+      });
       errors.push(...checked.errors);
       verifiedPools++;
       verifiedUsers += checked.verifiedUsers;
@@ -227,6 +260,7 @@ async function main() {
   }
 
   const errors = [];
+  const resultVersion = localMatchesResultVersion();
   let verifiedPools = 0;
   let verifiedUsers = 0;
   let nonZeroPools = 0;
@@ -250,7 +284,10 @@ async function main() {
       continue;
     }
 
-    const checked = verifyPoolSnapshot('local', pool.id, dbUsers, snapshot);
+    const checked = verifyPoolSnapshot('local', pool.id, dbUsers, snapshot, {
+      resultVersion,
+      requirePointsState: !!resultVersion,
+    });
     errors.push(...checked.errors);
     verifiedUsers += checked.verifiedUsers;
     nonZeroUsers += checked.nonZeroUsers;
@@ -261,7 +298,7 @@ async function main() {
   let publicVerifiedPools = 0;
   let publicVerifiedUsers = 0;
   if (!errors.length && PUBLIC_BASE_URL) {
-    const publicResult = await verifyPublicSnapshots(pools, usersByPool);
+    const publicResult = await verifyPublicSnapshots(pools, usersByPool, resultVersion);
     publicVerifiedPools = publicResult.verifiedPools;
     publicVerifiedUsers = publicResult.verifiedUsers;
     errors.push(...publicResult.errors);
@@ -273,6 +310,7 @@ async function main() {
     verifiedUsers,
     nonZeroPools,
     nonZeroUsers,
+    resultVersion,
     publicVerifiedPools,
     publicVerifiedUsers,
     errors: errors.slice(0, 20),
@@ -294,6 +332,8 @@ if (require.main === module) {
     comparableScoreRow,
     requestedLeaderboardPoolIds,
     verifyPoolSnapshot,
+    verifyPublicSnapshots,
+    localMatchesResultVersion,
     rowsMatch,
     scoreNumber,
     sbAll,
