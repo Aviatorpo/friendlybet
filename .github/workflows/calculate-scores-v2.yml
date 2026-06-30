@@ -35,6 +35,14 @@ on:
         options:
           - 'false'
           - 'true'
+      force_leaderboard_export:
+        description: 'Export and prove leaderboard snapshots even when no user score changed'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
 
 permissions:
   contents: write
@@ -89,19 +97,21 @@ jobs:
       # Pillar 1: refresh CDN snapshots (matches + per-pool leaderboards) after scoring,
       # so clients read standings from the edge instead of full-table reads of `users`.
       - name: Export CDN snapshots
-        if: steps.score_results.outputs.changed_pool_ids != '' || inputs.pool_ids != ''
+        if: steps.score_results.outputs.changed_pool_ids != '' || inputs.pool_ids != '' || inputs.force_leaderboard_export == 'true'
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids || inputs.pool_ids }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: ${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}
         run: node scripts/export-snapshots.js leaderboards
 
       - name: Verify scoring snapshots
-        if: steps.score_results.outputs.changed_pool_ids != '' || inputs.pool_ids != ''
+        if: steps.score_results.outputs.changed_pool_ids != '' || inputs.pool_ids != '' || inputs.force_leaderboard_export == 'true'
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids || inputs.pool_ids }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: ${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}
         run: node scripts/verify-scoring-snapshots.js
 
       - name: Audit two-phase knockout scoring
@@ -169,6 +179,7 @@ jobs:
           BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
           BACKUP_FORCE: ${{ inputs.force_backup == 'true' && '1' || '' }}
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids || inputs.pool_ids }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: ${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}
           SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
           SCORING_VERBOSE: '0'
           REGENERATE_COMMANDS: |
@@ -202,11 +213,12 @@ jobs:
         run: node scripts/knockout-scenario-readiness.js
 
       - name: Prove public scoring snapshots
-        if: steps.score_results.outputs.changed_pool_ids != '' || inputs.pool_ids != ''
+        if: steps.score_results.outputs.changed_pool_ids != '' || inputs.pool_ids != '' || inputs.force_leaderboard_export == 'true'
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids || inputs.pool_ids }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: ${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}
           SCORING_SNAPSHOT_PUBLIC_BASE_URL: https://friendlybet.live
           SCORING_SNAPSHOT_PUBLIC_RETRIES: 60
           SCORING_SNAPSHOT_PUBLIC_RETRY_MS: 10000

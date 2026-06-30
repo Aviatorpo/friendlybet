@@ -75,7 +75,11 @@ eq('pool snapshot verifier requires current points state when versioned', V.veri
 ]);
 
 process.env.LEADERBOARD_POOL_IDS = ' pool-a,pool-b,pool-a ';
+delete process.env.FORCE_ALL_LEADERBOARD_SNAPSHOTS;
 eq('requested pool ids are deduplicated and trimmed', V.requestedLeaderboardPoolIds(), ['pool-a', 'pool-b']);
+process.env.FORCE_ALL_LEADERBOARD_SNAPSHOTS = '1';
+eq('force-all snapshot verification ignores requested pool ids', V.requestedLeaderboardPoolIds(), []);
+delete process.env.FORCE_ALL_LEADERBOARD_SNAPSHOTS;
 
 (async () => {
   const urls = [];

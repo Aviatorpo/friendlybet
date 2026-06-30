@@ -40,6 +40,7 @@ function csvList(value) {
 }
 
 function requestedLeaderboardPoolIds() {
+  if (process.env.FORCE_ALL_LEADERBOARD_SNAPSHOTS === '1') return [];
   return [...new Set(csvList(process.env.LEADERBOARD_POOL_IDS || process.env.SCORING_SNAPSHOT_POOL_IDS))];
 }
 

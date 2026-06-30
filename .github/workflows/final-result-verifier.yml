@@ -181,19 +181,21 @@ jobs:
         run: node scripts/calculate-scores-v2.js --critical
 
       - name: Export leaderboard snapshots after scoring
-        if: steps.verify_results.outputs.changed == 'true' && steps.score_results.outputs.changed_pool_ids != ''
+        if: steps.verify_results.outputs.changed == 'true'
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
         run: node scripts/export-snapshots.js leaderboards
 
       - name: Verify scoring snapshots after scoring
-        if: steps.verify_results.outputs.changed == 'true' && steps.score_results.outputs.changed_pool_ids != ''
+        if: steps.verify_results.outputs.changed == 'true'
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
         run: node scripts/verify-scoring-snapshots.js
 
       - name: Audit two-phase knockout scoring after scoring
@@ -241,6 +243,7 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           FORCE_MATCH_SNAPSHOT: '1'
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
           SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
           SCORING_VERBOSE: '0'
           REGENERATE_COMMANDS: |
@@ -270,11 +273,12 @@ jobs:
         run: node scripts/knockout-scenario-readiness.js
 
       - name: Prove public scoring snapshots after verified result
-        if: steps.verify_results.outputs.changed == 'true' && steps.score_results.outputs.changed_pool_ids != ''
+        if: steps.verify_results.outputs.changed == 'true'
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
           SCORING_SNAPSHOT_PUBLIC_BASE_URL: https://friendlybet.live
           SCORING_SNAPSHOT_PUBLIC_RETRIES: 60
           SCORING_SNAPSHOT_PUBLIC_RETRY_MS: 10000
