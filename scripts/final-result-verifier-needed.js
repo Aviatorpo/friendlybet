@@ -99,15 +99,6 @@ function tiedScore(match) {
   return hasNumericScore(match) && Number(match.home_score) === Number(match.away_score);
 }
 
-function hasLiveResidue(match) {
-  return !!(match && (
-    match.live_clock != null ||
-    match.live_period != null ||
-    match.status_detail != null ||
-    match.live_source != null
-  ));
-}
-
 function parseOptionalTime(value) {
   const ms = Date.parse(value || '');
   return Number.isFinite(ms) ? ms : NaN;
@@ -130,7 +121,7 @@ function needsFinalVerification(match) {
   const status = _status(match);
   if (!TERMINAL.has(status)) return true;
   if (status !== 'FINISHED' && status !== 'AWARDED') return false;
-  if (!hasNumericScore(match) || hasLiveResidue(match)) return true;
+  if (!hasNumericScore(match)) return true;
   return isKnockoutStage(match.stage) && tiedScore(match) && !match.winner_code;
 }
 

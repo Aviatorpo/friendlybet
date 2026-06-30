@@ -48,6 +48,7 @@ Use this for World Cup match-result sync, group completion, scoring, dashboard, 
 - More than two repeated failure emails from the same workflow family in 30 minutes during a live transition is a control-plane incident. Assign one owner, summarize the current proven layer, and suppress or demote non-critical alert causes until the user path is restored.
 - A live-transition recovery report must include workflow run ids, finished-match count, pool/user scoring count when available, snapshot verification result, production URL/public-data proof, and the exact remaining blocker.
 - Public proof must be deployment-aware: after a workflow pushes generated scoring snapshots to `main`, give Vercel/CDN a bounded cache-busted propagation window before failing the run. A two-minute proof window is too brittle for generated data commits; use a roughly 10-minute window for live leaderboard proof, while local snapshot-vs-DB verification remains fail-fast before commit.
+- Do not let stale live metadata create permanent final-result work. A terminal `FINISHED`/`AWARDED` row with numeric score is scoreable; stale `live_clock`, `live_period`, `status_detail`, or `live_source` should be cleaned or sanitized from public snapshots, not sent through official-result consensus forever. Missing score, non-terminal stale-live state, or tied knockout without `winner_code` remain verifier candidates.
 
 ## Fast Scoring Planning Checklist
 

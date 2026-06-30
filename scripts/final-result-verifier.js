@@ -103,20 +103,11 @@ function tiedScore(homeScore, awayScore) {
   return homeScore != null && awayScore != null && Number(homeScore) === Number(awayScore);
 }
 
-function hasLiveResidue(m) {
-  return !!(m && (
-    m.live_clock != null ||
-    m.live_period != null ||
-    m.status_detail != null ||
-    m.live_source != null
-  ));
-}
-
 function needsFinalVerification(m) {
   const status = _status(m);
   if (!TERMINAL.has(status)) return true;
   if (!RESULT_TERMINAL.has(status)) return false;
-  if (!hasNumericScore(m) || hasLiveResidue(m)) return true;
+  if (!hasNumericScore(m)) return true;
   return isKnockoutStage(m.stage) && tiedScore(m.home_score, m.away_score) && !m.winner_code;
 }
 
