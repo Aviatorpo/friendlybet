@@ -367,6 +367,7 @@ const Readiness = require('./live-completion-readiness');
     'pool Pundit invite buzz is gated by effective open state',
     'live poller covers group and knockout match days',
     'live poller can push refreshed snapshots',
+    'verified finals publish all leaderboard snapshots for the result version',
     'final verifier covers group and knockout match days',
     'final verifier auto-escalates approved emergency sources',
     'live poller final handoff can auto-escalate approved emergency sources',

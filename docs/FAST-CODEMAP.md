@@ -102,6 +102,7 @@ The service-worker cache key gates PWA updates.
 10e. Final-result emergency sources must escalate automatically from stuck-match age/stale-live state. Manual emergency workflow input is diagnostic only, not the normal fallback.
 10f. Public `matches.json` and `leaderboard/*.json` must carry `result_version`, `published_at`, `source_state`, and `points_state`; `verify-scoring-snapshots` should reject leaderboards that do not match the match snapshot version.
 10g. Public match snapshots must de-duplicate logical fixtures and prefer official/FIFA enriched rows over stale legacy provider rows.
+10h. A new verified result version can require leaderboard publication even when no user's numeric score changed. Verified-final workflows must force all leaderboard snapshots through export/proof for the new `result_version`.
 11. `knockout_picks` has no `team_code`; single-phase bracket picks are stored in `predicted_winner`.
 12. `group_position_picks` has no `multiplier_applied`; single-phase scoring uses live multipliers.
 13. Keep frontend `FIFA_RANKINGS` and backend `FIFA_RANK` in sync.

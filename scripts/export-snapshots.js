@@ -73,6 +73,7 @@ function csvList(value) {
 function requestedLeaderboardPoolIds(args = process.argv.slice(2), env = process.env) {
   const arg = args.find(a => String(a || '').startsWith('--pool-ids='));
   if (arg) return csvList(arg.slice('--pool-ids='.length)) || [];
+  if (env.FORCE_ALL_LEADERBOARD_SNAPSHOTS === '1') return null;
   if (Object.prototype.hasOwnProperty.call(env, 'LEADERBOARD_POOL_IDS')) {
     const poolIds = csvList(env.LEADERBOARD_POOL_IDS);
     return poolIds && poolIds.length ? poolIds : null;

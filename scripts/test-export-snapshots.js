@@ -89,6 +89,7 @@ check('scheduled match remains unchanged', () => {
 check('leaderboard pool filter parses CLI and env safely', () => {
   assert.deepStrictEqual(Export.requestedLeaderboardPoolIds(['leaderboards', '--pool-ids=p1,p2'], {}), ['p1', 'p2']);
   assert.deepStrictEqual(Export.requestedLeaderboardPoolIds(['leaderboards'], { LEADERBOARD_POOL_IDS: 'p3, p4' }), ['p3', 'p4']);
+  assert.strictEqual(Export.requestedLeaderboardPoolIds(['leaderboards'], { LEADERBOARD_POOL_IDS: 'p3', FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1' }), null);
   assert.strictEqual(Export.requestedLeaderboardPoolIds(['leaderboards'], {}), null);
   assert.strictEqual(Export.requestedLeaderboardPoolIds(['leaderboards'], { LEADERBOARD_POOL_IDS: '' }), null);
   assert.deepStrictEqual(Export.requestedLeaderboardPoolIds(['leaderboards', '--pool-ids='], {}), []);

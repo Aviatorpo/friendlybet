@@ -160,6 +160,20 @@ check('verified-result workflows force match snapshot export before dependent co
   }
 });
 
+check('verified-result workflows publish all leaderboard snapshots for a new result version', () => {
+  for (const file of ['.github/workflows/final-result-verifier.yml', '.github/workflows/live-poller.yml']) {
+    const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    assert.ok(
+      !text.includes("steps.verify_results.outputs.changed == 'true' && steps.score_results.outputs.changed_pool_ids != ''"),
+      `${file} must not skip leaderboard publication when a verified result changes but no score changes`
+    );
+    assert.ok(
+      (text.match(/FORCE_ALL_LEADERBOARD_SNAPSHOTS:\s*'1'/g) || []).length >= 3,
+      `${file} must export, verify, commit, and prove all leaderboard snapshots for the new result version`
+    );
+  }
+});
+
 check('final-result verifier has continuous 15-minute recovery schedule', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/final-result-verifier.yml'), 'utf8');
   assert.ok(text.includes("cron: '4,19,34,49 * 11-28 6 *'"), 'final verifier must not have group-stage recovery gaps');

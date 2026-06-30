@@ -417,6 +417,15 @@ async function runReadiness(options = {}) {
   add(checks, 'live poller can push refreshed snapshots', /permissions:\s*\n\s+contents:\s*write/.test(livePoller), 'verified-final path must commit match, leaderboard, banter, and Pundit snapshots');
   add(
     checks,
+    'verified finals publish all leaderboard snapshots for the result version',
+    !livePoller.includes("steps.verify_results.outputs.changed == 'true' && steps.score_results.outputs.changed_pool_ids != ''")
+      && !verifier.includes("steps.verify_results.outputs.changed == 'true' && steps.score_results.outputs.changed_pool_ids != ''")
+      && (livePoller.match(/FORCE_ALL_LEADERBOARD_SNAPSHOTS:\s*'1'/g) || []).length >= 3
+      && (verifier.match(/FORCE_ALL_LEADERBOARD_SNAPSHOTS:\s*'1'/g) || []).length >= 3,
+    'a verified result must refresh/prove static leaderboard snapshots even when no user score changes'
+  );
+  add(
+    checks,
     'final verifier covers group and knockout match days',
     verifier.includes("cron: '4,19,34,49 * 11-28 6 *'")
       && verifier.includes("cron: '4,19,34,49 16-23 29 6 *'")
