@@ -579,9 +579,25 @@ function tpResolveFeed(feed, seed, thirdAssignment, pos) {
   return null;
 }
 
+function thirdPlaceGroupsFromGroupState(groupState) {
+  if (!groupState) return [];
+  if (groupState.thirdPlaceGroups) return Array.from(groupState.thirdPlaceGroups).filter(Boolean).sort();
+  const groupPositions = groupState.groupPositions || groupState.standings || {};
+  const bestThirdTeams = groupState.realBest8Thirds
+    ? Array.from(groupState.realBest8Thirds)
+    : [];
+  return bestThirdTeams.map(teamCode => {
+    for (const [groupLetter, teams] of Object.entries(groupPositions)) {
+      if (Array.isArray(teams) && teams[2] === teamCode) return groupLetter;
+    }
+    return null;
+  }).filter(Boolean).sort();
+}
+
 function buildTwoPhaseSlotMatches(finishedMatches, groupState = null) {
-  const seedState = groupState && groupState.status === 'ready'
-    ? { ok: true, groupPositions: groupState.groupPositions, thirdPlaceAdvancers: groupState.thirdPlaceGroups }
+  const groupPositions = groupState && (groupState.groupPositions || groupState.standings);
+  const seedState = groupState && groupState.status === 'ready' && groupPositions
+    ? { ok: true, groupPositions, thirdPlaceAdvancers: thirdPlaceGroupsFromGroupState(groupState) }
     : WCR.lateKnockoutSeedFromMatches(finishedMatches || [], { strict: true });
   if (!seedState || !seedState.ok) return new Map();
   const thirdAssignment = FIFA_THIRD_PLACE.assignment(seedState.thirdPlaceAdvancers || []);
