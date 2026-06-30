@@ -298,6 +298,7 @@ const I18N = {
 
 Object.assign(I18N.he, {
   twoPhaseSub:'\u05d6\u05d4 \u05e4\u05d5\u05dc \u05d3\u05d5-\u05e9\u05dc\u05d1\u05d9. \u05db\u05e8\u05d2\u05e2 \u05de\u05d5\u05e6\u05d2\u05d5\u05ea \u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05e9\u05dc\u05d1 \u05d4\u05d1\u05ea\u05d9\u05dd; \u05d4\u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8 \u05d9\u05d5\u05e4\u05d9\u05e2 \u05d1\u05d4\u05de\u05e9\u05da.',
+  twoPhaseKnockoutSub:'\u05d6\u05d4 \u05e4\u05d5\u05dc \u05d3\u05d5-\u05e9\u05dc\u05d1\u05d9. \u05db\u05e8\u05d2\u05e2 \u05de\u05d5\u05e6\u05d2\u05d5\u05ea \u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05e9\u05dc\u05d1 \u05d4\u05d1\u05ea\u05d9\u05dd \u05d5\u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05d4\u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8 \u05e9\u05e0\u05e9\u05de\u05e8\u05d5.',
   advancersLabel:'\u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05d4\u05e2\u05d5\u05dc\u05d5\u05ea',
   knockoutLabel:'\u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8',
   knockoutLockedTitle:'\u05d1\u05d7\u05d9\u05e8\u05d5\u05ea \u05d4\u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8 \u05e2\u05d3\u05d9\u05d9\u05df \u05dc\u05d0 \u05d6\u05de\u05d9\u05e0\u05d5\u05ea',
@@ -308,6 +309,7 @@ Object.assign(I18N.he, {
 });
 Object.assign(I18N.en, {
   twoPhaseSub:'This is a two-phase pool. Group-stage advancing picks are visible now; knockout picks will appear later.',
+  twoPhaseKnockoutSub:'This is a two-phase pool. Group-stage advancing picks and saved knockout picks are visible now.',
   advancersLabel:'Advancing picks',
   knockoutLabel:'Knockout',
   knockoutLockedTitle:'Knockout picks are not available yet',
@@ -361,6 +363,17 @@ Object.assign(I18N.en, {
 
 function param(k){ return new URLSearchParams(location.search).get(k); }
 
+function tpMatchIdToBracketPos(matchId){
+  const m = String(matchId || '').match(/^(R32|R16|QF|SF|FINAL)_M(\d+)$/);
+  if (!m) return null;
+  const n = parseInt(m[2], 10);
+  if (m[1] === 'R32') return n >= 1 && n <= 16 ? n : null;
+  if (m[1] === 'R16') return n >= 1 && n <= 8 ? 16 + n : null;
+  if (m[1] === 'QF') return n >= 1 && n <= 4 ? 24 + n : null;
+  if (m[1] === 'SF') return n >= 1 && n <= 2 ? 28 + n : null;
+  return n === 1 ? 31 : null;
+}
+
 function render(picks){
   const S = window.FBShare;
   const lang = picks.lang || 'he';
@@ -384,9 +397,11 @@ function render(picks){
   const tn = (c) => esc(S.teamName(c, lang));
   const fl = (c, st) => S.flagImg(safeTeamCode(c), { style: st || '' });
 
-  const isTwoPhase = picks.mode === 'two_phase';
-  const bracket = isTwoPhase ? null : S.resolveBracket(picks);
-  const champ = isTwoPhase ? null : (picks.tournamentWinner || (picks.bracketPicks||{})[31]);
+  const isTwoPhasePending = picks.mode === 'two_phase';
+  const isTwoPhaseKnockout = picks.mode === 'two_phase_knockout';
+  const isTwoPhase = isTwoPhasePending || isTwoPhaseKnockout;
+  const bracket = isTwoPhasePending ? null : S.resolveBracket(picks);
+  const champ = isTwoPhasePending ? null : (picks.tournamentWinner || (picks.bracketPicks||{})[31]);
   const fin = bracket ? bracket.final : {};
   const finalist = (!isTwoPhase && fin.home === champ) ? fin.away : fin.home;
   const champRoad = isTwoPhase ? [] : S.teamRoad(picks, champ, bracket);
@@ -528,7 +543,7 @@ function render(picks){
       <div class="logo">⚽</div><b>FriendlyBet</b><span>· ${L.tournament}</span>
     </div>
     <h1 class="title"><span class="who">${esc(picks.nickname)}</span> · ${L.title}</h1>
-    <div class="subtitle">${isTwoPhase ? L.twoPhaseSub : L.sub}</div>
+    <div class="subtitle">${isTwoPhaseKnockout ? L.twoPhaseKnockoutSub : (isTwoPhase ? L.twoPhaseSub : L.sub)}</div>
 
     ${!isTwoPhase ? `<div class="share-hero">
       <img class="share-hero-img" src="${heroSrc}" alt="" onerror="this.onerror=null;this.src=this.src.replace('.webp','.jpg')">
@@ -558,7 +573,7 @@ function render(picks){
     <div class="section-label">${isTwoPhase ? L.advancersLabel : L.groupsLabel}</div>
     <div class="groups">${phaseGroupsHtml}</div>
 
-    ${isTwoPhase ? `
+    ${isTwoPhasePending ? `
     <div class="section-label">${L.knockoutLabel}</div>
     <div class="locked-panel">
       <div class="lock-icon">!</div>
@@ -664,12 +679,14 @@ async function fetchRealPicksPhaseAware(userId, poolId, lang){
     'https://kovhuahdoluxyqqwqohw.supabase.co',
     'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU'
   );
-  const [usr, pool, gp, g2p, kp, tw, ts, tp, matches] = await Promise.all([
+  const [usr, pool, gp, g2p, kp, kp2pRpc, kp2pDirect, tw, ts, tp, matches] = await Promise.all([
     sb.from('users').select('nickname').eq('id', userId).maybeSingle(),
     sb.from('pools').select('betting_mode').eq('id', poolId).maybeSingle(),
     sb.from('group_position_picks').select('group_letter,position,team_code').eq('pool_id',poolId).eq('user_id',userId),
     sb.from('group_picks').select('group_letter,team_code').eq('pool_id',poolId).eq('user_id',userId),
     sb.rpc('get_public_bracket', { p_user_id: userId, p_pool_id: poolId }),
+    sb.rpc('get_public_two_phase_bracket', { p_user_id: userId, p_pool_id: poolId }),
+    sb.from('knockout_picks').select('match_id,predicted_winner').eq('pool_id',poolId).eq('user_id',userId).is('bracket_position', null),
     sb.from('tournament_winner_picks').select('team_code').eq('pool_id',poolId).eq('user_id',userId).maybeSingle(),
     sb.from('top_scorer_picks').select('player_name,team_code').eq('pool_id',poolId).eq('user_id',userId).maybeSingle(),
     sb.from('sp_third_place_picks').select('group_letter').eq('pool_id',poolId).eq('user_id',userId),
@@ -708,6 +725,26 @@ async function fetchRealPicksPhaseAware(userId, poolId, lang){
       const order = window.FBShare.WC2026_GROUPS[letter] || [];
       groupAdvancers[letter].sort((a,b) => order.indexOf(a) - order.indexOf(b));
     });
+    const twoPhaseKnockoutRows = (kp2pRpc && !kp2pRpc.error && Array.isArray(kp2pRpc.data) && kp2pRpc.data.length)
+      ? kp2pRpc.data
+      : ((kp2pDirect && !kp2pDirect.error && Array.isArray(kp2pDirect.data)) ? kp2pDirect.data : []);
+    const twoPhaseBracketPicks = {};
+    twoPhaseKnockoutRows.forEach(r => {
+      const pos = tpMatchIdToBracketPos(r && r.match_id);
+      if (pos && r && r.predicted_winner) twoPhaseBracketPicks[pos] = r.predicted_winner;
+    });
+    const seed = window.FBShare.lateKnockoutSeedFromMatches(matches.data || []);
+    if (seed && Object.keys(twoPhaseBracketPicks).length > 0) {
+      return {
+        nickname, lang, mode:'two_phase_knockout',
+        groupAdvancers,
+        groupPositions: seed.groupPositions,
+        bracketPicks: twoPhaseBracketPicks,
+        thirdPlaceAdvancers: seed.thirdPlaceAdvancers,
+        tournamentWinner: twoPhaseBracketPicks[31],
+        topScorer: null
+      };
+    }
     return { nickname, lang, mode:'two_phase', groupAdvancers };
   }
 
