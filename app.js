@@ -1891,6 +1891,14 @@ function _hasPendingResultVerification() {
   return rows.length > 0;
 }
 
+function _dashboardPendingMatchUxKind(now = Date.now()) {
+  const rows = state.results && Array.isArray(state.results.pendingVerificationMatches)
+    ? state.results.pendingVerificationMatches
+    : [];
+  if (rows.some(m => _matchUxState(m, now).kind === 'final_confirming')) return 'final_confirming';
+  return rows.length ? 'live_updating' : null;
+}
+
 async function _dashboardTournamentStarted(hasScores) {
   if (hasScores || (state.results.finishedMatches || []).length > 0) return true;
   try {
@@ -1927,11 +1935,15 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
   let titleKey = lateKo ? 'dashboard.liveStatus.lateKnockoutTitle' : (lateOpen ? 'dashboard.liveStatus.lateTitle' : 'dashboard.liveStatus.title');
   let kickerKey = lateKo ? 'dashboard.liveStatus.lateKnockoutKicker' : (lateOpen ? 'dashboard.liveStatus.lateKicker' : 'dashboard.liveStatus.kicker');
   let zeroKey = lateKo ? 'dashboard.liveStatus.lateKnockoutDeadline' : (lateOpen ? 'dashboard.liveStatus.lateDeadline' : 'dashboard.liveStatus.zeroPoints');
+  let pendingNoteKey = null;
   if (dataPending && !lateKo && !lateOpen) {
-    titleKey = 'dashboard.dataPending.title';
-    textKey = 'dashboard.dataPending.text';
-    kickerKey = 'dashboard.dataPending.kicker';
-    zeroKey = 'dashboard.dataPending.badge';
+    const pendingKind = _dashboardPendingMatchUxKind();
+    const pendingPrefix = pendingKind === 'final_confirming' ? 'dashboard.resultConfirming' : 'dashboard.liveUpdating';
+    titleKey = `${pendingPrefix}.title`;
+    textKey = `${pendingPrefix}.text`;
+    kickerKey = `${pendingPrefix}.kicker`;
+    zeroKey = `${pendingPrefix}.badge`;
+    pendingNoteKey = `${pendingPrefix}.note`;
   } else if (!lateKo && !lateOpen && (phase === 'officialFirst' || phase === 'officialSeveral')) {
     titleKey = phase === 'officialFirst' ? 'dashboard.officialStatus.firstGroupTitle' : 'dashboard.officialStatus.severalGroupsTitle';
     textKey = phase === 'officialFirst' ? 'dashboard.officialStatus.firstGroupText' : 'dashboard.officialStatus.severalGroupsText';
@@ -1959,7 +1971,7 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
       <span>${t('dashboard.liveStatus.progress', { done: gp.finished, total: gp.total })}</span>
       <span>${t('dashboard.liveStatus.groups', { done: gp.completeGroups, total: gp.totalGroups })}</span>
     </div>
-    ${dataPending && !lateKo && !lateOpen ? `<div class="dls-note">${t('dashboard.dataPending.note')}</div>` : ''}
+    ${pendingNoteKey ? `<div class="dls-note">${t(pendingNoteKey)}</div>` : ''}
     ${showThirdPlacePending ? `<div class="dls-note">${t('dashboard.officialStatus.thirdPlacePending')}</div>` : ''}
   `;
   el.style.display = '';
@@ -3458,6 +3470,115 @@ function _matchIsLiveish(m, now = Date.now()) {
   const ko = Date.parse(m.match_date);
   return !isNaN(ko) && ko <= now && (now - ko) < _MAX_MATCH_MS && !_matchIsTerminalStatus(m);
 }
+function _matchUxState(m, now = Date.now()) {
+  const finalWithoutScore = _matchIsFinishedStatus(m) && !_matchHasNumericScore(m);
+  const pendingProviderFinal = _matchIsPendingProviderFinal(m);
+  if (pendingProviderFinal || finalWithoutScore) {
+    return {
+      kind: 'final_confirming',
+      className: 'verifying',
+      statusKey: 'matchesEx.finalBeingConfirmed',
+      noteKey: 'matchesEx.finalBeingConfirmedNote',
+      requiresVerification: true,
+      isLive: false,
+      isFinished: false,
+      isScheduled: false,
+      showScore: false,
+      liveScoreTrusted: false
+    };
+  }
+
+  if (_matchNeedsStatusVerification(m, now)) {
+    return {
+      kind: 'live_updating',
+      className: 'verifying',
+      statusKey: 'matchesEx.liveUpdating',
+      noteKey: 'matchesEx.liveStatusUpdatingNote',
+      requiresVerification: true,
+      isLive: false,
+      isFinished: false,
+      isScheduled: false,
+      showScore: false,
+      liveScoreTrusted: false
+    };
+  }
+
+  if (_matchIsHalftimeBreak(m, now)) {
+    const liveScoreTrusted = _matchLiveScoreTrusted(m, now);
+    return {
+      kind: 'halftime',
+      className: 'halftime',
+      statusKey: 'matchesEx.halftime',
+      noteKey: null,
+      requiresVerification: false,
+      isLive: true,
+      isFinished: false,
+      isScheduled: false,
+      showScore: liveScoreTrusted,
+      liveScoreTrusted
+    };
+  }
+
+  if (_matchIsLiveish(m, now)) {
+    const liveClock = _matchLiveClockLabel(m, now);
+    const liveScoreTrusted = _matchLiveScoreTrusted(m, now);
+    if (!liveScoreTrusted) {
+      return {
+        kind: 'live_updating',
+        className: 'live',
+        statusKey: 'matchesEx.liveUpdating',
+        noteKey: 'matchesEx.liveScoreUpdatingNote',
+        requiresVerification: false,
+        isLive: true,
+        isFinished: false,
+        isScheduled: false,
+        showScore: false,
+        liveScoreTrusted
+      };
+    }
+    return {
+      kind: 'live',
+      className: 'live',
+      statusKey: 'matchesEx.live',
+      statusSuffix: liveClock || null,
+      noteKey: null,
+      requiresVerification: false,
+      isLive: true,
+      isFinished: false,
+      isScheduled: false,
+      showScore: true,
+      liveScoreTrusted
+    };
+  }
+
+  if (_matchIsFinishedStatus(m)) {
+    return {
+      kind: 'final',
+      className: 'finished',
+      statusKey: 'matchesEx.finished',
+      noteKey: null,
+      requiresVerification: false,
+      isLive: false,
+      isFinished: true,
+      isScheduled: false,
+      showScore: _matchHasNumericScore(m),
+      liveScoreTrusted: false
+    };
+  }
+
+  return {
+    kind: 'scheduled',
+    className: 'scheduled',
+    statusKey: null,
+    noteKey: null,
+    requiresVerification: false,
+    isLive: false,
+    isFinished: false,
+    isScheduled: true,
+    showScore: false,
+    liveScoreTrusted: false
+  };
+}
 function _snapshotHasStaleScheduled(matches, now = Date.now()) {
   return (matches || []).some(m => _matchIsStaleScheduled(m, now) && !_matchIsTerminalStatus(m));
 }
@@ -3834,7 +3955,7 @@ async function loadResultsData(options = {}) {
 
     state.results.allMatches = allRows || [];
     state.results.finishedMatches = matches || [];
-    state.results.pendingVerificationMatches = (allRows || []).filter(m => _matchNeedsStatusVerification(m));
+    state.results.pendingVerificationMatches = (allRows || []).filter(m => _matchUxState(m).requiresVerification);
     state.results.groupStandings = computeCurrentGroupStandings(matches || []);
     
     // Build per-team match list
@@ -11093,15 +11214,11 @@ function createMatchCard(match) {
   const domId = _matchDomId(match);
   if (domId) card.id = domId;
   
-  // PAUSED can mean a real break, but some feeds also keep PAUSED while sending
-  // a second-half clock. Only render Half-time when the detail actually says so.
-  const status = _matchStatus(match);
-  const needsStatusVerification = _matchNeedsStatusVerification(match);
-  const isHalftimeBreak = !needsStatusVerification && _matchIsHalftimeBreak(match);
-  const isLive = _matchIsLiveish(match);
-  const isFinished = _matchIsFinishedStatus(match);
-  const isScheduled = !isLive && !isFinished;
-  const liveScoreTrusted = !needsStatusVerification && isLive && _matchLiveScoreTrusted(match);
+  const uxState = _matchUxState(match);
+  const needsStatusVerification = uxState.requiresVerification;
+  const isHalftimeBreak = uxState.kind === 'halftime';
+  const isLive = uxState.isLive;
+  const isFinished = uxState.isFinished;
   
   card.className = 'match-card';
   if (needsStatusVerification) card.classList.add('verifying');
@@ -11125,21 +11242,10 @@ function createMatchCard(match) {
   // local minute label would look precise while being wrong.
   let statusText;
   let statusClass;
-  if (needsStatusVerification) {
-    statusText = t('matchesEx.verifyingResult');
-    statusClass = 'verifying';
-  } else if (isHalftimeBreak) {
-    // Half-time (or any break): show the score with an explicit half-time badge,
-    // driven by the real API status - not the elapsed-time guess.
-    statusText = t('matchesEx.halftime');
-    statusClass = 'halftime';
-  } else if (isLive) {
-    const liveClock = _matchLiveClockLabel(match);
-    statusText = liveScoreTrusted && liveClock ? `${t('matchesEx.live')} · ${liveClock}` : t('matchesEx.live');
-    statusClass = 'live';
-  } else if (isFinished) {
-    statusText = t('matchesEx.finished');
-    statusClass = 'finished';
+  if (uxState.statusKey) {
+    statusText = t(uxState.statusKey);
+    if (uxState.statusSuffix) statusText = `${statusText} \u00B7 ${uxState.statusSuffix}`;
+    statusClass = uxState.className;
   } else {
     statusText = formatMatchTime(match.match_date);
     statusClass = 'scheduled';
@@ -11165,9 +11271,9 @@ function createMatchCard(match) {
   let advancementNote = '';
   if (needsStatusVerification) {
     scoreHtml = `<div class="match-score no-score">VS</div>`;
-    pendingScoreNote = `<div class="match-score-pending-note">${t('matchesEx.statusBeingVerified')}</div>`;
+    pendingScoreNote = `<div class="match-score-pending-note">${t(uxState.noteKey || 'matchesEx.statusBeingVerified')}</div>`;
   } else if (isFinished || isLive) {
-    const hasScore = isFinished ? _matchHasNumericScore(match) : liveScoreTrusted;
+    const hasScore = uxState.showScore;
     scoreHtml = hasScore ? `
       <div class="match-score">
         <span>${match.home_score}</span>
@@ -11176,7 +11282,7 @@ function createMatchCard(match) {
       </div>
     ` : `<div class="match-score no-score">VS</div>`;
     if (!hasScore) {
-      pendingScoreNote = `<div class="match-score-pending-note">${isLive ? t('matchesEx.liveResultAfterFinal') : t('matchesEx.scoreAfterFinal')}</div>`;
+      pendingScoreNote = `<div class="match-score-pending-note">${t(uxState.noteKey || (isLive ? 'matchesEx.liveScoreUpdatingNote' : 'matchesEx.scoreAfterFinal'))}</div>`;
     }
     if (isFinished && resolvedWinner && _matchIsKnockoutStage(match) && Number(match.home_score) === Number(match.away_score)) {
       advancementNote = `<div class="match-score-pending-note">${t('matchesEx.advancedOnPenalties', { team: getTeamName(resolvedWinner) })}</div>`;

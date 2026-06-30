@@ -43,6 +43,7 @@ const phaseOfficialSource = extractFunction(app, '_phaseHasOfficialScoring');
 const groupProgressSource = extractFunction(app, '_dashboardGroupProgress');
 const groupIdentitySource = extractFunction(app, '_dashboardMatchIdentity');
 const pendingVerificationSource = extractFunction(app, '_hasPendingResultVerification');
+const dashboardPendingKindSource = extractFunction(app, '_dashboardPendingMatchUxKind');
 const sandbox = {
   state: { results: { finishedMatches: [], pendingVerificationMatches: [] } },
   _dashboardGroupProgress: () => ({ completeGroups: 0, totalGroups: 12 })
@@ -140,15 +141,18 @@ const dashboardStatusSandbox = {
   _lateEntryCutoffLabel: () => '20:00',
   _knockoutCutoffLabel: () => '20:00',
   t: (key, vars = {}) => `${key}${Object.keys(vars).length ? ':' + JSON.stringify(vars) : ''}`,
+  _matchUxState: (m) => ({ kind: (m && m.uxKind) || 'live_updating' }),
 };
 vm.createContext(dashboardStatusSandbox);
-vm.runInContext(`${phaseSource}; ${pendingVerificationSource}; ${extractFunction(app, '_renderDashboardLiveStatus')}; this.renderDashboardLiveStatus = _renderDashboardLiveStatus;`, dashboardStatusSandbox);
+vm.runInContext(`${phaseSource}; ${pendingVerificationSource}; ${dashboardPendingKindSource}; ${extractFunction(app, '_renderDashboardLiveStatus')}; this.renderDashboardLiveStatus = _renderDashboardLiveStatus;`, dashboardStatusSandbox);
 
 function renderDashboardStatus(progress, tournamentStarted = true, hasScores = false, pendingOrPoolMode = false, poolMode = undefined) {
   dashboardStatusSandbox.progress = progress;
-  const pending = pendingOrPoolMode === true;
+  const pendingRows = Array.isArray(pendingOrPoolMode)
+    ? pendingOrPoolMode
+    : (pendingOrPoolMode === true ? [{ id: 'm-pending' }] : []);
   const mode = typeof pendingOrPoolMode === 'string' ? pendingOrPoolMode : poolMode;
-  dashboardStatusSandbox.state.results.pendingVerificationMatches = pending ? [{ id: 'm-pending' }] : [];
+  dashboardStatusSandbox.state.results.pendingVerificationMatches = pendingRows;
   dashboardStatusSandbox.state.currentPool = mode ? { betting_mode: mode } : {};
   dashboardStatusSandbox.statusEl = { style: {}, innerHTML: '', classList: { toggle() {} } };
   dashboardStatusSandbox.renderDashboardLiveStatus(tournamentStarted, hasScores);
@@ -171,10 +175,20 @@ assert(statusEl.innerHTML.includes('dashboard.officialStatus.severalGroupsText:{
 assert(statusEl.innerHTML.includes('dashboard.officialStatus.thirdPlacePending'), 'Several-groups dashboard status must keep pending third-place explanation');
 
 statusEl = renderDashboardStatus({ finished: 18, total: 72, completeGroups: 3, totalGroups: 12 }, true, true, true);
-assert(statusEl.innerHTML.includes('dashboard.dataPending.title'), 'Pending result verification must override official dashboard copy');
-assert(statusEl.innerHTML.includes('dashboard.dataPending.badge'), 'Pending dashboard state must show a finalizing badge');
-assert(statusEl.innerHTML.includes('dashboard.dataPending.note'), 'Pending dashboard state must explain that scores will return automatically');
+assert(statusEl.innerHTML.includes('dashboard.liveUpdating.title'), 'Pending live-state verification must override official dashboard copy');
+assert(statusEl.innerHTML.includes('dashboard.liveUpdating.badge'), 'Pending live-state dashboard state must show a checking badge');
+assert(statusEl.innerHTML.includes('dashboard.liveUpdating.note'), 'Pending live-state dashboard state must explain that scores will return automatically');
 assert(!statusEl.innerHTML.includes('dashboard.officialStatus.thirdPlacePending'), 'Pending dashboard state must not mix in normal scoring notes');
+
+statusEl = renderDashboardStatus(
+  { finished: 18, total: 72, completeGroups: 3, totalGroups: 12 },
+  true,
+  true,
+  [{ id: 'm-final-pending', uxKind: 'final_confirming' }]
+);
+assert(statusEl.innerHTML.includes('dashboard.resultConfirming.title'), 'Pending final-result confirmation must use result-confirming dashboard copy');
+assert(statusEl.innerHTML.includes('dashboard.resultConfirming.badge'), 'Pending final-result confirmation must show a confirming badge');
+assert(statusEl.innerHTML.includes('dashboard.resultConfirming.note'), 'Pending final-result confirmation must explain that last official standings remain visible');
 
 statusEl = renderDashboardStatus({ finished: 72, total: 72, completeGroups: 12, totalGroups: 12 });
 assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.title'), 'All completed groups must use group-stage-complete dashboard copy');
@@ -325,6 +339,10 @@ assert(/\.admin-badge\s*\{[\s\S]*?flex-shrink:\s*0;[\s\S]*?\}/.test(styles), 'Ad
   'dashboard.officialStatus.thirdPlacePending',
   'dashboard.dataPending.text',
   'dashboard.dataPending.note',
+  'dashboard.liveUpdating.text',
+  'dashboard.liveUpdating.note',
+  'dashboard.resultConfirming.text',
+  'dashboard.resultConfirming.note',
   'dashboard.groupStageComplete.text',
   'leaderboard.statusLiveNoOfficial',
   'leaderboard.statusOfficialStarted',
