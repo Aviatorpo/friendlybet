@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-01T06:22:17.238Z",
-  "freshUntil": "2026-07-01T12:22:17.238Z",
-  "count": 8,
+  "updatedAt": "2026-07-01T10:08:10.324Z",
+  "freshUntil": "2026-07-01T16:08:10.324Z",
+  "count": 7,
   "items": [
     {
       "id": "result-3c2bf70e-e807-4f02-b41c-ddcefc4c849e",
@@ -38,15 +38,6 @@
       "en": "Netherlands and Morocco finished 1-1. In the knockout rounds, that does not settle the story; it just raises the pulse. It still matters for brackets, knockout picks, and pool points 🧾",
       "sources": [],
       "expires_at": "2026-07-01T13:00:00.000Z"
-    },
-    {
-      "id": "result-fd6b2190-6ec4-400d-bd94-868d225ee3f7",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "גרמניה ופרגוואי סיימו 1:1. בנוקאאוט זה לא סוגר סיפור, זה רק מעביר את כל ההימור לדופק גבוה יותר 🧾",
-      "en": "Germany and Paraguay finished 1-1. In the knockout rounds, that does not settle the story; it just raises the pulse. It still matters for brackets, knockout picks, and pool points 🧾",
-      "sources": [],
-      "expires_at": "2026-07-01T08:30:00.000Z"
     },
     {
       "id": "fixture-539f0f2d-6ef8-450d-9e07-546b6951c00e",
