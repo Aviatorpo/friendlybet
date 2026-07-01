@@ -475,8 +475,13 @@ async function runReadiness(options = {}) {
     readinessMonitor.includes('readiness-before.json')
       && readinessMonitor.includes("name==='live DB active match state is fresh'")
       && readinessMonitor.includes('node scripts/live-poller.js')
-      && readinessMonitor.includes('running one live-poller recovery pass'),
-    'stale active match state should trigger one direct live-poller pass before the monitor fails'
+      && readinessMonitor.includes('running one live-poller recovery pass')
+      && readinessMonitor.includes('FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches')
+      && readinessMonitor.includes('data: refresh match snapshot after readiness recovery')
+      && readinessMonitor.includes('gh workflow run calculate-scores-v2.yml')
+      && readinessMonitor.includes('force_leaderboard_export=true')
+      && /permissions:\s*\n\s+contents:\s*write\s*\n\s+actions:\s*write/.test(readinessMonitor),
+    'stale active match state should trigger one direct live-poller pass, publish the match snapshot, and then hand off to forced scoring/export'
   );
   add(
     checks,

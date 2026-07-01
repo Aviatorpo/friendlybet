@@ -137,7 +137,7 @@ const dashboardStatusSandbox = {
   },
   _dashboardGroupProgress: () => dashboardStatusSandbox.progress,
   _poolLateEntryOpen: () => false,
-  _isLateKnockoutPool: () => false,
+  _isLateKnockoutPool: (pool) => !!pool && pool.betting_mode === 'late_knockout',
   _lateEntryCutoffLabel: () => '20:00',
   _knockoutCutoffLabel: () => '20:00',
   t: (key, vars = {}) => `${key}${Object.keys(vars).length ? ':' + JSON.stringify(vars) : ''}`,
@@ -194,11 +194,19 @@ statusEl = renderDashboardStatus({ finished: 72, total: 72, completeGroups: 12, 
 assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.title'), 'All completed groups must use group-stage-complete dashboard copy');
 assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.badge'), 'Group-stage-complete status must show final group-points badge');
 assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.text'), 'Two-phase/default groups-complete status must use knockout-underway copy');
+assert(!statusEl.innerHTML.includes('dls-progress'), 'Group-stage-complete status must not keep the group-stage progress bar');
+assert(!statusEl.innerHTML.includes('dashboard.liveStatus.progress'), 'Group-stage-complete status must not keep group match progress metrics');
+assert(!statusEl.innerHTML.includes('dashboard.liveStatus.groups'), 'Group-stage-complete status must not keep completed-group metrics');
 
 statusEl = renderDashboardStatus({ finished: 72, total: 72, completeGroups: 12, totalGroups: 12 }, true, false, 'single_phase');
 assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.onePhaseText'), 'One-phase groups-complete status must not say knockout picks are open');
 assert(!statusEl.innerHTML.includes('dashboard.groupStageComplete.text:'), 'One-phase groups-complete status must use mode-specific locked-bracket copy');
 assert(!statusEl.innerHTML.includes('dashboard.officialStatus.thirdPlacePending'), 'Group-stage-complete status must stop showing third-place pending copy');
+
+statusEl = renderDashboardStatus({ finished: 72, total: 72, completeGroups: 12, totalGroups: 12 }, true, false, 'late_knockout');
+assert(statusEl.innerHTML.includes('dashboard.liveStatus.lateKnockoutTitle'), 'Late knockout dashboard must use knockout-specific copy');
+assert(!statusEl.innerHTML.includes('dls-progress'), 'Late knockout dashboard must not show a stale group-stage progress bar');
+assert(!statusEl.innerHTML.includes('dashboard.liveStatus.progress'), 'Late knockout dashboard must not show stale group-stage match counts');
 
 statusEl = renderDashboardStatus({ finished: 0, total: 72, completeGroups: 0, totalGroups: 12 }, false, false);
 assert(statusEl.style.display === 'none' && statusEl.innerHTML === '', 'Pre-tournament dashboard status must stay hidden');
