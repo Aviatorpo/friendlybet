@@ -9,8 +9,8 @@ const matches = JSON.parse(fs.readFileSync(path.join(root, 'public-data', 'match
 const appJs = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
 const stylesCss = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 const generatorJs = fs.readFileSync(path.join(root, 'scripts', 'generate-world-cup-stories.js'), 'utf8');
-const { TEAM_NAMES } = require('./generate-world-cup-stories');
-const byId = new Map(matches.map(match => [match.id, match]));
+const { TEAM_NAMES, buildMatchIndex, matchForStory } = require('./generate-world-cup-stories');
+const matchIndex = buildMatchIndex(matches);
 const seenFallbacks = new Map();
 const teamNames = Object.values(TEAM_NAMES || {}).flatMap(item => [item.en, item.he]).filter(Boolean);
 teamNames.sort((a, b) => b.length - a.length);
@@ -89,7 +89,7 @@ function fail(message) {
 }
 
 for (const story of stories) {
-  const match = byId.get(story.match_id);
+  const match = matchForStory(story, matchIndex);
   if (!match) {
     fail(`${story.id}: missing source match`);
     continue;
@@ -123,6 +123,17 @@ for (const story of stories) {
   }
   if (outcome !== 'DRAW' && story.result !== `${outcome} ${score} ${loser}`) {
     fail(`${story.id}: result must be winner-first, got "${story.result}"`);
+  }
+  if (isKnockout && draw && outcome !== 'DRAW') {
+    const visibleText = [
+      story.he && story.he.headline,
+      story.he && story.he.caption,
+      story.en && story.en.headline,
+      story.en && story.en.caption,
+    ].filter(Boolean).join(' ');
+    if (!/penalties|פנדלים/i.test(visibleText)) {
+      fail(`${story.id}: tied knockout qualification must mention penalties in visible story copy`);
+    }
   }
   if (!String(story.he && story.he.headline || '').includes(score)) {
     fail(`${story.id}: Hebrew headline missing score ${score}`);
@@ -249,7 +260,7 @@ for (let i = 1; i < stories.length; i++) {
 
 const latest = stories.slice(0, RECENT_STORY_COPY_WINDOW);
 latest.forEach(story => {
-  const match = byId.get(story.match_id);
+  const match = matchForStory(story, matchIndex);
   if (!match) return;
   const draw = Number(match.home_score) === Number(match.away_score);
   const outcome = match.winner_code || (draw ? 'DRAW' : null);

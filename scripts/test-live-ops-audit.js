@@ -393,10 +393,34 @@ check('standalone Pundit workflow audits match state before build', () => {
   assert.ok(text.includes('LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS'), 'generate-pundit audit must allow fresh active live snapshot rows while final verification waits');
   assert.ok(text.includes('LIVE_OPS_ALLOW_STORY_BACKLOG'), 'generate-pundit audit must let accepted story backlog refresh Pundit');
   assert.ok(text.includes("cron: '3,13,23,33,43,53 * 11-28 6 *'"), 'generate-pundit workflow must refresh Pundit near live group-stage transitions');
+  assert.ok(text.includes("cron: '3,13,23,33,43,53 0-7,15-23 1 7 *'"), 'generate-pundit workflow must refresh Pundit during knockout live windows');
+  assert.ok(text.includes("cron: '3,13,23,33,43,53 0-2,18-23 19 7 *'"), 'generate-pundit workflow must refresh Pundit through final day');
+  assert.ok(/Publish prepared World Cup stories[\s\S]*continue-on-error:\s*true/.test(text), 'generate-pundit workflow must not let story publishing block Pundit freshness');
   assert.ok(/git status --porcelain public-data\/pundit\.json public-data\/world-cup-stories\.json story-assets/.test(text), 'generate-pundit workflow must key deploys on Pundit or story changes');
   assert.ok(/match snapshot changed without a Pundit feed change/.test(text), 'generate-pundit workflow must avoid committing match-only live churn');
   assert.ok(/commit-generated-snapshots\.sh[\s\S]*public-data\/matches\.json public-data\/pundit\.json/.test(text), 'generate-pundit workflow must stage matches with Pundit');
   assert.ok(/REGENERATE_COMMANDS:[\s\S]*LIVE_OPS_SKIP_PUNDIT=1 LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS=1 LIVE_OPS_ALLOW_STORY_BACKLOG=1 node scripts\/live-ops-audit\.js[\s\S]*node scripts\/generate-pundit\.js/.test(text), 'generate-pundit workflow must regenerate from current main after generated-data push conflicts');
+  assert.ok(/REGENERATE_COMMANDS:[\s\S]*if \[ -f public-data\/pundit-news\.json \]/.test(text), 'generate-pundit regenerate path must not fail when optional Pundit news is absent');
+});
+
+check('prepared story workflow has automatic knockout retry coverage', () => {
+  const file = '.github/workflows/publish-world-cup-stories-prepared.yml';
+  const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
+  assert.ok(/schedule:/.test(text), 'prepared story workflow must have an automatic schedule');
+  assert.ok(text.includes("cron: '5,20,35,50 0-7,15-23 1 7 *'"), 'prepared story workflow must cover knockout live/post-final windows');
+  assert.ok(text.includes("cron: '5,20,35,50 0-2,18-23 19 7 *'"), 'prepared story workflow must cover final day');
+  assert.ok(text.includes("cron: '11 */4 * * *'"), 'prepared story workflow must have a quiet backlog retry');
+  assert.ok(/timeout-minutes:\s*20/.test(text), 'prepared story workflow must be bounded');
+  assertOrdered(text, file, 'node scripts/export-snapshots.js matches', 'node scripts/world-cup-story-auto-needed.js');
+  assertOrdered(text, file, 'node scripts/publish-world-cup-stories-auto.js', 'node scripts/test-world-cup-stories.js');
+  assert.ok(/REGENERATE_COMMANDS:[\s\S]*FORCE_MATCH_SNAPSHOT=1 node scripts\/export-snapshots\.js matches[\s\S]*node scripts\/world-cup-story-auto-needed\.js[\s\S]*node scripts\/publish-world-cup-stories-auto\.js[\s\S]*node scripts\/test-world-cup-stories\.js/.test(text), 'prepared story workflow must regenerate from a fresh match snapshot after generated-data push conflicts');
+});
+
+check('story publisher does not fail the live desk on broad base-audit backlog', () => {
+  const text = fs.readFileSync(path.join(ROOT, 'scripts/publish-world-cup-stories-auto.js'), 'utf8');
+  assert.ok(text.includes('World Cup story base audit failed; continuing'), 'story publisher must warn, not stop, on broad base-audit backlog');
+  assertOrdered(text, 'scripts/publish-world-cup-stories-auto.js', "['scripts/audit-world-cup-story-images.py', '--scope', 'bases']", "['node', 'scripts/generate-world-cup-stories.js']");
+  assertOrdered(text, 'scripts/publish-world-cup-stories-auto.js', "['node', 'scripts/generate-world-cup-stories.js']", "['scripts/audit-world-cup-story-images.py', '--scope', 'stories']");
 });
 
 check('readiness monitor can recover stale active live DB state', () => {

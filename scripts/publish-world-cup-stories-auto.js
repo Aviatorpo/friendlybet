@@ -35,6 +35,23 @@ function runPython(args) {
   throw lastError || new Error('Python not found');
 }
 
+function runPythonWarning(args, warning) {
+  const candidates = process.platform === 'win32' ? ['python', 'py'] : ['python3', 'python'];
+  let lastError = null;
+  for (const exe of candidates) {
+    const res = spawnSync(exe, args, { cwd: ROOT, stdio: 'inherit' });
+    if (res.error && res.error.code === 'ENOENT') {
+      lastError = res.error;
+      continue;
+    }
+    if (res.status !== 0) {
+      console.warn(warning);
+    }
+    return;
+  }
+  console.warn(`${warning} ${lastError ? lastError.message : 'Python not found'}`);
+}
+
 function latestStorySummary(limit = 5) {
   const payload = readJson(STORIES_PATH, { items: [] });
   const items = (payload.items || []).slice(0, limit);
@@ -48,7 +65,10 @@ function latestStorySummary(limit = 5) {
   }
 }
 
-runPython(['scripts/audit-world-cup-story-images.py', '--scope', 'bases']);
+runPythonWarning(
+  ['scripts/audit-world-cup-story-images.py', '--scope', 'bases'],
+  '::warning::World Cup story base audit failed; continuing to publish already-prepared stories and validating final story outputs.'
+);
 run(['node', 'scripts/generate-world-cup-stories.js'], {
   env: { STORY_AUTOGEN_IMAGES: '0' },
 });

@@ -1107,6 +1107,13 @@ function isKnockoutMatch(match) {
   return match && !isGroupStageMatch(match);
 }
 
+function isTiedKnockoutQualification(match, outcome) {
+  return isKnockoutMatch(match) &&
+    outcome &&
+    outcome !== 'DRAW' &&
+    Number(match.home_score) === Number(match.away_score);
+}
+
 function stageLabel(match, lang = 'en') {
   const stage = String(match && match.stage || '').toUpperCase();
   const labels = {
@@ -1129,6 +1136,38 @@ function stageLabel(match, lang = 'en') {
 function storyId(match) {
   const date = String(match.match_date || '').slice(0, 10) || new Date().toISOString().slice(0, 10);
   return `${match.home_team_code}-${match.away_team_code}-${date}`.toLowerCase();
+}
+
+function buildMatchIndex(matches) {
+  const byId = new Map();
+  const byStoryId = new Map();
+  for (const match of matches || []) {
+    if (!match) continue;
+    if (match.id) byId.set(match.id, match);
+    const date = String(match.match_date || '').slice(0, 10);
+    if (match.home_team_code && match.away_team_code && date) {
+      byStoryId.set(storyId(match), match);
+      byStoryId.set(`${match.away_team_code}-${match.home_team_code}-${date}`.toLowerCase(), match);
+    }
+  }
+  return { byId, byStoryId };
+}
+
+function matchForStory(story, matchIndex) {
+  if (!story || !matchIndex) return null;
+  return matchIndex.byId.get(story.match_id) ||
+    matchIndex.byStoryId.get(String(story.id || '').toLowerCase()) ||
+    null;
+}
+
+function dedupeStoriesByStableId(items) {
+  const seen = new Set();
+  return (items || []).filter(story => {
+    const key = String((story && (story.id || story.match_id)) || '').toLowerCase();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function outcomeFor(match) {
@@ -1279,6 +1318,12 @@ function titleCopy(match, outcome) {
     const loserHe = teamName(loser, 'he');
     const winnerEn = teamName(winner, 'en');
     const loserEn = teamName(loser, 'en');
+    if (isTiedKnockoutQualification(match, outcome)) {
+      return {
+        he: `${winnerHe} ניצחה את ${loserHe} בפנדלים אחרי ${score}: ${stageLabel(match, 'he')} קיבל קבלה`,
+        en: `${winnerEn} beat ${loserEn} on penalties after ${score}: ${stageLabel(match, 'en')} receipts are live`,
+      };
+    }
     return {
       he: `${winnerHe} ניצחה את ${loserHe} ${score}: ${stageLabel(match, 'he')} קיבל קבלה`,
       en: `${winnerEn} beat ${loserEn} ${score}: ${stageLabel(match, 'en')} receipts are live`,
@@ -1670,9 +1715,15 @@ function fallbackEditorialCaption(match, outcome) {
     const loserHe = teamName(loser, 'he');
     const winnerEn = teamName(outcome, 'en');
     const loserEn = teamName(loser, 'en');
+    if (isTiedKnockoutQualification(match, outcome)) {
+      return {
+        he: `${winnerHe} עברה את ${loserHe} בפנדלים אחרי ${score} ב${stageLabel(match, 'he')}. זה משחק שמסדר את הסוגריים מחדש ומשאיר את ${loserHe} מחוץ לסיפור.`,
+        en: `${winnerEn} got past ${loserEn} on penalties after ${score} in the ${stageLabel(match, 'en')}. The bracket moves on with ${winnerEn}, and ${loserEn} is out of the story.`,
+      };
+    }
     return {
-      he: `${winnerHe} עברה את ${loserHe} עם ${score} ב${stageLabel(match, 'he')}. מי שסימן אותה בנוקאאוט קיבל קבלה, ומי שבנה על ${loserHe} צריך מסלול מחדש.`,
-      en: `${winnerEn} got past ${loserEn} ${score} in the ${stageLabel(match, 'en')}. Anyone who had them in the knockout path gets a receipt; ${loserEn} believers need a new route.`,
+      he: `${winnerHe} עברה את ${loserHe} עם ${score} ב${stageLabel(match, 'he')}. זה משחק שמסדר את הסוגריים מחדש ומשאיר את ${loserHe} מחוץ לסיפור.`,
+      en: `${winnerEn} got past ${loserEn} ${score} in the ${stageLabel(match, 'en')}. The bracket moves on with ${winnerEn}, and ${loserEn} is out of the story.`,
     };
   }
   if (outcome === 'DRAW') {
@@ -2060,6 +2111,12 @@ function captionCopy(match, outcome) {
       };
     }
     const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
+    if (isTiedKnockoutQualification(match, outcome)) {
+      return {
+        he: `${teamName(outcome, 'he')} עברה את ${teamName(loser, 'he')} בפנדלים אחרי ${score}, והבראקטים מרגישים את זה מיד.`,
+        en: `${teamName(outcome)} got past ${teamName(loser)} on penalties after ${score}, and the brackets feel it immediately.`,
+      };
+    }
     return {
       he: `${teamName(outcome, 'he')} עברה את ${teamName(loser, 'he')} ${score}, והבראקטים מרגישים את זה מיד.`,
       en: `${teamName(outcome)} got past ${teamName(loser)} ${score}, and the brackets feel it immediately.`,
@@ -2301,8 +2358,8 @@ function validateStory(story, match) {
   }
 }
 
-function normalizeExistingStory(story, matchById) {
-  const match = story && matchById.get(story.match_id);
+function normalizeExistingStory(story, matchIndex) {
+  const match = matchForStory(story, matchIndex);
   if (!match || match.status !== 'FINISHED' || match.home_score == null || match.away_score == null) {
     return story;
   }
@@ -2444,11 +2501,14 @@ async function generateImage(match, outcome) {
 async function main() {
   const matchesPayload = await loadMatchesPayload();
   console.log(`Story match source: ${matchesPayload.source || 'snapshot'} (${(matchesPayload.matches || []).length} matches)`);
-  const matchById = new Map((matchesPayload.matches || []).map(match => [match.id, match]));
+  const matchIndex = buildMatchIndex(matchesPayload.matches || []);
+  const matchById = matchIndex.byId;
   const manifest = readJson(MANIFEST_PATH, { version: 1, items: [] });
   const storiesPayload = readJson(STORIES_PATH, { items: [] });
-  const existing = (Array.isArray(storiesPayload.items) ? storiesPayload.items : [])
-    .map(story => normalizeExistingStory(story, matchById));
+  const existing = dedupeStoriesByStableId(
+    (Array.isArray(storiesPayload.items) ? storiesPayload.items : [])
+      .map(story => normalizeExistingStory(story, matchIndex))
+  );
   const existingByMatch = new Set(existing.map(item => item && item.match_id).filter(Boolean));
   const existingMatchDates = new Map(
     (matchesPayload.matches || []).map(match => [match.id, new Date(match.match_date).getTime()])
@@ -2492,14 +2552,14 @@ async function main() {
     })
     .slice(0, MAX_STORIES);
   items = applyLatestStoryShapeVariety(items, matchById);
-  items = items.map(story => applyStoryEmojiDiscipline(story, matchById.get(story && story.match_id)));
+  items = items.map(story => applyStoryEmojiDiscipline(story, matchForStory(story, matchIndex)));
   if (postGroupStageComplete) {
-    items = items.map(story => applyPostGroupStageFinalCopy(story, matchById.get(story && story.match_id)));
+    items = items.map(story => applyPostGroupStageFinalCopy(story, matchForStory(story, matchIndex)));
     items = applyLatestStoryShapeVariety(items, matchById);
   }
   const contentChanged = JSON.stringify(items) !== JSON.stringify(Array.isArray(storiesPayload.items) ? storiesPayload.items : []);
   items.forEach(story => {
-    const match = matchById.get(story.match_id);
+    const match = matchForStory(story, matchIndex);
     if (match) validateStory(story, match);
   });
   const next = {
@@ -2538,10 +2598,14 @@ module.exports = {
   teamName,
   matchKey,
   storyId,
+  buildMatchIndex,
+  matchForStory,
+  dedupeStoriesByStableId,
   outcomeFor,
   scoreForOutcome,
   scoreDash,
   resultText,
+  isTiedKnockoutQualification,
   allGroupsComplete,
   assetSlug,
   outcomeBaseSlug,
