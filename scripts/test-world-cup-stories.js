@@ -356,6 +356,7 @@ const visualChecks = [
   [!generatorJs.includes('50%-64%'), 'story generator prompt must not use the old face-level caption band'],
   [appJs.includes('function _wcStoryFocuses') && appJs.includes('pool_focuses'), 'client must support ordered pool-specific story focus choices'],
   [appJs.includes("table === 'knockout_picks' ? 'predicted_winner' : 'team_code'"), 'client must query specific pick tables by their actual team column'],
+  [appJs.includes('assetRev') && appJs.includes('story-assets/') && appJs.includes('v=${rev}'), 'client story image URLs must include a feed revision cache buster'],
 ];
 visualChecks.forEach(([ok, message]) => { if (!ok) fail(message); });
 

@@ -2917,7 +2917,7 @@ const _WC_STORIES_FALLBACK = {
     }
   ]
 };
-let _wcStoriesState = { items: [], idx: 0, loadedAt: 0 };
+let _wcStoriesState = { items: [], idx: 0, loadedAt: 0, assetRev: '' };
 const _wcStoriesPoolCopyCache = {};
 const _WC_STORIES_CAROUSEL_LIMIT = 5;
 
@@ -2938,6 +2938,8 @@ async function loadWorldCupStories() {
     ? payload.items
     : _WC_STORIES_FALLBACK.items;
   _wcStoriesState.items = items.slice(0, _WC_STORIES_CAROUSEL_LIMIT);
+  _wcStoriesState.assetRev = String((payload && payload.updated_at) || CONFIG.APP_VERSION || Date.now())
+    .replace(/[^a-zA-Z0-9._-]/g, '');
   _wcStoriesState.loadedAt = Date.now();
   if (_wcStoriesState.idx >= _wcStoriesState.items.length) _wcStoriesState.idx = 0;
   return _wcStoriesState.items;
@@ -3056,7 +3058,11 @@ async function _wcStoryPoolCaption(story, baseCopy) {
 function _wcStoryImageUrl(path) {
   if (!path) return '';
   if (/^(https?:|data:|blob:)/i.test(path)) return path;
-  return path.replace(/^\/+/, '');
+  const clean = path.replace(/^\/+/, '');
+  if (!clean.startsWith('story-assets/')) return clean;
+  const rev = encodeURIComponent(_wcStoriesState.assetRev || CONFIG.APP_VERSION || '');
+  if (!rev) return clean;
+  return `${clean}${clean.includes('?') ? '&' : '?'}v=${rev}`;
 }
 
 function _wcEsc(s) {
