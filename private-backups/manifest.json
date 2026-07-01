@@ -73,6 +73,7 @@
     "400021509",
     "400021510",
     "400021511",
+    "400021512",
     "400021513",
     "400021514",
     "400021516",
@@ -1476,7 +1477,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-07-01T19:21:27.121Z",
+      "file": "private-backups/2026-07-01T19-21-27-121Z__400021512-ENG-COD.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "400021512"
+      ],
+      "tableCounts": {
+        "pools": 2195,
+        "users": 6795,
+        "group_picks": 22978,
+        "knockout_picks": 112863,
+        "group_position_picks": 175109,
+        "tournament_winner_picks": 3653,
+        "top_scorer_picks": 3133,
+        "sp_third_place_picks": 29186,
+        "pick_backups": 50731,
+        "knockout_reopen_grants": 1768,
+        "matches": 176,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-07-01T05:06:31.939Z"
+  "updatedAt": "2026-07-01T19:21:27.121Z"
 }
