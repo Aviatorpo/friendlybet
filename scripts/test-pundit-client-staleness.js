@@ -68,6 +68,10 @@ assert(
   'The group stage is behind us',
   'קבלות הבתים',
   'group-stage receipts',
+  'אחרי שלב הבתים',
+  'After the group stage',
+  'מקומות בבית',
+  'group places',
 ].forEach((phrase) => {
   assert(
     !src.includes(phrase),
@@ -78,6 +82,16 @@ assert(
     `Generated Pundit feed must not publish stale group-stage transition copy during knockout mode: ${phrase}`
   );
 });
+
+assert(
+  !/id:\s*'ev-grp[A-L]'/.test(src),
+  'Pundit evergreen deck must not include stale Group A-L preview cards during knockout mode'
+);
+
+assert(
+  !/group-stage surprise|הפתעה בשלב הבתים|advance from the groups|עולות משלב הבתים/.test(src),
+  'Pundit evergreen deck must not include group-stage filler while the live product is in knockout mode'
+);
 
 assert(
   /groupStageComplete\s*\?\s*`\$\{n\} מוביל עכשיו עם \$\{s\} נקודות/.test(src),

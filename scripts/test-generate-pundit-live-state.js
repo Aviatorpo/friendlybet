@@ -124,7 +124,8 @@ const HE_FIXTURE_CONSEQUENCE = /(?:בית|בתים|תחזית|תחזיות|הי�
   const items = pundit.build(phaseNow, { matchesPayload: { matches: completeMatches }, newsPayload: { items: [] } });
   const phase = items.find(item => item.id === 'phase-groups-complete-knockout-open');
   assert.ok(phase, 'Feed should include a group-complete knockout-open phase item');
-  assert.ok(phase.en.includes('Group points are official') && phase.en.includes('bracket is the story now'), 'Phase item must anchor the feed to the current knockout story');
+  assert.ok(phase.en.includes('The bracket is the story now'), 'Phase item must anchor the feed to the current knockout story');
+  assert.ok(!/group points|group-stage|group stage/i.test(phase.en), 'Phase item must not sound like stale group-stage commentary');
   assert.ok(phase.en.includes('two-phase') && phase.en.includes('one-phase'), 'Phase item must not claim the knockout window is open for every pool mode');
   assert.ok(phase.en.includes('June 28') && phase.en.includes('08:00 PM'), 'Phase item must include the exact first-knockout deadline');
   const knockoutWindow = items.find(item => item.id === 'phase-knockout-window');

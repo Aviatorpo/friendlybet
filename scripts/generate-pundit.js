@@ -233,8 +233,8 @@ function groupCompleteCommentary() {
   const heTime = knockoutDeadlineLabel('he');
   const enTime = knockoutDeadlineLabel('en');
   return {
-    he: `ניקוד הבתים רשמי והבראקט הוא הסיפור עכשיו. בהימורי two-phase או נוקאאוט, אם חלון העריכה עדיין פתוח הוא נסגר ב-${heTime}; בהימורי one-phase חיים כבר לפי התוצאות והנוקאאוט.`,
-    en: `Group points are official and the bracket is the story now. In two-phase or knockout pools, if the edit window is still open it closes at ${enTime}; one-phase pools are already living by results and knockouts.`,
+    he: `הבראקט הוא הסיפור עכשיו. בהימורי two-phase או נוקאאוט, אם חלון העריכה עדיין פתוח הוא נסגר ב-${heTime}; בהימורי one-phase חיים כבר לפי התוצאות והנוקאאוט.`,
+    en: `The bracket is the story now. In two-phase or knockout pools, if the edit window is still open it closes at ${enTime}; one-phase pools are already living by results and knockouts.`,
   };
 }
 
@@ -258,6 +258,25 @@ function resultScoreLineHe(match) {
   return `${teamName(winner, 'he')} ${winScore} ${teamName(loser, 'he')}`;
 }
 
+function stageLabel(match, lang = 'en') {
+  const stage = String((match && match.stage) || '').toUpperCase();
+  if (stage === 'ROUND_OF_32') return lang === 'he' ? 'שמינית הגמר המוקדמת' : 'Round of 32';
+  if (stage === 'ROUND_OF_16') return lang === 'he' ? 'שמינית הגמר' : 'Round of 16';
+  if (stage === 'QUARTER_FINALS') return lang === 'he' ? 'רבע הגמר' : 'quarter-final';
+  if (stage === 'SEMI_FINALS') return lang === 'he' ? 'חצי הגמר' : 'semi-final';
+  if (stage === 'THIRD_PLACE') return lang === 'he' ? 'המשחק על המקום השלישי' : 'third-place match';
+  if (stage === 'FINAL') return lang === 'he' ? 'הגמר' : 'final';
+  return lang === 'he' ? 'נוקאאוט' : 'knockout match';
+}
+
+function knockoutAdvancer(match) {
+  const winner = String((match && match.winner_code) || '').trim().toUpperCase();
+  const home = String((match && match.home_team_code) || '').trim().toUpperCase();
+  const away = String((match && match.away_team_code) || '').trim().toUpperCase();
+  if (winner && (winner === home || winner === away)) return winner;
+  return null;
+}
+
 function groupCompletePhaseItems(matches) {
   const heTime = knockoutDeadlineLabel('he');
   const enTime = knockoutDeadlineLabel('en');
@@ -277,23 +296,23 @@ function groupCompletePhaseItems(matches) {
     {
       id: 'phase-knockout-window',
       mode_scopes: ['two_phase', 'late_knockout'],
-      he: `זה כבר לא שלב של חישובי בית. בהימורי two-phase או נוקאאוט, הבחירות הבאות הן 31 משחקי נוקאאוט, מנצחת בכל משחק, וכל זה ננעל ב-${heTime}.`,
-      en: `This is no longer group-stage accounting. For two-phase or knockout pools, the next picks are 31 knockout matches, one winner each, locked at ${enTime}.`,
+      he: `זה שלב של הכרעות בראקט. בהימורי two-phase או נוקאאוט, הבחירות הבאות הן 31 משחקי נוקאאוט, מנצחת בכל משחק, וכל זה ננעל ב-${heTime}.`,
+      en: `This is bracket-decision time. For two-phase or knockout pools, the next picks are 31 knockout matches, one winner each, locked at ${enTime}.`,
     },
     {
       id: 'phase-leaderboard-official',
-      he: 'הלידרבורד עכשיו מספר מי שרד את שלב הבתים. מכאן הטבלה תזוז רק דרך הבראקט, האלופה ומלך השערים.',
-      en: 'The leaderboard now shows who survived the group stage. From here it moves through the bracket, champion pick, and top scorer.',
+      he: 'הלידרבורד עכשיו נכנס למרדף של נוקאאוט. מכאן הטבלה תזוז דרך הבראקט, האלופה ומלך השערים.',
+      en: 'The leaderboard is now in knockout-chase mode. From here it moves through the bracket, champion pick, and top scorer.',
     },
     {
       id: 'phase-final-results-recap',
-      he: latestHe ? `המשחקים האחרונים שסגרו את הבתים: ${latestHe}. עכשיו אין תיאוריות בית, רק ניקוד רשמי ובראקט.` : 'כל תוצאות הבתים סגורות. עכשיו אין תיאוריות בית, רק ניקוד רשמי ובראקט.',
-      en: latestEn ? `The final group results are in: ${latestEn}. No more group theories now, just official points and the bracket.` : 'All group results are final. No more group theories now, just official points and the bracket.',
+      he: latestHe ? `המשחקים האחרונים שנכנסו לניקוד: ${latestHe}. עכשיו הסיפור עובר לבראקט.` : 'התמונה הרשמית מוכנה, והסיפור עובר לבראקט.',
+      en: latestEn ? `The latest scored results are in: ${latestEn}. The story now moves to the bracket.` : 'The official picture is set, and the story moves to the bracket.',
     },
     {
       id: 'phase-bracket-receipts',
-      he: 'מי שפגע בבתים כבר קיבל קבלות. מי שרוצה להפוך את הטבלה צריך עכשיו בראקט חד, לא עוד פרשנות על בתים.',
-      en: 'Group-stage hits already have their receipts. Anyone chasing the table needs a sharp bracket now, not another group-stage take.',
+      he: 'מי שרוצה להפוך את הטבלה צריך עכשיו בראקט חד, בחירת אלופה חיה וקצת אומץ.',
+      en: 'Anyone chasing the table needs a sharp bracket now, a live champion pick, and a little nerve.',
     },
   ].map(item => ({
     ...item,
@@ -356,9 +375,29 @@ function resultCommentary(match, salt = '') {
 
   if (hs === as) {
     if (isKnockout) {
+      const advancer = knockoutAdvancer(match);
+      if (advancer) {
+        const eliminated = advancer === String(match.home_team_code || '').toUpperCase()
+          ? match.away_team_code
+          : match.home_team_code;
+        const advancerHe = teamName(advancer, 'he');
+        const eliminatedHe = teamName(eliminated, 'he');
+        const advancerEn = teamName(advancer, 'en');
+        const eliminatedEn = teamName(eliminated, 'en');
+        return variantFor(match, [
+          {
+            he: `${homeHe} ו${awayHe} סיימו ${hs}:${as}, אבל ${advancerHe} שרדה את שובר השוויון ועלתה. מי שסימן אותה בבראקט קיבל קבלה חדה.`,
+            en: `${homeEn} and ${awayEn} finished ${hs}-${as}, but ${advancerEn} survived the tiebreaker and advanced. ${advancerEn} bracket picks got a sharp receipt.`,
+          },
+          {
+            he: `${hs}:${as} על הלוח, ${advancerHe} בשלב הבא ו${eliminatedHe} בחוץ. זה כרטיס המשך לבראקט.`,
+            en: `${hs}-${as} on the board, ${advancerEn} into the next round and ${eliminatedEn} out. It is a bracket ticket.`,
+          },
+        ], salt);
+      }
       return {
-        he: `${homeHe} ו${awayHe} סיימו ${hs}:${as}. בנוקאאוט זה לא סוגר סיפור, זה רק מעביר את כל ההימור לדופק גבוה יותר.`,
-        en: `${homeEn} and ${awayEn} finished ${hs}-${as}. In the knockout rounds, that does not settle the story; it just raises the pulse.`,
+        he: `${homeHe} ו${awayHe} סיימו ${hs}:${as}, אבל חסרה עדיין הכרעת עלייה מאומתת. הפרשן מחכה לעובדה הרשמית לפני שהוא מחלק קבלות.`,
+        en: `${homeEn} and ${awayEn} finished ${hs}-${as}, but the verified advancing team is still missing. The Pundit waits for the official fact before handing out receipts.`,
       };
     }
     if (hs === 0) {
@@ -389,12 +428,21 @@ function resultCommentary(match, salt = '') {
     ], salt);
   }
 
-  const winnerHe = hs > as ? homeHe : awayHe;
-  const loserHe = hs > as ? awayHe : homeHe;
-  const winnerEn = hs > as ? homeEn : awayEn;
-  const loserEn = hs > as ? awayEn : homeEn;
-  const scoreHe = hs > as ? `${hs}:${as}` : `${as}:${hs}`;
-  const scoreEn = hs > as ? `${hs}-${as}` : `${as}-${hs}`;
+  const scoreWinner = hs > as ? match.home_team_code : match.away_team_code;
+  const winnerCode = isKnockout ? (knockoutAdvancer(match) || scoreWinner) : scoreWinner;
+  const loserCode = String(winnerCode || '').toUpperCase() === String(match.home_team_code || '').toUpperCase()
+    ? match.away_team_code
+    : match.home_team_code;
+  const winnerHe = teamName(winnerCode, 'he');
+  const loserHe = teamName(loserCode, 'he');
+  const winnerEn = teamName(winnerCode, 'en');
+  const loserEn = teamName(loserCode, 'en');
+  const scoreHe = String(winnerCode || '').toUpperCase() === String(match.home_team_code || '').toUpperCase()
+    ? `${hs}:${as}`
+    : `${as}:${hs}`;
+  const scoreEn = String(winnerCode || '').toUpperCase() === String(match.home_team_code || '').toUpperCase()
+    ? `${hs}-${as}`
+    : `${as}-${hs}`;
   if (isKnockout) {
     return variantFor(match, [
       {
@@ -402,8 +450,8 @@ function resultCommentary(match, salt = '') {
         en: `${winnerEn} got past ${loserEn} ${scoreEn}. Brackets that picked them get a receipt; ${loserEn} believers need a new route.`,
       },
       {
-        he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe} בנוקאאוט. זה כבר לא חישוב בית, זה רגע שמזיז בראקטים.`,
-        en: `${winnerEn} beat ${loserEn} ${scoreEn} in the knockout rounds. No group math now, just a bracket-moving result.`,
+        he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe} ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום.`,
+        en: `${winnerEn} beat ${loserEn} ${scoreEn} and stayed alive in the bracket. Anyone who picked them can keep dreaming.`,
       },
       {
         he: `${scoreHe} ל${winnerHe} על ${loserHe}. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות.`,
@@ -456,8 +504,8 @@ function resultCommentary(match, salt = '') {
   ], salt);
 }
 
-const FIXTURE_CONSEQUENCE_EN = /\b(table|tables|group|prediction|predictions|predictors|pool|pools|pick|picks|picked|safe|sweating|points|qualify|qualification|places)\b/i;
-const FIXTURE_CONSEQUENCE_HE = /(?:בית|בתים|תחזית|תחזיות|הימור|הימורים|נקודות|מקום|מקומות|עלייה|טבלה)/u;
+const FIXTURE_CONSEQUENCE_EN = /\b(table|tables|group|prediction|predictions|predictors|pool|pools|pick|picks|picked|safe|sweating|points|qualify|qualification|places|bracket|survive|alive|advance|advanced)\b/i;
+const FIXTURE_CONSEQUENCE_HE = /(?:בית|בתים|תחזית|תחזיות|הימור|הימורים|נקודות|מקום|מקומות|עלייה|טבלה|בראקט|לשרוד|שורדת|עולה|עלתה)/u;
 
 function withResultConsequence(text, match = null) {
   const he = String((text && text.he) || '').trim();
@@ -477,16 +525,21 @@ function withResultConsequence(text, match = null) {
   };
 }
 
-function withFixtureConsequence(text) {
+function withFixtureConsequence(text, match = null) {
   const he = String((text && text.he) || '').trim();
   const en = String((text && text.en) || '').trim();
+  const isKnockout = String(match && match.stage || '').toUpperCase() !== 'GROUP_STAGE';
   return {
     he: FIXTURE_CONSEQUENCE_HE.test(he)
       ? he
-      : `${he.replace(/[.。]\s*$/, '')}. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית.`,
+      : isKnockout
+        ? `${he.replace(/[.。]\s*$/, '')}. זה משחק שמזיז בראקטים, הימורי נוקאאוט ונקודות.`
+        : `${he.replace(/[.。]\s*$/, '')}. זה עדיין משחק שיכול להזיז נקודות, הימורים ואת הבית.`,
     en: FIXTURE_CONSEQUENCE_EN.test(en)
       ? en
-      : `${en.replace(/[.。]\s*$/, '')}. It still matters for table places, picks, and pool points.`,
+      : isKnockout
+        ? `${en.replace(/[.。]\s*$/, '')}. It still matters for brackets, knockout picks, and pool points.`
+        : `${en.replace(/[.。]\s*$/, '')}. It still matters for table places, picks, and pool points.`,
   };
 }
 
@@ -498,12 +551,58 @@ function fixtureCommentary(match, now, salt = '') {
   const awayEn = teamName(match.away_team_code, 'en');
   const homeFav = FAVORITES.has(match.home_team_code);
   const awayFav = FAVORITES.has(match.away_team_code);
+  const isKnockout = String(match.stage || '').toUpperCase() !== 'GROUP_STAGE';
+  const stageHe = stageLabel(match, 'he');
+  const stageEn = stageLabel(match, 'en');
+
+  if (isKnockout) {
+    if (homeFav && awayFav) {
+      return withFixtureConsequence({
+        he: `משחק ענק ב${stageHe}: ${homeHe} נגד ${awayHe}, ${w.he}. צד אחד ממשיך, צד אחד הולך הביתה.`,
+        en: `Huge ${stageEn}: ${homeEn} vs ${awayEn}, ${w.en}. One side moves on, one side goes home.`,
+      }, match);
+    }
+    if (homeFav || awayFav) {
+      const favHe = homeFav ? homeHe : awayHe;
+      const favEn = homeFav ? homeEn : awayEn;
+      const outsiderHe = homeFav ? awayHe : homeHe;
+      const outsiderEn = homeFav ? awayEn : homeEn;
+      return withFixtureConsequence(variantFor(match, [
+        {
+          he: `${homeHe} נגד ${awayHe}, ${w.he}. ${favHe} פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד.`,
+          en: `${homeEn} vs ${awayEn}, ${w.en}. ${favEn} are the favorite, but in knockout football favorites still have to survive.`,
+        },
+        {
+          he: `${stageHe}: ${homeHe} נגד ${awayHe}, ${w.he}. מי שבנה על ${favHe} רוצה שקט; מי שסימן את ${outsiderHe} מחפש רעידת טבלה.`,
+          en: `${stageEn}: ${homeEn} vs ${awayEn}, ${w.en}. ${favEn} picks want calm; ${outsiderEn} picks are hunting table shock.`,
+        },
+        {
+          he: `${homeHe} נגד ${awayHe}, ${w.he}. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים.`,
+          en: `${homeEn} vs ${awayEn}, ${w.en}. There is no repair job later: the winner advances, the loser tears up brackets.`,
+        },
+      ], salt), match);
+    }
+    return withFixtureConsequence(variantFor(match, [
+      {
+        he: `${homeHe} נגד ${awayHe}, ${w.he}. משחק נוקאאוט כזה יכול להפוך שקט בטבלה לרעש גדול.`,
+        en: `${homeEn} vs ${awayEn}, ${w.en}. This kind of knockout match can turn a quiet table into noise.`,
+      },
+      {
+        he: `${stageHe}: ${homeHe} נגד ${awayHe}, ${w.he}. מי שפוגע כאן קונה לעצמו עוד נשימה בבראקט.`,
+        en: `${stageEn}: ${homeEn} vs ${awayEn}, ${w.en}. Getting this one right buys another breath in the bracket.`,
+      },
+      {
+        he: `${homeHe} נגד ${awayHe}, ${w.he}. זה משחק של מעבר או סיום דרך, בדיוק המקום שבו הימורים זזים.`,
+        en: `${homeEn} vs ${awayEn}, ${w.en}. It is move-on-or-go-home territory, exactly where picks start moving.`,
+      },
+    ], salt), match);
+  }
 
   if (homeFav && awayFav) {
     return withFixtureConsequence({
       he: `משחק גדול: ${homeHe} נגד ${awayHe}, ${w.he}. ניצחון כאן יכול לשנות את כל תמונת הבית.`,
       en: `Big match: ${homeEn} vs ${awayEn}, ${w.en}. A win here can change the whole group picture.`,
-    });
+    }, match);
   }
   if (homeFav || awayFav) {
     const favHe = homeFav ? homeHe : awayHe;
@@ -525,12 +624,12 @@ function fixtureCommentary(match, now, salt = '') {
         he: `${homeHe} נגד ${awayHe}, ${w.he}. משחק שהרבה אנשים יסמנו כבטוח, וזה בדיוק הסיכון.`,
         en: `${homeEn} vs ${awayEn}, ${w.en}. Many people will mark this as safe, and that is exactly the risk.`,
       },
-    ], salt));
+    ], salt), match);
   }
   return withFixtureConsequence(variantFor(match, [
     {
-      he: `${homeHe} נגד ${awayHe}, ${w.he}. משחק כזה יכול להכריע מקומות בבית בלי הרבה כותרות.`,
-      en: `${homeEn} vs ${awayEn}, ${w.en}. This kind of match can decide group places without making many headlines.`,
+      he: `${homeHe} נגד ${awayHe}, ${w.he}. משחק כזה יכול להזיז מקומות בטבלה בלי הרבה כותרות.`,
+      en: `${homeEn} vs ${awayEn}, ${w.en}. This kind of match can move table places without making many headlines.`,
     },
     {
       he: `${homeHe} נגד ${awayHe}, ${w.he}. לא המשחק הכי גדול, אבל הנקודות כאן יכולות להיות קריטיות.`,
@@ -540,7 +639,7 @@ function fixtureCommentary(match, now, salt = '') {
       he: `${homeHe} נגד ${awayHe}, ${w.he}. מי שפוגע במשחקים האלה בדרך כלל מתקדם יפה בטבלה.`,
       en: `${homeEn} vs ${awayEn}, ${w.en}. People who get these matches right usually move well in the table.`,
     },
-  ], salt));
+  ], salt), match);
 }
 
 function liveCommentary(match) {
@@ -745,4 +844,6 @@ module.exports = {
   shouldTreatAsVerification,
   isPendingProviderFinal,
   allGroupsComplete,
+  resultCommentary,
+  fixtureCommentary,
 };
