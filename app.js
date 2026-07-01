@@ -1958,6 +1958,7 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
   }
   const deadline = lateKo ? _knockoutCutoffLabel() : _lateEntryCutoffLabel();
   const showThirdPlacePending = !dataPending && !lateKo && !lateOpen && (phase === 'officialFirst' || phase === 'officialSeveral');
+  const showGroupProgress = !lateKo && !lateOpen && (phase === 'liveNoOfficial' || phase === 'officialFirst' || phase === 'officialSeveral');
   el.innerHTML = `
     <div class="dls-head">
       <span class="dls-live"><span class="dls-dot"></span>${t(kickerKey)}</span>
@@ -1965,13 +1966,13 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
     </div>
     <div class="dls-title">${t(titleKey)}</div>
     <div class="dls-text">${t(textKey, { time: deadline, done: gp.completeGroups, total: gp.totalGroups })}</div>
-    <div class="dls-progress" aria-hidden="true">
+    ${showGroupProgress ? `<div class="dls-progress" aria-hidden="true">
       <div class="dls-progress-fill" style="width:${pct}%"></div>
-    </div>
-    <div class="dls-metrics">
+    </div>` : ''}
+    ${showGroupProgress ? `<div class="dls-metrics">
       <span>${t('dashboard.liveStatus.progress', { done: gp.finished, total: gp.total })}</span>
       <span>${t('dashboard.liveStatus.groups', { done: gp.completeGroups, total: gp.totalGroups })}</span>
-    </div>
+    </div>` : ''}
     ${pendingNoteKey ? `<div class="dls-note">${t(pendingNoteKey)}</div>` : ''}
     ${showThirdPlacePending ? `<div class="dls-note">${t('dashboard.officialStatus.thirdPlacePending')}</div>` : ''}
   `;

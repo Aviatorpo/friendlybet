@@ -42,8 +42,8 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
-  actions: read
+  contents: write
+  actions: write
 
 jobs:
   monitor:
@@ -91,8 +91,34 @@ jobs:
             exit "$status"
           fi
 
+          recovery_dispatched=0
           echo "::warning::Readiness detected stale live-poller coverage; running one live-poller recovery pass directly."
-          node scripts/live-poller.js
+          poller_output="$(mktemp)"
+          GITHUB_OUTPUT="$poller_output" node scripts/live-poller.js
+          cat "$poller_output"
+          final_detected="$(grep '^final_detected=' "$poller_output" | tail -n 1 | cut -d= -f2- || true)"
+          if [ "$stale_live_db" = "1" ] || [ "$final_detected" = "true" ]; then
+            if FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches; then
+              if [ -n "$(git status --porcelain public-data/matches.json)" ]; then
+                git config user.name "Aviatorpo"
+                git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+                REGENERATE_COMMANDS="FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches" bash scripts/commit-generated-snapshots.sh "data: refresh match snapshot after readiness recovery" public-data/matches.json || echo "::warning::Fast match snapshot commit failed; scoring/export recovery will still run."
+              else
+                echo "no fast match snapshot change"
+              fi
+            else
+              echo "::warning::Fast match snapshot export failed; scoring/export recovery will still run."
+            fi
+            active_scoring_runs="$(gh run list --workflow calculate-scores-v2.yml --limit 10 --json status --jq '[.[] | select(.status == "queued" or .status == "in_progress" or .status == "waiting" or .status == "requested" or .status == "pending")] | length')"
+            if [ "${active_scoring_runs:-0}" = "0" ]; then
+              gh workflow run calculate-scores-v2.yml --ref main -f force_leaderboard_export=true -f force_backup=false -f restore_from_snapshot=false -f pool_ids=''
+              recovery_dispatched=1
+              echo "::warning::Live-poller recovery found terminal match state; dispatched forced scoring and public snapshot export."
+            else
+              recovery_dispatched=1
+              echo "::warning::Scoring/export recovery is already queued or running; skipping duplicate dispatch."
+            fi
+          fi
           export LIVE_COMPLETION_LOCAL_POLLER_RECOVERY_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
           set +e
@@ -106,6 +132,10 @@ jobs:
           node scripts/live-ops-summary.js readiness-after.json >> "$GITHUB_STEP_SUMMARY"
           set -e
           if [ "$status_after" != "0" ]; then
+            if [ "$recovery_dispatched" = "1" ]; then
+              echo "::warning::Readiness remains red while scoring/export recovery is queued or running; calculate-scores-v2 owns the final publication proof."
+              exit 0
+            fi
             node scripts/send-telegram-incident.js readiness-after.json || true
             exit "$status_after"
           fi
