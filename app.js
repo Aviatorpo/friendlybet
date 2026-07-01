@@ -2306,26 +2306,26 @@ async function buildPoolPundit() {
 
   if (groupStageComplete) {
     push('pool-groups-complete', 0, knockoutWindowMode ? [
-      { he: 'ניקוד הבתים כבר רשמי והנוקאאוט רץ. הבראקטים נעולים עכשיו, וכל משחק יכול להפוך את הטבלה.',
-        en: 'Group points are official and the knockouts are underway. Brackets are locked now, and every match can flip the table.' },
-      { he: 'שלב הבתים מאחורינו. מי שרוצה לזוז מכאן צריך פגיעות נוקאאוט, לא עוד זמן לעריכות.',
-        en: 'The group stage is behind us. Moving from here takes knockout hits, not more editing time.' },
+      { he: 'הנוקאאוט כבר רץ והבראקטים נעולים. הטבלה זזה עכשיו דרך תוצאות אמת, לא דרך עריכות.',
+        en: 'The knockouts are already running and brackets are locked. The table moves through real results now, not edits.' },
+      { he: 'זה כבר מצב נוקאאוט: מי שרוצה לזוז בטבלה צריך פגיעות בבראקט ובתוצאות האחרונות.',
+        en: 'This is knockout mode now: moving on the table takes bracket hits and the latest results.' },
     ] : [
-      { he: 'ניקוד הבתים כבר רשמי והנוקאאוט כבר התחיל. מכאן הטבלה זזה דרך הבראקט, האלופה ומלך השערים.',
-        en: 'Group points are official and the knockouts are already underway. From here the table moves through the bracket, champion pick, and top scorer.' },
-      { he: 'הבתים מאחורינו, הקבלות בטבלה. עכשיו רודפים אחרי המוביל דרך משחקי הנוקאאוט.',
-        en: 'The groups are behind us and the receipts are on the table. Now the chase runs through the knockout matches.' },
+      { he: 'הנוקאאוט כבר התחיל. מכאן הטבלה זזה דרך הבראקט, האלופה ומלך השערים.',
+        en: 'The knockouts are already underway. From here the table moves through the bracket, champion pick, and top scorer.' },
+      { he: 'זה השלב שבו כל משחק נוקאאוט יכול להזיז את המרדף אחרי המוביל.',
+        en: 'This is the phase where every knockout match can move the chase for the leader.' },
     ]);
   }
 
   if (poolLocked) {
     push('pool-locked-live', 1, [
-      { he: groupStageComplete ? 'הבתים נגמרו, אבל ההימור לא נגמר. עכשיו כל בחירת נוקאאוט שווה הרבה יותר בטבלה.' : 'ההימור נעול. עכשיו הבחירות שלכם פוגשות את המציאות, וכל משחק יכול להזיז את הטבלה.',
-        en: groupStageComplete ? 'The groups are done, but the pool is not. Every knockout pick is worth more on the table now.' : 'Predictions are locked. Now your picks meet reality, and every match can move the table.' },
-      { he: groupStageComplete ? 'קבלות הבתים כבר חולקו. מי שמאחור צריך נקודות נוקאאוט, לא עוד הסברים על שלב הבתים.' : 'אין יותר עריכות, רק קבלות. הבראקט קפוא והדרמה של ההימור חיה.',
-        en: groupStageComplete ? 'The group-stage receipts are in. Anyone behind needs knockout points, not another group-stage explanation.' : 'No more edits, only receipts. The bracket is frozen and the pool drama is live.' },
-      { he: groupStageComplete ? 'שתפו את הטבלה: ניקוד הבתים רשמי, והסיפור הבא הוא מי פוגע בבראקט הנוקאאוט.' : 'שתפו את הטבלה, לא לינק הצטרפות. ההימור סגור, הדרמה פתוחה.',
-        en: groupStageComplete ? 'Share the table: group points are official, and the next story is who nails the knockout bracket.' : 'Share the table, not a join link. Predictions are closed, the drama is open.' },
+      { he: groupStageComplete ? 'ההימור נעול והנוקאאוט קובע עכשיו. כל בחירת בראקט יכולה להזיז את הטבלה.' : 'ההימור נעול. עכשיו הבחירות שלכם פוגשות את המציאות, וכל משחק יכול להזיז את הטבלה.',
+        en: groupStageComplete ? 'Predictions are locked and the knockouts decide things now. Every bracket pick can move the table.' : 'Predictions are locked. Now your picks meet reality, and every match can move the table.' },
+      { he: groupStageComplete ? 'מי שמאחור לא צריך הסברים על העבר; הוא צריך נקודות מהמשחקים הבאים בבראקט.' : 'אין יותר עריכות, רק קבלות. הבראקט קפוא והדרמה של ההימור חיה.',
+        en: groupStageComplete ? 'Anyone behind does not need explanations about the past; they need points from the next bracket matches.' : 'No more edits, only receipts. The bracket is frozen and the pool drama is live.' },
+      { he: groupStageComplete ? 'שתפו את הטבלה: הסיפור עכשיו הוא מי פוגע בנוקאאוט ומי מאבד גובה.' : 'שתפו את הטבלה, לא לינק הצטרפות. ההימור סגור, הדרמה פתוחה.',
+        en: groupStageComplete ? 'Share the table: the story now is who hits the knockouts and who loses ground.' : 'Share the table, not a join link. Predictions are closed, the drama is open.' },
     ]);
   } else if (lateEntryOpen) {
     push('pool-late-entry-open', 1, [
@@ -2375,10 +2375,10 @@ async function buildPoolPundit() {
   if (leader && (leader.total_score || 0) > 0) {
     const n = nameOf(leader), s = leader.total_score || 0;
     push('pool-leader', 2, [
-      { he: groupStageComplete ? `${n} יוצא משלב הבתים ראשון עם ${s} נקודות. עכשיו כולם רודפים אחריו דרך הנוקאאוט 🏃` : `${n} מוביל את ההימור עם ${s} נקודות — מישהו יתפוס אותו? 🏃`,
-        en: groupStageComplete ? `${n} leaves the group stage first with ${s} points. Now everyone has to chase through the knockouts 🏃` : `${n} leads the pool with ${s} points — can anyone catch them? 🏃` },
-      { he: groupStageComplete ? `${n} בראש אחרי הבתים עם ${s} נקודות. היתרון אמיתי, אבל הנוקאאוט עוד יכול להפוך הכול 😏` : `${n} בראש הטבלה עם ${s} נקודות. הפער עוד נסגר 😏`,
-        en: groupStageComplete ? `${n} leads after the groups with ${s} points. The gap is real, but the knockouts can still flip it 😏` : `${n} tops the table with ${s} points. That gap can still close 😏` },
+      { he: groupStageComplete ? `${n} מוביל עכשיו עם ${s} נקודות. הנוקאאוט כבר רץ, וכל פגיעה בבראקט יכולה לשנות את המרדף 🏃` : `${n} מוביל את ההימור עם ${s} נקודות — מישהו יתפוס אותו? 🏃`,
+        en: groupStageComplete ? `${n} leads now with ${s} points. The knockouts are already running, and every bracket hit can change the chase 🏃` : `${n} leads the pool with ${s} points — can anyone catch them? 🏃` },
+      { he: groupStageComplete ? `${n} בראש הטבלה עם ${s} נקודות. היתרון אמיתי, אבל כל בחירת נוקאאוט עוד יכולה להזיז את הכול 😏` : `${n} בראש הטבלה עם ${s} נקודות. הפער עוד נסגר 😏`,
+        en: groupStageComplete ? `${n} tops the table with ${s} points. The lead is real, but every knockout pick can still move everything 😏` : `${n} tops the table with ${s} points. That gap can still close 😏` },
     ]);
   }
 

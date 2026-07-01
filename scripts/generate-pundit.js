@@ -233,8 +233,8 @@ function groupCompleteCommentary() {
   const heTime = knockoutDeadlineLabel('he');
   const enTime = knockoutDeadlineLabel('en');
   return {
-    he: `שלב הבתים מאחורינו: כל 12 הבתים נסגרו וניקוד הבתים רשמי. בהימורי two-phase או נוקאאוט, הבראקט ניתן לעריכה עד ${heTime}; בהימורי one-phase כבר חיים עם הקבלות.`,
-    en: `The group stage is behind us: all 12 groups are final and group points are official. In two-phase or knockout pools, the bracket can still be edited until ${enTime}; one-phase pools are already living with the receipts.`,
+    he: `ניקוד הבתים רשמי והבראקט הוא הסיפור עכשיו. בהימורי two-phase או נוקאאוט, אם חלון העריכה עדיין פתוח הוא נסגר ב-${heTime}; בהימורי one-phase חיים כבר לפי התוצאות והנוקאאוט.`,
+    en: `Group points are official and the bracket is the story now. In two-phase or knockout pools, if the edit window is still open it closes at ${enTime}; one-phase pools are already living by results and knockouts.`,
   };
 }
 
