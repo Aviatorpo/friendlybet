@@ -54,6 +54,7 @@ Create premium share-story assets for FriendlyBet that look like the approved Wo
 - If the post-match PDF is unavailable, continue with the established star-vs-star workflow. Do not invent a player, do not use generic/current-player wording, and do not switch to non-player artwork unless the user explicitly asks for it or no named player plus verified shirt number can be established from any local/primary source.
 - Existing pre-generated assets containing phrases like `biggest current star`, `current star`, `#current`, or unnamed team players must not be reused for new final stories until replaced with named, verified real players.
 - Locally generated deterministic result cards are emergency internals only unless they meet the full premium Story bar. Do not publish flat geometric placeholder art, team-name-only posters, abstract field-line designs, or low-byte local fallback PNGs as final Stories. If the only available asset is that class of fallback, hide/skip the Story and record a content incident rather than showing ugly artwork to users.
+- The local `outcome-base` renderer is allowed only if it creates a real poster base: named player context from `STAR_PROFILES`, verified shirt numbers visible in the kit, no duplicate outcome text, no team-name-only center card, no abstract field-line placeholder. If it cannot meet that bar, leave the Story unpublished instead of publishing a weak fallback.
 
 ## Required FriendlyBet Watermark
 
