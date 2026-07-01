@@ -143,6 +143,33 @@ jobs:
           SCORING_VERBOSE: '0'
         run: node scripts/generate-knockout-scenarios.js
 
+      - name: Commit critical public snapshots if changed
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids || inputs.pool_ids }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: ${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}
+          SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
+          SCORING_VERBOSE: '0'
+          REGENERATE_COMMANDS: |
+            node scripts/repair-pick-multipliers.js
+            if [ "${{ inputs.restore_from_snapshot }}" = "true" ]; then RESTORE_POOL_IDS="${{ inputs.pool_ids }}" node scripts/restore-score-components-from-snapshots.js || true; fi
+            SCORING_POOL_IDS="${{ inputs.pool_ids }}" node scripts/calculate-scores-v2.js --critical
+            node scripts/export-snapshots.js leaderboards
+            node scripts/verify-scoring-snapshots.js
+            node scripts/audit-two-phase-knockout-scoring.js
+            node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36 || true
+            FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches || true
+            node scripts/generate-knockout-scenarios.js || true
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data/world-cup-schedule.json public-data/matches.json public-data/leaderboard public-data/knockout-scenarios)" ]; then
+            bash scripts/commit-generated-snapshots.sh "data: refresh critical public scoring snapshots" public-data/world-cup-schedule.json public-data/matches.json public-data/leaderboard public-data/knockout-scenarios
+          else
+            echo "no critical public snapshot change"
+          fi
+
       - name: Encrypted critical-data backup after finished matches
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
