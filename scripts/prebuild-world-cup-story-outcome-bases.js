@@ -27,7 +27,6 @@ const {
   matchKey,
   outcomeFor,
   outcomeBaseSlug,
-  STAR_PROFILES,
 } = require('./generate-world-cup-stories');
 
 process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot';
@@ -60,12 +59,6 @@ function runPython(args) {
 }
 
 function renderLocalOutcomeBase(match, outcome, output) {
-  const winner = outcome === 'DRAW' ? match.home_team_code : outcome;
-  const loser = outcome === 'DRAW'
-    ? match.away_team_code
-    : (outcome === match.home_team_code ? match.away_team_code : match.home_team_code);
-  const winnerProfile = STAR_PROFILES[winner] || {};
-  const loserProfile = STAR_PROFILES[loser] || {};
   runPython([
     'scripts/process-story-image.py',
     'outcome-base',
@@ -76,10 +69,6 @@ function renderLocalOutcomeBase(match, outcome, output) {
     teamName(match.away_team_code),
     outcome,
     teamName(outcome),
-    winnerProfile.player || teamName(winner),
-    String(winnerProfile.number || ''),
-    loserProfile.player || teamName(loser),
-    String(loserProfile.number || ''),
   ]);
 }
 
