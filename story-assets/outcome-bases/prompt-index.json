@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-07-01T15:13:42.383Z",
+  "updated_at": "2026-07-01T20:16:42.582Z",
   "source": "snapshot",
-  "matches": 20,
+  "matches": 21,
   "prompts": [
     {
       "match_id": "f73a51f3-f6a0-4914-8fe7-424d5eadc94c",
@@ -74,14 +74,6 @@
       "outcome": "ENG",
       "image": "story-assets/outcome-bases/eng-cod-eng-wins-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: England vs DR Congo at FIFA World Cup 2026.\nPrepared outcome: England advances over DR Congo.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "539f0f2d-6ef8-450d-9e07-546b6951c00e",
-      "match_key": "ENG-COD",
-      "match_date": "2026-07-01T16:00:00+00:00",
-      "outcome": "COD",
-      "image": "story-assets/outcome-bases/eng-cod-cod-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: England vs DR Congo at FIFA World Cup 2026.\nPrepared outcome: DR Congo advances over England.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
       "match_id": "227bb68a-a5e4-42ca-bd09-6f0d9badd0bc",
@@ -258,6 +250,22 @@
       "outcome": "NOR",
       "image": "story-assets/outcome-bases/bra-nor-nor-wins-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Brazil vs Norway at FIFA World Cup 2026.\nPrepared outcome: Norway advances over Brazil.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
+    },
+    {
+      "match_id": "2bbe0177-81d6-4268-9434-6790cec04007",
+      "match_key": "MEX-ENG",
+      "match_date": "2026-07-06T00:00:00+00:00",
+      "outcome": "MEX",
+      "image": "story-assets/outcome-bases/mex-eng-mex-wins-base.png",
+      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Mexico vs England at FIFA World Cup 2026.\nPrepared outcome: Mexico advances over England.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
+    },
+    {
+      "match_id": "2bbe0177-81d6-4268-9434-6790cec04007",
+      "match_key": "MEX-ENG",
+      "match_date": "2026-07-06T00:00:00+00:00",
+      "outcome": "ENG",
+      "image": "story-assets/outcome-bases/mex-eng-eng-wins-base.png",
+      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Mexico vs England at FIFA World Cup 2026.\nPrepared outcome: England advances over Mexico.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     }
   ]
 }
