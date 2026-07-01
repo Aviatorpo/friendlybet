@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-01T21:10:53.073Z",
+  "updatedAt": "2026-07-01T22:43:29.657Z",
   "source": "https://api.fifa.com/api/v3/calendar/matches?language=en&count=500&idCompetition=17&from=2026-06-01&to=2026-07-31",
   "sourcePage": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?country=IL&wtw-filter=ALL",
   "count": 104,
@@ -2023,8 +2023,8 @@
       "away_team_code": "SEN",
       "home_team_name": "Belgium",
       "away_team_name": "Senegal",
-      "home_score": 0,
-      "away_score": 1,
+      "home_score": 3,
+      "away_score": 2,
       "venue": "Seattle Stadium",
       "city": "Seattle",
       "country": "USA"
