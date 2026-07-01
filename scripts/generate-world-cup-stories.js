@@ -140,6 +140,132 @@ const DRAW_FOCUS = {
 };
 
 const STORY_COPY_OVERRIDES = {
+  'CIV-NOR': {
+    title: {
+      he: 'נורבגיה ניצחה את חוף השנהב 2-1: הולכת לשמינית הגמר',
+      en: 'Norway beat Ivory Coast 2-1: into the Round of 16',
+    },
+    caption: {
+      he: '\u05e0\u05d5\u05e8\u05d1\u05d2\u05d9\u05d4 \u05d9\u05e6\u05d0\u05d4 \u05de\u05de\u05e9\u05d7\u05e7 \u05e0\u05d5\u05e7\u05d0\u05d0\u05d5\u05d8 \u05e6\u05de\u05d5\u05d3 \u05e2\u05dd 2-1 \u05d5\u05db\u05e8\u05d8\u05d9\u05e1 \u05dc\u05e9\u05dc\u05d1 \u05d4\u05d1\u05d0. \u05d4\u05d0\u05dc\u05e0\u05d3 \u05d5\u05e0\u05d5\u05e8\u05d1\u05d2\u05d9\u05d4 \u05e0\u05e9\u05d0\u05e8\u05d9\u05dd \u05e2\u05dc \u05d4\u05dc\u05d5\u05d7 \u{1F525}',
+      en: 'Norway came out of a tight knockout match with a 2-1 win and a place in the next round. Haaland and Norway stay on the board 🔥',
+    },
+    pool_focuses: [
+      {
+        table: 'knockout_picks',
+        team_code: 'NOR',
+        he_name: '{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. 2-1 על חוף השנהב הפך את הבחירה הזאת לקלף אמיתי לשלב הבא 🔥',
+        he_names: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-1 על חוף השנהב הפך את הבחירות האלה לקלפים אמיתיים לשלב הבא 🔥',
+        he_count: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-1 על חוף השנהב הפך את הבחירות האלה לקלפים אמיתיים לשלב הבא 🔥',
+        en_name: '{names} picked {team} to win this knockout match. A 2-1 win over Ivory Coast turns that pick into a real next-round card 🔥',
+        en_names: '{names} picked {team} to win this knockout match. A 2-1 win over Ivory Coast turns those picks into real next-round cards 🔥',
+        en_count: '{names} picked {team} to win this knockout match. A 2-1 win over Ivory Coast turns those picks into real next-round cards 🔥',
+      },
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'NOR',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי 2-1 בנוקאאוט, זה כבר נשמע פחות כמו פנטזיה ויותר כמו שיחה רצינית 🔥',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-1 בנוקאאוט, זה כבר נשמע פחות כמו פנטזיה ויותר כמו שיחה רצינית 🔥',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-1 בנוקאאוט, זה כבר נשמע פחות כמו פנטזיה ויותר כמו שיחה רצינית 🔥',
+        en_name: '{names} picked {team} to win the World Cup. After a 2-1 knockout win, that sounds less like fantasy and more like a serious conversation 🔥',
+        en_names: '{names} picked {team} to win the World Cup. After a 2-1 knockout win, those picks sound less like fantasy and more like a serious conversation 🔥',
+        en_count: '{names} picked {team} to win the World Cup. After a 2-1 knockout win, those picks sound less like fantasy and more like a serious conversation 🔥',
+      },
+      {
+        table: 'knockout_picks',
+        team_code: 'CIV',
+        he_name: '{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. אחרי 2-1 לנורבגיה, הבחירה הזאת צריכה הסבר טוב בצ׳אט 😬',
+        he_names: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי 2-1 לנורבגיה, הבחירות האלה צריכות הסבר טוב בצ׳אט 😬',
+        he_count: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי 2-1 לנורבגיה, הבחירות האלה צריכות הסבר טוב בצ׳אט 😬',
+        en_name: '{names} picked {team} to win this knockout match. After Norway’s 2-1, that pick needs a strong answer in the chat 😬',
+        en_names: '{names} picked {team} to win this knockout match. After Norway’s 2-1, those picks need strong answers in the chat 😬',
+        en_count: '{names} picked {team} to win this knockout match. After Norway’s 2-1, those picks need strong answers in the chat 😬',
+      },
+    ],
+  },
+  'FRA-SWE': {
+    title: {
+      he: '\u05e6\u05e8\u05e4\u05ea \u05e0\u05d9\u05e6\u05d7\u05d4 \u05d0\u05ea \u05e9\u05d5\u05d5\u05d3\u05d9\u05d4 3-0: \u05e2\u05d5\u05dc\u05d4 \u05d1\u05e1\u05d8\u05d9\u05d9\u05dc',
+      en: 'France beat Sweden 3-0: through in style',
+    },
+    caption: {
+      he: '\u05e6\u05e8\u05e4\u05ea \u05dc\u05d0 \u05d4\u05e9\u05d0\u05d9\u05e8\u05d4 \u05d0\u05ea \u05e9\u05d5\u05d5\u05d3\u05d9\u05d4 \u05d1\u05de\u05e9\u05d7\u05e7: 3-0, \u05e9\u05dc\u05d1 \u05d4\u05d1\u05d0, \u05d5\u05dc\u05d9\u05dc\u05d4 \u05e0\u05e7\u05d9 \u05dc\u05de\u05d1\u05d0\u05e4\u05d4 \u05d5\u05d4\u05db\u05d7\u05d5\u05dc\u05d9\u05dd \u{1F525}',
+      en: 'France left Sweden no way back: 3-0, next round, and a clean knockout night for Mbappe and the blue shirts 🔥',
+    },
+    pool_focuses: [
+      {
+        table: 'knockout_picks',
+        team_code: 'FRA',
+        he_name: '{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. 3-0 על שוודיה זו לא בחירה זהירה, זו חותמת 🔥',
+        he_names: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 3-0 על שוודיה אלה לא בחירות זהירות, אלה חותמות 🔥',
+        he_count: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 3-0 על שוודיה אלה לא בחירות זהירות, אלה חותמות 🔥',
+        en_name: '{names} picked {team} to win this knockout match. A 3-0 over Sweden is not cautious; it is a stamp 🔥',
+        en_names: '{names} picked {team} to win this knockout match. A 3-0 over Sweden is not cautious; it is a stamp 🔥',
+        en_count: '{names} picked {team} to win this knockout match. A 3-0 over Sweden is not cautious; it is a stamp 🔥',
+      },
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'FRA',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי 3-0 בנוקאאוט, הצ׳אט צריך להפסיק לצחוק על זה 🔥',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-0 בנוקאאוט, הצ׳אט צריך להפסיק לצחוק על זה 🔥',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-0 בנוקאאוט, הצ׳אט צריך להפסיק לצחוק על זה 🔥',
+        en_name: '{names} picked {team} to win the World Cup. After a 3-0 knockout win, the chat has to stop laughing at it 🔥',
+        en_names: '{names} picked {team} to win the World Cup. After a 3-0 knockout win, the chat has to stop laughing at those picks 🔥',
+        en_count: '{names} picked {team} to win the World Cup. After a 3-0 knockout win, the chat has to stop laughing at those picks 🔥',
+      },
+      {
+        table: 'knockout_picks',
+        team_code: 'SWE',
+        he_name: '{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. אחרי 3-0 לצרפת, הבחירה הזאת צריכה תשובה טובה בצ׳אט 😬',
+        he_names: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי 3-0 לצרפת, הבחירות האלה צריכות תשובה טובה בצ׳אט 😬',
+        he_count: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי 3-0 לצרפת, הבחירות האלה צריכות תשובה טובה בצ׳אט 😬',
+        en_name: '{names} picked {team} to win this knockout match. After France’s 3-0, that pick needs a better answer in the chat 😬',
+        en_names: '{names} picked {team} to win this knockout match. After France’s 3-0, those picks need better answers in the chat 😬',
+        en_count: '{names} picked {team} to win this knockout match. After France’s 3-0, those picks need better answers in the chat 😬',
+      },
+    ],
+  },
+  'MEX-ECU': {
+    title: {
+      he: 'מקסיקו ניצחה את אקוודור 2-0: הביתיות חיה',
+      en: 'Mexico beat Ecuador 2-0: the host run continues',
+    },
+    caption: {
+      he: 'מקסיקו עברה את אקוודור עם 2-0 נקי בנוקאאוט. זה לא רק ניצחון ביתי; זה רגע שבו הבראקט מתחיל להיראות אישי 🔥',
+      en: 'Mexico moved past Ecuador with a clean 2-0 in the knockout round. Not just a host win; this is where the bracket starts to feel personal 🔥',
+    },
+    pool_focuses: [
+      {
+        table: 'knockout_picks',
+        team_code: 'MEX',
+        he_name: '{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. 2-0 על אקוודור הופך את הבחירה הזאת לרגע אישי בהימור 🔥',
+        he_names: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-0 על אקוודור הופך את הבחירות האלה לרגעים אישיים בהימור 🔥',
+        he_count: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-0 על אקוודור הופך את הבחירות האלה לרגעים אישיים בהימור 🔥',
+        en_name: '{names} picked {team} to win this knockout match. A 2-0 over Ecuador turns that pick into a personal pool moment 🔥',
+        en_names: '{names} picked {team} to win this knockout match. A 2-0 over Ecuador turns those picks into personal pool moments 🔥',
+        en_count: '{names} picked {team} to win this knockout match. A 2-0 over Ecuador turns those picks into personal pool moments 🔥',
+      },
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'MEX',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי 2-0 בנוקאאוט, זה כבר לא נשמע כמו בחירת אוהדים בלבד 🔥',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-0 בנוקאאוט, זה כבר לא נשמע כמו בחירת אוהדים בלבד 🔥',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-0 בנוקאאוט, זה כבר לא נשמע כמו בחירת אוהדים בלבד 🔥',
+        en_name: '{names} picked {team} to win the World Cup. After a 2-0 knockout win, that no longer sounds like just a fan pick 🔥',
+        en_names: '{names} picked {team} to win the World Cup. After a 2-0 knockout win, those no longer sound like just fan picks 🔥',
+        en_count: '{names} picked {team} to win the World Cup. After a 2-0 knockout win, those no longer sound like just fan picks 🔥',
+      },
+      {
+        table: 'knockout_picks',
+        team_code: 'ECU',
+        he_name: '{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. אחרי 2-0 למקסיקו, הצ׳אט קיבל שאלה קשה 😬',
+        he_names: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי 2-0 למקסיקו, הצ׳אט קיבל שאלה קשה 😬',
+        he_count: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי 2-0 למקסיקו, הצ׳אט קיבל שאלה קשה 😬',
+        en_name: '{names} picked {team} to win this knockout match. After Mexico’s 2-0, the chat has a hard question to answer 😬',
+        en_names: '{names} picked {team} to win this knockout match. After Mexico’s 2-0, the chat has hard questions to answer 😬',
+        en_count: '{names} picked {team} to win this knockout match. After Mexico’s 2-0, the chat has hard questions to answer 😬',
+      },
+    ],
+  },
   'MEX-KOR': {
     caption: {
       he: 'מקסיקו עברה את קוריאה הדרומית עם 1-0 קטן וחד. בית A כבר לא מחפש רעש, הוא מחפש מי נשאר מספיק רגוע לסמן אותה ראשונה 🔥',
@@ -161,12 +287,12 @@ const STORY_COPY_OVERRIDES = {
         table: 'group_position_picks',
         team_code: 'KOR',
         position: 1,
-        he_name: '{names} שם את {team} ראשונה בבית. אחרי 1-0 ממקסיקו, התוכנית עדיין חיה, אבל כבר ביקשה כוס מים ונאום הגנה 🎤',
-        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 ממקסיקו, התוכניות עדיין חיות, אבל כבר ביקשו כוס מים ונאום הגנה 🎤',
-        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 ממקסיקו, התוכניות עדיין חיות, אבל כבר ביקשו כוס מים ונאום הגנה 🎤',
-        en_name: '{names} picked {team} to top the group. After 1-0 from Mexico, the plan is alive, but it already asked for water and a defense speech 🎤',
-        en_names: '{names} picked {team} to top the group. After 1-0 from Mexico, the plans are alive, but they already asked for water and a defense speech 🎤',
-        en_count: '{names} picked {team} to top the group. After 1-0 from Mexico, the plans are alive, but they already asked for water and a defense speech 🎤',
+        he_name: '{names} שם את {team} ראשונה בבית. אחרי 1-0 ממקסיקו, התוכנית עדיין חיה אבל כבר צריכה תשובה טובה בצ׳אט 😬',
+        he_names: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 ממקסיקו, התוכניות עדיין חיות אבל כבר צריכות תשובה טובה בצ׳אט 😬',
+        he_count: '{names} שמו את {team} ראשונה בבית. אחרי 1-0 ממקסיקו, התוכניות עדיין חיות אבל כבר צריכות תשובה טובה בצ׳אט 😬',
+        en_name: '{names} picked {team} to top the group. After 1-0 from Mexico, the plan is alive but already needs a better chat answer 😬',
+        en_names: '{names} picked {team} to top the group. After 1-0 from Mexico, the plans are alive but already need better chat answers 😬',
+        en_count: '{names} picked {team} to top the group. After 1-0 from Mexico, the plans are alive but already need better chat answers 😬',
       },
     ],
   },
@@ -342,9 +468,9 @@ const STORY_COPY_OVERRIDES = {
         he_name: '{names} שם את {team} ראשונה בבית. אחרי 6-0 מקנדה, נאום ההגנה כבר צריך פתיח, גוף, סיכום ונספח 😬',
         he_names: '{names} שמו את {team} ראשונה בבית. אחרי 6-0 מקנדה, נאום ההגנה כבר צריך פתיח, גוף, סיכום ונספח 😬',
         he_count: '{names} שמו את {team} ראשונה בבית. אחרי 6-0 מקנדה, נאום ההגנה כבר צריך פתיח, גוף, סיכום ונספח 😬',
-        en_name: '{names} picked {team} to top the group. After 6-0 from Canada, the defense speech needs an intro, body, conclusion, and appendix 😬',
-        en_names: '{names} picked {team} to top the group. After 6-0 from Canada, the defense speech needs an intro, body, conclusion, and appendix 😬',
-        en_count: '{names} picked {team} to top the group. After 6-0 from Canada, the defense speech needs an intro, body, conclusion, and appendix 😬',
+        en_name: '{names} picked {team} to top the group. After 6-0 from Canada, that pick needs a very serious explanation 😬',
+        en_names: '{names} picked {team} to top the group. After 6-0 from Canada, those picks need very serious explanations 😬',
+        en_count: '{names} picked {team} to top the group. After 6-0 from Canada, those picks need very serious explanations 😬',
       },
     ],
   },
@@ -371,9 +497,9 @@ const STORY_COPY_OVERRIDES = {
         he_name: 'אוי הבושה. {names} שם את {team} ראשונה בבית, ואז ארגנטינה שמה 3-0 על השולחן. נאום ההגנה כבר צריך מצגת 🎤',
         he_names: 'אוי הבושה. {names} שמו את {team} ראשונה בבית, ואז ארגנטינה שמה 3-0 על השולחן. נאום ההגנה כבר צריך מצגת 🎤',
         he_count: 'אוי הבושה. {names} שמו את {team} ראשונה בבית, ואז ארגנטינה שמה 3-0 על השולחן. נאום ההגנה כבר צריך מצגת 🎤',
-        en_name: 'Oh, the shame. {names} picked {team} to top the group, then Argentina put 3-0 on the table. The defense speech needs slides now 🎤',
-        en_names: 'Oh, the shame. {names} picked {team} to top the group, then Argentina put 3-0 on the table. The defense speech needs slides now 🎤',
-        en_count: 'Oh, the shame. {names} picked {team} to top the group, then Argentina put 3-0 on the table. The defense speech needs slides now 🎤',
+        en_name: '{names} picked {team} to top the group, then Argentina put 3-0 on the table. That pick has a hard night in the chat 😬',
+        en_names: '{names} picked {team} to top the group, then Argentina put 3-0 on the table. Those picks have a hard night in the chat 😬',
+        en_count: '{names} picked {team} to top the group, then Argentina put 3-0 on the table. Those picks have a hard night in the chat 😬',
       },
     ],
   },
@@ -505,9 +631,9 @@ const STORY_COPY_OVERRIDES = {
         he_name: 'אוי הבושה. {names} בחר את {team} כמנצחת המונדיאל, ואז הגיע 1-1 מול ערב הסעודית. נאום ההגנה מתחיל עכשיו 🎤😬',
         he_names: 'אוי הבושה. {names} בחרו את {team} כמנצחת המונדיאל, ואז הגיע 1-1 מול ערב הסעודית. נאום ההגנה מתחיל עכשיו 🎤😬',
         he_count: 'אוי הבושה. {names} בחרו את {team} כמנצחת המונדיאל, ואז הגיע 1-1 מול ערב הסעודית. נאום ההגנה מתחיל עכשיו 🎤😬',
-        en_name: 'Oh, the shame. {names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. The defense speech starts now 🎤😬',
-        en_names: 'Oh, the shame. {names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. The defense speech starts now 🎤😬',
-        en_count: 'Oh, the shame. {names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. The defense speech starts now 🎤😬',
+        en_name: '{names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. That pick suddenly needs evidence 😬',
+        en_names: '{names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. Those picks suddenly need evidence 😬',
+        en_count: '{names} picked {team} to win the World Cup, then came 1-1 with Saudi Arabia. Those picks suddenly need evidence 😬',
       },
       {
         table: 'group_position_picks',
@@ -650,9 +776,9 @@ const STORY_COPY_OVERRIDES = {
         he_name: '{names} שם את {team} ראשונה בבית. אחרי 3-1 על אוזבקיסטן, זה כבר לא הימור שקט - זה רגע לצלם את הטופס 🔥',
         he_names: '{names} שמו את {team} ראשונה בבית. אחרי 3-1 על אוזבקיסטן, זה כבר לא הימור שקט - זה רגע לצלם את הטפסים 🔥',
         he_count: '{names} שמו את {team} ראשונה בבית. אחרי 3-1 על אוזבקיסטן, זה כבר לא הימור שקט - זה רגע לצלם את הטפסים 🔥',
-        en_name: '{names} picked {team} to top the group. After 3-1 over Uzbekistan, that is no longer a quiet pick - it is screenshot material 🔥',
-        en_names: '{names} picked {team} to top the group. After 3-1 over Uzbekistan, those are no longer quiet picks - they are screenshot material 🔥',
-        en_count: '{names} picked {team} to top the group. After 3-1 over Uzbekistan, those are no longer quiet picks - they are screenshot material 🔥',
+        en_name: '{names} picked {team} to top the group. After 3-1 over Uzbekistan, that is no longer a quiet pick - it is the pool headline 🔥',
+        en_names: '{names} picked {team} to top the group. After 3-1 over Uzbekistan, those are no longer quiet picks - they are the pool headline 🔥',
+        en_count: '{names} picked {team} to top the group. After 3-1 over Uzbekistan, those are no longer quiet picks - they are the pool headline 🔥',
       },
       {
         table: 'group_position_picks',
@@ -779,9 +905,9 @@ const STORY_COPY_OVERRIDES = {
         he_name: '{names} שם את {team} ראשונה בבית. אחרי 3-1 מאוסטריה, נאום ההגנה כבר צריך פתיח, גוף וסיכום 🎤',
         he_names: '{names} שמו את {team} ראשונה בבית. אחרי 3-1 מאוסטריה, נאום ההגנה כבר צריך פתיח, גוף וסיכום 🎤',
         he_count: '{names} שמו את {team} ראשונה בבית. אחרי 3-1 מאוסטריה, נאום ההגנה כבר צריך פתיח, גוף וסיכום 🎤',
-        en_name: '{names} picked {team} to top the group. After 3-1 from Austria, the defense speech needs an intro, body, and conclusion 🎤',
-        en_names: '{names} picked {team} to top the group. After 3-1 from Austria, the defense speech needs an intro, body, and conclusion 🎤',
-        en_count: '{names} picked {team} to top the group. After 3-1 from Austria, the defense speech needs an intro, body, and conclusion 🎤',
+        en_name: '{names} picked {team} to top the group. After 3-1 from Austria, that pick needs a complete rethink 😬',
+        en_names: '{names} picked {team} to top the group. After 3-1 from Austria, those picks need a complete rethink 😬',
+        en_count: '{names} picked {team} to top the group. After 3-1 from Austria, those picks need a complete rethink 😬',
       },
     ],
   },
@@ -1107,13 +1233,6 @@ function isKnockoutMatch(match) {
   return match && !isGroupStageMatch(match);
 }
 
-function isTiedKnockoutQualification(match, outcome) {
-  return isKnockoutMatch(match) &&
-    outcome &&
-    outcome !== 'DRAW' &&
-    Number(match.home_score) === Number(match.away_score);
-}
-
 function stageLabel(match, lang = 'en') {
   const stage = String(match && match.stage || '').toUpperCase();
   const labels = {
@@ -1160,19 +1279,19 @@ function matchForStory(story, matchIndex) {
     null;
 }
 
-function dedupeStoriesByStableId(items) {
-  const seen = new Set();
-  return (items || []).filter(story => {
-    const key = String((story && (story.id || story.match_id)) || '').toLowerCase();
-    if (!key || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
 function outcomeFor(match) {
   if (match.winner_code) return match.winner_code;
   return Number(match.home_score) === Number(match.away_score) ? 'DRAW' : null;
+}
+
+function isTiedKnockoutQualification(match, outcome) {
+  return Boolean(
+    match &&
+    outcome &&
+    outcome !== 'DRAW' &&
+    isKnockoutMatch(match) &&
+    Number(match.home_score) === Number(match.away_score)
+  );
 }
 
 function scoreDash(match) {
@@ -1264,10 +1383,6 @@ function finalizeOutcomeBase(match, outcome, baseImage) {
     topLabel(match, outcome),
     scoreLine(match),
   ]);
-  if (!fs.existsSync(output) || fs.statSync(output).size < MIN_FINAL_STORY_IMAGE_BYTES) {
-    console.warn(`Generated story asset for ${matchKey(match)} ${outcome} is below the production poster threshold; story not published`);
-    return '';
-  }
   return path.relative(ROOT, output).replace(/\\/g, '/');
 }
 
@@ -1326,13 +1441,13 @@ function titleCopy(match, outcome) {
     const loserEn = teamName(loser, 'en');
     if (isTiedKnockoutQualification(match, outcome)) {
       return {
-        he: `${winnerHe} ניצחה את ${loserHe} בפנדלים אחרי ${score}: ${stageLabel(match, 'he')} קיבל קבלה`,
-        en: `${winnerEn} beat ${loserEn} on penalties after ${score}: ${stageLabel(match, 'en')} receipts are live`,
+        he: `${winnerHe} \u05e0\u05d9\u05e6\u05d7\u05d4 \u05d0\u05ea ${loserHe} ${score} \u05d1\u05e4\u05e0\u05d3\u05dc\u05d9\u05dd: ${stageLabel(match, 'he')}`,
+        en: `${winnerEn} beat ${loserEn} ${score} on penalties: through the ${stageLabel(match, 'en')}`,
       };
     }
     return {
-      he: `${winnerHe} ניצחה את ${loserHe} ${score}: ${stageLabel(match, 'he')} קיבל קבלה`,
-      en: `${winnerEn} beat ${loserEn} ${score}: ${stageLabel(match, 'en')} receipts are live`,
+      he: `${winnerHe} \u05e0\u05d9\u05e6\u05d7\u05d4 \u05d0\u05ea ${loserHe} ${score}: ${stageLabel(match, 'he')}`,
+      en: `${winnerEn} beat ${loserEn} ${score}: through the ${stageLabel(match, 'en')}`,
     };
   }
   if (outcome === 'DRAW') {
@@ -1420,8 +1535,8 @@ function tournamentWinnerFocus(match, outcome, teamCode) {
       {
         heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הטופס הזה כבר לא מתחבא בשוליים.`,
         heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הטפסים האלה כבר לא מתחבאים בשוליים.`,
-        enName: `{names} picked {team} to win the World Cup. ${enContext}, that form is no longer hiding in the margins.`,
-        enNames: `{names} picked {team} to win the World Cup. ${enContext}, those forms are no longer hiding in the margins.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, that pick deserves a second look now.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, those picks deserve a second look now.`,
       },
       {
         heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הצ'אט של ההימור חייב לתת לזה מבט שני.`,
@@ -1450,10 +1565,10 @@ function tournamentWinnerFocus(match, outcome, teamCode) {
     ],
     loser: [
       {
-        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הטופס הזה צריך נאום הגנה מוקדם.`,
-        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הטפסים האלה צריכים נאום הגנה מוקדם.`,
-        enName: `{names} picked {team} to win the World Cup. ${enContext}, that form needs an early defense speech.`,
-        enNames: `{names} picked {team} to win the World Cup. ${enContext}, those forms need an early defense speech.`,
+        heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הטופס הזה צריך תשובה טובה בצ׳אט.`,
+        heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, הטפסים האלה צריכים תשובה טובה בצ׳אט.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, that pick needs a stronger answer now.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, those picks need stronger answers now.`,
       },
       {
         heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הבחירה על הגביע קיבלה מכה פומבית.`,
@@ -1470,8 +1585,8 @@ function tournamentWinnerFocus(match, outcome, teamCode) {
       {
         heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, כל צילום מסך של הבחירה הזאת נהיה מסוכן.`,
         heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}, כל צילום מסך של הבחירות האלה נהיה מסוכן.`,
-        enName: `{names} picked {team} to win the World Cup. ${enContext}, every screenshot of that pick just became dangerous.`,
-        enNames: `{names} picked {team} to win the World Cup. ${enContext}, every screenshot of those picks just became dangerous.`,
+        enName: `{names} picked {team} to win the World Cup. ${enContext}, that pick is much harder to defend now.`,
+        enNames: `{names} picked {team} to win the World Cup. ${enContext}, those picks are much harder to defend now.`,
       },
       {
         heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}, הצ'אט קיבל שאלה הוגנת מאוד.`,
@@ -1545,15 +1660,15 @@ function knockoutFocus(match, outcome, teamCode) {
   const stageEn = stageLabel(match, 'en');
   const won = teamCode === outcome;
   const copy = won ? {
-    heName: `{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי ${score} מול ${opponentHe}, זה כבר לא טופס - זו קבלה חיה ⚽`,
+    heName: `{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי ${score} מול ${opponentHe}, הבחירה הזאת נכנסה לשיחה על השלב הבא ⚽`,
     heNames: `{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי ${score} מול ${opponentHe}, אלה כבר לא טפסים - אלה קבלות חיות ⚽`,
-    enName: `{names} picked {team} to win this knockout match. After ${score} against ${opponentEn}, that form is a live receipt ⚽`,
-    enNames: `{names} picked {team} to win this knockout match. After ${score} against ${opponentEn}, those forms are live receipts ⚽`,
+    enName: `{names} picked {team} to win this knockout match. After ${score} against ${opponentEn}, that pick goes straight into the next-round conversation ⚽`,
+    enNames: `{names} picked {team} to win this knockout match. After ${score} against ${opponentEn}, those picks go straight into the next-round conversation ⚽`,
   } : {
     heName: `{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי ${score} ב${stageHe}, ההימור הזה כבר עומד מול המציאות ⚽`,
     heNames: `{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי ${score} ב${stageHe}, ההימורים האלה כבר עומדים מול המציאות ⚽`,
-    enName: `{names} picked {team} to win this knockout match. After ${score} in the ${stageEn}, that pick is staring at reality now ⚽`,
-    enNames: `{names} picked {team} to win this knockout match. After ${score} in the ${stageEn}, those picks are staring at reality now ⚽`,
+    enName: `{names} picked {team} to win this knockout match. After ${score} in the ${stageEn}, that pick needs a serious answer now ⚽`,
+    enNames: `{names} picked {team} to win this knockout match. After ${score} in the ${stageEn}, those picks need serious answers now ⚽`,
   };
   return {
     table: 'knockout_picks',
@@ -1721,15 +1836,9 @@ function fallbackEditorialCaption(match, outcome) {
     const loserHe = teamName(loser, 'he');
     const winnerEn = teamName(outcome, 'en');
     const loserEn = teamName(loser, 'en');
-    if (isTiedKnockoutQualification(match, outcome)) {
-      return {
-        he: `${winnerHe} עברה את ${loserHe} בפנדלים אחרי ${score} ב${stageLabel(match, 'he')}. זה משחק שמסדר את הסוגריים מחדש ומשאיר את ${loserHe} מחוץ לסיפור.`,
-        en: `${winnerEn} got past ${loserEn} on penalties after ${score} in the ${stageLabel(match, 'en')}. The bracket moves on with ${winnerEn}, and ${loserEn} is out of the story.`,
-      };
-    }
     return {
-      he: `${winnerHe} עברה את ${loserHe} עם ${score} ב${stageLabel(match, 'he')}. זה משחק שמסדר את הסוגריים מחדש ומשאיר את ${loserHe} מחוץ לסיפור.`,
-      en: `${winnerEn} got past ${loserEn} ${score} in the ${stageLabel(match, 'en')}. The bracket moves on with ${winnerEn}, and ${loserEn} is out of the story.`,
+      he: `${winnerHe} \u05e2\u05d1\u05e8\u05d4 \u05d0\u05ea ${loserHe} \u05e2\u05dd ${score} \u05d1${stageLabel(match, 'he')}. \u05d4\u05d1\u05e8\u05d0\u05e7\u05d8 \u05de\u05ea\u05e7\u05d3\u05dd \u05e2\u05db\u05e9\u05d9\u05d5 \u05d3\u05e8\u05db\u05d4, \u05d5${loserHe} \u05d9\u05d5\u05e8\u05d3\u05ea \u05de\u05d4\u05dc\u05d5\u05d7.`,
+      en: `${winnerEn} got past ${loserEn} ${score} in the ${stageLabel(match, 'en')}. The bracket now moves through ${winnerEn}, while ${loserEn} drops off the board.`,
     };
   }
   if (outcome === 'DRAW') {
@@ -1994,7 +2103,7 @@ const RECENT_COPY_VARIETY_CLAUSES = {
       'עכשיו זה רגע אישי בהימור.',
       'הצ\'אט יצטרך לבחור צד.',
       'הטופס הזה כבר לא רק רקע.',
-      'זה בדיוק מסוג הבחירות שמצלמים למסך.',
+      'לבחירה הזאת כבר יש משחק אמיתי מאחוריה.',
       'הטבלה הכריחה את כולם לקרוא שוב.',
       'הבדיחה בצ\'אט השתנתה כיוון.',
       'זה חומר אמיתי לדיון אחרי המשחק.',
@@ -2004,7 +2113,7 @@ const RECENT_COPY_VARIETY_CLAUSES = {
       'Now it is a personal pool moment.',
       'The chat has to pick a side.',
       'That form is no longer background noise.',
-      'This is exactly the kind of pick people screenshot.',
+      'That pick now has a real match behind it.',
       'The table forced everyone to read it again.',
       'The pool joke changed direction.',
       'That is real post-match debate material.',
@@ -2119,8 +2228,8 @@ function captionCopy(match, outcome) {
     const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
     if (isTiedKnockoutQualification(match, outcome)) {
       return {
-        he: `${teamName(outcome, 'he')} עברה את ${teamName(loser, 'he')} בפנדלים אחרי ${score}, והבראקטים מרגישים את זה מיד.`,
-        en: `${teamName(outcome)} got past ${teamName(loser)} on penalties after ${score}, and the brackets feel it immediately.`,
+        he: `${teamName(outcome, 'he')} \u05e2\u05d1\u05e8\u05d4 \u05d0\u05ea ${teamName(loser, 'he')} ${score} \u05d1\u05e4\u05e0\u05d3\u05dc\u05d9\u05dd, \u05d5\u05d4\u05d1\u05e8\u05d0\u05e7\u05d8 \u05de\u05ea\u05e7\u05d3\u05dd \u05d3\u05e8\u05db\u05d4.`,
+        en: `${teamName(outcome)} got past ${teamName(loser)} ${score} on penalties, and the bracket now moves through them.`,
       };
     }
     return {
@@ -2267,8 +2376,8 @@ function postGroupStageFocus(focus, match, outcome) {
     {
       heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, בית ${group} סגור והטופס הזה כבר חי בניקוד הרשמי.`,
       heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, בית ${group} סגור והטפסים האלה כבר חיים בניקוד הרשמי.`,
-      enName: `{names} picked {team} to top the group. After ${score}, Group ${group} is closed and that form now lives on the official scoreboard.`,
-      enNames: `{names} picked {team} to top the group. After ${score}, Group ${group} is closed and those forms now live on the official scoreboard.`,
+      enName: `{names} picked {team} to top the group. After ${score}, Group ${group} is closed and that pick is part of the official record.`,
+      enNames: `{names} picked {team} to top the group. After ${score}, Group ${group} is closed and those picks are part of the official record.`,
     },
     {
       heName: `{names} שם את {team} ראשונה בבית. עכשיו בית ${group} סופי, אז זו כבר לא תקווה - זו קבלה או צלקת.`,
@@ -2364,13 +2473,16 @@ function validateStory(story, match) {
   }
 }
 
-function normalizeExistingStory(story, matchIndex) {
-  const match = matchForStory(story, matchIndex);
+function normalizeExistingStory(story, matchById) {
+  const match = story && matchById.get(story.match_id);
+  if (!match) return null;
   if (!match || match.status !== 'FINISHED' || match.home_score == null || match.away_score == null) {
     return story;
   }
   const outcome = outcomeFor(match);
   if (!outcome || !story.image) return story;
+  const imagePath = path.join(ROOT, String(story.image || ''));
+  if (!fs.existsSync(imagePath) || fs.statSync(imagePath).size < MIN_FINAL_STORY_IMAGE_BYTES) return null;
   return {
     ...buildStory(match, story.image, outcome),
     id: story.id || storyId(match),
@@ -2456,7 +2568,7 @@ function outcomeBasePrompt(match, outcome) {
     'Composition: vertical portrait, dramatic stadium lights, two-player premium sports poster. Players heads high in frame but clearly below the reserved top result-text band.',
     'Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.',
     'Leave the lower edge visually calm for the deterministic FriendlyBet watermark added later.',
-    'Avoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces.',
+    'Avoid: score text, result title, caption panel, black rectangle, empty box, UI card, yellow result headline, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces.',
   ].join('\n');
 }
 
@@ -2507,14 +2619,12 @@ async function generateImage(match, outcome) {
 async function main() {
   const matchesPayload = await loadMatchesPayload();
   console.log(`Story match source: ${matchesPayload.source || 'snapshot'} (${(matchesPayload.matches || []).length} matches)`);
-  const matchIndex = buildMatchIndex(matchesPayload.matches || []);
-  const matchById = matchIndex.byId;
+  const matchById = new Map((matchesPayload.matches || []).map(match => [match.id, match]));
   const manifest = readJson(MANIFEST_PATH, { version: 1, items: [] });
   const storiesPayload = readJson(STORIES_PATH, { items: [] });
-  const existing = dedupeStoriesByStableId(
-    (Array.isArray(storiesPayload.items) ? storiesPayload.items : [])
-      .map(story => normalizeExistingStory(story, matchIndex))
-  );
+  const existing = (Array.isArray(storiesPayload.items) ? storiesPayload.items : [])
+    .map(story => normalizeExistingStory(story, matchById))
+    .filter(Boolean);
   const existingByMatch = new Set(existing.map(item => item && item.match_id).filter(Boolean));
   const existingMatchDates = new Map(
     (matchesPayload.matches || []).map(match => [match.id, new Date(match.match_date).getTime()])
@@ -2558,14 +2668,14 @@ async function main() {
     })
     .slice(0, MAX_STORIES);
   items = applyLatestStoryShapeVariety(items, matchById);
-  items = items.map(story => applyStoryEmojiDiscipline(story, matchForStory(story, matchIndex)));
+  items = items.map(story => applyStoryEmojiDiscipline(story, matchById.get(story && story.match_id)));
   if (postGroupStageComplete) {
-    items = items.map(story => applyPostGroupStageFinalCopy(story, matchForStory(story, matchIndex)));
+    items = items.map(story => applyPostGroupStageFinalCopy(story, matchById.get(story && story.match_id)));
     items = applyLatestStoryShapeVariety(items, matchById);
   }
   const contentChanged = JSON.stringify(items) !== JSON.stringify(Array.isArray(storiesPayload.items) ? storiesPayload.items : []);
   items.forEach(story => {
-    const match = matchForStory(story, matchIndex);
+    const match = matchById.get(story.match_id);
     if (match) validateStory(story, match);
   });
   const next = {
@@ -2606,7 +2716,6 @@ module.exports = {
   storyId,
   buildMatchIndex,
   matchForStory,
-  dedupeStoriesByStableId,
   outcomeFor,
   scoreForOutcome,
   scoreDash,
