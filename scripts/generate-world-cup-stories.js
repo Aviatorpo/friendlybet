@@ -1212,14 +1212,16 @@ function outcomeBaseSlug(match, outcome) {
 
 function outcomeBaseAsset(match, outcome) {
   const relative = path.join('story-assets', 'outcome-bases', outcomeBaseSlug(match, outcome)).replace(/\\/g, '/');
-  return fs.existsSync(path.join(ROOT, relative)) ? relative : '';
+  const imagePath = path.join(ROOT, relative);
+  return fs.existsSync(imagePath) && fs.statSync(imagePath).size >= MIN_FINAL_STORY_IMAGE_BYTES ? relative : '';
 }
 
 function manifestAsset(manifest, match, outcome) {
   const item = (manifest.items || []).find(entry => entry.match_id === match.id);
   const image = normalizeAssetPath(item && item.outcomes && item.outcomes[outcome]);
   if (!image) return '';
-  return fs.existsSync(path.join(ROOT, image)) ? image : '';
+  const imagePath = path.join(ROOT, image);
+  return fs.existsSync(imagePath) && fs.statSync(imagePath).size >= MIN_FINAL_STORY_IMAGE_BYTES ? image : '';
 }
 
 function knownOrGeneratedAsset(manifest, match, outcome) {
@@ -1262,6 +1264,10 @@ function finalizeOutcomeBase(match, outcome, baseImage) {
     topLabel(match, outcome),
     scoreLine(match),
   ]);
+  if (!fs.existsSync(output) || fs.statSync(output).size < MIN_FINAL_STORY_IMAGE_BYTES) {
+    console.warn(`Generated story asset for ${matchKey(match)} ${outcome} is below the production poster threshold; story not published`);
+    return '';
+  }
   return path.relative(ROOT, output).replace(/\\/g, '/');
 }
 
