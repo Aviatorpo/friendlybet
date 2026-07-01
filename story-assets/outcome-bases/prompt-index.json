@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-07-01T08:40:41.618Z",
+  "updated_at": "2026-07-01T15:13:42.383Z",
   "source": "snapshot",
-  "matches": 23,
+  "matches": 20,
   "prompts": [
     {
       "match_id": "f73a51f3-f6a0-4914-8fe7-424d5eadc94c",
@@ -66,30 +66,6 @@
       "outcome": "DRAW",
       "image": "story-assets/outcome-bases/cpv-ksa-draw-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Cape Verde vs KSA at FIFA World Cup 2026.\nPrepared outcome: Cape Verde and KSA draw.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "36f8071c-c9b0-4581-8953-242c240da988",
-      "match_key": "CIV-NOR",
-      "match_date": "2026-06-30T17:00:00+00:00",
-      "outcome": "NOR",
-      "image": "story-assets/outcome-bases/civ-nor-nor-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Ivory Coast vs Norway at FIFA World Cup 2026.\nPrepared outcome: Norway advances over Ivory Coast.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "1bcff6f2-4ccf-4a93-8558-8d4da01fad5e",
-      "match_key": "FRA-SWE",
-      "match_date": "2026-06-30T21:00:00+00:00",
-      "outcome": "FRA",
-      "image": "story-assets/outcome-bases/fra-swe-fra-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: France vs Sweden at FIFA World Cup 2026.\nPrepared outcome: France advances over Sweden.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "3c2bf70e-e807-4f02-b41c-ddcefc4c849e",
-      "match_key": "MEX-ECU",
-      "match_date": "2026-07-01T02:00:00+00:00",
-      "outcome": "MEX",
-      "image": "story-assets/outcome-bases/mex-ecu-mex-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Mexico vs Ecuador at FIFA World Cup 2026.\nPrepared outcome: Mexico advances over Ecuador.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
       "match_id": "539f0f2d-6ef8-450d-9e07-546b6951c00e",
