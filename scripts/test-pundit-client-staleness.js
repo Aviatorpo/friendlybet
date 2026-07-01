@@ -3,6 +3,7 @@ const path = require('path');
 
 const appPath = path.join(__dirname, '..', 'app.js');
 const src = fs.readFileSync(appPath, 'utf8');
+const generatorSrc = fs.readFileSync(path.join(__dirname, 'generate-pundit.js'), 'utf8');
 
 function assert(condition, message) {
   if (!condition) {
@@ -58,6 +59,34 @@ assert(
 assert(
   /const poolOpenForNewBuzz\s*=\s*!poolLocked\s*&&\s*\(lateEntryOpen\s*\|\|\s*!tournamentStarted\)/.test(src),
   'Pool join/share buzz must be based on effective betting availability, not only poolLocked'
+);
+
+[
+  'יוצא משלב הבתים',
+  'leaves the group stage',
+  'שלב הבתים מאחורינו',
+  'The group stage is behind us',
+  'קבלות הבתים',
+  'group-stage receipts',
+].forEach((phrase) => {
+  assert(
+    !src.includes(phrase),
+    `Pool Pundit must not show stale group-stage transition copy during knockout mode: ${phrase}`
+  );
+  assert(
+    !generatorSrc.includes(phrase),
+    `Generated Pundit feed must not publish stale group-stage transition copy during knockout mode: ${phrase}`
+  );
+});
+
+assert(
+  /groupStageComplete\s*\?\s*`\$\{n\} מוביל עכשיו עם \$\{s\} נקודות/.test(src),
+  'Group-complete pool leader copy must describe the current knockout chase, not a user leaving the group stage'
+);
+
+assert(
+  /groupStageComplete\s*\?\s*`\$\{n\} leads now with \$\{s\} points/.test(src),
+  'English group-complete pool leader copy must describe the current knockout chase'
 );
 
 [

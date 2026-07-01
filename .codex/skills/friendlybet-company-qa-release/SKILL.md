@@ -59,6 +59,7 @@ Read academy docs when release confidence, regression strategy, or senior QA pla
 19. Use grey-box debugging for serious incidents. Inspect code paths, DB rows, generated/public snapshots, workflow logs, browser/network state, and production artifacts before assigning blame or approving release.
 20. Make release decisions with risk evidence: changed surface, blast radius, failure likelihood, user impact, observability/proof, and rollback/replay path. "Tests passed" is evidence, not the whole decision.
 21. Act as a quality culture leader. Mentor other departments by converting vague concerns into reproducible cases, acceptance criteria, regression fixtures, and CI checks; do not become a last-minute checkbox function.
+22. For Pundit, banter, Story, or dashboard copy releases, verify phase-state fit as a release gate. Client-generated copy needs direct app-code tests, not only public-data feed validators; stale phase phrases such as group-stage transition copy during knockout mode are blockers.
 
 ## Output
 

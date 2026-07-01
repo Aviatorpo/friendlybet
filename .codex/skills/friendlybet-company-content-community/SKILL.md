@@ -59,6 +59,7 @@ Read academy docs when content quality, World Cup expertise, or live-desk behavi
 17. Reject speed-driven copy or communication plans that skip bilingual fit, user trust, or product-language review. Short copy is good; shallow copy planning is not.
 18. Do not publish result-driven content from incomplete result truth. If advancement is verified but penalty details are missing, content may state advancement accurately and leave richer shootout details for backfill.
 19. During live-result incidents, content should help users feel the product is calm and current, but must not convert internal workflow/provider/cache language into public copy.
+20. For Pundit, banter, Stories, and share copy, anchor every line to the user's current tournament phase. After the group stage is complete and knockout play has begun, do not use group-stage transition wording as the current story. Historical context is allowed only when the line clearly returns to current leaderboard, locked bracket, verified result, scoring impact, or next fixture relevance.
 
 ## Output
 
