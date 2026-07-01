@@ -174,6 +174,17 @@ check('verified-result workflows publish all leaderboard snapshots for a new res
   }
 });
 
+check('scoring workflow commits critical public snapshots before backup tail', () => {
+  const file = '.github/workflows/calculate-scores-v2.yml';
+  const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
+  assertOrdered(text, file, 'Generate knockout scoring scenarios', 'Commit critical public snapshots if changed');
+  assertOrdered(text, file, 'Commit critical public snapshots if changed', 'Encrypted critical-data backup after finished matches');
+  assert.ok(
+    /commit-generated-snapshots\.sh "data: refresh critical public scoring snapshots"[\s\S]*public-data\/matches\.json[\s\S]*public-data\/leaderboard[\s\S]*public-data\/knockout-scenarios/.test(text),
+    'scoring workflow must push public match, leaderboard, and scenario snapshots before backup/content work'
+  );
+});
+
 check('final-result verifier has continuous 15-minute recovery schedule', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/final-result-verifier.yml'), 'utf8');
   assert.ok(text.includes("cron: '4,19,34,49 * 11-28 6 *'"), 'final verifier must not have group-stage recovery gaps');
