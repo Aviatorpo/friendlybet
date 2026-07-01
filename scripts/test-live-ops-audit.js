@@ -183,6 +183,10 @@ check('scoring workflow commits critical public snapshots before backup tail', (
     /commit-generated-snapshots\.sh "data: refresh critical public scoring snapshots"[\s\S]*public-data\/matches\.json[\s\S]*public-data\/leaderboard[\s\S]*public-data\/knockout-scenarios/.test(text),
     'scoring workflow must push public match, leaderboard, and scenario snapshots before backup/content work'
   );
+  assert.ok(
+    /name: Prove public scoring snapshots[\s\S]*timeout-minutes:\s*12/.test(text),
+    'public scoring proof must be bounded so Actions do not hang indefinitely after publication'
+  );
 });
 
 check('final-result verifier has continuous 15-minute recovery schedule', () => {
