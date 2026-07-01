@@ -241,6 +241,7 @@ jobs:
 
       - name: Prove public scoring snapshots
         if: steps.score_results.outputs.changed_pool_ids != '' || inputs.pool_ids != '' || inputs.force_leaderboard_export == 'true'
+        timeout-minutes: 12
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
