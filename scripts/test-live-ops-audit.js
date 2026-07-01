@@ -432,6 +432,10 @@ check('story base prebuild is automatic, bounded, and covers knockout matches', 
   assert.ok(!prebuild.includes('requestImageBuffer'), 'scheduled story prebuild script must not call image-generation APIs');
   assert.ok(prebuild.includes('renderLocalOutcomeBase'), 'scheduled story prebuild must render local deterministic bases');
   assert.ok(prebuild.includes('function possibleOutcomes(match)'), 'prebuild must model possible outcomes per match type');
+  assert.ok(prebuild.includes("status === 'FINISHED'"), 'prebuild must backfill the actual outcome for finished matches missing story bases');
+  assert.ok(prebuild.includes('outcomeFor(match)'), 'prebuild must use canonical outcome resolution for finished story backfill');
+  assert.ok(prebuild.includes('matchesWithStories'), 'prebuild must avoid regenerating bases for matches that already have stories');
+  assert.ok(prebuild.includes('LOCAL_DETERMINISTIC_OUTCOME_BASE'), 'prebuild must mark local deterministic base metadata');
   assert.ok(prebuild.includes("String(match.stage || '').toUpperCase() !== 'GROUP_STAGE'"), 'prebuild must treat knockout matches differently from group matches');
 
   const coverage = fs.readFileSync(path.join(ROOT, 'scripts/check-world-cup-story-base-coverage.js'), 'utf8');
@@ -440,6 +444,7 @@ check('story base prebuild is automatic, bounded, and covers knockout matches', 
 
   const imageAudit = fs.readFileSync(path.join(ROOT, 'scripts/audit-world-cup-story-images.py'), 'utf8');
   assert.ok(imageAudit.includes('WC_STORY_AUDIT_SKIP_UNINDEXED_BASES'), 'image audit must support indexed-base mode for scheduled prebuild');
+  assert.ok(imageAudit.includes('LOCAL_DETERMINISTIC_OUTCOME_BASE'), 'image audit must support local deterministic base metadata');
 
   const processStoryImage = fs.readFileSync(path.join(ROOT, 'scripts/process-story-image.py'), 'utf8');
   assert.ok(processStoryImage.includes('outcome-base'), 'process-story-image must support local outcome-base rendering');
