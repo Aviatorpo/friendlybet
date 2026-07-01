@@ -13,6 +13,23 @@ name: Generate Pundit Feed
 on:
   schedule:
     - cron: '3,13,23,33,43,53 * 11-28 6 *'   # group-stage live desk, offset from poller/verifier
+    - cron: '3,13,23,33,43,53 16-23 29 6 *'   # first knockout day
+    - cron: '3,13,23,33,43,53 0-7,16-23 30 6 *'
+    - cron: '3,13,23,33,43,53 0-7,15-23 1 7 *'
+    - cron: '3,13,23,33,43,53 0-7,18-23 2 7 *'
+    - cron: '3,13,23,33,43,53 0-9,17-23 3 7 *'
+    - cron: '3,13,23,33,43,53 0-7,16-23 4 7 *'
+    - cron: '3,13,23,33,43,53 0-7,19-23 5 7 *'
+    - cron: '3,13,23,33,43,53 0-7,18-23 6 7 *'
+    - cron: '3,13,23,33,43,53 0-7,15-23 7 7 *'
+    - cron: '3,13,23,33,43,53 19-23 9 7 *'
+    - cron: '3,13,23,33,43,53 0-3,18-23 10 7 *'
+    - cron: '3,13,23,33,43,53 0-2,20-23 11 7 *'
+    - cron: '3,13,23,33,43,53 0-7 12 7 *'
+    - cron: '3,13,23,33,43,53 18-23 14 7 *'
+    - cron: '3,13,23,33,43,53 0-2,18-23 15 7 *'
+    - cron: '3,13,23,33,43,53 20-23 18 7 *'
+    - cron: '3,13,23,33,43,53 0-2,18-23 19 7 *'
     - cron: '7 */3 * * *'   # quiet refresh outside the group-stage live window
   workflow_dispatch:
 
@@ -26,6 +43,7 @@ concurrency:
 jobs:
   generate-pundit:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -55,6 +73,7 @@ jobs:
 
       - name: Publish prepared World Cup stories
         if: steps.story_work.outputs.publishable == 'true'
+        continue-on-error: true
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
@@ -89,7 +108,7 @@ jobs:
             node scripts/export-snapshots.js matches
             node scripts/world-cup-story-auto-needed.js > /tmp/friendlybet-story-needed.txt; cat /tmp/friendlybet-story-needed.txt; if grep -q 'publishable=true' /tmp/friendlybet-story-needed.txt; then python3 -m pip install --user pillow pypdf; node scripts/publish-world-cup-stories-auto.js; fi
             LIVE_OPS_SKIP_PUNDIT=1 LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS=1 LIVE_OPS_ALLOW_STORY_BACKLOG=1 node scripts/live-ops-audit.js
-            node scripts/pundit-news-validate.js
+            if [ -f public-data/pundit-news.json ]; then node scripts/pundit-news-validate.js; else echo "no pundit-news.json yet, skipping validation"; fi
             node scripts/generate-pundit.js
             node scripts/test-pundit-feed.js
         run: |

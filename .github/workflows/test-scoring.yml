@@ -63,6 +63,11 @@ on:
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
       - 'scripts/generate-pundit.js'
+      - 'scripts/generate-world-cup-stories.js'
+      - 'scripts/publish-world-cup-stories-auto.js'
+      - 'scripts/world-cup-story-auto-needed.js'
+      - 'scripts/test-world-cup-stories.js'
+      - 'scripts/audit-world-cup-story-images.py'
       - 'scripts/pundit-news-validate.js'
       - 'scripts/pundit-live-window-certifier.js'
       - 'scripts/test-pundit-news-validate.js'
@@ -74,6 +79,8 @@ on:
       - 'public-data/pundit-news.json'
       - 'public-data/pundit.json'
       - 'public-data/world-cup-stories.json'
+      - 'story-assets/manifest.json'
+      - 'story-assets/outcome-bases/prompt-index.json'
       - '.github/workflows/calculate-scores-v2.yml'
       - '.github/workflows/final-result-verifier.yml'
       - '.github/workflows/update-fifa-world-cup-schedule.yml'
@@ -144,6 +151,11 @@ on:
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
       - 'scripts/generate-pundit.js'
+      - 'scripts/generate-world-cup-stories.js'
+      - 'scripts/publish-world-cup-stories-auto.js'
+      - 'scripts/world-cup-story-auto-needed.js'
+      - 'scripts/test-world-cup-stories.js'
+      - 'scripts/audit-world-cup-story-images.py'
       - 'scripts/pundit-news-validate.js'
       - 'scripts/pundit-live-window-certifier.js'
       - 'scripts/test-pundit-news-validate.js'
@@ -155,6 +167,8 @@ on:
       - 'public-data/pundit-news.json'
       - 'public-data/pundit.json'
       - 'public-data/world-cup-stories.json'
+      - 'story-assets/manifest.json'
+      - 'story-assets/outcome-bases/prompt-index.json'
       - '.github/workflows/calculate-scores-v2.yml'
       - '.github/workflows/final-result-verifier.yml'
       - '.github/workflows/update-fifa-world-cup-schedule.yml'
@@ -251,6 +265,8 @@ jobs:
         run: node scripts/test-banter.js
       - name: Run Pundit feed tests
         run: node scripts/test-pundit-feed.js
+      - name: Run World Cup story tests
+        run: node scripts/test-world-cup-stories.js
       - name: Run Pundit news validation tests
         run: node scripts/test-pundit-news-validate.js
       - name: Validate current Pundit news file

@@ -1,6 +1,25 @@
 name: Publish Prepared World Cup Stories
 
 on:
+  schedule:
+    - cron: '5,20,35,50 16-23 29 6 *'   # first knockout day
+    - cron: '5,20,35,50 0-7,16-23 30 6 *'
+    - cron: '5,20,35,50 0-7,15-23 1 7 *'
+    - cron: '5,20,35,50 0-7,18-23 2 7 *'
+    - cron: '5,20,35,50 0-9,17-23 3 7 *'
+    - cron: '5,20,35,50 0-7,16-23 4 7 *'
+    - cron: '5,20,35,50 0-7,19-23 5 7 *'
+    - cron: '5,20,35,50 0-7,18-23 6 7 *'
+    - cron: '5,20,35,50 0-7,15-23 7 7 *'
+    - cron: '5,20,35,50 19-23 9 7 *'
+    - cron: '5,20,35,50 0-3,18-23 10 7 *'
+    - cron: '5,20,35,50 0-2,20-23 11 7 *'
+    - cron: '5,20,35,50 0-7 12 7 *'
+    - cron: '5,20,35,50 18-23 14 7 *'
+    - cron: '5,20,35,50 0-2,18-23 15 7 *'
+    - cron: '5,20,35,50 20-23 18 7 *'
+    - cron: '5,20,35,50 0-2,18-23 19 7 *'
+    - cron: '11 */4 * * *'   # quiet retry for prepared backlog
   workflow_dispatch:
   repository_dispatch:
     types:
@@ -16,6 +35,7 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -50,6 +70,10 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/publish-world-cup-stories-auto.js
 
+      - name: Validate World Cup stories
+        if: steps.story_work.outputs.publishable == 'true'
+        run: node scripts/test-world-cup-stories.js
+
       - name: Commit prepared World Cup stories if changed
         if: steps.story_work.outputs.publishable == 'true'
         env:
@@ -57,6 +81,7 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           FORCE_MATCH_SNAPSHOT: '1'
           REGENERATE_COMMANDS: |
+            FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches
             node scripts/world-cup-story-auto-needed.js
             node scripts/publish-world-cup-stories-auto.js
             node scripts/test-world-cup-stories.js
