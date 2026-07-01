@@ -420,14 +420,17 @@ check('story base prebuild is automatic, bounded, and covers knockout matches', 
   const workflow = fs.readFileSync(path.join(ROOT, '.github/workflows/prebuild-world-cup-story-bases.yml'), 'utf8');
   assert.ok(/schedule:/.test(workflow), 'story prebuild must run automatically');
   assert.ok(workflow.includes("cron: '17 */6 * * *'"), 'story prebuild must run on a bounded recurring schedule');
-  assert.ok(workflow.includes('OPENAI_API_KEY'), 'story prebuild must be wired for image generation when the secret exists');
+  assert.ok(!workflow.includes('OPENAI_API_KEY'), 'production story prebuild must not use the OpenAI Images API');
   assert.ok(workflow.includes('WC_STORY_MATCH_SOURCE: snapshot'), 'story prebuild must use the exported snapshot, not raw provider rows');
   assert.ok(workflow.includes("WC_STORY_PREBUILD_GENERATE: '1'"), 'story prebuild must enable generation ahead of matches');
   assert.ok(workflow.includes("WC_STORY_PREBUILD_LIMIT: ${{ inputs.limit || '6' }}"), 'story prebuild must keep generation cost bounded');
   assert.ok(workflow.includes("WC_STORY_AUDIT_SKIP_UNINDEXED_BASES: '1'"), 'story prebuild must not fail on old unindexed base assets');
+  assertOrdered(workflow, '.github/workflows/prebuild-world-cup-story-bases.yml', 'python3 -m pip install --user pillow pypdf', 'node scripts/prebuild-world-cup-story-outcome-bases.js');
 
   const prebuild = fs.readFileSync(path.join(ROOT, 'scripts/prebuild-world-cup-story-outcome-bases.js'), 'utf8');
   assert.ok(prebuild.includes("process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot'"), 'prebuild script must default to snapshot source');
+  assert.ok(!prebuild.includes('requestImageBuffer'), 'scheduled story prebuild script must not call image-generation APIs');
+  assert.ok(prebuild.includes('renderLocalOutcomeBase'), 'scheduled story prebuild must render local deterministic bases');
   assert.ok(prebuild.includes('function possibleOutcomes(match)'), 'prebuild must model possible outcomes per match type');
   assert.ok(prebuild.includes("String(match.stage || '').toUpperCase() !== 'GROUP_STAGE'"), 'prebuild must treat knockout matches differently from group matches');
 
@@ -437,6 +440,9 @@ check('story base prebuild is automatic, bounded, and covers knockout matches', 
 
   const imageAudit = fs.readFileSync(path.join(ROOT, 'scripts/audit-world-cup-story-images.py'), 'utf8');
   assert.ok(imageAudit.includes('WC_STORY_AUDIT_SKIP_UNINDEXED_BASES'), 'image audit must support indexed-base mode for scheduled prebuild');
+
+  const processStoryImage = fs.readFileSync(path.join(ROOT, 'scripts/process-story-image.py'), 'utf8');
+  assert.ok(processStoryImage.includes('outcome-base'), 'process-story-image must support local outcome-base rendering');
 });
 
 check('story publisher does not fail the live desk on broad base-audit backlog', () => {

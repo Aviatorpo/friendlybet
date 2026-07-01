@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -135,6 +136,63 @@ def contact_sheet(images: list[Path], dest: Path) -> None:
     sheet.save(dest, "PNG")
 
 
+def _hash_color(code: str) -> tuple[int, int, int]:
+    digest = hashlib.sha256(code.encode("utf-8")).digest()
+    return (
+        72 + digest[0] % 132,
+        58 + digest[1] % 124,
+        54 + digest[2] % 126,
+    )
+
+
+def _blend(a: tuple[int, int, int], b: tuple[int, int, int], t: float) -> tuple[int, int, int]:
+    return tuple(int(a[i] * (1 - t) + b[i] * t) for i in range(3))
+
+
+def _fit(draw: ImageDraw.ImageDraw, text: str, start: int, minimum: int, max_width: int) -> ImageFont.ImageFont:
+    return _fit_font(draw, text, "C:/Windows/Fonts/impact.ttf", max_width, start, minimum)
+
+
+def outcome_base(dest: Path, home_code: str, away_code: str, home_name: str, away_name: str, outcome_code: str, outcome_name: str) -> None:
+    home_color = _hash_color(home_code)
+    away_color = _hash_color(away_code)
+    winner_color = home_color if outcome_code == home_code else away_color
+    loser_color = away_color if outcome_code == home_code else home_color
+    loser_name = away_name if outcome_code == home_code else home_name
+
+    im = Image.new("RGBA", SIZE, (12, 14, 18, 255))
+    d = ImageDraw.Draw(im, "RGBA")
+
+    for y in range(SIZE[1]):
+        t = y / SIZE[1]
+        base = _blend((9, 12, 18), (24, 28, 36), t)
+        d.line([(0, y), (SIZE[0], y)], fill=(*base, 255))
+
+    d.polygon([(0, 260), (SIZE[0], 120), (SIZE[0], 880), (0, 1010)], fill=(*loser_color, 74))
+    d.polygon([(0, 170), (SIZE[0], 330), (SIZE[0], 760), (0, 610)], fill=(*winner_color, 156))
+    d.rectangle([0, 0, SIZE[0], 300], fill=(3, 5, 10, 182))
+    d.rectangle([0, int(SIZE[1] * 0.60), SIZE[0], int(SIZE[1] * 0.77)], fill=(8, 10, 15, 216))
+    d.rectangle([0, int(SIZE[1] * 0.88), SIZE[0], SIZE[1]], fill=(7, 8, 12, 226))
+
+    for x in range(-120, SIZE[0] + 160, 210):
+        d.ellipse([x, 720, x + 360, 1080], outline=(*winner_color, 38), width=10)
+    for x in range(-80, SIZE[0] + 160, 240):
+        d.line([(x, 1090), (x + 220, 1420)], fill=(255, 255, 255, 18), width=6)
+
+    headline_font = _fit(d, outcome_name.upper(), 104, 58, 800)
+    sub_font = _fit_font(d, "ADVANCES", "C:/Windows/Fonts/seguisb.ttf", 500, 56, 36)
+    vs_font = _fit_font(d, f"{home_code}  v  {away_code}", "C:/Windows/Fonts/seguisb.ttf", 600, 46, 30)
+    loser_font = _fit_font(d, f"over {loser_name}", "C:/Windows/Fonts/seguisb.ttf", 720, 44, 28)
+
+    _centered_stroked(d, 360, outcome_name.upper(), headline_font, fill=(248, 247, 242, 255), stroke=(4, 5, 8, 235), stroke_width=5)
+    _centered_stroked(d, 478, "ADVANCES", sub_font, fill=(226, 198, 120, 255), stroke=(4, 5, 8, 230), stroke_width=3)
+    _centered_stroked(d, 545, f"over {loser_name}", loser_font, fill=(229, 232, 236, 235), stroke=(4, 5, 8, 210), stroke_width=2)
+    _centered_stroked(d, 1190, f"{home_code}  v  {away_code}", vs_font, fill=(190, 198, 210, 210), stroke=(0, 0, 0, 170), stroke_width=2)
+
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    im.convert("RGB").save(dest, "PNG", optimize=True)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -149,6 +207,14 @@ def main() -> None:
     cs = sub.add_parser("contact-sheet")
     cs.add_argument("dest")
     cs.add_argument("images", nargs="+")
+    ob = sub.add_parser("outcome-base")
+    ob.add_argument("dest")
+    ob.add_argument("home_code")
+    ob.add_argument("away_code")
+    ob.add_argument("home_name")
+    ob.add_argument("away_name")
+    ob.add_argument("outcome_code")
+    ob.add_argument("outcome_name")
     args = parser.parse_args()
 
     if args.cmd == "watermark":
@@ -157,6 +223,16 @@ def main() -> None:
         result_card(Path(args.src), Path(args.dest), args.title, args.subtitle)
     elif args.cmd == "contact-sheet":
         contact_sheet([Path(p) for p in args.images], Path(args.dest))
+    elif args.cmd == "outcome-base":
+        outcome_base(
+            Path(args.dest),
+            args.home_code,
+            args.away_code,
+            args.home_name,
+            args.away_name,
+            args.outcome_code,
+            args.outcome_name,
+        )
 
 
 if __name__ == "__main__":
