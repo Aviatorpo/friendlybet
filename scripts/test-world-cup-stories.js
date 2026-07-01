@@ -54,7 +54,7 @@ const stalePostGroupFragments = [
 ];
 const endingEmojiPattern = /[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?$/u;
 const RECENT_STORY_COPY_WINDOW = 10;
-const MIN_LATEST_STORY_IMAGE_BYTES = 45000;
+const MIN_PRODUCTION_STORY_IMAGE_BYTES = 500000;
 
 function copyShape(text, options = {}) {
   let value = String(text || '');
@@ -100,6 +100,8 @@ for (const story of stories) {
   }
   if (!image || !fs.existsSync(path.join(root, image))) {
     fail(`${story.id}: missing story image asset ${story.image || ''}`);
+  } else if (fs.statSync(path.join(root, image)).size < MIN_PRODUCTION_STORY_IMAGE_BYTES) {
+    fail(`${story.id}: story image is below the production poster threshold (${fs.statSync(path.join(root, image)).size} bytes)`);
   }
   if (match.status !== 'FINISHED') continue;
   const draw = Number(match.home_score) === Number(match.away_score);
@@ -274,7 +276,7 @@ latest.forEach(story => {
   });
   const focuses = Array.isArray(story.pool_focuses) && story.pool_focuses.length ? story.pool_focuses : (story.pool_focus ? [story.pool_focus] : []);
   const imagePath = path.join(root, String(story.image || ''));
-  if (fs.existsSync(imagePath) && fs.statSync(imagePath).size < MIN_LATEST_STORY_IMAGE_BYTES) {
+  if (fs.existsSync(imagePath) && fs.statSync(imagePath).size < MIN_PRODUCTION_STORY_IMAGE_BYTES) {
     fail(`${story.id}: latest visible story image is too small for final poster art (${fs.statSync(imagePath).size} bytes)`);
   }
   if (outcome && outcome !== 'DRAW') {

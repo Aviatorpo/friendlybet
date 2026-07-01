@@ -53,6 +53,7 @@ Create premium share-story assets for FriendlyBet that look like the approved Wo
 - If a post-match PDF or external lineup source proves the default star did not play, pick the next most recognizable named participating player with a verified shirt number.
 - If the post-match PDF is unavailable, continue with the established star-vs-star workflow. Do not invent a player, do not use generic/current-player wording, and do not switch to non-player artwork unless the user explicitly asks for it or no named player plus verified shirt number can be established from any local/primary source.
 - Existing pre-generated assets containing phrases like `biggest current star`, `current star`, `#current`, or unnamed team players must not be reused for new final stories until replaced with named, verified real players.
+- Locally generated deterministic result cards are emergency internals only unless they meet the full premium Story bar. Do not publish flat geometric placeholder art, team-name-only posters, abstract field-line designs, or low-byte local fallback PNGs as final Stories. If the only available asset is that class of fallback, hide/skip the Story and record a content incident rather than showing ugly artwork to users.
 
 ## Required FriendlyBet Watermark
 
@@ -164,6 +165,7 @@ Before shipping:
 
 - Confirm every visible shirt number against `SquadLists-English.pdf` when that PDF is available, including cases where the image number identifies a different valid player than the default profile.
 - Confirm every visible player is a named real footballer verified from the official match post-summary PDF when available; fail the story if any prompt or asset uses a generic/anonymous player, `biggest current star`, `current star`, `#current`, or a placeholder instead of a verified name and shirt number.
+- Fail any production Story whose PNG is below the production poster threshold, currently 500KB. That threshold is not a beauty guarantee, but it catches the known flat local placeholder class that reached production on July 1, 2026. Never lower it to make an emergency automation pass; remove or hide the bad Story instead.
 - For knockout stories, confirm the baked title communicates advancement with `QUALIFIES!`; when a tied knockout score is resolved by penalties or another tiebreaker, confirm the qualifying player is visibly happy and the eliminated player is visibly sad/disappointed.
 - Create a contact sheet of all story images with the caption safe-zone rectangle overlaid.
 - Visually confirm no caption safe-zone rectangle crosses any player face.

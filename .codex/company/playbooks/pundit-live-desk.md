@@ -33,6 +33,7 @@ Use this minimum cadence during match days:
 - Story readiness failure: if a finished match has no prepared publishable story asset, treat it as a content incident and escalate through the story workflow instead of letting the feed quietly skip it. During scoring, group-completion, or knockout-opening incidents, this must not block verified results, points, leaderboard snapshots, or pick access.
 - Content automation independence: Pundit freshness and Story publishing must each have an automatic scheduled path during live/post-final tournament windows. A broad asset audit backlog, stale optional news file, or one bad prepared story must not block Pundit refreshes or verified-result workflows. Block only the specific invalid publishable output, warn on broader content backlog, and keep retrying automatically.
 - Story base cost discipline: production story-base preparation must be deterministic and local by default, not OpenAI/API-backed. When new known knockout fixtures appear, prepare both advancement outcomes ahead of time from local templates/assets so final-whistle publishing only selects and finalizes the correct outcome. Paid/manual AI image generation is editorial override work, not the automatic path.
+- Story visual quality floor: deterministic/local does not mean production-ready. If a prepared/finalized Story image is a flat geometric placeholder, team-name-only poster, abstract field-line card, or falls below the current production poster threshold, hide or skip that Story and create a content incident. Do not publish ugly fallback art just to maintain coverage; users seeing no Story is better than thousands of users seeing a visibly broken Story.
 - Evening desk: refresh `pundit-news.json` with 1-3 verified short-lived items or explicitly record that no publishable news passed the source gate.
 - Staleness watch: if `pundit.json` is past `freshUntil`, treat it as an incident, not a quiet state.
 - Client freshness: dashboard caching must honor `pundit.json` `freshUntil` and item-level `expires_at` as hard display boundaries. A browser may keep the card alive with pool-local or clearly non-live fallback copy, but it must not continue showing expired match/news claims just because the normal refetch interval has not elapsed.
@@ -98,6 +99,8 @@ When content is stale:
 5. If production can show stale user content, ship the smallest data or workflow fix first, then improve copy depth.
 6. After push/deploy/recovery, re-fetch the live production URL with a cache-busting query string and print the latest visible items. Do not call the incident closed until the live artifact changed, or state the remaining deploy/cache blocker.
 7. Record a reusable lesson in the relevant skill or playbook.
+
+If the incident is bad Story artwork, inspect the actual PNGs, not only the JSON. Remove or hide every currently visible low-quality asset from `public-data/world-cup-stories.json`, tighten the generator/test gate that allowed it, and then verify production no longer references those image paths.
 
 For editorial misses, also run the feedback loop:
 
