@@ -42,7 +42,15 @@ const bannedFallbackFragments = [
 ];
 const bannedFocusFragments = [
   /already need[s]? a defense speech/i,
+  /looking for a defense speech/i,
+  /live receipts?/i,
+  /staring at reality/i,
+  /people screenshot/i,
+  /every screenshot/i,
+  /no longer hiding in the margins/i,
+  /lives? on the official scoreboard/i,
   /\u05db\u05d1\u05e8 \u05e6\u05e8\u05d9\u05da(?:\u05d9\u05dd)? \u05e0\u05d0\u05d5\u05dd \u05d4\u05d2\u05e0\u05d4/u,
+  /\u05de\u05d7\u05e4\u05e9(?:\u05ea|\u05d9\u05dd)? \u05e0\u05d0\u05d5\u05dd \u05d4\u05d2\u05e0\u05d4/u,
 ];
 const stalePostGroupFragments = [
   /\b(Group [A-L] )?(stays open|opens up|is still open|leave[s]? the group open|just getting started|needs? a recovery match|waiting for another group match)\b/i,
