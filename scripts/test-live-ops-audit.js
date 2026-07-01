@@ -416,6 +416,25 @@ check('prepared story workflow has automatic knockout retry coverage', () => {
   assert.ok(/REGENERATE_COMMANDS:[\s\S]*FORCE_MATCH_SNAPSHOT=1 node scripts\/export-snapshots\.js matches[\s\S]*node scripts\/world-cup-story-auto-needed\.js[\s\S]*node scripts\/publish-world-cup-stories-auto\.js[\s\S]*node scripts\/test-world-cup-stories\.js/.test(text), 'prepared story workflow must regenerate from a fresh match snapshot after generated-data push conflicts');
 });
 
+check('story base prebuild is automatic, bounded, and covers knockout matches', () => {
+  const workflow = fs.readFileSync(path.join(ROOT, '.github/workflows/prebuild-world-cup-story-bases.yml'), 'utf8');
+  assert.ok(/schedule:/.test(workflow), 'story prebuild must run automatically');
+  assert.ok(workflow.includes("cron: '17 */6 * * *'"), 'story prebuild must run on a bounded recurring schedule');
+  assert.ok(workflow.includes('OPENAI_API_KEY'), 'story prebuild must be wired for image generation when the secret exists');
+  assert.ok(workflow.includes('WC_STORY_MATCH_SOURCE: snapshot'), 'story prebuild must use the exported snapshot, not raw provider rows');
+  assert.ok(workflow.includes("WC_STORY_PREBUILD_GENERATE: '1'"), 'story prebuild must enable generation ahead of matches');
+  assert.ok(workflow.includes("WC_STORY_PREBUILD_LIMIT: ${{ inputs.limit || '6' }}"), 'story prebuild must keep generation cost bounded');
+
+  const prebuild = fs.readFileSync(path.join(ROOT, 'scripts/prebuild-world-cup-story-outcome-bases.js'), 'utf8');
+  assert.ok(prebuild.includes("process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot'"), 'prebuild script must default to snapshot source');
+  assert.ok(prebuild.includes('function possibleOutcomes(match)'), 'prebuild must model possible outcomes per match type');
+  assert.ok(prebuild.includes("String(match.stage || '').toUpperCase() !== 'GROUP_STAGE'"), 'prebuild must treat knockout matches differently from group matches');
+
+  const coverage = fs.readFileSync(path.join(ROOT, 'scripts/check-world-cup-story-base-coverage.js'), 'utf8');
+  assert.ok(coverage.includes("process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot'"), 'coverage audit must default to snapshot source');
+  assert.ok(coverage.includes("String(match.stage || '').toUpperCase() !== 'GROUP_STAGE'"), 'coverage audit must include knockout matches');
+});
+
 check('story publisher does not fail the live desk on broad base-audit backlog', () => {
   const text = fs.readFileSync(path.join(ROOT, 'scripts/publish-world-cup-stories-auto.js'), 'utf8');
   assert.ok(text.includes("process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot'"), 'story publisher must use the exported match snapshot by default');

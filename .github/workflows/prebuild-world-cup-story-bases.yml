@@ -4,9 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       limit:
-        description: 'Maximum new base prompts to index in this run (0 = all missing)'
+        description: 'Maximum new base images to generate in this run (0 = all missing)'
         type: string
-        default: '0'
+        default: '6'
+  schedule:
+    # Prepare upcoming match outcome bases ahead of live windows. Keep the run
+    # bounded so content automation cannot become a cost sink.
+    - cron: '17 */6 * * *'
 
 permissions:
   contents: write
@@ -31,7 +35,10 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          WC_STORY_PREBUILD_LIMIT: ${{ inputs.limit || '0' }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          WC_STORY_MATCH_SOURCE: snapshot
+          WC_STORY_PREBUILD_GENERATE: '1'
+          WC_STORY_PREBUILD_LIMIT: ${{ inputs.limit || '6' }}
         run: node scripts/prebuild-world-cup-story-outcome-bases.js
 
       - name: Install story image audit tooling

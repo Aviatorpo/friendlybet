@@ -3,7 +3,7 @@
  * Audits prepared Story of the World Cup outcome bases.
  *
  * No image generation happens here. The script only reports whether upcoming
- * matches have all three prebuilt base PNGs: home win, away win, draw.
+ * matches have prebuilt base PNGs for each possible outcome.
  */
 
 const fs = require('fs');
@@ -15,14 +15,16 @@ const {
   outcomeBaseSlug,
 } = require('./generate-world-cup-stories');
 
+process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot';
+
 const LIMIT = Number(process.env.WC_STORY_BASE_AUDIT_LIMIT || 10);
 const SKIP_COVERED = process.env.WC_STORY_BASE_AUDIT_SKIP_COVERED === '1';
 const FROM_TIME = process.env.WC_STORY_BASE_AUDIT_FROM
   ? new Date(process.env.WC_STORY_BASE_AUDIT_FROM).getTime()
   : Date.now() - 6 * 60 * 60 * 1000;
 
-function isGroupMatch(match) {
-  return match && String(match.stage || '').toUpperCase() === 'GROUP_STAGE';
+function hasKnownTeams(match) {
+  return Boolean(match && match.home_team_code && match.away_team_code);
 }
 
 function isFinished(match) {
@@ -34,7 +36,10 @@ function basePath(match, outcome) {
 }
 
 function coverageFor(match) {
-  const outcomes = [match.home_team_code, match.away_team_code, 'DRAW'];
+  const knockout = String(match.stage || '').toUpperCase() !== 'GROUP_STAGE';
+  const outcomes = knockout
+    ? [match.home_team_code, match.away_team_code]
+    : [match.home_team_code, match.away_team_code, 'DRAW'];
   const present = [];
   const missing = [];
   for (const outcome of outcomes) {
@@ -51,7 +56,7 @@ function coverageFor(match) {
 async function main() {
   const payload = await loadMatchesPayload();
   const candidates = (payload.matches || [])
-    .filter(match => isGroupMatch(match) && !isFinished(match))
+    .filter(match => hasKnownTeams(match) && !isFinished(match))
     .filter(match => {
       const time = new Date(match.match_date || 0).getTime();
       return Number.isFinite(time) && time >= FROM_TIME;
