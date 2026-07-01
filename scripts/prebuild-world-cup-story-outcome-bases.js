@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * Prepare the outcome-base prompt index for every group-stage match:
+ * Prepare the outcome-base prompt index for every match with known teams:
  * - home team wins
  * - away team wins
  * - draw
@@ -26,6 +26,8 @@ const {
   requestImageBuffer,
 } = require('./generate-world-cup-stories');
 
+process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot';
+
 const LIMIT = Number(process.env.WC_STORY_PREBUILD_LIMIT || 0);
 const GENERATE = process.env.WC_STORY_PREBUILD_GENERATE === '1';
 const PROMPT_INDEX = path.join(OUTCOME_BASE_DIR, 'prompt-index.json');
@@ -50,14 +52,27 @@ function assertProfiles(match, outcome) {
   }
 }
 
-function isGroupMatch(match) {
-  return match && String(match.stage || '').toUpperCase() === 'GROUP_STAGE';
+function hasKnownTeams(match) {
+  return Boolean(match && match.home_team_code && match.away_team_code);
+}
+
+function isRelevantMatch(match) {
+  if (!hasKnownTeams(match)) return false;
+  const status = String(match.status || '').toUpperCase();
+  return status !== 'FINISHED' && status !== 'CANCELLED';
+}
+
+function possibleOutcomes(match) {
+  const knockout = String(match.stage || '').toUpperCase() !== 'GROUP_STAGE';
+  return knockout
+    ? [match.home_team_code, match.away_team_code]
+    : [match.home_team_code, match.away_team_code, 'DRAW'];
 }
 
 async function main() {
   const payload = await loadMatchesPayload();
   const matches = (payload.matches || [])
-    .filter(isGroupMatch)
+    .filter(isRelevantMatch)
     .sort((a, b) => new Date(a.match_date || 0) - new Date(b.match_date || 0));
 
   mkdirp(OUTCOME_BASE_DIR);
@@ -66,8 +81,7 @@ async function main() {
   let skipped = 0;
 
   for (const match of matches) {
-    const outcomes = [match.home_team_code, match.away_team_code, 'DRAW'];
-    for (const outcome of outcomes) {
+    for (const outcome of possibleOutcomes(match)) {
       const slug = outcomeBaseSlug(match, outcome);
       const output = path.join(OUTCOME_BASE_DIR, slug);
       const prompt = outcomeBasePrompt(match, outcome);
