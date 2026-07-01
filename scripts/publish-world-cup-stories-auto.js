@@ -5,6 +5,9 @@
  */
 
 const { spawnSync } = require('child_process');
+
+process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot';
+
 const {
   ROOT,
   STORIES_PATH,

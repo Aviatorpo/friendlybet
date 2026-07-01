@@ -418,9 +418,13 @@ check('prepared story workflow has automatic knockout retry coverage', () => {
 
 check('story publisher does not fail the live desk on broad base-audit backlog', () => {
   const text = fs.readFileSync(path.join(ROOT, 'scripts/publish-world-cup-stories-auto.js'), 'utf8');
+  assert.ok(text.includes("process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot'"), 'story publisher must use the exported match snapshot by default');
   assert.ok(text.includes('World Cup story base audit failed; continuing'), 'story publisher must warn, not stop, on broad base-audit backlog');
   assertOrdered(text, 'scripts/publish-world-cup-stories-auto.js', "['scripts/audit-world-cup-story-images.py', '--scope', 'bases']", "['node', 'scripts/generate-world-cup-stories.js']");
   assertOrdered(text, 'scripts/publish-world-cup-stories-auto.js', "['node', 'scripts/generate-world-cup-stories.js']", "['scripts/audit-world-cup-story-images.py', '--scope', 'stories']");
+
+  const needed = fs.readFileSync(path.join(ROOT, 'scripts/world-cup-story-auto-needed.js'), 'utf8');
+  assert.ok(needed.includes("process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot'"), 'story preflight must use the exported match snapshot by default');
 });
 
 check('readiness monitor can recover stale active live DB state', () => {
