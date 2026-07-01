@@ -31,18 +31,17 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Prepare outcome-base prompt index
+      - name: Install story image tooling
+        run: python3 -m pip install --user pillow pypdf
+
+      - name: Prepare local outcome bases
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           WC_STORY_MATCH_SOURCE: snapshot
           WC_STORY_PREBUILD_GENERATE: '1'
           WC_STORY_PREBUILD_LIMIT: ${{ inputs.limit || '6' }}
         run: node scripts/prebuild-world-cup-story-outcome-bases.js
-
-      - name: Install story image audit tooling
-        run: python3 -m pip install --user pillow pypdf
 
       - name: Audit prepared story base image quality
         env:

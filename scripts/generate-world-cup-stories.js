@@ -2450,7 +2450,7 @@ function outcomeBasePrompt(match, outcome) {
     'Composition: vertical portrait, dramatic stadium lights, two-player premium sports poster. Players heads high in frame but clearly below the reserved top result-text band.',
     'Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.',
     'Leave the lower edge visually calm for the deterministic FriendlyBet watermark added later.',
-    'Avoid: score text, result title, caption panel, black rectangle, empty box, UI card, yellow result headline, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces.',
+    'Avoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces.',
   ].join('\n');
 }
 

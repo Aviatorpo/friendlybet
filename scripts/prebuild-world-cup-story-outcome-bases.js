@@ -3,33 +3,35 @@
  * Prepare the outcome-base prompt index for every match with known teams:
  * - home team wins
  * - away team wins
- * - draw
+ * - draw when the match can finish as a draw
  *
  * These bases intentionally contain no final score/title text. After the match,
  * scripts/generate-world-cup-stories.js picks the correct base and renders the
  * exact result title/score deterministically.
  *
- * By default this script does not call an image API. Set
- * WC_STORY_PREBUILD_GENERATE=1 explicitly for local one-off generation.
+ * This script intentionally does not call image-generation APIs. It renders
+ * deterministic local PNG bases that can be finalized immediately after the
+ * match result is known.
  */
 
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 const {
   ROOT,
   OUTCOME_BASE_DIR,
   STAR_PROFILES,
   loadMatchesPayload,
+  teamName,
   matchKey,
   outcomeBaseSlug,
   outcomeBasePrompt,
-  requestImageBuffer,
 } = require('./generate-world-cup-stories');
 
 process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot';
 
 const LIMIT = Number(process.env.WC_STORY_PREBUILD_LIMIT || 0);
-const GENERATE = process.env.WC_STORY_PREBUILD_GENERATE === '1';
+const GENERATE = process.env.WC_STORY_PREBUILD_GENERATE !== '0';
 const PROMPT_INDEX = path.join(OUTCOME_BASE_DIR, 'prompt-index.json');
 
 function mkdirp(dir) {
@@ -54,6 +56,35 @@ function assertProfiles(match, outcome) {
 
 function hasKnownTeams(match) {
   return Boolean(match && match.home_team_code && match.away_team_code);
+}
+
+function runPython(args) {
+  const candidates = process.platform === 'win32' ? ['python', 'py'] : ['python3', 'python'];
+  let last = null;
+  for (const exe of candidates) {
+    const res = spawnSync(exe, args, { cwd: ROOT, stdio: 'inherit' });
+    if (res.error && res.error.code === 'ENOENT') {
+      last = res.error;
+      continue;
+    }
+    if (res.status !== 0) throw new Error(`${exe} ${args.join(' ')} failed with status ${res.status}`);
+    return;
+  }
+  throw last || new Error('Python not found');
+}
+
+function renderLocalOutcomeBase(match, outcome, output) {
+  runPython([
+    'scripts/process-story-image.py',
+    'outcome-base',
+    output,
+    match.home_team_code,
+    match.away_team_code,
+    teamName(match.home_team_code),
+    teamName(match.away_team_code),
+    outcome,
+    teamName(outcome),
+  ]);
 }
 
 function isRelevantMatch(match) {
@@ -101,11 +132,9 @@ async function main() {
       if (LIMIT && generated >= LIMIT) continue;
 
       if (GENERATE) assertProfiles(match, outcome);
-      if (!GENERATE || !process.env.OPENAI_API_KEY) continue;
+      if (!GENERATE) continue;
 
-      const buffer = await requestImageBuffer(prompt, `${matchKey(match)} ${outcome} outcome base`);
-      if (!buffer) continue;
-      fs.writeFileSync(output, buffer);
+      renderLocalOutcomeBase(match, outcome, output);
       generated++;
       console.log(`Generated outcome base ${path.relative(ROOT, output).replace(/\\/g, '/')}`);
     }
@@ -121,9 +150,7 @@ async function main() {
   const needed = promptIndex.length - skipped - generated;
   console.log(`World Cup story outcome bases: matches=${matches.length}, prompts=${promptIndex.length}, generated=${generated}, existing=${skipped}, remaining=${needed}`);
   if (needed > 0 && !GENERATE) {
-    console.log('Image generation is disabled; only the prompt index was written.');
-  } else if (!process.env.OPENAI_API_KEY && needed > 0) {
-    console.log('OPENAI_API_KEY is missing, so only the prompt index was written.');
+    console.log('Local image generation is disabled; only the prompt index was written.');
   }
 }
 
