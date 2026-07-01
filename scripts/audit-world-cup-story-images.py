@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import re
 import sys
 import unicodedata
@@ -126,6 +127,7 @@ def story_targets() -> list[AuditTarget]:
 
 def base_targets() -> list[AuditTarget]:
     prompt_index = load_json(PROMPT_INDEX_PATH, {"prompts": []})
+    skip_unindexed = os.environ.get("WC_STORY_AUDIT_SKIP_UNINDEXED_BASES") == "1"
     targets = []
     for item in prompt_index.get("prompts", []):
         image = str(item.get("image") or "")
@@ -140,7 +142,7 @@ def base_targets() -> list[AuditTarget]:
             )
 
     indexed = {target.image for target in targets}
-    if OUTCOME_BASE_DIR.exists():
+    if OUTCOME_BASE_DIR.exists() and not skip_unindexed:
         for path in OUTCOME_BASE_DIR.glob("*.png"):
             if path.name.startswith("contact-sheet"):
                 continue

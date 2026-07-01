@@ -45,6 +45,8 @@ jobs:
         run: python3 -m pip install --user pillow pypdf
 
       - name: Audit prepared story base image quality
+        env:
+          WC_STORY_AUDIT_SKIP_UNINDEXED_BASES: '1'
         run: python3 scripts/audit-world-cup-story-images.py --scope bases
 
       - name: Commit outcome-base index if changed

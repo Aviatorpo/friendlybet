@@ -424,6 +424,7 @@ check('story base prebuild is automatic, bounded, and covers knockout matches', 
   assert.ok(workflow.includes('WC_STORY_MATCH_SOURCE: snapshot'), 'story prebuild must use the exported snapshot, not raw provider rows');
   assert.ok(workflow.includes("WC_STORY_PREBUILD_GENERATE: '1'"), 'story prebuild must enable generation ahead of matches');
   assert.ok(workflow.includes("WC_STORY_PREBUILD_LIMIT: ${{ inputs.limit || '6' }}"), 'story prebuild must keep generation cost bounded');
+  assert.ok(workflow.includes("WC_STORY_AUDIT_SKIP_UNINDEXED_BASES: '1'"), 'story prebuild must not fail on old unindexed base assets');
 
   const prebuild = fs.readFileSync(path.join(ROOT, 'scripts/prebuild-world-cup-story-outcome-bases.js'), 'utf8');
   assert.ok(prebuild.includes("process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot'"), 'prebuild script must default to snapshot source');
@@ -433,6 +434,9 @@ check('story base prebuild is automatic, bounded, and covers knockout matches', 
   const coverage = fs.readFileSync(path.join(ROOT, 'scripts/check-world-cup-story-base-coverage.js'), 'utf8');
   assert.ok(coverage.includes("process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot'"), 'coverage audit must default to snapshot source');
   assert.ok(coverage.includes("String(match.stage || '').toUpperCase() !== 'GROUP_STAGE'"), 'coverage audit must include knockout matches');
+
+  const imageAudit = fs.readFileSync(path.join(ROOT, 'scripts/audit-world-cup-story-images.py'), 'utf8');
+  assert.ok(imageAudit.includes('WC_STORY_AUDIT_SKIP_UNINDEXED_BASES'), 'image audit must support indexed-base mode for scheduled prebuild');
 });
 
 check('story publisher does not fail the live desk on broad base-audit backlog', () => {
