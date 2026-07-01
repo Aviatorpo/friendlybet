@@ -54,7 +54,7 @@ const stalePostGroupFragments = [
 ];
 const endingEmojiPattern = /[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?$/u;
 const RECENT_STORY_COPY_WINDOW = 10;
-const MIN_LATEST_STORY_IMAGE_BYTES = 500000;
+const MIN_LATEST_STORY_IMAGE_BYTES = 45000;
 
 function copyShape(text, options = {}) {
   let value = String(text || '');

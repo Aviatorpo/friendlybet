@@ -20,12 +20,13 @@ const { spawnSync } = require('child_process');
 const {
   ROOT,
   OUTCOME_BASE_DIR,
-  STAR_PROFILES,
+  STORIES_PATH,
+  readJson,
   loadMatchesPayload,
   teamName,
   matchKey,
+  outcomeFor,
   outcomeBaseSlug,
-  outcomeBasePrompt,
 } = require('./generate-world-cup-stories');
 
 process.env.WC_STORY_MATCH_SOURCE = process.env.WC_STORY_MATCH_SOURCE || 'snapshot';
@@ -36,22 +37,6 @@ const PROMPT_INDEX = path.join(OUTCOME_BASE_DIR, 'prompt-index.json');
 
 function mkdirp(dir) {
   fs.mkdirSync(dir, { recursive: true });
-}
-
-function requiredProfileCodes(match, outcome) {
-  if (outcome === 'DRAW') return [match.home_team_code, match.away_team_code];
-  const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
-  return [outcome, loser];
-}
-
-function assertProfiles(match, outcome) {
-  const missing = requiredProfileCodes(match, outcome).filter(code => {
-    const profile = STAR_PROFILES[code];
-    return !profile || !profile.player || !profile.number || profile.number === 'current';
-  });
-  if (missing.length) {
-    throw new Error(`${matchKey(match)} ${outcome}: missing approved star profiles / shirt numbers for ${missing.join(', ')}`);
-  }
 }
 
 function hasKnownTeams(match) {
@@ -87,13 +72,32 @@ function renderLocalOutcomeBase(match, outcome, output) {
   ]);
 }
 
+function localOutcomeBasePrompt(match, outcome) {
+  const outcomeText = outcome === 'DRAW'
+    ? `${teamName(match.home_team_code)} and ${teamName(match.away_team_code)} draw`
+    : `${teamName(outcome)} advances over ${teamName(outcome === match.home_team_code ? match.away_team_code : match.home_team_code)}`;
+  return [
+    'LOCAL_DETERMINISTIC_OUTCOME_BASE',
+    `Match context: ${teamName(match.home_team_code)} vs ${teamName(match.away_team_code)} at FIFA World Cup 2026.`,
+    `Prepared outcome: ${outcomeText}.`,
+    'Generated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.',
+    'The exact score and result title will be added later by deterministic rendering after the match.',
+  ].join('\n');
+}
+
 function isRelevantMatch(match) {
   if (!hasKnownTeams(match)) return false;
   const status = String(match.status || '').toUpperCase();
-  return status !== 'FINISHED' && status !== 'CANCELLED';
+  if (status === 'CANCELLED') return false;
+  if (status === 'FINISHED') return Boolean(outcomeFor(match));
+  return true;
 }
 
 function possibleOutcomes(match) {
+  if (String(match.status || '').toUpperCase() === 'FINISHED') {
+    const outcome = outcomeFor(match);
+    return outcome ? [outcome] : [];
+  }
   const knockout = String(match.stage || '').toUpperCase() !== 'GROUP_STAGE';
   return knockout
     ? [match.home_team_code, match.away_team_code]
@@ -102,8 +106,11 @@ function possibleOutcomes(match) {
 
 async function main() {
   const payload = await loadMatchesPayload();
+  const stories = readJson(STORIES_PATH, { items: [] });
+  const matchesWithStories = new Set((stories.items || []).map(story => story && story.match_id).filter(Boolean));
   const matches = (payload.matches || [])
     .filter(isRelevantMatch)
+    .filter(match => !matchesWithStories.has(match.id))
     .sort((a, b) => new Date(a.match_date || 0) - new Date(b.match_date || 0));
 
   mkdirp(OUTCOME_BASE_DIR);
@@ -115,7 +122,7 @@ async function main() {
     for (const outcome of possibleOutcomes(match)) {
       const slug = outcomeBaseSlug(match, outcome);
       const output = path.join(OUTCOME_BASE_DIR, slug);
-      const prompt = outcomeBasePrompt(match, outcome);
+      const prompt = localOutcomeBasePrompt(match, outcome);
       promptIndex.push({
         match_id: match.id,
         match_key: matchKey(match),
@@ -131,7 +138,6 @@ async function main() {
       }
       if (LIMIT && generated >= LIMIT) continue;
 
-      if (GENERATE) assertProfiles(match, outcome);
       if (!GENERATE) continue;
 
       renderLocalOutcomeBase(match, outcome, output);
