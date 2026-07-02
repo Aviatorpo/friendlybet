@@ -22,6 +22,10 @@ const {
   imagePrompt,
   requestImageBuffer,
 } = require('./generate-world-cup-stories');
+const {
+  storyCoverageSet,
+  storyCoversMatch,
+} = require('./world-cup-story-coverage');
 
 const REVIEW_ROOT = path.join(ROOT, 'story-review');
 const PENDING_DIR = path.join(REVIEW_ROOT, 'pending');
@@ -162,7 +166,7 @@ async function main() {
   }
 
   const stories = readJson(STORIES_PATH, { items: [] });
-  const storyMatches = new Set((stories.items || []).map(story => story && story.match_id).filter(Boolean));
+  const storyCoverage = storyCoverageSet(stories.items || [], payload.matches || []);
   const pending = existingPendingSlugs();
   const finished = (payload.matches || [])
     .filter(match => match && match.status === 'FINISHED' && match.home_score != null && match.away_score != null)
@@ -172,7 +176,7 @@ async function main() {
   const blocked = [];
   for (const match of finished) {
     if (created.length >= LIMIT) break;
-    if (storyMatches.has(match.id)) continue;
+    if (storyCoversMatch(storyCoverage, match)) continue;
     const outcome = outcomeFor(match);
     if (!outcome) continue;
     const slug = reviewSlug(match);
