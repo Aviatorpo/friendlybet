@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-02T03:41:40.986Z",
-  "freshUntil": "2026-07-02T09:41:40.986Z",
-  "count": 9,
+  "updatedAt": "2026-07-02T07:44:06.131Z",
+  "freshUntil": "2026-07-02T13:44:06.131Z",
+  "count": 8,
   "items": [
     {
       "id": "result-de01be62-6533-4c6a-80b0-2974d78f5dc0",
@@ -47,15 +47,6 @@
       "en": "France got past Sweden 3-0. Brackets that picked them get a receipt; Sweden believers need a new route 🧾",
       "sources": [],
       "expires_at": "2026-07-02T09:00:00.000Z"
-    },
-    {
-      "id": "result-36f8071c-c9b0-4581-8953-242c240da988",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "נורווגיה ניצחה את חוף השנהב 2:1 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
-      "en": "Norway beat Ivory Coast 2-1 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
-      "sources": [],
-      "expires_at": "2026-07-02T05:00:00.000Z"
     },
     {
       "id": "fixture-ee21ba7e-528a-466e-b35c-264789e403af",
