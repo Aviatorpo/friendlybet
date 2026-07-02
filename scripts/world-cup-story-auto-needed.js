@@ -17,6 +17,10 @@ const {
   knownOrGeneratedAsset,
   outcomeBaseAsset,
 } = require('./generate-world-cup-stories');
+const {
+  storyCoverageSet,
+  storyCoversMatch,
+} = require('./world-cup-story-coverage');
 
 const PENDING_DIR = path.join(ROOT, 'story-review', 'pending');
 
@@ -40,7 +44,7 @@ async function main() {
   const payload = await loadMatchesPayload();
   const manifest = readJson(MANIFEST_PATH, { version: 1, items: [] });
   const stories = readJson(STORIES_PATH, { items: [] });
-  const storyMatches = new Set((stories.items || []).map(story => story && story.match_id).filter(Boolean));
+  const storyCoverage = storyCoverageSet(stories.items || [], payload.matches || []);
   const pending = pendingSlugs();
   const missing = [];
   const needsPreparedAsset = [];
@@ -48,7 +52,7 @@ async function main() {
 
   for (const match of payload.matches || []) {
     if (!match || match.status !== 'FINISHED' || match.home_score == null || match.away_score == null) continue;
-    if (storyMatches.has(match.id)) continue;
+    if (storyCoversMatch(storyCoverage, match)) continue;
     const outcome = outcomeFor(match);
     if (!outcome) continue;
     const slug = reviewSlug(match);

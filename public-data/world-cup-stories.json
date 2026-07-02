@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-01T13:04:54.723Z",
+  "updated_at": "2026-07-02T04:09:02.931Z",
   "items": [
     {
       "id": "mex-ecu-2026-07-01",
@@ -5543,6 +5543,90 @@
       }
     },
     {
+      "id": "qat-sui-2026-06-13",
+      "match_id": "534a6bd4-088a-4c95-958a-1cc6abb2f8a2",
+      "image": "story-assets/qatar-switzerland-draw.png",
+      "teams": [
+        "QAT",
+        "SUI"
+      ],
+      "outcome": "DRAW",
+      "result": "QAT 1-1 SUI",
+      "top_label": "DRAW!",
+      "pool_focus": {
+        "table": "tournament_winner_picks",
+        "team_code": "SUI",
+        "team_he": "שווייץ",
+        "team_en": "Switzerland",
+        "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 1-1 מול קטאר, הטופס עוד חי אבל כבר פחות זחוח ⚖️",
+        "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-1 מול קטאר, הטפסים עוד חיים אבל כבר פחות זחוחים ⚖️",
+        "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-1 מול קטאר, הטפסים עוד חיים אבל כבר פחות זחוחים ⚖️",
+        "en_name": "{names} picked {team} to win the World Cup. After 1-1 with Qatar, that form is alive but less smug ⚖️",
+        "en_names": "{names} picked {team} to win the World Cup. After 1-1 with Qatar, those forms are alive but less smug ⚖️",
+        "en_count": "{names} picked {team} to win the World Cup. After 1-1 with Qatar, those forms are alive but less smug ⚖️"
+      },
+      "pool_focuses": [
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "SUI",
+          "team_he": "שווייץ",
+          "team_en": "Switzerland",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 1-1 מול קטאר, הטופס עוד חי אבל כבר פחות זחוח ⚖️",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-1 מול קטאר, הטפסים עוד חיים אבל כבר פחות זחוחים ⚖️",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-1 מול קטאר, הטפסים עוד חיים אבל כבר פחות זחוחים ⚖️",
+          "en_name": "{names} picked {team} to win the World Cup. After 1-1 with Qatar, that form is alive but less smug ⚖️",
+          "en_names": "{names} picked {team} to win the World Cup. After 1-1 with Qatar, those forms are alive but less smug ⚖️",
+          "en_count": "{names} picked {team} to win the World Cup. After 1-1 with Qatar, those forms are alive but less smug ⚖️"
+        },
+        {
+          "table": "group_position_picks",
+          "team_code": "SUI",
+          "team_he": "שווייץ",
+          "team_en": "Switzerland",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 1-1, זה עדיין חי - רק עם הרבה פחות ביטחון ⚖️",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 1-1, זה עדיין חי - רק עם הרבה פחות ביטחון ⚖️",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 1-1, זה עדיין חי - רק עם הרבה פחות ביטחון ⚖️",
+          "en_name": "{names} picked {team} to top the group. After 1-1, it is still alive, just with much less swagger ⚖️",
+          "en_names": "{names} picked {team} to top the group. After 1-1, those forms are still alive, just with much less swagger ⚖️",
+          "en_count": "{names} picked {team} to top the group. After 1-1, those forms are still alive, just with much less swagger ⚖️"
+        },
+        {
+          "table": "group_position_picks",
+          "team_code": "QAT",
+          "team_he": "קטאר",
+          "team_en": "Qatar",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. 1-1 לא הורג את הטופס, אבל הוא בהחלט מזיז אותו לקצה הכיסא ⚖️",
+          "he_names": "{names} שמו את {team} ראשונה בבית. 1-1 לא הורג את הטפסים, אבל הוא בהחלט מזיז אותם לקצה הכיסא ⚖️",
+          "he_count": "{names} שמו את {team} ראשונה בבית. 1-1 לא הורג את הטפסים, אבל הוא בהחלט מזיז אותם לקצה הכיסא ⚖️",
+          "en_name": "{names} picked {team} to top the group. 1-1 does not kill the form, but it moves it to the edge of the chair ⚖️",
+          "en_names": "{names} picked {team} to top the group. 1-1 does not kill those forms, but it moves them to the edge of the chair ⚖️",
+          "en_count": "{names} picked {team} to top the group. 1-1 does not kill those forms, but it moves them to the edge of the chair ⚖️"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "QAT",
+          "team_he": "קטאר",
+          "team_en": "Qatar",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 1-1 מול שווייץ, זה לא מוחק את החלום אבל כן מעקם אותו ⚖️",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-1 מול שווייץ, זה לא מוחק את החלום אבל כן מעקם אותו ⚖️",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-1 מול שווייץ, זה לא מוחק את החלום אבל כן מעקם אותו ⚖️",
+          "en_name": "{names} picked {team} to win the World Cup. After 1-1 with Switzerland, it does not erase the dream, but it bends it ⚖️",
+          "en_names": "{names} picked {team} to win the World Cup. After 1-1 with Switzerland, it does not erase the dream, but it bends it ⚖️",
+          "en_count": "{names} picked {team} to win the World Cup. After 1-1 with Switzerland, it does not erase the dream, but it bends it ⚖️"
+        }
+      ],
+      "he": {
+        "headline": "קטאר ושווייץ נפרדו ב-1-1: בית B נשאר צמוד ⚖️",
+        "caption": "קטאר ושווייץ השאירו 1-1 על הלוח, בדיוק מספיק כדי להשאיר את כל הבית בוויכוח ⚖️"
+      },
+      "en": {
+        "headline": "Qatar and Switzerland draw 1-1: Group B stays tight ⚖️",
+        "caption": "Qatar and Switzerland left a 1-1 on the board, just enough to keep the whole group arguing ⚖️"
+      }
+    },
+    {
       "id": "usa-par-2026-06-13",
       "match_id": "c8b78bc2-97a3-45bd-b74e-f5066df3744e",
       "image": "story-assets/usa-wins-paraguay.png",
@@ -5599,6 +5683,67 @@
       "en": {
         "headline": "USA beat Paraguay 4-1: Group D took notice 🔥",
         "caption": "USA hit the burners with 4-1 over Paraguay. That was not a hint, it was a neon sign in the middle of Group D 🔥"
+      }
+    },
+    {
+      "id": "can-bih-2026-06-12",
+      "match_id": "f73a51f3-f6a0-4914-8fe7-424d5eadc94c",
+      "image": "story-assets/canada-bosnia-and-herzegovina-draw.png",
+      "teams": [
+        "CAN",
+        "BIH"
+      ],
+      "outcome": "DRAW",
+      "result": "CAN 1-1 BIH",
+      "top_label": "DRAW!",
+      "pool_focus": {
+        "table": "group_position_picks",
+        "team_code": "CAN",
+        "team_he": "קנדה",
+        "team_en": "Canada",
+        "position": 1,
+        "he_name": "{names} שם את {team} ראשונה בבית. אחרי 1-1 מול בוסניה, זה עדיין חי, אבל כבר פחות הולך עם משקפי שמש ⚖️",
+        "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול בוסניה, זה עדיין חי, אבל כבר פחות הולך עם משקפי שמש ⚖️",
+        "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול בוסניה, זה עדיין חי, אבל כבר פחות הולך עם משקפי שמש ⚖️",
+        "en_name": "{names} picked {team} to top the group. After 1-1 with Bosnia, it is still alive, just wearing fewer sunglasses ⚖️",
+        "en_names": "{names} picked {team} to top the group. After 1-1 with Bosnia, it is still alive, just wearing fewer sunglasses ⚖️",
+        "en_count": "{names} picked {team} to top the group. After 1-1 with Bosnia, it is still alive, just wearing fewer sunglasses ⚖️"
+      },
+      "pool_focuses": [
+        {
+          "table": "group_position_picks",
+          "team_code": "CAN",
+          "team_he": "קנדה",
+          "team_en": "Canada",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. אחרי 1-1 מול בוסניה, זה עדיין חי, אבל כבר פחות הולך עם משקפי שמש ⚖️",
+          "he_names": "{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול בוסניה, זה עדיין חי, אבל כבר פחות הולך עם משקפי שמש ⚖️",
+          "he_count": "{names} שמו את {team} ראשונה בבית. אחרי 1-1 מול בוסניה, זה עדיין חי, אבל כבר פחות הולך עם משקפי שמש ⚖️",
+          "en_name": "{names} picked {team} to top the group. After 1-1 with Bosnia, it is still alive, just wearing fewer sunglasses ⚖️",
+          "en_names": "{names} picked {team} to top the group. After 1-1 with Bosnia, it is still alive, just wearing fewer sunglasses ⚖️",
+          "en_count": "{names} picked {team} to top the group. After 1-1 with Bosnia, it is still alive, just wearing fewer sunglasses ⚖️"
+        },
+        {
+          "table": "group_position_picks",
+          "team_code": "BIH",
+          "team_he": "בוסניה והרצגובינה",
+          "team_en": "Bosnia and Herzegovina",
+          "position": 1,
+          "he_name": "{names} שם את {team} ראשונה בבית. 1-1 מול קנדה לא נותן מצעד, אבל הוא בהחלט משאיר את הדלת פתוחה עם רגל בפנים ⚖️",
+          "he_names": "{names} שמו את {team} ראשונה בבית. 1-1 מול קנדה לא נותן מצעד, אבל הוא בהחלט משאיר את הדלת פתוחה עם רגל בפנים ⚖️",
+          "he_count": "{names} שמו את {team} ראשונה בבית. 1-1 מול קנדה לא נותן מצעד, אבל הוא בהחלט משאיר את הדלת פתוחה עם רגל בפנים ⚖️",
+          "en_name": "{names} picked {team} to top the group. A 1-1 with Canada is not a parade, but it keeps one foot firmly in the door ⚖️",
+          "en_names": "{names} picked {team} to top the group. A 1-1 with Canada is not a parade, but it keeps one foot firmly in the door ⚖️",
+          "en_count": "{names} picked {team} to top the group. A 1-1 with Canada is not a parade, but it keeps one foot firmly in the door ⚖️"
+        }
+      ],
+      "he": {
+        "headline": "קנדה ובוסניה והרצגובינה נפרדו ב-1-1: הטבלה עוד לא נרגעה ⚖️",
+        "caption": "קנדה ובוסניה נפרדו ב-1-1, תוצאה שלא סוגרת כלום אבל פותחת מספיק ויכוחים. בית B קיבל תיקו עם רעש לוואי ⚖️"
+      },
+      "en": {
+        "headline": "Canada and Bosnia and Herzegovina draw 1-1: the table is not settled ⚖️",
+        "caption": "Canada and Bosnia drew 1-1, a result that closes nothing and opens plenty of arguments. Group B got a draw with aftershock ⚖️"
       }
     },
     {

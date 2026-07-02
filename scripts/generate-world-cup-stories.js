@@ -10,6 +10,11 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const {
+  storyCoverageKey,
+  storyCoverageSet,
+  storyCoversMatch,
+} = require('./world-cup-story-coverage');
 
 const ROOT = path.resolve(__dirname, '..');
 const MATCHES_PATH = path.join(ROOT, 'public-data', 'matches.json');
@@ -140,6 +145,132 @@ const DRAW_FOCUS = {
 };
 
 const STORY_COPY_OVERRIDES = {
+  'ENG-COD': {
+    title: {
+      he: 'אנגליה ניצחה את דר קונגו 2-1: קיין סחב אותה הלאה',
+      en: 'England beat DR Congo 2-1: Kane drags them through',
+    },
+    caption: {
+      he: 'קיין הפך ערב עצבני עם צמד מאוחר. 2-1 לאנגליה, והבראקט ממשיך עם דופק גבוה 🔥',
+      en: 'Kane turned a nervous night with two late goals. England survive 2-1, and the bracket keeps its pulse high 🔥',
+    },
+    pool_focuses: [
+      {
+        table: 'knockout_picks',
+        team_code: 'ENG',
+        he_name: '{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. הצמד המאוחר של קיין הפך את הבחירה הזו לקבלה אמיתית בבראקט 🔥',
+        he_names: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. הצמד המאוחר של קיין הפך את הבחירות האלה לקבלות אמיתיות בבראקט 🔥',
+        he_count: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. הצמד המאוחר של קיין הפך את הבחירות האלה לקבלות אמיתיות בבראקט 🔥',
+        en_name: "{names} picked {team} to win this knockout match. Kane's late double turns that pick into a proper bracket receipt 🔥",
+        en_names: "{names} picked {team} to win this knockout match. Kane's late double turns those picks into proper bracket receipts 🔥",
+        en_count: "{names} picked {team} to win this knockout match. Kane's late double turns those picks into proper bracket receipts 🔥",
+      },
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'ENG',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי 2-1 כזה בנוקאאוט, זה כבר לא נשמע כמו בדיחה בצאט 🔥',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-1 כזה בנוקאאוט, זה כבר לא נשמע כמו בדיחה בצאט 🔥',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-1 כזה בנוקאאוט, זה כבר לא נשמע כמו בדיחה בצאט 🔥',
+        en_name: '{names} picked {team} to win the World Cup. After that kind of 2-1 knockout escape, the chat has to take it seriously 🔥',
+        en_names: '{names} picked {team} to win the World Cup. After that kind of 2-1 knockout escape, the chat has to take those picks seriously 🔥',
+        en_count: '{names} picked {team} to win the World Cup. After that kind of 2-1 knockout escape, the chat has to take those picks seriously 🔥',
+      },
+      {
+        table: 'knockout_picks',
+        team_code: 'COD',
+        he_name: '{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. אחרי המהפך של קיין, הבחירה הזו צריכה נאום הגנה קצר בצאט 😬',
+        he_names: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי המהפך של קיין, הבחירות האלה צריכות נאום הגנה קצר בצאט 😬',
+        he_count: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי המהפך של קיין, הבחירות האלה צריכות נאום הגנה קצר בצאט 😬',
+        en_name: "{names} picked {team} to win this knockout match. After Kane's turnaround, that pick needs a short defense speech in the chat 😬",
+        en_names: "{names} picked {team} to win this knockout match. After Kane's turnaround, those picks need short defense speeches in the chat 😬",
+        en_count: "{names} picked {team} to win this knockout match. After Kane's turnaround, those picks need short defense speeches in the chat 😬",
+      },
+    ],
+  },
+  'BEL-SEN': {
+    title: {
+      he: 'בלגיה ניצחה את סנגל 3-2: קאמבק משוגע בהארכה',
+      en: 'Belgium beat Senegal 3-2: comeback chaos',
+    },
+    caption: {
+      he: 'בלגיה כבר נראתה בחוץ, ואז טילמנס ולוקאקו גררו את המשחק להארכה. 3-2 בלגי, והבראקט קיבל רעידת אדמה 🔥',
+      en: 'Belgium looked gone, then Tielemans and Lukaku dragged the match into extra time. Belgium steal it 3-2, and the bracket shakes 🔥',
+    },
+    pool_focuses: [
+      {
+        table: 'knockout_picks',
+        team_code: 'BEL',
+        he_name: '{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. קאמבק מ-2-0 ל-3-2 הופך את הבחירה הזו לקלף ענק 🔥',
+        he_names: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. קאמבק מ-2-0 ל-3-2 הופך את הבחירות האלה לקלפים ענקיים 🔥',
+        he_count: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. קאמבק מ-2-0 ל-3-2 הופך את הבחירות האלה לקלפים ענקיים 🔥',
+        en_name: '{names} picked {team} to win this knockout match. A comeback from 2-0 down to 3-2 turns that pick into a monster card 🔥',
+        en_names: '{names} picked {team} to win this knockout match. A comeback from 2-0 down to 3-2 turns those picks into monster cards 🔥',
+        en_count: '{names} picked {team} to win this knockout match. A comeback from 2-0 down to 3-2 turns those picks into monster cards 🔥',
+      },
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'BEL',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי קאמבק כזה, הצאט חייב לקחת את הטופס הזה יותר ברצינות 🔥',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי קאמבק כזה, הצאט חייב לקחת את הטפסים האלה יותר ברצינות 🔥',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי קאמבק כזה, הצאט חייב לקחת את הטפסים האלה יותר ברצינות 🔥',
+        en_name: '{names} picked {team} to win the World Cup. After that comeback, the chat has to take that form more seriously 🔥',
+        en_names: '{names} picked {team} to win the World Cup. After that comeback, the chat has to take those forms more seriously 🔥',
+        en_count: '{names} picked {team} to win the World Cup. After that comeback, the chat has to take those forms more seriously 🔥',
+      },
+      {
+        table: 'knockout_picks',
+        team_code: 'SEN',
+        he_name: '{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. אחרי 3-2 כזה לבלגיה, זה רגע של ידיים על הראש 😬',
+        he_names: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי 3-2 כזה לבלגיה, זה רגע של ידיים על הראש 😬',
+        he_count: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי 3-2 כזה לבלגיה, זה רגע של ידיים על הראש 😬',
+        en_name: '{names} picked {team} to win this knockout match. After that 3-2 for Belgium, this is a hands-on-head moment 😬',
+        en_names: '{names} picked {team} to win this knockout match. After that 3-2 for Belgium, these are hands-on-head moments 😬',
+        en_count: '{names} picked {team} to win this knockout match. After that 3-2 for Belgium, these are hands-on-head moments 😬',
+      },
+    ],
+  },
+  'USA-BIH': {
+    title: {
+      he: 'ארהב ניצחה את בוסניה והרצגובינה 2-0: עשרה שחקנים, כרטיס ביד',
+      en: 'USA beat Bosnia and Herzegovina 2-0: ten men, still through',
+    },
+    caption: {
+      he: 'ארהב שיחקה דקות ארוכות בעשרה שחקנים ועדיין מצאה 2-0. זה לא היה יפה, זה היה הישרדות נוקאאוט ביתית 🔥',
+      en: 'USA played a long stretch with ten men and still found 2-0. Not pretty; home knockout survival 🔥',
+    },
+    pool_focuses: [
+      {
+        table: 'knockout_picks',
+        team_code: 'USA',
+        he_name: '{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. 2-0 בעשרה שחקנים הופך את הבחירה הזו לקבלה חזקה במיוחד 🔥',
+        he_names: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-0 בעשרה שחקנים הופך את הבחירות האלה לקבלות חזקות במיוחד 🔥',
+        he_count: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-0 בעשרה שחקנים הופך את הבחירות האלה לקבלות חזקות במיוחד 🔥',
+        en_name: '{names} picked {team} to win this knockout match. A 2-0 with ten men turns that pick into a serious receipt 🔥',
+        en_names: '{names} picked {team} to win this knockout match. A 2-0 with ten men turns those picks into serious receipts 🔥',
+        en_count: '{names} picked {team} to win this knockout match. A 2-0 with ten men turns those picks into serious receipts 🔥',
+      },
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'USA',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי ניצחון נוקאאוט בעשרה שחקנים, זה כבר נשמע הרבה פחות פרוע 🔥',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי ניצחון נוקאאוט בעשרה שחקנים, זה כבר נשמע הרבה פחות פרוע 🔥',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי ניצחון נוקאאוט בעשרה שחקנים, זה כבר נשמע הרבה פחות פרוע 🔥',
+        en_name: '{names} picked {team} to win the World Cup. After a ten-man knockout win, that sounds a lot less wild 🔥',
+        en_names: '{names} picked {team} to win the World Cup. After a ten-man knockout win, those picks sound a lot less wild 🔥',
+        en_count: '{names} picked {team} to win the World Cup. After a ten-man knockout win, those picks sound a lot less wild 🔥',
+      },
+      {
+        table: 'knockout_picks',
+        team_code: 'BIH',
+        he_name: '{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. 2-0 לארהב בעשרה שחקנים הופך את הבחירה הזו לכואבת במיוחד 😬',
+        he_names: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-0 לארהב בעשרה שחקנים הופך את הבחירות האלה לכואבות במיוחד 😬',
+        he_count: '{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-0 לארהב בעשרה שחקנים הופך את הבחירות האלה לכואבות במיוחד 😬',
+        en_name: '{names} picked {team} to win this knockout match. A 2-0 to ten-man USA makes that pick hurt even more 😬',
+        en_names: '{names} picked {team} to win this knockout match. A 2-0 to ten-man USA makes those picks hurt even more 😬',
+        en_count: '{names} picked {team} to win this knockout match. A 2-0 to ten-man USA makes those picks hurt even more 😬',
+      },
+    ],
+  },
   'CIV-NOR': {
     title: {
       he: 'נורבגיה ניצחה את חוף השנהב 2-1: הולכת לשמינית הגמר',
@@ -2578,6 +2709,7 @@ async function main() {
     .map(story => normalizeExistingStory(story, matchById))
     .filter(Boolean);
   const existingByMatch = new Set(existing.map(item => item && item.match_id).filter(Boolean));
+  const existingStoryCoverage = storyCoverageSet(existing, matchesPayload.matches || []);
   const existingMatchDates = new Map(
     (matchesPayload.matches || []).map(match => [match.id, new Date(match.match_date).getTime()])
   );
@@ -2588,7 +2720,7 @@ async function main() {
 
   const addCandidates = ADD_LATEST_MISSING > 0
     ? finished
-      .filter(match => match && !existingByMatch.has(match.id) && outcomeFor(match))
+      .filter(match => match && !storyCoversMatch(existingStoryCoverage, match) && outcomeFor(match))
       .sort((a, b) => new Date(b.match_date) - new Date(a.match_date))
       .slice(0, ADD_LATEST_MISSING)
       .sort((a, b) => new Date(a.match_date) - new Date(b.match_date))
@@ -2596,7 +2728,7 @@ async function main() {
 
   const additions = [];
   for (const match of addCandidates) {
-    if (existingByMatch.has(match.id)) continue;
+    if (storyCoversMatch(existingStoryCoverage, match)) continue;
     const outcome = outcomeFor(match);
     if (!outcome) continue;
     let image = ensureStoryAsset(manifest, match, outcome);
@@ -2609,6 +2741,9 @@ async function main() {
     }
     additions.push(buildStory(match, image, outcome));
     existingByMatch.add(match.id);
+    existingStoryCoverage.add(String(match.id));
+    const coverageKey = storyCoverageKey(match);
+    if (coverageKey) existingStoryCoverage.add(coverageKey);
   }
 
   let items = additions

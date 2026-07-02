@@ -2,6 +2,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  storyCoverageSet,
+  storyCoversMatch,
+} = require('./world-cup-story-coverage');
 const { spawnSync } = require('child_process');
 const { validatePayload } = require('./pundit-news-validate');
 
@@ -78,8 +82,8 @@ function auditStories(matchesPayload, storiesPayload) {
   const matches = Array.isArray(matchesPayload && matchesPayload.matches) ? matchesPayload.matches : [];
   const stories = Array.isArray(storiesPayload && storiesPayload.items) ? storiesPayload.items : [];
   const finished = matches.filter(match => ['FINISHED', 'AWARDED'].includes(String(match && match.status || '').toUpperCase()));
-  const storiesByMatch = new Set(stories.map(story => String(story && story.match_id)).filter(Boolean));
-  const missing = finished.filter(match => !storiesByMatch.has(String(match && match.id)));
+  const storyCoverage = storyCoverageSet(stories, matches);
+  const missing = finished.filter(match => !storyCoversMatch(storyCoverage, match));
 
   if (missing.length) {
     errors.push(`missing stories for finished matches: ${missing.map(match => `${match.home_team_code}-${match.away_team_code}`).join(', ')}`);
