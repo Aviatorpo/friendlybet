@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-02T07:44:06.131Z",
-  "freshUntil": "2026-07-02T13:44:06.131Z",
-  "count": 8,
+  "updatedAt": "2026-07-02T09:30:03.389Z",
+  "freshUntil": "2026-07-02T15:30:03.389Z",
+  "count": 7,
   "items": [
     {
       "id": "result-de01be62-6533-4c6a-80b0-2974d78f5dc0",
@@ -38,15 +38,6 @@
       "en": "Mexico beat Ecuador 2-0 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-02T14:00:00.000Z"
-    },
-    {
-      "id": "result-1bcff6f2-4ccf-4a93-8558-8d4da01fad5e",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "צרפת עברה את שבדיה 3:0. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על שבדיה צריך מסלול חדש 🧾",
-      "en": "France got past Sweden 3-0. Brackets that picked them get a receipt; Sweden believers need a new route 🧾",
-      "sources": [],
-      "expires_at": "2026-07-02T09:00:00.000Z"
     },
     {
       "id": "fixture-ee21ba7e-528a-466e-b35c-264789e403af",
