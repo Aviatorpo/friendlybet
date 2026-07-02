@@ -2,6 +2,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  storyCoverageSet,
+  storyCoversMatch,
+} = require('./world-cup-story-coverage');
 
 const ROOT = path.resolve(__dirname, '..');
 const DATA_DIR = path.join(ROOT, 'public-data');
@@ -144,7 +148,8 @@ function resolveRecordPath(recordPath) {
 }
 
 function scoreTarget(match, ctx) {
-  const { nowMs, feedItems, storiesByMatch, newsItems } = ctx;
+  const { nowMs, feedItems, newsItems } = ctx;
+  const storyCoverage = ctx.storyCoverage || ctx.storiesByMatch || new Set();
   const phase = phaseFor(match, nowMs);
   const kickoff = parseTime(match.match_date);
   const refs = feedItems
@@ -199,7 +204,7 @@ function scoreTarget(match, ctx) {
       errors.push('finished match lacks result Pundit item');
       score -= 25;
     }
-    if (!storiesByMatch.has(String(match.id))) {
+    if (!storyCoversMatch(storyCoverage, match)) {
       errors.push('finished match lacks World Cup story');
       score -= 20;
     }
@@ -288,9 +293,7 @@ function certifyWithPayloads(args, payloads) {
   const news = payloads.news || { items: [] };
   const matches = Array.isArray(matchesPayload.matches) ? matchesPayload.matches : [];
   const feedItems = feed && Array.isArray(feed.items) ? feed.items : [];
-  const storiesByMatch = new Set((Array.isArray(stories.items) ? stories.items : [])
-    .map(story => String(story && story.match_id))
-    .filter(Boolean));
+  const storyCoverage = storyCoverageSet(Array.isArray(stories.items) ? stories.items : [], matches);
   const newsItems = Array.isArray(news.items) ? news.items : [];
   const errors = [];
   const warnings = [];
@@ -313,7 +316,7 @@ function certifyWithPayloads(args, payloads) {
   const targetReports = targets.map(match => scoreTarget(match, {
     nowMs,
     feedItems,
-    storiesByMatch,
+    storyCoverage,
     newsItems,
   }));
   for (const report of targetReports) {

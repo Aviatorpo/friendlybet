@@ -13,6 +13,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  storyCoverageSet,
+  storyCoversMatch,
+} = require('./world-cup-story-coverage');
 
 const ROOT = path.resolve(__dirname, '..');
 const DATA_DIR = path.join(ROOT, 'public-data');
@@ -216,14 +220,12 @@ function auditPundit(matches, nowMs, errors, warnings, feedOverride = null) {
 
 function auditStories(matches, errors) {
   const stories = readJson(STORIES_FILE, { items: [] });
-  const storyIds = new Set((Array.isArray(stories.items) ? stories.items : [])
-    .map(story => story && story.match_id)
-    .filter(Boolean));
+  const storyCoverage = storyCoverageSet(Array.isArray(stories.items) ? stories.items : [], matches || []);
   const finished = (matches || []).filter(m =>
     String(m && m.status || '').toUpperCase() === 'FINISHED'
     && m.home_score != null
     && m.away_score != null);
-  const missing = finished.filter(m => !storyIds.has(m.id));
+  const missing = finished.filter(m => !storyCoversMatch(storyCoverage, m));
   if (missing.length) {
     errors.push(`World Cup stories missing for ${missing.length} finished match(es): ${missing.slice(0, 8).map(matchKey).join(', ')}`);
   }

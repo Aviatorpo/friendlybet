@@ -8,6 +8,10 @@ const fs = require('fs');
 const path = require('path');
 const Watchdog = require('./live-state-watchdog');
 const Scoring = require('./calculate-scores-v2');
+const {
+  storyCoverageSet,
+  storyCoversMatch,
+} = require('./world-cup-story-coverage');
 const VerifierPreflight = require('./final-result-verifier-needed');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -94,14 +98,12 @@ function summarizeGroupCompletion(matches) {
 
 function summarizeStories(matches, resultRecovery = null, storiesPayload = null) {
   const stories = storiesPayload || readJson(STORIES_FILE, { items: [] });
-  const storyIds = new Set((Array.isArray(stories.items) ? stories.items : [])
-    .map(story => story && story.match_id)
-    .filter(Boolean));
+  const storyCoverage = storyCoverageSet(Array.isArray(stories.items) ? stories.items : [], matches || []);
   const finished = (matches || []).filter(match =>
     String(match && match.status || '').toUpperCase() === 'FINISHED'
     && match.home_score != null
     && match.away_score != null);
-  const missing = finished.filter(match => !storyIds.has(match.id));
+  const missing = finished.filter(match => !storyCoversMatch(storyCoverage, match));
   return {
     stories: Array.isArray(stories.items) ? stories.items.length : 0,
     finished_matches: finished.length,
