@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-07-01T20:16:42.582Z",
+  "updated_at": "2026-07-02T04:32:34.854Z",
   "source": "snapshot",
-  "matches": 21,
+  "matches": 22,
   "prompts": [
     {
       "match_id": "f73a51f3-f6a0-4914-8fe7-424d5eadc94c",
@@ -84,28 +84,12 @@
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Belgium vs Senegal at FIFA World Cup 2026.\nPrepared outcome: Belgium advances over Senegal.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
-      "match_id": "227bb68a-a5e4-42ca-bd09-6f0d9badd0bc",
-      "match_key": "BEL-SEN",
-      "match_date": "2026-07-01T20:00:00+00:00",
-      "outcome": "SEN",
-      "image": "story-assets/outcome-bases/bel-sen-sen-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Belgium vs Senegal at FIFA World Cup 2026.\nPrepared outcome: Senegal advances over Belgium.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
       "match_id": "de01be62-6533-4c6a-80b0-2974d78f5dc0",
       "match_key": "USA-BIH",
       "match_date": "2026-07-02T00:00:00+00:00",
       "outcome": "USA",
       "image": "story-assets/outcome-bases/usa-bih-usa-wins-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: USA vs Bosnia and Herzegovina at FIFA World Cup 2026.\nPrepared outcome: USA advances over Bosnia and Herzegovina.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "de01be62-6533-4c6a-80b0-2974d78f5dc0",
-      "match_key": "USA-BIH",
-      "match_date": "2026-07-02T00:00:00+00:00",
-      "outcome": "BIH",
-      "image": "story-assets/outcome-bases/usa-bih-bih-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: USA vs Bosnia and Herzegovina at FIFA World Cup 2026.\nPrepared outcome: Bosnia and Herzegovina advances over USA.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
       "match_id": "ee21ba7e-528a-466e-b35c-264789e403af",
@@ -266,6 +250,22 @@
       "outcome": "ENG",
       "image": "story-assets/outcome-bases/mex-eng-eng-wins-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Mexico vs England at FIFA World Cup 2026.\nPrepared outcome: England advances over Mexico.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
+    },
+    {
+      "match_id": "084756cf-d007-4858-8fc4-d6ca8b66b686",
+      "match_key": "USA-BEL",
+      "match_date": "2026-07-07T00:00:00+00:00",
+      "outcome": "USA",
+      "image": "story-assets/outcome-bases/usa-bel-usa-wins-base.png",
+      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: USA vs Belgium at FIFA World Cup 2026.\nPrepared outcome: USA advances over Belgium.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
+    },
+    {
+      "match_id": "084756cf-d007-4858-8fc4-d6ca8b66b686",
+      "match_key": "USA-BEL",
+      "match_date": "2026-07-07T00:00:00+00:00",
+      "outcome": "BEL",
+      "image": "story-assets/outcome-bases/usa-bel-bel-wins-base.png",
+      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: USA vs Belgium at FIFA World Cup 2026.\nPrepared outcome: Belgium advances over USA.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     }
   ]
 }
