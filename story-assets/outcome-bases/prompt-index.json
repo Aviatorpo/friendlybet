@@ -1,24 +1,8 @@
 {
-  "updated_at": "2026-07-02T04:32:34.854Z",
+  "updated_at": "2026-07-02T09:33:53.519Z",
   "source": "snapshot",
-  "matches": 22,
+  "matches": 17,
   "prompts": [
-    {
-      "match_id": "f73a51f3-f6a0-4914-8fe7-424d5eadc94c",
-      "match_key": "CAN-BIH",
-      "match_date": "2026-06-12T19:00:00+00:00",
-      "outcome": "DRAW",
-      "image": "story-assets/outcome-bases/can-bih-draw-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Canada vs Bosnia and Herzegovina at FIFA World Cup 2026.\nPrepared outcome: Canada and Bosnia and Herzegovina draw.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "534a6bd4-088a-4c95-958a-1cc6abb2f8a2",
-      "match_key": "QAT-SUI",
-      "match_date": "2026-06-13T19:00:00+00:00",
-      "outcome": "DRAW",
-      "image": "story-assets/outcome-bases/qat-sui-draw-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Qatar vs Switzerland at FIFA World Cup 2026.\nPrepared outcome: Qatar and Switzerland draw.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
     {
       "match_id": "09df59c6-1a7a-42d2-8c77-e9bcc3889dd5",
       "match_key": "GER-CUW",
@@ -66,30 +50,6 @@
       "outcome": "DRAW",
       "image": "story-assets/outcome-bases/cpv-ksa-draw-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Cape Verde vs KSA at FIFA World Cup 2026.\nPrepared outcome: Cape Verde and KSA draw.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "539f0f2d-6ef8-450d-9e07-546b6951c00e",
-      "match_key": "ENG-COD",
-      "match_date": "2026-07-01T16:00:00+00:00",
-      "outcome": "ENG",
-      "image": "story-assets/outcome-bases/eng-cod-eng-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: England vs DR Congo at FIFA World Cup 2026.\nPrepared outcome: England advances over DR Congo.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "227bb68a-a5e4-42ca-bd09-6f0d9badd0bc",
-      "match_key": "BEL-SEN",
-      "match_date": "2026-07-01T20:00:00+00:00",
-      "outcome": "BEL",
-      "image": "story-assets/outcome-bases/bel-sen-bel-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Belgium vs Senegal at FIFA World Cup 2026.\nPrepared outcome: Belgium advances over Senegal.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "de01be62-6533-4c6a-80b0-2974d78f5dc0",
-      "match_key": "USA-BIH",
-      "match_date": "2026-07-02T00:00:00+00:00",
-      "outcome": "USA",
-      "image": "story-assets/outcome-bases/usa-bih-usa-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: USA vs Bosnia and Herzegovina at FIFA World Cup 2026.\nPrepared outcome: USA advances over Bosnia and Herzegovina.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
       "match_id": "ee21ba7e-528a-466e-b35c-264789e403af",
