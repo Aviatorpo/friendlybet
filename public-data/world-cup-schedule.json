@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-02T19:22:53.684Z",
+  "updatedAt": "2026-07-02T20:42:03.716Z",
   "source": "https://api.fifa.com/api/v3/calendar/matches?language=en&count=500&idCompetition=17&from=2026-06-01&to=2026-07-31",
   "sourcePage": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?country=IL&wtw-filter=ALL",
   "count": 104,
@@ -2073,7 +2073,7 @@
       "away_team_code": "AUT",
       "home_team_name": "Spain",
       "away_team_name": "Austria",
-      "home_score": 0,
+      "home_score": 2,
       "away_score": 0,
       "venue": "Los Angeles Stadium",
       "city": "Los Angeles",
