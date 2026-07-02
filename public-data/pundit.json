@@ -1,8 +1,35 @@
 {
-  "updatedAt": "2026-07-01T13:51:45.284Z",
-  "freshUntil": "2026-07-01T19:51:45.284Z",
-  "count": 7,
+  "updatedAt": "2026-07-02T03:41:40.986Z",
+  "freshUntil": "2026-07-02T09:41:40.986Z",
+  "count": 9,
   "items": [
+    {
+      "id": "result-de01be62-6533-4c6a-80b0-2974d78f5dc0",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "2:0 לארה\"ב על בוסניה-הרצגובינה. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
+      "en": "2-0 for United States over Bosnia-Herzegovina. Anyone who picked them in this knockout match can open the receipts 🧾",
+      "sources": [],
+      "expires_at": "2026-07-03T12:00:00.000Z"
+    },
+    {
+      "id": "result-227bb68a-a5e4-42ca-bd09-6f0d9badd0bc",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "3:2 לבלגיה על סנגל. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
+      "en": "3-2 for Belgium over Senegal. Anyone who picked them in this knockout match can open the receipts 🧾",
+      "sources": [],
+      "expires_at": "2026-07-03T08:00:00.000Z"
+    },
+    {
+      "id": "result-539f0f2d-6ef8-450d-9e07-546b6951c00e",
+      "type": "result",
+      "confidence": "confirmed",
+      "he": "אנגליה ניצחה את קונגו הדמוקרטית 2:1 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
+      "en": "England beat Congo DR 2-1 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
+      "sources": [],
+      "expires_at": "2026-07-03T04:00:00.000Z"
+    },
     {
       "id": "result-3c2bf70e-e807-4f02-b41c-ddcefc4c849e",
       "type": "result",
@@ -31,40 +58,31 @@
       "expires_at": "2026-07-02T05:00:00.000Z"
     },
     {
-      "id": "fixture-539f0f2d-6ef8-450d-9e07-546b6951c00e",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "אנגליה נגד קונגו הדמוקרטית, היום 19:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
-      "en": "England vs Congo DR, today 19:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
-      "sources": [],
-      "expires_at": "2026-07-01T15:45:00.000Z"
-    },
-    {
-      "id": "fixture-227bb68a-a5e4-42ca-bd09-6f0d9badd0bc",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "בלגיה נגד סנגל, היום 23:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
-      "en": "Belgium vs Senegal, today 23:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
-      "sources": [],
-      "expires_at": "2026-07-01T19:45:00.000Z"
-    },
-    {
-      "id": "fixture-de01be62-6533-4c6a-80b0-2974d78f5dc0",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "ארה\"ב נגד בוסניה-הרצגובינה, מחר 03:00. משחק נוקאאוט כזה יכול להפוך שקט בטבלה לרעש גדול ⏰",
-      "en": "United States vs Bosnia-Herzegovina, tomorrow 03:00. This kind of knockout match can turn a quiet table into noise ⏰",
-      "sources": [],
-      "expires_at": "2026-07-01T23:45:00.000Z"
-    },
-    {
       "id": "fixture-ee21ba7e-528a-466e-b35c-264789e403af",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שמינית הגמר המוקדמת: ספרד נגד אוסטריה, מחר 22:00. מי שבנה על ספרד רוצה שקט; מי שסימן את אוסטריה מחפש רעידת טבלה ⏰",
-      "en": "Round of 32: Spain vs Austria, tomorrow 22:00. Spain picks want calm; Austria picks are hunting table shock ⏰",
+      "he": "שמינית הגמר המוקדמת: ספרד נגד אוסטריה, היום 22:00. מי שבנה על ספרד רוצה שקט; מי שסימן את אוסטריה מחפש רעידת טבלה ⏰",
+      "en": "Round of 32: Spain vs Austria, today 22:00. Spain picks want calm; Austria picks are hunting table shock ⏰",
       "sources": [],
       "expires_at": "2026-07-02T18:45:00.000Z"
+    },
+    {
+      "id": "fixture-8bb5df11-6f67-48f1-838b-990c4863bf2d",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "משחק ענק בשמינית הגמר המוקדמת: פורטוגל נגד קרואטיה, מחר 02:00. צד אחד ממשיך, צד אחד הולך הביתה ⏰",
+      "en": "Huge Round of 32: Portugal vs Croatia, tomorrow 02:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
+      "sources": [],
+      "expires_at": "2026-07-02T22:45:00.000Z"
+    },
+    {
+      "id": "fixture-399b52f8-23c0-4421-bc48-763df6ed58af",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "שווייץ נגד אלג'יריה, מחר 06:00. זה משחק של מעבר או סיום דרך, בדיוק המקום שבו הימורים זזים ⏰",
+      "en": "Switzerland vs Algeria, tomorrow 06:00. It is move-on-or-go-home territory, exactly where picks start moving ⏰",
+      "sources": [],
+      "expires_at": "2026-07-03T02:45:00.000Z"
     }
   ]
 }
