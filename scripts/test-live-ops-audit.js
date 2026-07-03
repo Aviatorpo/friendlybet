@@ -100,7 +100,7 @@ check('result recovery summary respects bounded lookback', () => {
   assert.strictEqual(result.candidates, 0);
 });
 
-check('public snapshot live-status mode ignores active-window recovery candidates only', () => {
+check('public snapshot live-status mode ignores bounded match-day recovery candidates only', () => {
   const nowMs = Date.parse('2026-06-23T12:00:00Z');
   const activeFrozen = {
     id: 'live-public-1',
@@ -109,6 +109,13 @@ check('public snapshot live-status mode ignores active-window recovery candidate
     home_team_code: 'POR',
     away_team_code: 'UZB',
   };
+  const delayedFrozen = {
+    id: 'live-public-2',
+    status: 'PAUSED',
+    match_date: '2026-06-23T06:45:00Z',
+    home_team_code: 'SUI',
+    away_team_code: 'ALG',
+  };
   const oldStale = {
     id: 'old-public-1',
     status: 'TIMED',
@@ -116,12 +123,12 @@ check('public snapshot live-status mode ignores active-window recovery candidate
     home_team_code: 'MEX',
     away_team_code: 'KOR',
   };
-  const filtered = Audit.summarizeResultRecovery([activeFrozen, oldStale], nowMs, {
+  const filtered = Audit.summarizeResultRecovery([activeFrozen, delayedFrozen, oldStale], nowMs, {
     lookbackHours: 336,
     minAgeMinutes: 95,
     ignoreSnapshotLiveStatus: true,
   });
-  assert.strictEqual(filtered.ignored_snapshot_live_status, 1);
+  assert.strictEqual(filtered.ignored_snapshot_live_status, 2);
   assert.strictEqual(filtered.candidates, 1);
   assert.strictEqual(filtered.sample[0].id, 'old-public-1');
 });
@@ -290,6 +297,27 @@ check('scheduled scoring/export failures fail loudly', () => {
   assert.ok(!/score calculation skipped[\s\S]*exit 0/.test(text), 'scheduled scoring must not exit 0 after scoring failure');
   assert.ok(!/leaderboard snapshot export skipped[\s\S]*exit 0/.test(text), 'scheduled snapshot export must not exit 0 after export failure');
   assert.ok(/run:\s*node scripts\/calculate-scores-v2\.js/.test(text), 'scoring workflow must run scoring directly');
+  assertOrdered(
+    text,
+    '.github/workflows/calculate-scores-v2.yml',
+    'node scripts/calculate-scores-v2.js --critical',
+    'node scripts/export-snapshots.js matches',
+    'scoring workflow must force the match snapshot before proving leaderboard result_version'
+  );
+  assertOrdered(
+    text,
+    '.github/workflows/calculate-scores-v2.yml',
+    'node scripts/export-snapshots.js matches',
+    'node scripts/export-snapshots.js leaderboards',
+    'scoring workflow must publish matches before leaderboards'
+  );
+  assertOrdered(
+    text,
+    '.github/workflows/calculate-scores-v2.yml',
+    'node scripts/export-snapshots.js leaderboards',
+    'node scripts/verify-scoring-snapshots.js',
+    'scoring workflow must prove snapshots after export'
+  );
   assert.ok(/run:\s*node scripts\/export-snapshots\.js leaderboards/.test(text), 'scoring workflow must run snapshot export directly');
 });
 
@@ -399,6 +427,9 @@ check('standalone Pundit workflow audits match state before build', () => {
   assert.ok(/git status --porcelain public-data\/pundit\.json public-data\/world-cup-stories\.json story-assets/.test(text), 'generate-pundit workflow must key deploys on Pundit or story changes');
   assert.ok(/match snapshot changed without a Pundit feed change/.test(text), 'generate-pundit workflow must avoid committing match-only live churn');
   assert.ok(/commit-generated-snapshots\.sh[\s\S]*public-data\/matches\.json public-data\/pundit\.json/.test(text), 'generate-pundit workflow must stage matches with Pundit');
+  assert.ok(/Validate generated Pundit feed[\s\S]*continue-on-error:\s*true/.test(text), 'standalone Pundit validation must not create critical-path failure emails');
+  assert.ok(/Report Pundit validation warning[\s\S]*::warning::Generated Pundit feed failed/.test(text), 'standalone Pundit validation failures must remain visible as warnings');
+  assert.ok(/Commit feed if changed[\s\S]*if:\s*steps\.pundit_validation\.outcome == 'success'/.test(text), 'standalone Pundit workflow must keep the last good feed when validation fails');
   assert.ok(/REGENERATE_COMMANDS:[\s\S]*LIVE_OPS_SKIP_PUNDIT=1 LIVE_OPS_IGNORE_SNAPSHOT_LIVE_STATUS=1 LIVE_OPS_ALLOW_STORY_BACKLOG=1 node scripts\/live-ops-audit\.js[\s\S]*node scripts\/generate-pundit\.js/.test(text), 'generate-pundit workflow must regenerate from current main after generated-data push conflicts');
   assert.ok(/REGENERATE_COMMANDS:[\s\S]*if \[ -f public-data\/pundit-news\.json \]/.test(text), 'generate-pundit regenerate path must not fail when optional Pundit news is absent');
 });
@@ -490,6 +521,8 @@ check('story asset backlog cannot fail scoring/result workflows', () => {
     assert.ok(/::warning::World Cup story desk/.test(text), `${file} must warn, not fail, on missing story assets`);
     assert.ok(!/::error::World Cup story desk/.test(text), `${file} must not report story backlog as a workflow error`);
     assert.ok(/exit "\$failed"/.test(text), `${file} must exit only on result-verification failure`);
+    assert.ok(/Report post-final Pundit warning[\s\S]*::warning::Post-final Pundit refresh failed/.test(text), `${file} must warn, not fail, on post-final Pundit quality failures`);
+    assert.ok(/Commit post-final content if changed[\s\S]*continue-on-error:\s*true/.test(text), `${file} post-final content commits must not fail critical result publication`);
   });
 
   const ci = fs.readFileSync(path.join(ROOT, '.github/workflows/test-scoring.yml'), 'utf8');

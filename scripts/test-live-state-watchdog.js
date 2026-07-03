@@ -52,8 +52,9 @@ check('finished tied knockout without winner is an error', () => {
   assert.ok(errors.some(e => /tied knockout without verified advancing team/.test(e)));
 });
 
-check('finished ESPN residue is an error after grace period', () => {
+check('finished ESPN residue is warning-only by default after grace period', () => {
   const errors = [];
+  const warnings = [];
   W.auditMatches([{
     id: 'm4',
     status: 'FINISHED',
@@ -65,12 +66,15 @@ check('finished ESPN residue is an error after grace period', () => {
     live_period: 2,
     status_detail: "82'",
     live_source: 'espn',
-  }], nowMs, errors, []);
-  assert.ok(errors.some(e => /live\/provider residue/.test(e)));
+  }], nowMs, errors, warnings);
+  assert.deepStrictEqual(errors, []);
+  assert.ok(warnings.some(e => /live\/provider residue/.test(e)));
 });
 
-check('pending ESPN final residue is an error', () => {
+check('pending ESPN final residue can hard-fail when explicitly requested', () => {
   const errors = [];
+  const warnings = [];
+  process.env.LIVE_WATCHDOG_RESIDUE_HARD_FAIL = '1';
   W.auditMatches([{
     id: 'm5',
     status: 'FINISHED',
@@ -80,7 +84,8 @@ check('pending ESPN final residue is an error', () => {
     winner_code: 'MEX',
     status_detail: 'ESPN final pending verification',
     live_source: 'espn-final',
-  }], nowMs, errors, []);
+  }], nowMs, errors, warnings);
+  delete process.env.LIVE_WATCHDOG_RESIDUE_HARD_FAIL;
   assert.ok(errors.some(e => /live\/provider residue/.test(e)));
 });
 

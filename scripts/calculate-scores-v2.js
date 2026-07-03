@@ -24,6 +24,7 @@ const fs = require('fs');
 const path = require('path');
 const WCR = require('../share-assets/world-cup-rules.js');
 const FIFA_THIRD_PLACE = require('../share-assets/fifa-third-place-table.js');
+const { resultVersionFromMatches } = require('./export-snapshots.js');
 
 assertQaIfRequested();
 
@@ -39,6 +40,15 @@ function setGithubOutput(name, value) {
   const file = process.env.GITHUB_OUTPUT;
   if (!file) return;
   fs.appendFileSync(file, `${name}=${String(value == null ? '' : value)}\n`);
+}
+
+function localMatchesResultVersion() {
+  try {
+    const payload = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'public-data', 'matches.json'), 'utf8'));
+    return payload && payload.result_version || null;
+  } catch (_) {
+    return null;
+  }
 }
 
 function csvList(value) {
@@ -679,6 +689,8 @@ async function main(options = {}) {
     console.log('No pools');
     setGithubOutput('score_ms', Date.now() - startedAt);
     setGithubOutput('changed_pool_ids', '');
+    setGithubOutput('force_all_leaderboard_snapshots', '');
+    setGithubOutput('result_version', '');
     setGithubOutput('changed_users', 0);
     setGithubOutput('scored_users', 0);
     setGithubOutput('scored_pools', 0);
@@ -691,6 +703,8 @@ async function main(options = {}) {
   // score, so keying off "has a score" scored matches mid-play and made knockout
   // points appear/flip as the scoreline changed. Require a terminal status.
   const finishedMatches = (matches || []).filter(isTerminalMatch);
+  const resultVersion = resultVersionFromMatches(matches || []);
+  const localResultVersion = localMatchesResultVersion();
   console.log(`${pools.length} pools, ${finishedMatches.length} finished matches`);
   const groupState = buildGroupState(matches || []);
 
@@ -786,14 +800,26 @@ async function main(options = {}) {
 
   const elapsedMs = Date.now() - startedAt;
   const changedPoolList = Array.from(changedPoolIds);
+  const forceAllLeaderboardSnapshots = critical && (
+    changedUsers > 0 ||
+    (!!resultVersion && !!localResultVersion && resultVersion !== localResultVersion)
+  );
+  if (forceAllLeaderboardSnapshots) {
+    const reason = changedUsers > 0
+      ? `${changedUsers} user score(s) changed`
+      : `result_version changed from ${localResultVersion || 'missing'} to ${resultVersion || 'missing'}`;
+    console.log(`forcing all leaderboard snapshots because ${reason}`);
+  }
   setGithubOutput('score_ms', elapsedMs);
   setGithubOutput('changed_pool_ids', changedPoolList.join(','));
+  setGithubOutput('force_all_leaderboard_snapshots', forceAllLeaderboardSnapshots ? '1' : '');
+  setGithubOutput('result_version', resultVersion || '');
   setGithubOutput('changed_users', changedUsers);
   setGithubOutput('scored_users', scoredUsers);
   setGithubOutput('scored_pools', scoredPools);
   setGithubOutput('critical', critical ? 'true' : 'false');
   console.log(`\nDone in ${(elapsedMs / 1000).toFixed(1)}s (${changedUsers}/${scoredUsers} users changed; ${changedPoolList.length} pool leaderboard(s) affected)`);
-  return { changedPoolIds: changedPoolList, changedUsers, scoredUsers, scoredPools, scoreMs: elapsedMs, critical };
+  return { changedPoolIds: changedPoolList, changedUsers, scoredUsers, scoredPools, scoreMs: elapsedMs, critical, forceAllLeaderboardSnapshots, resultVersion };
 }
 
 // ---- SINGLE PHASE scoring ----

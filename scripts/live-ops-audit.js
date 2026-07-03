@@ -18,7 +18,7 @@ const ROOT = path.resolve(__dirname, '..');
 const MATCHES_FILE = path.join(ROOT, 'public-data', 'matches.json');
 const STORIES_FILE = path.join(ROOT, 'public-data', 'world-cup-stories.json');
 const PUNDIT_FILE = path.join(ROOT, 'public-data', 'pundit.json');
-const PUBLIC_SNAPSHOT_ACTIVE_WINDOW_MS = 4 * 60 * 60 * 1000;
+const PUBLIC_SNAPSHOT_ACTIVE_WINDOW_MS = 8 * 60 * 60 * 1000;
 
 function readJson(file, fallback) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch (_) { return fallback; }
