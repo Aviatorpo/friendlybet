@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-07-03T18:50:58.613Z",
-  "freshUntil": "2026-07-04T00:50:58.613Z",
+  "updatedAt": "2026-07-03T19:13:10.432Z",
+  "freshUntil": "2026-07-04T01:13:10.432Z",
   "count": 8,
   "items": [
     {
       "id": "live-becdf518-3a65-4a3f-82a6-622c288a398e",
       "type": "live",
       "confidence": "confirmed",
-      "he": "אוסטרליה נגד מצרים עכשיו על הדשא. כל שער יכול לשנות את הבראקט ואת ההימורים 🔥",
-      "en": "Australia vs Egypt is live now. Every goal can change the bracket and the picks 🔥",
+      "he": "אוסטרליה נגד מצרים עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
+      "en": "Australia vs Egypt is live now. Every goal can flip brackets and push one side toward the next round 🔥",
       "sources": [],
-      "expires_at": "2026-07-03T21:50:58.613Z"
+      "expires_at": "2026-07-03T22:13:10.432Z"
     },
     {
       "id": "result-399b52f8-23c0-4421-bc48-763df6ed58af",
@@ -43,8 +43,8 @@
       "id": "fixture-1b693d86-e3d7-49ed-acbe-ff1cbda5ab02",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שמינית הגמר המוקדמת: ארגנטינה נגד כף ורדה, מחר 01:00. מי שבנה על ארגנטינה רוצה שקט; מי שסימן את כף ורדה מחפש רעידת טבלה ⏰",
-      "en": "Round of 32: Argentina vs Cape Verde, tomorrow 01:00. Argentina picks want calm; Cape Verde picks are hunting table shock ⏰",
+      "he": "שמינית הגמר המוקדמת: ארגנטינה נגד כף ורדה, מחר 01:00. מי שבנה על ארגנטינה רוצה שקט; מי שסימן את כף ורדה מחפש רעידת בראקט ⏰",
+      "en": "Round of 32: Argentina vs Cape Verde, tomorrow 01:00. Argentina picks want calm; Cape Verde picks are hunting bracket shock ⏰",
       "sources": [],
       "expires_at": "2026-07-03T21:45:00.000Z"
     },
@@ -52,8 +52,8 @@
       "id": "fixture-4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שמינית הגמר המוקדמת: קולומביה נגד גאנה, מחר 04:30. מי שבנה על קולומביה רוצה שקט; מי שסימן את גאנה מחפש רעידת טבלה ⏰",
-      "en": "Round of 32: Colombia vs Ghana, tomorrow 04:30. Colombia picks want calm; Ghana picks are hunting table shock ⏰",
+      "he": "שמינית הגמר המוקדמת: קולומביה נגד גאנה, מחר 04:30. מי שבנה על קולומביה רוצה שקט; מי שסימן את גאנה מחפש רעידת בראקט ⏰",
+      "en": "Round of 32: Colombia vs Ghana, tomorrow 04:30. Colombia picks want calm; Ghana picks are hunting bracket shock ⏰",
       "sources": [],
       "expires_at": "2026-07-04T01:15:00.000Z"
     },

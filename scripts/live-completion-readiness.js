@@ -14,8 +14,8 @@ const LiveOpsAudit = require('./live-ops-audit');
 const WCR = require('../share-assets/world-cup-rules.js');
 
 const ROOT = path.resolve(__dirname, '..');
-const LIVE_DB_SCHEDULED_GRACE_MS = 12 * 60 * 1000;
-const LIVE_DB_SOURCE_STALE_MS = 10 * 60 * 1000;
+const LIVE_DB_SCHEDULED_GRACE_MS = 3 * 60 * 1000;
+const LIVE_DB_SOURCE_STALE_MS = 3 * 60 * 1000;
 const LIVE_DB_ACTIVE_WINDOW_MS = 4 * 60 * 60 * 1000;
 const LIVE_POLLER_STALE_MS = 20 * 60 * 1000;
 const FINAL_VERIFIER_STALE_MS = 45 * 60 * 1000;
@@ -495,9 +495,11 @@ async function runReadiness(options = {}) {
     liveController.includes('node scripts/live-controller-needed.js')
       && liveController.includes('node scripts/live-poller.js')
       && liveController.includes('LIVE_POLL_CONTROLLER_MS')
+      && liveController.includes("cron: '1,21,41")
+      && liveController.includes("LIVE_CONTROLLER_LEAD_MINUTES: '120'")
       && liveController.includes('gh workflow run final-result-verifier.yml')
       && /actions:\s*write/.test(liveController),
-    'long controller must preflight, poll, and dispatch the verified final scoring pipeline'
+    'long controller must pre-warm, preflight, poll, and dispatch the verified final scoring pipeline'
   );
 
   [

@@ -573,8 +573,8 @@ function fixtureCommentary(match, now, salt = '') {
           en: `${homeEn} vs ${awayEn}, ${w.en}. ${favEn} are the favorite, but in knockout football favorites still have to survive.`,
         },
         {
-          he: `${stageHe}: ${homeHe} נגד ${awayHe}, ${w.he}. מי שבנה על ${favHe} רוצה שקט; מי שסימן את ${outsiderHe} מחפש רעידת טבלה.`,
-          en: `${stageEn}: ${homeEn} vs ${awayEn}, ${w.en}. ${favEn} picks want calm; ${outsiderEn} picks are hunting table shock.`,
+          he: `${stageHe}: ${homeHe} נגד ${awayHe}, ${w.he}. מי שבנה על ${favHe} רוצה שקט; מי שסימן את ${outsiderHe} מחפש רעידת בראקט.`,
+          en: `${stageEn}: ${homeEn} vs ${awayEn}, ${w.en}. ${favEn} picks want calm; ${outsiderEn} picks are hunting bracket shock.`,
         },
         {
           he: `${homeHe} נגד ${awayHe}, ${w.he}. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים.`,
@@ -584,8 +584,8 @@ function fixtureCommentary(match, now, salt = '') {
     }
     return withFixtureConsequence(variantFor(match, [
       {
-        he: `${homeHe} נגד ${awayHe}, ${w.he}. משחק נוקאאוט כזה יכול להפוך שקט בטבלה לרעש גדול.`,
-        en: `${homeEn} vs ${awayEn}, ${w.en}. This kind of knockout match can turn a quiet table into noise.`,
+        he: `${homeHe} נגד ${awayHe}, ${w.he}. משחק נוקאאוט כזה יכול להפוך בראקט שקט לרעש גדול.`,
+        en: `${homeEn} vs ${awayEn}, ${w.en}. This kind of knockout match can turn a quiet bracket into noise.`,
       },
       {
         he: `${stageHe}: ${homeHe} נגד ${awayHe}, ${w.he}. מי שפוגע כאן קונה לעצמו עוד נשימה בבראקט.`,
@@ -650,8 +650,8 @@ function liveCommentary(match) {
   const isKnockout = String(match.stage || '').toUpperCase() !== 'GROUP_STAGE';
   if (isKnockout) {
     return {
-      he: `${homeHe} נגד ${awayHe} עכשיו על הדשא. כל שער יכול לשנות את הבראקט ואת ההימורים.`,
-      en: `${homeEn} vs ${awayEn} is live now. Every goal can change the bracket and the picks.`,
+      he: `${homeHe} נגד ${awayHe} עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא.`,
+      en: `${homeEn} vs ${awayEn} is live now. Every goal can flip brackets and push one side toward the next round.`,
     };
   }
   return {
