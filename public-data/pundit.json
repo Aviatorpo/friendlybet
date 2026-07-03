@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-03T08:12:11.285Z",
-  "freshUntil": "2026-07-03T14:12:11.285Z",
+  "updatedAt": "2026-07-03T14:29:59.383Z",
+  "freshUntil": "2026-07-03T20:29:59.383Z",
   "count": 7,
   "items": [
     {
@@ -31,15 +31,6 @@
       "expires_at": "2026-07-04T07:00:00.000Z"
     },
     {
-      "id": "result-de01be62-6533-4c6a-80b0-2974d78f5dc0",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "2:0 לארה\"ב על בוסניה-הרצגובינה. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
-      "en": "2-0 for United States over Bosnia-Herzegovina. Anyone who picked them in this knockout match can open the receipts 🧾",
-      "sources": [],
-      "expires_at": "2026-07-03T12:00:00.000Z"
-    },
-    {
       "id": "fixture-becdf518-3a65-4a3f-82a6-622c288a398e",
       "type": "fixture",
       "confidence": "confirmed",
@@ -65,6 +56,15 @@
       "en": "Colombia vs Ghana, tomorrow 04:30. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-04T01:15:00.000Z"
+    },
+    {
+      "id": "fixture-725161f2-68ae-4b8f-bda4-d08243bec185",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "קנדה נגד מרוקו, מחר 20:00. משחק נוקאאוט כזה יכול להפוך שקט בטבלה לרעש גדול ⏰",
+      "en": "Canada vs Morocco, tomorrow 20:00. This kind of knockout match can turn a quiet table into noise ⏰",
+      "sources": [],
+      "expires_at": "2026-07-04T16:45:00.000Z"
     }
   ]
 }
