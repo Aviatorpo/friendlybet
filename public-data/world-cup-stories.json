@@ -1,6 +1,471 @@
 {
-  "updated_at": "2026-07-02T04:09:02.931Z",
+  "updated_at": "2026-07-03T18:14:37.336Z",
   "items": [
+    {
+      "id": "sui-alg-2026-07-03",
+      "match_id": "399b52f8-23c0-4421-bc48-763df6ed58af",
+      "image": "story-assets/switzerland-wins-algeria.png",
+      "teams": [
+        "SUI",
+        "ALG"
+      ],
+      "outcome": "SUI",
+      "result": "SUI 2-0 ALG",
+      "top_label": "SWITZERLAND QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "SUI",
+        "team_he": "שווייץ",
+        "team_en": "Switzerland",
+        "match_id": "399b52f8-23c0-4421-bc48-763df6ed58af",
+        "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. 2-0 שווייצרי קר הפך את זה לקבלה מסודרת 🔥",
+        "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. 2-0 שווייצרי קר הפך את זה לקבלות מסודרות 🔥",
+        "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. 2-0 שווייצרי קר הפך את זה לקבלות מסודרות 🔥",
+        "en_name": "{names} picked {team} to win this knockout match. A cold Swiss 2-0 turns that call into a tidy receipt 🔥",
+        "en_names": "{names} picked {team} to win this knockout match. A cold Swiss 2-0 turns those calls into tidy receipts 🔥",
+        "en_count": "{names} picked {team} to win this knockout match. A cold Swiss 2-0 turns those calls into tidy receipts 🔥"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "SUI",
+          "team_he": "שווייץ",
+          "team_en": "Switzerland",
+          "match_id": "399b52f8-23c0-4421-bc48-763df6ed58af",
+          "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. 2-0 שווייצרי קר הפך את זה לקבלה מסודרת 🔥",
+          "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. 2-0 שווייצרי קר הפך את זה לקבלות מסודרות 🔥",
+          "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. 2-0 שווייצרי קר הפך את זה לקבלות מסודרות 🔥",
+          "en_name": "{names} picked {team} to win this knockout match. A cold Swiss 2-0 turns that call into a tidy receipt 🔥",
+          "en_names": "{names} picked {team} to win this knockout match. A cold Swiss 2-0 turns those calls into tidy receipts 🔥",
+          "en_count": "{names} picked {team} to win this knockout match. A cold Swiss 2-0 turns those calls into tidy receipts 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "SUI",
+          "team_he": "שווייץ",
+          "team_en": "Switzerland",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. עם שאקה ו-2-0 על אלג'יריה, זה נראה כמו טופס שיודע מה הוא עושה 🔥",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. עם שאקה ו-2-0 על אלג'יריה, זה נראה כמו טפסים שיודעים מה הם עושים 🔥",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. עם שאקה ו-2-0 על אלג'יריה, זה נראה כמו טפסים שיודעים מה הם עושים 🔥",
+          "en_name": "{names} picked {team} to win the World Cup. Xhaka, a clean sheet, and 2-0 over Algeria make that form look very deliberate 🔥",
+          "en_names": "{names} picked {team} to win the World Cup. Xhaka, a clean sheet, and 2-0 over Algeria make those forms look very deliberate 🔥",
+          "en_count": "{names} picked {team} to win the World Cup. Xhaka, a clean sheet, and 2-0 over Algeria make those forms look very deliberate 🔥"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "ALG",
+          "team_he": "אלג'יריה",
+          "team_en": "Algeria",
+          "match_id": "399b52f8-23c0-4421-bc48-763df6ed58af",
+          "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. שווייץ עצרה את הסיפור עם 2-0, והבחירה הזאת נראית כבדה 😬",
+          "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. שווייץ עצרה את הסיפור עם 2-0, והבחירות האלה נראות כבדות 😬",
+          "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. שווייץ עצרה את הסיפור עם 2-0, והבחירות האלה נראות כבדות 😬",
+          "en_name": "{names} picked {team} to win this knockout match. Switzerland closed the door 2-0, and that Algeria call suddenly feels heavy 😬",
+          "en_names": "{names} picked {team} to win this knockout match. Switzerland closed the door 2-0, and those Algeria calls suddenly feel heavy 😬",
+          "en_count": "{names} picked {team} to win this knockout match. Switzerland closed the door 2-0, and those Algeria calls suddenly feel heavy 😬"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ALG",
+          "team_he": "אלג'יריה",
+          "team_en": "Algeria",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 2-0 מול שווייץ, החלום הזה צריך להתאושש 😬",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-0 מול שווייץ, החלומות האלה צריכים להתאושש 😬",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-0 מול שווייץ, החלומות האלה צריכים להתאושש 😬",
+          "en_name": "{names} picked {team} to win the World Cup. A 2-0 stop sign from Switzerland leaves that Algeria dream needing recovery 😬",
+          "en_names": "{names} picked {team} to win the World Cup. A 2-0 stop sign from Switzerland leaves those Algeria dreams needing recovery 😬",
+          "en_count": "{names} picked {team} to win the World Cup. A 2-0 stop sign from Switzerland leaves those Algeria dreams needing recovery 😬"
+        }
+      ],
+      "he": {
+        "headline": "שווייץ ניצחה את אלג'יריה 2-0: שאקה סגר את הדלת 🔥",
+        "caption": "שווייץ לא נזקקה לדרמה: 2-0 על אלג'יריה, שאקה במרכז, וכרטיס נוקאאוט בלי רעידות 🔥"
+      },
+      "en": {
+        "headline": "Switzerland beat Algeria 2-0: Xhaka shuts the door 🔥",
+        "caption": "Switzerland did not need chaos: 2-0 over Algeria, Xhaka in control, and a knockout ticket with no trembling finish 🔥"
+      }
+    },
+    {
+      "id": "por-cro-2026-07-02",
+      "match_id": "8bb5df11-6f67-48f1-838b-990c4863bf2d",
+      "image": "story-assets/portugal-wins-croatia.png",
+      "teams": [
+        "POR",
+        "CRO"
+      ],
+      "outcome": "POR",
+      "result": "POR 2-1 CRO",
+      "top_label": "PORTUGAL QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "POR",
+        "team_he": "פורטוגל",
+        "team_en": "Portugal",
+        "match_id": "8bb5df11-6f67-48f1-838b-990c4863bf2d",
+        "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. 2-1 עצבני על קרואטיה נראה בדיוק כמו הקבלה שהבראקט ביקש 🔥",
+        "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. 2-1 עצבני על קרואטיה נראה בדיוק כמו הקבלה שהבראקט ביקש 🔥",
+        "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. 2-1 עצבני על קרואטיה נראה בדיוק כמו הקבלה שהבראקט ביקש 🔥",
+        "en_name": "{names} picked {team} to win this knockout match. A nervy 2-1 over Croatia is exactly the receipt the bracket wanted 🔥",
+        "en_names": "{names} picked {team} to win this knockout match. A nervy 2-1 over Croatia is exactly the receipt those brackets wanted 🔥",
+        "en_count": "{names} picked {team} to win this knockout match. A nervy 2-1 over Croatia is exactly the receipt those brackets wanted 🔥"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "POR",
+          "team_he": "פורטוגל",
+          "team_en": "Portugal",
+          "match_id": "8bb5df11-6f67-48f1-838b-990c4863bf2d",
+          "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. 2-1 עצבני על קרואטיה נראה בדיוק כמו הקבלה שהבראקט ביקש 🔥",
+          "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. 2-1 עצבני על קרואטיה נראה בדיוק כמו הקבלה שהבראקט ביקש 🔥",
+          "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. 2-1 עצבני על קרואטיה נראה בדיוק כמו הקבלה שהבראקט ביקש 🔥",
+          "en_name": "{names} picked {team} to win this knockout match. A nervy 2-1 over Croatia is exactly the receipt the bracket wanted 🔥",
+          "en_names": "{names} picked {team} to win this knockout match. A nervy 2-1 over Croatia is exactly the receipt those brackets wanted 🔥",
+          "en_count": "{names} picked {team} to win this knockout match. A nervy 2-1 over Croatia is exactly the receipt those brackets wanted 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "POR",
+          "team_he": "פורטוגל",
+          "team_en": "Portugal",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 2-1 על קרואטיה, הבחירה הזאת עדיין נושמת ברעש 🔥",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-1 על קרואטיה, הבחירות האלה עדיין נושמות ברעש 🔥",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-1 על קרואטיה, הבחירות האלה עדיין נושמות ברעש 🔥",
+          "en_name": "{names} picked {team} to win the World Cup. After a 2-1 survival night against Croatia, that trophy idea is still breathing loudly 🔥",
+          "en_names": "{names} picked {team} to win the World Cup. After a 2-1 survival night against Croatia, those trophy ideas are still breathing loudly 🔥",
+          "en_count": "{names} picked {team} to win the World Cup. After a 2-1 survival night against Croatia, those trophy ideas are still breathing loudly 🔥"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "CRO",
+          "team_he": "קרואטיה",
+          "team_en": "Croatia",
+          "match_id": "8bb5df11-6f67-48f1-838b-990c4863bf2d",
+          "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. קרואטיה נפלה רק ב-2-1, אבל זה מספיק כדי לקרוע טופס 😬",
+          "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. קרואטיה נפלה רק ב-2-1, אבל זה מספיק כדי לקרוע טפסים 😬",
+          "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. קרואטיה נפלה רק ב-2-1, אבל זה מספיק כדי לקרוע טפסים 😬",
+          "en_name": "{names} picked {team} to win this knockout match. Croatia only lost 2-1, but that is enough to tear up the ticket 😬",
+          "en_names": "{names} picked {team} to win this knockout match. Croatia only lost 2-1, but that is enough to tear up those tickets 😬",
+          "en_count": "{names} picked {team} to win this knockout match. Croatia only lost 2-1, but that is enough to tear up those tickets 😬"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "CRO",
+          "team_he": "קרואטיה",
+          "team_en": "Croatia",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. מודריץ' והחברים עצרו קרוב, אבל 2-1 לפורטוגל שינה את החלום 😬",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. מודריץ' והחברים עצרו קרוב, אבל 2-1 לפורטוגל שינה את החלום 😬",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. מודריץ' והחברים עצרו קרוב, אבל 2-1 לפורטוגל שינה את החלום 😬",
+          "en_name": "{names} picked {team} to win the World Cup. Modric and company kept it close, but Portugal's 2-1 changes that dream 😬",
+          "en_names": "{names} picked {team} to win the World Cup. Modric and company kept it close, but Portugal's 2-1 changes those dreams 😬",
+          "en_count": "{names} picked {team} to win the World Cup. Modric and company kept it close, but Portugal's 2-1 changes those dreams 😬"
+        }
+      ],
+      "he": {
+        "headline": "פורטוגל ניצחה את קרואטיה 2-1: ברונו משך אותה הלאה 🔥",
+        "caption": "קרואטיה לא נפלה בשקט, אבל פורטוגל מצאה 2-1 וברונו שמר את הטופסים בחיים 🔥"
+      },
+      "en": {
+        "headline": "Portugal beat Croatia 2-1: Bruno drags them through 🔥",
+        "caption": "Croatia did not go quietly, but Portugal found 2-1 and Bruno kept the bracket forms alive for another round 🔥"
+      }
+    },
+    {
+      "id": "esp-aut-2026-07-02",
+      "match_id": "ee21ba7e-528a-466e-b35c-264789e403af",
+      "image": "story-assets/spain-wins-austria.png",
+      "teams": [
+        "ESP",
+        "AUT"
+      ],
+      "outcome": "ESP",
+      "result": "ESP 3-0 AUT",
+      "top_label": "SPAIN QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "ESP",
+        "team_he": "ספרד",
+        "team_en": "Spain",
+        "match_id": "ee21ba7e-528a-466e-b35c-264789e403af",
+        "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי 3-0 מול אוסטריה, הבחירה הזאת נכנסה לשיחה על השלב הבא. בראקט רגוע יותר 🔥",
+        "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 3-0 מול אוסטריה, אלה כבר לא טפסים - אלה קבלות חיות. בראקט רגוע יותר 🔥",
+        "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 3-0 מול אוסטריה, אלה כבר לא טפסים - אלה קבלות חיות. בראקט רגוע יותר 🔥",
+        "en_name": "{names} picked {team} to win this knockout match. Clean 3-0, calm bracket work, and one Spain receipt on the table 🔥",
+        "en_names": "{names} picked {team} to win this knockout match. Clean 3-0, calm bracket work, and those Spain receipts are on the table 🔥",
+        "en_count": "{names} picked {team} to win this knockout match. Clean 3-0, calm bracket work, and those Spain receipts are on the table 🔥"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "ESP",
+          "team_he": "ספרד",
+          "team_en": "Spain",
+          "match_id": "ee21ba7e-528a-466e-b35c-264789e403af",
+          "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי 3-0 מול אוסטריה, הבחירה הזאת נכנסה לשיחה על השלב הבא. בראקט רגוע יותר 🔥",
+          "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 3-0 מול אוסטריה, אלה כבר לא טפסים - אלה קבלות חיות. בראקט רגוע יותר 🔥",
+          "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 3-0 מול אוסטריה, אלה כבר לא טפסים - אלה קבלות חיות. בראקט רגוע יותר 🔥",
+          "en_name": "{names} picked {team} to win this knockout match. Clean 3-0, calm bracket work, and one Spain receipt on the table 🔥",
+          "en_names": "{names} picked {team} to win this knockout match. Clean 3-0, calm bracket work, and those Spain receipts are on the table 🔥",
+          "en_count": "{names} picked {team} to win this knockout match. Clean 3-0, calm bracket work, and those Spain receipts are on the table 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ESP",
+          "team_he": "ספרד",
+          "team_en": "Spain",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 3-0 על אוסטריה, הצ'אט של ההימור חייב לתת לזה מבט שני. זה כבר טופס רציני 🔥",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-0 על אוסטריה, הצ'אט של ההימור חייב לתת לזה מבט שני. זה כבר טופס רציני 🔥",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-0 על אוסטריה, הצ'אט של ההימור חייב לתת לזה מבט שני. זה כבר טופס רציני 🔥",
+          "en_name": "{names} picked {team} to win the World Cup. After Spain's 3-0 over Austria, that trophy pick looks less brave and more practical 🔥",
+          "en_names": "{names} picked {team} to win the World Cup. After Spain's 3-0 over Austria, those trophy picks look less brave and more practical 🔥",
+          "en_count": "{names} picked {team} to win the World Cup. After Spain's 3-0 over Austria, those trophy picks look less brave and more practical 🔥"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "AUT",
+          "team_he": "אוסטריה",
+          "team_en": "Austria",
+          "match_id": "ee21ba7e-528a-466e-b35c-264789e403af",
+          "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי 3-0 בשמינית-מוקדמת, ההימור הזה כבר עומד מול המציאות. הצאט יבקש הסבר 😬",
+          "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 3-0 בשמינית-מוקדמת, ההימורים האלה כבר עומדים מול המציאות. הצאט יבקש הסבר 😬",
+          "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 3-0 בשמינית-מוקדמת, ההימורים האלה כבר עומדים מול המציאות. הצאט יבקש הסבר 😬",
+          "en_name": "{names} picked {team} to win this knockout match. Spain's 3-0 makes that Austria call a tough chat-room explanation 😬",
+          "en_names": "{names} picked {team} to win this knockout match. Spain's 3-0 makes those Austria calls tough chat-room explanations 😬",
+          "en_count": "{names} picked {team} to win this knockout match. Spain's 3-0 makes those Austria calls tough chat-room explanations 😬"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "AUT",
+          "team_he": "אוסטריה",
+          "team_en": "Austria",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 3-0 מול ספרד, החלום עדיין חי אבל כבר מזיע. החלום נהיה כבד 😬",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-0 מול ספרד, החלום עדיין חי אבל כבר מזיע. החלום נהיה כבד 😬",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-0 מול ספרד, החלום עדיין חי אבל כבר מזיע. החלום נהיה כבד 😬",
+          "en_name": "{names} picked {team} to win the World Cup. After 3-0 against Spain, that Austria dream sits a lot less comfortably 😬",
+          "en_names": "{names} picked {team} to win the World Cup. After 3-0 against Spain, those Austria dreams sit a lot less comfortably 😬",
+          "en_count": "{names} picked {team} to win the World Cup. After 3-0 against Spain, those Austria dreams sit a lot less comfortably 😬"
+        }
+      ],
+      "he": {
+        "headline": "ספרד ניצחה את אוסטריה 3-0: שמינית-מוקדמת. רודרי שם חותמת 🔥",
+        "caption": "ספרד עברה את אוסטריה עם 3-0 בשמינית-מוקדמת. הבראקט מתקדם עכשיו דרכה, ואוסטריה יורדת מהלוח. ספרד נראתה בשליטה 🔥"
+      },
+      "en": {
+        "headline": "Spain beat Austria 3-0: Rodri and Spain move on 🔥",
+        "caption": "A clean 3-0 for Spain over Austria, with no late chaos and no doubt about the next ticket. Spain bracket picks just got a calm receipt 🔥"
+      }
+    },
+    {
+      "id": "usa-bih-2026-07-02",
+      "match_id": "de01be62-6533-4c6a-80b0-2974d78f5dc0",
+      "image": "story-assets/usa-wins-bosnia-and-herzegovina.png",
+      "teams": [
+        "USA",
+        "BIH"
+      ],
+      "outcome": "USA",
+      "result": "USA 2-0 BIH",
+      "top_label": "USA QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "USA",
+        "team_he": "ארה\"ב",
+        "team_en": "USA",
+        "he_name": "{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. 2-0 בעשרה שחקנים הופך את הבחירה הזו לקבלה חזקה במיוחד 🔥",
+        "he_names": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-0 בעשרה שחקנים הופך את הבחירות האלה לקבלות חזקות במיוחד 🔥",
+        "he_count": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-0 בעשרה שחקנים הופך את הבחירות האלה לקבלות חזקות במיוחד 🔥",
+        "en_name": "{names} picked {team} to win this knockout match. A 2-0 with ten men turns that pick into a serious receipt 🔥",
+        "en_names": "{names} picked {team} to win this knockout match. A 2-0 with ten men turns those picks into serious receipts 🔥",
+        "en_count": "{names} picked {team} to win this knockout match. A 2-0 with ten men turns those picks into serious receipts 🔥"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "USA",
+          "team_he": "ארה\"ב",
+          "team_en": "USA",
+          "he_name": "{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. 2-0 בעשרה שחקנים הופך את הבחירה הזו לקבלה חזקה במיוחד 🔥",
+          "he_names": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-0 בעשרה שחקנים הופך את הבחירות האלה לקבלות חזקות במיוחד 🔥",
+          "he_count": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-0 בעשרה שחקנים הופך את הבחירות האלה לקבלות חזקות במיוחד 🔥",
+          "en_name": "{names} picked {team} to win this knockout match. A 2-0 with ten men turns that pick into a serious receipt 🔥",
+          "en_names": "{names} picked {team} to win this knockout match. A 2-0 with ten men turns those picks into serious receipts 🔥",
+          "en_count": "{names} picked {team} to win this knockout match. A 2-0 with ten men turns those picks into serious receipts 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "USA",
+          "team_he": "ארה\"ב",
+          "team_en": "USA",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי ניצחון נוקאאוט בעשרה שחקנים, זה כבר נשמע הרבה פחות פרוע 🔥",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי ניצחון נוקאאוט בעשרה שחקנים, זה כבר נשמע הרבה פחות פרוע 🔥",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי ניצחון נוקאאוט בעשרה שחקנים, זה כבר נשמע הרבה פחות פרוע 🔥",
+          "en_name": "{names} picked {team} to win the World Cup. After a ten-man knockout win, that sounds a lot less wild 🔥",
+          "en_names": "{names} picked {team} to win the World Cup. After a ten-man knockout win, those picks sound a lot less wild 🔥",
+          "en_count": "{names} picked {team} to win the World Cup. After a ten-man knockout win, those picks sound a lot less wild 🔥"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "BIH",
+          "team_he": "בוסניה והרצגובינה",
+          "team_en": "Bosnia and Herzegovina",
+          "he_name": "{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. 2-0 לארהב בעשרה שחקנים הופך את הבחירה הזו לכואבת במיוחד 😬",
+          "he_names": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-0 לארהב בעשרה שחקנים הופך את הבחירות האלה לכואבות במיוחד 😬",
+          "he_count": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. 2-0 לארהב בעשרה שחקנים הופך את הבחירות האלה לכואבות במיוחד 😬",
+          "en_name": "{names} picked {team} to win this knockout match. A 2-0 to ten-man USA makes that pick hurt even more 😬",
+          "en_names": "{names} picked {team} to win this knockout match. A 2-0 to ten-man USA makes those picks hurt even more 😬",
+          "en_count": "{names} picked {team} to win this knockout match. A 2-0 to ten-man USA makes those picks hurt even more 😬"
+        }
+      ],
+      "he": {
+        "headline": "ארהב ניצחה את בוסניה והרצגובינה 2-0: עשרה שחקנים, כרטיס ביד ⚽",
+        "caption": "ארהב שיחקה דקות ארוכות בעשרה שחקנים ועדיין מצאה 2-0. זה לא היה יפה, זה היה הישרדות נוקאאוט ביתית 🔥"
+      },
+      "en": {
+        "headline": "USA beat Bosnia and Herzegovina 2-0: ten men, still through ⚽",
+        "caption": "USA played a long stretch with ten men and still found 2-0. Not pretty; home knockout survival 🔥"
+      }
+    },
+    {
+      "id": "bel-sen-2026-07-01",
+      "match_id": "227bb68a-a5e4-42ca-bd09-6f0d9badd0bc",
+      "image": "story-assets/belgium-wins-senegal.png",
+      "teams": [
+        "BEL",
+        "SEN"
+      ],
+      "outcome": "BEL",
+      "result": "BEL 3-2 SEN",
+      "top_label": "BELGIUM QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "BEL",
+        "team_he": "בלגיה",
+        "team_en": "Belgium",
+        "he_name": "{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. קאמבק מ-2-0 ל-3-2 הופך את הבחירה הזו לקלף ענק 🔥",
+        "he_names": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. קאמבק מ-2-0 ל-3-2 הופך את הבחירות האלה לקלפים ענקיים 🔥",
+        "he_count": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. קאמבק מ-2-0 ל-3-2 הופך את הבחירות האלה לקלפים ענקיים 🔥",
+        "en_name": "{names} picked {team} to win this knockout match. A comeback from 2-0 down to 3-2 turns that pick into a monster card 🔥",
+        "en_names": "{names} picked {team} to win this knockout match. A comeback from 2-0 down to 3-2 turns those picks into monster cards 🔥",
+        "en_count": "{names} picked {team} to win this knockout match. A comeback from 2-0 down to 3-2 turns those picks into monster cards 🔥"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "BEL",
+          "team_he": "בלגיה",
+          "team_en": "Belgium",
+          "he_name": "{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. קאמבק מ-2-0 ל-3-2 הופך את הבחירה הזו לקלף ענק 🔥",
+          "he_names": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. קאמבק מ-2-0 ל-3-2 הופך את הבחירות האלה לקלפים ענקיים 🔥",
+          "he_count": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. קאמבק מ-2-0 ל-3-2 הופך את הבחירות האלה לקלפים ענקיים 🔥",
+          "en_name": "{names} picked {team} to win this knockout match. A comeback from 2-0 down to 3-2 turns that pick into a monster card 🔥",
+          "en_names": "{names} picked {team} to win this knockout match. A comeback from 2-0 down to 3-2 turns those picks into monster cards 🔥",
+          "en_count": "{names} picked {team} to win this knockout match. A comeback from 2-0 down to 3-2 turns those picks into monster cards 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "BEL",
+          "team_he": "בלגיה",
+          "team_en": "Belgium",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי קאמבק כזה, הצאט חייב לקחת את הטופס הזה יותר ברצינות 🔥",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי קאמבק כזה, הצאט חייב לקחת את הטפסים האלה יותר ברצינות 🔥",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי קאמבק כזה, הצאט חייב לקחת את הטפסים האלה יותר ברצינות 🔥",
+          "en_name": "{names} picked {team} to win the World Cup. After that comeback, the chat has to take that form more seriously 🔥",
+          "en_names": "{names} picked {team} to win the World Cup. After that comeback, the chat has to take those forms more seriously 🔥",
+          "en_count": "{names} picked {team} to win the World Cup. After that comeback, the chat has to take those forms more seriously 🔥"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "SEN",
+          "team_he": "סנגל",
+          "team_en": "Senegal",
+          "he_name": "{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. אחרי 3-2 כזה לבלגיה, זה רגע של ידיים על הראש 😬",
+          "he_names": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי 3-2 כזה לבלגיה, זה רגע של ידיים על הראש 😬",
+          "he_count": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי 3-2 כזה לבלגיה, זה רגע של ידיים על הראש 😬",
+          "en_name": "{names} picked {team} to win this knockout match. After that 3-2 for Belgium, this is a hands-on-head moment 😬",
+          "en_names": "{names} picked {team} to win this knockout match. After that 3-2 for Belgium, these are hands-on-head moments 😬",
+          "en_count": "{names} picked {team} to win this knockout match. After that 3-2 for Belgium, these are hands-on-head moments 😬"
+        }
+      ],
+      "he": {
+        "headline": "בלגיה ניצחה את סנגל 3-2: קאמבק משוגע בהארכה 🔥",
+        "caption": "בלגיה כבר נראתה בחוץ, ואז טילמנס ולוקאקו גררו את המשחק להארכה. 3-2 בלגי, והבראקט קיבל רעידת אדמה 🔥"
+      },
+      "en": {
+        "headline": "Belgium beat Senegal 3-2: comeback chaos 🔥",
+        "caption": "Belgium looked gone, then Tielemans and Lukaku dragged the match into extra time. Belgium steal it 3-2, and the bracket shakes 🔥"
+      }
+    },
+    {
+      "id": "eng-cod-2026-07-01",
+      "match_id": "539f0f2d-6ef8-450d-9e07-546b6951c00e",
+      "image": "story-assets/england-wins-dr-congo.png",
+      "teams": [
+        "ENG",
+        "COD"
+      ],
+      "outcome": "ENG",
+      "result": "ENG 2-1 COD",
+      "top_label": "ENGLAND QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "ENG",
+        "team_he": "אנגליה",
+        "team_en": "England",
+        "he_name": "{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. הצמד המאוחר של קיין הפך את הבחירה הזו לקבלה אמיתית בבראקט 🔥",
+        "he_names": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. הצמד המאוחר של קיין הפך את הבחירות האלה לקבלות אמיתיות בבראקט 🔥",
+        "he_count": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. הצמד המאוחר של קיין הפך את הבחירות האלה לקבלות אמיתיות בבראקט 🔥",
+        "en_name": "{names} picked {team} to win this knockout match. Kane's late double turns that pick into a proper bracket receipt 🔥",
+        "en_names": "{names} picked {team} to win this knockout match. Kane's late double turns those picks into proper bracket receipts 🔥",
+        "en_count": "{names} picked {team} to win this knockout match. Kane's late double turns those picks into proper bracket receipts 🔥"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "ENG",
+          "team_he": "אנגליה",
+          "team_en": "England",
+          "he_name": "{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. הצמד המאוחר של קיין הפך את הבחירה הזו לקבלה אמיתית בבראקט 🔥",
+          "he_names": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. הצמד המאוחר של קיין הפך את הבחירות האלה לקבלות אמיתיות בבראקט 🔥",
+          "he_count": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. הצמד המאוחר של קיין הפך את הבחירות האלה לקבלות אמיתיות בבראקט 🔥",
+          "en_name": "{names} picked {team} to win this knockout match. Kane's late double turns that pick into a proper bracket receipt 🔥",
+          "en_names": "{names} picked {team} to win this knockout match. Kane's late double turns those picks into proper bracket receipts 🔥",
+          "en_count": "{names} picked {team} to win this knockout match. Kane's late double turns those picks into proper bracket receipts 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ENG",
+          "team_he": "אנגליה",
+          "team_en": "England",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 2-1 כזה בנוקאאוט, זה כבר לא נשמע כמו בדיחה בצאט 🔥",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-1 כזה בנוקאאוט, זה כבר לא נשמע כמו בדיחה בצאט 🔥",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-1 כזה בנוקאאוט, זה כבר לא נשמע כמו בדיחה בצאט 🔥",
+          "en_name": "{names} picked {team} to win the World Cup. After that kind of 2-1 knockout escape, the chat has to take it seriously 🔥",
+          "en_names": "{names} picked {team} to win the World Cup. After that kind of 2-1 knockout escape, the chat has to take those picks seriously 🔥",
+          "en_count": "{names} picked {team} to win the World Cup. After that kind of 2-1 knockout escape, the chat has to take those picks seriously 🔥"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "COD",
+          "team_he": "הרפובליקה הדמוקרטית של קונגו",
+          "team_en": "DR Congo",
+          "he_name": "{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. אחרי המהפך של קיין, הבחירה הזו צריכה נאום הגנה קצר בצאט 😬",
+          "he_names": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי המהפך של קיין, הבחירות האלה צריכות נאום הגנה קצר בצאט 😬",
+          "he_count": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. אחרי המהפך של קיין, הבחירות האלה צריכות נאום הגנה קצר בצאט 😬",
+          "en_name": "{names} picked {team} to win this knockout match. After Kane's turnaround, that pick needs a short defense speech in the chat 😬",
+          "en_names": "{names} picked {team} to win this knockout match. After Kane's turnaround, those picks need short defense speeches in the chat 😬",
+          "en_count": "{names} picked {team} to win this knockout match. After Kane's turnaround, those picks need short defense speeches in the chat 😬"
+        }
+      ],
+      "he": {
+        "headline": "אנגליה ניצחה את דר קונגו 2-1: קיין סחב אותה הלאה ⚽",
+        "caption": "קיין הפך ערב עצבני עם צמד מאוחר. 2-1 לאנגליה, והבראקט ממשיך עם דופק גבוה 🔥"
+      },
+      "en": {
+        "headline": "England beat DR Congo 2-1: Kane drags them through ⚽",
+        "caption": "Kane turned a nervous night with two late goals. England survive 2-1, and the bracket keeps its pulse high 🔥"
+      }
+    },
     {
       "id": "mex-ecu-2026-07-01",
       "match_id": "3c2bf70e-e807-4f02-b41c-ddcefc4c849e",
