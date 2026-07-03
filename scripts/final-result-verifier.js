@@ -3,9 +3,10 @@
 // ============================================================
 // Conservative multi-source recovery for matches that should be over but are
 // still missing a final result. It reads ESPN's public scoreboard JSON and
-// FIFA's official calendar feed. If primary sources disagree, the same run opens
-// the approved emergency shelf and can resolve from three additional independent
-// source families that agree with each other.
+// FIFA's official calendar feed. If the primary pair disagrees, is missing, or
+// cannot produce a scoreable final, the same run opens the approved emergency
+// shelf and can resolve from three additional independent source families that
+// agree with each other.
 //
 // Default mode is DRY RUN. It only writes to Supabase when called with --apply.
 // Required for live use:
@@ -1256,6 +1257,43 @@ function sourceSetDisagrees(sourceUpdates, watchedSources = CONFLICT_WATCH_SOURC
   return new Set(observed.values()).size > 1;
 }
 
+function primarySourceEscalationReason(sourceUpdates, consensus, decision = {}, sourceStatuses = {}, watchedSources = CONFLICT_WATCH_SOURCES) {
+  if (!consensus || consensus.update) return null;
+  if (consensus.primary_conflict) return consensus.reason || 'primary source conflict';
+  const watched = [...sourceNamesSet(watchedSources)];
+  if (!watched.length) return null;
+
+  const accepted = sourceNamesSet((sourceUpdates || [])
+    .filter(su => su && su.update)
+    .map(su => su.source));
+  const attempted = new Set();
+  const problems = [];
+  const observations = Array.isArray(decision && decision.observations) ? decision.observations : [];
+
+  for (const source of watched) {
+    if (accepted.has(source)) attempted.add(source);
+    const status = sourceStatuses && sourceStatuses[source];
+    if (status && !status.skipped) {
+      attempted.add(source);
+      if (status.ok === false) problems.push(`${source}: ${status.error || 'source unavailable'}`);
+      if (status.ok === true && Number(status.loaded) === 0) problems.push(`${source}: no fixtures loaded`);
+    }
+    for (const obs of observations) {
+      if (String(obs && obs.source || '').trim().toLowerCase() !== source) continue;
+      attempted.add(source);
+      if (!['confirmed_result', 'ledger_confirmed_result'].includes(obs.state)) {
+        problems.push(`${source}: ${obs.reason || obs.state || 'not scoreable'}`);
+      }
+    }
+  }
+
+  const missing = watched.filter(source => !accepted.has(source));
+  if (!missing.length) return null;
+  if (problems.length) return `primary source unresolved (${[...new Set(problems)].join('; ')})`;
+  if (attempted.size >= watched.length) return `primary source unresolved; missing accepted result from ${missing.join('+')}`;
+  return null;
+}
+
 function bestConflictFallbackGroup(winners, conflictSources = CONFLICT_WATCH_SOURCES, minSources = CONFLICT_FALLBACK_MIN_SOURCES) {
   const eligible = (winners || [])
     .map(group => ({ group, nonPrimaryFamilyCount: groupSourceFamilyCountExcept(group, conflictSources) }))
@@ -1325,7 +1363,23 @@ function consensusUpdate(sourceUpdates, opts = {}) {
       if (!su || !su.source || !su.update) return false;
       return blockFamilies.has(sourceFamily(su.source)) && resultKey(su.update) !== fallbackBest.key;
     });
-    if (requiredSources.length && fallbackMinSources > 0 && fallbackBest && fallbackBest.familyCount >= fallbackMinSources && !fallbackTie && !blockedByExplicitSource) {
+    const primaryFallbackSources = sourceNamesSet(conflictSources);
+    const requiredIncludesPrimaryFallbackSource = requiredSources
+      .some(source => primaryFallbackSources.has(String(source || '').trim().toLowerCase()));
+    const primaryFallbackMinSources = Math.max(fallbackMinSources, conflictFallbackMinSources);
+    const primaryFallback = bestConflictFallbackGroup(winners, conflictSources, primaryFallbackMinSources);
+    if (requiredSources.length && primaryFallbackMinSources > 0 && primaryFallback) {
+      return {
+        update: primaryFallback.group.sources[0].update,
+        sources: primaryFallback.group.sources,
+        familyCount: primaryFallback.group.familyCount,
+        groups: winners,
+        fallback: true,
+        primary_source_fallback: true,
+        non_primary_family_count: primaryFallback.nonPrimaryFamilyCount,
+      };
+    }
+    if (requiredSources.length && fallbackMinSources > 0 && !requiredIncludesPrimaryFallbackSource && fallbackBest && fallbackBest.familyCount >= fallbackMinSources && !fallbackTie && !blockedByExplicitSource) {
       return {
         update: fallbackBest.sources[0].update,
         sources: fallbackBest.sources,
@@ -1382,6 +1436,8 @@ function skipNeedsAttention(sourceUpdates, consensus, match = null, now = new Da
   const waitingForRequiredSource = /requires agreeing/i.test(consensus.reason);
   if (waitingForRequiredSource) {
     const requiredSources = requiredSourcesFromConsensus(consensus);
+    const primarySources = sourceNamesSet(CONFLICT_WATCH_SOURCES);
+    if (requiredSources.some(source => primarySources.has(source))) return false;
     const age = match ? candidateAgeMinutes(match, now) : null;
     if (!Number.isFinite(age) || age < resultAttentionAfterMinutes()) return false;
     return (sourceUpdates || []).length > 0;
@@ -1526,6 +1582,7 @@ async function verifyFinalResults(opts = {}) {
       active: false,
       min_additional_sources: CONFLICT_FALLBACK_MIN_SOURCES,
       watched_sources: CONFLICT_WATCH_SOURCES,
+      reasons: [],
     },
     selected_sources: [],
     source_statuses: {},
@@ -1630,15 +1687,30 @@ async function verifyFinalResults(opts = {}) {
 
     let sourceUpdates = sourceUpdatesFromMap(sourceUpdatesBySource);
     let agreed = consensusUpdate(sourceUpdates);
-    if (!agreed.update && agreed.primary_conflict) {
-      const conflictSources = sourcesForRun(now, {
+
+    if (!agreed.update) {
+      const missingPrimarySources = CONFLICT_WATCH_SOURCES.filter(source => !selectedSources.includes(source));
+      if (missingPrimarySources.length) {
+        selectedSources = [...new Set([...selectedSources, ...missingPrimarySources])];
+        report.selected_sources = selectedSources;
+        await loadSourceFixturesFor(missingPrimarySources, registry, sourceFixtures, report, stuck);
+        observeSourcesForMatch(dbMatch, missingPrimarySources, sourceFixtures, registry, sourceUpdatesBySource, decision, label);
+        sourceUpdates = sourceUpdatesFromMap(sourceUpdatesBySource);
+        agreed = consensusUpdate(sourceUpdates);
+      }
+    }
+
+    const primaryEscalationReason = primarySourceEscalationReason(sourceUpdates, agreed, decision, report.source_statuses, CONFLICT_WATCH_SOURCES);
+    if (!agreed.update && primaryEscalationReason) {
+      const emergencySources = sourcesForRun(now, {
         sources: sourcesWithEmergency(ENABLED_SOURCES),
         mode: 'all',
         emergencySources: true,
       });
-      const additionalSources = conflictSources.filter(source => !selectedSources.includes(source));
+      const additionalSources = emergencySources.filter(source => !selectedSources.includes(source));
       if (additionalSources.length) {
         report.conflict_escalation.active = true;
+        report.conflict_escalation.reasons.push(primaryEscalationReason);
         selectedSources = [...new Set([...selectedSources, ...additionalSources])];
         report.selected_sources = selectedSources;
         await loadSourceFixturesFor(additionalSources, registry, sourceFixtures, report, stuck);
@@ -1653,6 +1725,7 @@ async function verifyFinalResults(opts = {}) {
       family_count: agreed.familyCount || 0,
       non_primary_family_count: agreed.non_primary_family_count || 0,
       conflict_override: !!agreed.conflict_override,
+      primary_source_fallback: !!agreed.primary_source_fallback,
       agreeing_sources: (agreed.sources || []).map(source => ({
         source: source.source,
         family: sourceFamily(source.source),
@@ -1758,6 +1831,7 @@ if (require.main === module) {
     requiredSourcesDisagree,
     requiredSourcesFromConsensus,
     sourceSetDisagrees,
+    primarySourceEscalationReason,
     sourceFamilyCountExcept,
     bestConflictFallbackGroup,
     verifyFinalResults,
