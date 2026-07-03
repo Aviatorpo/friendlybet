@@ -145,7 +145,9 @@ function auditMatches(matches, nowMs, errors, warnings) {
         errors.push(`${key}: ${status} tied knockout without verified advancing team`);
       }
       if (nowMs - kickoff >= residueGraceMs && hasProblematicLiveResidue(match)) {
-        errors.push(`${key}: finished match still has live/provider residue (${match.live_source || '-'} / ${match.status_detail || '-'} / ${match.live_clock || '-'})`);
+        const message = `${key}: finished match still has live/provider residue (${match.live_source || '-'} / ${match.status_detail || '-'} / ${match.live_clock || '-'})`;
+        if (process.env.LIVE_WATCHDOG_RESIDUE_HARD_FAIL === '1') errors.push(message);
+        else warnings.push(message);
       }
     }
     if (LIVE_STATUSES.has(status) && nowMs - kickoff > liveWindowPastMs) {

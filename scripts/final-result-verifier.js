@@ -1237,9 +1237,45 @@ function needsResultAttention(result) {
   return (Number(result.attention_skips) || 0) > 0;
 }
 
-function skipNeedsAttention(sourceUpdates, consensus) {
+function resultAttentionAfterMinutes() {
+  const configured = parseInt(process.env.RESULT_ATTENTION_AFTER_MINUTES || '', 10);
+  if (Number.isFinite(configured) && configured > 0) return configured;
+  return Math.max(180, AUTO_EMERGENCY_AFTER_MINUTES + 60);
+}
+
+function requiredSourcesDisagree(sourceUpdates, requiredSources = REQUIRED_SOURCES) {
+  const required = new Set((requiredSources || []).map(source => String(source || '').trim().toLowerCase()).filter(Boolean));
+  if (!required.size) return false;
+  const observed = new Map();
+  for (const su of sourceUpdates || []) {
+    const source = String(su && su.source || '').trim().toLowerCase();
+    if (!required.has(source) || !su.update) continue;
+    observed.set(source, resultKey(su.update));
+  }
+  if (observed.size < required.size) return false;
+  return new Set(observed.values()).size > 1;
+}
+
+function requiredSourcesFromConsensus(consensus) {
+  const match = /requires agreeing ([^;]+)/i.exec(String(consensus && consensus.reason || ''));
+  if (!match) return [];
+  return match[1]
+    .split('+')
+    .map(source => source.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function skipNeedsAttention(sourceUpdates, consensus, match = null, now = new Date()) {
   if (!consensus || !consensus.reason) return false;
   if (/conflicting source consensus/i.test(consensus.reason)) return true;
+  const waitingForRequiredSource = /requires agreeing/i.test(consensus.reason);
+  if (waitingForRequiredSource) {
+    const requiredSources = requiredSourcesFromConsensus(consensus);
+    if (requiredSourcesDisagree(sourceUpdates, requiredSources.length ? requiredSources : REQUIRED_SOURCES)) return true;
+    const age = match ? candidateAgeMinutes(match, now) : null;
+    if (!Number.isFinite(age) || age < resultAttentionAfterMinutes()) return false;
+    return (sourceUpdates || []).length > 0;
+  }
   const minSources = parseInt(process.env.RESULT_FALLBACK_MIN_SOURCES || '', 10) || 2;
   return (sourceUpdates || []).length >= minSources;
 }
@@ -1545,7 +1581,7 @@ async function verifyFinalResults(opts = {}) {
     };
     if (!agreed.update) {
       skipped++;
-      if (skipNeedsAttention(sourceUpdates, agreed)) attentionSkips++;
+      if (skipNeedsAttention(sourceUpdates, agreed, dbMatch, now)) attentionSkips++;
       else waiting++;
       const sources = sourceUpdates.map(s => `${s.source}:${s.update.home_score}-${s.update.away_score}`).join(', ') || 'none';
       console.log(`SKIP ${label}: ${agreed.reason}; sources=${sources}`);
@@ -1630,6 +1666,8 @@ if (require.main === module) {
     matchKey,
     needsResultAttention,
     skipNeedsAttention,
+    requiredSourcesDisagree,
+    requiredSourcesFromConsensus,
     verifyFinalResults,
     __setFetch: (fn) => { globalThis.fetch = fn; }
   };

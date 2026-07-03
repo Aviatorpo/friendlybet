@@ -32,8 +32,8 @@ function copyShape(text) {
     .toLowerCase();
 }
 
-const EN_CONSEQUENCE_TERMS = /\b(table|tables|group|prediction|predictions|predictors|pool|pools|pick|picks|picked|form|forms|slip|slips|called|safe|sweating|points|qualify|qualification|receipt|receipts)\b/i;
-const HE_CONSEQUENCE_TERMS = /(?:טבלה|טבלאות|בית|בתים|תחזית|תחזיות|הימור|הימורים|טופס|טפסים|נקודות|מקום|מקומות|עלייה|קבלה|קבלות|סימן)/u;
+const EN_CONSEQUENCE_TERMS = /\b(table|tables|group|prediction|predictions|predictors|pool|pools|pick|picks|picked|form|forms|slip|slips|called|safe|sweating|points|qualify|qualification|receipt|receipts|bracket|brackets|survive|survived|alive|advance|advances|advanced)\b/i;
+const HE_CONSEQUENCE_TERMS = /(?:טבלה|טבלאות|בית|בתים|תחזית|תחזיות|הימור|הימורים|טופס|טפסים|נקודות|מקום|מקומות|עלייה|קבלה|קבלות|סימן|בראקט|בראקטים|לשרוד|שורד|עולה|עלתה|ממשיכה)/u;
 const EN_CURRENT_KNOCKOUT_BANNED = /\b(group stage|group-stage|group places|group picture|whole group|advance from the groups|Group [A-L])\b/i;
 const HE_CURRENT_KNOCKOUT_BANNED = /(?:שלב הבתים|מקומות בבית|תמונת הבית|חישוב בית|תיאוריות בית|טבלה תיאורטית של בתים|בית [A-L]|בית [א-ת])/u;
 const EN_KNOCKOUT_ADVANCEMENT = /\b(advanced|advance|advances|through|went through|moves on|survived|survive|tiebreaker|penalties|ticket)\b/i;

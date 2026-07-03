@@ -293,17 +293,25 @@ jobs:
         run: node scripts/generate-banter.js
 
       - name: Build Pundit feed after critical scoring
+        id: pundit_build
         if: steps.verify_results.outputs.changed == 'true'
         continue-on-error: true
         run: node scripts/generate-pundit.js
 
       - name: Validate Pundit feed after critical scoring
+        id: pundit_validation
         if: steps.verify_results.outputs.changed == 'true'
         continue-on-error: true
         run: node scripts/test-pundit-feed.js
 
+      - name: Report post-final Pundit warning
+        if: steps.verify_results.outputs.changed == 'true' && (steps.pundit_build.outcome == 'failure' || steps.pundit_validation.outcome == 'failure')
+        run: |
+          echo "::warning::Post-final Pundit refresh failed or did not pass quality validation. Critical result/scoring publication is already isolated; keeping the last committed content feed."
+
       - name: Commit post-final content if changed
-        if: steps.verify_results.outputs.changed == 'true'
+        if: steps.verify_results.outputs.changed == 'true' && steps.pundit_build.outcome == 'success' && steps.pundit_validation.outcome == 'success'
+        continue-on-error: true
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}

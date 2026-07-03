@@ -3409,11 +3409,7 @@ function _matchIsHalftimeBreak(m, now = Date.now()) {
   if (_matchStatus(m) !== 'PAUSED') return false;
   if (_matchHasSecondHalfClock(m)) return false;
   if (!_matchSourceFresh(m, now, _HALFTIME_SOURCE_MAX_AGE_MS)) return false;
-  if (_matchDetailIndicatesHalftime(m)) return true;
-  const elapsed = _matchElapsedMs(m, now);
-  const period = Number(m && m.live_period);
-  const firstPeriodish = !Number.isFinite(period) || period <= 1;
-  return firstPeriodish && elapsed != null && elapsed >= 40 * 60 * 1000 && elapsed <= 75 * 60 * 1000;
+  return _matchDetailIndicatesHalftime(m);
 }
 function _matchIsStalePausedBreak(m, now = Date.now()) {
   return _matchStatus(m) === 'PAUSED'
@@ -3480,6 +3476,7 @@ function _matchUxState(m, now = Date.now()) {
   const finalWithoutScore = _matchIsFinishedStatus(m) && !_matchHasNumericScore(m);
   const pendingProviderFinal = _matchIsPendingProviderFinal(m);
   if (pendingProviderFinal || finalWithoutScore) {
+    const hasNumericScore = _matchHasNumericScore(m);
     return {
       kind: 'final_confirming',
       className: 'verifying',
@@ -3489,12 +3486,13 @@ function _matchUxState(m, now = Date.now()) {
       isLive: false,
       isFinished: false,
       isScheduled: false,
-      showScore: false,
-      liveScoreTrusted: false
+      showScore: hasNumericScore,
+      liveScoreTrusted: hasNumericScore
     };
   }
 
   if (_matchNeedsStatusVerification(m, now)) {
+    const hasNumericScore = _matchHasNumericScore(m);
     return {
       kind: 'live_updating',
       className: 'live',
@@ -3504,8 +3502,8 @@ function _matchUxState(m, now = Date.now()) {
       isLive: false,
       isFinished: false,
       isScheduled: false,
-      showScore: false,
-      liveScoreTrusted: false
+      showScore: hasNumericScore,
+      liveScoreTrusted: hasNumericScore
     };
   }
 
@@ -11276,7 +11274,13 @@ function createMatchCard(match) {
   let pendingScoreNote = '';
   let advancementNote = '';
   if (needsStatusVerification) {
-    scoreHtml = `<div class="match-score no-score">VS</div>`;
+    scoreHtml = uxState.showScore ? `
+      <div class="match-score">
+        <span>${match.home_score}</span>
+        <span>-</span>
+        <span>${match.away_score}</span>
+      </div>
+    ` : `<div class="match-score no-score">VS</div>`;
     pendingScoreNote = `<div class="match-score-pending-note">${t(uxState.noteKey || 'matchesEx.statusBeingVerified')}</div>`;
   } else if (isFinished || isLive) {
     const hasScore = uxState.showScore;

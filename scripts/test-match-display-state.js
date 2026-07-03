@@ -103,11 +103,24 @@ assert(api._matchUxState(match({
   live_source: 'espn-final',
   status_detail: 'ESPN final pending verification',
 }), now).kind === 'final_confirming', 'Provider-pending finals must use final confirmation UX');
+assert(api._matchUxState(match({
+  status: 'FINISHED',
+  live_source: 'espn-final',
+  status_detail: 'ESPN final pending verification',
+  home_score: 2,
+  away_score: 1,
+}), now).showScore === true, 'Provider-pending finals with a score must keep the last trusted score visible');
 
 assert(api._matchNeedsStatusVerification(match({
   status: 'IN_PLAY',
   match_date: '2026-06-23T07:00:00Z',
 }), now), 'Very old live status must render as verification');
+assert(api._matchUxState(match({
+  status: 'IN_PLAY',
+  match_date: '2026-06-23T07:00:00Z',
+  home_score: 1,
+  away_score: 0,
+}), now).showScore === true, 'Stale live rows with a numeric score must keep the latest score visible while verification continues');
 assert(api._matchUxState(match({
   status: 'IN_PLAY',
   match_date: '2026-06-23T07:00:00Z',
@@ -126,6 +139,15 @@ assert(api._matchIsHalftimeBreak(match({
   live_source: 'espn',
   source_updated_at: '2026-06-23T11:50:00Z',
 }), now), 'Fresh PAUSED/HT row must render as half-time');
+assert(!api._matchIsHalftimeBreak(match({
+  status: 'PAUSED',
+  match_date: '2026-06-23T11:10:00Z',
+  live_period: 1,
+  live_clock: "45'+3'",
+  status_detail: '',
+  live_source: 'espn',
+  source_updated_at: '2026-06-23T11:50:00Z',
+}), now), 'PAUSED rows must not infer half-time from elapsed time without explicit source evidence');
 assert(!api._matchIsHalftimeBreak(match({
   status: 'PAUSED',
   match_date: '2026-06-23T10:50:00Z',
@@ -246,6 +268,7 @@ assert(/isHalftimeBreak\s*=\s*uxState\.kind\s*===\s*'halftime'/.test(cardSource)
 assert(!/else if \(status === 'PAUSED'\)/.test(cardSource), 'Match cards must not render PAUSED blindly as half-time');
 assert(/card\.classList\.add\('verifying'\)/.test(cardSource), 'Verification state must use the verifying card style');
 assert(/uxState\.noteKey/.test(cardSource), 'Verification notes must come from the UX state');
+assert(/if \(needsStatusVerification\)[\s\S]*uxState\.showScore[\s\S]*match\.home_score[\s\S]*match\.away_score/.test(cardSource), 'Verification state must keep numeric scores visible instead of reverting to VS');
 assert(/noteKey:\s*'matchesEx\.liveResultAfterFinal'/.test(matchUxStateSource), 'Live score gaps must use the simple full-time update copy');
 assert(/matchesEx\.advancedOnPenalties/.test(cardSource), 'Penalty-decided knockout cards must show who advanced');
 assert(/_matchResolvedWinner\(match\)/.test(cardSource), 'Match cards must use resolved winner helper for penalty decisions');

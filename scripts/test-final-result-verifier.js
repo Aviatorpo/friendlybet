@@ -372,6 +372,26 @@ ok('conflicting sources do not produce consensus', !F.consensusUpdate([
   { source: 'fifa', update: fifaUpdate },
   { source: 'espn', update: { ...espnUpdate, away_score: 2 } }
 ], 2).update);
+const missingRequiredConsensus = {
+  reason: '1 independent final source family/families, 1 required; requires agreeing fifa',
+};
+const recentMissingRequiredMatch = {
+  match_date: '2026-06-23T10:30:00Z',
+};
+const oldMissingRequiredMatch = {
+  match_date: '2026-06-23T08:00:00Z',
+};
+process.env.RESULT_ATTENTION_AFTER_MINUTES = '180';
+ok('missing required official source stays waiting inside attention window',
+  !F.skipNeedsAttention([{ source: 'guardian', update: espnUpdate }], missingRequiredConsensus, recentMissingRequiredMatch, new Date('2026-06-23T12:00:00Z')));
+ok('missing required official source escalates after attention window',
+  F.skipNeedsAttention([{ source: 'guardian', update: espnUpdate }], missingRequiredConsensus, oldMissingRequiredMatch, new Date('2026-06-23T12:00:00Z')));
+ok('conflicting required official sources need attention immediately',
+  F.skipNeedsAttention([
+    { source: 'espn', update: espnUpdate },
+    { source: 'fifa', update: { ...fifaUpdate, away_score: 2 } },
+  ], { reason: '2 independent final source family/families, 2 required; requires agreeing espn+fifa' }, recentMissingRequiredMatch, new Date('2026-06-23T12:00:00Z')));
+delete process.env.RESULT_ATTENTION_AFTER_MINUTES;
 ok('provider-confirmed waiting candidates do not require operational attention',
   !F.needsResultAttention({ checked: 2, updated: 0, skipped: 2, waiting: 2, attention_skips: 0 }));
 ok('conflicting or fully final-but-unresolved candidates require operational attention',

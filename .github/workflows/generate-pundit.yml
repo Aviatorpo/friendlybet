@@ -100,9 +100,17 @@ jobs:
         run: node scripts/generate-pundit.js
 
       - name: Validate generated Pundit feed
+        id: pundit_validation
+        continue-on-error: true
         run: node scripts/test-pundit-feed.js
 
+      - name: Report Pundit validation warning
+        if: steps.pundit_validation.outcome == 'failure'
+        run: |
+          echo "::warning::Generated Pundit feed failed quality validation. Keeping the last committed feed so content quality does not create a critical-path failure email."
+
       - name: Commit feed if changed
+        if: steps.pundit_validation.outcome == 'success'
         env:
           REGENERATE_COMMANDS: |
             node scripts/export-snapshots.js matches
