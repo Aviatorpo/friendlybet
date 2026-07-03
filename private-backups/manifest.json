@@ -76,6 +76,7 @@
     "400021512",
     "400021513",
     "400021514",
+    "400021515",
     "400021516",
     "400021518",
     "400021519",
@@ -1626,7 +1627,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-07-03T21:10:14.955Z",
+      "file": "private-backups/2026-07-03T21-10-14-955Z__400021515-AUS-EGY.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "400021515"
+      ],
+      "tableCounts": {
+        "pools": 2195,
+        "users": 6794,
+        "group_picks": 22978,
+        "knockout_picks": 112894,
+        "group_position_picks": 175061,
+        "tournament_winner_picks": 3652,
+        "top_scorer_picks": 3133,
+        "sp_third_place_picks": 29178,
+        "pick_backups": 50731,
+        "knockout_reopen_grants": 1770,
+        "matches": 176,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-07-03T08:02:18.851Z"
+  "updatedAt": "2026-07-03T21:10:14.955Z"
 }
