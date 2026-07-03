@@ -236,8 +236,92 @@ async function runConflictingSourcesUseThreeSourceFallback() {
   });
 }
 
+async function runMissingPrimarySourceUsesThreeSourceFallback() {
+  F.__setFetch(async (url, options = {}) => {
+    const textUrl = String(url);
+    const method = options.method || 'GET';
+    if (textUrl.includes('/rest/v1/matches') && method === 'GET') {
+      return { ok: true, text: async () => JSON.stringify([stuckMatch]) };
+    }
+    if (textUrl.includes('/rest/v1/result_verification_observations') && method === 'GET') {
+      return { ok: false, status: 404, text: async () => 'table missing from schema cache' };
+    }
+    if (textUrl.includes('/rest/v1/result_verification_') && method === 'POST') {
+      return { ok: true, text: async () => '[]' };
+    }
+    if (textUrl.includes('site.api.espn.com')) {
+      return { ok: true, json: async () => ({ events: textUrl.includes('20260611') ? [espnFinal] : [] }) };
+    }
+    if (textUrl.includes('api.fifa.com')) {
+      return { ok: true, json: async () => ({ Results: [] }) };
+    }
+    if (textUrl.includes('livescore.com')) {
+      return { ok: true, text: async () => '<html></html>' };
+    }
+    if (textUrl.includes('foxsports.com')) {
+      return { ok: true, text: async () => foxConflictHtml };
+    }
+    if (textUrl.includes('sports.yahoo.com')) {
+      return { ok: true, text: async () => (textUrl.includes('date=2026-06-11') ? yahooConflictHtml : '') };
+    }
+    if (textUrl.includes('content.guardianapis.com')) {
+      return {
+        ok: true,
+        json: async () => ({
+          response: {
+            results: [{
+              id: 'football/live/mexico-south-africa',
+              webUrl: 'https://www.theguardian.com/football/live/mexico-south-africa',
+              webTitle: 'Mexico and South Africa draw 1-1 at World Cup 2026',
+              fields: {
+                headline: 'Mexico and South Africa draw 1-1',
+                trailText: 'Mexico and South Africa finished 1-1 at full-time.',
+                bodyText: 'Mexico and South Africa finished 1-1 at full-time.',
+              },
+            }],
+          },
+        }),
+      };
+    }
+    if (textUrl.includes('apnews.com')) {
+      return { ok: true, text: async () => '<html></html>' };
+    }
+    fail('unexpected fetch in missing primary run', textUrl);
+  });
+
+  const result = await F.verifyFinalResults({ now: new Date('2026-06-11T21:10:00Z') });
+  eq('missing FIFA result checks three other sources and resolves', {
+    checked: result.checked,
+    updated: result.updated,
+    skipped: result.skipped,
+    waiting: result.waiting,
+    attention: result.attention_skips,
+    needsAttention: F.needsResultAttention(result),
+    escalated: result.report.conflict_escalation.active,
+    reasons: result.report.conflict_escalation.reasons.length,
+    consensusOk: result.report.candidates[0].consensus.ok,
+    primaryFallback: result.report.candidates[0].consensus.primary_source_fallback,
+    nonPrimaryFamilies: result.report.candidates[0].consensus.non_primary_family_count,
+    score: `${result.report.candidates[0].verified_update.home_score}-${result.report.candidates[0].verified_update.away_score}`,
+  }, {
+    checked: 1,
+    updated: 0,
+    skipped: 0,
+    waiting: 0,
+    attention: 0,
+    needsAttention: false,
+    escalated: true,
+    reasons: 1,
+    consensusOk: true,
+    primaryFallback: true,
+    nonPrimaryFamilies: 3,
+    score: '1-1',
+  });
+}
+
 runLedgerUnavailableFallback()
   .then(runConflictingSourcesUseThreeSourceFallback)
+  .then(runMissingPrimarySourceUsesThreeSourceFallback)
   .then(() => {
     console.log('\nFinal result verifier fallback tests passed');
   })

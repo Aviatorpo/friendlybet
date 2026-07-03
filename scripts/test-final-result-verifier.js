@@ -360,8 +360,15 @@ const fallbackConsensus = F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
   { source: 'livescore', update: espnUpdate },
   { source: 'guardian', update: espnUpdate },
+  { source: 'fox', update: espnUpdate },
 ], { minSources: 2, requiredSources: ['espn', 'fifa'], fallbackMinSources: 3 });
-ok('three independent families can fallback when FIFA is unavailable', !!fallbackConsensus.update && fallbackConsensus.fallback === true);
+ok('three non-primary families can fallback when FIFA is unavailable',
+  !!fallbackConsensus.update && fallbackConsensus.fallback === true && fallbackConsensus.primary_source_fallback === true && fallbackConsensus.non_primary_family_count === 3);
+ok('two non-primary families cannot fallback when FIFA is unavailable', !F.consensusUpdate([
+  { source: 'espn', update: espnUpdate },
+  { source: 'livescore', update: espnUpdate },
+  { source: 'guardian', update: espnUpdate },
+], { minSources: 2, requiredSources: ['espn', 'fifa'], fallbackMinSources: 3 }).update);
 const conflictOverrideConsensus = F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
   { source: 'fifa', update: { ...fifaUpdate, away_score: 2 } },
@@ -393,8 +400,15 @@ const oldMissingRequiredMatch = {
 process.env.RESULT_ATTENTION_AFTER_MINUTES = '180';
 ok('missing required official source stays waiting inside attention window',
   !F.skipNeedsAttention([{ source: 'guardian', update: espnUpdate }], missingRequiredConsensus, recentMissingRequiredMatch, new Date('2026-06-23T12:00:00Z')));
-ok('missing required official source escalates after attention window',
-  F.skipNeedsAttention([{ source: 'guardian', update: espnUpdate }], missingRequiredConsensus, oldMissingRequiredMatch, new Date('2026-06-23T12:00:00Z')));
+ok('missing required primary source keeps retrying instead of attention failure',
+  !F.skipNeedsAttention([{ source: 'guardian', update: espnUpdate }], missingRequiredConsensus, oldMissingRequiredMatch, new Date('2026-06-23T12:00:00Z')));
+ok('missing primary source with an attempted empty result triggers emergency source escalation',
+  !!F.primarySourceEscalationReason(
+    [{ source: 'espn', update: espnUpdate }],
+    missingRequiredConsensus,
+    { observations: [{ source: 'espn', state: 'confirmed_result', update: espnUpdate }] },
+    { espn: { ok: true, loaded: 1 }, fifa: { ok: true, loaded: 0 } }
+  ));
 ok('conflicting required official sources keep retrying instead of attention failure',
   !F.skipNeedsAttention([
     { source: 'espn', update: espnUpdate },
