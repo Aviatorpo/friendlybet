@@ -84,6 +84,7 @@
     "400021523",
     "400021524",
     "400021525",
+    "400021526",
     "537327",
     "537328",
     "537329",
@@ -1576,7 +1577,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-07-03T01:14:37.616Z",
+      "file": "private-backups/2026-07-03T01-14-37-616Z__400021526-POR-CRO.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "400021526"
+      ],
+      "tableCounts": {
+        "pools": 2195,
+        "users": 6794,
+        "group_picks": 22978,
+        "knockout_picks": 112863,
+        "group_position_picks": 175061,
+        "tournament_winner_picks": 3652,
+        "top_scorer_picks": 3133,
+        "sp_third_place_picks": 29178,
+        "pick_backups": 50719,
+        "knockout_reopen_grants": 1768,
+        "matches": 176,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-07-02T22:17:51.647Z"
+  "updatedAt": "2026-07-03T01:14:37.616Z"
 }
