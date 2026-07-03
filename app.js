@@ -935,14 +935,18 @@ async function completeRegistration() {
     // Hash recovery code
     const recoveryHash = await hashRecoveryCode(state.pendingRecoveryCode);
 
-    // Create user - joins immediately, admin can approve/remove later
+    const requiresApproval = !!(state.currentPool && state.currentPool.approve_before_betting);
+
+    // Create user. Pools that do not require approval should not create a fake
+    // pending state; that state blocks member pick viewing and confuses admins.
     const _joinerInsert = {
       pool_id: state.currentPool.id,
       nickname: state.pendingNickname,
       recovery_code_hash: recoveryHash,
       is_admin: false,
       is_approved: true, // Legacy field - keep true
-      approval_status: 'pending', // New: admin can approve later
+      approval_status: requiresApproval ? 'pending' : 'approved',
+      approved_at: requiresApproval ? null : new Date().toISOString(),
       signup_source: _src.source,
       signup_referrer: _src.referrer,
       utm_source: _src.utm_source,
