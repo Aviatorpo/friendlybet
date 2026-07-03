@@ -647,6 +647,13 @@ function liveCommentary(match) {
   const awayHe = teamName(match.away_team_code, 'he');
   const homeEn = teamName(match.home_team_code, 'en');
   const awayEn = teamName(match.away_team_code, 'en');
+  const isKnockout = String(match.stage || '').toUpperCase() !== 'GROUP_STAGE';
+  if (isKnockout) {
+    return {
+      he: `${homeHe} נגד ${awayHe} עכשיו על הדשא. כל שער יכול לשנות את הבראקט ואת ההימורים.`,
+      en: `${homeEn} vs ${awayEn} is live now. Every goal can change the bracket and the picks.`,
+    };
+  }
   return {
     he: `${homeHe} נגד ${awayHe} עכשיו על הדשא. כל שער יכול לשנות את הבית ואת ההימורים.`,
     en: `${homeEn} vs ${awayEn} is live now. Every goal can change the group and the predictions.`,
