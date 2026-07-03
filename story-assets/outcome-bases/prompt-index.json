@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-03T04:10:50.753Z",
+  "updated_at": "2026-07-03T09:36:35.273Z",
   "source": "snapshot",
   "matches": 18,
   "prompts": [
@@ -74,14 +74,6 @@
       "outcome": "SUI",
       "image": "story-assets/outcome-bases/sui-alg-sui-wins-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Switzerland vs Algeria at FIFA World Cup 2026.\nPrepared outcome: Switzerland advances over Algeria.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "399b52f8-23c0-4421-bc48-763df6ed58af",
-      "match_key": "SUI-ALG",
-      "match_date": "2026-07-03T03:00:00+00:00",
-      "outcome": "ALG",
-      "image": "story-assets/outcome-bases/sui-alg-alg-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Switzerland vs Algeria at FIFA World Cup 2026.\nPrepared outcome: Algeria advances over Switzerland.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
       "match_id": "becdf518-3a65-4a3f-82a6-622c288a398e",
