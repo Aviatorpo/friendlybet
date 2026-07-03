@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-07-03T19:56:41.545Z",
-  "freshUntil": "2026-07-04T01:56:41.545Z",
+  "updatedAt": "2026-07-03T21:18:32.117Z",
+  "freshUntil": "2026-07-04T03:18:32.117Z",
   "count": 8,
   "items": [
     {
-      "id": "live-becdf518-3a65-4a3f-82a6-622c288a398e",
-      "type": "live",
+      "id": "verify-becdf518-3a65-4a3f-82a6-622c288a398e",
+      "type": "verification",
       "confidence": "confirmed",
-      "he": "אוסטרליה נגד מצרים עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
-      "en": "Australia vs Egypt is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "he": "אוסטרליה נגד מצרים: סטטוס המשחק בבדיקה לפני שהטבלה מקבלת נקודות. עדיף רגע של זהירות מטעות שמזיזה הימור שלם 🧐",
+      "en": "Australia vs Egypt: match status is being checked before the table gets points. A careful pause beats moving a whole pool on bad data 🧐",
       "sources": [],
-      "expires_at": "2026-07-03T22:56:41.545Z"
+      "expires_at": "2026-07-03T22:18:32.117Z"
     },
     {
       "id": "result-399b52f8-23c0-4421-bc48-763df6ed58af",
@@ -43,8 +43,8 @@
       "id": "fixture-1b693d86-e3d7-49ed-acbe-ff1cbda5ab02",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שמינית הגמר המוקדמת: ארגנטינה נגד כף ורדה, מחר 01:00. מי שבנה על ארגנטינה רוצה שקט; מי שסימן את כף ורדה מחפש רעידת בראקט ⏰",
-      "en": "Round of 32: Argentina vs Cape Verde, tomorrow 01:00. Argentina picks want calm; Cape Verde picks are hunting bracket shock ⏰",
+      "he": "שמינית הגמר המוקדמת: ארגנטינה נגד כף ורדה, היום 01:00. מי שבנה על ארגנטינה רוצה שקט; מי שסימן את כף ורדה מחפש רעידת בראקט ⏰",
+      "en": "Round of 32: Argentina vs Cape Verde, today 01:00. Argentina picks want calm; Cape Verde picks are hunting bracket shock ⏰",
       "sources": [],
       "expires_at": "2026-07-03T21:45:00.000Z"
     },
@@ -52,8 +52,8 @@
       "id": "fixture-4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שמינית הגמר המוקדמת: קולומביה נגד גאנה, מחר 04:30. מי שבנה על קולומביה רוצה שקט; מי שסימן את גאנה מחפש רעידת בראקט ⏰",
-      "en": "Round of 32: Colombia vs Ghana, tomorrow 04:30. Colombia picks want calm; Ghana picks are hunting bracket shock ⏰",
+      "he": "שמינית הגמר המוקדמת: קולומביה נגד גאנה, היום 04:30. מי שבנה על קולומביה רוצה שקט; מי שסימן את גאנה מחפש רעידת בראקט ⏰",
+      "en": "Round of 32: Colombia vs Ghana, today 04:30. Colombia picks want calm; Ghana picks are hunting bracket shock ⏰",
       "sources": [],
       "expires_at": "2026-07-04T01:15:00.000Z"
     },
@@ -61,8 +61,8 @@
       "id": "fixture-725161f2-68ae-4b8f-bda4-d08243bec185",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שמינית הגמר: קנדה נגד מרוקו, מחר 20:00. מי שפוגע כאן קונה לעצמו עוד נשימה בבראקט ⏰",
-      "en": "Round of 16: Canada vs Morocco, tomorrow 20:00. Getting this one right buys another breath in the bracket ⏰",
+      "he": "שמינית הגמר: קנדה נגד מרוקו, היום 20:00. מי שפוגע כאן קונה לעצמו עוד נשימה בבראקט ⏰",
+      "en": "Round of 16: Canada vs Morocco, today 20:00. Getting this one right buys another breath in the bracket ⏰",
       "sources": [],
       "expires_at": "2026-07-04T16:45:00.000Z"
     },
@@ -70,8 +70,8 @@
       "id": "fixture-f1d512ac-b83b-4edc-ab23-e927e566a76d",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "פרגוואי נגד צרפת, 05/07 24:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
-      "en": "Paraguay vs France, 05/07 24:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
+      "he": "פרגוואי נגד צרפת, מחר 24:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
+      "en": "Paraguay vs France, tomorrow 24:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-04T20:45:00.000Z"
     }
