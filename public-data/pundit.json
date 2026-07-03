@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-03T19:13:10.432Z",
-  "freshUntil": "2026-07-04T01:13:10.432Z",
+  "updatedAt": "2026-07-03T19:43:09.708Z",
+  "freshUntil": "2026-07-04T01:43:09.708Z",
   "count": 8,
   "items": [
     {
@@ -10,7 +10,7 @@
       "he": "אוסטרליה נגד מצרים עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
       "en": "Australia vs Egypt is live now. Every goal can flip brackets and push one side toward the next round 🔥",
       "sources": [],
-      "expires_at": "2026-07-03T22:13:10.432Z"
+      "expires_at": "2026-07-03T22:43:09.708Z"
     },
     {
       "id": "result-399b52f8-23c0-4421-bc48-763df6ed58af",
@@ -70,8 +70,8 @@
       "id": "fixture-f1d512ac-b83b-4edc-ab23-e927e566a76d",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "פרגוואי נגד צרפת, 05/07 00:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
-      "en": "Paraguay vs France, 05/07 00:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
+      "he": "פרגוואי נגד צרפת, 05/07 24:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
+      "en": "Paraguay vs France, 05/07 24:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-04T20:45:00.000Z"
     }
