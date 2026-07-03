@@ -3,10 +3,9 @@
 // ============================================================
 // Conservative multi-source recovery for matches that should be over but are
 // still missing a final result. It reads ESPN's public scoreboard JSON and
-// FIFA's official calendar feed.
-// A normal final write requires ESPN + FIFA to agree; if FIFA is unavailable,
-// the fallback path can use three independent source families without overruling
-// an explicit FIFA disagreement.
+// FIFA's official calendar feed. If primary sources disagree, the same run opens
+// the approved emergency shelf and can resolve from three additional independent
+// source families that agree with each other.
 //
 // Default mode is DRY RUN. It only writes to Supabase when called with --apply.
 // Required for live use:
@@ -55,6 +54,8 @@ const MIN_SOURCES = parseInt(process.env.RESULT_FALLBACK_MIN_SOURCES || '', 10) 
 const REQUIRED_SOURCES = csvList(process.env.RESULT_FALLBACK_REQUIRED_SOURCES, 'fifa');
 const CONSENSUS_FALLBACK_MIN_SOURCES = parseInt(process.env.RESULT_CONSENSUS_FALLBACK_MIN_SOURCES || '', 10) || 0;
 const CONSENSUS_FALLBACK_BLOCK_SOURCES = csvList(process.env.RESULT_CONSENSUS_FALLBACK_BLOCK_SOURCES, 'fifa');
+const CONFLICT_WATCH_SOURCES = csvList(process.env.RESULT_CONFLICT_WATCH_SOURCES, 'espn,fifa');
+const CONFLICT_FALLBACK_MIN_SOURCES = parseInt(process.env.RESULT_CONFLICT_FALLBACK_MIN_SOURCES || '', 10) || 3;
 const ENABLED_SOURCES = csvList(process.env.RESULT_FALLBACK_SOURCES, 'espn,fifa');
 const EMERGENCY_SOURCE_KEYS = ['livescore', 'fox', 'yahoo', 'guardian', 'ap', 'houston_chronicle', 'nypost'];
 const AUTO_EMERGENCY_SOURCES = process.env.RESULT_AUTO_EMERGENCY_SOURCES === '1';
@@ -1079,6 +1080,62 @@ function sourcesForRun(now = new Date(), options = {}) {
   return [sources[bucket % sources.length]];
 }
 
+async function loadSourceFixturesFor(sources, registry, sourceFixtures, report, matches) {
+  for (const source of sources || []) {
+    if (sourceFixtures.has(source)) continue;
+    const loader = registry[source];
+    if (!loader) {
+      report.source_statuses[source] = { ok: false, error: 'unsupported source' };
+      continue;
+    }
+    try {
+      const rows = await loader.load(matches);
+      sourceFixtures.set(source, rows);
+      console.log(`Loaded ${rows.length} ${source.toUpperCase()} fixture(s)`);
+      report.source_statuses[source] = { ok: true, loaded: rows.length };
+    } catch (e) {
+      console.warn(`${source.toUpperCase()} source unavailable: ${e.message}`);
+      report.source_statuses[source] = { ok: false, error: e.message };
+    }
+  }
+}
+
+function observeSourcesForMatch(dbMatch, sourceList, sourceFixtures, registry, sourceUpdatesBySource, decision, label) {
+  for (const source of sourceList || []) {
+    const rows = sourceFixtures.get(source) || [];
+    if (!rows.length) continue;
+    const loader = registry[source];
+    if (!loader) continue;
+    const found = findMatchingFixture(dbMatch, rows, loader.transform);
+    if (found.match) {
+      const built = buildUpdateFromVerifiedFixture(found.match, new Date().toISOString(), dbMatch);
+      if (built.update) {
+        const sourceUpdate = { source, update: built.update, sourceId: found.match.api_id };
+        addSourceUpdateBySource(sourceUpdatesBySource, sourceUpdate, 'current');
+        decision.observations.push({
+          source,
+          state: 'confirmed_result',
+          source_id: found.match.api_id || null,
+          fixture_date: found.match.fixtureDate || null,
+          update: built.update,
+        });
+      } else {
+        console.log(`OBSERVE ${label}: ${source} ${built.reason}`);
+        decision.observations.push({
+          source,
+          state: 'not_scoreable',
+          source_id: found.match.api_id || null,
+          fixture_date: found.match.fixtureDate || null,
+          reason: built.reason,
+        });
+      }
+    } else {
+      console.log(`OBSERVE ${label}: ${source} ${found.reason}`);
+      decision.observations.push({ source, state: 'no_matching_fixture', reason: found.reason });
+    }
+  }
+}
+
 function matchKey(match) {
   return `${match && match.home_team_code || '?'}-${match && match.away_team_code || '?'}-${match && match.match_date || '?'}`;
 }
@@ -1173,10 +1230,51 @@ function uniqueSourceFamilyCount(sourceUpdates) {
   return new Set((sourceUpdates || []).map(s => sourceFamily(s && s.source))).size;
 }
 
+function sourceNamesSet(sources) {
+  return new Set((sources || []).map(source => String(source || '').trim().toLowerCase()).filter(Boolean));
+}
+
+function sourceFamilyCountExcept(sourceUpdates, excludedSources) {
+  const excluded = sourceNamesSet(excludedSources);
+  return uniqueSourceFamilyCount((sourceUpdates || []).filter(su => !excluded.has(String(su && su.source || '').trim().toLowerCase())));
+}
+
+function groupSourceFamilyCountExcept(group, excludedSources) {
+  return sourceFamilyCountExcept(group && group.sources || [], excludedSources);
+}
+
+function sourceSetDisagrees(sourceUpdates, watchedSources = CONFLICT_WATCH_SOURCES) {
+  const watched = sourceNamesSet(watchedSources);
+  if (!watched.size) return false;
+  const observed = new Map();
+  for (const su of sourceUpdates || []) {
+    const source = String(su && su.source || '').trim().toLowerCase();
+    if (!watched.has(source) || !su.update) continue;
+    observed.set(source, resultKey(su.update));
+  }
+  if (observed.size < watched.size) return false;
+  return new Set(observed.values()).size > 1;
+}
+
+function bestConflictFallbackGroup(winners, conflictSources = CONFLICT_WATCH_SOURCES, minSources = CONFLICT_FALLBACK_MIN_SOURCES) {
+  const eligible = (winners || [])
+    .map(group => ({ group, nonPrimaryFamilyCount: groupSourceFamilyCountExcept(group, conflictSources) }))
+    .filter(entry => entry.nonPrimaryFamilyCount >= minSources)
+    .sort((a, b) => b.nonPrimaryFamilyCount - a.nonPrimaryFamilyCount || b.group.familyCount - a.group.familyCount);
+  if (!eligible.length) return null;
+  const best = eligible[0];
+  const tied = eligible[1]
+    && eligible[1].nonPrimaryFamilyCount === best.nonPrimaryFamilyCount
+    && eligible[1].group.key !== best.group.key;
+  return tied ? null : best;
+}
+
 function consensusUpdate(sourceUpdates, opts = {}) {
   const options = typeof opts === 'number' ? { minSources: opts, requiredSources: [] } : (opts || {});
   const requiredSources = Array.isArray(options.requiredSources) ? options.requiredSources : REQUIRED_SOURCES;
   const fallbackMinSources = Number(options.fallbackMinSources == null ? CONSENSUS_FALLBACK_MIN_SOURCES : options.fallbackMinSources) || 0;
+  const conflictSources = Array.isArray(options.conflictSources) ? options.conflictSources : CONFLICT_WATCH_SOURCES;
+  const conflictFallbackMinSources = Number(options.conflictFallbackMinSources == null ? CONFLICT_FALLBACK_MIN_SOURCES : options.conflictFallbackMinSources) || 0;
   const fallbackBlockSources = Array.isArray(options.fallbackBlockSources)
     ? options.fallbackBlockSources
     : CONSENSUS_FALLBACK_BLOCK_SOURCES;
@@ -1198,6 +1296,27 @@ function consensusUpdate(sourceUpdates, opts = {}) {
     const names = new Set(group.sources.map(s => String(s.source || '').toLowerCase()));
     return requiredSources.every(source => names.has(source));
   }) || (requiredSources.length ? null : winners[0]);
+  const primaryConflict = sourceSetDisagrees(sourceUpdates, conflictSources);
+  if (primaryConflict) {
+    const conflictFallback = bestConflictFallbackGroup(winners, conflictSources, conflictFallbackMinSources);
+    if (conflictFallback) {
+      return {
+        update: conflictFallback.group.sources[0].update,
+        sources: conflictFallback.group.sources,
+        familyCount: conflictFallback.group.familyCount,
+        groups: winners,
+        fallback: true,
+        conflict_override: true,
+        non_primary_family_count: conflictFallback.nonPrimaryFamilyCount,
+      };
+    }
+    return {
+      update: null,
+      reason: `primary source conflict; requires ${conflictFallbackMinSources} additional independent agreeing source families`,
+      groups: winners,
+      primary_conflict: true,
+    };
+  }
   if (!best || best.familyCount < minSources) {
     const fallbackBest = winners[0] || null;
     const fallbackTie = fallbackBest && winners[1] && winners[1].familyCount === fallbackBest.familyCount && winners[1].key !== fallbackBest.key;
@@ -1244,16 +1363,7 @@ function resultAttentionAfterMinutes() {
 }
 
 function requiredSourcesDisagree(sourceUpdates, requiredSources = REQUIRED_SOURCES) {
-  const required = new Set((requiredSources || []).map(source => String(source || '').trim().toLowerCase()).filter(Boolean));
-  if (!required.size) return false;
-  const observed = new Map();
-  for (const su of sourceUpdates || []) {
-    const source = String(su && su.source || '').trim().toLowerCase();
-    if (!required.has(source) || !su.update) continue;
-    observed.set(source, resultKey(su.update));
-  }
-  if (observed.size < required.size) return false;
-  return new Set(observed.values()).size > 1;
+  return sourceSetDisagrees(sourceUpdates, requiredSources);
 }
 
 function requiredSourcesFromConsensus(consensus) {
@@ -1268,10 +1378,10 @@ function requiredSourcesFromConsensus(consensus) {
 function skipNeedsAttention(sourceUpdates, consensus, match = null, now = new Date()) {
   if (!consensus || !consensus.reason) return false;
   if (/conflicting source consensus/i.test(consensus.reason)) return true;
+  if (/primary source conflict/i.test(consensus.reason)) return false;
   const waitingForRequiredSource = /requires agreeing/i.test(consensus.reason);
   if (waitingForRequiredSource) {
     const requiredSources = requiredSourcesFromConsensus(consensus);
-    if (requiredSourcesDisagree(sourceUpdates, requiredSources.length ? requiredSources : REQUIRED_SOURCES)) return true;
     const age = match ? candidateAgeMinutes(match, now) : null;
     if (!Number.isFinite(age) || age < resultAttentionAfterMinutes()) return false;
     return (sourceUpdates || []).length > 0;
@@ -1411,6 +1521,12 @@ async function verifyFinalResults(opts = {}) {
       active: false,
       oldest_candidate_age_minutes: null,
     },
+    conflict_escalation: {
+      enabled: true,
+      active: false,
+      min_additional_sources: CONFLICT_FALLBACK_MIN_SOURCES,
+      watched_sources: CONFLICT_WATCH_SOURCES,
+    },
     selected_sources: [],
     source_statuses: {},
     ledger: {
@@ -1459,24 +1575,9 @@ async function verifyFinalResults(opts = {}) {
   report.selected_sources = selectedSources;
   Object.assign(report.source_statuses, sourceStatusSkippedByRotation(supportedSources(runSources, sourceOptions), selectedSources));
 
-  const registry = sourceRegistry(sourceOptions);
+  const registry = sourceRegistry({ emergencySources: true });
   const sourceFixtures = new Map();
-  for (const source of selectedSources) {
-    const loader = registry[source];
-    if (!loader) {
-      report.source_statuses[source] = { ok: false, error: 'unsupported source' };
-      continue;
-    }
-    try {
-      const rows = await loader.load(stuck);
-      sourceFixtures.set(source, rows);
-      console.log(`Loaded ${rows.length} ${source.toUpperCase()} fixture(s)`);
-      report.source_statuses[source] = { ok: true, loaded: rows.length };
-    } catch (e) {
-      console.warn(`${source.toUpperCase()} source unavailable: ${e.message}`);
-      report.source_statuses[source] = { ok: false, error: e.message };
-    }
-  }
+  await loadSourceFixturesFor(selectedSources, registry, sourceFixtures, report, stuck);
 
   let updated = 0;
   let skipped = 0;
@@ -1525,45 +1626,33 @@ async function verifyFinalResults(opts = {}) {
       });
     }
 
-    for (const source of selectedSources) {
-      const rows = sourceFixtures.get(source) || [];
-      if (!rows.length) continue;
-      const loader = registry[source];
-      const found = findMatchingFixture(dbMatch, rows, loader.transform);
-      if (found.match) {
-        const built = buildUpdateFromVerifiedFixture(found.match, new Date().toISOString(), dbMatch);
-        if (built.update) {
-          const sourceUpdate = { source, update: built.update, sourceId: found.match.api_id };
-          addSourceUpdateBySource(sourceUpdatesBySource, sourceUpdate, 'current');
-          decision.observations.push({
-            source,
-            state: 'confirmed_result',
-            source_id: found.match.api_id || null,
-            fixture_date: found.match.fixtureDate || null,
-            update: built.update,
-          });
-        } else {
-          console.log(`OBSERVE ${label}: ${source} ${built.reason}`);
-          decision.observations.push({
-            source,
-            state: 'not_scoreable',
-            source_id: found.match.api_id || null,
-            fixture_date: found.match.fixtureDate || null,
-            reason: built.reason,
-          });
-        }
-      } else {
-        console.log(`OBSERVE ${label}: ${source} ${found.reason}`);
-        decision.observations.push({ source, state: 'no_matching_fixture', reason: found.reason });
+    observeSourcesForMatch(dbMatch, selectedSources, sourceFixtures, registry, sourceUpdatesBySource, decision, label);
+
+    let sourceUpdates = sourceUpdatesFromMap(sourceUpdatesBySource);
+    let agreed = consensusUpdate(sourceUpdates);
+    if (!agreed.update && agreed.primary_conflict) {
+      const conflictSources = sourcesForRun(now, {
+        sources: sourcesWithEmergency(ENABLED_SOURCES),
+        mode: 'all',
+        emergencySources: true,
+      });
+      const additionalSources = conflictSources.filter(source => !selectedSources.includes(source));
+      if (additionalSources.length) {
+        report.conflict_escalation.active = true;
+        selectedSources = [...new Set([...selectedSources, ...additionalSources])];
+        report.selected_sources = selectedSources;
+        await loadSourceFixturesFor(additionalSources, registry, sourceFixtures, report, stuck);
+        observeSourcesForMatch(dbMatch, additionalSources, sourceFixtures, registry, sourceUpdatesBySource, decision, label);
+        sourceUpdates = sourceUpdatesFromMap(sourceUpdatesBySource);
+        agreed = consensusUpdate(sourceUpdates);
       }
     }
-
-    const sourceUpdates = sourceUpdatesFromMap(sourceUpdatesBySource);
-    const agreed = consensusUpdate(sourceUpdates);
     decision.consensus = {
       ok: !!agreed.update,
       reason: agreed.update ? null : agreed.reason,
       family_count: agreed.familyCount || 0,
+      non_primary_family_count: agreed.non_primary_family_count || 0,
+      conflict_override: !!agreed.conflict_override,
       agreeing_sources: (agreed.sources || []).map(source => ({
         source: source.source,
         family: sourceFamily(source.source),
@@ -1668,6 +1757,9 @@ if (require.main === module) {
     skipNeedsAttention,
     requiredSourcesDisagree,
     requiredSourcesFromConsensus,
+    sourceSetDisagrees,
+    sourceFamilyCountExcept,
+    bestConflictFallbackGroup,
     verifyFinalResults,
     __setFetch: (fn) => { globalThis.fetch = fn; }
   };

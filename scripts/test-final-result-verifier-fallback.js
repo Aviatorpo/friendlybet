@@ -64,6 +64,24 @@ const fifaFinal = {
   Winner: null
 };
 
+const foxConflictHtml = `
+  <div id="c12d20260611">
+    <a class="score-chip final" href="/soccer/fifa-world-cup-men-mexico-vs-south-africa-jun-11-2026-game-boxscore-222">
+      <div class="score-team-row">
+        <span class="score-team-logo" title="Mexico">Mexico</span>
+        <span title="MEX">MEX</span>
+        <div class="score-team-score"><span class="scores-text">1</span></div>
+      </div>
+      <div class="score-team-row">
+        <span class="score-team-logo" title="South Africa">South Africa</span>
+        <span title="RSA">RSA</span>
+        <div class="score-team-score"><span class="scores-text">1</span></div>
+      </div>
+    </a>
+  </div>`;
+
+const yahooConflictHtml = 'x name\\":\\"Mexico vs. South Africa (Final: MEX 1-1 RSA) y startDate\\":\\"2026-06-11T19:00:00Z\\" Mexico and South Africa finished 1-1';
+
 eq('auto emergency waits before the escalation threshold',
   F.shouldAutoEmergencyEscalate([stuckMatch], new Date('2026-06-11T20:40:00Z'), { enabled: true, afterMinutes: 105 }),
   false);
@@ -134,7 +152,7 @@ async function runLedgerUnavailableFallback() {
     calls.some(call => call.includes('site.api.espn.com')) && calls.some(call => call.includes('api.fifa.com')));
 }
 
-async function runConflictingSourcesRequireAttention() {
+async function runConflictingSourcesUseThreeSourceFallback() {
   F.__setFetch(async (url, options = {}) => {
     const textUrl = String(url);
     const method = options.method || 'GET';
@@ -156,29 +174,70 @@ async function runConflictingSourcesRequireAttention() {
         json: async () => ({ Results: [{ ...fifaFinal, Away: { ...fifaFinal.Away, Score: 2 } }] })
       };
     }
+    if (textUrl.includes('livescore.com')) {
+      return { ok: true, text: async () => '<html></html>' };
+    }
+    if (textUrl.includes('foxsports.com')) {
+      return { ok: true, text: async () => foxConflictHtml };
+    }
+    if (textUrl.includes('sports.yahoo.com')) {
+      return { ok: true, text: async () => (textUrl.includes('date=2026-06-11') ? yahooConflictHtml : '') };
+    }
+    if (textUrl.includes('content.guardianapis.com')) {
+      return {
+        ok: true,
+        json: async () => ({
+          response: {
+            results: [{
+              id: 'football/live/mexico-south-africa',
+              webUrl: 'https://www.theguardian.com/football/live/mexico-south-africa',
+              webTitle: 'Mexico and South Africa draw 1-1 at World Cup 2026',
+              fields: {
+                headline: 'Mexico and South Africa draw 1-1',
+                trailText: 'Mexico and South Africa finished 1-1 at full-time.',
+                bodyText: 'Mexico and South Africa finished 1-1 at full-time.',
+              },
+            }],
+          },
+        }),
+      };
+    }
+    if (textUrl.includes('apnews.com')) {
+      return { ok: true, text: async () => '<html></html>' };
+    }
     fail('unexpected fetch in conflict run', textUrl);
   });
 
   const result = await F.verifyFinalResults({ now: new Date('2026-06-11T21:10:00Z') });
-  eq('conflicting ESPN/FIFA result is skipped and needs attention', {
+  eq('conflicting ESPN/FIFA result checks three more sources and resolves', {
     checked: result.checked,
     updated: result.updated,
     skipped: result.skipped,
+    waiting: result.waiting,
     attention: result.attention_skips,
     needsAttention: F.needsResultAttention(result),
+    conflictEscalated: result.report.conflict_escalation.active,
     consensusOk: result.report.candidates[0].consensus.ok,
+    conflictOverride: result.report.candidates[0].consensus.conflict_override,
+    nonPrimaryFamilies: result.report.candidates[0].consensus.non_primary_family_count,
+    score: `${result.report.candidates[0].verified_update.home_score}-${result.report.candidates[0].verified_update.away_score}`,
   }, {
     checked: 1,
     updated: 0,
-    skipped: 1,
-    attention: 1,
-    needsAttention: true,
-    consensusOk: false,
+    skipped: 0,
+    waiting: 0,
+    attention: 0,
+    needsAttention: false,
+    conflictEscalated: true,
+    consensusOk: true,
+    conflictOverride: true,
+    nonPrimaryFamilies: 3,
+    score: '1-1',
   });
 }
 
 runLedgerUnavailableFallback()
-  .then(runConflictingSourcesRequireAttention)
+  .then(runConflictingSourcesUseThreeSourceFallback)
   .then(() => {
     console.log('\nFinal result verifier fallback tests passed');
   })
