@@ -8,7 +8,7 @@ const fs = require('fs');
 const SUPABASE_URL = (process.env.SUPABASE_URL || 'https://kovhuahdoluxyqqwqohw.supabase.co').replace(/\/+$/, '');
 const SUPABASE_KEY = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY || '';
 const LOOKBACK_MS = (parseInt(process.env.LIVE_CONTROLLER_LOOKBACK_MINUTES || '', 10) || 240) * 60 * 1000;
-const LEAD_MS = (parseInt(process.env.LIVE_CONTROLLER_LEAD_MINUTES || '', 10) || 90) * 60 * 1000;
+const LEAD_MS = (parseInt(process.env.LIVE_CONTROLLER_LEAD_MINUTES || '', 10) || 120) * 60 * 1000;
 const TERMINAL_STATUSES = new Set(['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED']);
 
 function setGithubOutput(name, value) {

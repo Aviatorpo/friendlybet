@@ -124,7 +124,7 @@ assert(api._matchUxState(match({
 assert(api._matchUxState(match({
   status: 'IN_PLAY',
   match_date: '2026-06-23T07:00:00Z',
-}), now).noteKey === 'matchesEx.liveResultAfterFinal', 'Stale live rows must keep the simple post-full-time update copy');
+}), now).noteKey === 'matchesEx.liveFeedConnectingNote', 'Stale live rows without score must show live-feed connecting copy');
 assert(api._matchUxState(match({
   status: 'IN_PLAY',
   match_date: '2026-06-23T07:00:00Z',
@@ -224,7 +224,7 @@ assert(api._matchUxState(match({
   source_updated_at: '2026-06-23T11:59:00Z',
   home_score: 0,
   away_score: 0,
-}), now).noteKey === 'matchesEx.liveResultAfterFinal', 'Live rows without a trusted clock must use the simple post-full-time update copy');
+}), now).noteKey === 'matchesEx.liveFeedConnectingNote', 'Live rows without a trusted clock must show live-feed connecting copy');
 assert(api._matchResolvedWinner({
   status: 'FINISHED',
   stage: 'ROUND_OF_32',
@@ -269,7 +269,7 @@ assert(!/else if \(status === 'PAUSED'\)/.test(cardSource), 'Match cards must no
 assert(/card\.classList\.add\('verifying'\)/.test(cardSource), 'Verification state must use the verifying card style');
 assert(/uxState\.noteKey/.test(cardSource), 'Verification notes must come from the UX state');
 assert(/if \(needsStatusVerification\)[\s\S]*uxState\.showScore[\s\S]*match\.home_score[\s\S]*match\.away_score/.test(cardSource), 'Verification state must keep numeric scores visible instead of reverting to VS');
-assert(/noteKey:\s*'matchesEx\.liveResultAfterFinal'/.test(matchUxStateSource), 'Live score gaps must use the simple full-time update copy');
+assert(/noteKey:\s*'matchesEx\.liveFeedConnectingNote'/.test(matchUxStateSource), 'Live score gaps must use live-feed connecting copy');
 assert(/matchesEx\.advancedOnPenalties/.test(cardSource), 'Penalty-decided knockout cards must show who advanced');
 assert(/_matchResolvedWinner\(match\)/.test(cardSource), 'Match cards must use resolved winner helper for penalty decisions');
 assert(/if \(uxState\.statusKey\)[\s\S]*statusText\s*=\s*t\(uxState\.statusKey\)/.test(cardSource), 'Status badges must use UX-state copy keys');

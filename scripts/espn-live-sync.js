@@ -188,7 +188,7 @@ async function loadEspnEventsFor(matches) {
 async function loadCandidateMatches(now = new Date()) {
   const start = new Date(now.getTime() - 5 * 60 * 60 * 1000);
   const end = new Date(now.getTime() + 15 * 60 * 1000);
-  const q = `?select=external_id,status,match_date,home_team_code,away_team_code` +
+  const q = `?select=id,external_id,status,match_date,home_team_code,away_team_code,source_updated_at,last_updated` +
             `&match_date=gte.${start.toISOString()}&match_date=lte.${end.toISOString()}&order=match_date.asc`;
   const rows = await callSupabase('GET', 'matches', null, q);
   return (rows || []).filter(m => !TERMINAL.has(String(m.status || '').toUpperCase()));
@@ -218,12 +218,41 @@ function buildPatch(espnMatch, opts = {}) {
   return patch;
 }
 
+let heartbeatWarned = false;
+async function writeLiveHeartbeat(dbMatch, patch, opts = {}) {
+  if (!dbMatch || !dbMatch.id || opts.dryRun || opts.skipHeartbeat) return;
+  const nowIso = opts.nowIso || new Date().toISOString();
+  const sourceMs = Date.parse(patch && patch.source_updated_at || nowIso);
+  const nowMs = Date.parse(nowIso);
+  const sourceAgeSeconds = Number.isFinite(sourceMs) && Number.isFinite(nowMs)
+    ? Math.max(0, Math.round((nowMs - sourceMs) / 1000))
+    : null;
+  const payload = [{
+    match_id: dbMatch.id,
+    external_id: dbMatch.external_id || null,
+    controller_owner: process.env.GITHUB_RUN_ID ? `github:${process.env.GITHUB_RUN_ID}` : 'local-live-sync',
+    last_provider_poll_at: nowIso,
+    last_successful_live_write_at: nowIso,
+    last_status: patch && patch.status || dbMatch.status || null,
+    source_age_seconds: sourceAgeSeconds,
+    updated_at: nowIso
+  }];
+  try {
+    await callSupabase('POST', 'match_live_heartbeats', payload, '?on_conflict=match_id');
+  } catch (err) {
+    if (!heartbeatWarned) {
+      heartbeatWarned = true;
+      console.warn(`Live heartbeat write skipped: ${err.message}`);
+    }
+  }
+}
+
 async function syncEspnLive(opts = {}) {
   if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY or PROD_ANON_KEY');
   const now = opts.now || new Date();
   const candidates = opts.matches || await loadCandidateMatches(now);
   console.log(`ESPN live sync: ${candidates.length} candidate match(es).`);
-  if (!candidates.length) return { checked: 0, updated: 0, skipped: 0 };
+  if (!candidates.length) return { checked: 0, updated: 0, skipped: 0, applied: [] };
 
   const includeLiveColumns = opts.includeLiveColumns != null ? !!opts.includeLiveColumns : await matchesHasLiveColumns();
   if (!includeLiveColumns) console.warn('ESPN live sync: live display columns missing - updating score/status only.');
@@ -233,6 +262,7 @@ async function syncEspnLive(opts = {}) {
   let updated = 0;
   let skipped = 0;
   let finalDetected = 0;
+  const applied = [];
   const nowIso = now.toISOString();
 
   for (const dbMatch of candidates) {
@@ -250,11 +280,20 @@ async function syncEspnLive(opts = {}) {
     console.log(`ESPN live sync apply ${label}: status=${patch.status}, score=${patch.home_score ?? '-'}-${patch.away_score ?? '-'}, clock=${patch.live_clock || '-'}`);
     if (!opts.dryRun) {
       await callSupabase('PATCH', 'matches', patch, `?external_id=eq.${encodeURIComponent(dbMatch.external_id)}`);
+      await writeLiveHeartbeat(dbMatch, patch, { nowIso, skipHeartbeat: opts.skipHeartbeat });
     }
+    applied.push({
+      external_id: dbMatch.external_id,
+      status: patch.status,
+      home_score: patch.home_score,
+      away_score: patch.away_score,
+      live_clock: patch.live_clock || null,
+      source_updated_at: patch.source_updated_at || nowIso
+    });
     updated++;
   }
 
-  return { checked: candidates.length, updated, skipped, finalDetected };
+  return { checked: candidates.length, updated, skipped, finalDetected, applied };
 }
 
 if (require.main === module) {
@@ -270,6 +309,7 @@ if (require.main === module) {
     normalizeTeamCode,
     syncEspnLive,
     transformEspnEvent,
+    writeLiveHeartbeat,
     __setFetch: (fn) => { globalThis.fetch = fn; }
   };
 }

@@ -369,6 +369,31 @@ const Readiness = require('./live-completion-readiness');
     'local live-poller recovery should stay visible as warning evidence'
   );
 
+  const staleScheduledJustAfterKickoff = await Readiness.runReadiness({
+    auditOptions: { nowMs: Date.parse('2026-06-23T12:04:00Z'), skipPundit: true },
+    allowStoryBacklog: true,
+    dbMatches: [
+      {
+        id: 'live-db2',
+        status: 'SCHEDULED',
+        match_date: '2026-06-23T12:00:00Z',
+        home_team_code: 'AUS',
+        away_team_code: 'EGY',
+        stage: 'ROUND_OF_32',
+      },
+    ],
+    workflowRuns: {
+      livePoller: [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T11:30:00Z' }],
+      finalResultVerifier: [{ id: 2, status: 'completed', conclusion: 'success', created_at: '2026-06-23T11:50:00Z' }],
+      pundit: [{ id: 3, status: 'completed', conclusion: 'success', created_at: '2026-06-23T11:45:00Z' }],
+    },
+  });
+  assert.strictEqual(staleScheduledJustAfterKickoff.ok, false, 'scheduled rows must fail readiness within minutes after kickoff');
+  assert.ok(
+    staleScheduledJustAfterKickoff.checks.some(check => check.name === 'live DB active match state is fresh' && !check.ok && /still SCHEDULED 4m after kickoff/.test(check.detail)),
+    'readiness must report stale scheduled match early enough for auto-recovery'
+  );
+
   const staleWorkflow = Readiness.summarizeWorkflowLiveness(
     [{ id: 1, status: 'completed', conclusion: 'success', created_at: '2026-06-23T09:00:00Z' }],
     Date.parse('2026-06-23T12:00:00Z'),

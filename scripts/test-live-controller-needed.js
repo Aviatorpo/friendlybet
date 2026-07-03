@@ -48,6 +48,17 @@ const ControllerNeeded = require('./live-controller-needed');
   ], nowMs);
   assert.strictEqual(tooFarAway.needed, false, 'far future fixtures outside the lead window should not start controller');
 
+  const twoHourLead = ControllerNeeded.summarize([
+    {
+      id: 4.5,
+      status: 'SCHEDULED',
+      match_date: '2026-06-30T21:59:59Z',
+      home_team_code: 'AUS',
+      away_team_code: 'EGY',
+    },
+  ], nowMs);
+  assert.strictEqual(twoHourLead.needed, true, 'fixtures inside the 120-minute lead window should pre-warm the controller');
+
   const activePastKickoff = ControllerNeeded.summarize([
     {
       id: 5,
