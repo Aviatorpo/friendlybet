@@ -535,4 +535,17 @@ check('story asset backlog cannot fail scoring/result workflows', () => {
   assert.ok(/test-world-cup-stories\.js \|\| true/.test(scoring), 'scoring regenerate path must not block on story validation');
 });
 
+check('join flow does not create fake pending approvals for open pools', () => {
+  const app = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+  assert.ok(app.includes('const requiresApproval = !!(state.currentPool && state.currentPool.approve_before_betting);'), 'frontend join fallback must read approve_before_betting');
+  assert.ok(app.includes("approval_status: requiresApproval ? 'pending' : 'approved'"), 'frontend join fallback must approve users in non-approval pools');
+  assert.ok(app.includes('approved_at: requiresApproval ? null : new Date().toISOString()'), 'frontend join fallback must stamp auto-approved users');
+
+  const migration = fs.readFileSync(path.join(ROOT, 'migrations/2026-07-03-fix-join-approval-status.sql'), 'utf8');
+  assert.ok(migration.includes('v_requires_approval := coalesce(v_pool.approve_before_betting, false);'), 'join_pool RPC must read approve_before_betting');
+  assert.ok(migration.includes("v_approval_status := case when v_requires_approval then 'pending' else 'approved' end;"), 'join_pool RPC must approve users in non-approval pools');
+  assert.ok(migration.includes("p.code = '287ZF'"), 'data repair must be scoped to pool 287ZF');
+  assert.ok(migration.includes("u.approval_status = 'pending'"), 'data repair must only touch pending approval rows');
+});
+
 console.log(`\nLive-ops audit tests passed: ${passed}`);
