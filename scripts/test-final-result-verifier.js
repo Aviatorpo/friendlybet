@@ -362,11 +362,20 @@ const fallbackConsensus = F.consensusUpdate([
   { source: 'guardian', update: espnUpdate },
 ], { minSources: 2, requiredSources: ['espn', 'fifa'], fallbackMinSources: 3 });
 ok('three independent families can fallback when FIFA is unavailable', !!fallbackConsensus.update && fallbackConsensus.fallback === true);
-ok('fallback consensus does not overrule explicit FIFA disagreement', !F.consensusUpdate([
+const conflictOverrideConsensus = F.consensusUpdate([
   { source: 'espn', update: espnUpdate },
+  { source: 'fifa', update: { ...fifaUpdate, away_score: 2 } },
   { source: 'livescore', update: espnUpdate },
   { source: 'guardian', update: espnUpdate },
+  { source: 'fox', update: espnUpdate },
+], { minSources: 2, requiredSources: ['espn', 'fifa'], fallbackMinSources: 3 });
+ok('three non-primary families can overrule an ESPN/FIFA conflict',
+  !!conflictOverrideConsensus.update && conflictOverrideConsensus.conflict_override === true && conflictOverrideConsensus.non_primary_family_count === 3);
+ok('two non-primary families cannot overrule an ESPN/FIFA conflict', !F.consensusUpdate([
+  { source: 'espn', update: espnUpdate },
   { source: 'fifa', update: { ...fifaUpdate, away_score: 2 } },
+  { source: 'livescore', update: espnUpdate },
+  { source: 'guardian', update: espnUpdate },
 ], { minSources: 2, requiredSources: ['espn', 'fifa'], fallbackMinSources: 3 }).update);
 ok('conflicting sources do not produce consensus', !F.consensusUpdate([
   { source: 'fifa', update: fifaUpdate },
@@ -386,11 +395,11 @@ ok('missing required official source stays waiting inside attention window',
   !F.skipNeedsAttention([{ source: 'guardian', update: espnUpdate }], missingRequiredConsensus, recentMissingRequiredMatch, new Date('2026-06-23T12:00:00Z')));
 ok('missing required official source escalates after attention window',
   F.skipNeedsAttention([{ source: 'guardian', update: espnUpdate }], missingRequiredConsensus, oldMissingRequiredMatch, new Date('2026-06-23T12:00:00Z')));
-ok('conflicting required official sources need attention immediately',
-  F.skipNeedsAttention([
+ok('conflicting required official sources keep retrying instead of attention failure',
+  !F.skipNeedsAttention([
     { source: 'espn', update: espnUpdate },
     { source: 'fifa', update: { ...fifaUpdate, away_score: 2 } },
-  ], { reason: '2 independent final source family/families, 2 required; requires agreeing espn+fifa' }, recentMissingRequiredMatch, new Date('2026-06-23T12:00:00Z')));
+  ], { reason: 'primary source conflict; requires 3 additional independent agreeing source families' }, recentMissingRequiredMatch, new Date('2026-06-23T12:00:00Z')));
 delete process.env.RESULT_ATTENTION_AFTER_MINUTES;
 ok('provider-confirmed waiting candidates do not require operational attention',
   !F.needsResultAttention({ checked: 2, updated: 0, skipped: 2, waiting: 2, attention_skips: 0 }));
