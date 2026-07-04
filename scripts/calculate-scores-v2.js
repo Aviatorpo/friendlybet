@@ -486,6 +486,14 @@ function publicScoreRow(user, groupPoints, knockoutPoints, bonusPoints, total, n
   return row;
 }
 
+function databaseScoreRow(user, groupPoints, knockoutPoints, bonusPoints, total, nowIso = new Date().toISOString()) {
+  const row = publicScoreRow(user, groupPoints, knockoutPoints, bonusPoints, total, nowIso);
+  if (Object.prototype.hasOwnProperty.call(user || {}, 'recovery_code_hash')) {
+    row.recovery_code_hash = user.recovery_code_hash;
+  }
+  return row;
+}
+
 async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, opts = {}) {
   const heartbeat = opts.heartbeat !== false;
   const now = new Date();
@@ -535,7 +543,10 @@ async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonus
 
 async function recordUserScore(user, groupPoints, knockoutPoints, bonusPoints, total, opts = {}) {
   if (Array.isArray(opts.collectScores)) {
-    opts.collectScores.push(publicScoreRow(user, groupPoints, knockoutPoints, bonusPoints, total, opts.scenarioTimestamp));
+    const row = opts.collectDatabaseScores
+      ? databaseScoreRow(user, groupPoints, knockoutPoints, bonusPoints, total, opts.scenarioTimestamp)
+      : publicScoreRow(user, groupPoints, knockoutPoints, bonusPoints, total, opts.scenarioTimestamp);
+    opts.collectScores.push(row);
     return !userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints, total);
   }
   return updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonusPoints, total, opts);
@@ -826,6 +837,7 @@ async function main(options = {}) {
           pickIndexes,
           heartbeat: SCORING_FORCE_SCORE_HEARTBEAT || !critical,
           collectScores: bulkScoreRows || opts.collectScores,
+          collectDatabaseScores: !!bulkScoreRows,
           scenarioTimestamp: bulkScoreRows ? scoringTimestampIso : opts.scenarioTimestamp,
         });
       } else {
@@ -834,6 +846,7 @@ async function main(options = {}) {
           pickIndexes,
           heartbeat: SCORING_FORCE_SCORE_HEARTBEAT || !critical,
           collectScores: bulkScoreRows || opts.collectScores,
+          collectDatabaseScores: !!bulkScoreRows,
           scenarioTimestamp: bulkScoreRows ? scoringTimestampIso : opts.scenarioTimestamp,
         });
       }
@@ -1016,6 +1029,7 @@ async function scoreSinglePhasePool(pool, rules, users, finishedMatches, tsMap, 
     const wrote = await recordUserScore(user, groupPoints, knockoutPoints, bonusPoints, total, {
       heartbeat: opts.heartbeat !== false,
       collectScores: opts.collectScores,
+      collectDatabaseScores: opts.collectDatabaseScores,
       scenarioTimestamp: opts.scenarioTimestamp,
     });
     if (wrote) changedUsers++;
@@ -1113,6 +1127,7 @@ async function scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, rea
     const wrote = await recordUserScore(user, groupPoints, knockoutPoints, bonusPoints, total, {
       heartbeat: opts.heartbeat !== false,
       collectScores: opts.collectScores,
+      collectDatabaseScores: opts.collectDatabaseScores,
       scenarioTimestamp: opts.scenarioTimestamp,
     });
     if (wrote) changedUsers++;
@@ -1132,7 +1147,7 @@ if (require.main === module) {
     main, scoreSinglePhasePool, scoreTwoPhasePool,
     computeGroupStandings, groupIsComplete, groupMatchIdentity, isTerminalMatch, isPendingProviderFinal, knockoutWinner,
     buildGroupState, indexRowsBy, userScoresAlreadyCurrent, updateUserScoreIfChanged,
-    recordUserScore, publicScoreRow,
+    recordUserScore, publicScoreRow, databaseScoreRow,
     upsertScoreRows,
     scoreCalcTimestampFresh,
     bracketPosRuleKey, stageRuleKey, poolMultResolver, buildTwoPhaseSlotMatches,
