@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-04T13:54:02.450Z",
-  "freshUntil": "2026-07-04T19:54:02.450Z",
+  "updatedAt": "2026-07-04T16:12:49.620Z",
+  "freshUntil": "2026-07-04T22:12:49.620Z",
   "count": 6,
   "items": [
     {
@@ -31,15 +31,6 @@
       "expires_at": "2026-07-05T06:00:00.000Z"
     },
     {
-      "id": "result-399b52f8-23c0-4421-bc48-763df6ed58af",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "שווייץ עברה את אלג'יריה 2:0. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על אלג'יריה צריך מסלול חדש 🧾",
-      "en": "Switzerland got past Algeria 2-0. Brackets that picked them get a receipt; Algeria believers need a new route 🧾",
-      "sources": [],
-      "expires_at": "2026-07-04T15:00:00.000Z"
-    },
-    {
       "id": "fixture-725161f2-68ae-4b8f-bda4-d08243bec185",
       "type": "fixture",
       "confidence": "confirmed",
@@ -56,6 +47,15 @@
       "en": "Round of 16: Paraguay vs France, tomorrow 24:00. France picks want calm; Paraguay picks are hunting bracket shock ⏰",
       "sources": [],
       "expires_at": "2026-07-04T20:45:00.000Z"
+    },
+    {
+      "id": "fixture-d766b98c-7eea-4f41-9227-3c1a0f6826b4",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "שמינית הגמר: ברזיל נגד נורווגיה, מחר 23:00. מי שבנה על ברזיל רוצה שקט; מי שסימן את נורווגיה מחפש רעידת בראקט ⏰",
+      "en": "Round of 16: Brazil vs Norway, tomorrow 23:00. Brazil picks want calm; Norway picks are hunting bracket shock ⏰",
+      "sources": [],
+      "expires_at": "2026-07-05T19:45:00.000Z"
     }
   ]
 }
