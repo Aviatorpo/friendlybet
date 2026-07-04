@@ -107,4 +107,24 @@ const scheduleMatch = {
   assert.strictEqual(merged.live_source, 'manual-verifier');
 }
 
+{
+  const scheduled = bridge.normalizeScheduleRow(scheduleMatch);
+  const finished = bridge.normalizeScheduleRow({
+    ...scheduleMatch,
+    status: 'FINISHED',
+    home_score: 2,
+    away_score: 1
+  });
+  const result = bridge.scoreableResultVersionChanged([scheduled], [finished]);
+  assert.strictEqual(result.changed, true, 'terminal schedule bridge updates must flag scoreable result_version changes');
+  assert.notStrictEqual(result.beforeResultVersion, result.afterResultVersion);
+}
+
+{
+  const scheduled = bridge.normalizeScheduleRow(scheduleMatch);
+  const shiftedVenue = { ...scheduled, venue: 'Changed Venue' };
+  const result = bridge.scoreableResultVersionChanged([scheduled], [shiftedVenue]);
+  assert.strictEqual(result.changed, false, 'non-scoreable schedule metadata must not dispatch scoring');
+}
+
 console.log('sync fifa schedule to matches tests passed');

@@ -74,6 +74,28 @@ eq('pool snapshot verifier requires current points state when versioned', V.veri
   'local pool pool-1 points_state mismatch: expected=current_for_result_version snapshot=updating'
 ]);
 
+eq('pool snapshot verifier rejects stale score heartbeat after latest result', V.verifyPoolSnapshot('local', 'pool-1', [{
+  ...dbUser,
+  joined_at: '2026-07-04T01:00:00Z',
+  last_score_calc: '2026-07-04T06:00:00Z'
+}], {
+  result_version: 'rv_new',
+  points_state: 'current_for_result_version',
+  standings: [{ ...dbUser }]
+}, { resultVersion: 'rv_new', requirePointsState: true, scoreFreshAfterMs: Date.parse('2026-07-04T06:35:00Z') }).errors, [
+  'local pool pool-1 user user-1 last_score_calc stale: expected>=2026-07-04T06:35:00.000Z actual=2026-07-04T06:00:00Z'
+]);
+
+eq('score heartbeat ignores users who joined after the result update', V.verifyPoolSnapshot('local', 'pool-1', [{
+  ...dbUser,
+  joined_at: '2026-07-04T06:40:00Z',
+  last_score_calc: null
+}], {
+  result_version: 'rv_new',
+  points_state: 'current_for_result_version',
+  standings: [{ ...dbUser }]
+}, { resultVersion: 'rv_new', requirePointsState: true, scoreFreshAfterMs: Date.parse('2026-07-04T06:35:00Z') }).errors, []);
+
 process.env.LEADERBOARD_POOL_IDS = ' pool-a,pool-b,pool-a ';
 delete process.env.FORCE_ALL_LEADERBOARD_SNAPSHOTS;
 eq('requested pool ids are deduplicated and trimmed', V.requestedLeaderboardPoolIds(), ['pool-a', 'pool-b']);

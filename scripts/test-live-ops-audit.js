@@ -194,6 +194,13 @@ check('scoring workflow commits critical public snapshots before backup tail', (
     /name: Prove public scoring snapshots[\s\S]*timeout-minutes:\s*12/.test(text),
     'public scoring proof must be bounded so Actions do not hang indefinitely after publication'
   );
+  assertOrdered(
+    text,
+    file,
+    'Prove public scoring snapshots',
+    'Check knockout scenario readiness',
+    'public scoring proof must run before non-critical knockout scenario readiness'
+  );
 });
 
 check('final-result verifier has continuous 15-minute recovery schedule', () => {
@@ -260,6 +267,13 @@ check('verified-result workflows refresh next hidden knockout scenarios', () => 
         /commit-generated-snapshots\.sh[\s\S]*public-data/.test(text),
       `${file} must commit next knockout scenario files`
     );
+    assertOrdered(
+      text,
+      file,
+      'Prove public scoring snapshots',
+      'Check knockout scenario readiness',
+      `${file} must prove public scoring before non-critical scenario readiness`
+    );
   });
 });
 
@@ -282,6 +296,10 @@ check('FIFA schedule workflow bridges official schedule into scoring DB', () => 
   assert.ok(text.includes('node scripts/sync-fifa-schedule-to-matches.js --include-placeholders'), 'schedule workflow must bridge schedule rows into Supabase matches');
   assert.ok(text.includes('SUPABASE_SECRET_KEY'), 'schedule bridge must use the service key from GitHub secrets');
   assert.ok(text.includes('node scripts/export-snapshots.js matches'), 'schedule bridge must export public match snapshot after DB upsert');
+  assert.ok(/permissions:\s*\n\s+contents:\s*write\s*\n\s+actions:\s*write/.test(text), 'schedule bridge must be allowed to dispatch forced scoring after scoreable result changes');
+  assert.ok(text.includes("steps.schedule_bridge.outputs.scoreable_result_changed == 'true'"), 'schedule bridge must key scoring dispatch to scoreable result_version changes');
+  assert.ok(text.includes('gh workflow run calculate-scores-v2.yml'), 'schedule bridge must dispatch forced scoring when it changes scoreable match truth');
+  assert.ok(text.includes('force_leaderboard_export=true'), 'schedule bridge dispatch must force all leaderboard publication/proof');
   assertOrdered(text, file,
     'node scripts/update-fifa-world-cup-schedule.js --if-window',
     'node scripts/sync-fifa-schedule-to-matches.js --include-placeholders',
@@ -496,7 +514,10 @@ check('readiness monitor can recover stale active live DB state', () => {
   const text = fs.readFileSync(path.join(ROOT, '.github/workflows/live-completion-readiness.yml'), 'utf8');
   assert.ok(text.includes('readiness-before.json'), 'readiness monitor must capture the first failing gate result');
   assert.ok(text.includes("name==='live DB active match state is fresh'"), 'readiness monitor must target stale active DB state only');
+  assert.ok(text.includes("name==='score publication is current for latest result_version'"), 'readiness monitor must target stale score publication as recoverable work');
   assert.ok(text.includes('node scripts/live-poller.js'), 'readiness monitor must run one live-poller recovery pass');
+  assert.ok(text.includes('stale_score_publication'), 'readiness monitor must track score-publication failures separately from live polling');
+  assert.ok(text.includes('force_leaderboard_export=true'), 'readiness score-publication recovery must force all leaderboard publication/proof');
   assert.ok(/timeout-minutes:\s*18/.test(text), 'readiness monitor timeout must allow a recovery poll and second gate');
 });
 

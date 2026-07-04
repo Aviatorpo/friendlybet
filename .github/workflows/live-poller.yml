@@ -106,6 +106,7 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
           SCORING_VERBOSE: '0'
+          SCORING_FORCE_SCORE_HEARTBEAT: '1'
         run: node scripts/calculate-scores-v2.js --critical
 
       - name: Export leaderboard snapshots after scoring
@@ -124,6 +125,7 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
           FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
+          SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT: '1'
         run: node scripts/verify-scoring-snapshots.js
 
       - name: Refresh FIFA schedule after live verified result
@@ -171,9 +173,9 @@ jobs:
             node scripts/update-fifa-world-cup-schedule.js || true
             node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36 || true
             node scripts/export-snapshots.js matches
-            node scripts/calculate-scores-v2.js --critical
+            SCORING_FORCE_SCORE_HEARTBEAT=1 node scripts/calculate-scores-v2.js --critical
             node scripts/export-snapshots.js leaderboards
-            node scripts/verify-scoring-snapshots.js
+            SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT=1 node scripts/verify-scoring-snapshots.js
             node scripts/generate-knockout-scenarios.js || true
         run: |
           git config user.name "Aviatorpo"
@@ -184,14 +186,6 @@ jobs:
             echo "no live final snapshot change"
           fi
 
-      - name: Check knockout scenario readiness
-        if: steps.verify_results.outputs.changed == 'true'
-        env:
-          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
-          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          KNOCKOUT_SCENARIO_FAIL_WITHIN_HOURS: 24
-        run: node scripts/knockout-scenario-readiness.js
-
       - name: Prove public scoring snapshots after live final
         if: steps.verify_results.outputs.changed == 'true'
         env:
@@ -199,10 +193,19 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
           FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
+          SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT: '1'
           SCORING_SNAPSHOT_PUBLIC_BASE_URL: https://friendlybet.live
           SCORING_SNAPSHOT_PUBLIC_RETRIES: 60
           SCORING_SNAPSHOT_PUBLIC_RETRY_MS: 10000
         run: node scripts/verify-scoring-snapshots.js
+
+      - name: Check knockout scenario readiness
+        if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          KNOCKOUT_SCENARIO_FAIL_WITHIN_HOURS: 24
+        run: node scripts/knockout-scenario-readiness.js
 
       - name: Generate leaderboard banter after critical scoring
         if: steps.verify_results.outputs.changed == 'true'

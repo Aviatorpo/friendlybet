@@ -19,6 +19,9 @@ const SCORING_CRITICAL =
   process.argv.includes('--critical') ||
   process.env.SCORING_CRITICAL === '1' ||
   process.env.SCORING_CRITICAL === 'true';
+const SCORING_FORCE_SCORE_HEARTBEAT =
+  process.env.SCORING_FORCE_SCORE_HEARTBEAT === '1' ||
+  process.env.SCORING_FORCE_SCORE_HEARTBEAT === 'true';
 const SCORING_POOL_IDS = csvList(process.env.SCORING_POOL_IDS || '');
 const fs = require('fs');
 const path = require('path');
@@ -399,6 +402,7 @@ const SCORE_HEARTBEAT_MAX_PATCHES_PER_RUN = 250;
 let scoreHeartbeatPatchesThisRun = 0;
 
 function scoreCalcTimestampFresh(value, nowMs = Date.now()) {
+  if (SCORING_FORCE_SCORE_HEARTBEAT) return false;
   if (!value) return false;
   const ts = Date.parse(value);
   if (!Number.isFinite(ts)) return false;
@@ -406,6 +410,7 @@ function scoreCalcTimestampFresh(value, nowMs = Date.now()) {
 }
 
 function canPatchScoreHeartbeat() {
+  if (SCORING_FORCE_SCORE_HEARTBEAT) return true;
   return scoreHeartbeatPatchesThisRun < SCORE_HEARTBEAT_MAX_PATCHES_PER_RUN;
 }
 
@@ -776,13 +781,13 @@ async function main(options = {}) {
           lateKnockout: mode === 'late_knockout',
           groupState,
           pickIndexes,
-          heartbeat: !critical,
+          heartbeat: SCORING_FORCE_SCORE_HEARTBEAT || !critical,
         });
       } else {
         result = await scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, {
           groupState,
           pickIndexes,
-          heartbeat: !critical,
+          heartbeat: SCORING_FORCE_SCORE_HEARTBEAT || !critical,
         });
       }
       scoredPools++;
@@ -809,6 +814,9 @@ async function main(options = {}) {
       ? `${changedUsers} user score(s) changed`
       : `result_version changed from ${localResultVersion || 'missing'} to ${resultVersion || 'missing'}`;
     console.log(`forcing all leaderboard snapshots because ${reason}`);
+  }
+  if (SCORING_FORCE_SCORE_HEARTBEAT) {
+    console.log('forced score heartbeat was enabled; unchanged users were stamped for result-publication proof');
   }
   setGithubOutput('score_ms', elapsedMs);
   setGithubOutput('changed_pool_ids', changedPoolList.join(','));

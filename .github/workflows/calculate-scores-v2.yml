@@ -93,6 +93,7 @@ jobs:
           SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
           SCORING_VERBOSE: '0'
           SCORING_POOL_IDS: ${{ inputs.pool_ids }}
+          SCORING_FORCE_SCORE_HEARTBEAT: ${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}
         run: node scripts/calculate-scores-v2.js --critical
       # Pillar 1: refresh CDN snapshots (matches + per-pool leaderboards) after scoring,
       # so clients read standings from the edge instead of full-table reads of `users`.
@@ -120,6 +121,7 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids || inputs.pool_ids }}
           FORCE_ALL_LEADERBOARD_SNAPSHOTS: ${{ (steps.score_results.outputs.force_all_leaderboard_snapshots == '1' || inputs.force_leaderboard_export == 'true') && '1' || '' }}
+          SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT: ${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}
         run: node scripts/verify-scoring-snapshots.js
 
       - name: Audit two-phase knockout scoring
@@ -162,10 +164,10 @@ jobs:
           REGENERATE_COMMANDS: |
             node scripts/repair-pick-multipliers.js
             if [ "${{ inputs.restore_from_snapshot }}" = "true" ]; then RESTORE_POOL_IDS="${{ inputs.pool_ids }}" node scripts/restore-score-components-from-snapshots.js || true; fi
-            SCORING_POOL_IDS="${{ inputs.pool_ids }}" node scripts/calculate-scores-v2.js --critical
+            SCORING_FORCE_SCORE_HEARTBEAT="${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}" SCORING_POOL_IDS="${{ inputs.pool_ids }}" node scripts/calculate-scores-v2.js --critical
             FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches
             node scripts/export-snapshots.js leaderboards
-            node scripts/verify-scoring-snapshots.js
+            SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT="${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}" node scripts/verify-scoring-snapshots.js
             node scripts/audit-two-phase-knockout-scoring.js
             node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36 || true
             FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches
@@ -221,10 +223,10 @@ jobs:
           REGENERATE_COMMANDS: |
             node scripts/repair-pick-multipliers.js
             if [ "${{ inputs.restore_from_snapshot }}" = "true" ]; then RESTORE_POOL_IDS="${{ inputs.pool_ids }}" node scripts/restore-score-components-from-snapshots.js || true; fi
-            SCORING_POOL_IDS="${{ inputs.pool_ids }}" node scripts/calculate-scores-v2.js --critical
+            SCORING_FORCE_SCORE_HEARTBEAT="${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}" SCORING_POOL_IDS="${{ inputs.pool_ids }}" node scripts/calculate-scores-v2.js --critical
             FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches
             node scripts/export-snapshots.js leaderboards
-            node scripts/verify-scoring-snapshots.js
+            SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT="${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}" node scripts/verify-scoring-snapshots.js
             node scripts/audit-two-phase-knockout-scoring.js
             node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36 || true
             FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches
@@ -242,13 +244,6 @@ jobs:
             echo "no snapshot change"
           fi
 
-      - name: Check knockout scenario readiness
-        env:
-          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
-          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-          KNOCKOUT_SCENARIO_FAIL_WITHIN_HOURS: 24
-        run: node scripts/knockout-scenario-readiness.js
-
       - name: Prove public scoring snapshots
         if: steps.score_results.outputs.changed_pool_ids != '' || steps.score_results.outputs.force_all_leaderboard_snapshots == '1' || inputs.pool_ids != '' || inputs.force_leaderboard_export == 'true'
         timeout-minutes: 12
@@ -257,7 +252,15 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids || inputs.pool_ids }}
           FORCE_ALL_LEADERBOARD_SNAPSHOTS: ${{ (steps.score_results.outputs.force_all_leaderboard_snapshots == '1' || inputs.force_leaderboard_export == 'true') && '1' || '' }}
+          SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT: ${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}
           SCORING_SNAPSHOT_PUBLIC_BASE_URL: https://friendlybet.live
           SCORING_SNAPSHOT_PUBLIC_RETRIES: 60
           SCORING_SNAPSHOT_PUBLIC_RETRY_MS: 10000
         run: node scripts/verify-scoring-snapshots.js
+
+      - name: Check knockout scenario readiness
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          KNOCKOUT_SCENARIO_FAIL_WITHIN_HOURS: 24
+        run: node scripts/knockout-scenario-readiness.js

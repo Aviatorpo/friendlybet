@@ -12,6 +12,7 @@ process.env.SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY || LOCAL_SUPAB
 
 const LiveOpsAudit = require('./live-ops-audit');
 const WCR = require('../share-assets/world-cup-rules.js');
+const { resultVersionFromMatches } = require('./export-snapshots.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const LIVE_DB_SCHEDULED_GRACE_MS = 3 * 60 * 1000;
@@ -21,6 +22,9 @@ const LIVE_POLLER_STALE_MS = 20 * 60 * 1000;
 const FINAL_VERIFIER_STALE_MS = 45 * 60 * 1000;
 const PUNDIT_WORKFLOW_STALE_MS = 35 * 60 * 1000;
 const WORKFLOW_LIVENESS_PRE_MATCH_MS = 90 * 60 * 1000;
+const REST_PAGE_SIZE = 1000;
+const PUBLIC_LEADERBOARD_PROOF_CONCURRENCY = Math.max(1, parseInt(process.env.LIVE_COMPLETION_PUBLIC_LEADERBOARD_CONCURRENCY || '', 10) || 6);
+const PUBLIC_LEADERBOARD_PROOF_LIMIT = Math.max(1, parseInt(process.env.LIVE_COMPLETION_PUBLIC_LEADERBOARD_LIMIT || '', 10) || 2500);
 
 function read(file) {
   return fs.readFileSync(path.join(ROOT, file), 'utf8');
@@ -169,6 +173,134 @@ async function fetchSupabaseMatches(config, fetchImpl = globalThis.fetch) {
   const matches = await res.json();
   if (!Array.isArray(matches)) throw new Error('Supabase matches readiness returned a non-array payload');
   return matches;
+}
+
+async function fetchSupabaseRows(config, table, select, fetchImpl = globalThis.fetch) {
+  if (typeof fetchImpl !== 'function') throw new Error('fetch is not available');
+  const url = normalizeBaseUrl(process.env.SUPABASE_URL || config.url || '');
+  const secretKey = HAD_SUPABASE_SECRET_KEY ? process.env.SUPABASE_SECRET_KEY : '';
+  const key = secretKey
+    || process.env.SUPABASE_PUBLISHABLE_KEY
+    || process.env.SUPABASE_ANON_KEY
+    || config.key;
+  if (!url || !key) throw new Error('Supabase URL/key missing');
+  const all = [];
+  for (let from = 0, guard = 0; ; guard++, from += REST_PAGE_SIZE) {
+    if (guard >= 10000) throw new Error(`Supabase ${table} readiness pagination guard exceeded`);
+    const endpoint = `${url}/rest/v1/${table}?select=${encodeURIComponent(select)}`;
+    const res = await fetchImpl(endpoint, {
+      headers: {
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+        Accept: 'application/json',
+        Range: `${from}-${from + REST_PAGE_SIZE - 1}`,
+      },
+    });
+    if (!res || !res.ok) throw new Error(`Supabase ${table} readiness failed (${res && res.status})`);
+    const page = await res.json();
+    if (!Array.isArray(page)) throw new Error(`Supabase ${table} readiness returned a non-array payload`);
+    all.push(...page);
+    if (page.length < REST_PAGE_SIZE) break;
+  }
+  return all;
+}
+
+function latestScoreableResultUpdateMs(matches) {
+  let latest = NaN;
+  for (const match of matches || []) {
+    const status = String(match && match.status || '').toUpperCase();
+    if (!['FINISHED', 'AWARDED'].includes(status)) continue;
+    if (match.home_score == null || match.away_score == null) continue;
+    const candidate = Math.max(
+      parseTime(match.source_updated_at),
+      parseTime(match.last_updated),
+      parseTime(match.match_date)
+    );
+    if (Number.isFinite(candidate) && (!Number.isFinite(latest) || candidate > latest)) latest = candidate;
+  }
+  return latest;
+}
+
+function userNeedsFreshScoreCalc(user, cutoffMs) {
+  if (!Number.isFinite(cutoffMs)) return false;
+  const joinedMs = parseTime(user && user.joined_at);
+  return !Number.isFinite(joinedMs) || joinedMs <= cutoffMs;
+}
+
+async function mapLimit(items, limit, fn) {
+  const results = new Array(items.length);
+  let next = 0;
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (next < items.length) {
+      const index = next++;
+      results[index] = await fn(items[index], index);
+    }
+  });
+  await Promise.all(workers);
+  return results;
+}
+
+async function summarizeScorePublicationFreshness(config, matches, options = {}) {
+  const fetchImpl = options.fetch || globalThis.fetch;
+  const resultVersion = resultVersionFromMatches(matches || []);
+  const latestResultMs = latestScoreableResultUpdateMs(matches || []);
+  const [pools, users] = await Promise.all([
+    fetchSupabaseRows(config, 'pools', 'id', fetchImpl),
+    fetchSupabaseRows(config, 'users', 'id,pool_id,last_score_calc,joined_at,total_score', fetchImpl),
+  ]);
+
+  const poolsWithUsers = new Set((users || []).map(user => user && user.pool_id).filter(Boolean));
+  const staleUsers = [];
+  const stalePools = new Set();
+  if (Number.isFinite(latestResultMs)) {
+    for (const user of users || []) {
+      if (!userNeedsFreshScoreCalc(user, latestResultMs)) continue;
+      const scoreMs = parseTime(user.last_score_calc);
+      if (!Number.isFinite(scoreMs) || scoreMs < latestResultMs) {
+        staleUsers.push(user);
+        if (user.pool_id) stalePools.add(user.pool_id);
+      }
+    }
+  }
+
+  const publicBaseUrl = normalizeBaseUrl(options.publicBaseUrl || '');
+  const publicMismatches = [];
+  let publicChecked = 0;
+  let publicSkipped = 0;
+  if (publicBaseUrl && resultVersion) {
+    const poolList = (pools || []).filter(pool => pool && poolsWithUsers.has(pool.id));
+    const proofList = poolList.slice(0, PUBLIC_LEADERBOARD_PROOF_LIMIT);
+    publicSkipped = Math.max(0, poolList.length - proofList.length);
+    await mapLimit(proofList, PUBLIC_LEADERBOARD_PROOF_CONCURRENCY, async (pool) => {
+      try {
+        const sep = publicBaseUrl.includes('?') ? '&' : '?';
+        const snapshot = await fetchJson(`${publicBaseUrl}/public-data/leaderboard/${encodeURIComponent(pool.id)}.json${sep}cb=${Date.now()}`, fetchImpl);
+        publicChecked++;
+        if (!snapshot || snapshot.result_version !== resultVersion || snapshot.points_state !== 'current_for_result_version') {
+          publicMismatches.push(`${pool.id}: rv=${snapshot && snapshot.result_version || 'missing'} points=${snapshot && snapshot.points_state || 'missing'}`);
+        }
+      } catch (err) {
+        publicChecked++;
+        publicMismatches.push(`${pool.id}: fetch failed ${err.message}`);
+      }
+    });
+  }
+
+  return {
+    ok: staleUsers.length === 0 && publicMismatches.length === 0 && publicSkipped === 0,
+    result_version: resultVersion,
+    latest_result_updated_at: Number.isFinite(latestResultMs) ? new Date(latestResultMs).toISOString() : null,
+    pools: (pools || []).length,
+    pools_with_users: poolsWithUsers.size,
+    users: (users || []).length,
+    stale_users: staleUsers.length,
+    stale_pools: stalePools.size,
+    stale_sample: staleUsers.slice(0, 8).map(user => `${user.pool_id || '?'}:${user.id}:${user.last_score_calc || 'missing'}`),
+    public_checked: publicChecked,
+    public_mismatches: publicMismatches.length,
+    public_mismatch_sample: publicMismatches.slice(0, 8),
+    public_skipped: publicSkipped,
+  };
 }
 
 function summarizeLiveDbFreshness(matches, nowMs) {
@@ -471,9 +603,10 @@ async function runReadiness(options = {}) {
   );
   add(
     checks,
-    'readiness monitor self-heals stale active live DB',
+    'readiness monitor self-heals stale active live DB and score publication',
     readinessMonitor.includes('readiness-before.json')
       && readinessMonitor.includes("name==='live DB active match state is fresh'")
+      && readinessMonitor.includes("name==='score publication is current for latest result_version'")
       && readinessMonitor.includes('node scripts/live-poller.js')
       && readinessMonitor.includes('running one live-poller recovery pass')
       && readinessMonitor.includes('FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches')
@@ -481,7 +614,7 @@ async function runReadiness(options = {}) {
       && readinessMonitor.includes('gh workflow run calculate-scores-v2.yml')
       && readinessMonitor.includes('force_leaderboard_export=true')
       && /permissions:\s*\n\s+contents:\s*write\s*\n\s+actions:\s*write/.test(readinessMonitor),
-    'stale active match state should trigger one direct live-poller pass, publish the match snapshot, and then hand off to forced scoring/export'
+    'stale active match state or stale result publication should trigger recovery and forced scoring/export'
   );
   add(
     checks,
@@ -605,10 +738,12 @@ async function runReadiness(options = {}) {
   }
 
   let liveDb = null;
+  let liveDbMatches = null;
   const shouldCheckDb = options.dbMatches || options.dbSource === 'supabase' || process.env.LIVE_COMPLETION_DB_SOURCE === 'supabase';
   if (shouldCheckDb) {
     try {
       const dbMatches = options.dbMatches || await fetchSupabaseMatches(supabaseConfig, options.fetch);
+      liveDbMatches = dbMatches;
       workflowContextMatches = dbMatches;
       const dbAudit = await LiveOpsAudit.audit({
         ...(options.auditOptions || {}),
@@ -642,6 +777,20 @@ async function runReadiness(options = {}) {
       add(checks, 'official knockout bracket is exact when groups are complete', !officialBracket.active || officialBracket.ok, officialBracket.detail);
     } catch (err) {
       add(checks, 'live DB matches are readable', false, err.message);
+    }
+  }
+
+  let scorePublication = null;
+  if (liveDbMatches) {
+    try {
+      scorePublication = await summarizeScorePublicationFreshness(supabaseConfig, liveDbMatches, {
+        fetch: options.fetch,
+        publicBaseUrl,
+      });
+      const detail = `rv=${scorePublication.result_version || 'missing'}, latest=${scorePublication.latest_result_updated_at || 'missing'}, staleUsers=${scorePublication.stale_users}, stalePools=${scorePublication.stale_pools}, publicMismatches=${scorePublication.public_mismatches}, publicChecked=${scorePublication.public_checked}, publicSkipped=${scorePublication.public_skipped}${scorePublication.stale_sample.length ? `, staleSample=${scorePublication.stale_sample.join('; ')}` : ''}${scorePublication.public_mismatch_sample.length ? `, publicSample=${scorePublication.public_mismatch_sample.join('; ')}` : ''}`;
+      add(checks, 'score publication is current for latest result_version', scorePublication.ok, detail);
+    } catch (err) {
+      add(checks, 'score publication is current for latest result_version', false, err.message);
     }
   }
 
@@ -751,6 +900,7 @@ async function runReadiness(options = {}) {
     checks,
     warnings,
     live_db: liveDb,
+    score_publication: scorePublication,
     workflow_liveness: workflowLiveness,
     production,
     audit: {
@@ -783,7 +933,11 @@ if (require.main === module) {
     summarizePublicSnapshots,
     loadPublicSnapshots,
     fetchSupabaseMatches,
+    fetchSupabaseRows,
     auditPublicSnapshots,
+    summarizeScorePublicationFreshness,
+    latestScoreableResultUpdateMs,
+    userNeedsFreshScoreCalc,
     summarizeLiveDbFreshness,
     isWorkflowLivenessRequired,
     summarizeWorkflowLiveness,

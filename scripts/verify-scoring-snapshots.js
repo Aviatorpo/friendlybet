@@ -20,6 +20,9 @@ const PUBLIC_BASE_URL = String(process.env.SCORING_SNAPSHOT_PUBLIC_BASE_URL || '
 const PUBLIC_RETRIES = Math.max(1, parseInt(process.env.SCORING_SNAPSHOT_PUBLIC_RETRIES || '', 10) || 1);
 const PUBLIC_RETRY_MS = Math.max(0, parseInt(process.env.SCORING_SNAPSHOT_PUBLIC_RETRY_MS || '', 10) || 0);
 const POOL_QUERY_BATCH_SIZE = Math.max(1, parseInt(process.env.SCORING_SNAPSHOT_POOL_QUERY_BATCH_SIZE || '', 10) || 50);
+const REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT =
+  process.env.SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT === '1' ||
+  process.env.SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT === 'true';
 const SAFE_USER_COLS = [
   'id', 'pool_id', 'nickname', 'total_score',
   'group_points', 'knockout_points', 'bonus_points',
@@ -109,6 +112,45 @@ function localMatchesResultVersion() {
   }
 }
 
+function timestampMs(value) {
+  const ms = Date.parse(value || '');
+  return Number.isFinite(ms) ? ms : NaN;
+}
+
+function scoreableResultRows(payload) {
+  const matches = Array.isArray(payload && payload.matches) ? payload.matches : [];
+  return matches.filter(match => {
+    const status = String(match && match.status || '').toUpperCase();
+    return (status === 'FINISHED' || status === 'AWARDED')
+      && match.home_score != null
+      && match.away_score != null;
+  });
+}
+
+function localLatestScoreableResultUpdateMs() {
+  try {
+    const payload = readJson(path.join(DATA_DIR, 'matches.json'));
+    let latest = NaN;
+    for (const match of scoreableResultRows(payload)) {
+      const candidate = Math.max(
+        timestampMs(match.source_updated_at),
+        timestampMs(match.last_updated),
+        timestampMs(match.match_date)
+      );
+      if (Number.isFinite(candidate) && (!Number.isFinite(latest) || candidate > latest)) latest = candidate;
+    }
+    return latest;
+  } catch (_) {
+    return NaN;
+  }
+}
+
+function userRequiresScoreHeartbeat(user, cutoffMs) {
+  if (!Number.isFinite(cutoffMs)) return false;
+  const joinedMs = timestampMs(user && user.joined_at);
+  return !Number.isFinite(joinedMs) || joinedMs <= cutoffMs;
+}
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -166,6 +208,12 @@ function verifyPoolSnapshot(label, poolId, dbUsers, snapshot, opts = {}) {
     }
     if (!rowsMatch(dbUser, snapUser)) {
       errors.push(`${label} pool ${poolId} user ${dbUser.id} score mismatch: db=${JSON.stringify(comparableScoreRow(dbUser))} snapshot=${JSON.stringify(comparableScoreRow(snapUser))}`);
+    }
+    if (opts.scoreFreshAfterMs && userRequiresScoreHeartbeat(dbUser, opts.scoreFreshAfterMs)) {
+      const scoreMs = timestampMs(dbUser.last_score_calc);
+      if (!Number.isFinite(scoreMs) || scoreMs < opts.scoreFreshAfterMs) {
+        errors.push(`${label} pool ${poolId} user ${dbUser.id} last_score_calc stale: expected>=${new Date(opts.scoreFreshAfterMs).toISOString()} actual=${dbUser.last_score_calc || 'missing'}`);
+      }
     }
     const total = scoreNumber(dbUser.total_score);
     poolTotal += total;
@@ -231,6 +279,7 @@ async function verifyPublicSnapshots(pools, usersByPool, expectedResultVersion =
       const checked = verifyPoolSnapshot('public', pool.id, dbUsers, snapshot, {
         resultVersion: publicResultVersion || expectedResultVersion,
         requirePointsState: !!(publicResultVersion || expectedResultVersion),
+        scoreFreshAfterMs: REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT ? localLatestScoreableResultUpdateMs() : null,
       });
       errors.push(...checked.errors);
       verifiedPools++;
@@ -262,6 +311,7 @@ async function main() {
 
   const errors = [];
   const resultVersion = localMatchesResultVersion();
+  const scoreFreshAfterMs = REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT ? localLatestScoreableResultUpdateMs() : null;
   let verifiedPools = 0;
   let verifiedUsers = 0;
   let nonZeroPools = 0;
@@ -288,6 +338,7 @@ async function main() {
     const checked = verifyPoolSnapshot('local', pool.id, dbUsers, snapshot, {
       resultVersion,
       requirePointsState: !!resultVersion,
+      scoreFreshAfterMs,
     });
     errors.push(...checked.errors);
     verifiedUsers += checked.verifiedUsers;
@@ -312,6 +363,7 @@ async function main() {
     nonZeroPools,
     nonZeroUsers,
     resultVersion,
+    scoreFreshAfter: Number.isFinite(scoreFreshAfterMs) ? new Date(scoreFreshAfterMs).toISOString() : null,
     publicVerifiedPools,
     publicVerifiedUsers,
     errors: errors.slice(0, 20),
@@ -335,6 +387,8 @@ if (require.main === module) {
     verifyPoolSnapshot,
     verifyPublicSnapshots,
     localMatchesResultVersion,
+    timestampMs,
+    userRequiresScoreHeartbeat,
     rowsMatch,
     scoreNumber,
     sbAll,

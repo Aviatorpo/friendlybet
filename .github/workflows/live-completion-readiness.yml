@@ -86,18 +86,22 @@ jobs:
 
           stale_live_db=$(node -e "const r=require('./readiness-before.json'); const c=(r.checks||[]).find(x=>x.name==='live DB active match state is fresh'); process.stdout.write(c && !c.ok ? '1' : '0')")
           stale_live_poller=$(node -e "const r=require('./readiness-before.json'); const c=(r.checks||[]).find(x=>x.name==='live poller workflow ran recently'); process.stdout.write(c && !c.ok ? '1' : '0')")
-          if [ "$stale_live_db" != "1" ] && [ "$stale_live_poller" != "1" ]; then
+          stale_score_publication=$(node -e "const r=require('./readiness-before.json'); const c=(r.checks||[]).find(x=>x.name==='score publication is current for latest result_version'); process.stdout.write(c && !c.ok ? '1' : '0')")
+          if [ "$stale_live_db" != "1" ] && [ "$stale_live_poller" != "1" ] && [ "$stale_score_publication" != "1" ]; then
             node scripts/send-telegram-incident.js readiness-before.json || true
             exit "$status"
           fi
 
           recovery_dispatched=0
-          echo "::warning::Readiness detected stale live-poller coverage; running one live-poller recovery pass directly."
-          poller_output="$(mktemp)"
-          GITHUB_OUTPUT="$poller_output" node scripts/live-poller.js
-          cat "$poller_output"
-          final_detected="$(grep '^final_detected=' "$poller_output" | tail -n 1 | cut -d= -f2- || true)"
-          if [ "$stale_live_db" = "1" ] || [ "$final_detected" = "true" ]; then
+          final_detected=false
+          if [ "$stale_live_db" = "1" ] || [ "$stale_live_poller" = "1" ]; then
+            echo "::warning::Readiness detected stale live-poller coverage; running one live-poller recovery pass directly."
+            poller_output="$(mktemp)"
+            GITHUB_OUTPUT="$poller_output" node scripts/live-poller.js
+            cat "$poller_output"
+            final_detected="$(grep '^final_detected=' "$poller_output" | tail -n 1 | cut -d= -f2- || true)"
+          fi
+          if [ "$stale_live_db" = "1" ] || [ "$final_detected" = "true" ] || [ "$stale_score_publication" = "1" ]; then
             if FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches; then
               if [ -n "$(git status --porcelain public-data/matches.json)" ]; then
                 git config user.name "Aviatorpo"
@@ -113,7 +117,7 @@ jobs:
             if [ "${active_scoring_runs:-0}" = "0" ]; then
               gh workflow run calculate-scores-v2.yml --ref main -f force_leaderboard_export=true -f force_backup=false -f restore_from_snapshot=false -f pool_ids=''
               recovery_dispatched=1
-              echo "::warning::Live-poller recovery found terminal match state; dispatched forced scoring and public snapshot export."
+              echo "::warning::Readiness found stale terminal match scoring/publication state; dispatched forced scoring and public snapshot export."
             else
               recovery_dispatched=1
               echo "::warning::Scoring/export recovery is already queued or running; skipping duplicate dispatch."

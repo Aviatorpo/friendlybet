@@ -8,6 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { resultVersionFromMatches } = require('./export-snapshots.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const DEFAULT_SCHEDULE_PATH = path.join(ROOT, 'public-data', 'world-cup-schedule.json');
@@ -166,6 +167,16 @@ function imminentKnownMissing(scheduleRows, dbRows, opts) {
   });
 }
 
+function scoreableResultVersionChanged(beforeRows, afterRows) {
+  const beforeResultVersion = resultVersionFromMatches(beforeRows || []);
+  const afterResultVersion = resultVersionFromMatches(afterRows || []);
+  return {
+    beforeResultVersion,
+    afterResultVersion,
+    changed: beforeResultVersion !== afterResultVersion
+  };
+}
+
 async function callSupabase(method, table, data = null, query = '') {
   if (!SUPABASE_KEY) throw new Error('Missing SUPABASE_SECRET_KEY');
   const res = await fetch(`${SUPABASE_URL.replace(/\/+$/, '')}/rest/v1/${table}${query}`, {
@@ -239,6 +250,7 @@ async function run(opts = parseArgs(process.argv.slice(2))) {
     .map(match => normalizeScheduleRow(match, opts))
     .filter(Boolean);
   const beforeRows = opts.dryRun ? [] : await loadDbRows();
+  const beforeResultVersion = resultVersionFromMatches(beforeRows);
   const beforeByExternalId = new Map(beforeRows.map(row => [String(row.external_id || ''), row]));
   const rows = normalizedRows.map(row => mergeScheduleRowWithExisting(row, beforeByExternalId.get(row.external_id)));
   const knownRows = rows.filter(row => row.home_team_code && row.away_team_code);
@@ -248,6 +260,9 @@ async function run(opts = parseArgs(process.argv.slice(2))) {
   const upsertResult = await upsertKnownAndPlaceholders(knownRows, placeholderRows, opts);
   const upserted = upsertResult.known + upsertResult.placeholders;
   const afterRows = opts.dryRun ? rows : await loadDbRows();
+  const versionChange = scoreableResultVersionChanged(beforeRows, afterRows);
+  const afterResultVersion = versionChange.afterResultVersion;
+  const scoreableResultChanged = versionChange.changed;
   const missingAfter = opts.dryRun ? [] : imminentKnownMissing(scheduleRows, afterRows, opts);
 
   console.log(`FIFA schedule bridge: schedule=${scheduleRows.length}, upsert candidates=${rows.length}, known=${knownRows.length}, placeholders=${placeholderRows.length}, upserted=${upserted}${opts.dryRun ? ' (dry-run)' : ''}`);
@@ -257,6 +272,7 @@ async function run(opts = parseArgs(process.argv.slice(2))) {
   if (placeholderRows.length && opts.includePlaceholders) {
     console.log(`Placeholder fixtures carried: ${placeholderRows.map(m => `${m.external_id}:${m.stage}`).join(', ')}`);
   }
+  console.log(`Scoreable result_version: ${beforeResultVersion || 'missing'} -> ${afterResultVersion || 'missing'}${scoreableResultChanged ? ' (changed)' : ''}`);
   if (missingAfter.length) {
     missingAfter.forEach(m => console.error(`Missing scoreable fixture after bridge: ${m.match_date} ${m.stage} ${m.home_team_code}-${m.away_team_code} (${m.fifa_match_id || m.external_id})`));
   }
@@ -269,11 +285,14 @@ async function run(opts = parseArgs(process.argv.slice(2))) {
   setOutput('placeholder_count', placeholderRows.length);
   setOutput('missing_after', missingAfter.length);
   setOutput('changed', upserted > 0 ? 'true' : 'false');
+  setOutput('result_version_before', beforeResultVersion || '');
+  setOutput('result_version_after', afterResultVersion || '');
+  setOutput('scoreable_result_changed', scoreableResultChanged ? 'true' : 'false');
 
   if (missingAfter.length > 0) {
     throw new Error(`${missingAfter.length} imminent known fixture(s) still missing from Supabase matches`);
   }
-  return { scheduleRows, rows, knownRows, placeholderRows, upserted, missingAfter };
+  return { scheduleRows, rows, knownRows, placeholderRows, upserted, missingAfter, beforeResultVersion, afterResultVersion, scoreableResultChanged };
 }
 
 if (require.main === module) {
@@ -288,6 +307,7 @@ if (require.main === module) {
     mergeScheduleRowWithExisting,
     winnerFromSchedule,
     imminentKnownMissing,
+    scoreableResultVersionChanged,
     run,
     parseArgs
   };

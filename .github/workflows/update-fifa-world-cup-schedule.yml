@@ -26,6 +26,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: update-fifa-world-cup-schedule
@@ -76,4 +77,17 @@ jobs:
             bash scripts/commit-generated-snapshots.sh "data: refresh FIFA schedule and match bridge" public-data/world-cup-schedule.json public-data/matches.json
           else
             echo "no FIFA schedule or match snapshot change"
+          fi
+
+      - name: Dispatch scoring after scoreable schedule result
+        if: steps.schedule_bridge.outputs.scoreable_result_changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          active_scoring_runs="$(gh run list --workflow calculate-scores-v2.yml --limit 10 --json status --jq '[.[] | select(.status == "queued" or .status == "in_progress" or .status == "waiting" or .status == "requested" or .status == "pending")] | length')"
+          if [ "${active_scoring_runs:-0}" = "0" ]; then
+            gh workflow run calculate-scores-v2.yml --ref main -f force_leaderboard_export=true -f force_backup=false -f restore_from_snapshot=false -f pool_ids=''
+            echo "::warning::FIFA schedule bridge changed scoreable result_version from ${{ steps.schedule_bridge.outputs.result_version_before }} to ${{ steps.schedule_bridge.outputs.result_version_after }}; dispatched forced scoring and leaderboard publication."
+          else
+            echo "::warning::FIFA schedule bridge changed scoreable result_version, but scoring is already queued or running."
           fi
