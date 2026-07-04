@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-04T17:15:37.994Z",
-  "freshUntil": "2026-07-04T23:15:37.994Z",
-  "count": 6,
+  "updatedAt": "2026-07-04T18:17:25.219Z",
+  "freshUntil": "2026-07-05T00:17:25.219Z",
+  "count": 7,
   "items": [
     {
       "id": "live-725161f2-68ae-4b8f-bda4-d08243bec185",
@@ -10,7 +10,7 @@
       "he": "קנדה נגד מרוקו עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
       "en": "Canada vs Morocco is live now. Every goal can flip brackets and push one side toward the next round 🔥",
       "sources": [],
-      "expires_at": "2026-07-04T20:15:37.994Z"
+      "expires_at": "2026-07-04T21:17:25.219Z"
     },
     {
       "id": "result-4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
@@ -56,6 +56,15 @@
       "en": "Brazil vs Norway, tomorrow 23:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-05T19:45:00.000Z"
+    },
+    {
+      "id": "fixture-2bbe0177-81d6-4268-9434-6790cec04007",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "מקסיקו נגד אנגליה, 06/07 03:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
+      "en": "Mexico vs England, 06/07 03:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
+      "sources": [],
+      "expires_at": "2026-07-05T23:45:00.000Z"
     }
   ]
 }
