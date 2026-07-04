@@ -132,6 +132,30 @@ check('deduped match snapshot prefers official enriched fixture row', () => {
   assert.strictEqual(rows[0].external_id, '400021443');
 });
 
+check('result version dedupes DB duplicate rows to the public match facts', () => {
+  const legacy = {
+    id: 'legacy',
+    external_id: '537327',
+    stage: 'GROUP_STAGE',
+    status: 'FINISHED',
+    match_date: '2026-06-11T19:00:00Z',
+    home_team_code: 'MEX',
+    away_team_code: 'RSA',
+    home_score: 2,
+    away_score: 0,
+    winner_code: 'MEX',
+    last_updated: '2026-06-18T10:13:41Z',
+  };
+  const official = {
+    ...legacy,
+    id: 'official',
+    external_id: '400021443',
+    venue: 'Mexico City Stadium',
+    source_updated_at: '2026-06-30T11:59:48Z',
+  };
+  assert.strictEqual(resultVersionFromMatches([legacy, official]), resultVersionFromMatches([official]));
+});
+
 check('result version follows scoreable match facts, not volatile timestamps', () => {
   const base = [{
     id: 'm1',

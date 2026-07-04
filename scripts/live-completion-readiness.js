@@ -12,7 +12,7 @@ process.env.SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY || LOCAL_SUPAB
 
 const LiveOpsAudit = require('./live-ops-audit');
 const WCR = require('../share-assets/world-cup-rules.js');
-const { resultVersionFromMatches } = require('./export-snapshots.js');
+const { resultVersionFromMatches, dedupeMatchesForSnapshot } = require('./export-snapshots.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const LIVE_DB_SCHEDULED_GRACE_MS = 3 * 60 * 1000;
@@ -205,17 +205,26 @@ async function fetchSupabaseRows(config, table, select, fetchImpl = globalThis.f
   return all;
 }
 
+function latestFiniteTimestampMs(values) {
+  let latest = NaN;
+  for (const value of values || []) {
+    const ms = parseTime(value);
+    if (Number.isFinite(ms) && (!Number.isFinite(latest) || ms > latest)) latest = ms;
+  }
+  return latest;
+}
+
 function latestScoreableResultUpdateMs(matches) {
   let latest = NaN;
   for (const match of matches || []) {
     const status = String(match && match.status || '').toUpperCase();
     if (!['FINISHED', 'AWARDED'].includes(status)) continue;
     if (match.home_score == null || match.away_score == null) continue;
-    const candidate = Math.max(
-      parseTime(match.source_updated_at),
-      parseTime(match.last_updated),
-      parseTime(match.match_date)
-    );
+    const candidate = latestFiniteTimestampMs([
+      match.source_updated_at,
+      match.last_updated,
+      match.match_date
+    ]);
     if (Number.isFinite(candidate) && (!Number.isFinite(latest) || candidate > latest)) latest = candidate;
   }
   return latest;
@@ -242,8 +251,9 @@ async function mapLimit(items, limit, fn) {
 
 async function summarizeScorePublicationFreshness(config, matches, options = {}) {
   const fetchImpl = options.fetch || globalThis.fetch;
-  const resultVersion = resultVersionFromMatches(matches || []);
-  const latestResultMs = latestScoreableResultUpdateMs(matches || []);
+  const publicationMatches = dedupeMatchesForSnapshot(matches || []);
+  const resultVersion = resultVersionFromMatches(publicationMatches);
+  const latestResultMs = latestScoreableResultUpdateMs(publicationMatches);
   const [pools, users] = await Promise.all([
     fetchSupabaseRows(config, 'pools', 'id', fetchImpl),
     fetchSupabaseRows(config, 'users', 'id,pool_id,last_score_calc,joined_at,total_score', fetchImpl),

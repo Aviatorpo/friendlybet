@@ -225,7 +225,8 @@ function resultFact(match) {
 }
 
 function resultVersionFromMatches(matches) {
-  const facts = (matches || [])
+  const publicationMatches = dedupeMatchesForSnapshot((matches || []).map(sanitizeMatchForSnapshot));
+  const facts = publicationMatches
     .filter(match => {
       const status = String(match && match.status || '').toUpperCase();
       return FINAL_STATUSES.has(status)

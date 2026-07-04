@@ -27,7 +27,7 @@ const fs = require('fs');
 const path = require('path');
 const WCR = require('../share-assets/world-cup-rules.js');
 const FIFA_THIRD_PLACE = require('../share-assets/fifa-third-place-table.js');
-const { resultVersionFromMatches } = require('./export-snapshots.js');
+const { resultVersionFromMatches, dedupeMatchesForSnapshot } = require('./export-snapshots.js');
 
 assertQaIfRequested();
 
@@ -787,7 +787,8 @@ async function main(options = {}) {
   }
 
   // 2. Load matches (for groups + knockout outcomes)
-  const matches = await sbAll('matches', '?select=*');
+  const dbMatches = await sbAll('matches', '?select=*');
+  const matches = dedupeMatchesForSnapshot(dbMatches || []);
   // Only TRULY-final matches count. A live (IN_PLAY/PAUSED) match has a current
   // score, so keying off "has a score" scored matches mid-play and made knockout
   // points appear/flip as the scoreline changed. Require a terminal status.
@@ -796,7 +797,7 @@ async function main(options = {}) {
   const scoreFreshAfterMs = latestScoreableResultUpdateMs(matches || []);
   const scoreFreshAfter = Number.isFinite(scoreFreshAfterMs) ? new Date(scoreFreshAfterMs).toISOString() : '';
   const localResultVersion = localMatchesResultVersion();
-  console.log(`${pools.length} pools, ${finishedMatches.length} finished matches`);
+  console.log(`${pools.length} pools, ${finishedMatches.length} finished matches (${(dbMatches || []).length} DB rows)`);
   const groupState = buildGroupState(matches || []);
 
   const [
