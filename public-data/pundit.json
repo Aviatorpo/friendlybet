@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-07-04T03:56:46.955Z",
-  "freshUntil": "2026-07-04T09:56:46.955Z",
+  "updatedAt": "2026-07-04T06:55:03.011Z",
+  "freshUntil": "2026-07-04T12:55:03.011Z",
   "count": 8,
   "items": [
     {
-      "id": "verify-4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
-      "type": "verification",
+      "id": "result-4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "קולומביה נגד גאנה: סטטוס המשחק בבדיקה לפני שהטבלה מקבלת נקודות. עדיף רגע של זהירות מטעות שמזיזה הימור שלם 🧐",
-      "en": "Colombia vs Ghana: match status is being checked before the table gets points. A careful pause beats moving a whole pool on bad data 🧐",
+      "he": "קולומביה עברה את גאנה 1:0. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על גאנה צריך מסלול חדש 🧾",
+      "en": "Colombia got past Ghana 1-0. Brackets that picked them get a receipt; Ghana believers need a new route 🧾",
       "sources": [],
-      "expires_at": "2026-07-04T04:56:46.955Z"
+      "expires_at": "2026-07-05T13:30:00.000Z"
     },
     {
       "id": "result-1b693d86-e3d7-49ed-acbe-ff1cbda5ab02",
       "type": "result",
       "confidence": "confirmed",
-      "he": "ארגנטינה ניצחה את כף ורדה 3:2 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
-      "en": "Argentina beat Cape Verde 3-2 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
+      "he": "3:2 לארגנטינה על כף ורדה. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
+      "en": "3-2 for Argentina over Cape Verde. Anyone who picked them in this knockout match can open the receipts 🧾",
       "sources": [],
       "expires_at": "2026-07-05T10:00:00.000Z"
     },
@@ -25,8 +25,8 @@
       "id": "result-becdf518-3a65-4a3f-82a6-622c288a398e",
       "type": "result",
       "confidence": "confirmed",
-      "he": "אוסטרליה ומצרים סיימו 1:1, אבל מצרים שרדה את שובר השוויון ועלתה. מי שסימן אותה בבראקט קיבל קבלה חדה 🧾",
-      "en": "Australia and Egypt finished 1-1, but Egypt survived the tiebreaker and advanced. Egypt bracket picks got a sharp receipt 🧾",
+      "he": "1:1 על הלוח, מצרים בשלב הבא ואוסטרליה בחוץ. זה כרטיס המשך לבראקט 🧾",
+      "en": "1-1 on the board, Egypt into the next round and Australia out. It is a bracket ticket 🧾",
       "sources": [],
       "expires_at": "2026-07-05T06:00:00.000Z"
     },
@@ -34,8 +34,8 @@
       "id": "result-399b52f8-23c0-4421-bc48-763df6ed58af",
       "type": "result",
       "confidence": "confirmed",
-      "he": "2:0 לשווייץ על אלג'יריה. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
-      "en": "2-0 for Switzerland over Algeria. Anyone who picked them in this knockout match can open the receipts 🧾",
+      "he": "שווייץ עברה את אלג'יריה 2:0. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על אלג'יריה צריך מסלול חדש 🧾",
+      "en": "Switzerland got past Algeria 2-0. Brackets that picked them get a receipt; Algeria believers need a new route 🧾",
       "sources": [],
       "expires_at": "2026-07-04T15:00:00.000Z"
     },
@@ -43,8 +43,8 @@
       "id": "result-8bb5df11-6f67-48f1-838b-990c4863bf2d",
       "type": "result",
       "confidence": "confirmed",
-      "he": "2:1 לפורטוגל על קרואטיה. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
-      "en": "2-1 for Portugal over Croatia. Anyone who picked them in this knockout match can open the receipts 🧾",
+      "he": "פורטוגל ניצחה את קרואטיה 2:1 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
+      "en": "Portugal beat Croatia 2-1 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-04T11:00:00.000Z"
     },
@@ -52,8 +52,8 @@
       "id": "result-ee21ba7e-528a-466e-b35c-264789e403af",
       "type": "result",
       "confidence": "confirmed",
-      "he": "3:0 לספרד על אוסטריה. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
-      "en": "3-0 for Spain over Austria. Anyone who picked them in this knockout match can open the receipts 🧾",
+      "he": "ספרד עברה את אוסטריה 3:0. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על אוסטריה צריך מסלול חדש 🧾",
+      "en": "Spain got past Austria 3-0. Brackets that picked them get a receipt; Austria believers need a new route 🧾",
       "sources": [],
       "expires_at": "2026-07-04T07:00:00.000Z"
     },
