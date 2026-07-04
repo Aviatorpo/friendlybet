@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-04T06:55:03.011Z",
-  "freshUntil": "2026-07-04T12:55:03.011Z",
-  "count": 8,
+  "updatedAt": "2026-07-04T08:49:17.692Z",
+  "freshUntil": "2026-07-04T14:49:17.692Z",
+  "count": 7,
   "items": [
     {
       "id": "result-4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
@@ -47,15 +47,6 @@
       "en": "Portugal beat Croatia 2-1 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-04T11:00:00.000Z"
-    },
-    {
-      "id": "result-ee21ba7e-528a-466e-b35c-264789e403af",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "ספרד עברה את אוסטריה 3:0. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על אוסטריה צריך מסלול חדש 🧾",
-      "en": "Spain got past Austria 3-0. Brackets that picked them get a receipt; Austria believers need a new route 🧾",
-      "sources": [],
-      "expires_at": "2026-07-04T07:00:00.000Z"
     },
     {
       "id": "fixture-725161f2-68ae-4b8f-bda4-d08243bec185",
