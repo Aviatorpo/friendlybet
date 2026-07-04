@@ -422,7 +422,7 @@ const Readiness = require('./live-completion-readiness');
     'live poller final handoff can auto-escalate approved emergency sources',
     'readiness monitor covers production during group and knockout match days',
     'readiness monitor audits live DB by default',
-    'readiness monitor self-heals stale active live DB',
+    'readiness monitor self-heals stale active live DB and score publication',
     'readiness monitor keeps Pundit warning-only for critical result readiness',
     'live match controller backs up dropped short poller cron',
     'standalone Pundit workflow covers live group-stage transitions',
