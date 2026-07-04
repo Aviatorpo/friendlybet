@@ -84,6 +84,13 @@ jobs:
           PUBLIC_BASE_URL: https://friendlybet.live
         run: node scripts/restore-score-components-from-snapshots.js
 
+      - name: Bridge known knockout fixtures before scoring
+        continue-on-error: true
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36
+
       - name: Calculate scores (v2)
         id: score_results
         timeout-minutes: 45
@@ -165,6 +172,7 @@ jobs:
           REGENERATE_COMMANDS: |
             node scripts/repair-pick-multipliers.js
             if [ "${{ inputs.restore_from_snapshot }}" = "true" ]; then RESTORE_POOL_IDS="${{ inputs.pool_ids }}" node scripts/restore-score-components-from-snapshots.js || true; fi
+            node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36 || true
             SCORING_FORCE_SCORE_HEARTBEAT="${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}" SCORING_POOL_IDS="${{ inputs.pool_ids }}" node scripts/calculate-scores-v2.js --critical
             FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches
             node scripts/export-snapshots.js leaderboards
@@ -239,6 +247,7 @@ jobs:
           REGENERATE_COMMANDS: |
             node scripts/repair-pick-multipliers.js
             if [ "${{ inputs.restore_from_snapshot }}" = "true" ]; then RESTORE_POOL_IDS="${{ inputs.pool_ids }}" node scripts/restore-score-components-from-snapshots.js || true; fi
+            node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36 || true
             SCORING_FORCE_SCORE_HEARTBEAT="${{ inputs.force_leaderboard_export == 'true' && '1' || '' }}" SCORING_POOL_IDS="${{ inputs.pool_ids }}" node scripts/calculate-scores-v2.js --critical
             FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches
             node scripts/export-snapshots.js leaderboards

@@ -259,6 +259,10 @@ check('verified-result workflows refresh next hidden knockout scenarios', () => 
     assert.ok(text.includes('node scripts/sync-fifa-schedule-to-matches.js --include-placeholders'), `${file} must bridge known knockout fixtures before scenario generation`);
     assertOrdered(text, file,
       'node scripts/sync-fifa-schedule-to-matches.js --include-placeholders',
+      'Calculate scores',
+      `${file} must bridge scoreable knockout truth before calculating scores`);
+    assertOrdered(text, file,
+      'node scripts/sync-fifa-schedule-to-matches.js --include-placeholders',
       'node scripts/generate-knockout-scenarios.js',
       `${file} must bridge fixtures before generating hidden scenarios`);
     assert.ok(text.includes('node scripts/generate-knockout-scenarios.js'), `${file} must generate next knockout scenario files`);

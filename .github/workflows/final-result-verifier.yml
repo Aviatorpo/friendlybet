@@ -169,6 +169,19 @@ jobs:
             echo "no match snapshot change"
           fi
 
+      - name: Refresh FIFA schedule before scoring
+        if: steps.verify_results.outputs.changed == 'true'
+        continue-on-error: true
+        run: node scripts/update-fifa-world-cup-schedule.js
+
+      - name: Bridge next knockout fixtures before scoring
+        if: steps.verify_results.outputs.changed == 'true'
+        continue-on-error: true
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36
+
       - name: Calculate scores after verified final result
         id: score_results
         if: steps.verify_results.outputs.changed == 'true'
