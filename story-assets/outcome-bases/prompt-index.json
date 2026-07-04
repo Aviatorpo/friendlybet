@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-07-03T19:50:33.337Z",
+  "updated_at": "2026-07-04T04:03:09.620Z",
   "source": "snapshot",
-  "matches": 15,
+  "matches": 16,
   "prompts": [
     {
       "match_id": "09df59c6-1a7a-42d2-8c77-e9bcc3889dd5",
@@ -55,14 +55,6 @@
       "match_id": "becdf518-3a65-4a3f-82a6-622c288a398e",
       "match_key": "AUS-EGY",
       "match_date": "2026-07-03T18:00:00+00:00",
-      "outcome": "AUS",
-      "image": "story-assets/outcome-bases/aus-egy-aus-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Australia vs Egypt at FIFA World Cup 2026.\nPrepared outcome: Australia advances over Egypt.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "becdf518-3a65-4a3f-82a6-622c288a398e",
-      "match_key": "AUS-EGY",
-      "match_date": "2026-07-03T18:00:00+00:00",
       "outcome": "EGY",
       "image": "story-assets/outcome-bases/aus-egy-egy-wins-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Australia vs Egypt at FIFA World Cup 2026.\nPrepared outcome: Egypt advances over Australia.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
@@ -76,28 +68,12 @@
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Argentina vs Cape Verde at FIFA World Cup 2026.\nPrepared outcome: Argentina advances over Cape Verde.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
-      "match_id": "1b693d86-e3d7-49ed-acbe-ff1cbda5ab02",
-      "match_key": "ARG-CPV",
-      "match_date": "2026-07-03T22:00:00+00:00",
-      "outcome": "CPV",
-      "image": "story-assets/outcome-bases/arg-cpv-cpv-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Argentina vs Cape Verde at FIFA World Cup 2026.\nPrepared outcome: Cape Verde advances over Argentina.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
       "match_id": "4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
       "match_key": "COL-GHA",
       "match_date": "2026-07-04T01:30:00+00:00",
       "outcome": "COL",
       "image": "story-assets/outcome-bases/col-gha-col-wins-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Colombia vs Ghana at FIFA World Cup 2026.\nPrepared outcome: Colombia advances over Ghana.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
-      "match_key": "COL-GHA",
-      "match_date": "2026-07-04T01:30:00+00:00",
-      "outcome": "GHA",
-      "image": "story-assets/outcome-bases/col-gha-gha-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Colombia vs Ghana at FIFA World Cup 2026.\nPrepared outcome: Ghana advances over Colombia.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
       "match_id": "725161f2-68ae-4b8f-bda4-d08243bec185",
@@ -194,6 +170,22 @@
       "outcome": "BEL",
       "image": "story-assets/outcome-bases/usa-bel-bel-wins-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: USA vs Belgium at FIFA World Cup 2026.\nPrepared outcome: Belgium advances over USA.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
+    },
+    {
+      "match_id": "90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
+      "match_key": "ARG-EGY",
+      "match_date": "2026-07-07T16:00:00+00:00",
+      "outcome": "ARG",
+      "image": "story-assets/outcome-bases/arg-egy-arg-wins-base.png",
+      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Argentina vs Egypt at FIFA World Cup 2026.\nPrepared outcome: Argentina advances over Egypt.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
+    },
+    {
+      "match_id": "90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
+      "match_key": "ARG-EGY",
+      "match_date": "2026-07-07T16:00:00+00:00",
+      "outcome": "EGY",
+      "image": "story-assets/outcome-bases/arg-egy-egy-wins-base.png",
+      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Argentina vs Egypt at FIFA World Cup 2026.\nPrepared outcome: Egypt advances over Argentina.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     }
   ]
 }
