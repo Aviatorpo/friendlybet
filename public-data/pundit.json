@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-07-03T23:39:08.426Z",
-  "freshUntil": "2026-07-04T05:39:08.426Z",
-  "count": 8,
+  "updatedAt": "2026-07-04T01:17:43.129Z",
+  "freshUntil": "2026-07-04T07:17:43.129Z",
+  "count": 7,
   "items": [
     {
-      "id": "live-1b693d86-e3d7-49ed-acbe-ff1cbda5ab02",
-      "type": "live",
+      "id": "result-1b693d86-e3d7-49ed-acbe-ff1cbda5ab02",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "ארגנטינה נגד כף ורדה עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
-      "en": "Argentina vs Cape Verde is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "he": "ארגנטינה ניצחה את כף ורדה 3:2 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
+      "en": "Argentina beat Cape Verde 3-2 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
       "sources": [],
-      "expires_at": "2026-07-04T02:39:08.426Z"
+      "expires_at": "2026-07-05T10:00:00.000Z"
     },
     {
       "id": "result-becdf518-3a65-4a3f-82a6-622c288a398e",
       "type": "result",
       "confidence": "confirmed",
-      "he": "1:1 על הלוח, מצרים בשלב הבא ואוסטרליה בחוץ. זה כרטיס המשך לבראקט 🧾",
-      "en": "1-1 on the board, Egypt into the next round and Australia out. It is a bracket ticket 🧾",
+      "he": "אוסטרליה ומצרים סיימו 1:1, אבל מצרים שרדה את שובר השוויון ועלתה. מי שסימן אותה בבראקט קיבל קבלה חדה 🧾",
+      "en": "Australia and Egypt finished 1-1, but Egypt survived the tiebreaker and advanced. Egypt bracket picks got a sharp receipt 🧾",
       "sources": [],
       "expires_at": "2026-07-05T06:00:00.000Z"
     },
@@ -25,8 +25,8 @@
       "id": "result-399b52f8-23c0-4421-bc48-763df6ed58af",
       "type": "result",
       "confidence": "confirmed",
-      "he": "שווייץ ניצחה את אלג'יריה 2:0 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
-      "en": "Switzerland beat Algeria 2-0 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
+      "he": "2:0 לשווייץ על אלג'יריה. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
+      "en": "2-0 for Switzerland over Algeria. Anyone who picked them in this knockout match can open the receipts 🧾",
       "sources": [],
       "expires_at": "2026-07-04T15:00:00.000Z"
     },
@@ -34,8 +34,8 @@
       "id": "result-8bb5df11-6f67-48f1-838b-990c4863bf2d",
       "type": "result",
       "confidence": "confirmed",
-      "he": "פורטוגל עברה את קרואטיה 2:1. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על קרואטיה צריך מסלול חדש 🧾",
-      "en": "Portugal got past Croatia 2-1. Brackets that picked them get a receipt; Croatia believers need a new route 🧾",
+      "he": "2:1 לפורטוגל על קרואטיה. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
+      "en": "2-1 for Portugal over Croatia. Anyone who picked them in this knockout match can open the receipts 🧾",
       "sources": [],
       "expires_at": "2026-07-04T11:00:00.000Z"
     },
@@ -43,26 +43,17 @@
       "id": "result-ee21ba7e-528a-466e-b35c-264789e403af",
       "type": "result",
       "confidence": "confirmed",
-      "he": "ספרד ניצחה את אוסטריה 3:0 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
-      "en": "Spain beat Austria 3-0 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
+      "he": "3:0 לספרד על אוסטריה. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
+      "en": "3-0 for Spain over Austria. Anyone who picked them in this knockout match can open the receipts 🧾",
       "sources": [],
       "expires_at": "2026-07-04T07:00:00.000Z"
-    },
-    {
-      "id": "fixture-4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "קולומביה נגד גאנה, היום 04:30. קולומביה פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
-      "en": "Colombia vs Ghana, today 04:30. Colombia are the favorite, but in knockout football favorites still have to survive ⏰",
-      "sources": [],
-      "expires_at": "2026-07-04T01:15:00.000Z"
     },
     {
       "id": "fixture-725161f2-68ae-4b8f-bda4-d08243bec185",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "קנדה נגד מרוקו, היום 20:00. זה משחק של מעבר או סיום דרך, בדיוק המקום שבו הימורים זזים ⏰",
-      "en": "Canada vs Morocco, today 20:00. It is move-on-or-go-home territory, exactly where picks start moving ⏰",
+      "he": "קנדה נגד מרוקו, היום 20:00. משחק נוקאאוט כזה יכול להפוך בראקט שקט לרעש גדול ⏰",
+      "en": "Canada vs Morocco, today 20:00. This kind of knockout match can turn a quiet bracket into noise ⏰",
       "sources": [],
       "expires_at": "2026-07-04T16:45:00.000Z"
     },
@@ -70,8 +61,8 @@
       "id": "fixture-f1d512ac-b83b-4edc-ab23-e927e566a76d",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "פרגוואי נגד צרפת, מחר 24:00. צרפת פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
-      "en": "Paraguay vs France, tomorrow 24:00. France are the favorite, but in knockout football favorites still have to survive ⏰",
+      "he": "שמינית הגמר: פרגוואי נגד צרפת, מחר 24:00. מי שבנה על צרפת רוצה שקט; מי שסימן את פרגוואי מחפש רעידת בראקט ⏰",
+      "en": "Round of 16: Paraguay vs France, tomorrow 24:00. France picks want calm; Paraguay picks are hunting bracket shock ⏰",
       "sources": [],
       "expires_at": "2026-07-04T20:45:00.000Z"
     }
