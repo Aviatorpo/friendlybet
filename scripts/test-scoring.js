@@ -116,9 +116,12 @@ console.log('\n== unit: scoreCalcTimestampFresh ==');
   eq('stale at heartbeat limit', S.scoreCalcTimestampFresh('2026-06-23T19:00:00.000Z', now), false);
   eq('missing timestamp is stale', S.scoreCalcTimestampFresh(null, now), false);
   eq('latest scoreable update ignores missing timestamp fields', new Date(S.latestScoreableResultUpdateMs([
-    { status: 'FINISHED', home_score: 1, away_score: 0, last_updated: '2026-07-04T06:35:58.684Z' },
+    { status: 'FINISHED', home_score: 1, away_score: 0, source_updated_at: '2026-07-04T06:35:58.684Z' },
     { status: 'FINISHED', home_score: 2, away_score: 0, source_updated_at: null, last_updated: null, match_date: '2026-07-04T05:00:00.000Z' },
     { status: 'SCHEDULED', home_score: 4, away_score: 4, source_updated_at: '2026-07-04T08:00:00.000Z' }
+  ])).toISOString(), '2026-07-04T06:35:58.684Z');
+  eq('latest scoreable update ignores terminal metadata-only last_updated churn', new Date(S.latestScoreableResultUpdateMs([
+    { status: 'FINISHED', home_score: 1, away_score: 0, source_updated_at: '2026-07-04T06:35:58.684Z', last_updated: '2026-07-04T17:36:50.095Z' }
   ])).toISOString(), '2026-07-04T06:35:58.684Z');
 })();
 

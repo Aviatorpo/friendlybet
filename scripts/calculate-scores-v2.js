@@ -76,7 +76,6 @@ function latestScoreableResultUpdateMs(matches) {
     if (match.home_score == null || match.away_score == null) continue;
     const candidate = latestFiniteTimestampMs([
       match.source_updated_at,
-      match.last_updated,
       match.match_date
     ]);
     if (Number.isFinite(candidate) && (!Number.isFinite(latest) || candidate > latest)) latest = candidate;

@@ -222,7 +222,6 @@ function latestScoreableResultUpdateMs(matches) {
     if (match.home_score == null || match.away_score == null) continue;
     const candidate = latestFiniteTimestampMs([
       match.source_updated_at,
-      match.last_updated,
       match.match_date
     ]);
     if (Number.isFinite(candidate) && (!Number.isFinite(latest) || candidate > latest)) latest = candidate;
@@ -296,16 +295,21 @@ async function summarizeScorePublicationFreshness(config, matches, options = {})
     });
   }
 
+  const publicProofClean = Boolean(publicBaseUrl && resultVersion && publicChecked > 0 && publicMismatches.length === 0 && publicSkipped === 0);
+  const staleUsersBlock = staleUsers.length > 0 && !publicProofClean;
+
   return {
-    ok: staleUsers.length === 0 && publicMismatches.length === 0 && publicSkipped === 0,
+    ok: !staleUsersBlock && publicMismatches.length === 0 && publicSkipped === 0,
     result_version: resultVersion,
     latest_result_updated_at: Number.isFinite(latestResultMs) ? new Date(latestResultMs).toISOString() : null,
     pools: (pools || []).length,
     pools_with_users: poolsWithUsers.size,
     users: (users || []).length,
     stale_users: staleUsers.length,
+    stale_users_warning_only: publicProofClean && staleUsers.length > 0,
     stale_pools: stalePools.size,
     stale_sample: staleUsers.slice(0, 8).map(user => `${user.pool_id || '?'}:${user.id}:${user.last_score_calc || 'missing'}`),
+    public_proof_clean: publicProofClean,
     public_checked: publicChecked,
     public_mismatches: publicMismatches.length,
     public_mismatch_sample: publicMismatches.slice(0, 8),

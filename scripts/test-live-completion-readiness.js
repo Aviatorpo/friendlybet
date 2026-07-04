@@ -4,6 +4,7 @@
 const assert = require('assert');
 
 const Readiness = require('./live-completion-readiness');
+const { resultVersionFromMatches, dedupeMatchesForSnapshot } = require('./export-snapshots');
 
 (async () => {
   assert.strictEqual(Readiness.parseAppVersion("APP_VERSION: '2.10.88'"), '2.10.88');
@@ -119,6 +120,87 @@ const Readiness = require('./live-completion-readiness');
     staleProductionPunditWarningOnly.warnings.some(warning => warning.code === 'production_pundit_stale_warning_only'),
     'stale production Pundit must be warning-only for critical result/scoring readiness'
   );
+
+  const scorePublicationMatches = [{
+    id: 'm-score-1',
+    external_id: 'fifa-score-1',
+    status: 'FINISHED',
+    stage: 'GROUP_STAGE',
+    group_letter: 'A',
+    match_date: '2026-07-04T06:00:00.000Z',
+    source_updated_at: '2026-07-04T17:36:50.095Z',
+    last_updated: '2026-07-04T17:36:50.095Z',
+    home_team_code: 'COL',
+    away_team_code: 'GHA',
+    home_score: 2,
+    away_score: 1,
+    winner_code: 'COL',
+  }];
+  const currentResultVersion = resultVersionFromMatches(dedupeMatchesForSnapshot(scorePublicationMatches));
+  const staleHeartbeatWithCleanPublicProof = await Readiness.summarizeScorePublicationFreshness(
+    { url: 'https://x.supabase.co', key: 'publishable-from-config' },
+    scorePublicationMatches,
+    {
+      publicBaseUrl: 'https://friendlybet.live',
+      fetch: async (url) => {
+        if (String(url).includes('/rest/v1/pools?')) {
+          return { ok: true, json: async () => [{ id: 'pool-current' }] };
+        }
+        if (String(url).includes('/rest/v1/users?')) {
+          return {
+            ok: true,
+            json: async () => [{
+              id: 'user-current',
+              pool_id: 'pool-current',
+              joined_at: '2026-06-01T00:00:00.000Z',
+              last_score_calc: '2026-07-04T17:34:05.470Z',
+              total_score: 12,
+            }],
+          };
+        }
+        if (String(url).includes('/public-data/leaderboard/pool-current.json')) {
+          return {
+            ok: true,
+            json: async () => ({
+              result_version: currentResultVersion,
+              points_state: 'current_for_result_version',
+            }),
+          };
+        }
+        throw new Error(`unexpected fetch: ${url}`);
+      },
+    }
+  );
+  assert.strictEqual(staleHeartbeatWithCleanPublicProof.ok, true, 'clean public leaderboard proof must override metadata-only score heartbeat staleness');
+  assert.strictEqual(staleHeartbeatWithCleanPublicProof.stale_users, 1, 'stale score heartbeat evidence should remain visible');
+  assert.strictEqual(staleHeartbeatWithCleanPublicProof.stale_users_warning_only, true, 'stale heartbeat should be warning-only when public proof is clean');
+  assert.strictEqual(staleHeartbeatWithCleanPublicProof.public_proof_clean, true, 'public proof should be marked clean');
+
+  const staleHeartbeatWithoutPublicProof = await Readiness.summarizeScorePublicationFreshness(
+    { url: 'https://x.supabase.co', key: 'publishable-from-config' },
+    scorePublicationMatches,
+    {
+      fetch: async (url) => {
+        if (String(url).includes('/rest/v1/pools?')) {
+          return { ok: true, json: async () => [{ id: 'pool-current' }] };
+        }
+        if (String(url).includes('/rest/v1/users?')) {
+          return {
+            ok: true,
+            json: async () => [{
+              id: 'user-current',
+              pool_id: 'pool-current',
+              joined_at: '2026-06-01T00:00:00.000Z',
+              last_score_calc: '2026-07-04T17:34:05.470Z',
+              total_score: 12,
+            }],
+          };
+        }
+        throw new Error(`unexpected fetch: ${url}`);
+      },
+    }
+  );
+  assert.strictEqual(staleHeartbeatWithoutPublicProof.ok, false, 'stale score heartbeat must still fail when no public proof exists');
 
   const dbResult = await Readiness.runReadiness({
     auditOptions: { nowMs: Date.parse('2026-06-23T12:00:00Z'), skipPundit: true },
