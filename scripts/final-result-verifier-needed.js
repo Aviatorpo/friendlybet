@@ -99,6 +99,12 @@ function tiedScore(match) {
   return hasNumericScore(match) && Number(match.home_score) === Number(match.away_score);
 }
 
+function isPendingProviderFinal(match) {
+  const source = String((match && match.live_source) || '').toLowerCase();
+  const detail = String((match && match.status_detail) || '').toLowerCase();
+  return source === 'espn-final' || detail.includes('pending verification');
+}
+
 function parseOptionalTime(value) {
   const ms = Date.parse(value || '');
   return Number.isFinite(ms) ? ms : NaN;
@@ -121,6 +127,7 @@ function needsFinalVerification(match) {
   const status = _status(match);
   if (!TERMINAL.has(status)) return true;
   if (status !== 'FINISHED' && status !== 'AWARDED') return false;
+  if (isPendingProviderFinal(match)) return true;
   if (!hasNumericScore(match)) return true;
   return isKnockoutStage(match.stage) && tiedScore(match) && !match.winner_code;
 }
@@ -194,5 +201,6 @@ if (require.main === module) {
     isStaleLiveCandidate,
     needsFinalVerification,
     isKnockoutStage,
+    isPendingProviderFinal,
   };
 }

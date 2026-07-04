@@ -76,6 +76,17 @@ ok('finished match missing score is still recoverable',
   F.isStuckCandidate({ ...db, status: 'FINISHED', home_score: null, away_score: null }, Date.parse('2026-06-11T21:10:00Z')));
 ok('finished scored match with live residue is not final-result recovery work',
   !F.isStuckCandidate({ ...db, status: 'FINISHED', home_score: 1, away_score: 1, live_clock: "90'+4'" }, Date.parse('2026-06-11T21:10:00Z')));
+ok('finished ESPN-pending final is still verification work',
+  F.isStuckCandidate({
+    ...db,
+    status: 'FINISHED',
+    stage: 'ROUND_OF_16',
+    home_score: 0,
+    away_score: 3,
+    winner_code: 'MEX',
+    live_source: 'espn-final',
+    status_detail: 'ESPN final pending verification'
+  }, Date.parse('2026-06-11T21:10:00Z')));
 ok('stale knockout paused state is recoverable before normal age threshold',
   F.isStuckCandidate({
     external_id: '400021516',

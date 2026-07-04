@@ -137,10 +137,17 @@ function tiedScore(homeScore, awayScore) {
   return homeScore != null && awayScore != null && Number(homeScore) === Number(awayScore);
 }
 
+function isPendingProviderFinal(m) {
+  const source = String((m && m.live_source) || '').toLowerCase();
+  const detail = String((m && m.status_detail) || '').toLowerCase();
+  return source === 'espn-final' || detail.includes('pending verification');
+}
+
 function needsFinalVerification(m) {
   const status = _status(m);
   if (!TERMINAL.has(status)) return true;
   if (!RESULT_TERMINAL.has(status)) return false;
+  if (isPendingProviderFinal(m)) return true;
   if (!hasNumericScore(m)) return true;
   return isKnockoutStage(m.stage) && tiedScore(m.home_score, m.away_score) && !m.winner_code;
 }
@@ -1797,6 +1804,7 @@ if (require.main === module) {
     isStuckCandidate,
     isStaleLiveCandidate,
     needsFinalVerification,
+    isPendingProviderFinal,
     transformEspnEvent,
     transformFifaMatch,
     transformLiveScoreEvent,

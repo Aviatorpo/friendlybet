@@ -868,18 +868,18 @@ async function main(options = {}) {
           groupState,
           pickIndexes,
           heartbeat: SCORING_FORCE_SCORE_HEARTBEAT || !critical,
-          collectScores: bulkScoreRows || opts.collectScores,
+          collectScores: bulkScoreRows || options.collectScores,
           collectDatabaseScores: !!bulkScoreRows,
-          scenarioTimestamp: bulkScoreRows ? scoringTimestampIso : opts.scenarioTimestamp,
+          scenarioTimestamp: bulkScoreRows ? scoringTimestampIso : options.scenarioTimestamp,
         });
       } else {
         result = await scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, {
           groupState,
           pickIndexes,
           heartbeat: SCORING_FORCE_SCORE_HEARTBEAT || !critical,
-          collectScores: bulkScoreRows || opts.collectScores,
+          collectScores: bulkScoreRows || options.collectScores,
           collectDatabaseScores: !!bulkScoreRows,
-          scenarioTimestamp: bulkScoreRows ? scoringTimestampIso : opts.scenarioTimestamp,
+          scenarioTimestamp: bulkScoreRows ? scoringTimestampIso : options.scenarioTimestamp,
         });
       }
       scoredPools++;
