@@ -42,6 +42,16 @@ check('finished tied knockout without advancer is a candidate', isCandidate({ ..
 check('finished tied knockout with advancer is not a candidate', !isCandidate({ ...match, stage: 'ROUND_OF_32', status: 'FINISHED', home_score: 1, away_score: 1, winner_code: 'TUR' }, minutesAfterKickoff(180)));
 check('finished match missing score is a candidate', isCandidate({ ...match, status: 'FINISHED', home_score: null, away_score: null }, minutesAfterKickoff(180)));
 check('finished scored match with live residue is not a final-result candidate', !isCandidate({ ...match, status: 'FINISHED', home_score: 1, away_score: 0, live_clock: "90'+4'" }, minutesAfterKickoff(180)));
+check('finished scored ESPN-pending final is a verification candidate', isCandidate({
+  ...match,
+  status: 'FINISHED',
+  stage: 'ROUND_OF_16',
+  home_score: 0,
+  away_score: 3,
+  winner_code: 'PAR',
+  live_source: 'espn-final',
+  status_detail: 'ESPN final pending verification'
+}, minutesAfterKickoff(180)));
 
 const staleKnockoutLive = {
   status: 'PAUSED',
