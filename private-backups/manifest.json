@@ -90,6 +90,7 @@
     "400021526",
     "400021527",
     "400021530",
+    "400021533",
     "537327",
     "537328",
     "537329",
@@ -1726,7 +1727,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-07-04T23:34:36.074Z",
+      "file": "private-backups/2026-07-04T23-34-36-074Z__400021533-PAR-FRA.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "400021533"
+      ],
+      "tableCounts": {
+        "pools": 2195,
+        "users": 6785,
+        "group_picks": 22978,
+        "knockout_picks": 112615,
+        "group_position_picks": 175061,
+        "tournament_winner_picks": 3643,
+        "top_scorer_picks": 3133,
+        "sp_third_place_picks": 29178,
+        "pick_backups": 50623,
+        "knockout_reopen_grants": 1770,
+        "matches": 176,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-07-04T20:45:55.481Z"
+  "updatedAt": "2026-07-04T23:34:36.074Z"
 }
