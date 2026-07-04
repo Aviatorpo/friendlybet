@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-04T13:59:32.328Z",
+  "updated_at": "2026-07-04T19:39:26.228Z",
   "source": "snapshot",
   "matches": 17,
   "prompts": [
@@ -74,14 +74,6 @@
       "outcome": "COL",
       "image": "story-assets/outcome-bases/col-gha-col-wins-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Colombia vs Ghana at FIFA World Cup 2026.\nPrepared outcome: Colombia advances over Ghana.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "725161f2-68ae-4b8f-bda4-d08243bec185",
-      "match_key": "CAN-MAR",
-      "match_date": "2026-07-04T17:00:00+00:00",
-      "outcome": "CAN",
-      "image": "story-assets/outcome-bases/can-mar-can-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Canada vs Morocco at FIFA World Cup 2026.\nPrepared outcome: Canada advances over Morocco.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
       "match_id": "725161f2-68ae-4b8f-bda4-d08243bec185",
