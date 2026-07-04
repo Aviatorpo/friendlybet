@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-07-04T01:17:43.129Z",
-  "freshUntil": "2026-07-04T07:17:43.129Z",
-  "count": 7,
+  "updatedAt": "2026-07-04T03:54:03.019Z",
+  "freshUntil": "2026-07-04T09:54:03.019Z",
+  "count": 8,
   "items": [
+    {
+      "id": "verify-4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
+      "type": "verification",
+      "confidence": "confirmed",
+      "he": "קולומביה נגד גאנה: סטטוס המשחק בבדיקה לפני שהטבלה מקבלת נקודות. עדיף רגע של זהירות מטעות שמזיזה הימור שלם 🧐",
+      "en": "Colombia vs Ghana: match status is being checked before the table gets points. A careful pause beats moving a whole pool on bad data 🧐",
+      "sources": [],
+      "expires_at": "2026-07-04T04:54:03.019Z"
+    },
     {
       "id": "result-1b693d86-e3d7-49ed-acbe-ff1cbda5ab02",
       "type": "result",
