@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-07-04T22:40:31.490Z",
-  "freshUntil": "2026-07-05T04:40:31.490Z",
+  "updatedAt": "2026-07-04T23:19:11.737Z",
+  "freshUntil": "2026-07-05T05:19:11.737Z",
   "count": 7,
   "items": [
     {
-      "id": "live-f1d512ac-b83b-4edc-ab23-e927e566a76d",
-      "type": "live",
+      "id": "result-f1d512ac-b83b-4edc-ab23-e927e566a76d",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "פרגוואי נגד צרפת עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
-      "en": "Paraguay vs France is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "he": "1:0 לצרפת על פרגוואי. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
+      "en": "1-0 for France over Paraguay. Anyone who picked them in this knockout match can open the receipts 🧾",
       "sources": [],
-      "expires_at": "2026-07-05T01:40:31.490Z"
+      "expires_at": "2026-07-06T09:00:00.000Z"
     },
     {
       "id": "result-725161f2-68ae-4b8f-bda4-d08243bec185",
       "type": "result",
       "confidence": "confirmed",
-      "he": "מרוקו עברה את קנדה 3:0. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על קנדה צריך מסלול חדש 🧾",
-      "en": "Morocco got past Canada 3-0. Brackets that picked them get a receipt; Canada believers need a new route 🧾",
+      "he": "3:0 למרוקו על קנדה. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
+      "en": "3-0 for Morocco over Canada. Anyone who picked them in this knockout match can open the receipts 🧾",
       "sources": [],
       "expires_at": "2026-07-06T05:00:00.000Z"
     },
@@ -25,8 +25,8 @@
       "id": "result-4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
       "type": "result",
       "confidence": "confirmed",
-      "he": "קולומביה ניצחה את גאנה 1:0 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
-      "en": "Colombia beat Ghana 1-0 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
+      "he": "1:0 לקולומביה על גאנה. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
+      "en": "1-0 for Colombia over Ghana. Anyone who picked them in this knockout match can open the receipts 🧾",
       "sources": [],
       "expires_at": "2026-07-05T13:30:00.000Z"
     },
@@ -34,8 +34,8 @@
       "id": "result-1b693d86-e3d7-49ed-acbe-ff1cbda5ab02",
       "type": "result",
       "confidence": "confirmed",
-      "he": "ארגנטינה עברה את כף ורדה 3:2. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על כף ורדה צריך מסלול חדש 🧾",
-      "en": "Argentina got past Cape Verde 3-2. Brackets that picked them get a receipt; Cape Verde believers need a new route 🧾",
+      "he": "ארגנטינה ניצחה את כף ורדה 3:2 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
+      "en": "Argentina beat Cape Verde 3-2 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-05T10:00:00.000Z"
     },
@@ -43,8 +43,8 @@
       "id": "result-becdf518-3a65-4a3f-82a6-622c288a398e",
       "type": "result",
       "confidence": "confirmed",
-      "he": "אוסטרליה ומצרים סיימו 1:1, אבל מצרים שרדה את שובר השוויון ועלתה. מי שסימן אותה בבראקט קיבל קבלה חדה 🧾",
-      "en": "Australia and Egypt finished 1-1, but Egypt survived the tiebreaker and advanced. Egypt bracket picks got a sharp receipt 🧾",
+      "he": "1:1 על הלוח, מצרים בשלב הבא ואוסטרליה בחוץ. זה כרטיס המשך לבראקט 🧾",
+      "en": "1-1 on the board, Egypt into the next round and Australia out. It is a bracket ticket 🧾",
       "sources": [],
       "expires_at": "2026-07-05T06:00:00.000Z"
     },
