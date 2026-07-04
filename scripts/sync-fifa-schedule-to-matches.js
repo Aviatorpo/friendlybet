@@ -86,10 +86,23 @@ function valueOrExisting(value, existingValue) {
   return value == null && existingValue != null ? existingValue : value;
 }
 
+function scoreableFactEqual(row, existing) {
+  if (!row || !existing) return false;
+  return String(row.status || '').toUpperCase() === String(existing.status || '').toUpperCase()
+    && String(row.stage || '') === String(existing.stage || '')
+    && String(row.home_team_code || '') === String(existing.home_team_code || '')
+    && String(row.away_team_code || '') === String(existing.away_team_code || '')
+    && String(row.winner_code || '') === String(existing.winner_code || '')
+    && (row.home_score == null ? null : Number(row.home_score)) === (existing.home_score == null ? null : Number(existing.home_score))
+    && (row.away_score == null ? null : Number(row.away_score)) === (existing.away_score == null ? null : Number(existing.away_score));
+}
+
 function mergeScheduleRowWithExisting(row, existing) {
   if (!existing) return row;
   const merged = { ...row };
   const preserveExistingProgress = statusRank(existing.status) > statusRank(row.status);
+  const preserveExistingTerminalFactTimestamp = ['FINISHED', 'AWARDED'].includes(String(row.status || '').toUpperCase())
+    && scoreableFactEqual(row, existing);
 
   merged.home_team_code = valueOrExisting(row.home_team_code, existing.home_team_code);
   merged.away_team_code = valueOrExisting(row.away_team_code, existing.away_team_code);
@@ -102,6 +115,11 @@ function mergeScheduleRowWithExisting(row, existing) {
     for (const field of ['live_clock', 'live_period', 'status_detail', 'live_source', 'source_updated_at']) {
       merged[field] = valueOrExisting(row[field], existing[field]);
     }
+  }
+  if (preserveExistingTerminalFactTimestamp) {
+    merged.live_source = valueOrExisting(existing.live_source, row.live_source);
+    merged.source_updated_at = valueOrExisting(existing.source_updated_at, row.source_updated_at);
+    merged.last_updated = valueOrExisting(existing.last_updated, row.last_updated);
   }
 
   return merged;
@@ -305,6 +323,7 @@ if (require.main === module) {
     normalizeScheduleRow,
     statusFromSchedule,
     mergeScheduleRowWithExisting,
+    scoreableFactEqual,
     winnerFromSchedule,
     imminentKnownMissing,
     scoreableResultVersionChanged,

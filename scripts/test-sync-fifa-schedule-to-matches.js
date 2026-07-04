@@ -127,4 +127,21 @@ const scheduleMatch = {
   assert.strictEqual(result.changed, false, 'non-scoreable schedule metadata must not dispatch scoring');
 }
 
+{
+  const finished = bridge.normalizeScheduleRow({
+    ...scheduleMatch,
+    status: 'FINISHED',
+    home_score: 2,
+    away_score: 1
+  });
+  const merged = bridge.mergeScheduleRowWithExisting(finished, {
+    ...finished,
+    live_source: 'fifa-schedule',
+    source_updated_at: '2026-07-04T06:35:58.684Z',
+    last_updated: '2026-07-04T06:35:58.684Z'
+  });
+  assert.strictEqual(merged.source_updated_at, '2026-07-04T06:35:58.684Z', 'unchanged terminal facts must preserve result freshness cutoff');
+  assert.strictEqual(merged.last_updated, '2026-07-04T06:35:58.684Z', 'unchanged terminal facts must not look newer than scoring');
+}
+
 console.log('sync fifa schedule to matches tests passed');

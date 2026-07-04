@@ -115,6 +115,11 @@ console.log('\n== unit: scoreCalcTimestampFresh ==');
   eq('fresh within heartbeat window', S.scoreCalcTimestampFresh('2026-06-23T19:01:00.000Z', now), true);
   eq('stale at heartbeat limit', S.scoreCalcTimestampFresh('2026-06-23T19:00:00.000Z', now), false);
   eq('missing timestamp is stale', S.scoreCalcTimestampFresh(null, now), false);
+  eq('latest scoreable update ignores missing timestamp fields', new Date(S.latestScoreableResultUpdateMs([
+    { status: 'FINISHED', home_score: 1, away_score: 0, last_updated: '2026-07-04T06:35:58.684Z' },
+    { status: 'FINISHED', home_score: 2, away_score: 0, source_updated_at: null, last_updated: null, match_date: '2026-07-04T05:00:00.000Z' },
+    { status: 'SCHEDULED', home_score: 4, away_score: 4, source_updated_at: '2026-07-04T08:00:00.000Z' }
+  ])).toISOString(), '2026-07-04T06:35:58.684Z');
 })();
 
 // ---------- 2. FULL TOURNAMENT INTEGRATION ----------

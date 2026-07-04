@@ -185,7 +185,8 @@ check('scoring workflow commits critical public snapshots before backup tail', (
   const file = '.github/workflows/calculate-scores-v2.yml';
   const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
   assertOrdered(text, file, 'Generate knockout scoring scenarios', 'Commit critical public snapshots if changed');
-  assertOrdered(text, file, 'Commit critical public snapshots if changed', 'Encrypted critical-data backup after finished matches');
+  assertOrdered(text, file, 'Commit critical public snapshots if changed', 'Prove public scoring snapshots');
+  assertOrdered(text, file, 'Prove public scoring snapshots', 'Encrypted critical-data backup after finished matches', 'public scoring proof must run before backup/content tail');
   assert.ok(
     /commit-generated-snapshots\.sh "data: refresh critical public scoring snapshots"[\s\S]*public-data\/matches\.json[\s\S]*public-data\/leaderboard[\s\S]*public-data\/knockout-scenarios/.test(text),
     'scoring workflow must push public match, leaderboard, and scenario snapshots before backup/content work'
@@ -261,6 +262,7 @@ check('verified-result workflows refresh next hidden knockout scenarios', () => 
       'node scripts/generate-knockout-scenarios.js',
       `${file} must bridge fixtures before generating hidden scenarios`);
     assert.ok(text.includes('node scripts/generate-knockout-scenarios.js'), `${file} must generate next knockout scenario files`);
+    assert.ok(text.includes('SCORING_SCORE_FRESH_AFTER'), `${file} must pass the scorer freshness cutoff into strict scoring proof`);
     assert.ok(text.includes('node scripts/knockout-scenario-readiness.js'), `${file} must check next knockout scenario readiness`);
     assert.ok(
       text.includes('public-data/knockout-scenarios') ||

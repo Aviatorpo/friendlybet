@@ -117,6 +117,15 @@ function timestampMs(value) {
   return Number.isFinite(ms) ? ms : NaN;
 }
 
+function latestFiniteTimestampMs(values) {
+  let latest = NaN;
+  for (const value of values || []) {
+    const ms = timestampMs(value);
+    if (Number.isFinite(ms) && (!Number.isFinite(latest) || ms > latest)) latest = ms;
+  }
+  return latest;
+}
+
 function scoreableResultRows(payload) {
   const matches = Array.isArray(payload && payload.matches) ? payload.matches : [];
   return matches.filter(match => {
@@ -132,17 +141,22 @@ function localLatestScoreableResultUpdateMs() {
     const payload = readJson(path.join(DATA_DIR, 'matches.json'));
     let latest = NaN;
     for (const match of scoreableResultRows(payload)) {
-      const candidate = Math.max(
-        timestampMs(match.source_updated_at),
-        timestampMs(match.last_updated),
-        timestampMs(match.match_date)
-      );
+      const candidate = latestFiniteTimestampMs([
+        match.source_updated_at,
+        match.last_updated,
+        match.match_date
+      ]);
       if (Number.isFinite(candidate) && (!Number.isFinite(latest) || candidate > latest)) latest = candidate;
     }
     return latest;
   } catch (_) {
     return NaN;
   }
+}
+
+function configuredScoreFreshAfterMs() {
+  const ms = timestampMs(process.env.SCORING_SCORE_FRESH_AFTER || '');
+  return Number.isFinite(ms) ? ms : NaN;
 }
 
 function userRequiresScoreHeartbeat(user, cutoffMs) {
@@ -279,7 +293,7 @@ async function verifyPublicSnapshots(pools, usersByPool, expectedResultVersion =
       const checked = verifyPoolSnapshot('public', pool.id, dbUsers, snapshot, {
         resultVersion: publicResultVersion || expectedResultVersion,
         requirePointsState: !!(publicResultVersion || expectedResultVersion),
-        scoreFreshAfterMs: REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT ? localLatestScoreableResultUpdateMs() : null,
+        scoreFreshAfterMs: REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT ? (configuredScoreFreshAfterMs() || localLatestScoreableResultUpdateMs()) : null,
       });
       errors.push(...checked.errors);
       verifiedPools++;
@@ -311,7 +325,7 @@ async function main() {
 
   const errors = [];
   const resultVersion = localMatchesResultVersion();
-  const scoreFreshAfterMs = REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT ? localLatestScoreableResultUpdateMs() : null;
+  const scoreFreshAfterMs = REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT ? (configuredScoreFreshAfterMs() || localLatestScoreableResultUpdateMs()) : null;
   let verifiedPools = 0;
   let verifiedUsers = 0;
   let nonZeroPools = 0;
@@ -388,6 +402,7 @@ if (require.main === module) {
     verifyPublicSnapshots,
     localMatchesResultVersion,
     timestampMs,
+    configuredScoreFreshAfterMs,
     userRequiresScoreHeartbeat,
     rowsMatch,
     scoreNumber,

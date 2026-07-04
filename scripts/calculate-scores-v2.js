@@ -54,6 +54,36 @@ function localMatchesResultVersion() {
   }
 }
 
+function timestampMs(value) {
+  const ms = Date.parse(value || '');
+  return Number.isFinite(ms) ? ms : NaN;
+}
+
+function latestFiniteTimestampMs(values) {
+  let latest = NaN;
+  for (const value of values || []) {
+    const ms = timestampMs(value);
+    if (Number.isFinite(ms) && (!Number.isFinite(latest) || ms > latest)) latest = ms;
+  }
+  return latest;
+}
+
+function latestScoreableResultUpdateMs(matches) {
+  let latest = NaN;
+  for (const match of matches || []) {
+    const status = String(match && match.status || '').toUpperCase();
+    if (!['FINISHED', 'AWARDED'].includes(status)) continue;
+    if (match.home_score == null || match.away_score == null) continue;
+    const candidate = latestFiniteTimestampMs([
+      match.source_updated_at,
+      match.last_updated,
+      match.match_date
+    ]);
+    if (Number.isFinite(candidate) && (!Number.isFinite(latest) || candidate > latest)) latest = candidate;
+  }
+  return latest;
+}
+
 function csvList(value) {
   return String(value || '')
     .split(',')
@@ -763,6 +793,8 @@ async function main(options = {}) {
   // points appear/flip as the scoreline changed. Require a terminal status.
   const finishedMatches = (matches || []).filter(isTerminalMatch);
   const resultVersion = resultVersionFromMatches(matches || []);
+  const scoreFreshAfterMs = latestScoreableResultUpdateMs(matches || []);
+  const scoreFreshAfter = Number.isFinite(scoreFreshAfterMs) ? new Date(scoreFreshAfterMs).toISOString() : '';
   const localResultVersion = localMatchesResultVersion();
   console.log(`${pools.length} pools, ${finishedMatches.length} finished matches`);
   const groupState = buildGroupState(matches || []);
@@ -884,6 +916,7 @@ async function main(options = {}) {
   setGithubOutput('changed_pool_ids', changedPoolList.join(','));
   setGithubOutput('force_all_leaderboard_snapshots', forceAllLeaderboardSnapshots ? '1' : '');
   setGithubOutput('result_version', resultVersion || '');
+  setGithubOutput('score_fresh_after', scoreFreshAfter);
   setGithubOutput('changed_users', changedUsers);
   setGithubOutput('scored_users', scoredUsers);
   setGithubOutput('scored_pools', scoredPools);
@@ -1149,6 +1182,7 @@ if (require.main === module) {
     buildGroupState, indexRowsBy, userScoresAlreadyCurrent, updateUserScoreIfChanged,
     recordUserScore, publicScoreRow, databaseScoreRow,
     upsertScoreRows,
+    latestScoreableResultUpdateMs,
     scoreCalcTimestampFresh,
     bracketPosRuleKey, stageRuleKey, poolMultResolver, buildTwoPhaseSlotMatches,
     groupScoringMode,

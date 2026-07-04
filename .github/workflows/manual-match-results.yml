@@ -99,6 +99,7 @@ jobs:
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
           FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
           SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT: '1'
+          SCORING_SCORE_FRESH_AFTER: ${{ steps.score_results.outputs.score_fresh_after }}
         run: node scripts/verify-scoring-snapshots.js
 
       - name: Refresh FIFA schedule after manual result
@@ -141,7 +142,7 @@ jobs:
             node scripts/export-snapshots.js matches
             SCORING_FORCE_SCORE_HEARTBEAT=1 node scripts/calculate-scores-v2.js --critical
             node scripts/export-snapshots.js all
-            SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT=1 node scripts/verify-scoring-snapshots.js
+            SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT=1 SCORING_SCORE_FRESH_AFTER="${{ steps.score_results.outputs.score_fresh_after }}" node scripts/verify-scoring-snapshots.js
             node scripts/generate-knockout-scenarios.js || true
         run: |
           git config user.name "Aviatorpo"
@@ -159,6 +160,7 @@ jobs:
           LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
           FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
           SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT: '1'
+          SCORING_SCORE_FRESH_AFTER: ${{ steps.score_results.outputs.score_fresh_after }}
           SCORING_SNAPSHOT_PUBLIC_BASE_URL: https://friendlybet.live
           SCORING_SNAPSHOT_PUBLIC_RETRIES: 60
           SCORING_SNAPSHOT_PUBLIC_RETRY_MS: 10000
