@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-04T08:49:17.692Z",
-  "freshUntil": "2026-07-04T14:49:17.692Z",
-  "count": 7,
+  "updatedAt": "2026-07-04T13:54:02.450Z",
+  "freshUntil": "2026-07-04T19:54:02.450Z",
+  "count": 6,
   "items": [
     {
       "id": "result-4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
@@ -38,15 +38,6 @@
       "en": "Switzerland got past Algeria 2-0. Brackets that picked them get a receipt; Algeria believers need a new route 🧾",
       "sources": [],
       "expires_at": "2026-07-04T15:00:00.000Z"
-    },
-    {
-      "id": "result-8bb5df11-6f67-48f1-838b-990c4863bf2d",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "פורטוגל ניצחה את קרואטיה 2:1 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
-      "en": "Portugal beat Croatia 2-1 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
-      "sources": [],
-      "expires_at": "2026-07-04T11:00:00.000Z"
     },
     {
       "id": "fixture-725161f2-68ae-4b8f-bda4-d08243bec185",
