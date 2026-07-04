@@ -399,7 +399,10 @@ function preserveExistingGroupScoresIfSourceNotReady(user, groupPoints, bonusPoi
 
 const SCORE_HEARTBEAT_MAX_AGE_MS = 5 * 60 * 60 * 1000;
 const SCORE_HEARTBEAT_MAX_PATCHES_PER_RUN = 250;
+const SCORE_HEARTBEAT_BATCH_SIZE = 250;
 let scoreHeartbeatPatchesThisRun = 0;
+let forcedScoreHeartbeatIso = null;
+const forcedScoreHeartbeatUserIds = new Set();
 
 function scoreCalcTimestampFresh(value, nowMs = Date.now()) {
   if (SCORING_FORCE_SCORE_HEARTBEAT) return false;
@@ -412,6 +415,30 @@ function scoreCalcTimestampFresh(value, nowMs = Date.now()) {
 function canPatchScoreHeartbeat() {
   if (SCORING_FORCE_SCORE_HEARTBEAT) return true;
   return scoreHeartbeatPatchesThisRun < SCORE_HEARTBEAT_MAX_PATCHES_PER_RUN;
+}
+
+function postgrestIn(values) {
+  return `in.(${values.map(v => encodeURIComponent(v)).join(',')})`;
+}
+
+function queueForcedScoreHeartbeat(userId) {
+  if (!userId) return false;
+  if (!forcedScoreHeartbeatIso) forcedScoreHeartbeatIso = new Date().toISOString();
+  forcedScoreHeartbeatUserIds.add(userId);
+  return true;
+}
+
+async function flushForcedScoreHeartbeats() {
+  if (!SCORING_FORCE_SCORE_HEARTBEAT || forcedScoreHeartbeatUserIds.size === 0) return 0;
+  const ids = Array.from(forcedScoreHeartbeatUserIds);
+  for (let i = 0; i < ids.length; i += SCORE_HEARTBEAT_BATCH_SIZE) {
+    const batch = ids.slice(i, i + SCORE_HEARTBEAT_BATCH_SIZE);
+    await sb('PATCH', 'users', {
+      data: { last_score_calc: forcedScoreHeartbeatIso },
+      query: `?id=${postgrestIn(batch)}`
+    });
+  }
+  return ids.length;
 }
 
 function userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints, total) {
@@ -456,6 +483,9 @@ async function updateUserScoreIfChanged(user, groupPoints, knockoutPoints, bonus
     if (!heartbeat) return false;
     if (scoreCalcTimestampFresh(user.last_score_calc, now.getTime())) return false;
     if (!canPatchScoreHeartbeat()) return false;
+    if (SCORING_FORCE_SCORE_HEARTBEAT) {
+      return queueForcedScoreHeartbeat(user.id);
+    }
     await sb('PATCH', 'users', {
       data: { last_score_calc: nowIso },
       query: `?id=eq.${user.id}`
@@ -802,6 +832,7 @@ async function main(options = {}) {
   if (poolFailures) {
     throw new Error(`${poolFailures} pool(s) failed during scoring`);
   }
+  const forcedHeartbeatUsers = await flushForcedScoreHeartbeats();
 
   const elapsedMs = Date.now() - startedAt;
   const changedPoolList = Array.from(changedPoolIds);
@@ -816,7 +847,7 @@ async function main(options = {}) {
     console.log(`forcing all leaderboard snapshots because ${reason}`);
   }
   if (SCORING_FORCE_SCORE_HEARTBEAT) {
-    console.log('forced score heartbeat was enabled; unchanged users were stamped for result-publication proof');
+    console.log(`forced score heartbeat was enabled; ${forcedHeartbeatUsers} unchanged user(s) were stamped for result-publication proof`);
   }
   setGithubOutput('score_ms', elapsedMs);
   setGithubOutput('changed_pool_ids', changedPoolList.join(','));
