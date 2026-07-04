@@ -441,6 +441,17 @@ async function flushForcedScoreHeartbeats() {
   return ids.length;
 }
 
+async function upsertScoreRows(rows, batchSize = 250) {
+  if (!Array.isArray(rows) || rows.length === 0) return 0;
+  for (let i = 0; i < rows.length; i += batchSize) {
+    await sb('POST', 'users', {
+      data: rows.slice(i, i + batchSize),
+      query: '?on_conflict=id'
+    });
+  }
+  return rows.length;
+}
+
 function userScoresAlreadyCurrent(user, groupPoints, knockoutPoints, bonusPoints, total) {
   if (user.total_score == null) return false;
   if ((user.group_points ?? user.groups_score) == null) return false;
@@ -710,6 +721,8 @@ async function main(options = {}) {
   const critical = options.critical == null ? SCORING_CRITICAL : !!options.critical;
   console.log(`FriendlyBet v2 scoring start${critical ? ' (critical mode)' : ''}`);
   const startedAt = Date.now();
+  const bulkScoreRows = SCORING_FORCE_SCORE_HEARTBEAT ? [] : null;
+  const scoringTimestampIso = new Date().toISOString();
 
   // 1. Load pools
   const poolFilter = new Set(csvList(options.poolIds || SCORING_POOL_IDS));
@@ -812,12 +825,16 @@ async function main(options = {}) {
           groupState,
           pickIndexes,
           heartbeat: SCORING_FORCE_SCORE_HEARTBEAT || !critical,
+          collectScores: bulkScoreRows || opts.collectScores,
+          scenarioTimestamp: bulkScoreRows ? scoringTimestampIso : opts.scenarioTimestamp,
         });
       } else {
         result = await scoreTwoPhasePool(pool, rules, users, finishedMatches, tsMap, realTopScorer, {
           groupState,
           pickIndexes,
           heartbeat: SCORING_FORCE_SCORE_HEARTBEAT || !critical,
+          collectScores: bulkScoreRows || opts.collectScores,
+          scenarioTimestamp: bulkScoreRows ? scoringTimestampIso : opts.scenarioTimestamp,
         });
       }
       scoredPools++;
@@ -832,7 +849,8 @@ async function main(options = {}) {
   if (poolFailures) {
     throw new Error(`${poolFailures} pool(s) failed during scoring`);
   }
-  const forcedHeartbeatUsers = await flushForcedScoreHeartbeats();
+  const bulkScoreUsers = bulkScoreRows ? await upsertScoreRows(bulkScoreRows) : 0;
+  const forcedHeartbeatUsers = bulkScoreRows ? 0 : await flushForcedScoreHeartbeats();
 
   const elapsedMs = Date.now() - startedAt;
   const changedPoolList = Array.from(changedPoolIds);
@@ -847,7 +865,7 @@ async function main(options = {}) {
     console.log(`forcing all leaderboard snapshots because ${reason}`);
   }
   if (SCORING_FORCE_SCORE_HEARTBEAT) {
-    console.log(`forced score heartbeat was enabled; ${forcedHeartbeatUsers} unchanged user(s) were stamped for result-publication proof`);
+    console.log(`forced score heartbeat was enabled; ${bulkScoreUsers || forcedHeartbeatUsers} user score row(s) were stamped for result-publication proof`);
   }
   setGithubOutput('score_ms', elapsedMs);
   setGithubOutput('changed_pool_ids', changedPoolList.join(','));
@@ -1115,6 +1133,7 @@ if (require.main === module) {
     computeGroupStandings, groupIsComplete, groupMatchIdentity, isTerminalMatch, isPendingProviderFinal, knockoutWinner,
     buildGroupState, indexRowsBy, userScoresAlreadyCurrent, updateUserScoreIfChanged,
     recordUserScore, publicScoreRow,
+    upsertScoreRows,
     scoreCalcTimestampFresh,
     bracketPosRuleKey, stageRuleKey, poolMultResolver, buildTwoPhaseSlotMatches,
     groupScoringMode,
