@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-05T14:02:17.229Z",
-  "freshUntil": "2026-07-05T20:02:17.229Z",
-  "count": 5,
+  "updatedAt": "2026-07-05T19:39:46.695Z",
+  "freshUntil": "2026-07-06T01:39:46.695Z",
+  "count": 6,
   "items": [
     {
       "id": "result-f1d512ac-b83b-4edc-ab23-e927e566a76d",
@@ -47,6 +47,15 @@
       "en": "Huge Round of 16: Portugal vs Spain, tomorrow 22:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-06T18:45:00.000Z"
+    },
+    {
+      "id": "fixture-084756cf-d007-4858-8fc4-d6ca8b66b686",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "שמינית הגמר: ארה\"ב נגד בלגיה, 07/07 03:00. מי שבנה על בלגיה רוצה שקט; מי שסימן את ארה\"ב מחפש רעידת בראקט ⏰",
+      "en": "Round of 16: United States vs Belgium, 07/07 03:00. Belgium picks want calm; United States picks are hunting bracket shock ⏰",
+      "sources": [],
+      "expires_at": "2026-07-06T23:45:00.000Z"
     }
   ]
 }
