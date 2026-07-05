@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-07-05T21:18:29.853Z",
-  "freshUntil": "2026-07-06T03:18:29.853Z",
+  "updatedAt": "2026-07-05T22:10:59.843Z",
+  "freshUntil": "2026-07-06T04:10:59.843Z",
   "count": 6,
   "items": [
     {
-      "id": "live-d766b98c-7eea-4f41-9227-3c1a0f6826b4",
-      "type": "live",
+      "id": "result-d766b98c-7eea-4f41-9227-3c1a0f6826b4",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "ברזיל נגד נורווגיה עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
-      "en": "Brazil vs Norway is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "he": "נורווגיה עברה את ברזיל 2:1. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על ברזיל צריך מסלול חדש 🧾",
+      "en": "Norway got past Brazil 2-1. Brackets that picked them get a receipt; Brazil believers need a new route 🧾",
       "sources": [],
-      "expires_at": "2026-07-06T00:18:29.853Z"
+      "expires_at": "2026-07-07T08:00:00.000Z"
     },
     {
       "id": "result-f1d512ac-b83b-4edc-ab23-e927e566a76d",
       "type": "result",
       "confidence": "confirmed",
-      "he": "1:0 לצרפת על פרגוואי. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
-      "en": "1-0 for France over Paraguay. Anyone who picked them in this knockout match can open the receipts 🧾",
+      "he": "צרפת ניצחה את פרגוואי 1:0 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
+      "en": "France beat Paraguay 1-0 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-06T09:00:00.000Z"
     },
@@ -25,8 +25,8 @@
       "id": "result-725161f2-68ae-4b8f-bda4-d08243bec185",
       "type": "result",
       "confidence": "confirmed",
-      "he": "3:0 למרוקו על קנדה. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות. זה משנה בראקטים, הימורי נוקאאוט ונקודות 🧾",
-      "en": "3-0 for Morocco over Canada. Anyone who picked them in this knockout match can open the receipts 🧾",
+      "he": "מרוקו ניצחה את קנדה 3:0 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
+      "en": "Morocco beat Canada 3-0 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-06T05:00:00.000Z"
     },
