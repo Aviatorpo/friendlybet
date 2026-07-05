@@ -446,16 +446,16 @@ function resultCommentary(match, salt = '') {
   if (isKnockout) {
     return variantFor(match, [
       {
-        he: `${winnerHe} עברה את ${loserHe} ${scoreHe}. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על ${loserHe} צריך מסלול חדש.`,
-        en: `${winnerEn} got past ${loserEn} ${scoreEn}. Brackets that picked them get a receipt; ${loserEn} believers need a new route.`,
+        he: `${winnerHe} עברה את ${loserHe} ${scoreHe}. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על ${loserHe} צריך מסלול חדש.`,
+        en: `${winnerEn} got past ${loserEn} ${scoreEn}. Bracket paths that kept ${winnerEn} alive get a receipt; ${loserEn} routes need a new plan.`,
       },
       {
-        he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe} ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום.`,
-        en: `${winnerEn} beat ${loserEn} ${scoreEn} and stayed alive in the bracket. Anyone who picked them can keep dreaming.`,
+        he: `${winnerHe} ניצחה את ${loserHe} ${scoreHe} ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום.`,
+        en: `${winnerEn} beat ${loserEn} ${scoreEn} and stayed alive in the bracket. Any bracket path that kept ${winnerEn} alive can keep dreaming.`,
       },
       {
-        he: `${scoreHe} ל${winnerHe} על ${loserHe}. מי שסימן אותה במשחק הנוקאאוט הזה יכול לפתוח את הקבלות.`,
-        en: `${scoreEn} for ${winnerEn} over ${loserEn}. Anyone who picked them in this knockout match can open the receipts.`,
+        he: `${scoreHe} ל${winnerHe} על ${loserHe}. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות.`,
+        en: `${scoreEn} for ${winnerEn} over ${loserEn}. Any bracket path that kept ${winnerEn} alive can open the receipts.`,
       },
     ], salt);
   }

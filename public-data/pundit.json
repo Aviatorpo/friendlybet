@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-07-05T22:10:59.843Z",
-  "freshUntil": "2026-07-06T04:10:59.843Z",
+  "updatedAt": "2026-07-05T22:33:50.434Z",
+  "freshUntil": "2026-07-06T04:33:50.434Z",
   "count": 6,
   "items": [
     {
       "id": "result-d766b98c-7eea-4f41-9227-3c1a0f6826b4",
       "type": "result",
       "confidence": "confirmed",
-      "he": "נורווגיה עברה את ברזיל 2:1. בראקטים שסימנו אותה קיבלו קבלה; מי שבנה על ברזיל צריך מסלול חדש 🧾",
-      "en": "Norway got past Brazil 2-1. Brackets that picked them get a receipt; Brazil believers need a new route 🧾",
+      "he": "נורווגיה עברה את ברזיל 2:1. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על ברזיל צריך מסלול חדש 🧾",
+      "en": "Norway got past Brazil 2-1. Bracket paths that kept Norway alive get a receipt; Brazil routes need a new plan 🧾",
       "sources": [],
       "expires_at": "2026-07-07T08:00:00.000Z"
     },
@@ -16,8 +16,8 @@
       "id": "result-f1d512ac-b83b-4edc-ab23-e927e566a76d",
       "type": "result",
       "confidence": "confirmed",
-      "he": "צרפת ניצחה את פרגוואי 1:0 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
-      "en": "France beat Paraguay 1-0 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
+      "he": "צרפת ניצחה את פרגוואי 1:0 ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום 🧾",
+      "en": "France beat Paraguay 1-0 and stayed alive in the bracket. Any bracket path that kept France alive can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-06T09:00:00.000Z"
     },
@@ -25,8 +25,8 @@
       "id": "result-725161f2-68ae-4b8f-bda4-d08243bec185",
       "type": "result",
       "confidence": "confirmed",
-      "he": "מרוקו ניצחה את קנדה 3:0 ונשארה בחיים בבראקט. מי שסימן אותה יכול להמשיך לחלום 🧾",
-      "en": "Morocco beat Canada 3-0 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
+      "he": "מרוקו ניצחה את קנדה 3:0 ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום 🧾",
+      "en": "Morocco beat Canada 3-0 and stayed alive in the bracket. Any bracket path that kept Morocco alive can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-06T05:00:00.000Z"
     },
