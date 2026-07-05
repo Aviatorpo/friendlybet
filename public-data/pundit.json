@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-07-05T20:11:36.469Z",
-  "freshUntil": "2026-07-06T02:11:36.469Z",
-  "count": 5,
+  "updatedAt": "2026-07-05T21:18:29.853Z",
+  "freshUntil": "2026-07-06T03:18:29.853Z",
+  "count": 6,
   "items": [
+    {
+      "id": "live-d766b98c-7eea-4f41-9227-3c1a0f6826b4",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "ברזיל נגד נורווגיה עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
+      "en": "Brazil vs Norway is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "sources": [],
+      "expires_at": "2026-07-06T00:18:29.853Z"
+    },
     {
       "id": "result-f1d512ac-b83b-4edc-ab23-e927e566a76d",
       "type": "result",
@@ -25,8 +34,8 @@
       "id": "fixture-2bbe0177-81d6-4268-9434-6790cec04007",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "מקסיקו נגד אנגליה, מחר 03:00. אנגליה פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
-      "en": "Mexico vs England, tomorrow 03:00. England are the favorite, but in knockout football favorites still have to survive ⏰",
+      "he": "מקסיקו נגד אנגליה, היום 03:00. אנגליה פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
+      "en": "Mexico vs England, today 03:00. England are the favorite, but in knockout football favorites still have to survive ⏰",
       "sources": [],
       "expires_at": "2026-07-05T23:45:00.000Z"
     },
@@ -34,8 +43,8 @@
       "id": "fixture-e2a51510-0a1f-40f3-9990-632608b6f116",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "משחק ענק בשמינית הגמר: פורטוגל נגד ספרד, מחר 22:00. צד אחד ממשיך, צד אחד הולך הביתה ⏰",
-      "en": "Huge Round of 16: Portugal vs Spain, tomorrow 22:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
+      "he": "משחק ענק בשמינית הגמר: פורטוגל נגד ספרד, היום 22:00. צד אחד ממשיך, צד אחד הולך הביתה ⏰",
+      "en": "Huge Round of 16: Portugal vs Spain, today 22:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-06T18:45:00.000Z"
     },
@@ -43,8 +52,8 @@
       "id": "fixture-084756cf-d007-4858-8fc4-d6ca8b66b686",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "ארה\"ב נגד בלגיה, 07/07 03:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
-      "en": "United States vs Belgium, 07/07 03:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
+      "he": "ארה\"ב נגד בלגיה, מחר 03:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
+      "en": "United States vs Belgium, tomorrow 03:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-06T23:45:00.000Z"
     }
