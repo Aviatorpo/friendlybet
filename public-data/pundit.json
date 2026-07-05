@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-05T02:42:08.500Z",
-  "freshUntil": "2026-07-05T08:42:08.500Z",
-  "count": 7,
+  "updatedAt": "2026-07-05T06:26:27.113Z",
+  "freshUntil": "2026-07-05T12:26:27.113Z",
+  "count": 6,
   "items": [
     {
       "id": "result-f1d512ac-b83b-4edc-ab23-e927e566a76d",
@@ -38,15 +38,6 @@
       "en": "Argentina beat Cape Verde 3-2 and stayed alive in the bracket. Anyone who picked them can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-05T10:00:00.000Z"
-    },
-    {
-      "id": "result-becdf518-3a65-4a3f-82a6-622c288a398e",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "1:1 על הלוח, מצרים בשלב הבא ואוסטרליה בחוץ. זה כרטיס המשך לבראקט 🧾",
-      "en": "1-1 on the board, Egypt into the next round and Australia out. It is a bracket ticket 🧾",
-      "sources": [],
-      "expires_at": "2026-07-05T06:00:00.000Z"
     },
     {
       "id": "fixture-d766b98c-7eea-4f41-9227-3c1a0f6826b4",
