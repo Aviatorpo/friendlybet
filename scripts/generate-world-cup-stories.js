@@ -145,6 +145,58 @@ const DRAW_FOCUS = {
 };
 
 const STORY_COPY_OVERRIDES = {
+  'BRA-NOR': {
+    title: {
+      he: 'נורבגיה ניצחה את ברזיל 2-1: לרבע הגמר',
+      en: 'Norway beat Brazil 2-1: into the quarterfinals',
+    },
+    caption: {
+      he: 'נורבגיה הדיחה את ברזיל עם 2-1 בשמינית הגמר. האלנד הפך ערב ענק לכרטיס לרבע הגמר 🔥',
+      en: 'Norway knocked Brazil out 2-1 in the Round of 16. Haaland turned a huge night into a quarterfinal ticket 🔥',
+    },
+    pool_focuses: [
+      {
+        table: 'knockout_picks',
+        team_code: 'NOR',
+        he_name: '{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. 2-1 על ברזיל הופך את הבחירה הזאת לרגע ענק בבראקט 🔥',
+        he_names: '{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. 2-1 על ברזיל הופך את הבחירות האלה לרגע ענק בבראקט 🔥',
+        he_count: '{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. 2-1 על ברזיל הופך את הבחירות האלה לרגע ענק בבראקט 🔥',
+        en_name: '{names} picked {team} to win this knockout match. A 2-1 over Brazil turns that pick into a huge bracket moment 🔥',
+        en_names: '{names} picked {team} to win this knockout match. A 2-1 over Brazil turns those picks into a huge bracket moment 🔥',
+        en_count: '{names} picked {team} to win this knockout match. A 2-1 over Brazil turns those picks into a huge bracket moment 🔥',
+      },
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'NOR',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי הדחה של ברזיל, החלום הזה כבר נשמע הרבה פחות משוגע 🔥',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי הדחה של ברזיל, החלום הזה כבר נשמע הרבה פחות משוגע 🔥',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי הדחה של ברזיל, החלום הזה כבר נשמע הרבה פחות משוגע 🔥',
+        en_name: '{names} picked {team} to win the World Cup. After knocking out Brazil, that dream sounds much less wild 🔥',
+        en_names: '{names} picked {team} to win the World Cup. After knocking out Brazil, those dreams sound much less wild 🔥',
+        en_count: '{names} picked {team} to win the World Cup. After knocking out Brazil, those dreams sound much less wild 🔥',
+      },
+      {
+        table: 'knockout_picks',
+        team_code: 'BRA',
+        he_name: '{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי 2-1 לנורבגיה, הבראקט הזה צריך תשובה טובה בצ׳אט 😬',
+        he_names: '{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 2-1 לנורבגיה, הבראקטים האלה צריכים תשובה טובה בצ׳אט 😬',
+        he_count: '{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 2-1 לנורבגיה, הבראקטים האלה צריכים תשובה טובה בצ׳אט 😬',
+        en_name: '{names} picked {team} to win this knockout match. After Norway’s 2-1, that bracket needs a strong chat answer 😬',
+        en_names: '{names} picked {team} to win this knockout match. After Norway’s 2-1, those brackets need strong chat answers 😬',
+        en_count: '{names} picked {team} to win this knockout match. After Norway’s 2-1, those brackets need strong chat answers 😬',
+      },
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'BRA',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי שנורבגיה שלחה אותה הביתה, זה רגע של ידיים על הראש 😬',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי שנורבגיה שלחה אותה הביתה, זה רגע של ידיים על הראש 😬',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי שנורבגיה שלחה אותה הביתה, זה רגע של ידיים על הראש 😬',
+        en_name: '{names} picked {team} to win the World Cup. After Norway sent them home, that is a hands-on-head moment 😬',
+        en_names: '{names} picked {team} to win the World Cup. After Norway sent them home, those are hands-on-head moments 😬',
+        en_count: '{names} picked {team} to win the World Cup. After Norway sent them home, those are hands-on-head moments 😬',
+      },
+    ],
+  },
   'ENG-COD': {
     title: {
       he: 'אנגליה ניצחה את דר קונגו 2-1: קיין סחב אותה הלאה',
