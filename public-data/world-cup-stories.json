@@ -1,6 +1,91 @@
 {
-  "updated_at": "2026-07-04T19:20:22.747Z",
+  "updated_at": "2026-07-05T05:00:13.971Z",
   "items": [
+    {
+      "id": "par-fra-2026-07-04",
+      "match_id": "f1d512ac-b83b-4edc-ab23-e927e566a76d",
+      "image": "story-assets/france-wins-paraguay.png",
+      "teams": [
+        "PAR",
+        "FRA"
+      ],
+      "outcome": "FRA",
+      "result": "FRA 1-0 PAR",
+      "top_label": "FRANCE QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "FRA",
+        "team_he": "צרפת",
+        "team_en": "France",
+        "match_id": "f1d512ac-b83b-4edc-ab23-e927e566a76d",
+        "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול פרגוואי, הבחירה הזאת נכנסה לשיחה על השלב הבא ⚽",
+        "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול פרגוואי, אלה כבר לא טפסים - אלה קבלות חיות ⚽",
+        "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול פרגוואי, אלה כבר לא טפסים - אלה קבלות חיות ⚽",
+        "en_name": "{names} picked {team} to win this knockout match. After 1-0 against Paraguay, that pick goes straight into the next-round conversation ⚽",
+        "en_names": "{names} picked {team} to win this knockout match. After 1-0 against Paraguay, those picks go straight into the next-round conversation ⚽",
+        "en_count": "{names} picked {team} to win this knockout match. After 1-0 against Paraguay, those picks go straight into the next-round conversation ⚽"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "FRA",
+          "team_he": "צרפת",
+          "team_en": "France",
+          "match_id": "f1d512ac-b83b-4edc-ab23-e927e566a76d",
+          "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול פרגוואי, הבחירה הזאת נכנסה לשיחה על השלב הבא ⚽",
+          "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול פרגוואי, אלה כבר לא טפסים - אלה קבלות חיות ⚽",
+          "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 מול פרגוואי, אלה כבר לא טפסים - אלה קבלות חיות ⚽",
+          "en_name": "{names} picked {team} to win this knockout match. After 1-0 against Paraguay, that pick goes straight into the next-round conversation ⚽",
+          "en_names": "{names} picked {team} to win this knockout match. After 1-0 against Paraguay, those picks go straight into the next-round conversation ⚽",
+          "en_count": "{names} picked {team} to win this knockout match. After 1-0 against Paraguay, those picks go straight into the next-round conversation ⚽"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "FRA",
+          "team_he": "צרפת",
+          "team_en": "France",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 1-0 על פרגוואי, הצ'אט של ההימור חייב לתת לזה מבט שני ⚽",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-0 על פרגוואי, הצ'אט של ההימור חייב לתת לזה מבט שני ⚽",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-0 על פרגוואי, הצ'אט של ההימור חייב לתת לזה מבט שני ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. After 1-0 over Paraguay, the pool chat owes that pick a second look ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. After 1-0 over Paraguay, the pool chat owes those picks a second look ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. After 1-0 over Paraguay, the pool chat owes those picks a second look ⚽"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "PAR",
+          "team_he": "פרגוואי",
+          "team_en": "Paraguay",
+          "match_id": "f1d512ac-b83b-4edc-ab23-e927e566a76d",
+          "he_name": "{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 בשמינית הגמר, ההימור הזה כבר עומד מול המציאות ⚽",
+          "he_names": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 בשמינית הגמר, ההימורים האלה כבר עומדים מול המציאות ⚽",
+          "he_count": "{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 1-0 בשמינית הגמר, ההימורים האלה כבר עומדים מול המציאות ⚽",
+          "en_name": "{names} picked {team} to win this knockout match. After 1-0 in the Round of 16, that pick needs a serious answer now ⚽",
+          "en_names": "{names} picked {team} to win this knockout match. After 1-0 in the Round of 16, those picks need serious answers now ⚽",
+          "en_count": "{names} picked {team} to win this knockout match. After 1-0 in the Round of 16, those picks need serious answers now ⚽"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "PAR",
+          "team_he": "פרגוואי",
+          "team_en": "Paraguay",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 1-0 מול צרפת, הטופס הזה צריך תשובה טובה בצ׳אט ⚽",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-0 מול צרפת, הטפסים האלה צריכים תשובה טובה בצ׳אט ⚽",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 1-0 מול צרפת, הטפסים האלה צריכים תשובה טובה בצ׳אט ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. After 1-0 against France, that pick needs a stronger answer now ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. After 1-0 against France, those picks need stronger answers now ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. After 1-0 against France, those picks need stronger answers now ⚽"
+        }
+      ],
+      "he": {
+        "headline": "צרפת ניצחה את פרגוואי 1-0: שמינית הגמר ⚽",
+        "caption": "צרפת עברה את פרגוואי עם 1-0 בשמינית הגמר. הבראקט מתקדם עכשיו דרכה, ופרגוואי יורדת מהלוח ⚽"
+      },
+      "en": {
+        "headline": "France beat Paraguay 1-0: through the Round of 16 ⚽",
+        "caption": "France got past Paraguay 1-0 in the Round of 16. The bracket now moves through France, while Paraguay drops off the board ⚽"
+      }
+    },
     {
       "id": "can-mar-2026-07-04",
       "match_id": "725161f2-68ae-4b8f-bda4-d08243bec185",
