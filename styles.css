@@ -1384,23 +1384,49 @@ body.ltr .btn-secondary .ti-arrow-left {
 
 .dip-scoreboard {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
   gap: 10px;
+}
+
+.dip-scoreboard-fixture {
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+}
+
+.dip-scoreboard-scored {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 6px;
 }
 
 .dip-score-team {
   min-width: 0;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 8px;
 }
 
-.dip-score-team-away {
+.dip-scoreboard-fixture .dip-score-team-away {
   justify-content: flex-end;
 }
 
-.dip-score-team strong {
+.dip-score-team-scored {
+  justify-content: space-between;
+  min-height: 38px;
+  padding: 7px 9px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.075);
+}
+
+.dip-score-team-main {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dip-score-team strong,
+.dip-score-team-main strong {
   min-width: 0;
   color: #fff;
   font-size: 14px;
@@ -1481,6 +1507,24 @@ body.ltr .btn-secondary .ti-arrow-left {
   white-space: nowrap;
 }
 
+.dip-team-score-badge {
+  min-width: 34px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(217, 180, 106, 0.16);
+  border: 1px solid rgba(217, 180, 106, 0.32);
+  color: #f1d99a;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+  direction: ltr;
+}
+
 .dip-match-block-compact .dip-block-head {
   margin-bottom: 6px;
 }
@@ -1509,6 +1553,16 @@ body.ltr .btn-secondary .ti-arrow-left {
   font-size: 12px;
 }
 
+.dip-match-block-compact .dip-score-team-scored {
+  min-height: 32px;
+  padding: 5px 7px;
+  border-radius: 8px;
+}
+
+.dip-match-block-compact .dip-score-team-main {
+  gap: 6px;
+}
+
 .dip-match-block-compact .dip-flag {
   width: 28px;
   min-width: 28px;
@@ -1520,6 +1574,13 @@ body.ltr .btn-secondary .ti-arrow-left {
   min-width: 48px;
   padding: 6px 8px;
   font-size: 16px;
+}
+
+.dip-match-block-compact .dip-team-score-badge {
+  min-width: 30px;
+  height: 24px;
+  padding: 0 7px;
+  font-size: 15px;
 }
 
 .dip-match-block-compact .dip-points-list {
