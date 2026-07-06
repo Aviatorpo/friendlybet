@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-06T08:08:06.020Z",
-  "freshUntil": "2026-07-06T14:08:06.020Z",
+  "updatedAt": "2026-07-06T10:58:32.158Z",
+  "freshUntil": "2026-07-06T16:58:32.158Z",
   "count": 5,
   "items": [
     {
@@ -22,15 +22,6 @@
       "expires_at": "2026-07-07T08:00:00.000Z"
     },
     {
-      "id": "result-f1d512ac-b83b-4edc-ab23-e927e566a76d",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "צרפת עברה את פרגוואי 1:0. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על פרגוואי צריך מסלול חדש 🧾",
-      "en": "France got past Paraguay 1-0. Bracket paths that kept France alive get a receipt; Paraguay routes need a new plan 🧾",
-      "sources": [],
-      "expires_at": "2026-07-06T09:00:00.000Z"
-    },
-    {
       "id": "fixture-e2a51510-0a1f-40f3-9990-632608b6f116",
       "type": "fixture",
       "confidence": "confirmed",
@@ -47,6 +38,15 @@
       "en": "United States vs Belgium, tomorrow 03:00. Belgium are the favorite, but in knockout football favorites still have to survive ⏰",
       "sources": [],
       "expires_at": "2026-07-06T23:45:00.000Z"
+    },
+    {
+      "id": "fixture-90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "ארגנטינה נגד מצרים, מחר 19:00. ארגנטינה פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
+      "en": "Argentina vs Egypt, tomorrow 19:00. Argentina are the favorite, but in knockout football favorites still have to survive ⏰",
+      "sources": [],
+      "expires_at": "2026-07-07T15:45:00.000Z"
     }
   ]
 }
