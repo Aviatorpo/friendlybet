@@ -1248,6 +1248,11 @@ body.ltr .btn-secondary .ti-arrow-left {
   color: #dbeeff;
 }
 
+.dip-action:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
 .dip-match-region {
   display: grid;
   gap: 10px;
@@ -1348,6 +1353,21 @@ body.ltr .btn-secondary .ti-arrow-left {
   padding-bottom: 13px;
 }
 
+.dip-match-block-compact {
+  padding: 10px 11px;
+  border-color: rgba(255, 255, 255, 0.085);
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: none;
+}
+
+.dip-match-block-compact:first-child {
+  padding-top: 10px;
+}
+
+.dip-match-block-compact:last-child {
+  padding-bottom: 10px;
+}
+
 .dip-block-head {
   display: flex;
   align-items: flex-start;
@@ -1431,45 +1451,93 @@ body.ltr .btn-secondary .ti-arrow-left {
 }
 
 .dip-point-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 52px;
-  align-items: center;
-  gap: 12px;
+  display: block;
   min-height: 34px;
   padding: 7px 0;
   border-top: 1px solid rgba(255, 255, 255, 0.07);
+  text-align: start;
 }
 
 .dip-point-row:first-child {
   border-top: 0;
 }
 
-.dip-point-label {
+.dip-point-sentence {
   min-width: 0;
   display: block;
   color: rgba(255, 255, 255, 0.82);
   font-size: 12px;
-  line-height: 1.25;
+  line-height: 1.35;
   font-weight: 850;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.dip-points {
-  min-width: 0;
-  text-align: end;
-  background: transparent;
-  color: #d8fff3;
-  font-size: 13px;
-  line-height: 1.2;
-  font-weight: 900;
-  direction: ltr;
-  white-space: nowrap;
-}
-
-.dip-points.muted {
+.dip-point-sentence.muted {
   color: rgba(255, 255, 255, 0.62);
+}
+
+.dip-points-value {
+  color: #d8fff3;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.dip-match-block-compact .dip-block-head {
+  margin-bottom: 6px;
+}
+
+.dip-match-block-compact .dip-mini-title,
+.dip-match-block-compact .dip-block-meta,
+.dip-match-block-compact .dip-empty {
+  font-size: 11px;
+}
+
+.dip-match-block-compact .dip-status {
+  min-height: 23px;
+  padding: 4px 7px;
+  font-size: 9px;
+}
+
+.dip-match-block-compact .dip-scoreboard {
+  gap: 7px;
+}
+
+.dip-match-block-compact .dip-score-team {
+  gap: 6px;
+}
+
+.dip-match-block-compact .dip-score-team strong {
+  font-size: 12px;
+}
+
+.dip-match-block-compact .dip-flag {
+  width: 28px;
+  min-width: 28px;
+  height: 20px;
+  border-radius: 5px;
+}
+
+.dip-match-block-compact .dip-score-pill {
+  min-width: 48px;
+  padding: 6px 8px;
+  font-size: 16px;
+}
+
+.dip-match-block-compact .dip-points-list {
+  margin-top: 7px;
+}
+
+.dip-match-block-compact .dip-point-row {
+  min-height: 28px;
+  padding: 5px 0;
+}
+
+.dip-match-block-compact .dip-point-sentence {
+  font-size: 11px;
+  line-height: 1.32;
+}
+
+.dip-match-block-compact .dip-points-value {
+  font-size: 12px;
 }
 
 .dip-mini-title {

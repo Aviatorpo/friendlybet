@@ -1794,9 +1794,20 @@ function _dashboardImpactMemoryBracketRows() {
     }));
 }
 
+async function _dashboardImpactLoadMemoryBracketRows() {
+  let rows = _dashboardImpactMemoryBracketRows();
+  if (rows.length || !_dashboardImpactUsesSinglePhaseBracket() || typeof spLoadExistingPicks !== 'function') return rows;
+  try {
+    await spLoadExistingPicks();
+  } catch (err) {
+    console.warn('dashboard impact pilot: single-phase pick preload failed', err);
+  }
+  return _dashboardImpactMemoryBracketRows();
+}
+
 async function _dashboardImpactLoadMyBracketPicks() {
   if (!state.currentUser || !state.currentPool || !state.currentPool.id) return null;
-  const fallbackRows = _dashboardImpactMemoryBracketRows();
+  let fallbackRows = await _dashboardImpactLoadMemoryBracketRows();
   if (typeof supabaseClient === 'undefined' || !supabaseClient) return fallbackRows.length ? fallbackRows : null;
 
   const poolId = state.currentPool.id;
@@ -1809,28 +1820,36 @@ async function _dashboardImpactLoadMyBracketPicks() {
   if (cacheHit) return _dashboardImpactPickCache.rows;
   if (_dashboardImpactPickCache.promise) return _dashboardImpactPickCache.promise;
 
-  const readPicks = () => supabaseClient
-    .from('knockout_picks')
-    .select('bracket_position,predicted_winner,team_code,multiplier_applied')
-    .eq('user_id', userId)
-    .eq('pool_id', poolId)
-    .not('bracket_position', 'is', null);
+  const readPicks = (poolScoped = true) => {
+    let query = supabaseClient
+      .from('knockout_picks')
+      .select('bracket_position,predicted_winner,team_code,multiplier_applied')
+      .eq('user_id', userId)
+      .not('bracket_position', 'is', null)
+      .range(0, 9999);
+    if (poolScoped) query = query.eq('pool_id', poolId);
+    return query;
+  };
 
   _dashboardImpactPickCache.promise = (async () => {
     let { data, error } = await readPicks();
     if (error) {
       await new Promise(resolve => setTimeout(resolve, 400));
-      const retry = await readPicks();
+      const retry = await readPicks(true);
       data = retry.data;
       error = retry.error;
     }
     if (error) {
-      console.warn('dashboard impact pilot: knockout pick read failed', error);
+      fallbackRows = _dashboardImpactMemoryBracketRows();
+      if (!fallbackRows.length) console.warn('dashboard impact pilot: knockout pick read failed', error);
       return fallbackRows.length ? fallbackRows : null;
+    }
+    if ((!data || !data.length) && _dashboardImpactUsesSinglePhaseBracket()) {
+      const legacy = await readPicks(false);
+      if (!legacy.error && legacy.data && legacy.data.length) data = legacy.data;
     }
     const rows = (data || []).filter(row => row && row.bracket_position != null);
     const resolvedRows = rows.length ? rows : fallbackRows;
-    if (!resolvedRows.length) return null;
     _dashboardImpactPickCache = {
       poolId,
       userId,
@@ -1888,6 +1907,12 @@ function _dashboardImpactFormatPointsValue(value) {
   return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
 }
 
+function _dashboardImpactPointsValueText(value) {
+  const points = Number(value) || 0;
+  const key = Math.abs(points) === 1 ? 'dashboard.impact.pointsValueOne' : 'dashboard.impact.pointsValueOther';
+  return t(key, { points: _dashboardImpactFormatPointsValue(points) });
+}
+
 function _dashboardImpactPickPointsForTeamAtStage(teamCode, stage, picks) {
   const ruleKey = _dashboardImpactStageRuleKey(stage);
   if (!teamCode || !ruleKey || !Array.isArray(picks)) return null;
@@ -1910,12 +1935,13 @@ function _dashboardImpactPickPointsForTeamAtStage(teamCode, stage, picks) {
 
 function _dashboardImpactPointsText(pointsInfo) {
   if (!pointsInfo || pointsInfo.points == null) {
-    return { text: t('dashboard.impact.pointsUnavailable'), muted: true };
+    return { text: t('dashboard.impact.pointsUnavailable'), muted: true, available: false };
   }
   const points = Number(pointsInfo.points) || 0;
   return {
-    text: t('dashboard.impact.pointsDelta', { points: _dashboardImpactFormatPointsValue(points) }),
-    muted: points <= 0
+    text: _dashboardImpactPointsValueText(points),
+    muted: points <= 0,
+    available: true
   };
 }
 
@@ -1940,12 +1966,24 @@ function _dashboardImpactScoreboardHtml(match, ux) {
   `;
 }
 
-function _dashboardImpactPointRowHtml(label, pointsInfo) {
+function _dashboardImpactPointSentenceHtml(sentenceKey, unavailableKey, params, pointsInfo) {
   const points = _dashboardImpactPointsText(pointsInfo);
+  if (!points.available) {
+    return `<span class="dip-point-sentence muted">${escapeHtml(t(unavailableKey, params))}</span>`;
+  }
+  const token = '__FB_POINTS__';
+  const sentence = t(sentenceKey, { ...(params || {}), points: token });
+  const parts = String(sentence).split(token);
+  if (parts.length < 2) {
+    return `<span class="dip-point-sentence">${escapeHtml(sentence)} <strong class="dip-points-value">${escapeHtml(points.text)}</strong></span>`;
+  }
+  return `<span class="dip-point-sentence">${escapeHtml(parts[0])}<strong class="dip-points-value">${escapeHtml(points.text)}</strong>${escapeHtml(parts.slice(1).join(token))}</span>`;
+}
+
+function _dashboardImpactPointRowHtml(sentenceKey, unavailableKey, params, pointsInfo) {
   return `
     <div class="dip-point-row">
-      <span class="dip-point-label">${escapeHtml(label)}</span>
-      <span class="dip-points ${points.muted ? 'muted' : ''}">${escapeHtml(points.text)}</span>
+      ${_dashboardImpactPointSentenceHtml(sentenceKey, unavailableKey, params, pointsInfo)}
     </div>
   `;
 }
@@ -1953,8 +1991,12 @@ function _dashboardImpactPointRowHtml(label, pointsInfo) {
 function _dashboardImpactScenarioRows(match, picks) {
   if (!match || !_matchIsKnockoutStage(match) || !match.home_team_code || !match.away_team_code) return '';
   const rows = [match.home_team_code, match.away_team_code].map(code => {
-    const label = t('dashboard.impact.ifTeamAdvances', { team: getTeamName(code) });
-    return _dashboardImpactPointRowHtml(label, _dashboardImpactPickPointsForTeamAtStage(code, match.stage, picks));
+    return _dashboardImpactPointRowHtml(
+      'dashboard.impact.scenarioPointsSentence',
+      'dashboard.impact.scenarioPointsUnavailable',
+      { team: getTeamName(code) },
+      _dashboardImpactPickPointsForTeamAtStage(code, match.stage, picks)
+    );
   });
   return `<div class="dip-points-list">${rows.join('')}</div>`;
 }
@@ -1973,15 +2015,18 @@ function _dashboardImpactResultRows(match, picks) {
     return `
       <div class="dip-points-list">
         <div class="dip-point-row">
-          <span class="dip-point-label">${escapeHtml(t('dashboard.impact.resultPending'))}</span>
-          <span class="dip-points muted">${escapeHtml(t('dashboard.impact.pointsUnavailable'))}</span>
+          <span class="dip-point-sentence muted">${escapeHtml(t('dashboard.impact.resultPending'))}</span>
         </div>
       </div>
     `;
   }
-  const label = t('dashboard.impact.resultPoints', { team: getTeamName(winner) });
   const pointsInfo = _dashboardImpactPickPointsForTeamAtStage(winner, match.stage, picks);
-  return `<div class="dip-points-list">${_dashboardImpactPointRowHtml(label, pointsInfo)}</div>`;
+  return `<div class="dip-points-list">${_dashboardImpactPointRowHtml(
+    'dashboard.impact.resultPointsSentence',
+    'dashboard.impact.resultPointsUnavailable',
+    { team: getTeamName(winner) },
+    pointsInfo
+  )}</div>`;
 }
 
 function _dashboardImpactLiveMatch(matches) {
@@ -2017,31 +2062,33 @@ function _dashboardImpactNextMatch(matches, now = Date.now(), excludeMatch = nul
     .sort((a, b) => Date.parse(a.match_date || 0) - Date.parse(b.match_date || 0))[0] || null;
 }
 
-function _dashboardImpactMatchMeta(match) {
+function _dashboardImpactMatchMeta(match, ux = null) {
   if (!match) return '';
+  const liveClock = ux && ux.isLive ? _matchLiveClockLabel(match) : null;
+  const timeLabel = liveClock || (ux && ux.isLive ? '' : _dashboardImpactMatchTime(match));
   const parts = [
     getStageLabel(match.stage, match.group_letter, match.stage_name),
-    _dashboardImpactMatchTime(match)
+    timeLabel
   ].filter(Boolean);
   return parts.join(' - ');
-  return parts.join(' · ');
 }
 
-function _dashboardImpactMatchBlockHtml(kind, titleKey, match, pointsHtml) {
+function _dashboardImpactMatchBlockHtml(kind, titleKey, match, pointsHtml, options = {}) {
   if (!match) return '';
   const ux = _matchUxState(match);
   const isConfirming = kind === 'live' && !!(ux && ux.requiresVerification);
+  const compactClass = options.compact ? ' dip-match-block-compact' : '';
   const statusKey = isConfirming
     ? 'dashboard.impact.statusChecking'
     : (kind === 'live'
       ? 'dashboard.impact.statusLive'
       : (kind === 'next' ? 'dashboard.impact.statusNext' : 'dashboard.impact.statusFinal'));
   return `
-    <section class="dip-match-card dip-match-block dip-match-block-${kind}${isConfirming ? ' dip-match-block-confirming' : ''}">
+    <section class="dip-match-card dip-match-block dip-match-block-${kind}${isConfirming ? ' dip-match-block-confirming' : ''}${compactClass}">
       <div class="dip-block-head">
         <div class="dip-block-title">
           <span class="dip-mini-title">${escapeHtml(t(titleKey))}</span>
-          <span class="dip-block-meta">${escapeHtml(_dashboardImpactMatchMeta(match))}</span>
+          <span class="dip-block-meta">${escapeHtml(_dashboardImpactMatchMeta(match, ux))}</span>
         </div>
         <span class="dip-status dip-status-${kind}">${escapeHtml(t(statusKey))}</span>
       </div>
@@ -2051,9 +2098,10 @@ function _dashboardImpactMatchBlockHtml(kind, titleKey, match, pointsHtml) {
   `;
 }
 
-function _dashboardImpactEmptyCardHtml(kind, titleKey, textKey) {
+function _dashboardImpactEmptyCardHtml(kind, titleKey, textKey, options = {}) {
+  const compactClass = options.compact ? ' dip-match-block-compact' : '';
   return `
-    <section class="dip-match-card dip-match-block dip-match-block-${kind} dip-match-empty-card">
+    <section class="dip-match-card dip-match-block dip-match-block-${kind} dip-match-empty-card${compactClass}">
       <div class="dip-block-head">
         <div class="dip-block-title">
           <span class="dip-mini-title">${escapeHtml(t(titleKey))}</span>
@@ -2066,6 +2114,7 @@ function _dashboardImpactEmptyCardHtml(kind, titleKey, textKey) {
 
 function _dashboardImpactMatchStackHtml(activeMatch, lastResult, nextMatch, picks) {
   const blocks = [];
+  const secondaryCompact = !!activeMatch;
   if (activeMatch) {
     blocks.push(_dashboardImpactMatchBlockHtml(
       'live',
@@ -2079,22 +2128,51 @@ function _dashboardImpactMatchStackHtml(activeMatch, lastResult, nextMatch, pick
       'last',
       'dashboard.impact.lastResult',
       lastResult,
-      _dashboardImpactResultRows(lastResult, picks)
+      _dashboardImpactResultRows(lastResult, picks),
+      { compact: secondaryCompact }
     ));
   } else {
-    blocks.push(_dashboardImpactEmptyCardHtml('last', 'dashboard.impact.lastResult', 'dashboard.impact.noResultYet'));
+    blocks.push(_dashboardImpactEmptyCardHtml('last', 'dashboard.impact.lastResult', 'dashboard.impact.noResultYet', { compact: secondaryCompact }));
   }
   if (nextMatch) {
     blocks.push(_dashboardImpactMatchBlockHtml(
       'next',
       'dashboard.impact.nextMatch',
       nextMatch,
-      _dashboardImpactScenarioRows(nextMatch, picks)
+      _dashboardImpactScenarioRows(nextMatch, picks),
+      { compact: secondaryCompact }
     ));
   } else {
-    blocks.push(_dashboardImpactEmptyCardHtml('next', 'dashboard.impact.nextMatch', 'dashboard.impact.noNextMatch'));
+    blocks.push(_dashboardImpactEmptyCardHtml('next', 'dashboard.impact.nextMatch', 'dashboard.impact.noNextMatch', { compact: secondaryCompact }));
   }
   return `<div class="dip-match-stack">${blocks.join('')}</div>`;
+}
+
+function _dashboardImpactUsesSinglePhaseBracket() {
+  return !!(state.currentPool && state.currentPool.betting_mode === 'single_phase');
+}
+
+async function _dashboardImpactOpenBracket(btn) {
+  try {
+    if (btn) {
+      btn.disabled = true;
+      btn.setAttribute('aria-busy', 'true');
+    }
+    if (_dashboardImpactUsesSinglePhaseBracket() && typeof openSpBracketView === 'function') {
+      if (typeof spLoadExistingPicks === 'function') await spLoadExistingPicks();
+      return openSpBracketView();
+    }
+    if (typeof openBracketView === 'function') return openBracketView();
+  } catch (err) {
+    console.warn('dashboard impact pilot: bracket open failed', err);
+    if (typeof showToast === 'function') showToast(t('errors.reconnect'), 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.setAttribute('aria-busy', 'false');
+    }
+  }
+  return null;
 }
 
 async function renderDashboardImpactPilot(users, ctx = {}) {
@@ -2114,10 +2192,7 @@ async function renderDashboardImpactPilot(users, ctx = {}) {
   const leaderboardBtn = document.getElementById('dip-open-leaderboard');
   if (leaderboardBtn) leaderboardBtn.onclick = () => showLeaderboard();
   const bracketBtn = document.getElementById('dip-open-bracket');
-  if (bracketBtn) bracketBtn.onclick = () => {
-    if (typeof openSpBracketView === 'function' && state.currentPool && state.currentPool.betting_mode === 'single_phase') return openSpBracketView();
-    if (typeof openBracketView === 'function') return openBracketView();
-  };
+  if (bracketBtn) bracketBtn.onclick = () => _dashboardImpactOpenBracket(bracketBtn);
 
   const body = document.getElementById('dip-match-body');
   if (!body) return true;
@@ -12426,6 +12501,9 @@ function showError(elementId, message) {
 // The previous check returned early on ANY active screen, which meant a
 // hung init left the splash up forever (and on the next showScreen call
 // nothing else activated, leaving a blank dark-blue background).
+const FB_BOOT_SUPABASE_WAIT_MS = 12000;
+const FB_BOOT_FORCE_HOME_MS = FB_BOOT_SUPABASE_WAIT_MS + 3000;
+
 function _fbForceHomeIfBlank(reason) {
   const anyActive = document.querySelector('.screen.active');
   // Only consider real screens; the loading splash counts as "still stuck".
@@ -12446,20 +12524,18 @@ function _fbForceHomeIfBlank(reason) {
   }
   if (anyActive && anyActive.id !== 'loading-screen') return;
   console.warn('Forcing home-screen — ' + (reason || 'no active screen'));
-  // Clear stale local session: if the user was supposed to auto-login but
-  // we got stuck on the way, they probably have bad localStorage state.
-  // Cheap to wipe; they can reauth with their recovery code from home.
-  try { if (typeof clearLocalUser === 'function') clearLocalUser(); } catch (_) {}
+  // Do not clear the stored session here. This timeout is a visual escape hatch,
+  // and wiping auth state can turn a slow Supabase boot into a failed login.
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const home = document.getElementById('home-screen');
   if (home) home.classList.add('active');
 }
-// 6s instead of 8: previous timeout was longer than typical Supabase init,
-// so a quick recovery is fine. Still gives the loading splash a reasonable
-// dwell time on a slow first paint. Browser smoke tests set FB_TEST_MODE to
-// render states directly without the startup fallback racing the scenario.
+// The startup fallback must outlast the Supabase wait so a slow-but-successful
+// recovery-code login is not interrupted by the visual escape hatch.
+// Browser smoke tests set FB_TEST_MODE to render states directly without the
+// startup fallback racing the scenario.
 if (!window.FB_TEST_MODE) {
-  setTimeout(() => _fbForceHomeIfBlank('init timeout'), 6000);
+  setTimeout(() => _fbForceHomeIfBlank('init timeout'), FB_BOOT_FORCE_HOME_MS);
   window.addEventListener('error', (e) => {
     console.error('[GLOBAL ERROR]', e && e.error || e);
     _fbForceHomeIfBlank('global error: ' + (e && e.message));
@@ -12730,7 +12806,7 @@ async function initApp() {
   // unhandled-promise callback and leaving the user on a blank screen
   // after the loading splash. Now we poll up to 12s and fall back to
   // home-screen if it never wakes up.
-  const waitForSupabase = (timeoutMs = 12000) => new Promise(resolve => {
+  const waitForSupabase = (timeoutMs = FB_BOOT_SUPABASE_WAIT_MS) => new Promise(resolve => {
     const start = Date.now();
     const tick = () => {
       if (supabaseClient) return resolve(true);
