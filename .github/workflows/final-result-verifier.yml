@@ -5,24 +5,8 @@ on:
     # Cheap continuous recovery during the full tournament match windows. The
     # preflight/backoff step exits before provider calls unless a stale result is
     # actually due, so this removes multi-hour gaps without adding API-style load.
-    - cron: '4,19,34,49 * 11-28 6 *'
-    - cron: '4,19,34,49 16-23 29 6 *'
-    - cron: '4,19,34,49 0-7,16-23 30 6 *'
-    - cron: '4,19,34,49 0-7,15-23 1 7 *'
-    - cron: '4,19,34,49 0-7,18-23 2 7 *'
-    - cron: '4,19,34,49 0-9,17-23 3 7 *'
-    - cron: '4,19,34,49 0-7,16-23 4 7 *'
-    - cron: '4,19,34,49 0-7,19-23 5 7 *'
-    - cron: '4,19,34,49 0-7,18-23 6 7 *'
-    - cron: '4,19,34,49 0-7,15-23 7 7 *'
-    - cron: '4,19,34,49 19-23 9 7 *'
-    - cron: '4,19,34,49 0-3,18-23 10 7 *'
-    - cron: '4,19,34,49 0-2,20-23 11 7 *'
-    - cron: '4,19,34,49 0-7 12 7 *'
-    - cron: '4,19,34,49 18-23 14 7 *'
-    - cron: '4,19,34,49 0-2,18-23 15 7 *'
-    - cron: '4,19,34,49 20-23 18 7 *'
-    - cron: '4,19,34,49 0-2,18-23 19 7 *'
+    - cron: '4,19,34,49 * 11-30 6 *'
+    - cron: '4,19,34,49 * 1-19 7 *'
   workflow_dispatch:
     inputs:
       apply:

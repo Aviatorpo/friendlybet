@@ -557,10 +557,9 @@ async function runReadiness(options = {}) {
   add(
     checks,
     'live poller covers group and knockout match days',
-    livePoller.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 11-28 6 *'")
-      && livePoller.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 16-23 29 6 *'")
-      && livePoller.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 0-2,18-23 19 7 *'"),
-    '5-minute offset schedule required for group stage and knockout windows'
+    livePoller.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 11-30 6 *'")
+      && livePoller.includes("cron: '2,7,12,17,22,27,32,37,42,47,52,57 * 1-19 7 *'"),
+    '5-minute broad tournament schedule required; DB preflight controls cost'
   );
   add(checks, 'live poller can push refreshed snapshots', /permissions:\s*\n\s+contents:\s*write/.test(livePoller), 'verified-final path must commit match, leaderboard, banter, and Pundit snapshots');
   add(
@@ -575,10 +574,9 @@ async function runReadiness(options = {}) {
   add(
     checks,
     'final verifier covers group and knockout match days',
-    verifier.includes("cron: '4,19,34,49 * 11-28 6 *'")
-      && verifier.includes("cron: '4,19,34,49 16-23 29 6 *'")
-      && verifier.includes("cron: '4,19,34,49 0-2,18-23 19 7 *'"),
-    '15-minute offset schedule required for group stage and knockout windows'
+    verifier.includes("cron: '4,19,34,49 * 11-30 6 *'")
+      && verifier.includes("cron: '4,19,34,49 * 1-19 7 *'"),
+    '15-minute broad tournament schedule required; verifier preflight controls cost'
   );
   add(
     checks,
@@ -599,13 +597,12 @@ async function runReadiness(options = {}) {
   add(
     checks,
     'readiness monitor covers production during group and knockout match days',
-    readinessMonitor.includes("cron: '6,16,26,36,46,56 * 11-28 6 *'")
-      && readinessMonitor.includes("cron: '6,16,26,36,46,56 16-23 29 6 *'")
-      && readinessMonitor.includes("cron: '6,16,26,36,46,56 0-2,18-23 19 7 *'")
+    readinessMonitor.includes("cron: '6,16,26,36,46,56 * 11-30 6 *'")
+      && readinessMonitor.includes("cron: '6,16,26,36,46,56 * 1-19 7 *'")
       && readinessMonitor.includes('LIVE_COMPLETION_PUBLIC_BASE_URL: https://friendlybet.live')
       && readinessMonitor.includes("LIVE_COMPLETION_GITHUB_WORKFLOWS: '1'")
       && readinessMonitor.includes('node scripts/live-completion-readiness.js'),
-    'scheduled monitor must audit production public snapshots every 10 minutes during live tournament windows'
+    'scheduled monitor must audit production public snapshots during broad tournament windows'
   );
   add(
     checks,
