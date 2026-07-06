@@ -1,6 +1,91 @@
 {
-  "updated_at": "2026-07-05T22:33:50.860Z",
+  "updated_at": "2026-07-06T06:54:22.251Z",
   "items": [
+    {
+      "id": "mex-eng-2026-07-06",
+      "match_id": "2bbe0177-81d6-4268-9434-6790cec04007",
+      "image": "story-assets/england-wins-mexico.png",
+      "teams": [
+        "MEX",
+        "ENG"
+      ],
+      "outcome": "ENG",
+      "result": "ENG 3-2 MEX",
+      "top_label": "ENGLAND QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "ENG",
+        "team_he": "אנגליה",
+        "team_en": "England",
+        "match_id": "2bbe0177-81d6-4268-9434-6790cec04007",
+        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. עכשיו 3-2 במקסיקו סיטי נתן לבחירה הזאת שורה ראשונה בבראקט 🔥",
+        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. עכשיו 3-2 במקסיקו סיטי נתן לבחירות האלה שורה ראשונה בבראקט 🔥",
+        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. עכשיו 3-2 במקסיקו סיטי נתן לבחירות האלה שורה ראשונה בבראקט 🔥",
+        "en_name": "{names} picked {team} to advance in the knockout bracket. Now a 3-2 in Mexico City puts that pick on the front row of the bracket 🔥",
+        "en_names": "{names} picked {team} to advance in the knockout bracket. Now a 3-2 in Mexico City puts those picks on the front row of the bracket 🔥",
+        "en_count": "{names} picked {team} to advance in the knockout bracket. Now a 3-2 in Mexico City puts those picks on the front row of the bracket 🔥"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "ENG",
+          "team_he": "אנגליה",
+          "team_en": "England",
+          "match_id": "2bbe0177-81d6-4268-9434-6790cec04007",
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. עכשיו 3-2 במקסיקו סיטי נתן לבחירה הזאת שורה ראשונה בבראקט 🔥",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. עכשיו 3-2 במקסיקו סיטי נתן לבחירות האלה שורה ראשונה בבראקט 🔥",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. עכשיו 3-2 במקסיקו סיטי נתן לבחירות האלה שורה ראשונה בבראקט 🔥",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. Now a 3-2 in Mexico City puts that pick on the front row of the bracket 🔥",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. Now a 3-2 in Mexico City puts those picks on the front row of the bracket 🔥",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. Now a 3-2 in Mexico City puts those picks on the front row of the bracket 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ENG",
+          "team_he": "אנגליה",
+          "team_en": "England",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 3-2 כזה מול מקסיקו, הטופס הזה נשמע יותר כמו מועמדת אמיתית 🔥",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-2 כזה מול מקסיקו, הטפסים האלה נשמעים יותר כמו מועמדת אמיתית 🔥",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 3-2 כזה מול מקסיקו, הטפסים האלה נשמעים יותר כמו מועמדת אמיתית 🔥",
+          "en_name": "{names} picked {team} to win the World Cup. A 3-2 knockout over Mexico makes that trophy call sound more serious 🔥",
+          "en_names": "{names} picked {team} to win the World Cup. A 3-2 knockout over Mexico makes those trophy calls sound more serious 🔥",
+          "en_count": "{names} picked {team} to win the World Cup. A 3-2 knockout over Mexico makes those trophy calls sound more serious 🔥"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "MEX",
+          "team_he": "מקסיקו",
+          "team_en": "Mexico",
+          "match_id": "2bbe0177-81d6-4268-9434-6790cec04007",
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. אחרי הדחה ביתית ב-3-2, הדרך הזאת נגמרה לפני רבע הגמר 😬",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי הדחה ביתית ב-3-2, הדרכים האלה נגמרו לפני רבע הגמר 😬",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי הדחה ביתית ב-3-2, הדרכים האלה נגמרו לפני רבע הגמר 😬",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. After the home 3-2 exit, that route stops before the quarterfinals 😬",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. After the home 3-2 exit, those routes stop before the quarterfinals 😬",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. After the home 3-2 exit, those routes stop before the quarterfinals 😬"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "MEX",
+          "team_he": "מקסיקו",
+          "team_en": "Mexico",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. ההפסד 3-2 לאנגליה סגר את חלום הגביע הזה מוקדם מדי 😬",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. ההפסד 3-2 לאנגליה סגר את חלומות הגביע האלה מוקדם מדי 😬",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. ההפסד 3-2 לאנגליה סגר את חלומות הגביע האלה מוקדם מדי 😬",
+          "en_name": "{names} picked {team} to win the World Cup. The 3-2 loss to England closes that trophy dream earlier than the form hoped 😬",
+          "en_names": "{names} picked {team} to win the World Cup. The 3-2 loss to England closes those trophy dreams earlier than the forms hoped 😬",
+          "en_count": "{names} picked {team} to win the World Cup. The 3-2 loss to England closes those trophy dreams earlier than the forms hoped 😬"
+        }
+      ],
+      "he": {
+        "headline": "אנגליה ניצחה את מקסיקו 3-2: קיין סידר רבע גמר 🔥",
+        "caption": "במקסיקו סיטי זה נגמר 3-2 לאנגליה, עם מקום ברבע הגמר ומקסיקו מחוץ לבראקט 🔥"
+      },
+      "en": {
+        "headline": "England beat Mexico 3-2: Kane writes the quarterfinal line 🔥",
+        "caption": "In Mexico City, England closed a 3-2 win, booked a quarterfinal place, and pushed Mexico out of the bracket 🔥"
+      }
+    },
     {
       "id": "bra-nor-2026-07-05",
       "match_id": "d766b98c-7eea-4f41-9227-3c1a0f6826b4",
