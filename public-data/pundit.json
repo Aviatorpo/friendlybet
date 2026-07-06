@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-06T21:19:02.379Z",
-  "freshUntil": "2026-07-07T03:19:02.379Z",
-  "count": 6,
+  "updatedAt": "2026-07-06T23:54:32.645Z",
+  "freshUntil": "2026-07-07T05:54:32.645Z",
+  "count": 5,
   "items": [
     {
       "id": "result-e2a51510-0a1f-40f3-9990-632608b6f116",
@@ -31,20 +31,11 @@
       "expires_at": "2026-07-07T08:00:00.000Z"
     },
     {
-      "id": "fixture-084756cf-d007-4858-8fc4-d6ca8b66b686",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "שמינית הגמר: ארה\"ב נגד בלגיה, היום 03:00. מי שבנה על בלגיה רוצה שקט; מי שסימן את ארה\"ב מחפש רעידת בראקט ⏰",
-      "en": "Round of 16: United States vs Belgium, today 03:00. Belgium picks want calm; United States picks are hunting bracket shock ⏰",
-      "sources": [],
-      "expires_at": "2026-07-06T23:45:00.000Z"
-    },
-    {
       "id": "fixture-90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שמינית הגמר: ארגנטינה נגד מצרים, היום 19:00. מי שבנה על ארגנטינה רוצה שקט; מי שסימן את מצרים מחפש רעידת בראקט ⏰",
-      "en": "Round of 16: Argentina vs Egypt, today 19:00. Argentina picks want calm; Egypt picks are hunting bracket shock ⏰",
+      "he": "ארגנטינה נגד מצרים, היום 19:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
+      "en": "Argentina vs Egypt, today 19:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-07T15:45:00.000Z"
     },
@@ -52,8 +43,8 @@
       "id": "fixture-d0cb75c4-0479-42f4-b473-0eb5b4b51f54",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שווייץ נגד קולומביה, היום 23:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
-      "en": "Switzerland vs Colombia, today 23:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
+      "he": "שמינית הגמר: שווייץ נגד קולומביה, היום 23:00. מי שבנה על קולומביה רוצה שקט; מי שסימן את שווייץ מחפש רעידת בראקט ⏰",
+      "en": "Round of 16: Switzerland vs Colombia, today 23:00. Colombia picks want calm; Switzerland picks are hunting bracket shock ⏰",
       "sources": [],
       "expires_at": "2026-07-07T19:45:00.000Z"
     }
