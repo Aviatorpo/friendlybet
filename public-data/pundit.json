@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-06T03:48:00.545Z",
-  "freshUntil": "2026-07-06T09:48:00.545Z",
-  "count": 6,
+  "updatedAt": "2026-07-06T08:08:06.020Z",
+  "freshUntil": "2026-07-06T14:08:06.020Z",
+  "count": 5,
   "items": [
     {
       "id": "result-2bbe0177-81d6-4268-9434-6790cec04007",
@@ -29,15 +29,6 @@
       "en": "France got past Paraguay 1-0. Bracket paths that kept France alive get a receipt; Paraguay routes need a new plan 🧾",
       "sources": [],
       "expires_at": "2026-07-06T09:00:00.000Z"
-    },
-    {
-      "id": "result-725161f2-68ae-4b8f-bda4-d08243bec185",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "מרוקו עברה את קנדה 3:0. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על קנדה צריך מסלול חדש 🧾",
-      "en": "Morocco got past Canada 3-0. Bracket paths that kept Morocco alive get a receipt; Canada routes need a new plan 🧾",
-      "sources": [],
-      "expires_at": "2026-07-06T05:00:00.000Z"
     },
     {
       "id": "fixture-e2a51510-0a1f-40f3-9990-632608b6f116",
