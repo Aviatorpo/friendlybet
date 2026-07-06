@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-06T10:58:32.158Z",
-  "freshUntil": "2026-07-06T16:58:32.158Z",
-  "count": 5,
+  "updatedAt": "2026-07-06T15:54:00.579Z",
+  "freshUntil": "2026-07-06T21:54:00.579Z",
+  "count": 6,
   "items": [
     {
       "id": "result-2bbe0177-81d6-4268-9434-6790cec04007",
@@ -47,6 +47,15 @@
       "en": "Argentina vs Egypt, tomorrow 19:00. Argentina are the favorite, but in knockout football favorites still have to survive ⏰",
       "sources": [],
       "expires_at": "2026-07-07T15:45:00.000Z"
+    },
+    {
+      "id": "fixture-d0cb75c4-0479-42f4-b473-0eb5b4b51f54",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "שווייץ נגד קולומביה, מחר 23:00. קולומביה פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
+      "en": "Switzerland vs Colombia, tomorrow 23:00. Colombia are the favorite, but in knockout football favorites still have to survive ⏰",
+      "sources": [],
+      "expires_at": "2026-07-07T19:45:00.000Z"
     }
   ]
 }
