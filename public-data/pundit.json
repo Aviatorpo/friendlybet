@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-07-06T20:10:44.059Z",
-  "freshUntil": "2026-07-07T02:10:44.059Z",
+  "updatedAt": "2026-07-06T21:19:02.379Z",
+  "freshUntil": "2026-07-07T03:19:02.379Z",
   "count": 6,
   "items": [
     {
-      "id": "live-e2a51510-0a1f-40f3-9990-632608b6f116",
-      "type": "live",
+      "id": "result-e2a51510-0a1f-40f3-9990-632608b6f116",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "פורטוגל נגד ספרד עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
-      "en": "Portugal vs Spain is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "he": "ספרד עברה את פורטוגל 1:0. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על פורטוגל צריך מסלול חדש 🧾",
+      "en": "Spain got past Portugal 1-0. Bracket paths that kept Spain alive get a receipt; Portugal routes need a new plan 🧾",
       "sources": [],
-      "expires_at": "2026-07-06T23:10:44.059Z"
+      "expires_at": "2026-07-08T07:00:00.000Z"
     },
     {
       "id": "result-2bbe0177-81d6-4268-9434-6790cec04007",
       "type": "result",
       "confidence": "confirmed",
-      "he": "אנגליה עברה את מקסיקו 3:2. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על מקסיקו צריך מסלול חדש 🧾",
-      "en": "England got past Mexico 3-2. Bracket paths that kept England alive get a receipt; Mexico routes need a new plan 🧾",
+      "he": "אנגליה ניצחה את מקסיקו 3:2 ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום 🧾",
+      "en": "England beat Mexico 3-2 and stayed alive in the bracket. Any bracket path that kept England alive can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-07T13:00:00.000Z"
     },
@@ -25,8 +25,8 @@
       "id": "result-d766b98c-7eea-4f41-9227-3c1a0f6826b4",
       "type": "result",
       "confidence": "confirmed",
-      "he": "2:1 לנורווגיה על ברזיל. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות 🧾",
-      "en": "2-1 for Norway over Brazil. Any bracket path that kept Norway alive can open the receipts 🧾",
+      "he": "נורווגיה ניצחה את ברזיל 2:1 ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום 🧾",
+      "en": "Norway beat Brazil 2-1 and stayed alive in the bracket. Any bracket path that kept Norway alive can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-07T08:00:00.000Z"
     },
@@ -34,8 +34,8 @@
       "id": "fixture-084756cf-d007-4858-8fc4-d6ca8b66b686",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שמינית הגמר: ארה\"ב נגד בלגיה, מחר 03:00. מי שבנה על בלגיה רוצה שקט; מי שסימן את ארה\"ב מחפש רעידת בראקט ⏰",
-      "en": "Round of 16: United States vs Belgium, tomorrow 03:00. Belgium picks want calm; United States picks are hunting bracket shock ⏰",
+      "he": "שמינית הגמר: ארה\"ב נגד בלגיה, היום 03:00. מי שבנה על בלגיה רוצה שקט; מי שסימן את ארה\"ב מחפש רעידת בראקט ⏰",
+      "en": "Round of 16: United States vs Belgium, today 03:00. Belgium picks want calm; United States picks are hunting bracket shock ⏰",
       "sources": [],
       "expires_at": "2026-07-06T23:45:00.000Z"
     },
@@ -43,8 +43,8 @@
       "id": "fixture-90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שמינית הגמר: ארגנטינה נגד מצרים, מחר 19:00. מי שבנה על ארגנטינה רוצה שקט; מי שסימן את מצרים מחפש רעידת בראקט ⏰",
-      "en": "Round of 16: Argentina vs Egypt, tomorrow 19:00. Argentina picks want calm; Egypt picks are hunting bracket shock ⏰",
+      "he": "שמינית הגמר: ארגנטינה נגד מצרים, היום 19:00. מי שבנה על ארגנטינה רוצה שקט; מי שסימן את מצרים מחפש רעידת בראקט ⏰",
+      "en": "Round of 16: Argentina vs Egypt, today 19:00. Argentina picks want calm; Egypt picks are hunting bracket shock ⏰",
       "sources": [],
       "expires_at": "2026-07-07T15:45:00.000Z"
     },
@@ -52,8 +52,8 @@
       "id": "fixture-d0cb75c4-0479-42f4-b473-0eb5b4b51f54",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שווייץ נגד קולומביה, מחר 23:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
-      "en": "Switzerland vs Colombia, tomorrow 23:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
+      "he": "שווייץ נגד קולומביה, היום 23:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
+      "en": "Switzerland vs Colombia, today 23:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-07T19:45:00.000Z"
     }
