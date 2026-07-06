@@ -124,6 +124,20 @@ async function hashRecoveryCode(code) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+async function _waitForSupabaseClient(timeoutMs = 10000) {
+  if (supabaseClient) return true;
+  try { initSupabase(); } catch (_) {}
+  const started = Date.now();
+  return new Promise(resolve => {
+    const tick = () => {
+      if (supabaseClient) return resolve(true);
+      if (Date.now() - started >= timeoutMs) return resolve(false);
+      setTimeout(tick, 100);
+    };
+    tick();
+  });
+}
+
 // v2.5.16: log in to an existing account using a recovery code.
 // v2.5.29: the stored hash is of the ORIGINAL hyphenated format
 // ("ABCD-EFGH-IJKL-MNOP") produced by generateRecoveryCode(). We must
@@ -145,7 +159,10 @@ function _formatRecoveryCodeForHash(rawInput) {
 async function _lookupUserByRecoveryCode(rawInput) {
   const bareChars = String(rawInput || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
   if (bareChars.length < 12) return { error: 'short' };
-  if (!supabaseClient) { initSupabase(); return { error: 'server' }; }
+  if (!supabaseClient) {
+    const ready = await _waitForSupabaseClient();
+    if (!ready) return { error: 'server' };
+  }
   const hyphenated = _formatRecoveryCodeForHash(bareChars);
 
   // Preferred: server-side login RPC. It validates the code in the DB and
@@ -271,11 +288,22 @@ async function loginViaRecoveryCode(rawInput, opts = {}) {
 }
 window.loginViaRecoveryCode = loginViaRecoveryCode;
 
+function _setRecoveryLoginBusy(busy) {
+  const btn = document.getElementById('recovery-login-submit');
+  if (!btn) return;
+  btn.disabled = !!busy;
+  btn.setAttribute('aria-busy', busy ? 'true' : 'false');
+  btn.classList.toggle('is-loading', !!busy);
+  const label = btn.querySelector('[data-i18n="recoveryLogin.submit"]') || btn.querySelector('span');
+  if (label) label.textContent = busy ? t('recoveryLogin.signingIn') : t('recoveryLogin.submit');
+}
+
 async function submitRecoveryLogin() {
   const input = document.getElementById('recovery-login-input');
   const errEl = document.getElementById('recovery-login-error');
   if (errEl) errEl.style.display = 'none';
   if (!input) return;
+  _setRecoveryLoginBusy(true);
   try {
     const found = await _lookupUserByRecoveryCode(input.value);
     if (!found || found.error) {
@@ -290,6 +318,8 @@ async function submitRecoveryLogin() {
   } catch (err) {
     console.error('submitRecoveryLogin err:', err);
     if (errEl) { errEl.textContent = t('errors.unexpected'); errEl.style.display = ''; }
+  } finally {
+    if (state.currentScreen === 'recovery-login-screen') _setRecoveryLoginBusy(false);
   }
 }
 window.submitRecoveryLogin = submitRecoveryLogin;
@@ -1367,19 +1397,38 @@ async function goToDashboard() {
     }
   }
 
-  // Update betting status based on actual picks
-  updateBettingStatusOnDashboard();
+  // Update betting status based on actual picks. Await before the drama hero so
+  // recovery/partial-pick states can take precedence over leaderboard drama.
+  try { await updateBettingStatusOnDashboard(); } catch (e) { console.warn('Dashboard betting status failed:', e); }
   // v2.10: await so state._userNeedsKnockoutRecovery is set before the admin nudge
   // reads it (an affected admin must never briefly see both banners).
   try { await updateKnockoutStatusOnDashboard(); } catch (_) {}
   refreshLiveStatus();
 
   // v2.9.22: admin-only nudge about members who lost their knockout bracket.
-  updateAdminNudgeOnDashboard();
+  try { await updateAdminNudgeOnDashboard(); } catch (e) { console.warn('Dashboard admin nudge failed:', e); }
 
   // v2.10.8: two-phase incident banner (members + admin) — apology + re-enter +
   // 72h grace deadline for pools affected by the two-phase pick-loss bug.
-  updateTwoPhaseIncidentBanner();
+  try { await updateTwoPhaseIncidentBanner(); } catch (e) { console.warn('Dashboard incident banner failed:', e); }
+
+  renderDashboardDramaHero(resolveDashboardDramaState({
+    users: allUsers,
+    hasScores,
+    tournamentStarted,
+    phase,
+    progress
+  }));
+
+  renderDashboardImpactPilot(allUsers, {
+    hasScores,
+    tournamentStarted,
+    phase,
+    progress
+  }).catch(err => {
+    console.warn('Dashboard impact pilot failed:', err);
+    _setDashboardImpactPilotMode(false);
+  });
 
   updateDashboardProjectionTeaser(allUsers, { phase }).catch(err => {
     console.warn('Dashboard projection teaser failed:', err);
@@ -1394,6 +1443,701 @@ async function goToDashboard() {
   initDashboardCountdown(tournamentStarted);
 
   showScreen('user-dashboard-screen');
+}
+
+function _dashboardElementVisible(id) {
+  const el = document.getElementById(id);
+  if (!el) return false;
+  return el.style.display !== 'none' && window.getComputedStyle(el).display !== 'none';
+}
+
+function _dashboardCriticalBannerKind() {
+  if (_dashboardElementVisible('bracket-recover-banner') || _dashboardElementVisible('knockout-reopen-banner') || _dashboardElementVisible('tp-incident-banner')) {
+    return 'recovery';
+  }
+  if (_dashboardElementVisible('admin-nudge-banner')) return 'admin';
+  return null;
+}
+
+function _dashboardRankState(users, hasScores, officialStarted) {
+  if (!officialStarted || !hasScores || !state.currentUser || !Array.isArray(users) || !users.length) return null;
+  const idx = users.findIndex(u => u && u.id === state.currentUser.id);
+  if (idx < 0) return null;
+  const me = users[idx] || {};
+  const leader = users[0] || {};
+  const rank = idx + 1;
+  const myPoints = me.total_score || 0;
+  const leaderPoints = leader.total_score || 0;
+  const gapToLeader = Math.max(0, leaderPoints - myPoints);
+  const nextAhead = rank > 1 ? users[idx - 1] : null;
+  return {
+    rank,
+    myPoints,
+    leaderName: leader.nickname || t('dashboard.drama.fallbackLeader'),
+    leaderPoints,
+    gapToLeader,
+    gapToNext: nextAhead ? Math.max(0, (nextAhead.total_score || 0) - myPoints) : 0
+  };
+}
+
+function resolveDashboardDramaState(ctx = {}) {
+  const users = Array.isArray(ctx.users) ? ctx.users : [];
+  const phase = ctx.phase || _groupStagePhase(!!ctx.tournamentStarted, !!ctx.hasScores, ctx.progress || _dashboardGroupProgress());
+  const officialStarted = _phaseHasOfficialScoring(phase);
+  const pending = _hasPendingResultVerification();
+  const criticalKind = _dashboardCriticalBannerKind();
+  const locked = typeof spIsLocked === 'function' ? !!spIsLocked() : isPoolJoinClosed();
+  const submitted = typeof spHasUserSubmitted === 'function' ? spHasUserSubmitted() : !!(state.currentUser && state.currentUser.predictions_submitted_at);
+  const lateKo = _isLateKnockoutPool(state.currentPool);
+  const lateOpen = !lateKo && _poolLateEntryOpen();
+  const rankState = _dashboardRankState(users, !!ctx.hasScores, officialStarted);
+  const groupProgress = ctx.progress || _dashboardGroupProgress();
+  const tournamentCtx = phase === 'groupsComplete'
+    ? _currentTournamentContext({ progress: groupProgress, tournamentStarted: ctx.tournamentStarted, hasScores: ctx.hasScores })
+    : null;
+  const poolSize = users.length || 0;
+
+  const base = {
+    className: '',
+    pillKey: 'dashboard.drama.pill.pool',
+    metaKey: 'dashboard.drama.meta.pool',
+    metaParams: { n: poolSize },
+    titleKey: 'dashboard.drama.pre.title',
+    textKey: 'dashboard.drama.pre.text',
+    textParams: { n: poolSize },
+    actionKey: 'dashboard.drama.action.leaderboard',
+    actionTarget: 'leaderboard',
+    metrics: [
+      { value: poolSize || '-', labelKey: 'dashboard.drama.metric.members' }
+    ],
+    rankState,
+    hideLegacyStats: !!rankState,
+    hideLiveStatus: true
+  };
+
+  if (criticalKind === 'recovery') {
+    return {
+      ...base,
+      className: 'needs-action',
+      pillKey: 'dashboard.drama.pill.action',
+      titleKey: 'dashboard.drama.recovery.title',
+      textKey: 'dashboard.drama.recovery.text',
+      actionKey: 'dashboard.drama.action.fix',
+      actionTarget: 'picks',
+      metrics: [{ value: '!', labelKey: 'dashboard.drama.metric.action' }],
+      hideLegacyStats: false
+    };
+  }
+
+  if (criticalKind === 'admin') {
+    return {
+      ...base,
+      className: 'needs-action',
+      pillKey: 'dashboard.drama.pill.action',
+      titleKey: 'dashboard.drama.admin.title',
+      textKey: 'dashboard.drama.admin.text',
+      actionKey: 'dashboard.drama.action.members',
+      actionTarget: 'members',
+      metrics: [{ value: poolSize || '-', labelKey: 'dashboard.drama.metric.members' }],
+      hideLegacyStats: false
+    };
+  }
+
+  if (!locked && !submitted) {
+    return {
+      ...base,
+      className: 'needs-action',
+      pillKey: 'dashboard.drama.pill.yourMove',
+      titleKey: lateKo ? 'dashboard.drama.lateKnockout.title' : 'dashboard.drama.picks.title',
+      textKey: lateKo ? 'dashboard.drama.lateKnockout.text' : 'dashboard.drama.picks.text',
+      textParams: lateKo ? { time: _knockoutCutoffLabel() } : { n: poolSize },
+      actionKey: 'dashboard.drama.action.pick',
+      actionTarget: 'picks',
+      metrics: [
+        { value: poolSize || '-', labelKey: 'dashboard.drama.metric.members' },
+        { value: lateKo ? _knockoutCutoffLabel() : (lateOpen ? _lateEntryCutoffLabel() : '-'), labelKey: 'dashboard.drama.metric.lock' }
+      ],
+      hideLegacyStats: false
+    };
+  }
+
+  if (pending) {
+    return {
+      ...base,
+      className: 'checking',
+      pillKey: 'dashboard.drama.pill.checking',
+      titleKey: 'dashboard.drama.checking.title',
+      textKey: 'dashboard.drama.checking.text',
+      actionKey: 'dashboard.drama.action.leaderboard',
+      actionTarget: 'leaderboard',
+      metrics: rankState
+        ? [
+            { value: `#${rankState.rank}`, labelKey: 'dashboard.drama.metric.lastRank' },
+            { value: rankState.myPoints, labelKey: 'dashboard.drama.metric.points' }
+          ]
+        : [{ value: groupProgress.completeGroups, labelKey: 'dashboard.drama.metric.groups' }],
+      hideLegacyStats: !!rankState
+    };
+  }
+
+  if (rankState) {
+    const isLeader = rankState.rank === 1;
+    const groupsComplete = phase === 'groupsComplete';
+    const dramaCopy = (groupsComplete && tournamentCtx && tournamentCtx.drama) || {};
+    return {
+      ...base,
+      className: isLeader ? 'official is-leading' : 'official',
+      pillKey: groupsComplete ? 'dashboard.drama.pill.knockout' : 'dashboard.drama.pill.official',
+      metaKey: isLeader ? 'dashboard.drama.meta.leading' : 'dashboard.drama.meta.chasing',
+      metaParams: isLeader
+        ? { points: rankState.myPoints }
+        : { points: rankState.myPoints, gap: rankState.gapToLeader },
+      titleKey: groupsComplete
+        ? (dramaCopy.titleKey || 'dashboard.drama.tournamentGeneric.title')
+        : (isLeader ? 'dashboard.drama.officialLeader.title' : 'dashboard.drama.officialChaser.title'),
+      textKey: groupsComplete
+        ? (dramaCopy.textKey || 'dashboard.drama.tournamentGeneric.text')
+        : (isLeader ? 'dashboard.drama.officialLeader.text' : 'dashboard.drama.officialChaser.text'),
+      textParams: groupsComplete ? _tournamentContextParams(tournamentCtx, {
+        rank: rankState.rank,
+        points: rankState.myPoints,
+        leader: rankState.leaderName,
+        gap: rankState.gapToLeader,
+        next: rankState.gapToNext
+      }) : {
+        rank: rankState.rank,
+        points: rankState.myPoints,
+        leader: rankState.leaderName,
+        gap: rankState.gapToLeader,
+        next: rankState.gapToNext
+      },
+      actionKey: 'dashboard.drama.action.leaderboard',
+      actionTarget: 'leaderboard',
+      metrics: [
+        { value: `#${rankState.rank}`, labelKey: 'dashboard.drama.metric.rank' },
+        { value: rankState.myPoints, labelKey: 'dashboard.drama.metric.points' },
+        { value: isLeader ? t('dashboard.drama.metric.leaderValue') : rankState.gapToLeader, labelKey: isLeader ? 'dashboard.drama.metric.status' : 'dashboard.drama.metric.behind' }
+      ],
+      hideLegacyStats: true
+    };
+  }
+
+  if (phase === 'groupsComplete' || lateKo) {
+    const dramaCopy = (phase === 'groupsComplete' && tournamentCtx && tournamentCtx.drama) || {};
+    return {
+      ...base,
+      className: 'knockout',
+      pillKey: 'dashboard.drama.pill.knockout',
+      titleKey: phase === 'groupsComplete' ? (dramaCopy.titleKey || 'dashboard.drama.tournamentGeneric.title') : 'dashboard.drama.knockoutNoRank.title',
+      textKey: phase === 'groupsComplete' ? (dramaCopy.textKey || 'dashboard.drama.tournamentGeneric.text') : 'dashboard.drama.knockoutNoRank.text',
+      textParams: phase === 'groupsComplete' ? _tournamentContextParams(tournamentCtx) : base.textParams,
+      actionKey: 'dashboard.drama.action.leaderboard',
+      actionTarget: 'leaderboard',
+      metrics: [
+        { value: groupProgress.completeGroups || '-', labelKey: 'dashboard.drama.metric.groups' },
+        { value: poolSize || '-', labelKey: 'dashboard.drama.metric.members' }
+      ],
+      hideLegacyStats: false
+    };
+  }
+
+  if (ctx.tournamentStarted) {
+    return {
+      ...base,
+      className: 'live',
+      pillKey: 'dashboard.drama.pill.live',
+      titleKey: 'dashboard.drama.live.title',
+      textKey: 'dashboard.drama.live.text',
+      textParams: { done: groupProgress.finished, total: groupProgress.total },
+      actionKey: 'dashboard.drama.action.projection',
+      actionTarget: 'leaderboard',
+      metrics: [
+        { value: `${groupProgress.finished}/${groupProgress.total}`, labelKey: 'dashboard.drama.metric.matches' },
+        { value: poolSize || '-', labelKey: 'dashboard.drama.metric.members' }
+      ],
+      hideLegacyStats: false
+    };
+  }
+
+  return base;
+}
+
+function renderDashboardDramaHero(view) {
+  const hero = document.getElementById('dashboard-drama-hero');
+  if (!hero || !view) return;
+  const pill = document.getElementById('dashboard-drama-pill');
+  const meta = document.getElementById('dashboard-drama-meta');
+  const title = document.getElementById('dashboard-drama-title');
+  const text = document.getElementById('dashboard-drama-text');
+  const metrics = document.getElementById('dashboard-drama-metrics');
+  const action = document.getElementById('dashboard-drama-action');
+
+  hero.className = 'dashboard-drama-hero' + (view.className ? ` ${view.className}` : '');
+  if (pill) pill.textContent = t(view.pillKey);
+  if (meta) meta.textContent = t(view.metaKey, view.metaParams || {});
+  if (title) title.textContent = t(view.titleKey, view.textParams || {});
+  if (text) text.textContent = t(view.textKey, view.textParams || {});
+
+  if (metrics) {
+    metrics.innerHTML = '';
+    (view.metrics || []).slice(0, 3).forEach(metric => {
+      const item = document.createElement('div');
+      item.className = 'ddh-metric';
+      const value = document.createElement('span');
+      value.className = 'ddh-metric-value';
+      value.textContent = metric.value == null || metric.value === '' ? '-' : String(metric.value);
+      const label = document.createElement('small');
+      label.textContent = t(metric.labelKey);
+      item.appendChild(value);
+      item.appendChild(label);
+      metrics.appendChild(item);
+    });
+  }
+
+  if (action) {
+    action.textContent = t(view.actionKey);
+    action.onclick = () => {
+      if (view.actionTarget === 'picks') return startBettingFromDashboard();
+      if (view.actionTarget === 'members') return showMembers();
+      if (view.actionTarget === 'invite') return showShareModal();
+      return showLeaderboard();
+    };
+  }
+
+  const statsEl = document.getElementById('dashboard-stats');
+  if (statsEl && view.hideLegacyStats) statsEl.style.display = 'none';
+  const liveStatusEl = document.getElementById('dashboard-live-status');
+  if (liveStatusEl && view.hideLiveStatus) liveStatusEl.style.display = 'none';
+  hero.style.display = '';
+}
+
+const DASHBOARD_IMPACT_PILOT_POOL_ID = '4927bd42-a9aa-4bf5-ab5d-e166869a72c6';
+const DASHBOARD_IMPACT_PILOT_POOL_CODE = '349MD';
+const DASHBOARD_IMPACT_PILOT_USER_ID = 'a8fe26ff-12df-45ed-890b-70b6072fe2c0';
+const DASHBOARD_IMPACT_PICK_CACHE_MS = 60 * 1000;
+let _dashboardImpactPickCache = { poolId: null, userId: null, at: 0, rows: null, promise: null };
+
+function _isDashboardImpactPilotPool(pool = state.currentPool) {
+  if (!pool) return false;
+  const id = String(pool.id || '').toLowerCase();
+  const code = String(pool.code || '').trim().toUpperCase();
+  const poolAllowed = id === DASHBOARD_IMPACT_PILOT_POOL_ID || code === DASHBOARD_IMPACT_PILOT_POOL_CODE;
+  const userAllowed = String((state.currentUser && state.currentUser.id) || '').toLowerCase() === DASHBOARD_IMPACT_PILOT_USER_ID;
+  const reviewerAllowed = !!(state.currentUser && state.currentUser.is_admin && userAllowed);
+  return poolAllowed && reviewerAllowed;
+}
+
+function _setDashboardImpactPilotMode(enabled) {
+  const screen = document.getElementById('user-dashboard-screen');
+  if (screen) screen.classList.toggle('dashboard-impact-pilot-active', !!enabled);
+  const pilot = document.getElementById('dashboard-impact-pilot');
+  if (pilot && !enabled) pilot.style.display = 'none';
+}
+
+function _dashboardImpactScore(row) {
+  return Number(row && (row.total_score ?? row.totalScore ?? row.score ?? 0)) || 0;
+}
+
+function _dashboardImpactUserRank(users, userId) {
+  const idx = (users || []).findIndex(user => user && user.id === userId);
+  return idx >= 0 ? idx + 1 : 0;
+}
+
+function _dashboardImpactPrimaryStats(users) {
+  const sorted = _sortLeaderboardUsers(users || []);
+  const userId = state.currentUser && state.currentUser.id;
+  const me = sorted.find(user => user && user.id === userId) || state.currentUser || {};
+  const leader = sorted[0] || me;
+  const myPoints = _dashboardImpactScore(me);
+  const leaderPoints = _dashboardImpactScore(leader);
+  const rank = _dashboardImpactUserRank(sorted, userId);
+  return {
+    rank,
+    myPoints,
+    gapToLeader: rank > 0 ? Math.max(0, leaderPoints - myPoints) : null,
+    users: sorted
+  };
+}
+
+function _dashboardImpactMatches() {
+  return (state.results && Array.isArray(state.results.allMatches)) ? state.results.allMatches.slice() : [];
+}
+
+function _dashboardImpactMatchTime(match) {
+  if (!match || !match.match_date) return '';
+  try {
+    return formatMatchTime(match.match_date);
+  } catch (_) {
+    return '';
+  }
+}
+
+function _dashboardImpactScoreText(match, ux) {
+  if (ux && ux.showScore && match && match.home_score != null && match.away_score != null) {
+    return `${match.home_score}-${match.away_score}`;
+  }
+  return 'VS';
+}
+
+function _dashboardImpactMemoryBracketRows() {
+  const picks = (typeof spState !== 'undefined' && spState && spState.bracketPicks) ? spState.bracketPicks : null;
+  return Object.entries(picks || {})
+    .filter(([, code]) => !!code)
+    .map(([position, code]) => ({
+      bracket_position: Number(position),
+      predicted_winner: code,
+      source: 'memory'
+    }));
+}
+
+async function _dashboardImpactLoadMyBracketPicks() {
+  if (!state.currentUser || !state.currentPool || !state.currentPool.id) return null;
+  const fallbackRows = _dashboardImpactMemoryBracketRows();
+  if (typeof supabaseClient === 'undefined' || !supabaseClient) return fallbackRows.length ? fallbackRows : null;
+
+  const poolId = state.currentPool.id;
+  const userId = state.currentUser.id;
+  const now = Date.now();
+  const cacheHit = _dashboardImpactPickCache.poolId === poolId
+    && _dashboardImpactPickCache.userId === userId
+    && Array.isArray(_dashboardImpactPickCache.rows)
+    && now - _dashboardImpactPickCache.at < DASHBOARD_IMPACT_PICK_CACHE_MS;
+  if (cacheHit) return _dashboardImpactPickCache.rows;
+  if (_dashboardImpactPickCache.promise) return _dashboardImpactPickCache.promise;
+
+  const readPicks = () => supabaseClient
+    .from('knockout_picks')
+    .select('bracket_position,predicted_winner,team_code,multiplier_applied')
+    .eq('user_id', userId)
+    .eq('pool_id', poolId)
+    .not('bracket_position', 'is', null);
+
+  _dashboardImpactPickCache.promise = (async () => {
+    let { data, error } = await readPicks();
+    if (error) {
+      await new Promise(resolve => setTimeout(resolve, 400));
+      const retry = await readPicks();
+      data = retry.data;
+      error = retry.error;
+    }
+    if (error) {
+      console.warn('dashboard impact pilot: knockout pick read failed', error);
+      return fallbackRows.length ? fallbackRows : null;
+    }
+    const rows = (data || []).filter(row => row && row.bracket_position != null);
+    const resolvedRows = rows.length ? rows : fallbackRows;
+    if (!resolvedRows.length) return null;
+    _dashboardImpactPickCache = {
+      poolId,
+      userId,
+      rows: resolvedRows,
+      at: Date.now(),
+      promise: null
+    };
+    return resolvedRows;
+  })();
+
+  try {
+    return await _dashboardImpactPickCache.promise;
+  } finally {
+    if (_dashboardImpactPickCache.promise) _dashboardImpactPickCache.promise = null;
+  }
+}
+
+function _dashboardImpactStageRuleKey(stage) {
+  switch (String(stage || '').toUpperCase()) {
+    case 'ROUND_OF_32':
+    case 'LAST_32':
+    case 'R32':
+      return 'round_of_32';
+    case 'LAST_16':
+    case 'ROUND_OF_16':
+    case 'R16':
+      return 'round_of_16';
+    case 'QUARTER_FINALS':
+    case 'QUARTER_FINAL':
+    case 'QF':
+      return 'quarter_final';
+    case 'SEMI_FINALS':
+    case 'SEMI_FINAL':
+    case 'SF':
+      return 'semi_final';
+    case 'FINAL':
+      return 'final';
+    default:
+      return null;
+  }
+}
+
+function _dashboardImpactBracketRuleKey(position) {
+  const pos = Number(position);
+  if (pos >= 1 && pos <= 16) return 'round_of_32';
+  if (pos >= 17 && pos <= 24) return 'round_of_16';
+  if (pos >= 25 && pos <= 28) return 'quarter_final';
+  if (pos >= 29 && pos <= 30) return 'semi_final';
+  if (pos === 31) return 'final';
+  return null;
+}
+
+function _dashboardImpactFormatPointsValue(value) {
+  const rounded = Math.round((Number(value) || 0) * 10) / 10;
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+}
+
+function _dashboardImpactPickPointsForTeamAtStage(teamCode, stage, picks) {
+  const ruleKey = _dashboardImpactStageRuleKey(stage);
+  if (!teamCode || !ruleKey || !Array.isArray(picks)) return null;
+  const rules = typeof _poolProjectionRules === 'function'
+    ? _poolProjectionRules(state.currentPool)
+    : { ...((DEFAULT_SCORING_RULES && DEFAULT_SCORING_RULES.single_phase) || {}), ...((state.currentPool && state.currentPool.scoring_rules) || {}) };
+  const base = Number(rules && rules[ruleKey]) || 0;
+  let points = 0;
+  let picked = false;
+  picks.forEach(row => {
+    const pickTeam = String((row && (row.predicted_winner || row.team_code)) || '').toUpperCase();
+    if (pickTeam !== String(teamCode).toUpperCase()) return;
+    if (_dashboardImpactBracketRuleKey(row.bracket_position) !== ruleKey) return;
+    picked = true;
+    const mult = typeof getPoolTeamMultiplier === 'function' ? getPoolTeamMultiplier(state.currentPool, pickTeam) : 1;
+    points += base * (Number(mult) || 1);
+  });
+  return { points, picked };
+}
+
+function _dashboardImpactPointsText(pointsInfo) {
+  if (!pointsInfo || pointsInfo.points == null) {
+    return { text: t('dashboard.impact.pointsUnavailable'), muted: true };
+  }
+  const points = Number(pointsInfo.points) || 0;
+  return {
+    text: t('dashboard.impact.pointsDelta', { points: _dashboardImpactFormatPointsValue(points) }),
+    muted: points <= 0
+  };
+}
+
+function _dashboardImpactScoreTeamHtml(code, side = '') {
+  const name = code ? getTeamName(code) : t('bracketView.tbd');
+  const flag = code ? getCountryFlag(code) : '<span class="flag-img-fallback">-</span>';
+  return `
+    <div class="dip-score-team ${side ? `dip-score-team-${side}` : ''}">
+      <span class="dip-flag">${flag}</span>
+      <strong>${escapeHtml(name)}</strong>
+    </div>
+  `;
+}
+
+function _dashboardImpactScoreboardHtml(match, ux) {
+  return `
+    <div class="dip-scoreboard">
+      ${_dashboardImpactScoreTeamHtml(match && match.home_team_code, 'home')}
+      <div class="dip-score-pill">${escapeHtml(_dashboardImpactScoreText(match, ux))}</div>
+      ${_dashboardImpactScoreTeamHtml(match && match.away_team_code, 'away')}
+    </div>
+  `;
+}
+
+function _dashboardImpactPointRowHtml(label, pointsInfo) {
+  const points = _dashboardImpactPointsText(pointsInfo);
+  return `
+    <div class="dip-point-row">
+      <span class="dip-point-label">${escapeHtml(label)}</span>
+      <span class="dip-points ${points.muted ? 'muted' : ''}">${escapeHtml(points.text)}</span>
+    </div>
+  `;
+}
+
+function _dashboardImpactScenarioRows(match, picks) {
+  if (!match || !_matchIsKnockoutStage(match) || !match.home_team_code || !match.away_team_code) return '';
+  const rows = [match.home_team_code, match.away_team_code].map(code => {
+    const label = t('dashboard.impact.ifTeamAdvances', { team: getTeamName(code) });
+    return _dashboardImpactPointRowHtml(label, _dashboardImpactPickPointsForTeamAtStage(code, match.stage, picks));
+  });
+  return `<div class="dip-points-list">${rows.join('')}</div>`;
+}
+
+function _dashboardImpactVerifiedAdvancer(match) {
+  if (!match || !_matchIsKnockoutStage(match)) return _matchResolvedWinner(match);
+  const winner = String((match && match.winner_code) || '').toUpperCase();
+  const teams = [match.home_team_code, match.away_team_code].map(code => String(code || '').toUpperCase());
+  return winner && teams.includes(winner) ? winner : null;
+}
+
+function _dashboardImpactResultRows(match, picks) {
+  if (!match || !_matchIsKnockoutStage(match) || !match.home_team_code || !match.away_team_code) return '';
+  const winner = _dashboardImpactVerifiedAdvancer(match);
+  if (!winner) {
+    return `
+      <div class="dip-points-list">
+        <div class="dip-point-row">
+          <span class="dip-point-label">${escapeHtml(t('dashboard.impact.resultPending'))}</span>
+          <span class="dip-points muted">${escapeHtml(t('dashboard.impact.pointsUnavailable'))}</span>
+        </div>
+      </div>
+    `;
+  }
+  const label = t('dashboard.impact.resultPoints', { team: getTeamName(winner) });
+  const pointsInfo = _dashboardImpactPickPointsForTeamAtStage(winner, match.stage, picks);
+  return `<div class="dip-points-list">${_dashboardImpactPointRowHtml(label, pointsInfo)}</div>`;
+}
+
+function _dashboardImpactLiveMatch(matches) {
+  return (matches || [])
+    .filter(match => {
+      const ux = _matchUxState(match);
+      return ux.isLive || ux.requiresVerification;
+    })
+    .sort((a, b) => Date.parse(a.match_date || 0) - Date.parse(b.match_date || 0))[0] || null;
+}
+
+function _dashboardImpactLastResult(matches) {
+  return (matches || [])
+    .filter(match => _matchIsFinishedStatus(match))
+    .sort((a, b) => Date.parse(b.match_date || 0) - Date.parse(a.match_date || 0))[0] || null;
+}
+
+function _dashboardImpactSameMatch(a, b) {
+  if (!a || !b) return false;
+  if (a.id && b.id && String(a.id) === String(b.id)) return true;
+  if (a.external_id && b.external_id && String(a.external_id) === String(b.external_id)) return true;
+  return typeof _scenarioMatchSameFixture === 'function' && _scenarioMatchSameFixture(a, b);
+}
+
+function _dashboardImpactNextMatch(matches, now = Date.now(), excludeMatch = null) {
+  return (matches || [])
+    .filter(match => !_matchIsTerminalStatus(match))
+    .filter(match => !excludeMatch || !_dashboardImpactSameMatch(match, excludeMatch))
+    .filter(match => {
+      const time = Date.parse(match.match_date || '');
+      return isNaN(time) || time >= (now - 35 * 60 * 1000);
+    })
+    .sort((a, b) => Date.parse(a.match_date || 0) - Date.parse(b.match_date || 0))[0] || null;
+}
+
+function _dashboardImpactMatchMeta(match) {
+  if (!match) return '';
+  const parts = [
+    getStageLabel(match.stage, match.group_letter, match.stage_name),
+    _dashboardImpactMatchTime(match)
+  ].filter(Boolean);
+  return parts.join(' - ');
+  return parts.join(' · ');
+}
+
+function _dashboardImpactMatchBlockHtml(kind, titleKey, match, pointsHtml) {
+  if (!match) return '';
+  const ux = _matchUxState(match);
+  const isConfirming = kind === 'live' && !!(ux && ux.requiresVerification);
+  const statusKey = isConfirming
+    ? 'dashboard.impact.statusChecking'
+    : (kind === 'live'
+      ? 'dashboard.impact.statusLive'
+      : (kind === 'next' ? 'dashboard.impact.statusNext' : 'dashboard.impact.statusFinal'));
+  return `
+    <section class="dip-match-card dip-match-block dip-match-block-${kind}${isConfirming ? ' dip-match-block-confirming' : ''}">
+      <div class="dip-block-head">
+        <div class="dip-block-title">
+          <span class="dip-mini-title">${escapeHtml(t(titleKey))}</span>
+          <span class="dip-block-meta">${escapeHtml(_dashboardImpactMatchMeta(match))}</span>
+        </div>
+        <span class="dip-status dip-status-${kind}">${escapeHtml(t(statusKey))}</span>
+      </div>
+      ${_dashboardImpactScoreboardHtml(match, ux)}
+      ${pointsHtml || ''}
+    </section>
+  `;
+}
+
+function _dashboardImpactEmptyCardHtml(kind, titleKey, textKey) {
+  return `
+    <section class="dip-match-card dip-match-block dip-match-block-${kind} dip-match-empty-card">
+      <div class="dip-block-head">
+        <div class="dip-block-title">
+          <span class="dip-mini-title">${escapeHtml(t(titleKey))}</span>
+        </div>
+      </div>
+      <div class="dip-empty">${escapeHtml(t(textKey))}</div>
+    </section>
+  `;
+}
+
+function _dashboardImpactMatchStackHtml(activeMatch, lastResult, nextMatch, picks) {
+  const blocks = [];
+  if (activeMatch) {
+    blocks.push(_dashboardImpactMatchBlockHtml(
+      'live',
+      'dashboard.impact.liveKicker',
+      activeMatch,
+      _dashboardImpactScenarioRows(activeMatch, picks)
+    ));
+  }
+  if (lastResult) {
+    blocks.push(_dashboardImpactMatchBlockHtml(
+      'last',
+      'dashboard.impact.lastResult',
+      lastResult,
+      _dashboardImpactResultRows(lastResult, picks)
+    ));
+  } else {
+    blocks.push(_dashboardImpactEmptyCardHtml('last', 'dashboard.impact.lastResult', 'dashboard.impact.noResultYet'));
+  }
+  if (nextMatch) {
+    blocks.push(_dashboardImpactMatchBlockHtml(
+      'next',
+      'dashboard.impact.nextMatch',
+      nextMatch,
+      _dashboardImpactScenarioRows(nextMatch, picks)
+    ));
+  } else {
+    blocks.push(_dashboardImpactEmptyCardHtml('next', 'dashboard.impact.nextMatch', 'dashboard.impact.noNextMatch'));
+  }
+  return `<div class="dip-match-stack">${blocks.join('')}</div>`;
+}
+
+async function renderDashboardImpactPilot(users, ctx = {}) {
+  const enabled = _isDashboardImpactPilotPool();
+  _setDashboardImpactPilotMode(enabled);
+  const root = document.getElementById('dashboard-impact-pilot');
+  if (!root || !enabled) return false;
+
+  const stats = _dashboardImpactPrimaryStats(users || []);
+  const rankEl = document.getElementById('dip-rank');
+  const pointsEl = document.getElementById('dip-points');
+  const gapEl = document.getElementById('dip-gap');
+  if (rankEl) rankEl.textContent = stats.rank ? `#${stats.rank}` : '-';
+  if (pointsEl) pointsEl.textContent = String(stats.myPoints || 0);
+  if (gapEl) gapEl.textContent = stats.gapToLeader == null ? '-' : String(stats.gapToLeader);
+
+  const leaderboardBtn = document.getElementById('dip-open-leaderboard');
+  if (leaderboardBtn) leaderboardBtn.onclick = () => showLeaderboard();
+  const bracketBtn = document.getElementById('dip-open-bracket');
+  if (bracketBtn) bracketBtn.onclick = () => {
+    if (typeof openSpBracketView === 'function' && state.currentPool && state.currentPool.betting_mode === 'single_phase') return openSpBracketView();
+    if (typeof openBracketView === 'function') return openBracketView();
+  };
+
+  const body = document.getElementById('dip-match-body');
+  if (!body) return true;
+
+  const matches = _dashboardImpactMatches();
+  const activeMatch = _dashboardImpactLiveMatch(matches);
+  const lastResult = _dashboardImpactLastResult(matches);
+  const nextMatch = _dashboardImpactNextMatch(matches, Date.now(), activeMatch);
+  const bracketPicks = await _dashboardImpactLoadMyBracketPicks();
+
+  if (activeMatch) {
+    const ux = _matchUxState(activeMatch);
+    const confirming = !!ux.requiresVerification;
+    root.classList.toggle('is-confirming', confirming);
+    root.classList.toggle('is-live', !confirming);
+    body.innerHTML = _dashboardImpactMatchStackHtml(activeMatch, lastResult, nextMatch, bracketPicks);
+  } else {
+    root.classList.remove('is-confirming', 'is-live');
+    body.innerHTML = _dashboardImpactMatchStackHtml(null, lastResult, nextMatch, bracketPicks);
+  }
+
+  root.style.display = '';
+
+  return true;
 }
 
 function _hideDashboardProjectionTeaser() {
@@ -1884,6 +2628,89 @@ function _groupStagePhase(tournamentStarted, hasScores, progress) {
   return 'liveNoOfficial';
 }
 
+function _tournamentContextApi() {
+  if (typeof FriendlyBetTournamentContext !== 'undefined' && FriendlyBetTournamentContext) return FriendlyBetTournamentContext;
+  if (typeof window !== 'undefined' && window.FriendlyBetTournamentContext) return window.FriendlyBetTournamentContext;
+  return null;
+}
+
+function _fallbackTournamentContext(progress) {
+  return {
+    phase: 'tournamentActive',
+    round: null,
+    roundState: 'safe',
+    confidence: 'safe',
+    exact: false,
+    stale: false,
+    reason: 'resolver_unavailable',
+    roundLabelKey: 'tournamentContext.round.generic',
+    groupProgress: progress || _dashboardGroupProgress(),
+    dashboard: {
+      kickerKey: 'dashboard.tournament.genericKicker',
+      badgeKey: 'dashboard.tournament.genericBadge',
+      titleKey: 'dashboard.tournament.genericTitle',
+      textKey: 'dashboard.tournament.genericText',
+      onePhaseTextKey: 'dashboard.tournament.genericText'
+    },
+    drama: {
+      titleKey: 'dashboard.drama.tournamentGeneric.title',
+      textKey: 'dashboard.drama.tournamentGeneric.text'
+    },
+    leaderboardStatusKey: 'leaderboard.statusTournamentGeneric',
+    punditKey: 'pundit.tournament.generic'
+  };
+}
+
+function _currentTournamentContext(extra = {}) {
+  const progress = extra.progress || _dashboardGroupProgress();
+  const api = _tournamentContextApi();
+  if (!api || typeof api.deriveTournamentContext !== 'function') return _fallbackTournamentContext(progress);
+  const results = state.results || {};
+  const matches = Array.isArray(extra.matches)
+    ? extra.matches
+    : (Array.isArray(results.allMatches) && results.allMatches.length ? results.allMatches : (results.finishedMatches || []));
+  try {
+    return api.deriveTournamentContext({
+      matches,
+      now: extra.now,
+      tournamentStarted: extra.tournamentStarted,
+      hasScores: extra.hasScores,
+      groupProgress: progress,
+      dataPending: extra.dataPending
+    }) || _fallbackTournamentContext(progress);
+  } catch (err) {
+    console.warn('Tournament context failed:', err);
+    return _fallbackTournamentContext(progress);
+  }
+}
+
+function _tournamentContextParams(ctx, extra = {}) {
+  const safe = ctx || {};
+  const round = safe.roundLabelKey ? t(safe.roundLabelKey) : t('tournamentContext.round.generic');
+  return {
+    round,
+    completed: safe.completedMatches || 0,
+    total: safe.totalMatches || 0,
+    ...extra
+  };
+}
+
+function _tournamentContextTextKey(ctx, onePhase) {
+  const dashboard = (ctx && ctx.dashboard) || {};
+  return onePhase && dashboard.onePhaseTextKey ? dashboard.onePhaseTextKey : (dashboard.textKey || 'dashboard.tournament.genericText');
+}
+
+function _tournamentContextItem(id, type, emoji, key, ctx, extraParams = {}, extra = {}) {
+  return {
+    id,
+    type,
+    emoji,
+    key,
+    params: _tournamentContextParams(ctx, extraParams),
+    ...extra
+  };
+}
+
 function _hasPendingResultVerification() {
   const rows = state.results && Array.isArray(state.results.pendingVerificationMatches)
     ? state.results.pendingVerificationMatches
@@ -1927,6 +2754,7 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
   const lateOpen = !lateKo && _poolLateEntryOpen();
   const poolMode = state.currentPool && state.currentPool.betting_mode;
   const onePhase = poolMode === 'single_phase';
+  const deadline = lateKo ? _knockoutCutoffLabel() : _lateEntryCutoffLabel();
   let textKey = lateKo
     ? 'dashboard.liveStatus.lateKnockoutText'
     : lateOpen
@@ -1935,6 +2763,7 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
   let titleKey = lateKo ? 'dashboard.liveStatus.lateKnockoutTitle' : (lateOpen ? 'dashboard.liveStatus.lateTitle' : 'dashboard.liveStatus.title');
   let kickerKey = lateKo ? 'dashboard.liveStatus.lateKnockoutKicker' : (lateOpen ? 'dashboard.liveStatus.lateKicker' : 'dashboard.liveStatus.kicker');
   let zeroKey = lateKo ? 'dashboard.liveStatus.lateKnockoutDeadline' : (lateOpen ? 'dashboard.liveStatus.lateDeadline' : 'dashboard.liveStatus.zeroPoints');
+  let copyParams = { time: deadline, done: gp.completeGroups, total: gp.totalGroups };
   let pendingNoteKey = null;
   if (dataPending && !lateKo && !lateOpen) {
     const pendingKind = _dashboardPendingMatchUxKind();
@@ -1951,20 +2780,22 @@ function _renderDashboardLiveStatus(tournamentStarted, hasScores) {
     kickerKey = 'dashboard.officialStatus.kicker';
     zeroKey = 'dashboard.officialStatus.pointsLive';
   } else if (!lateKo && !lateOpen && phase === 'groupsComplete') {
-    titleKey = 'dashboard.groupStageComplete.title';
-    textKey = onePhase ? 'dashboard.groupStageComplete.onePhaseText' : 'dashboard.groupStageComplete.text';
-    kickerKey = 'dashboard.groupStageComplete.kicker';
-    zeroKey = 'dashboard.groupStageComplete.badge';
+    const tournamentCtx = _currentTournamentContext({ progress: gp, tournamentStarted, hasScores, dataPending });
+    const dashboardCopy = (tournamentCtx && tournamentCtx.dashboard) || {};
+    titleKey = dashboardCopy.titleKey || 'dashboard.tournament.genericTitle';
+    textKey = _tournamentContextTextKey(tournamentCtx, onePhase);
+    kickerKey = dashboardCopy.kickerKey || 'dashboard.tournament.genericKicker';
+    zeroKey = dashboardCopy.badgeKey || 'dashboard.tournament.genericBadge';
+    copyParams = _tournamentContextParams(tournamentCtx, { time: deadline, done: gp.completeGroups, total: gp.totalGroups });
   }
-  const deadline = lateKo ? _knockoutCutoffLabel() : _lateEntryCutoffLabel();
   const showThirdPlacePending = !dataPending && !lateKo && !lateOpen && (phase === 'officialFirst' || phase === 'officialSeveral');
   el.innerHTML = `
     <div class="dls-head">
-      <span class="dls-live"><span class="dls-dot"></span>${t(kickerKey)}</span>
-      <span class="dls-zero">${t(zeroKey, { time: deadline })}</span>
+      <span class="dls-live"><span class="dls-dot"></span>${t(kickerKey, copyParams)}</span>
+      <span class="dls-zero">${t(zeroKey, copyParams)}</span>
     </div>
-    <div class="dls-title">${t(titleKey)}</div>
-    <div class="dls-text">${t(textKey, { time: deadline, done: gp.completeGroups, total: gp.totalGroups })}</div>
+    <div class="dls-title">${t(titleKey, copyParams)}</div>
+    <div class="dls-text">${t(textKey, copyParams)}</div>
     <div class="dls-progress" aria-hidden="true">
       <div class="dls-progress-fill" style="width:${pct}%"></div>
     </div>
@@ -2016,7 +2847,7 @@ function _punditItemAllowedForPoolMode(item, poolMode) {
   if (!item || !poolMode) return true;
   const scopes = Array.isArray(item.mode_scopes) ? item.mode_scopes : [];
   if (scopes.length) return scopes.includes(poolMode);
-  if (poolMode === 'one_phase') {
+  if (poolMode === 'one_phase' || poolMode === 'single_phase') {
     const text = `${item.he || ''} ${item.en || ''}`;
     if (/knockout picks (stay open|are open)|editable until|next picks are knockout picks/i.test(text)) return false;
     if (/ההימור על הנוקאאוט פתוח|ניתן לעריכה עד|הבחירות הבאות הן נוקאאוט/.test(text)) return false;
@@ -2054,7 +2885,7 @@ async function loadPundit() {
       if (feedFresh) {
         globalFreshUntil = Number.isFinite(freshUntil) ? freshUntil : (updatedAt + 6 * 60 * 60 * 1000);
         globalItems = (j && Array.isArray(j.items) ? j.items : [])
-          .filter(it => it && (it.he || it.en))
+          .filter(it => it && (it.he || it.en || it.key))
           .filter(it => !it.expires_at || Date.parse(it.expires_at) > now);
       }
     }
@@ -2116,7 +2947,11 @@ async function loadPundit() {
     // has no live pool pulse, keep The Pundit alive with timeless, clearly
     // non-live commentary. Never use stale generated facts as if they were fresh.
     if (!items.length) {
-      items = _ppLeastRecent(_punditEmergencyFallbackDeck(), PUNDIT_TARGET, seenMap, H);
+      const tournamentCtx = _currentTournamentContext({ progress: _dashboardGroupProgress(), dataPending: _hasPendingResultVerification() });
+      const tournamentFallback = tournamentCtx && (tournamentCtx.phase === 'knockout' || tournamentCtx.phase === 'tournamentActive' || tournamentCtx.phase === 'tournamentComplete')
+        ? _punditTournamentFallbackDeck(tournamentCtx)
+        : [];
+      items = _ppLeastRecent(tournamentFallback.length ? tournamentFallback : _punditEmergencyFallbackDeck(), PUNDIT_TARGET, seenMap, H);
       items.forEach(it => { if (it && it.id) seenMap[it.id] = H; });
       _ppSeenSave(seenMap);
       _ppHourSave({ H, pool: [], news: items.map(i => i.id), fallback: true });
@@ -2287,13 +3122,18 @@ async function buildPoolPundit() {
     : null;
   const gp = (typeof _dashboardGroupProgress === 'function') ? _dashboardGroupProgress() : { completeGroups: 0, totalGroups: 12 };
   const groupStageComplete = gp && gp.totalGroups > 0 && gp.completeGroups >= gp.totalGroups;
+  const tournamentCtx = groupStageComplete
+    ? _currentTournamentContext({ progress: gp, tournamentStarted, hasScores })
+    : null;
   const knockoutWindowMode = groupStageComplete && (pool.betting_mode === 'two_phase' || pool.betting_mode === 'late_knockout');
-  const knockoutCutoff = (typeof _knockoutCutoffLabel === 'function') ? _knockoutCutoffLabel() : '';
 
-  const cand = []; // { id, prio, he, en } - lower prio = more important
+  const cand = []; // { id, prio, he/en or key/params } - lower prio = more important
   const push = (id, prio, variants) => {
     const v = _ppPick(variants, seed);
     cand.push({ id, prio, he: v.he, en: v.en });
+  };
+  const pushKey = (id, prio, key, params = {}) => {
+    cand.push(_tournamentContextItem(id, 'pool', '🎯', key, tournamentCtx, params, { prio }));
   };
 
   if (poolLocked || tournamentStarted) {
@@ -2304,28 +3144,29 @@ async function buildPoolPundit() {
   }
 
   if (groupStageComplete) {
-    push('pool-groups-complete', 0, knockoutWindowMode ? [
-      { he: 'ניקוד הבתים כבר רשמי והנוקאאוט רץ. הבראקטים נעולים עכשיו, וכל משחק יכול להפוך את הטבלה.',
-        en: 'Group points are official and the knockouts are underway. Brackets are locked now, and every match can flip the table.' },
-      { he: 'שלב הבתים מאחורינו. מי שרוצה לזוז מכאן צריך פגיעות נוקאאוט, לא עוד זמן לעריכות.',
-        en: 'The group stage is behind us. Moving from here takes knockout hits, not more editing time.' },
-    ] : [
-      { he: 'ניקוד הבתים כבר רשמי והנוקאאוט כבר התחיל. מכאן הטבלה זזה דרך הבראקט, האלופה ומלך השערים.',
-        en: 'Group points are official and the knockouts are already underway. From here the table moves through the bracket, champion pick, and top scorer.' },
-      { he: 'הבתים מאחורינו, הקבלות בטבלה. עכשיו רודפים אחרי המוביל דרך משחקי הנוקאאוט.',
-        en: 'The groups are behind us and the receipts are on the table. Now the chase runs through the knockout matches.' },
-    ]);
+    const key = tournamentCtx && tournamentCtx.exact
+      ? (knockoutWindowMode ? 'pundit.pool.tournamentRoundLocked' : 'pundit.pool.tournamentRound')
+      : 'pundit.pool.tournamentGeneric';
+    pushKey('pool-tournament-context', 0, key);
   }
 
   if (poolLocked) {
-    push('pool-locked-live', 1, [
-      { he: groupStageComplete ? 'הבתים נגמרו, אבל ההימור לא נגמר. עכשיו כל בחירת נוקאאוט שווה הרבה יותר בטבלה.' : 'ההימור נעול. עכשיו הבחירות שלכם פוגשות את המציאות, וכל משחק יכול להזיז את הטבלה.',
-        en: groupStageComplete ? 'The groups are done, but the pool is not. Every knockout pick is worth more on the table now.' : 'Predictions are locked. Now your picks meet reality, and every match can move the table.' },
-      { he: groupStageComplete ? 'קבלות הבתים כבר חולקו. מי שמאחור צריך נקודות נוקאאוט, לא עוד הסברים על שלב הבתים.' : 'אין יותר עריכות, רק קבלות. הבראקט קפוא והדרמה של ההימור חיה.',
-        en: groupStageComplete ? 'The group-stage receipts are in. Anyone behind needs knockout points, not another group-stage explanation.' : 'No more edits, only receipts. The bracket is frozen and the pool drama is live.' },
-      { he: groupStageComplete ? 'שתפו את הטבלה: ניקוד הבתים רשמי, והסיפור הבא הוא מי פוגע בבראקט הנוקאאוט.' : 'שתפו את הטבלה, לא לינק הצטרפות. ההימור סגור, הדרמה פתוחה.',
-        en: groupStageComplete ? 'Share the table: group points are official, and the next story is who nails the knockout bracket.' : 'Share the table, not a join link. Predictions are closed, the drama is open.' },
-    ]);
+    if (groupStageComplete) {
+      pushKey(
+        'pool-locked-live',
+        1,
+        tournamentCtx && tournamentCtx.exact ? 'pundit.pool.lockedTournamentRound' : 'pundit.pool.lockedTournamentGeneric'
+      );
+    } else {
+      push('pool-locked-live', 1, [
+        { he: 'ההימור נעול. עכשיו הבחירות שלכם פוגשות את המציאות, וכל משחק יכול להזיז את הטבלה.',
+          en: 'Predictions are locked. Now your picks meet reality, and every match can move the table.' },
+        { he: 'אין יותר עריכות, רק קבלות. הבראקט קפוא והדרמה של ההימור חיה.',
+          en: 'No more edits, only receipts. The bracket is frozen and the pool drama is live.' },
+        { he: 'שתפו את הטבלה, לא לינק הצטרפות. ההימור סגור, הדרמה פתוחה.',
+          en: 'Share the table, not a join link. Predictions are closed, the drama is open.' },
+      ]);
+    }
   } else if (lateEntryOpen) {
     push('pool-late-entry-open', 1, [
       { he: `ההימור עדיין פתוח למצטרפים מאוחרים עד ${lateEntryCutoff}. מי שנכנס עכשיו מהמר עם פחות זמן לחשוב.`,
@@ -2693,6 +3534,23 @@ function _punditEmergencyFallbackDeck() {
   }));
 }
 
+function _punditTournamentFallbackDeck(tournamentCtx) {
+  const safe = tournamentCtx || _fallbackTournamentContext(_dashboardGroupProgress());
+  const primaryKey = safe.punditKey || 'pundit.tournament.generic';
+  return [
+    _tournamentContextItem('pundit-tournament-context', 'pool', '🎯', primaryKey, safe, {}, { confidence: 'confirmed', sources: [] }),
+    _tournamentContextItem(
+      'pundit-tournament-no-stale',
+      'verification',
+      '🧭',
+      safe.exact ? 'pundit.tournament.noStaleExact' : 'pundit.tournament.noStaleGeneric',
+      safe,
+      {},
+      { confidence: 'confirmed', sources: [] }
+    ),
+  ];
+}
+
 function _evergreenPundit(count, hourSeed, exclude) {
   if (count <= 0) return [];
   const used = new Set((exclude || []).map(it => it && it.id));
@@ -2777,7 +3635,7 @@ function _punditDraw() {
   if (textEl) {
     textEl.classList.add('pundit-fade');
     setTimeout(() => {
-      const rawText = (lang === 'he' ? it.he : it.en) || it.he || it.en || '';
+      const rawText = it.key ? t(it.key, it.params || {}) : ((lang === 'he' ? it.he : it.en) || it.he || it.en || '');
       textEl.textContent = _punditWithEmoji(rawText, it && it.type);
       textEl.classList.remove('pundit-fade');
       // Reset to collapsed and decide whether "see more" is needed for this item.
@@ -3404,11 +4262,7 @@ function _matchIsHalftimeBreak(m, now = Date.now()) {
   if (_matchStatus(m) !== 'PAUSED') return false;
   if (_matchHasSecondHalfClock(m)) return false;
   if (!_matchSourceFresh(m, now, _HALFTIME_SOURCE_MAX_AGE_MS)) return false;
-  if (_matchDetailIndicatesHalftime(m)) return true;
-  const elapsed = _matchElapsedMs(m, now);
-  const period = Number(m && m.live_period);
-  const firstPeriodish = !Number.isFinite(period) || period <= 1;
-  return firstPeriodish && elapsed != null && elapsed >= 40 * 60 * 1000 && elapsed <= 75 * 60 * 1000;
+  return _matchDetailIndicatesHalftime(m);
 }
 function _matchIsStalePausedBreak(m, now = Date.now()) {
   return _matchStatus(m) === 'PAUSED'
@@ -3475,6 +4329,7 @@ function _matchUxState(m, now = Date.now()) {
   const finalWithoutScore = _matchIsFinishedStatus(m) && !_matchHasNumericScore(m);
   const pendingProviderFinal = _matchIsPendingProviderFinal(m);
   if (pendingProviderFinal || finalWithoutScore) {
+    const hasNumericScore = _matchHasNumericScore(m);
     return {
       kind: 'final_confirming',
       className: 'verifying',
@@ -3484,12 +4339,13 @@ function _matchUxState(m, now = Date.now()) {
       isLive: false,
       isFinished: false,
       isScheduled: false,
-      showScore: false,
-      liveScoreTrusted: false
+      showScore: hasNumericScore,
+      liveScoreTrusted: hasNumericScore
     };
   }
 
   if (_matchNeedsStatusVerification(m, now)) {
+    const hasNumericScore = _matchHasNumericScore(m);
     return {
       kind: 'live_updating',
       className: 'live',
@@ -3499,8 +4355,8 @@ function _matchUxState(m, now = Date.now()) {
       isLive: false,
       isFinished: false,
       isScheduled: false,
-      showScore: false,
-      liveScoreTrusted: false
+      showScore: hasNumericScore,
+      liveScoreTrusted: hasNumericScore
     };
   }
 
@@ -4544,6 +5400,10 @@ async function _tpFetchReopenStatus() {
 
 function _tpRecoveryClosed() {
   return !!(state.currentPool && state.currentPool.betting_mode === 'two_phase' && Date.now() >= _knockoutCutoffMs());
+}
+
+function _twoPhaseNormalWindowClosed(pool = state.currentPool) {
+  return !!(pool && pool.betting_mode === 'two_phase' && !_poolGraceActive(pool) && Date.now() >= _knockoutCutoffMs());
 }
 
 function _tpRecoveryLockedIds() {
@@ -5947,6 +6807,13 @@ async function showTopScorer() {
     return;
   }
 
+  if (_twoPhaseNormalWindowClosed()) {
+    if (lockedView) lockedView.style.display = 'block';
+    if (unlockedView) unlockedView.style.display = 'none';
+    updateTopScorerClosedView();
+    return;
+  }
+
   if (lockedView) lockedView.style.display = 'none';
   if (unlockedView) unlockedView.style.display = 'block';
 
@@ -5972,7 +6839,42 @@ async function showTopScorer() {
   renderTopScorerList();
 }
 
+function _setTextAndI18n(selector, key, params = {}) {
+  const el = document.querySelector(selector);
+  if (!el) return;
+  el.setAttribute('data-i18n', key);
+  el.textContent = t(key, params);
+}
+
+function updateTopScorerClosedView() {
+  _setTextAndI18n('#ts-locked-view .ts-locked-title', 'tsLocked.closedTitle');
+  _setTextAndI18n('#ts-locked-view .ts-locked-subtitle', 'tsLocked.closedSubtitle', { time: _knockoutCutoffLabel() });
+  _setTextAndI18n('#ts-locked-view .ts-explain-row:nth-child(1) strong', 'tsLocked.closedWhy');
+  _setTextAndI18n('#ts-locked-view .ts-explain-row:nth-child(1) span', 'tsLocked.closedWhyText', { time: _knockoutCutoffLabel() });
+  _setTextAndI18n('#ts-locked-view .ts-explain-row:nth-child(2) strong', 'tsLocked.closedHow');
+  _setTextAndI18n('#ts-locked-view .ts-explain-row:nth-child(2) span', 'tsLocked.closedHowText');
+  _setTextAndI18n('#ts-locked-view .ts-explain-row:nth-child(3) strong', 'tsLocked.closedWhat');
+  _setTextAndI18n('#ts-locked-view .ts-explain-row:nth-child(3) span', 'tsLocked.closedWhatText');
+  const countdown = document.querySelector('#ts-locked-view .ts-countdown-card');
+  if (countdown) countdown.style.display = 'none';
+  const lastCheck = document.getElementById('ts-last-check');
+  if (lastCheck) {
+    lastCheck.setAttribute('data-i18n', 'tsLocked.closedStatus');
+    lastCheck.textContent = t('tsLocked.closedStatus');
+  }
+}
+
 function updateLockedView(settings) {
+  _setTextAndI18n('#ts-locked-view .ts-locked-title', 'tsLocked.title');
+  _setTextAndI18n('#ts-locked-view .ts-locked-subtitle', 'tsLocked.subtitle');
+  _setTextAndI18n('#ts-locked-view .ts-explain-row:nth-child(1) strong', 'tsLocked.why');
+  _setTextAndI18n('#ts-locked-view .ts-explain-row:nth-child(1) span', 'tsLocked.whyText');
+  _setTextAndI18n('#ts-locked-view .ts-explain-row:nth-child(2) strong', 'tsLocked.how');
+  _setTextAndI18n('#ts-locked-view .ts-explain-row:nth-child(2) span', 'tsLocked.howText');
+  _setTextAndI18n('#ts-locked-view .ts-explain-row:nth-child(3) strong', 'tsLocked.what');
+  _setTextAndI18n('#ts-locked-view .ts-explain-row:nth-child(3) span', 'tsLocked.whatText');
+  const countdown = document.querySelector('#ts-locked-view .ts-countdown-card');
+  if (countdown) countdown.style.display = '';
   const lastCheck = settings.squads_last_check;
   if (lastCheck) {
     const date = new Date(lastCheck);
@@ -8143,7 +9045,9 @@ async function updateBettingStatusOnDashboard() {
     if (restoredCount > picksCount) picksCount = restoredCount;
   }
   const twoPhaseAllSet = picksCount >= 32 && koCount >= 31 && (!tsRequired || tsChosen);
-  try { await _updateTwoPhaseReopenBanner(); } catch (_) {}
+  const twoPhaseClosed = _twoPhaseNormalWindowClosed();
+  let twoPhaseRecoveryOpen = false;
+  try { twoPhaseRecoveryOpen = await _updateTwoPhaseReopenBanner(); } catch (_) {}
 
   if (picksCount === 0) {
     titleEl.textContent = t('dashboard.startCta.title');
@@ -8158,6 +9062,11 @@ async function updateBettingStatusOnDashboard() {
   } else if (!officialReady) {
     titleEl.textContent = t('dashboard.editCta.title');
     subtitleEl.textContent = t('dashboard.twoPhase.waitingKnockout');
+    ctaEl.classList.add('done');
+    _fbSetDashboardProgressCard('partial');
+  } else if (twoPhaseClosed && !twoPhaseRecoveryOpen && !twoPhaseAllSet) {
+    titleEl.textContent = t('dashboard.twoPhase.closedTitle');
+    subtitleEl.textContent = t('dashboard.twoPhase.closedSub', { time: _knockoutCutoffLabel() });
     ctaEl.classList.add('done');
     _fbSetDashboardProgressCard('partial');
   } else if (koCount === 0) {
@@ -8218,6 +9127,12 @@ async function startKnockoutBetting() {
 
   if (!supabaseClient) {
     showToast(t('errors.serverConnectingShort'), 'error');
+    return;
+  }
+
+  if (_twoPhaseNormalWindowClosed() && !tpReopenActive) {
+    showToast(t('dashboard.twoPhase.closedToast'), 'info');
+    await tpShowSummary();
     return;
   }
 
@@ -9781,6 +10696,9 @@ async function refreshScoreSurfaces(reason = 'auto') {
       const rank = me ? users.findIndex(user => user.id === me.id) + 1 : 0;
       rankEl.textContent = (hasScores && rank > 0) ? rank : '-';
     }
+    renderDashboardImpactPilot(users, { hasScores }).catch(err => {
+      console.warn('Dashboard impact pilot refresh failed:', err);
+    });
   } catch (err) {
     console.warn('Score surface refresh failed:', err);
   } finally {
@@ -9850,14 +10768,20 @@ async function showLeaderboard(options = {}) {
   const phase = _groupStagePhase(tournamentStarted, hasScores, progress);
   const officialStarted = _phaseHasOfficialScoring(phase);
   const dataPending = _hasPendingResultVerification() || usedLeaderboardSnapshot;
+  const tournamentCtx = phase === 'groupsComplete'
+    ? _currentTournamentContext({ progress, tournamentStarted, hasScores, dataPending })
+    : null;
 
   const statusKey = dataPending ? 'leaderboard.statusDataPending'
     : phase === 'pre' ? 'leaderboard.statusBefore'
     : phase === 'liveNoOfficial' ? 'leaderboard.statusLiveNoOfficial'
-    : phase === 'groupsComplete' ? 'leaderboard.statusGroupsComplete'
+    : phase === 'groupsComplete' ? ((tournamentCtx && tournamentCtx.leaderboardStatusKey) || 'leaderboard.statusTournamentGeneric')
     : 'leaderboard.statusOfficialStarted';
+  const statusParams = phase === 'groupsComplete'
+    ? _tournamentContextParams(tournamentCtx, { groups: progress.completeGroups, total: progress.totalGroups })
+    : { groups: progress.completeGroups, total: progress.totalGroups };
   document.getElementById('lb-tournament-status').textContent =
-    t(statusKey, { groups: progress.completeGroups, total: progress.totalGroups });
+    t(statusKey, statusParams);
   const thirdPlaceNoteEl = document.getElementById('lb-third-place-note');
   if (thirdPlaceNoteEl) {
     const showThirdPlaceNote = !dataPending && (phase === 'officialFirst' || phase === 'officialSeveral')
@@ -9876,7 +10800,7 @@ async function showLeaderboard(options = {}) {
   }
 
   // Pool Pundit: live banter about what the latest results did to the board
-  renderLeaderboardBanter(users, { phase, dataPending });
+  renderLeaderboardBanter(users, { phase, dataPending, tournamentContext: tournamentCtx });
 
   // Render full list
   const fullListTitle = document.querySelector('#leaderboard-screen .section-title-small[data-i18n="leaderboard.fullRanking"]');
@@ -10177,6 +11101,7 @@ const LB_BANTER_MAX_AGE_MS = 36 * 60 * 60 * 1000;
 
 function _banterText(item) {
   if (!item) return '';
+  if (item.key) return t(item.key, item.params || {});
   const lang = (typeof currentLanguage !== 'undefined' && currentLanguage) || 'he';
   return (lang === 'en' ? item.en : item.he) || item.he || item.en || '';
 }
@@ -10187,39 +11112,31 @@ function _stripTrailingEmoji(s) {
   return String(s || '').replace(/[\s\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{2190}-\u{21FF}️‍]+$/u, '');
 }
 
-function _groupsCompleteLeaderboardBanter(users) {
+function _groupsCompleteLeaderboardBanter(users, tournamentCtx) {
   const leader = (users || [])[0] || null;
   const pts = leader ? (leader.total_score || 0) : 0;
   const name = leader && leader.nickname ? leader.nickname : null;
+  const exact = tournamentCtx && tournamentCtx.exact;
+  const leaderKey = exact ? 'leaderboard.banter.tournamentLeader' : 'leaderboard.banter.tournamentGenericLeader';
+  const headlineKey = exact ? 'leaderboard.banter.tournamentHeadline' : 'leaderboard.banter.tournamentGeneric';
   const headline = name && pts > 0
-    ? {
-        id: 'leaderboard-groups-complete-leader',
-        type: 'groups-complete',
-        emoji: '🏁',
-        he: `${name} מוביל עם ${pts} נקודות כשהנוקאאוט כבר רץ. עכשיו כל משחק יכול לשנות את המרדף.`,
-        en: `${name} leads with ${pts} points as the knockouts are already underway. Every match can change the chase now.`,
+    ? _tournamentContextItem('leaderboard-tournament-leader', 'groups-complete', '🏁', leaderKey, tournamentCtx, { name, points: pts }, {
         featuredUserId: leader.id,
         featuredNickname: name,
-      }
-    : {
-        id: 'leaderboard-groups-complete',
-        type: 'groups-complete',
-        emoji: '🏁',
-        he: 'ניקוד הבתים רשמי והנוקאאוט כבר התחיל. מכאן הלידרבורד זז דרך הבראקט, האלופה ומלך השערים.',
-        en: 'Group points are official and the knockouts are underway. From here the leaderboard moves through the bracket, champion pick, and top scorer.',
-      };
+      })
+    : _tournamentContextItem('leaderboard-tournament-headline', 'groups-complete', '🏁', headlineKey, tournamentCtx);
   return {
     updatedAt: new Date().toISOString(),
     headline,
     items: [
       headline,
-      {
-        id: 'leaderboard-groups-complete-next',
-        type: 'groups-complete-next',
-        emoji: '🎯',
-        he: 'אין יותר טבלה תיאורטית של בתים. מי שמאחור צריך פגיעות נוקאאוט, לא עוד תירוצים.',
-        en: 'No more theoretical group table. Anyone behind needs knockout hits, not excuses.',
-      },
+      _tournamentContextItem(
+        'leaderboard-tournament-chase',
+        'groups-complete-next',
+        '🎯',
+        exact ? 'leaderboard.banter.tournamentChase' : 'leaderboard.banter.tournamentGenericChase',
+        tournamentCtx
+      ),
     ],
   };
 }
@@ -10233,7 +11150,7 @@ async function renderLeaderboardBanter(users, options = {}) {
     if (options && options.dataPending) return;
     if (!state.currentPool || !state.currentPool.id) return;
     const phaseFallback = options && options.phase === 'groupsComplete'
-      ? _groupsCompleteLeaderboardBanter(users)
+      ? _groupsCompleteLeaderboardBanter(users, options.tournamentContext)
       : null;
     const res = await fetch(`/public-data/banter/${state.currentPool.id}.json`, { cache: 'no-store' });
     let data = null;
@@ -10246,7 +11163,7 @@ async function renderLeaderboardBanter(users, options = {}) {
       const generatedItems = Array.isArray(data.items) ? data.items.filter(it => it && it.id !== phaseFallback.headline.id) : [];
       data = { ...data, headline: phaseFallback.headline, items: [phaseFallback.headline].concat(generatedItems) };
     }
-    const items = Array.isArray(data.items) ? data.items.filter(it => it && (it.he || it.en)) : [];
+    const items = Array.isArray(data.items) ? data.items.filter(it => it && (it.he || it.en || it.key)) : [];
     const headline = data.headline || items[0];
     if (!headline) return;
 
@@ -11271,7 +12188,13 @@ function createMatchCard(match) {
   let pendingScoreNote = '';
   let advancementNote = '';
   if (needsStatusVerification) {
-    scoreHtml = `<div class="match-score no-score">VS</div>`;
+    scoreHtml = uxState.showScore ? `
+      <div class="match-score">
+        <span>${match.home_score}</span>
+        <span>-</span>
+        <span>${match.away_score}</span>
+      </div>
+    ` : `<div class="match-score no-score">VS</div>`;
     pendingScoreNote = `<div class="match-score-pending-note">${t(uxState.noteKey || 'matchesEx.statusBeingVerified')}</div>`;
   } else if (isFinished || isLive) {
     const hasScore = uxState.showScore;
@@ -12869,7 +13792,22 @@ if (!navigator.onLine) {
 }
 
 
-if (!window.FB_TEST_MODE && 'serviceWorker' in navigator) {
+const FB_LOCAL_PREVIEW = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+
+if (!window.FB_TEST_MODE && FB_LOCAL_PREVIEW && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.getRegistrations()
+      .then(regs => Promise.all(regs.map(reg => reg.unregister())))
+      .catch(() => {});
+    if (window.caches) {
+      caches.keys()
+        .then(names => Promise.all(names.map(name => caches.delete(name))))
+        .catch(() => {});
+    }
+  });
+}
+
+if (!window.FB_TEST_MODE && !FB_LOCAL_PREVIEW && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
       .then(reg => {
@@ -16640,6 +17578,10 @@ window.startBettingFromDashboard = async function() {
       const koCount = (kp.data || []).filter(r => r && r.match_id).length;
       const tsRequired = (typeof spTopScorerRequired === 'function') ? spTopScorerRequired() : true;
       const tsChosen = (tp.data || []).length >= 1;
+      if (_twoPhaseNormalWindowClosed() && !tpReopenActive) {
+        showToast(t('dashboard.twoPhase.closedToast'), 'info');
+        return tpShowSummary();
+      }
       if (koCount < 31) return startKnockoutBetting();
       if (tsRequired && !tsChosen) {
         state.tpInFlow = true;
@@ -18092,6 +19034,33 @@ function selectFeedbackCategory(cat) {
   });
 }
 
+async function submitFeedbackToApi(payload) {
+  const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+  const timeout = controller ? setTimeout(() => controller.abort(), 12000) : null;
+
+  try {
+    const response = await fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: controller ? controller.signal : undefined
+    });
+
+    if (!response.ok) {
+      let body = '';
+      try { body = await response.text(); } catch (_) {}
+      throw new Error('feedback api failed: ' + response.status + ' ' + body);
+    }
+  } finally {
+    if (timeout) clearTimeout(timeout);
+  }
+}
+
+async function submitFeedbackDirectly(payload) {
+  const { error } = await supabaseClient.from('feedback').insert(payload);
+  if (error) throw error;
+}
+
 async function submitFeedback() {
   if (_fbFeedbackSending) return;
   const msgEl = document.getElementById('fb-feedback-message');
@@ -18124,14 +19093,13 @@ async function submitFeedback() {
   };
 
   try {
-    const { error } = await supabaseClient.from('feedback').insert(payload);
-    if (error) {
-      console.warn('submitFeedback error:', error);
-      showToast(t('feedback.sendError'), 'error');
-      _fbFeedbackSending = false;
-      if (submitBtn) submitBtn.classList.remove('loading');
-      return;
+    try {
+      await submitFeedbackToApi(payload);
+    } catch (apiErr) {
+      console.warn('submitFeedback api fallback:', apiErr);
+      await submitFeedbackDirectly(payload);
     }
+
     // Success: flip to the thank-you panel
     const body = document.getElementById('fb-feedback-body');
     const thanks = document.getElementById('fb-feedback-thanks');

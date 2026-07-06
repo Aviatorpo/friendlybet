@@ -730,7 +730,7 @@ function loadTablerFallback() {
 
         <div id="recovery-login-error" class="error-message" style="display: none;"></div>
 
-        <button class="btn-secondary btn-large" onclick="submitRecoveryLogin()">
+        <button class="btn-secondary btn-large" id="recovery-login-submit" type="button" onclick="submitRecoveryLogin()">
           <i class="ti ti-login"></i>
           <span data-i18n="recoveryLogin.submit">התחבר</span>
         </button>
@@ -1519,6 +1519,51 @@ function loadTablerFallback() {
         </div>
       </div>
 
+      <section class="dashboard-impact-pilot" id="dashboard-impact-pilot" style="display:none;" aria-live="polite">
+        <div class="dip-summary" aria-label="Pool position">
+          <div class="dip-metric">
+            <span data-i18n="dashboard.impact.rank">מקום</span>
+            <strong id="dip-rank">-</strong>
+          </div>
+          <div class="dip-metric dip-metric-gold">
+            <span data-i18n="dashboard.impact.points">נקודות</span>
+            <strong id="dip-points">0</strong>
+          </div>
+          <div class="dip-metric">
+            <span data-i18n="dashboard.impact.gap">פער מהמוביל</span>
+            <strong id="dip-gap">-</strong>
+          </div>
+        </div>
+
+        <div class="dip-actions">
+          <button type="button" class="dip-action" id="dip-open-leaderboard">
+            <i class="ti ti-list-numbers"></i>
+            <span data-i18n="dashboard.impact.openLeaderboard">פתח דירוג</span>
+          </button>
+          <button type="button" class="dip-action dip-action-secondary" id="dip-open-bracket">
+            <i class="ti ti-tournament"></i>
+            <span data-i18n="dashboard.impact.viewBracket">ראה בראקט</span>
+          </button>
+        </div>
+
+        <section class="dip-match-region" aria-label="Match points impact">
+          <div class="dip-match-body" id="dip-match-body"></div>
+        </section>
+      </section>
+
+      <section class="dashboard-drama-hero" id="dashboard-drama-hero" style="display:none;" aria-live="polite">
+        <div class="ddh-copy">
+          <div class="ddh-kicker">
+            <span class="ddh-pill" id="dashboard-drama-pill"></span>
+            <span class="ddh-meta" id="dashboard-drama-meta"></span>
+          </div>
+          <h2 class="ddh-title" id="dashboard-drama-title"></h2>
+          <p class="ddh-text" id="dashboard-drama-text"></p>
+          <div class="ddh-metrics" id="dashboard-drama-metrics"></div>
+        </div>
+        <button type="button" class="ddh-action" id="dashboard-drama-action"></button>
+      </section>
+
       <!-- User Stats Card (hidden until tournament starts) -->
       <div class="dashboard-stats" id="dashboard-stats" style="display:none;">
         <div class="stat-block">
@@ -1630,29 +1675,6 @@ function loadTablerFallback() {
         </div>
       </div>
 
-      <!-- Quick actions -->
-      <div class="quick-actions">
-        <button class="quick-action-btn" onclick="showLeaderboard()">
-          <svg class="quick-action-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
-            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
-            <path d="M4 22h16"></path>
-            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
-            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
-            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
-          </svg>
-          <span data-i18n="dashboard.quickAction.leaderboard">דירוג</span>
-        </button>
-        <button class="quick-action-btn" onclick="showHelp()">
-          <svg class="quick-action-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="9.5"></circle>
-            <path d="M9.4 9.2a2.7 2.7 0 0 1 5.2 1c0 1.8-2.6 2.2-2.6 3.8"></path>
-            <line x1="12" y1="17.4" x2="12.01" y2="17.4"></line>
-          </svg>
-          <span data-i18n="dashboard.quickAction.help">עזרה</span>
-        </button>
-      </div>
-
       <!-- The Pundit - live rotating commentary (v2.6.71).
            Placed at the BOTTOM, below the betting CTA, so it never sits above
            the action the user came to do (predict). Fed by public-data/pundit.json:
@@ -1701,6 +1723,18 @@ function loadTablerFallback() {
         <div class="wc-stories-rail" id="world-cup-stories-rail"></div>
         <div class="wc-stories-dots" id="world-cup-stories-dots"></div>
       </section>
+
+      <!-- Secondary utility. The dashboard hero owns the primary action. -->
+      <div class="quick-actions quick-actions-secondary">
+        <button class="quick-action-btn" onclick="showHelp()">
+          <svg class="quick-action-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9.5"></circle>
+            <path d="M9.4 9.2a2.7 2.7 0 0 1 5.2 1c0 1.8-2.6 2.2-2.6 3.8"></path>
+            <line x1="12" y1="17.4" x2="12.01" y2="17.4"></line>
+          </svg>
+          <span data-i18n="dashboard.quickAction.help">עזרה</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -3173,7 +3207,7 @@ function loadTablerFallback() {
       <span>FriendlyBet</span>
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
-      <span class="menu-version">v2.10.119</span>
+      <span class="menu-version">v2.10.128</span>
     </div>
   </div>
 
@@ -3836,6 +3870,8 @@ function loadTablerFallback() {
 <script src="share-assets/world-cup-rules.js"></script>
 <!-- FIFA World Cup 2026 Annex C third-place allocation table -->
 <script src="third-place-allocation.js"></script>
+<!-- Shared tournament phase/moment resolver -->
+<script src="lib/tournament-context.js"></script>
 <!-- Our app -->
 <script src="app.js"></script>
 

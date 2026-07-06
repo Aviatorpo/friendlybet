@@ -5,7 +5,7 @@
 // Strategy: Cache-first for assets, Network-first for API
 // ============================================================
 
-const CACHE_VERSION = 'friendlybet-v2.10.119';
+const CACHE_VERSION = 'friendlybet-v2.10.128';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -28,6 +28,7 @@ const STATIC_ASSETS = [
   '/app.js',
   '/config.js',
   '/i18n.js',
+  '/lib/tournament-context.js',
   '/manifest.json',
   '/favicon.svg',
   '/favicon-96.png',
