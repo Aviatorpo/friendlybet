@@ -1776,11 +1776,14 @@ function _dashboardImpactMatchTime(match) {
   }
 }
 
-function _dashboardImpactScoreText(match, ux) {
-  if (ux && ux.showScore && match && match.home_score != null && match.away_score != null) {
-    return `${match.home_score}-${match.away_score}`;
-  }
-  return 'VS';
+function _dashboardImpactHasScore(match, ux) {
+  return !!(ux && ux.showScore && match && match.home_score != null && match.away_score != null);
+}
+
+function _dashboardImpactTeamScoreText(match, side, ux) {
+  if (!_dashboardImpactHasScore(match, ux)) return null;
+  const value = side === 'away' ? match.away_score : match.home_score;
+  return value == null ? null : String(value);
 }
 
 function _dashboardImpactMemoryBracketRows() {
@@ -1945,23 +1948,30 @@ function _dashboardImpactPointsText(pointsInfo) {
   };
 }
 
-function _dashboardImpactScoreTeamHtml(code, side = '') {
+function _dashboardImpactScoreTeamHtml(code, side = '', scoreText = null) {
   const name = code ? getTeamName(code) : t('bracketView.tbd');
   const flag = code ? getCountryFlag(code) : '<span class="flag-img-fallback">-</span>';
+  const scoreHtml = scoreText != null
+    ? `<span class="dip-team-score-badge">${escapeHtml(scoreText)}</span>`
+    : '';
   return `
-    <div class="dip-score-team ${side ? `dip-score-team-${side}` : ''}">
-      <span class="dip-flag">${flag}</span>
-      <strong>${escapeHtml(name)}</strong>
+    <div class="dip-score-team ${side ? `dip-score-team-${side}` : ''}${scoreText != null ? ' dip-score-team-scored' : ''}" aria-label="${escapeHtml(scoreText != null ? `${name} ${scoreText}` : name)}">
+      <span class="dip-score-team-main">
+        <span class="dip-flag">${flag}</span>
+        <strong>${escapeHtml(name)}</strong>
+      </span>
+      ${scoreHtml}
     </div>
   `;
 }
 
 function _dashboardImpactScoreboardHtml(match, ux) {
+  const hasScore = _dashboardImpactHasScore(match, ux);
   return `
-    <div class="dip-scoreboard">
-      ${_dashboardImpactScoreTeamHtml(match && match.home_team_code, 'home')}
-      <div class="dip-score-pill">${escapeHtml(_dashboardImpactScoreText(match, ux))}</div>
-      ${_dashboardImpactScoreTeamHtml(match && match.away_team_code, 'away')}
+    <div class="dip-scoreboard ${hasScore ? 'dip-scoreboard-scored' : 'dip-scoreboard-fixture'}">
+      ${_dashboardImpactScoreTeamHtml(match && match.home_team_code, 'home', _dashboardImpactTeamScoreText(match, 'home', ux))}
+      ${hasScore ? '' : '<div class="dip-score-pill">VS</div>'}
+      ${_dashboardImpactScoreTeamHtml(match && match.away_team_code, 'away', _dashboardImpactTeamScoreText(match, 'away', ux))}
     </div>
   `;
 }

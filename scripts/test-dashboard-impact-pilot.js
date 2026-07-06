@@ -48,6 +48,11 @@ assert(pilotBody.includes('_dashboardImpactVerifiedAdvancer'), 'pilot uses verif
 assert(pilotBody.includes('winner_code'), 'result points depend on verified winner_code');
 assert(pilotBody.includes('_dashboardImpactMatchStackHtml(activeMatch, lastResult, nextMatch, bracketPicks)'), 'live dashboard renders live/last/next stack');
 assert(pilotBody.includes('_dashboardImpactNextMatch(matches, Date.now(), activeMatch)'), 'next match is not hidden during live state');
+assert(pilotBody.includes("_dashboardImpactTeamScoreText(match, 'home', ux)"), 'home score is bound to the home team row');
+assert(pilotBody.includes("_dashboardImpactTeamScoreText(match, 'away', ux)"), 'away score is bound to the away team row');
+assert(pilotBody.includes('dip-team-score-badge'), 'scored matches render per-team score badges');
+assert(pilotBody.includes('<div class="dip-score-pill">VS</div>'), 'score pill is used only for scoreless fixture states');
+assert(!pilotBody.includes('`${match.home_score}-${match.away_score}`'), 'pilot must not render one shared bidi-sensitive score string');
 assert(pilotBody.includes('dip-match-block-compact'), 'last/next cards become compact when a live match is present');
 assert(pilotBody.includes('_dashboardImpactMatchMeta(match, ux)'), 'live card metadata receives UX state');
 assert(pilotBody.includes('_matchLiveClockLabel(match)'), 'live match metadata uses live clock when available');
@@ -62,7 +67,7 @@ assert(!pilotBody.includes('_fetchKnockoutScenarioManifest'), 'pilot does not de
 assert(!pilotBody.includes("t('dashboard.impact.ifAdvances')"), 'generic if-advances copy is not rendered in pilot');
 assert(!pilotBody.includes("dashboard.impact.pointsChecking"), 'pilot does not render checking-points copy');
 assert(!pilotBody.includes('dip-scenarios'), 'pilot no longer has one shared scenario container id');
-assert(!pilotBody.includes('dip-team-score'), 'score is not duplicated inside team rows');
+assert(!pilotBody.includes('dip-score-pill">${escapeHtml'), 'scored matches do not render a shared middle score pill');
 assert(!pilotBody.includes("getElementById('dip-match-title')"), 'pilot does not render a duplicate parent match title');
 assert(!pilotBody.includes("getElementById('dip-match-sub')"), 'pilot does not render duplicate parent match metadata');
 
@@ -84,6 +89,9 @@ assert(!index.includes('id="dip-match-sub"'), 'dashboard pilot has no duplicate 
 assert(styles.includes('.dashboard-impact-pilot-active #dashboard-drama-hero'), 'pilot hides old hero only inside active gate');
 assert(styles.includes('#user-dashboard-screen.dashboard-impact-pilot-active #pundit-card'), 'pilot reorders Pundit under match module');
 assert(styles.includes('.dip-scoreboard'), 'pilot has a single scoreboard row');
+assert(styles.includes('.dip-scoreboard-scored'), 'scored matches use a dedicated per-team score layout');
+assert(styles.includes('.dip-team-score-badge'), 'team scores are visually attached to their own rows');
+assert(styles.includes('direction: ltr;'), 'numeric score badges are isolated from RTL bidi reordering');
 assert(styles.includes('.dip-point-row'), 'pilot has simple point rows');
 assert(styles.includes('.dip-point-sentence'), 'pilot point rows are sentence-based');
 assert(styles.includes('.dip-points-value'), 'pilot emphasizes points inline');
