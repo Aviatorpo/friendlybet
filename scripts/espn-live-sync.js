@@ -85,7 +85,7 @@ function mapEspnStatus(eventStatus = {}) {
   if (name.includes('POSTPONED') || desc.includes('POSTPONED')) return 'POSTPONED';
   if (name.includes('CANCELED') || name.includes('CANCELLED') || desc.includes('CANCELED') || desc.includes('CANCELLED')) return 'CANCELLED';
   if (state === 'in' && looksLikeRunningClock(eventStatus)) return 'IN_PLAY';
-  if (name.includes('HALF') && (name.includes('TIME') || desc.includes('HALF'))) return 'PAUSED';
+  if (/\b(HT|HALF[-_\s]?TIME)\b/.test(`${name} ${desc}`)) return 'PAUSED';
   if (state === 'in' || name.includes('IN_PROGRESS') || name.includes('FIRST_HALF') || name.includes('SECOND_HALF')) return 'IN_PLAY';
   return 'TIMED';
 }

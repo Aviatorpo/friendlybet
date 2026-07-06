@@ -103,6 +103,46 @@ eq('ESPN PAUSED-looking row with second-half clock normalizes to live', {
   statusDetail: "51'"
 });
 
+const firstHalfWithDescription = {
+  ...liveEvent,
+  competitions: [{
+    ...liveEvent.competitions[0],
+    status: {
+      clock: 1740,
+      displayClock: "29'",
+      period: 1,
+      type: { name: 'STATUS_FIRST_HALF', state: 'in', completed: false, description: 'First Half', detail: "29'", shortDetail: "29'" }
+    }
+  }]
+};
+eq('ESPN first-half description stays live, not paused', {
+  status: E.transformEspnEvent(firstHalfWithDescription).status,
+  liveClock: E.transformEspnEvent(firstHalfWithDescription).liveClock
+}, {
+  status: 'IN_PLAY',
+  liveClock: "29'"
+});
+
+const halftimeBreakEvent = {
+  ...liveEvent,
+  competitions: [{
+    ...liveEvent.competitions[0],
+    status: {
+      clock: 2700,
+      displayClock: 'HT',
+      period: 1,
+      type: { name: 'STATUS_HALFTIME', state: 'in', completed: false, description: 'Halftime', detail: 'HT', shortDetail: 'HT' }
+    }
+  }]
+};
+eq('ESPN halftime break stays paused', {
+  status: E.transformEspnEvent(halftimeBreakEvent).status,
+  liveClock: E.transformEspnEvent(halftimeBreakEvent).liveClock
+}, {
+  status: 'PAUSED',
+  liveClock: 'HT'
+});
+
 const finalEvent = {
   ...liveEvent,
   competitions: [{
