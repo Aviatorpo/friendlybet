@@ -23,6 +23,16 @@ assert.match(app, /function _setRecoveryLoginBusy\(busy\)/, 'manual recovery log
 assert.match(app, /btn\.disabled = !!busy;/, 'manual recovery login must prevent double submits');
 assert.match(app, /btn\.setAttribute\('aria-busy', busy \? 'true' : 'false'\);/, 'manual recovery login must expose busy state accessibly');
 assert.match(app, /if \(state\.currentScreen === 'recovery-login-screen'\) _setRecoveryLoginBusy\(false\);/, 'manual recovery login must restore the button on handled failure');
+assert.match(app, /const FB_BOOT_SUPABASE_WAIT_MS = 12000;/, 'startup Supabase wait should have one shared timeout constant');
+assert.match(app, /const FB_BOOT_FORCE_HOME_MS = FB_BOOT_SUPABASE_WAIT_MS \+ 3000;/, 'startup force-home fallback must outlast Supabase wait');
+assert.match(app, /setTimeout\(\(\) => _fbForceHomeIfBlank\('init timeout'\), FB_BOOT_FORCE_HOME_MS\);/, 'startup fallback should use the safe timeout constant');
+assert.match(app, /const waitForSupabase = \(timeoutMs = FB_BOOT_SUPABASE_WAIT_MS\)/, 'initial route wait should use the shared Supabase timeout');
+
+const forceStart = app.indexOf('function _fbForceHomeIfBlank');
+const forceEnd = app.indexOf('// The startup fallback must outlast', forceStart);
+const forceBody = app.slice(forceStart, forceEnd);
+assert.ok(forceStart >= 0 && forceEnd > forceStart, 'startup fallback body is extractable');
+assert.ok(!forceBody.includes('clearLocalUser()'), 'startup visual fallback must not wipe recovery-login session state');
 
 assert.match(
   html,
