@@ -11,6 +11,7 @@ on:
       - 'index.html'
       - 'config.js'
       - 'service-worker.js'
+      - 'scripts/test-recovery-login-resilience.js'
       - 'scripts/calculate-scores-v2.js'
       - 'scripts/generate-knockout-scenarios.js'
       - 'scripts/knockout-scenario-readiness.js'
@@ -42,6 +43,8 @@ on:
       - 'scripts/test-fair-play-resolver.js'
       - 'public-data/fair-play-resolutions.json'
       - '.github/workflows/resolve-fair-play.yml'
+      - 'lib/tournament-context.js'
+      - 'scripts/test-tournament-context.js'
       - 'scripts/test-live-ux-state.js'
       - 'scripts/live-ux-visual-proof.js'
       - 'scripts/test-match-display-state.js'
@@ -99,6 +102,7 @@ on:
       - 'index.html'
       - 'config.js'
       - 'service-worker.js'
+      - 'scripts/test-recovery-login-resilience.js'
       - 'scripts/calculate-scores-v2.js'
       - 'scripts/generate-knockout-scenarios.js'
       - 'scripts/knockout-scenario-readiness.js'
@@ -130,6 +134,8 @@ on:
       - 'scripts/test-fair-play-resolver.js'
       - 'public-data/fair-play-resolutions.json'
       - '.github/workflows/resolve-fair-play.yml'
+      - 'lib/tournament-context.js'
+      - 'scripts/test-tournament-context.js'
       - 'scripts/test-live-ux-state.js'
       - 'scripts/live-ux-visual-proof.js'
       - 'scripts/test-match-display-state.js'
@@ -213,6 +219,8 @@ jobs:
         run: node scripts/test-sync-fifa-schedule-to-matches.js
       - name: Run sync transform tests
         run: node scripts/test-sync-transform.js
+      - name: Run recovery login resilience tests
+        run: node scripts/test-recovery-login-resilience.js
       - name: Run team-mapping tests
         run: node scripts/test-team-mapping.js
       - name: Run live-poller tests
@@ -240,6 +248,8 @@ jobs:
         run: node scripts/test-live-completion-readiness.js
       - name: Run live ops summary tests
         run: node scripts/test-live-ops-summary.js
+      - name: Run tournament context tests
+        run: node scripts/test-tournament-context.js
       - name: Run live UX state tests
         run: node scripts/test-live-ux-state.js
       - name: Run match display-state tests

@@ -6,6 +6,7 @@ const root = path.join(__dirname, '..');
 const app = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
 const styles = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 const i18n = fs.readFileSync(path.join(root, 'i18n.js'), 'utf8');
+const tournamentContext = fs.readFileSync(path.join(root, 'lib', 'tournament-context.js'), 'utf8');
 const workflow = fs.readFileSync(path.join(root, '.github', 'workflows', 'test-scoring.yml'), 'utf8');
 const visualProof = fs.readFileSync(path.join(root, 'scripts', 'live-ux-visual-proof.js'), 'utf8');
 
@@ -142,6 +143,23 @@ const dashboardStatusSandbox = {
   _knockoutCutoffLabel: () => '20:00',
   t: (key, vars = {}) => `${key}${Object.keys(vars).length ? ':' + JSON.stringify(vars) : ''}`,
   _matchUxState: (m) => ({ kind: (m && m.uxKind) || 'live_updating' }),
+  _currentTournamentContext: () => ({
+    exact: true,
+    round: 'R16',
+    roundLabelKey: 'tournamentContext.round.r16',
+    completedMatches: 2,
+    totalMatches: 8,
+    dashboard: {
+      kickerKey: 'dashboard.tournament.roundKicker',
+      badgeKey: 'dashboard.tournament.roundBadge',
+      titleKey: 'dashboard.tournament.roundTitle',
+      textKey: 'dashboard.tournament.roundText',
+      onePhaseTextKey: 'dashboard.tournament.roundOnePhaseText',
+    },
+    leaderboardStatusKey: 'leaderboard.statusTournamentRound',
+  }),
+  _tournamentContextTextKey: (ctx, onePhase) => onePhase ? ctx.dashboard.onePhaseTextKey : ctx.dashboard.textKey,
+  _tournamentContextParams: (ctx, extra = {}) => ({ round: 'Round of 16', completed: 2, total: 8, ...extra }),
 };
 vm.createContext(dashboardStatusSandbox);
 vm.runInContext(`${phaseSource}; ${pendingVerificationSource}; ${dashboardPendingKindSource}; ${extractFunction(app, '_renderDashboardLiveStatus')}; this.renderDashboardLiveStatus = _renderDashboardLiveStatus;`, dashboardStatusSandbox);
@@ -191,16 +209,16 @@ assert(statusEl.innerHTML.includes('dashboard.resultConfirming.badge'), 'Pending
 assert(statusEl.innerHTML.includes('dashboard.resultConfirming.note'), 'Pending final-result confirmation must explain that last official standings remain visible');
 
 statusEl = renderDashboardStatus({ finished: 72, total: 72, completeGroups: 12, totalGroups: 12 });
-assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.title'), 'All completed groups must use group-stage-complete dashboard copy');
-assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.badge'), 'Group-stage-complete status must show final group-points badge');
-assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.text'), 'Two-phase/default groups-complete status must use knockout-underway copy');
+assert(statusEl.innerHTML.includes('dashboard.tournament.roundTitle'), 'All completed groups must use tournament-context dashboard copy');
+assert(statusEl.innerHTML.includes('dashboard.tournament.roundBadge'), 'Tournament context status must show final group-points badge');
+assert(statusEl.innerHTML.includes('dashboard.tournament.roundText'), 'Two-phase/default groups-complete status must name the verified knockout round');
 assert(!statusEl.innerHTML.includes('dls-progress'), 'Group-stage-complete status must not keep the group-stage progress bar');
 assert(!statusEl.innerHTML.includes('dashboard.liveStatus.progress'), 'Group-stage-complete status must not keep group match progress metrics');
 assert(!statusEl.innerHTML.includes('dashboard.liveStatus.groups'), 'Group-stage-complete status must not keep completed-group metrics');
 
 statusEl = renderDashboardStatus({ finished: 72, total: 72, completeGroups: 12, totalGroups: 12 }, true, false, 'single_phase');
-assert(statusEl.innerHTML.includes('dashboard.groupStageComplete.onePhaseText'), 'One-phase groups-complete status must not say knockout picks are open');
-assert(!statusEl.innerHTML.includes('dashboard.groupStageComplete.text:'), 'One-phase groups-complete status must use mode-specific locked-bracket copy');
+assert(statusEl.innerHTML.includes('dashboard.tournament.roundOnePhaseText'), 'One-phase groups-complete status must not say knockout picks are open');
+assert(!statusEl.innerHTML.includes('dashboard.tournament.roundText:'), 'One-phase groups-complete status must use mode-specific locked-bracket copy');
 assert(!statusEl.innerHTML.includes('dashboard.officialStatus.thirdPlacePending'), 'Group-stage-complete status must stop showing third-place pending copy');
 
 statusEl = renderDashboardStatus({ finished: 72, total: 72, completeGroups: 12, totalGroups: 12 }, true, false, 'late_knockout');
@@ -217,7 +235,8 @@ assert(/const officialStarted\s*=\s*_phaseHasOfficialScoring\(phase\)/.test(lead
 assert(/_groupStagePhase\(tournamentStarted,\s*hasScores,\s*progress\)/.test(leaderboard), 'Leaderboard must use the shared group-stage phase model');
 assert(/leaderboard\.statusLiveNoOfficial/.test(leaderboard), 'Leaderboard must have a live-but-no-official status');
 assert(/leaderboard\.statusOfficialStarted/.test(leaderboard), 'Leaderboard must have an official scoring status');
-assert(/leaderboard\.statusGroupsComplete/.test(leaderboard), 'Leaderboard must have a groups-complete status');
+assert(/leaderboardStatusKey/.test(leaderboard) && /leaderboard\.statusTournamentRound/.test(tournamentContext), 'Leaderboard must use resolver-owned exact tournament-round status');
+assert(/leaderboard\.statusTournamentGeneric/.test(leaderboard), 'Leaderboard must have a conservative tournament fallback status');
 assert(/leaderboard\.statusDataPending/.test(leaderboard), 'Leaderboard must have a pending official-data status');
 assert(/lb-third-place-note/.test(leaderboard) && /leaderboard\.thirdPlacePending/.test(leaderboard), 'Leaderboard must show pending third-place explanation during official partial-group scoring');
 assert(
@@ -325,13 +344,13 @@ renderSandbox.renderFullLeaderboard([
 ], { hasScores: false, dataPending: true });
 assert(renderRows[0].innerHTML.includes('leaderboard.calculatingShort'), 'Pending leaderboard rows without any official scores must avoid fake point totals');
 assert(renderRows[0].innerHTML.includes('leaderboard.calculatingBreakdown'), 'Pending leaderboard rows without official scores must explain that data is finalizing');
-assert(/renderLeaderboardBanter\(users,\s*\{\s*phase,\s*dataPending\s*\}\)/.test(app), 'Leaderboard banter must receive the current tournament phase and pending-data state');
+assert(/renderLeaderboardBanter\(users,\s*\{\s*phase,\s*dataPending,\s*tournamentContext:\s*tournamentCtx\s*\}\)/.test(app), 'Leaderboard banter must receive the current tournament context and pending-data state');
 assert(/options\s*&&\s*options\.dataPending/.test(app), 'Leaderboard banter must stay hidden while official data is pending');
-assert(/function _groupsCompleteLeaderboardBanter\(users\)/.test(app), 'Leaderboard must have a groups-complete Pundit fallback');
+assert(/function _groupsCompleteLeaderboardBanter\(users,\s*tournamentCtx\)/.test(app), 'Leaderboard must have a tournament-context Pundit fallback');
 assert(/options\s*&&\s*options\.phase\s*===\s*'groupsComplete'/.test(app), 'Leaderboard Pundit fallback must activate only for groups-complete phase');
 assert(/function _punditItemAllowedForPoolMode\(item,\s*poolMode\)/.test(app), 'Pundit feed must have a pool-mode filter');
 assert(/globalItems\s*=\s*globalItems\.filter\(item\s*=>\s*_punditItemAllowedForPoolMode\(item,\s*poolMode\)\)/.test(app), 'Global Pundit items must be filtered by pool betting mode before rotation');
-assert(/mode_scopes/.test(app) && /poolMode === 'one_phase'/.test(app), 'One-phase pools must not render mode-specific knockout-open Pundit cards');
+assert(/mode_scopes/.test(app) && /poolMode === 'single_phase'/.test(app), 'Single-phase pools must not render mode-specific knockout-open Pundit cards');
 
 const podiumNameCss = /\.podium-name\s*\{[\s\S]*?white-space:\s*nowrap;[\s\S]*?overflow:\s*hidden;[\s\S]*?text-overflow:\s*ellipsis;[\s\S]*?\}/.test(styles);
 assert(podiumNameCss, 'Podium names must keep nowrap/hidden/ellipsis protection');
@@ -351,11 +370,29 @@ assert(/\.admin-badge\s*\{[\s\S]*?flex-shrink:\s*0;[\s\S]*?\}/.test(styles), 'Ad
   'dashboard.liveUpdating.note',
   'dashboard.resultConfirming.text',
   'dashboard.resultConfirming.note',
-  'dashboard.groupStageComplete.text',
+  'dashboard.tournament.roundText',
+  'dashboard.tournament.roundOnePhaseText',
+  'dashboard.tournament.upcomingText',
+  'dashboard.tournament.confirmingText',
+  'dashboard.tournament.genericText',
+  'dashboard.drama.tournamentRound.text',
+  'dashboard.drama.tournamentGeneric.text',
+  'tournamentContext.round.r16',
+  'tournamentContext.round.qf',
+  'tournamentContext.round.sf',
+  'tournamentContext.round.thirdPlace',
+  'tournamentContext.round.final',
   'leaderboard.statusLiveNoOfficial',
   'leaderboard.statusOfficialStarted',
-  'leaderboard.statusGroupsComplete',
+  'leaderboard.statusTournamentRound',
+  'leaderboard.statusTournamentUpcoming',
+  'leaderboard.statusTournamentConfirming',
+  'leaderboard.statusTournamentGeneric',
   'leaderboard.statusDataPending',
+  'leaderboard.banter.tournamentHeadline',
+  'leaderboard.banter.tournamentGeneric',
+  'pundit.tournament.round',
+  'pundit.tournament.generic',
   'leaderboard.emptyLiveNoOfficialText',
   'leaderboard.emptyOfficialZeroText',
   'leaderboard.emptyDataPendingText',
@@ -368,8 +405,10 @@ assert(/\.admin-badge\s*\{[\s\S]*?flex-shrink:\s*0;[\s\S]*?\}/.test(styles), 'Ad
   assert(hits >= 2, `${key} must exist in both Hebrew and English`);
 });
 assert(!/first knockout match starts|תחילת משחק הנוקאאוט הראשון/.test(i18n), 'Knockout-started copy must not say picks are open until the first knockout match');
-assert(/Knockouts underway/.test(i18n) && /הנוקאאוט כבר התחיל/.test(i18n), 'Group-complete copy must say the knockout stage is already underway');
+assert(!/Knockouts underway|knockouts underway|הנוקאאוט כבר התחיל|הנוקאאוט כבר רץ/.test(i18n), 'Tournament copy must not preserve stale generic "knockouts already started" wording');
 
+assert(workflow.includes("scripts/test-tournament-context.js"), 'CI workflow must watch tournament context tests');
+assert(/run:\s*node scripts\/test-tournament-context\.js/.test(workflow), 'CI workflow must run tournament context tests');
 assert(workflow.includes("scripts/test-live-ux-state.js"), 'CI workflow must watch and run live UX state tests');
 assert(/run:\s*node scripts\/test-live-ux-state\.js/.test(workflow), 'CI workflow must run live UX state tests');
 [
