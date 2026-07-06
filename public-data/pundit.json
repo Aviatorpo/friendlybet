@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-07-06T15:54:00.579Z",
-  "freshUntil": "2026-07-06T21:54:00.579Z",
+  "updatedAt": "2026-07-06T20:02:30.534Z",
+  "freshUntil": "2026-07-07T02:02:30.534Z",
   "count": 6,
   "items": [
+    {
+      "id": "live-e2a51510-0a1f-40f3-9990-632608b6f116",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "פורטוגל נגד ספרד עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
+      "en": "Portugal vs Spain is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "sources": [],
+      "expires_at": "2026-07-06T23:02:30.534Z"
+    },
     {
       "id": "result-2bbe0177-81d6-4268-9434-6790cec04007",
       "type": "result",
@@ -22,20 +31,11 @@
       "expires_at": "2026-07-07T08:00:00.000Z"
     },
     {
-      "id": "fixture-e2a51510-0a1f-40f3-9990-632608b6f116",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "משחק ענק בשמינית הגמר: פורטוגל נגד ספרד, היום 22:00. צד אחד ממשיך, צד אחד הולך הביתה ⏰",
-      "en": "Huge Round of 16: Portugal vs Spain, today 22:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
-      "sources": [],
-      "expires_at": "2026-07-06T18:45:00.000Z"
-    },
-    {
       "id": "fixture-084756cf-d007-4858-8fc4-d6ca8b66b686",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "ארה\"ב נגד בלגיה, מחר 03:00. בלגיה פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
-      "en": "United States vs Belgium, tomorrow 03:00. Belgium are the favorite, but in knockout football favorites still have to survive ⏰",
+      "he": "שמינית הגמר: ארה\"ב נגד בלגיה, מחר 03:00. מי שבנה על בלגיה רוצה שקט; מי שסימן את ארה\"ב מחפש רעידת בראקט ⏰",
+      "en": "Round of 16: United States vs Belgium, tomorrow 03:00. Belgium picks want calm; United States picks are hunting bracket shock ⏰",
       "sources": [],
       "expires_at": "2026-07-06T23:45:00.000Z"
     },
@@ -43,8 +43,8 @@
       "id": "fixture-90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "ארגנטינה נגד מצרים, מחר 19:00. ארגנטינה פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
-      "en": "Argentina vs Egypt, tomorrow 19:00. Argentina are the favorite, but in knockout football favorites still have to survive ⏰",
+      "he": "שמינית הגמר: ארגנטינה נגד מצרים, מחר 19:00. מי שבנה על ארגנטינה רוצה שקט; מי שסימן את מצרים מחפש רעידת בראקט ⏰",
+      "en": "Round of 16: Argentina vs Egypt, tomorrow 19:00. Argentina picks want calm; Egypt picks are hunting bracket shock ⏰",
       "sources": [],
       "expires_at": "2026-07-07T15:45:00.000Z"
     },
@@ -52,8 +52,8 @@
       "id": "fixture-d0cb75c4-0479-42f4-b473-0eb5b4b51f54",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "שווייץ נגד קולומביה, מחר 23:00. קולומביה פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
-      "en": "Switzerland vs Colombia, tomorrow 23:00. Colombia are the favorite, but in knockout football favorites still have to survive ⏰",
+      "he": "שווייץ נגד קולומביה, מחר 23:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
+      "en": "Switzerland vs Colombia, tomorrow 23:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-07T19:45:00.000Z"
     }
