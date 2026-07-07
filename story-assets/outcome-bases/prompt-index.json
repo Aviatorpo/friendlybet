@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-06T20:15:48.238Z",
+  "updated_at": "2026-07-07T04:18:32.902Z",
   "source": "snapshot",
   "matches": 12,
   "prompts": [
@@ -50,30 +50,6 @@
       "outcome": "DRAW",
       "image": "story-assets/outcome-bases/cpv-ksa-draw-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Cape Verde vs KSA at FIFA World Cup 2026.\nPrepared outcome: Cape Verde and KSA draw.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "e2a51510-0a1f-40f3-9990-632608b6f116",
-      "match_key": "POR-ESP",
-      "match_date": "2026-07-06T19:00:00+00:00",
-      "outcome": "POR",
-      "image": "story-assets/outcome-bases/por-esp-por-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Portugal vs Spain at FIFA World Cup 2026.\nPrepared outcome: Portugal advances over Spain.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "e2a51510-0a1f-40f3-9990-632608b6f116",
-      "match_key": "POR-ESP",
-      "match_date": "2026-07-06T19:00:00+00:00",
-      "outcome": "ESP",
-      "image": "story-assets/outcome-bases/por-esp-esp-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Portugal vs Spain at FIFA World Cup 2026.\nPrepared outcome: Spain advances over Portugal.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "084756cf-d007-4858-8fc4-d6ca8b66b686",
-      "match_key": "USA-BEL",
-      "match_date": "2026-07-07T00:00:00+00:00",
-      "outcome": "USA",
-      "image": "story-assets/outcome-bases/usa-bel-usa-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: USA vs Belgium at FIFA World Cup 2026.\nPrepared outcome: USA advances over Belgium.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
       "match_id": "084756cf-d007-4858-8fc4-d6ca8b66b686",
@@ -130,6 +106,22 @@
       "outcome": "MAR",
       "image": "story-assets/outcome-bases/fra-mar-mar-wins-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: France vs Morocco at FIFA World Cup 2026.\nPrepared outcome: Morocco advances over France.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
+    },
+    {
+      "match_id": "28d7a286-32b3-4203-b8a5-793ae663b5ed",
+      "match_key": "ESP-BEL",
+      "match_date": "2026-07-10T19:00:00+00:00",
+      "outcome": "ESP",
+      "image": "story-assets/outcome-bases/esp-bel-esp-wins-base.png",
+      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Spain vs Belgium at FIFA World Cup 2026.\nPrepared outcome: Spain advances over Belgium.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
+    },
+    {
+      "match_id": "28d7a286-32b3-4203-b8a5-793ae663b5ed",
+      "match_key": "ESP-BEL",
+      "match_date": "2026-07-10T19:00:00+00:00",
+      "outcome": "BEL",
+      "image": "story-assets/outcome-bases/esp-bel-bel-wins-base.png",
+      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Spain vs Belgium at FIFA World Cup 2026.\nPrepared outcome: Belgium advances over Spain.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
       "match_id": "b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
