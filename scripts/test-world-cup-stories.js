@@ -7,6 +7,7 @@ const root = path.resolve(__dirname, '..');
 const stories = JSON.parse(fs.readFileSync(path.join(root, 'public-data', 'world-cup-stories.json'), 'utf8')).items || [];
 const matches = JSON.parse(fs.readFileSync(path.join(root, 'public-data', 'matches.json'), 'utf8')).matches || [];
 const appJs = fs.readFileSync(path.join(root, 'app.js'), 'utf8');
+const indexHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const stylesCss = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 const generatorJs = fs.readFileSync(path.join(root, 'scripts', 'generate-world-cup-stories.js'), 'utf8');
 const { TEAM_NAMES, buildMatchIndex, matchForStory } = require('./generate-world-cup-stories');
@@ -392,6 +393,16 @@ const visualChecks = [
   [appJs.includes("query.in('bracket_position', positions)"), 'single-phase knockout story focus must be restricted to the scoring-eligible bracket stage'],
   [appJs.includes("query.eq('match_id', exactMatchId).is('bracket_position', null)"), 'two-phase knockout story focus must use an exact match id rather than broad team matching'],
   [appJs.includes('assetRev') && appJs.includes('story-assets/') && appJs.includes('v=${rev}'), 'client story image URLs must include a feed revision cache buster'],
+  [appJs.includes('function _wcHandleStoriesWheel') && appJs.includes("rail.addEventListener('wheel', _wcHandleStoriesWheel, { passive: false })"), 'desktop story carousel must support horizontal scrolling with the mouse wheel'],
+  [appJs.includes('function _wcHandleStoriesPointerDown') && appJs.includes("rail.addEventListener('pointermove', _wcHandleStoriesPointerMove)"), 'desktop story carousel must support mouse drag scrolling'],
+  [appJs.includes('draggable="false"') && stylesCss.includes('-webkit-user-drag: none'), 'story carousel images must not swallow desktop drag gestures'],
+  [appJs.includes('function _wcHandleStoriesKeydown') && appJs.includes("rail.addEventListener('keydown', _wcHandleStoriesKeydown)"), 'desktop story carousel must support keyboard arrow navigation'],
+  [appJs.includes('_wcScrollStoryCardIntoView(rail, cards[nextIdx])') && !appJs.includes("cards[nextIdx].scrollIntoView"), 'story carousel next/previous navigation must use rail-centered scrolling, not element scrollIntoView'],
+  [appJs.includes('function _wcStoriesLogicalScroll') && appJs.includes('function _wcSetStoriesLogicalScroll'), 'story carousel scrolling must normalize RTL/LTR scroll positions without changing the visual structure'],
+  [indexHtml.includes('<div class="wc-stories-rail" id="world-cup-stories-rail"></div>') && !indexHtml.includes('world-cup-stories-side-'), 'dashboard story carousel must preserve the original direct rail structure without side navigation'],
+  [stylesCss.includes('.wc-stories-nav') && !stylesCss.includes('.wc-stories-side-nav') && !stylesCss.includes('.wc-stories-stage'), 'CSS must keep the existing header navigation format rather than adding side controls'],
+  [stylesCss.includes('.wc-stories-nav .ti-chevron-left::before') && stylesCss.includes('transform: rotate(45deg)'), 'story carousel header buttons must keep visible chevron icons even when external icon fonts are unavailable'],
+  [stylesCss.includes('scrollbar-width: none') && stylesCss.includes('.wc-stories-rail::-webkit-scrollbar { display: none; }'), 'story carousel must preserve the previous hidden-scrollbar visual format while adding better desktop input handling'],
 ];
 visualChecks.forEach(([ok, message]) => { if (!ok) fail(message); });
 
