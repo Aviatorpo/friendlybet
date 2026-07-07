@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-07T06:59:32.716Z",
-  "freshUntil": "2026-07-07T12:59:32.716Z",
-  "count": 6,
+  "updatedAt": "2026-07-07T09:58:19.845Z",
+  "freshUntil": "2026-07-07T15:58:19.845Z",
+  "count": 5,
   "items": [
     {
       "id": "result-084756cf-d007-4858-8fc4-d6ca8b66b686",
@@ -29,15 +29,6 @@
       "en": "3-2 for England over Mexico. Any bracket path that kept England alive can open the receipts 🧾",
       "sources": [],
       "expires_at": "2026-07-07T13:00:00.000Z"
-    },
-    {
-      "id": "result-d766b98c-7eea-4f41-9227-3c1a0f6826b4",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "נורווגיה עברה את ברזיל 2:1. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על ברזיל צריך מסלול חדש 🧾",
-      "en": "Norway got past Brazil 2-1. Bracket paths that kept Norway alive get a receipt; Brazil routes need a new plan 🧾",
-      "sources": [],
-      "expires_at": "2026-07-07T08:00:00.000Z"
     },
     {
       "id": "fixture-90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
