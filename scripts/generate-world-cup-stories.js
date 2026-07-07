@@ -168,12 +168,12 @@ const STORY_COPY_OVERRIDES = {
       {
         "table": "knockout_picks",
         "team_code": "ARG",
-        "he_name": "{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקט; הקאמבק המאוחר הציל אותו 🔥",
-        "he_names": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקטים; הקאמבק המאוחר הציל אותם 🔥",
-        "he_count": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקטים; הקאמבק המאוחר הציל אותם 🔥",
-        "en_name": "{names} picked {team} to win this knockout match. It was the expected pick, but 2-0 Egypt in the 67th made the bracket sweat; the late comeback saved it 🔥",
-        "en_names": "{names} picked {team} to win this knockout match. It was the expected pick, but 2-0 Egypt in the 67th made those brackets sweat; the late comeback saved them 🔥",
-        "en_count": "{names} picked {team} to win this knockout match. It was the expected pick, but 2-0 Egypt in the 67th made those brackets sweat; the late comeback saved them 🔥"
+        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקט; הקאמבק המאוחר הציל אותו 🔥",
+        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקטים; הקאמבק המאוחר הציל אותם 🔥",
+        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקטים; הקאמבק המאוחר הציל אותם 🔥",
+        "en_name": "{names} picked {team} to advance in the knockout bracket. It was the expected pick, but 2-0 Egypt in the 67th made the bracket sweat; the late comeback saved it 🔥",
+        "en_names": "{names} picked {team} to advance in the knockout bracket. It was the expected pick, but 2-0 Egypt in the 67th made those brackets sweat; the late comeback saved them 🔥",
+        "en_count": "{names} picked {team} to advance in the knockout bracket. It was the expected pick, but 2-0 Egypt in the 67th made those brackets sweat; the late comeback saved them 🔥"
       },
       {
         "table": "tournament_winner_picks",
@@ -188,12 +188,12 @@ const STORY_COPY_OVERRIDES = {
       {
         "table": "knockout_picks",
         "team_code": "EGY",
-        "he_name": "{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
-        "he_names": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
-        "he_count": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
-        "en_name": "{names} picked {team} to win this knockout match. Until the 67th it was very alive; Argentina's late comeback turned it into a painful almost 🔥",
-        "en_names": "{names} picked {team} to win this knockout match. Until the 67th it was very alive; Argentina's late comeback turned those picks into a painful almost 🔥",
-        "en_count": "{names} picked {team} to win this knockout match. Until the 67th it was very alive; Argentina's late comeback turned those picks into a painful almost 🔥"
+        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
+        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
+        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
+        "en_name": "{names} picked {team} to advance in the knockout bracket. Until the 67th it was very alive; Argentina's late comeback turned it into a painful almost 🔥",
+        "en_names": "{names} picked {team} to advance in the knockout bracket. Until the 67th it was very alive; Argentina's late comeback turned those picks into a painful almost 🔥",
+        "en_count": "{names} picked {team} to advance in the knockout bracket. Until the 67th it was very alive; Argentina's late comeback turned those picks into a painful almost 🔥"
       }
     ]
   },

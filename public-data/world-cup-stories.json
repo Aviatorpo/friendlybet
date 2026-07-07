@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-07T19:28:27.832Z",
+  "updated_at": "2026-07-07T19:39:49.199Z",
   "items": [
     {
       "id": "arg-egy-2026-07-07",
@@ -43,12 +43,12 @@
           "team_he": "ארגנטינה",
           "team_en": "Argentina",
           "match_id": "90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
-          "he_name": "{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקט; הקאמבק המאוחר הציל אותו 🔥",
-          "he_names": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקטים; הקאמבק המאוחר הציל אותם 🔥",
-          "he_count": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקטים; הקאמבק המאוחר הציל אותם 🔥",
-          "en_name": "{names} picked {team} to win this knockout match. It was the expected pick, but 2-0 Egypt in the 67th made the bracket sweat; the late comeback saved it 🔥",
-          "en_names": "{names} picked {team} to win this knockout match. It was the expected pick, but 2-0 Egypt in the 67th made those brackets sweat; the late comeback saved them 🔥",
-          "en_count": "{names} picked {team} to win this knockout match. It was the expected pick, but 2-0 Egypt in the 67th made those brackets sweat; the late comeback saved them 🔥"
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקט; הקאמבק המאוחר הציל אותו 🔥",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקטים; הקאמבק המאוחר הציל אותם 🔥",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקטים; הקאמבק המאוחר הציל אותם 🔥",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. It was the expected pick, but 2-0 Egypt in the 67th made the bracket sweat; the late comeback saved it 🔥",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. It was the expected pick, but 2-0 Egypt in the 67th made those brackets sweat; the late comeback saved them 🔥",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. It was the expected pick, but 2-0 Egypt in the 67th made those brackets sweat; the late comeback saved them 🔥"
         },
         {
           "table": "tournament_winner_picks",
@@ -68,12 +68,12 @@
           "team_he": "מצרים",
           "team_en": "Egypt",
           "match_id": "90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
-          "he_name": "{names} בחר את {team} לנצח את משחק הנוקאאוט הזה. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
-          "he_names": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
-          "he_count": "{names} בחרו את {team} לנצח את משחק הנוקאאוט הזה. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
-          "en_name": "{names} picked {team} to win this knockout match. Until the 67th it was very alive; Argentina's late comeback turned it into a painful almost 🔥",
-          "en_names": "{names} picked {team} to win this knockout match. Until the 67th it was very alive; Argentina's late comeback turned those picks into a painful almost 🔥",
-          "en_count": "{names} picked {team} to win this knockout match. Until the 67th it was very alive; Argentina's late comeback turned those picks into a painful almost 🔥"
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. Until the 67th it was very alive; Argentina's late comeback turned it into a painful almost 🔥",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. Until the 67th it was very alive; Argentina's late comeback turned those picks into a painful almost 🔥",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. Until the 67th it was very alive; Argentina's late comeback turned those picks into a painful almost 🔥"
         }
       ],
       "he": {
