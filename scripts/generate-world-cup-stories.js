@@ -145,6 +145,58 @@ const DRAW_FOCUS = {
 };
 
 const STORY_COPY_OVERRIDES = {
+  'ARG-EGY': {
+    "title": {
+      "he": "ארגנטינה ניצחה את מצרים 3-2: מי שסימן אותה לזכייה נושם",
+      "en": "Argentina beat Egypt 3-2: title picks can breathe"
+    },
+    "caption": {
+      "he": "2-0 למצרים בדקה 67, ואז שלושה שערים מאוחרים של ארגנטינה. מי שסימן אותה כזוכת המונדיאל כבר ראה את הטופס נופל, ועכשיו נושם לרווחה 🔥",
+      "en": "Egypt led 2-0 in the 67th, then Argentina hit three late goals. Anyone who picked them to win the World Cup saw the form falling, and can breathe again 🔥"
+    },
+    "pool_focuses": [
+      {
+        "table": "tournament_winner_picks",
+        "team_code": "ARG",
+        "he_name": "{names} סימן את {team} כזוכת המונדיאל. ב-2-0 למצרים זה כבר נראה כמו טופס שנופל; אחרי הקאמבק המאוחר, אפשר לנשום לרווחה 🔥",
+        "he_names": "{names} סימנו את {team} כזוכת המונדיאל. ב-2-0 למצרים זה כבר נראה כמו טפסים שנופלים; אחרי הקאמבק המאוחר, אפשר לנשום לרווחה 🔥",
+        "he_count": "{names} סימנו את {team} כזוכת המונדיאל. ב-2-0 למצרים זה כבר נראה כמו טפסים שנופלים; אחרי הקאמבק המאוחר, אפשר לנשום לרווחה 🔥",
+        "en_name": "{names} picked {team} to win the World Cup. At 2-0 Egypt, that form looked like it was falling; after the late comeback, breathe again 🔥",
+        "en_names": "{names} picked {team} to win the World Cup. At 2-0 Egypt, those forms looked like they were falling; after the late comeback, breathe again 🔥",
+        "en_count": "{names} picked {team} to win the World Cup. At 2-0 Egypt, those forms looked like they were falling; after the late comeback, breathe again 🔥"
+      },
+      {
+        "table": "knockout_picks",
+        "team_code": "ARG",
+        "he_name": "{names} סימן את {team} להתקדם. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקט; הקאמבק המאוחר הציל אותו 🔥",
+        "he_names": "{names} סימנו את {team} להתקדם. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקטים; הקאמבק המאוחר הציל אותם 🔥",
+        "he_count": "{names} סימנו את {team} להתקדם. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקטים; הקאמבק המאוחר הציל אותם 🔥",
+        "en_name": "{names} had {team} to advance. It was the expected pick, but 2-0 Egypt in the 67th made the bracket sweat; the late comeback saved it 🔥",
+        "en_names": "{names} had {team} to advance. It was the expected pick, but 2-0 Egypt in the 67th made those brackets sweat; the late comeback saved them 🔥",
+        "en_count": "{names} had {team} to advance. It was the expected pick, but 2-0 Egypt in the 67th made those brackets sweat; the late comeback saved them 🔥"
+      },
+      {
+        "table": "tournament_winner_picks",
+        "team_code": "EGY",
+        "he_name": "{names} סימן את {team} כזוכת המונדיאל. בדקה 67 זה היה נראה כמו סיפור ענק; שלושה שערים מאוחרים של ארגנטינה סגרו את הטופס 🔥",
+        "he_names": "{names} סימנו את {team} כזוכת המונדיאל. בדקה 67 זה היה נראה כמו סיפור ענק; שלושה שערים מאוחרים של ארגנטינה סגרו את הטפסים 🔥",
+        "he_count": "{names} סימנו את {team} כזוכת המונדיאל. בדקה 67 זה היה נראה כמו סיפור ענק; שלושה שערים מאוחרים של ארגנטינה סגרו את הטפסים 🔥",
+        "en_name": "{names} picked {team} to win the World Cup. In the 67th it looked like a huge story; three late Argentina goals closed the form 🔥",
+        "en_names": "{names} picked {team} to win the World Cup. In the 67th it looked like a huge story; three late Argentina goals closed those forms 🔥",
+        "en_count": "{names} picked {team} to win the World Cup. In the 67th it looked like a huge story; three late Argentina goals closed those forms 🔥"
+      },
+      {
+        "table": "knockout_picks",
+        "team_code": "EGY",
+        "he_name": "{names} סימן את {team} להתקדם. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
+        "he_names": "{names} סימנו את {team} להתקדם. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
+        "he_count": "{names} סימנו את {team} להתקדם. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
+        "en_name": "{names} had {team} to advance. Until the 67th it was very alive; Argentina’s late comeback turned it into a painful almost 🔥",
+        "en_names": "{names} had {team} to advance. Until the 67th it was very alive; Argentina’s late comeback turned those picks into a painful almost 🔥",
+        "en_count": "{names} had {team} to advance. Until the 67th it was very alive; Argentina’s late comeback turned those picks into a painful almost 🔥"
+      }
+    ]
+  },
   'BRA-NOR': {
     title: {
       he: 'נורווגיה ניצחה את ברזיל 2-1: לרבע הגמר',

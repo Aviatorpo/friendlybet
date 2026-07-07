@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-07T19:00:12.213Z",
+  "updated_at": "2026-07-07T19:14:26.883Z",
   "items": [
     {
       "id": "arg-egy-2026-07-07",
@@ -13,43 +13,54 @@
       "result": "ARG 3-2 EGY",
       "top_label": "ARGENTINA QUALIFIES!",
       "pool_focus": {
-        "table": "knockout_picks",
+        "table": "tournament_winner_picks",
         "team_code": "ARG",
         "team_he": "ארגנטינה",
         "team_en": "Argentina",
-        "match_id": "90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
-        "he_name": "כולם לעמוד ולמחוא כפיים ל-{names}: {team} להתקדם, 3-2 על הקצה, וקבלה יפה מאוד לבראקט 🔥",
-        "he_names": "כולם לעמוד ולמחוא כפיים ל-{names}: {team} להתקדם, 3-2 על הקצה, וקבלה יפה מאוד לבראקט 🔥",
-        "he_count": "כולם לעמוד ולמחוא כפיים ל-{names}: {team} להתקדם, 3-2 על הקצה, וקבלה יפה מאוד לבראקט 🔥",
-        "en_name": "Everyone stand up for {names}: {team} to advance, a 3-2 stress test, and a very clean bracket receipt 🔥",
-        "en_names": "Everyone stand up for {names}: {team} to advance, a 3-2 stress test, and a very clean bracket receipt 🔥",
-        "en_count": "Everyone stand up for {names}: {team} to advance, a 3-2 stress test, and a very clean bracket receipt 🔥"
+        "he_name": "{names} סימן את {team} כזוכת המונדיאל. ב-2-0 למצרים זה כבר נראה כמו טופס שנופל; אחרי הקאמבק המאוחר, אפשר לנשום לרווחה 🔥",
+        "he_names": "{names} סימנו את {team} כזוכת המונדיאל. ב-2-0 למצרים זה כבר נראה כמו טפסים שנופלים; אחרי הקאמבק המאוחר, אפשר לנשום לרווחה 🔥",
+        "he_count": "{names} סימנו את {team} כזוכת המונדיאל. ב-2-0 למצרים זה כבר נראה כמו טפסים שנופלים; אחרי הקאמבק המאוחר, אפשר לנשום לרווחה 🔥",
+        "en_name": "{names} picked {team} to win the World Cup. At 2-0 Egypt, that form looked like it was falling; after the late comeback, breathe again 🔥",
+        "en_names": "{names} picked {team} to win the World Cup. At 2-0 Egypt, those forms looked like they were falling; after the late comeback, breathe again 🔥",
+        "en_count": "{names} picked {team} to win the World Cup. At 2-0 Egypt, those forms looked like they were falling; after the late comeback, breathe again 🔥"
       },
       "pool_focuses": [
         {
+          "table": "tournament_winner_picks",
+          "team_code": "ARG",
+          "team_he": "ארגנטינה",
+          "team_en": "Argentina",
+          "he_name": "{names} סימן את {team} כזוכת המונדיאל. ב-2-0 למצרים זה כבר נראה כמו טופס שנופל; אחרי הקאמבק המאוחר, אפשר לנשום לרווחה 🔥",
+          "he_names": "{names} סימנו את {team} כזוכת המונדיאל. ב-2-0 למצרים זה כבר נראה כמו טפסים שנופלים; אחרי הקאמבק המאוחר, אפשר לנשום לרווחה 🔥",
+          "he_count": "{names} סימנו את {team} כזוכת המונדיאל. ב-2-0 למצרים זה כבר נראה כמו טפסים שנופלים; אחרי הקאמבק המאוחר, אפשר לנשום לרווחה 🔥",
+          "en_name": "{names} picked {team} to win the World Cup. At 2-0 Egypt, that form looked like it was falling; after the late comeback, breathe again 🔥",
+          "en_names": "{names} picked {team} to win the World Cup. At 2-0 Egypt, those forms looked like they were falling; after the late comeback, breathe again 🔥",
+          "en_count": "{names} picked {team} to win the World Cup. At 2-0 Egypt, those forms looked like they were falling; after the late comeback, breathe again 🔥"
+        },
+        {
           "table": "knockout_picks",
           "team_code": "ARG",
           "team_he": "ארגנטינה",
           "team_en": "Argentina",
           "match_id": "90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
-          "he_name": "כולם לעמוד ולמחוא כפיים ל-{names}: {team} להתקדם, 3-2 על הקצה, וקבלה יפה מאוד לבראקט 🔥",
-          "he_names": "כולם לעמוד ולמחוא כפיים ל-{names}: {team} להתקדם, 3-2 על הקצה, וקבלה יפה מאוד לבראקט 🔥",
-          "he_count": "כולם לעמוד ולמחוא כפיים ל-{names}: {team} להתקדם, 3-2 על הקצה, וקבלה יפה מאוד לבראקט 🔥",
-          "en_name": "Everyone stand up for {names}: {team} to advance, a 3-2 stress test, and a very clean bracket receipt 🔥",
-          "en_names": "Everyone stand up for {names}: {team} to advance, a 3-2 stress test, and a very clean bracket receipt 🔥",
-          "en_count": "Everyone stand up for {names}: {team} to advance, a 3-2 stress test, and a very clean bracket receipt 🔥"
+          "he_name": "{names} סימן את {team} להתקדם. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקט; הקאמבק המאוחר הציל אותו 🔥",
+          "he_names": "{names} סימנו את {team} להתקדם. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקטים; הקאמבק המאוחר הציל אותם 🔥",
+          "he_count": "{names} סימנו את {team} להתקדם. זו הייתה הבחירה המתבקשת, אבל 2-0 למצרים בדקה 67 הזיע את הבראקטים; הקאמבק המאוחר הציל אותם 🔥",
+          "en_name": "{names} had {team} to advance. It was the expected pick, but 2-0 Egypt in the 67th made the bracket sweat; the late comeback saved it 🔥",
+          "en_names": "{names} had {team} to advance. It was the expected pick, but 2-0 Egypt in the 67th made those brackets sweat; the late comeback saved them 🔥",
+          "en_count": "{names} had {team} to advance. It was the expected pick, but 2-0 Egypt in the 67th made those brackets sweat; the late comeback saved them 🔥"
         },
         {
           "table": "tournament_winner_picks",
-          "team_code": "ARG",
-          "team_he": "ארגנטינה",
-          "team_en": "Argentina",
-          "he_name": "בחירת {team} לזכייה במונדיאל של {names} קיבלה 3-2 עצבני, אבל היא עדיין חיה. הצ'אט שומע את זה 🔥",
-          "he_names": "בחירות {team} לזכייה במונדיאל של {names} קיבלו 3-2 עצבני, אבל הן עדיין חיות. הצ'אט שומע את זה 🔥",
-          "he_count": "בחירות {team} לזכייה במונדיאל של {names} קיבלו 3-2 עצבני, אבל הן עדיין חיות. הצ'אט שומע את זה 🔥",
-          "en_name": "{names} picked {team} to win the World Cup. This 3-2 left stress marks, but the pick still has a pulse 🔥",
-          "en_names": "{names} picked {team} to win the World Cup. This 3-2 left stress marks, but those picks still have a pulse 🔥",
-          "en_count": "{names} picked {team} to win the World Cup. This 3-2 left stress marks, but those picks still have a pulse 🔥"
+          "team_code": "EGY",
+          "team_he": "מצרים",
+          "team_en": "Egypt",
+          "he_name": "{names} סימן את {team} כזוכת המונדיאל. בדקה 67 זה היה נראה כמו סיפור ענק; שלושה שערים מאוחרים של ארגנטינה סגרו את הטופס 🔥",
+          "he_names": "{names} סימנו את {team} כזוכת המונדיאל. בדקה 67 זה היה נראה כמו סיפור ענק; שלושה שערים מאוחרים של ארגנטינה סגרו את הטפסים 🔥",
+          "he_count": "{names} סימנו את {team} כזוכת המונדיאל. בדקה 67 זה היה נראה כמו סיפור ענק; שלושה שערים מאוחרים של ארגנטינה סגרו את הטפסים 🔥",
+          "en_name": "{names} picked {team} to win the World Cup. In the 67th it looked like a huge story; three late Argentina goals closed the form 🔥",
+          "en_names": "{names} picked {team} to win the World Cup. In the 67th it looked like a huge story; three late Argentina goals closed those forms 🔥",
+          "en_count": "{names} picked {team} to win the World Cup. In the 67th it looked like a huge story; three late Argentina goals closed those forms 🔥"
         },
         {
           "table": "knockout_picks",
@@ -57,33 +68,21 @@
           "team_he": "מצרים",
           "team_en": "Egypt",
           "match_id": "90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
-          "he_name": "{names} עם {team} להתקדם. זה היה קרוב מדי בשביל לצחוק, אבל 3-2 עצר את הבראקט. נאום ההגנה לצ'אט מתחיל עכשיו 🔥",
-          "he_names": "{names} עם {team} להתקדם. זה היה קרוב מדי בשביל לצחוק, אבל 3-2 עצר את הבראקטים. נאומי ההגנה לצ'אט מתחילים עכשיו 🔥",
-          "he_count": "{names} עם {team} להתקדם. זה היה קרוב מדי בשביל לצחוק, אבל 3-2 עצר את הבראקטים. נאומי ההגנה לצ'אט מתחילים עכשיו 🔥",
-          "en_name": "{names} had {team} to advance. Too close to laugh, still wrong: 3-2 stopped the bracket. The chat defense starts now 🔥",
-          "en_names": "{names} had {team} to advance. Too close to laugh, still wrong: 3-2 stopped those brackets. The chat defense starts now 🔥",
-          "en_count": "{names} had {team} to advance. Too close to laugh, still wrong: 3-2 stopped those brackets. The chat defense starts now 🔥"
-        },
-        {
-          "table": "tournament_winner_picks",
-          "team_code": "EGY",
-          "team_he": "מצרים",
-          "team_en": "Egypt",
-          "he_name": "{names} עם {team} לזכייה במונדיאל. מצרים כמעט נתנה לזה חיים, אבל כמעט לא מחזיק טופס אליפות. הצ'אט מחכה להסבר 🔥",
-          "he_names": "{names} עם {team} לזכייה במונדיאל. מצרים כמעט נתנה לזה חיים, אבל כמעט לא מחזיק טפסי אליפות. הצ'אט מחכה להסברים 🔥",
-          "he_count": "{names} עם {team} לזכייה במונדיאל. מצרים כמעט נתנה לזה חיים, אבל כמעט לא מחזיק טפסי אליפות. הצ'אט מחכה להסברים 🔥",
-          "en_name": "{names} had {team} to win the World Cup. Egypt almost gave that pick a story, but almost does not carry a title call. The chat wants the defense 🔥",
-          "en_names": "{names} had {team} to win the World Cup. Egypt almost gave those picks a story, but almost does not carry title calls. The chat wants the defense 🔥",
-          "en_count": "{names} had {team} to win the World Cup. Egypt almost gave those picks a story, but almost does not carry title calls. The chat wants the defense 🔥"
+          "he_name": "{names} סימן את {team} להתקדם. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
+          "he_names": "{names} סימנו את {team} להתקדם. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
+          "he_count": "{names} סימנו את {team} להתקדם. עד דקה 67 זה נראה חי לגמרי; הקאמבק המאוחר של ארגנטינה הפך את זה לכמעט כואב 🔥",
+          "en_name": "{names} had {team} to advance. Until the 67th it was very alive; Argentina’s late comeback turned it into a painful almost 🔥",
+          "en_names": "{names} had {team} to advance. Until the 67th it was very alive; Argentina’s late comeback turned those picks into a painful almost 🔥",
+          "en_count": "{names} had {team} to advance. Until the 67th it was very alive; Argentina’s late comeback turned those picks into a painful almost 🔥"
         }
       ],
       "he": {
-        "headline": "ארגנטינה ניצחה את מצרים 3-2: קבלות בבראקט 🔥",
-        "caption": "מצרים כמעט הפכה את זה לסיפור ענק, אבל ארגנטינה נשארה בחיים. מי שסימן אותה להתקדם קיבל קבלה; מי שהלך על מצרים מכין הסבר לצ'אט 🔥"
+        "headline": "ארגנטינה ניצחה את מצרים 3-2: מי שסימן אותה לזכייה נושם 🔥",
+        "caption": "2-0 למצרים בדקה 67, ואז שלושה שערים מאוחרים של ארגנטינה. מי שסימן אותה כזוכת המונדיאל כבר ראה את הטופס נופל, ועכשיו נושם לרווחה 🔥"
       },
       "en": {
-        "headline": "Argentina beat Egypt 3-2: bracket receipts are out 🔥",
-        "caption": "Egypt almost turned this into a huge story, but Argentina stayed alive. Argentina-to-advance picks get the receipt; Egypt picks owe the chat an explanation 🔥"
+        "headline": "Argentina beat Egypt 3-2: title picks can breathe 🔥",
+        "caption": "Egypt led 2-0 in the 67th, then Argentina hit three late goals. Anyone who picked them to win the World Cup saw the form falling, and can breathe again 🔥"
       }
     },
     {
