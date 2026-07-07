@@ -61,6 +61,21 @@ const stalePostGroupFragments = [
   /\u05e2\u05d3\u05d9\u05d9\u05df \u05d7/u,
   /\u05de\u05e9\u05d7\u05e7 \u05d4\u05d1\u05d0/u,
 ];
+const weakLatestCommentatorFragments = [
+  /\bforms?\b/i,
+  /\breceipts?\b/i,
+  /correct picks?/i,
+  /clean hits?/i,
+  /big (?:pool|bracket) boost/i,
+  /\bboost\b/i,
+  /took a (?:hard|heavy) hit/i,
+  /fell hard/i,
+  /got stronger/i,
+  /under the floodlights/i,
+  /\bswagger\b/i,
+  /edge of the chair/i,
+  /defense speech/i,
+];
 const endingEmojiPattern = /[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?$/u;
 const RECENT_STORY_COPY_WINDOW = 10;
 const MIN_PRODUCTION_STORY_IMAGE_BYTES = 500000;
@@ -360,6 +375,11 @@ latest.forEach(story => {
     if (captionShape && seenLatestCaptions.has(captionShape)) {
       fail(`${story.id}: ${lang} latest-story fallback caption structure duplicates ${seenLatestCaptions.get(captionShape)}`);
     }
+    weakLatestCommentatorFragments.forEach(pattern => {
+      if (pattern.test(story[lang] && story[lang].caption || '')) {
+        fail(`${story.id}: ${lang} latest-story fallback caption uses weak template/commentator filler`);
+      }
+    });
     seenLatestCaptions.set(captionShape, story.id);
     const focuses = Array.isArray(story.pool_focuses) && story.pool_focuses.length ? story.pool_focuses : (story.pool_focus ? [story.pool_focus] : []);
     focuses.forEach((focus, idx) => {
@@ -367,6 +387,11 @@ latest.forEach(story => {
       if (focusShape && seenLatestFocuses.has(focusShape)) {
         fail(`${story.id}: ${lang} latest-story pool_focuses[${idx}] structure duplicates ${seenLatestFocuses.get(focusShape)}`);
       }
+      weakLatestCommentatorFragments.forEach(pattern => {
+        if (pattern.test(focusText(focus, lang))) {
+          fail(`${story.id}: ${lang} latest-story pool_focuses[${idx}] uses weak template/commentator filler`);
+        }
+      });
       if (focusShape) seenLatestFocuses.set(focusShape, `${story.id} pool_focuses[${idx}]`);
     });
   });
