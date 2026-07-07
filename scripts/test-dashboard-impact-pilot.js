@@ -12,25 +12,27 @@ function assert(condition, message) {
   }
 }
 
-assert(app.includes("DASHBOARD_IMPACT_PILOT_POOL_ID = '4927bd42-a9aa-4bf5-ab5d-e166869a72c6'"), 'pilot pool id is fixed');
-assert(app.includes("DASHBOARD_IMPACT_PILOT_POOL_CODE = '349MD'"), 'pilot pool code is fixed');
-assert(app.includes("DASHBOARD_IMPACT_PILOT_USER_ID = 'a8fe26ff-12df-45ed-890b-70b6072fe2c0'"), 'pilot user id is fixed to Eyal');
-assert(app.includes('function _isDashboardImpactPilotPool'), 'pilot gate function exists');
+assert(!app.includes('DASHBOARD_IMPACT_PILOT_POOL_ID'), 'dashboard rollout is not tied to one pool id');
+assert(!app.includes('DASHBOARD_IMPACT_PILOT_POOL_CODE'), 'dashboard rollout is not tied to one pool code');
+assert(!app.includes('DASHBOARD_IMPACT_PILOT_USER_ID'), 'dashboard rollout is not tied to one reviewer user');
+assert(app.includes('function _isDashboardImpactEnabled'), 'dashboard eligibility function exists');
 assert(app.includes('renderDashboardImpactPilot(allUsers'), 'dashboard render calls pilot renderer');
 assert(app.includes('renderDashboardImpactPilot(users'), 'score refresh updates pilot renderer');
 assert(!app.includes('_dashboardImpactLivePreviewMatches'), 'production build must not include fake live preview helpers');
 assert(!app.includes('live-real-app'), 'production build must not include local live preview routing');
 
-const gateStart = app.indexOf('function _isDashboardImpactPilotPool');
+const gateStart = app.indexOf('function _isDashboardImpactEnabled');
 const gateEnd = app.indexOf('function _setDashboardImpactPilotMode', gateStart);
 const gateBody = app.slice(gateStart, gateEnd);
-assert(gateStart >= 0 && gateEnd > gateStart, 'pilot gate body is extractable');
-assert(!/(location|searchParams|localStorage)/.test(gateBody), 'pilot gate does not depend on URL or browser storage flags');
-assert(gateBody.includes('poolAllowed && reviewerAllowed'), 'pilot requires both allowed pool and reviewer session');
-assert(gateBody.includes('userAllowed'), 'pilot requires the exact reviewer user id');
-assert(gateBody.includes('state.currentUser && state.currentUser.is_admin && userAllowed'), 'approval pilot is not shown to ordinary pool members or other admins');
+assert(gateStart >= 0 && gateEnd > gateStart, 'dashboard eligibility body is extractable');
+assert(!/(location|searchParams|localStorage)/.test(gateBody), 'dashboard rollout does not depend on URL or browser storage flags');
+assert(gateBody.includes('if (!pool) return false'), 'dashboard stays hidden when no pool is loaded');
+assert(gateBody.includes('state.currentUser && state.currentUser.id'), 'dashboard requires a real logged-in pool user');
+assert(!gateBody.includes('is_admin'), 'dashboard rollout is not admin-only');
+assert(!gateBody.includes('349MD'), 'dashboard rollout is not pool-code gated');
+assert(!gateBody.includes('a8fe26ff-12df-45ed-890b-70b6072fe2c0'), 'dashboard rollout is not reviewer-user gated');
 
-const pilotStart = app.indexOf('const DASHBOARD_IMPACT_PILOT_POOL_ID');
+const pilotStart = app.indexOf('const DASHBOARD_IMPACT_PICK_CACHE_MS');
 const pilotEnd = app.indexOf('function _hideDashboardProjectionTeaser', pilotStart);
 const pilotBody = app.slice(pilotStart, pilotEnd);
 assert(pilotStart >= 0 && pilotEnd > pilotStart, 'pilot body is extractable');
@@ -149,4 +151,4 @@ assert(!styles.includes('.dip-points {'), 'old detached points column was remove
   assert(!app.includes(bad) && !index.includes(bad) && !i18n.includes(bad), `removed fragile copy: ${bad}`);
 });
 
-console.log('dashboard impact pilot gate ok');
+console.log('dashboard impact rollout gate ok');

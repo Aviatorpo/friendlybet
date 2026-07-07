@@ -1715,20 +1715,12 @@ function renderDashboardDramaHero(view) {
   hero.style.display = '';
 }
 
-const DASHBOARD_IMPACT_PILOT_POOL_ID = '4927bd42-a9aa-4bf5-ab5d-e166869a72c6';
-const DASHBOARD_IMPACT_PILOT_POOL_CODE = '349MD';
-const DASHBOARD_IMPACT_PILOT_USER_ID = 'a8fe26ff-12df-45ed-890b-70b6072fe2c0';
 const DASHBOARD_IMPACT_PICK_CACHE_MS = 60 * 1000;
 let _dashboardImpactPickCache = { poolId: null, userId: null, at: 0, rows: null, promise: null };
 
-function _isDashboardImpactPilotPool(pool = state.currentPool) {
+function _isDashboardImpactEnabled(pool = state.currentPool) {
   if (!pool) return false;
-  const id = String(pool.id || '').toLowerCase();
-  const code = String(pool.code || '').trim().toUpperCase();
-  const poolAllowed = id === DASHBOARD_IMPACT_PILOT_POOL_ID || code === DASHBOARD_IMPACT_PILOT_POOL_CODE;
-  const userAllowed = String((state.currentUser && state.currentUser.id) || '').toLowerCase() === DASHBOARD_IMPACT_PILOT_USER_ID;
-  const reviewerAllowed = !!(state.currentUser && state.currentUser.is_admin && userAllowed);
-  return poolAllowed && reviewerAllowed;
+  return !!(state.currentUser && state.currentUser.id);
 }
 
 function _setDashboardImpactPilotMode(enabled) {
@@ -2198,7 +2190,7 @@ async function _dashboardImpactOpenBracket(btn) {
 }
 
 async function renderDashboardImpactPilot(users, ctx = {}) {
-  const enabled = _isDashboardImpactPilotPool();
+  const enabled = _isDashboardImpactEnabled();
   _setDashboardImpactPilotMode(enabled);
   const root = document.getElementById('dashboard-impact-pilot');
   if (!root || !enabled) return false;
