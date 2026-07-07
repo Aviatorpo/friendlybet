@@ -323,6 +323,58 @@ const STORY_COPY_OVERRIDES = {
       },
     ],
   },
+  'USA-BEL': {
+    title: {
+      he: 'בלגיה ניצחה את ארה"ב 4-1: המארחת בחוץ',
+      en: 'Belgium beat USA 4-1: the hosts are out',
+    },
+    caption: {
+      he: 'בלגיה הפכה את סיאטל ללילה חד: 4-1, ארה"ב בחוץ, וספרד מחכה ברבע הגמר 🔥',
+      en: 'Belgium turned Seattle into a statement night: 4-1, USA out, and Spain waiting in the quarterfinals 🔥',
+    },
+    pool_focuses: [
+      {
+        table: 'knockout_picks',
+        team_code: 'BEL',
+        he_name: '{names} בחר את {team} להתקדם בבראקט הנוקאאוט. אחרי 4-1 בסיאטל, הבחירה הזאת נראית כמו כרטיס לרבע הגמר 🔥',
+        he_names: '{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 4-1 בסיאטל, הבחירות האלה נראות כמו כרטיסים לרבע הגמר 🔥',
+        he_count: '{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 4-1 בסיאטל, הבחירות האלה נראות כמו כרטיסים לרבע הגמר 🔥',
+        en_name: '{names} picked {team} to advance in the knockout bracket. After 4-1 in Seattle, that pick looks like a quarterfinal ticket 🔥',
+        en_names: '{names} picked {team} to advance in the knockout bracket. After 4-1 in Seattle, those picks look like quarterfinal tickets 🔥',
+        en_count: '{names} picked {team} to advance in the knockout bracket. After 4-1 in Seattle, those picks look like quarterfinal tickets 🔥',
+      },
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'BEL',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. 4-1 בנוקאאוט מול המארחת הופך את הטופס הזה להרבה פחות מצחיק 🔥',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. 4-1 בנוקאאוט מול המארחת הופך את הטפסים האלה להרבה פחות מצחיקים 🔥',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. 4-1 בנוקאאוט מול המארחת הופך את הטפסים האלה להרבה פחות מצחיקים 🔥',
+        en_name: '{names} picked {team} to win the World Cup. A 4-1 knockout win over the hosts makes that form much harder to laugh at 🔥',
+        en_names: '{names} picked {team} to win the World Cup. A 4-1 knockout win over the hosts makes those forms much harder to laugh at 🔥',
+        en_count: '{names} picked {team} to win the World Cup. A 4-1 knockout win over the hosts makes those forms much harder to laugh at 🔥',
+      },
+      {
+        table: 'knockout_picks',
+        team_code: 'USA',
+        he_name: '{names} בחר את {team} להתקדם בבראקט הנוקאאוט. 4-1 בבית הופך את הבחירה הזאת להודעה הכי קשה בצ\'אט 😬',
+        he_names: '{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 4-1 בבית הופך את הבחירות האלה להודעות הכי קשות בצ\'אט 😬',
+        he_count: '{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 4-1 בבית הופך את הבחירות האלה להודעות הכי קשות בצ\'אט 😬',
+        en_name: '{names} picked {team} to advance in the knockout bracket. A 4-1 at home turns that pick into the hardest message in the chat 😬',
+        en_names: '{names} picked {team} to advance in the knockout bracket. A 4-1 at home turns those picks into the hardest messages in the chat 😬',
+        en_count: '{names} picked {team} to advance in the knockout bracket. A 4-1 at home turns those picks into the hardest messages in the chat 😬',
+      },
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'USA',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי 4-1 מול בלגיה, החלום הביתי נגמר מוקדם מדי 😬',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 4-1 מול בלגיה, החלום הביתי נגמר מוקדם מדי 😬',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי 4-1 מול בלגיה, החלום הביתי נגמר מוקדם מדי 😬',
+        en_name: '{names} picked {team} to win the World Cup. After 4-1 against Belgium, the home dream ended too early 😬',
+        en_names: '{names} picked {team} to win the World Cup. After 4-1 against Belgium, the home dream ended too early 😬',
+        en_count: '{names} picked {team} to win the World Cup. After 4-1 against Belgium, the home dream ended too early 😬',
+      },
+    ],
+  },
   'CIV-NOR': {
     title: {
       he: 'נורווגיה ניצחה את חוף השנהב 2-1: הולכת לשמינית הגמר',

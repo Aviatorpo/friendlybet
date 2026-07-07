@@ -1,6 +1,88 @@
 {
-  "updated_at": "2026-07-06T21:31:03.610Z",
+  "updated_at": "2026-07-07T05:21:18.487Z",
   "items": [
+    {
+      "id": "usa-bel-2026-07-07",
+      "match_id": "084756cf-d007-4858-8fc4-d6ca8b66b686",
+      "image": "story-assets/belgium-wins-usa.png",
+      "teams": [
+        "USA",
+        "BEL"
+      ],
+      "outcome": "BEL",
+      "result": "BEL 4-1 USA",
+      "top_label": "BELGIUM QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "BEL",
+        "team_he": "בלגיה",
+        "team_en": "Belgium",
+        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. אחרי 4-1 בסיאטל, הבחירה הזאת נראית כמו כרטיס לרבע הגמר 🔥",
+        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 4-1 בסיאטל, הבחירות האלה נראות כמו כרטיסים לרבע הגמר 🔥",
+        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 4-1 בסיאטל, הבחירות האלה נראות כמו כרטיסים לרבע הגמר 🔥",
+        "en_name": "{names} picked {team} to advance in the knockout bracket. After 4-1 in Seattle, that pick looks like a quarterfinal ticket 🔥",
+        "en_names": "{names} picked {team} to advance in the knockout bracket. After 4-1 in Seattle, those picks look like quarterfinal tickets 🔥",
+        "en_count": "{names} picked {team} to advance in the knockout bracket. After 4-1 in Seattle, those picks look like quarterfinal tickets 🔥"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "BEL",
+          "team_he": "בלגיה",
+          "team_en": "Belgium",
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. אחרי 4-1 בסיאטל, הבחירה הזאת נראית כמו כרטיס לרבע הגמר 🔥",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 4-1 בסיאטל, הבחירות האלה נראות כמו כרטיסים לרבע הגמר 🔥",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 4-1 בסיאטל, הבחירות האלה נראות כמו כרטיסים לרבע הגמר 🔥",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. After 4-1 in Seattle, that pick looks like a quarterfinal ticket 🔥",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. After 4-1 in Seattle, those picks look like quarterfinal tickets 🔥",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. After 4-1 in Seattle, those picks look like quarterfinal tickets 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "BEL",
+          "team_he": "בלגיה",
+          "team_en": "Belgium",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. 4-1 בנוקאאוט מול המארחת הופך את הטופס הזה להרבה פחות מצחיק 🔥",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. 4-1 בנוקאאוט מול המארחת הופך את הטפסים האלה להרבה פחות מצחיקים 🔥",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. 4-1 בנוקאאוט מול המארחת הופך את הטפסים האלה להרבה פחות מצחיקים 🔥",
+          "en_name": "{names} picked {team} to win the World Cup. A 4-1 knockout win over the hosts makes that form much harder to laugh at 🔥",
+          "en_names": "{names} picked {team} to win the World Cup. A 4-1 knockout win over the hosts makes those forms much harder to laugh at 🔥",
+          "en_count": "{names} picked {team} to win the World Cup. A 4-1 knockout win over the hosts makes those forms much harder to laugh at 🔥"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "USA",
+          "team_he": "ארה\"ב",
+          "team_en": "USA",
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. 4-1 בבית הופך את הבחירה הזאת להודעה הכי קשה בצ'אט 😬",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 4-1 בבית הופך את הבחירות האלה להודעות הכי קשות בצ'אט 😬",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 4-1 בבית הופך את הבחירות האלה להודעות הכי קשות בצ'אט 😬",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. A 4-1 at home turns that pick into the hardest message in the chat 😬",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. A 4-1 at home turns those picks into the hardest messages in the chat 😬",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. A 4-1 at home turns those picks into the hardest messages in the chat 😬"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "USA",
+          "team_he": "ארה\"ב",
+          "team_en": "USA",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 4-1 מול בלגיה, החלום הביתי נגמר מוקדם מדי 😬",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 4-1 מול בלגיה, החלום הביתי נגמר מוקדם מדי 😬",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 4-1 מול בלגיה, החלום הביתי נגמר מוקדם מדי 😬",
+          "en_name": "{names} picked {team} to win the World Cup. After 4-1 against Belgium, the home dream ended too early 😬",
+          "en_names": "{names} picked {team} to win the World Cup. After 4-1 against Belgium, the home dream ended too early 😬",
+          "en_count": "{names} picked {team} to win the World Cup. After 4-1 against Belgium, the home dream ended too early 😬"
+        }
+      ],
+      "he": {
+        "headline": "בלגיה ניצחה את ארה\"ב 4-1: המארחת בחוץ 🔥",
+        "caption": "בלגיה הפכה את סיאטל ללילה חד: 4-1, ארה\"ב בחוץ, וספרד מחכה ברבע הגמר 🔥"
+      },
+      "en": {
+        "headline": "Belgium beat USA 4-1: the hosts are out 🔥",
+        "caption": "Belgium turned Seattle into a statement night: 4-1, USA out, and Spain waiting in the quarterfinals 🔥"
+      }
+    },
     {
       "id": "por-esp-2026-07-06",
       "match_id": "e2a51510-0a1f-40f3-9990-632608b6f116",
@@ -780,12 +862,12 @@
         "team_he": "פורטוגל",
         "team_en": "Portugal",
         "match_id": "8bb5df11-6f67-48f1-838b-990c4863bf2d",
-        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 מול קרואטיה, הבחירה הזאת נכנסה לשיחה על השלב הבא לבחירה הזאת כבר יש משחק אמיתי מאחוריה הטבלה הכריחה את כולם לקרוא שוב ⚽",
-        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 מול קרואטיה, אלה כבר לא טפסים - אלה קבלות חיות לבחירה הזאת כבר יש משחק אמיתי מאחוריה הטבלה הכריחה את כולם לקרוא שוב ⚽",
-        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 מול קרואטיה, אלה כבר לא טפסים - אלה קבלות חיות לבחירה הזאת כבר יש משחק אמיתי מאחוריה הטבלה הכריחה את כולם לקרוא שוב ⚽",
-        "en_name": "{names} picked {team} to advance in the knockout bracket. After 2-1 against Croatia, that pick goes straight into the next-round conversation That pick just got a life of its own Now it is a personal pool moment ⚽",
-        "en_names": "{names} picked {team} to advance in the knockout bracket. After 2-1 against Croatia, those picks go straight into the next-round conversation That pick just got a life of its own Now it is a personal pool moment ⚽",
-        "en_count": "{names} picked {team} to advance in the knockout bracket. After 2-1 against Croatia, those picks go straight into the next-round conversation That pick just got a life of its own Now it is a personal pool moment ⚽"
+        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 מול קרואטיה, הבחירה הזאת נכנסה לשיחה על השלב הבא ⚽",
+        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 מול קרואטיה, אלה כבר לא טפסים - אלה קבלות חיות ⚽",
+        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 מול קרואטיה, אלה כבר לא טפסים - אלה קבלות חיות ⚽",
+        "en_name": "{names} picked {team} to advance in the knockout bracket. After 2-1 against Croatia, that pick goes straight into the next-round conversation ⚽",
+        "en_names": "{names} picked {team} to advance in the knockout bracket. After 2-1 against Croatia, those picks go straight into the next-round conversation ⚽",
+        "en_count": "{names} picked {team} to advance in the knockout bracket. After 2-1 against Croatia, those picks go straight into the next-round conversation ⚽"
       },
       "pool_focuses": [
         {
@@ -794,24 +876,24 @@
           "team_he": "פורטוגל",
           "team_en": "Portugal",
           "match_id": "8bb5df11-6f67-48f1-838b-990c4863bf2d",
-          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 מול קרואטיה, הבחירה הזאת נכנסה לשיחה על השלב הבא לבחירה הזאת כבר יש משחק אמיתי מאחוריה הטבלה הכריחה את כולם לקרוא שוב ⚽",
-          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 מול קרואטיה, אלה כבר לא טפסים - אלה קבלות חיות לבחירה הזאת כבר יש משחק אמיתי מאחוריה הטבלה הכריחה את כולם לקרוא שוב ⚽",
-          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 מול קרואטיה, אלה כבר לא טפסים - אלה קבלות חיות לבחירה הזאת כבר יש משחק אמיתי מאחוריה הטבלה הכריחה את כולם לקרוא שוב ⚽",
-          "en_name": "{names} picked {team} to advance in the knockout bracket. After 2-1 against Croatia, that pick goes straight into the next-round conversation That pick just got a life of its own Now it is a personal pool moment ⚽",
-          "en_names": "{names} picked {team} to advance in the knockout bracket. After 2-1 against Croatia, those picks go straight into the next-round conversation That pick just got a life of its own Now it is a personal pool moment ⚽",
-          "en_count": "{names} picked {team} to advance in the knockout bracket. After 2-1 against Croatia, those picks go straight into the next-round conversation That pick just got a life of its own Now it is a personal pool moment ⚽"
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 מול קרואטיה, הבחירה הזאת נכנסה לשיחה על השלב הבא ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 מול קרואטיה, אלה כבר לא טפסים - אלה קבלות חיות ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 מול קרואטיה, אלה כבר לא טפסים - אלה קבלות חיות ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. After 2-1 against Croatia, that pick goes straight into the next-round conversation ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. After 2-1 against Croatia, those picks go straight into the next-round conversation ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. After 2-1 against Croatia, those picks go straight into the next-round conversation ⚽"
         },
         {
           "table": "tournament_winner_picks",
           "team_code": "POR",
           "team_he": "פורטוגל",
           "team_en": "Portugal",
-          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 2-1 על קרואטיה, הצ'אט של ההימור חייב לתת לזה מבט שני לבחירה הזאת כבר יש משחק אמיתי מאחוריה ⚽",
-          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-1 על קרואטיה, הצ'אט של ההימור חייב לתת לזה מבט שני לבחירה הזאת כבר יש משחק אמיתי מאחוריה ⚽",
-          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-1 על קרואטיה, הצ'אט של ההימור חייב לתת לזה מבט שני לבחירה הזאת כבר יש משחק אמיתי מאחוריה ⚽",
-          "en_name": "{names} picked {team} to win the World Cup. After 2-1 over Croatia, the pool chat owes that pick a second look That pick just got a life of its own ⚽",
-          "en_names": "{names} picked {team} to win the World Cup. After 2-1 over Croatia, the pool chat owes those picks a second look That pick just got a life of its own ⚽",
-          "en_count": "{names} picked {team} to win the World Cup. After 2-1 over Croatia, the pool chat owes those picks a second look That pick just got a life of its own ⚽"
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 2-1 על קרואטיה, הצ'אט של ההימור חייב לתת לזה מבט שני ⚽",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-1 על קרואטיה, הצ'אט של ההימור חייב לתת לזה מבט שני ⚽",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-1 על קרואטיה, הצ'אט של ההימור חייב לתת לזה מבט שני ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. After 2-1 over Croatia, the pool chat owes that pick a second look ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. After 2-1 over Croatia, the pool chat owes those picks a second look ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. After 2-1 over Croatia, the pool chat owes those picks a second look ⚽"
         },
         {
           "table": "knockout_picks",
@@ -819,12 +901,12 @@
           "team_he": "קרואטיה",
           "team_en": "Croatia",
           "match_id": "8bb5df11-6f67-48f1-838b-990c4863bf2d",
-          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 בשמינית-מוקדמת, ההימור הזה כבר עומד מול המציאות לבחירה הזאת כבר יש משחק אמיתי מאחוריה הטבלה הכריחה את כולם לקרוא שוב ⚽",
-          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 בשמינית-מוקדמת, ההימורים האלה כבר עומדים מול המציאות לבחירה הזאת כבר יש משחק אמיתי מאחוריה הטבלה הכריחה את כולם לקרוא שוב ⚽",
-          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 בשמינית-מוקדמת, ההימורים האלה כבר עומדים מול המציאות לבחירה הזאת כבר יש משחק אמיתי מאחוריה הטבלה הכריחה את כולם לקרוא שוב ⚽",
-          "en_name": "{names} picked {team} to advance in the knockout bracket. After 2-1 in the Round of 32, that pick needs a serious answer now That pick just got a life of its own Now it is a personal pool moment ⚽",
-          "en_names": "{names} picked {team} to advance in the knockout bracket. After 2-1 in the Round of 32, those picks need serious answers now That pick just got a life of its own Now it is a personal pool moment ⚽",
-          "en_count": "{names} picked {team} to advance in the knockout bracket. After 2-1 in the Round of 32, those picks need serious answers now That pick just got a life of its own Now it is a personal pool moment ⚽"
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 בשמינית-מוקדמת, ההימור הזה כבר עומד מול המציאות ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 בשמינית-מוקדמת, ההימורים האלה כבר עומדים מול המציאות ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אחרי 2-1 בשמינית-מוקדמת, ההימורים האלה כבר עומדים מול המציאות ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. After 2-1 in the Round of 32, that pick needs a serious answer now ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. After 2-1 in the Round of 32, those picks need serious answers now ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. After 2-1 in the Round of 32, those picks need serious answers now ⚽"
         },
         {
           "table": "tournament_winner_picks",
@@ -840,12 +922,12 @@
         }
       ],
       "he": {
-        "headline": "פורטוגל ניצחה את קרואטיה 2-1: שמינית-מוקדמת - ההימורים מרגישים את זה ⚽",
-        "caption": "פורטוגל עברה את קרואטיה עם 2-1 בשמינית-מוקדמת. הבראקט מתקדם עכשיו דרכה, וקרואטיה יורדת מהלוח בחירות המקום הראשון מרגישות את זה מיד ⚽"
+        "headline": "פורטוגל ניצחה את קרואטיה 2-1: שמינית-מוקדמת ⚽",
+        "caption": "פורטוגל עברה את קרואטיה עם 2-1 בשמינית-מוקדמת. הבראקט מתקדם עכשיו דרכה, וקרואטיה יורדת מהלוח ⚽"
       },
       "en": {
-        "headline": "Portugal beat Croatia 2-1: through the Round of 32 - the group story changed ⚽",
-        "caption": "Portugal got past Croatia 2-1 in the Round of 32. The bracket now moves through Portugal, while Croatia drops off the board This is not the same story as the previous match ⚽"
+        "headline": "Portugal beat Croatia 2-1: through the Round of 32 ⚽",
+        "caption": "Portugal got past Croatia 2-1 in the Round of 32. The bracket now moves through Portugal, while Croatia drops off the board ⚽"
       }
     },
     {
