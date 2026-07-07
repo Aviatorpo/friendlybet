@@ -56,6 +56,8 @@ jobs:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
           CONTROLLER_MINUTES: ${{ inputs.controller_minutes || '120' }}
+          LIVE_CONTROLLER_SOURCE: github-long-controller
+          LIVE_CONTROLLER_COOLDOWN_MS: '45000'
           LIVE_POLL_INTERVAL_MS: '60000'
           LIVE_POLL_RUN_MS: '270000'
           LIVE_POLL_CONTROLLER_SLEEP_MS: '30000'

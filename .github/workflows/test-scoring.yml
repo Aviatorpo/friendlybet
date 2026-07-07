@@ -30,6 +30,10 @@ on:
       - 'scripts/test-live-poller.js'
       - 'scripts/live-controller-needed.js'
       - 'scripts/test-live-controller-needed.js'
+      - 'scripts/live-controller-state.js'
+      - 'scripts/test-live-controller-state.js'
+      - 'api/live-nudge.mjs'
+      - 'scripts/test-live-nudge-api.mjs'
       - 'scripts/live-state-watchdog.js'
       - 'scripts/test-live-state-watchdog.js'
       - 'scripts/live-ops-audit.js'
@@ -54,6 +58,7 @@ on:
       - 'scripts/test-verify-scoring-snapshots.js'
       - '.github/workflows/live-poller.yml'
       - '.github/workflows/live-match-controller.yml'
+      - 'vercel.json'
       - 'scripts/espn-live-sync.js'
       - 'scripts/test-espn-live-sync.js'
       - 'scripts/final-result-verifier.js'
@@ -121,6 +126,10 @@ on:
       - 'scripts/test-live-poller.js'
       - 'scripts/live-controller-needed.js'
       - 'scripts/test-live-controller-needed.js'
+      - 'scripts/live-controller-state.js'
+      - 'scripts/test-live-controller-state.js'
+      - 'api/live-nudge.mjs'
+      - 'scripts/test-live-nudge-api.mjs'
       - 'scripts/live-state-watchdog.js'
       - 'scripts/test-live-state-watchdog.js'
       - 'scripts/live-ops-audit.js'
@@ -145,6 +154,7 @@ on:
       - 'scripts/test-verify-scoring-snapshots.js'
       - '.github/workflows/live-poller.yml'
       - '.github/workflows/live-match-controller.yml'
+      - 'vercel.json'
       - 'scripts/espn-live-sync.js'
       - 'scripts/test-espn-live-sync.js'
       - 'scripts/final-result-verifier.js'
@@ -227,6 +237,10 @@ jobs:
         run: node scripts/test-live-poller.js
       - name: Run live-controller preflight tests
         run: node scripts/test-live-controller-needed.js
+      - name: Run live-controller state tests
+        run: node scripts/test-live-controller-state.js
+      - name: Run live-nudge API tests
+        run: node scripts/test-live-nudge-api.mjs
       - name: Run live-state watchdog tests
         run: node scripts/test-live-state-watchdog.js
       - name: Run live-ops audit tests

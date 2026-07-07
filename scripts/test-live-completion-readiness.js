@@ -137,6 +137,24 @@ const { resultVersionFromMatches, dedupeMatchesForSnapshot } = require('./export
     winner_code: 'COL',
   }];
   const currentResultVersion = resultVersionFromMatches(dedupeMatchesForSnapshot(scorePublicationMatches));
+  const freshScorePublicationFetch = async (url) => {
+    if (String(url).includes('/rest/v1/pools?')) {
+      return { ok: true, json: async () => [{ id: 'pool-current' }] };
+    }
+    if (String(url).includes('/rest/v1/users?')) {
+      return {
+        ok: true,
+        json: async () => [{
+          id: 'user-current',
+          pool_id: 'pool-current',
+          joined_at: '2026-06-01T00:00:00.000Z',
+          last_score_calc: '2026-07-04T18:00:00.000Z',
+          total_score: 12,
+        }],
+      };
+    }
+    throw new Error(`unexpected fetch: ${url}`);
+  };
   const staleHeartbeatWithCleanPublicProof = await Readiness.summarizeScorePublicationFreshness(
     { url: 'https://x.supabase.co', key: 'publishable-from-config' },
     scorePublicationMatches,
@@ -249,6 +267,7 @@ const { resultVersionFromMatches, dedupeMatchesForSnapshot } = require('./export
     publicSnapshots: storyBacklogSnapshots,
     dbMatches: storyBacklogSnapshots.matches.matches,
     allowStoryBacklog: false,
+    fetch: freshScorePublicationFetch,
   });
   assert.strictEqual(storyBacklogCritical.ok, false, 'missing Stories must fail readiness when story backlog hard-fail mode is explicitly requested');
   assert.ok(
@@ -262,6 +281,7 @@ const { resultVersionFromMatches, dedupeMatchesForSnapshot } = require('./export
     publicSnapshots: storyBacklogSnapshots,
     dbMatches: storyBacklogSnapshots.matches.matches,
     allowStoryBacklog: true,
+    fetch: freshScorePublicationFetch,
   });
   assert.strictEqual(storyBacklogWarningOnly.ok, true, JSON.stringify(storyBacklogWarningOnly.checks.filter(check => !check.ok), null, 2));
   assert.ok(

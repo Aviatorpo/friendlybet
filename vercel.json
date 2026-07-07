@@ -17,7 +17,8 @@
   ],
   "functions": {
     "api/og.mjs": { "includeFiles": "lib/fonts/**" },
-    "api/share.mjs": { "includeFiles": "share-page.html" }
+    "api/share.mjs": { "includeFiles": "share-page.html" },
+    "api/live-nudge.mjs": { "maxDuration": 10 }
   },
   "headers": [
     {

@@ -4644,6 +4644,85 @@ function _snapshotShouldReadDb(matches, maxAgeMs = 60000) {
     || _snapshotHasPastNonTerminal(matches);
 }
 
+const _LIVE_NUDGE_LOCAL_COOLDOWN_MS = 90 * 1000;
+const _LIVE_NUDGE_KICKOFF_GRACE_MS = 5 * 60 * 1000;
+let _liveNudgeMemory = { keys: Object.create(null) };
+
+function _liveNudgeEnabled() {
+  return typeof CONFIG === 'undefined' || CONFIG.LIVE_NUDGE_ENABLED !== false;
+}
+
+function _liveNudgeCandidateKey(m) {
+  if (!m) return null;
+  if (m.external_id) return `external:${m.external_id}`;
+  if (m.id) return `id:${m.id}`;
+  return _matchNumberKey(m) || _matchFifaIdKey(m) || _matchIdentityKey(m);
+}
+
+function _matchShouldNudgeLiveController(m, now = Date.now(), maxAgeMs = 2 * 60 * 1000) {
+  if (!m || _matchIsFinishedStatus(m)) return false;
+  if (_matchNeedsStatusVerification(m, now)) return true;
+  if (_matchIsLiveStatus(m) && !_matchSourceFresh(m, now, maxAgeMs)) return true;
+  const elapsed = _matchElapsedMs(m, now);
+  return _matchIsScheduledStatus(m)
+    && elapsed != null
+    && elapsed >= _LIVE_NUDGE_KICKOFF_GRACE_MS
+    && elapsed < _MAX_MATCH_MS;
+}
+
+function _collectLiveNudgeCandidates(matches, now = Date.now()) {
+  const seen = new Set();
+  const candidates = [];
+  (matches || []).forEach(m => {
+    if (!_matchShouldNudgeLiveController(m, now)) return;
+    const key = _liveNudgeCandidateKey(m);
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    candidates.push({
+      key,
+      external_id: m.external_id || null,
+      match_number: m.match_number || null,
+      status: _matchStatus(m),
+      source_updated_at: m.source_updated_at || m.last_updated || null
+    });
+  });
+  return candidates;
+}
+
+function _liveNudgeLocalAllowed(candidates, now = Date.now()) {
+  if (!candidates || !candidates.length) return false;
+  const key = candidates.map(c => c.key).sort().join('|');
+  const last = _liveNudgeMemory.keys[key] || 0;
+  if (now - last < _LIVE_NUDGE_LOCAL_COOLDOWN_MS) return false;
+  _liveNudgeMemory.keys[key] = now;
+  return true;
+}
+
+async function _maybeNudgeLiveController(matches, reason = 'match-stale') {
+  if (!_liveNudgeEnabled() || typeof fetch !== 'function') return false;
+  const candidates = _collectLiveNudgeCandidates(matches);
+  if (!_liveNudgeLocalAllowed(candidates)) return false;
+  try {
+    await fetch('/api/live-nudge', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        source: 'browser-nudge',
+        reason,
+        matches: candidates.slice(0, 3).map(c => ({
+          external_id: c.external_id,
+          match_number: c.match_number,
+          status: c.status,
+          source_updated_at: c.source_updated_at
+        }))
+      })
+    });
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
 function _matchCountsForGroupProjection(m, now = Date.now()) {
   if (!_matchHasNumericScore(m)) return false;
   if (_matchIsFinishedStatus(m)) return true;
@@ -11955,8 +12034,10 @@ async function loadMatches(silent = false) {
     // ...but if the snapshot is lagging while a match is live OR still shows an
     // old past-kickoff match as non-terminal, read from DB. Final-result fallback
     // can update Postgres while the deploy-throttled CDN snapshot remains frozen.
+    let matchSnapshotWasStale = false;
     if (matches && _snapshotShouldReadDb(matches)) {
       console.warn('match snapshot stale for live/past match - reading live from DB');
+      matchSnapshotWasStale = true;
       matches = null;
     }
     if (!matches && supabaseClient) {
@@ -11979,6 +12060,7 @@ async function loadMatches(silent = false) {
     }
 
     matchesState.allMatches = mergeOfficialScheduleWithLiveMatches(officialSchedule, matches || []);
+    _maybeNudgeLiveController(matchesState.allMatches, matchSnapshotWasStale ? 'stale-snapshot' : 'matches-refresh').catch(() => {});
     
     // Find most recent update
     if (matchesState.allMatches.length > 0) {

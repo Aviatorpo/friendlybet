@@ -17,6 +17,7 @@
 
 const sync = require('./smart-sync.js');
 const espn = require('./espn-live-sync.js');
+const controllerState = require('./live-controller-state.js');
 const fs = require('fs');
 
 function setGithubOutput(name, value) {
@@ -36,6 +37,10 @@ async function runLivePollerWindow(opts = {}) {
   const runMs      = opts.runMs || 270000;              // ~4.5 min, just under the */5 cron
   const now        = opts.now || (() => Date.now());
   const sleep      = opts.sleep || ((ms) => new Promise(r => setTimeout(r, ms)));
+  const source     = opts.source || process.env.LIVE_CONTROLLER_SOURCE || 'github-live-poller';
+  const leaseMs    = opts.leaseMs || (parseInt(process.env.LIVE_CONTROLLER_LEASE_MS || '', 10) || 90000);
+  const cooldownMs = opts.cooldownMs || (parseInt(process.env.LIVE_CONTROLLER_COOLDOWN_MS || '', 10) || 45000);
+  const requireLease = opts.requireLease != null ? !!opts.requireLease : process.env.LIVE_CONTROLLER_REQUIRE_LEASE === '1';
 
   if (!(await sync.shouldSync())) {
     const allFinishedInWindow = sync.shouldSync && sync.shouldSync.lastReason === 'all_finished';
@@ -53,17 +58,49 @@ async function runLivePollerWindow(opts = {}) {
 
   const end = now() + runMs;
   let polls = 0;
+  let leaseSkips = 0;
   let finalDetections = 0;
   while (true) {
+    let lease = null;
     try {
+      lease = await controllerState.claimControllerLease({
+        source,
+        leaseMs,
+        cooldownMs,
+        requireLease,
+      });
+      if (!lease.claimed) {
+        leaseSkips++;
+        console.log(`live-controller lease not claimed (${lease.reason}) - skipping this provider poll.`);
+      } else if (lease.degraded) {
+        console.warn(`live-controller state degraded (${lease.reason}) - falling back to legacy single-run polling.`);
+      }
+      if (!lease.claimed) {
+        if (now() + intervalMs >= end) break;
+        await sleep(intervalMs);
+        continue;
+      }
       const result = await espn.syncEspnLive(); // ESPN -> DB (score + provider clock)
       if (!result || result.updated === 0) {
         console.warn('ESPN live sync updated no matches - leaving result unchanged until the next ESPN/FIFA check.');
+      }
+      if (lease.release) {
+        try {
+          await controllerState.upsertLiveMatchJobsFromPollResult(result, { cooldownMs, nextAttemptMs: cooldownMs });
+        } catch (jobErr) {
+          console.warn('live-controller job state write skipped:', jobErr.message);
+        }
+        await controllerState.releaseControllerLease(lease, { success: true, pollResult: result, cooldownMs });
       }
       finalDetections += Number(result && result.finalDetected || 0);
       polls++;
     } catch (e) {
       console.error('ESPN live poll failed (will retry next tick):', e.message);
+      try {
+        if (lease && lease.claimed) await controllerState.releaseControllerLease(lease, { success: false, error: e, cooldownMs });
+      } catch (releaseErr) {
+        console.warn('live-controller lease release failed after poll error:', releaseErr.message);
+      }
     }
     if (now() + intervalMs >= end) break;
     await sleep(intervalMs);
@@ -74,7 +111,7 @@ async function runLivePollerWindow(opts = {}) {
     }
   }
   const finalDetected = finalDetections > 0;
-  return { polls, finalDetected, finalDetections, finalReason: finalDetected ? 'espn_final' : '' };
+  return { polls, leaseSkips, finalDetected, finalDetections, finalReason: finalDetected ? 'espn_final' : '' };
 }
 
 async function runLivePoller(opts = {}) {

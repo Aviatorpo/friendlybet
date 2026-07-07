@@ -41,6 +41,8 @@ jobs:
         env:
           SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LIVE_CONTROLLER_SOURCE: github-live-poller
+          LIVE_CONTROLLER_COOLDOWN_MS: '45000'
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
             node scripts/live-poller.js

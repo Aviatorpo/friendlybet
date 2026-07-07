@@ -283,6 +283,7 @@ async function syncEspnLive(opts = {}) {
       await writeLiveHeartbeat(dbMatch, patch, { nowIso, skipHeartbeat: opts.skipHeartbeat });
     }
     applied.push({
+      match_id: dbMatch.id || null,
       external_id: dbMatch.external_id,
       status: patch.status,
       home_score: patch.home_score,

@@ -8,6 +8,7 @@
 // ============================================================
 
 process.env.SUPABASE_SECRET_KEY = 'test';
+process.env.LIVE_CONTROLLER_STATE_ENABLED = '0';
 const sync = require('./smart-sync.js');
 const { runLivePoller } = require('./live-poller.js');
 

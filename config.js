@@ -8,6 +8,7 @@ const CONFIG = {
   
   APP_NAME: 'FriendlyBet',
   APP_VERSION: '2.10.133',
+  LIVE_NUDGE_ENABLED: true,
   
   STORAGE_KEYS: {
     USER_ID: 'fb_user_id',

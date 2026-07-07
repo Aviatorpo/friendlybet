@@ -253,6 +253,25 @@ async function summarizeScorePublicationFreshness(config, matches, options = {})
   const publicationMatches = dedupeMatchesForSnapshot(matches || []);
   const resultVersion = resultVersionFromMatches(publicationMatches);
   const latestResultMs = latestScoreableResultUpdateMs(publicationMatches);
+  if (!Number.isFinite(latestResultMs)) {
+    return {
+      ok: true,
+      result_version: resultVersion,
+      latest_result_updated_at: null,
+      pools: 0,
+      pools_with_users: 0,
+      users: 0,
+      stale_users: 0,
+      stale_users_warning_only: false,
+      stale_pools: 0,
+      stale_sample: [],
+      public_proof_clean: false,
+      public_checked: 0,
+      public_mismatches: 0,
+      public_mismatch_sample: [],
+      public_skipped: 0,
+    };
+  }
   const [pools, users] = await Promise.all([
     fetchSupabaseRows(config, 'pools', 'id', fetchImpl),
     fetchSupabaseRows(config, 'users', 'id,pool_id,last_score_calc,joined_at,total_score', fetchImpl),
@@ -261,14 +280,12 @@ async function summarizeScorePublicationFreshness(config, matches, options = {})
   const poolsWithUsers = new Set((users || []).map(user => user && user.pool_id).filter(Boolean));
   const staleUsers = [];
   const stalePools = new Set();
-  if (Number.isFinite(latestResultMs)) {
-    for (const user of users || []) {
-      if (!userNeedsFreshScoreCalc(user, latestResultMs)) continue;
-      const scoreMs = parseTime(user.last_score_calc);
-      if (!Number.isFinite(scoreMs) || scoreMs < latestResultMs) {
-        staleUsers.push(user);
-        if (user.pool_id) stalePools.add(user.pool_id);
-      }
+  for (const user of users || []) {
+    if (!userNeedsFreshScoreCalc(user, latestResultMs)) continue;
+    const scoreMs = parseTime(user.last_score_calc);
+    if (!Number.isFinite(scoreMs) || scoreMs < latestResultMs) {
+      staleUsers.push(user);
+      if (user.pool_id) stalePools.add(user.pool_id);
     }
   }
 
@@ -553,6 +570,9 @@ async function runReadiness(options = {}) {
   const generatePundit = read('.github/workflows/generate-pundit.yml');
   const readinessMonitor = read('.github/workflows/live-completion-readiness.yml');
   const liveController = read('.github/workflows/live-match-controller.yml');
+  const liveControllerState = read('scripts/live-controller-state.js');
+  const liveNudgeApi = read('api/live-nudge.mjs');
+  const liveControllerMigration = read('migrations/2026-07-07-live-controller-state.sql');
 
   add(
     checks,
@@ -645,6 +665,34 @@ async function runReadiness(options = {}) {
       && /actions:\s*write/.test(liveController),
     'long controller must pre-warm, preflight, poll, and dispatch the verified final scoring pipeline'
   );
+  add(
+    checks,
+    'live controller uses durable lease and cooldown state',
+    liveControllerState.includes('claimControllerLease')
+      && liveControllerState.includes('lease_token')
+      && liveControllerState.includes('cooldown_until')
+      && liveControllerMigration.includes('CREATE TABLE IF NOT EXISTS public.live_controller_state')
+      && liveControllerMigration.includes('ALTER TABLE public.live_controller_state ENABLE ROW LEVEL SECURITY'),
+    'redundant wake-ups must not become competing live-score writers'
+  );
+  add(
+    checks,
+    'browser/Supabase nudge wakes the same leased controller',
+    liveNudgeApi.includes('runLivePollerWindow')
+      && liveNudgeApi.includes('requireLease: true')
+      && !liveNudgeApi.includes('workflow_dispatch')
+      && app.includes("fetch('/api/live-nudge'")
+      && app.includes('_LIVE_NUDGE_LOCAL_COOLDOWN_MS'),
+    'browser nudge must be rate-limited and must not dispatch GitHub Actions'
+  );
+  add(
+    checks,
+    'Supabase scheduled wake-up targets the nudge endpoint',
+    liveControllerMigration.includes('cron.schedule')
+      && liveControllerMigration.includes('https://friendlybet.live/api/live-nudge')
+      && liveControllerMigration.includes('X-FriendlyBet-Wake-Source'),
+    'GitHub must not be the only scheduled wake-up layer'
+  );
 
   [
     ['final-result-verifier', verifier, 'FORCE_MATCH_SNAPSHOT', 'node scripts/generate-pundit.js'],
@@ -675,6 +723,8 @@ async function runReadiness(options = {}) {
     'node scripts/test-fair-play-resolver.js',
     'node scripts/test-live-ux-state.js',
     'node scripts/test-live-state-watchdog.js',
+    'node scripts/test-live-controller-state.js',
+    'node scripts/test-live-nudge-api.mjs',
     'node scripts/test-match-display-state.js',
     'node scripts/test-final-result-verifier.js',
     'node scripts/test-final-result-verifier-ledger.js',

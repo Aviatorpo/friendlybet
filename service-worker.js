@@ -9,7 +9,7 @@ const CACHE_VERSION = 'friendlybet-v2.10.133';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
-// v2.10.13: keep live data fresh enough while avoiding a Vercel edge request on
+// v2.10.132: keep live data fresh enough while avoiding a Vercel edge request on
 // every dashboard/leaderboard render. These are deliberately short for match data.
 const PUBLIC_DATA_TTLS = [
   { test: path => path.endsWith('/matches.json'), ttl: 30 * 1000 },
