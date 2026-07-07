@@ -228,6 +228,17 @@ for (const story of stories) {
         fail(`${story.id}: pool_focuses[${idx}] uses banned repeated defense-speech phrasing`);
       }
     });
+    if (outcome && outcome !== 'DRAW' && focus.team_code) {
+      const isWinningFocus = focus.team_code === outcome;
+      const winningPraise = /(good (call|calls|pick|picks)|clean hit|big (pool|bracket) boost|pick got stronger|correct picks|\u05d1\u05d7\u05d9\u05e8(?:\u05d4|\u05d5\u05ea) \u05d8\u05d5\u05d1(?:\u05d4|\u05d5\u05ea)|\u05e4\u05d2\u05d9\u05e2(?:\u05d4|\u05d5\u05ea) \u05d8\u05d5\u05d1(?:\u05d4|\u05d5\u05ea)|\u05d3\u05d7\u05d9\u05e4\u05d4|\u05d4\u05ea\u05d7\u05d6\u05e7\u05d4)/i;
+      const losingSting = /(fell hard|took a (hard|heavy) hit|wrong picks|\u05e0\u05e4\u05dc(?:\u05d4|\u05d5) \u05d7\u05d6\u05e7|\u05de\u05db\u05d4 (?:\u05e7\u05e9\u05d4|\u05d7\u05d6\u05e7\u05d4)|\u05d1\u05d7\u05d9\u05e8(?:\u05d4|\u05d5\u05ea) \u05dc\u05d0 \u05d8\u05d5\u05d1(?:\u05d4|\u05d5\u05ea))/i;
+      if (isWinningFocus && (losingSting.test(enFocus) || losingSting.test(heFocus))) {
+        fail(`${story.id}: winning pool_focuses[${idx}] must not use losing-pick language`);
+      }
+      if (!isWinningFocus && (winningPraise.test(enFocus) || winningPraise.test(heFocus))) {
+        fail(`${story.id}: losing pool_focuses[${idx}] must not use winning-pick praise`);
+      }
+    }
     if (!/picked \{team\} (to (win the World Cup|top the group|advance in the knockout bracket)|first in the group)/i.test(enFocus)) {
       fail(`${story.id}: pool_focuses[${idx}] English text must name the exact pick type`);
     }
