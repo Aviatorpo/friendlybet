@@ -1948,19 +1948,31 @@ function _dashboardImpactPointsText(pointsInfo) {
   };
 }
 
-function _dashboardImpactScoreTeamHtml(code, side = '', scoreText = null) {
+function _dashboardImpactScoreTeamHtml(code, side = '') {
   const name = code ? getTeamName(code) : t('bracketView.tbd');
   const flag = code ? getCountryFlag(code) : '<span class="flag-img-fallback">-</span>';
-  const scoreHtml = scoreText != null
-    ? `<span class="dip-team-score-badge">${escapeHtml(scoreText)}</span>`
-    : '';
   return `
-    <div class="dip-score-team ${side ? `dip-score-team-${side}` : ''}${scoreText != null ? ' dip-score-team-scored' : ''}" aria-label="${escapeHtml(scoreText != null ? `${name} ${scoreText}` : name)}">
+    <div class="dip-score-team ${side ? `dip-score-team-${side}` : ''}" aria-label="${escapeHtml(name)}">
       <span class="dip-score-team-main">
         <span class="dip-flag">${flag}</span>
-        <strong>${escapeHtml(name)}</strong>
+        <strong dir="auto">${escapeHtml(name)}</strong>
       </span>
-      ${scoreHtml}
+    </div>
+  `;
+}
+
+function _dashboardImpactScorePillHtml(match, ux) {
+  if (!_dashboardImpactHasScore(match, ux)) return '<div class="dip-score-pill">VS</div>';
+  const homeScore = _dashboardImpactTeamScoreText(match, 'home', ux);
+  const awayScore = _dashboardImpactTeamScoreText(match, 'away', ux);
+  const homeName = match && match.home_team_code ? getTeamName(match.home_team_code) : t('bracketView.tbd');
+  const awayName = match && match.away_team_code ? getTeamName(match.away_team_code) : t('bracketView.tbd');
+  const ariaLabel = `${homeName} ${homeScore}, ${awayName} ${awayScore}`;
+  return `
+    <div class="dip-score-pill dip-score-pill-scored" dir="ltr" aria-label="${escapeHtml(ariaLabel)}">
+      <span class="dip-score-number dip-score-number-home">${escapeHtml(homeScore)}</span>
+      <span class="dip-score-separator">-</span>
+      <span class="dip-score-number dip-score-number-away">${escapeHtml(awayScore)}</span>
     </div>
   `;
 }
@@ -1968,10 +1980,10 @@ function _dashboardImpactScoreTeamHtml(code, side = '', scoreText = null) {
 function _dashboardImpactScoreboardHtml(match, ux) {
   const hasScore = _dashboardImpactHasScore(match, ux);
   return `
-    <div class="dip-scoreboard ${hasScore ? 'dip-scoreboard-scored' : 'dip-scoreboard-fixture'}">
-      ${_dashboardImpactScoreTeamHtml(match && match.home_team_code, 'home', _dashboardImpactTeamScoreText(match, 'home', ux))}
-      ${hasScore ? '' : '<div class="dip-score-pill">VS</div>'}
-      ${_dashboardImpactScoreTeamHtml(match && match.away_team_code, 'away', _dashboardImpactTeamScoreText(match, 'away', ux))}
+    <div class="dip-scoreboard ${hasScore ? 'dip-scoreboard-scored' : 'dip-scoreboard-fixture'}" dir="ltr">
+      ${_dashboardImpactScoreTeamHtml(match && match.home_team_code, 'home')}
+      ${_dashboardImpactScorePillHtml(match, ux)}
+      ${_dashboardImpactScoreTeamHtml(match && match.away_team_code, 'away')}
     </div>
   `;
 }
