@@ -1459,7 +1459,382 @@ function matchKey(match) {
 const KNOCKOUT_HOST_CODES = new Set(['CAN', 'MEX', 'USA']);
 const KNOCKOUT_FAVORITE_CODES = new Set(['ARG', 'BEL', 'BRA', 'ENG', 'ESP', 'FRA', 'GER', 'POR']);
 
+function sentenceStart(value) {
+  const text = String(value || '').trim();
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+}
+
+function commentatorKnockoutPoolImpact(match, table, won, teamCode, angle) {
+  const isTournament = table === 'tournament_winner_picks';
+  const variants = won
+    ? (isTournament ? [
+      {
+        heSingle: 'הבחירה על גביע העולם מקבלת כוח בטבלת ההימור',
+        hePlural: 'הבחירות על גביע העולם מקבלות כוח בטבלת ההימור',
+        enSingle: 'that World Cup pick gets louder in the pool',
+        enPlural: 'those World Cup picks get louder in the pool',
+      },
+      {
+        heSingle: 'החלום על הגביע נראה הרבה יותר רציני בטבלת ההימור',
+        hePlural: 'החלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור',
+        enSingle: 'that World Cup pick looks serious on the leaderboard',
+        enPlural: 'those World Cup picks look serious on the leaderboard',
+      },
+      {
+        heSingle: 'הבחירה הזאת כבר עושה רעש נכון בטבלת ההימור',
+        hePlural: 'הבחירות האלה כבר עושות רעש נכון בטבלת ההימור',
+        enSingle: 'that pick suddenly matters in the pool table',
+        enPlural: 'those picks suddenly matter in the pool table',
+      },
+      {
+        heSingle: 'הדרך לגביע קיבלה עוד הוכחה בטבלת ההימור',
+        hePlural: 'הדרך לגביע קיבלה עוד הוכחה בטבלת ההימור',
+        enSingle: 'the trophy call has real weight in the pool now',
+        enPlural: 'the trophy calls have real weight in the pool now',
+      },
+    ] : [
+      {
+        heSingle: 'בחירת הנוקאאוט מקבלת ניקוד חשוב בטבלת ההימור',
+        hePlural: 'בחירות הנוקאאוט מקבלות ניקוד חשוב בטבלת ההימור',
+        enSingle: 'that knockout call scores in the pool',
+        enPlural: 'those knockout calls score in the pool',
+      },
+      {
+        heSingle: 'הבראקט שלו מקבל נקודות חשובות בטבלת ההימור',
+        hePlural: 'הבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור',
+        enSingle: 'that bracket pick lands important pool points',
+        enPlural: 'those bracket picks land important pool points',
+      },
+      {
+        heSingle: 'הבחירה הזאת מזיזה את טבלת ההימור לטובתו',
+        hePlural: 'הבחירות האלה מזיזות את טבלת ההימור לטובתם',
+        enSingle: 'that call moves the pool table the right way',
+        enPlural: 'those calls move the pool table the right way',
+      },
+      {
+        heSingle: 'זו פגיעה שמופיעה מיד בניקוד',
+        hePlural: 'אלו פגיעות שמופיעות מיד בניקוד',
+        enSingle: 'that pick lands in the points column',
+        enPlural: 'those picks land in the points column',
+      },
+    ])
+    : (isTournament ? [
+      {
+        heSingle: 'החלום על הגביע חוטף מכה בטבלת ההימור',
+        hePlural: 'החלומות על הגביע חוטפים מכה בטבלת ההימור',
+        enSingle: 'that World Cup dream takes damage in the pool',
+        enPlural: 'those World Cup dreams take damage in the pool',
+      },
+      {
+        heSingle: 'הבחירה על הגביע נראית הרבה פחות בטוחה בטבלת ההימור',
+        hePlural: 'הבחירות על הגביע נראות הרבה פחות בטוחות בטבלת ההימור',
+        enSingle: 'that trophy pick looks much weaker in the pool',
+        enPlural: 'those trophy picks look much weaker in the pool',
+      },
+      {
+        heSingle: 'המסלול לגביע נעשה כבד מאוד בטבלת ההימור',
+        hePlural: 'המסלולים לגביע נעשים כבדים מאוד בטבלת ההימור',
+        enSingle: 'that title call is in real trouble on the leaderboard',
+        enPlural: 'those title calls are in real trouble on the leaderboard',
+      },
+      {
+        heSingle: 'הבחירה הזאת עולה ביוקר בטבלת ההימור',
+        hePlural: 'הבחירות האלה עולות ביוקר בטבלת ההימור',
+        enSingle: 'that pick costs real ground in the pool table',
+        enPlural: 'those picks cost real ground in the pool table',
+      },
+    ] : [
+      {
+        heSingle: 'בחירת הנוקאאוט מאבדת גובה בטבלת ההימור',
+        hePlural: 'בחירות הנוקאאוט מאבדות גובה בטבלת ההימור',
+        enSingle: 'that knockout call loses ground in the pool',
+        enPlural: 'those knockout calls lose ground in the pool',
+      },
+      {
+        heSingle: 'הבראקט הזה משלם על זה בטבלת ההימור',
+        hePlural: 'הבראקטים האלה משלמים על זה בטבלת ההימור',
+        enSingle: 'that bracket call pays for it on the leaderboard',
+        enPlural: 'those bracket calls pay for it on the leaderboard',
+      },
+      {
+        heSingle: 'הבחירה הזאת יורדת מיד בניקוד',
+        hePlural: 'הבחירות האלה יורדות מיד בניקוד',
+        enSingle: 'that pick drops straight into the bad column',
+        enPlural: 'those picks drop straight into the bad column',
+      },
+      {
+        heSingle: 'זו טעות שכבר מורגשת בטבלת ההימור',
+        hePlural: 'אלו טעויות שכבר מורגשות בטבלת ההימור',
+        enSingle: 'that miss already hurts the pool table',
+        enPlural: 'those misses already hurt the pool table',
+      },
+    ]);
+  return storyCopyChoice(match, `commentator-pool-impact-${angle}-${table}-${won ? 'won' : 'lost'}-${teamCode}`, variants);
+}
+
+function commentatorKnockoutFocusCopy(match, outcome, teamCode, table) {
+  const meta = knockoutStoryScoreMeta(match, outcome);
+  const angle = knockoutStoryAngle(match, outcome, meta);
+  const won = teamCode === outcome;
+  const opponent = opponentForTeam(match, teamCode);
+  const opponentHe = teamName(opponent, 'he');
+  const opponentEn = teamName(opponent, 'en');
+  const pickedTeamHe = teamName(teamCode, 'he');
+  const pickedTeamEn = teamName(teamCode, 'en');
+  const impact = commentatorKnockoutPoolImpact(match, table, won, teamCode, angle);
+  const score = meta.score;
+  const variants = {
+    penalties: won ? [
+      {
+        pickFirst: false,
+        heSingle: `${meta.winnerHe} עוברת בפנדלים אחרי ${score}. בחירה אמיצה, ו${impact.heSingle}`,
+        hePlural: `${meta.winnerHe} עוברת בפנדלים אחרי ${score}. בחירות אמיצות, ו${impact.hePlural}`,
+        enSingle: `${meta.winnerEn} advance on penalties after ${score}. Brave call, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} advance on penalties after ${score}. Brave calls, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `${score} ואז פנדלים. ${meta.winnerHe} בשלב הבא, ו${impact.heSingle}`,
+        hePlural: `${score} ואז פנדלים. ${meta.winnerHe} בשלב הבא, ו${impact.hePlural}`,
+        enSingle: `${score}, then penalties. ${meta.winnerEn} go through, and ${impact.enSingle}`,
+        enPlural: `${score}, then penalties. ${meta.winnerEn} go through, and ${impact.enPlural}`,
+      },
+    ] : [
+      {
+        pickFirst: false,
+        heSingle: `${meta.winnerHe} עוברת בפנדלים אחרי ${score}. בחירה לא טובה, ו${impact.heSingle}`,
+        hePlural: `${meta.winnerHe} עוברת בפנדלים אחרי ${score}. בחירות לא טובות, ו${impact.hePlural}`,
+        enSingle: `${meta.winnerEn} advance on penalties after ${score}. Bad call, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} advance on penalties after ${score}. Bad calls, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `${score} ופנדלים שלחו את ${pickedTeamHe} הביתה. ${impact.heSingle}`,
+        hePlural: `${score} ופנדלים שלחו את ${pickedTeamHe} הביתה. ${impact.hePlural}`,
+        enSingle: `${score} and penalties send ${pickedTeamEn} out. ${sentenceStart(impact.enSingle)}`,
+        enPlural: `${score} and penalties send ${pickedTeamEn} out. ${sentenceStart(impact.enPlural)}`,
+      },
+    ],
+    blowout: won ? [
+      {
+        pickFirst: false,
+        heSingle: `${meta.winnerHe} דרסה את ${meta.loserHe} ${score}. בחירה גדולה, ו${impact.heSingle}`,
+        hePlural: `${meta.winnerHe} דרסה את ${meta.loserHe} ${score}. בחירות גדולות, ו${impact.hePlural}`,
+        enSingle: `${meta.winnerEn} smashed ${meta.loserEn} ${score}. Great call, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} smashed ${meta.loserEn} ${score}. Great calls, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `${score} בלי הרבה שאלות. ${meta.winnerHe} ממשיכה, ו${impact.heSingle}`,
+        hePlural: `${score} בלי הרבה שאלות. ${meta.winnerHe} ממשיכה, ו${impact.hePlural}`,
+        enSingle: `${score}, no real debate. ${meta.winnerEn} move on, and ${impact.enSingle}`,
+        enPlural: `${score}, no real debate. ${meta.winnerEn} move on, and ${impact.enPlural}`,
+      },
+    ] : [
+      {
+        pickFirst: false,
+        heSingle: `${meta.winnerHe} דרסה את ${meta.loserHe} ${score}. בחירה גרועה, ו${impact.heSingle}`,
+        hePlural: `${meta.winnerHe} דרסה את ${meta.loserHe} ${score}. בחירות גרועות, ו${impact.hePlural}`,
+        enSingle: `${meta.winnerEn} smashed ${meta.loserEn} ${score}. Bad call, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} smashed ${meta.loserEn} ${score}. Bad calls, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `${pickedTeamHe} נעצרת חזק אחרי ${score}. ${impact.heSingle}`,
+        hePlural: `${pickedTeamHe} נעצרת חזק אחרי ${score}. ${impact.hePlural}`,
+        enSingle: `${pickedTeamEn} stop hard after ${score}. ${sentenceStart(impact.enSingle)}`,
+        enPlural: `${pickedTeamEn} stop hard after ${score}. ${sentenceStart(impact.enPlural)}`,
+      },
+    ],
+    favorite_out: won ? [
+      {
+        pickFirst: false,
+        heSingle: `${meta.winnerHe} מעיפה את ${meta.loserHe}. זו בחירה ענקית, ו${impact.heSingle}`,
+        hePlural: `${meta.winnerHe} מעיפה את ${meta.loserHe}. אלו בחירות ענקיות, ו${impact.hePlural}`,
+        enSingle: `${meta.winnerEn} knock out ${meta.loserEn}. Huge call, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} knock out ${meta.loserEn}. Huge calls, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `${meta.loserHe} בחוץ אחרי ${score}. זה רגע גדול, ו${impact.heSingle}`,
+        hePlural: `${meta.loserHe} בחוץ אחרי ${score}. זה רגע גדול, ו${impact.hePlural}`,
+        enSingle: `${meta.loserEn} are out after ${score}. Big moment, and ${impact.enSingle}`,
+        enPlural: `${meta.loserEn} are out after ${score}. Big moment, and ${impact.enPlural}`,
+      },
+    ] : [
+      {
+        pickFirst: false,
+        heSingle: `${meta.loserHe} בחוץ. בחירה כואבת, ו${impact.heSingle}`,
+        hePlural: `${meta.loserHe} בחוץ. בחירות כואבות, ו${impact.hePlural}`,
+        enSingle: `${meta.loserEn} are out. Painful call, and ${impact.enSingle}`,
+        enPlural: `${meta.loserEn} are out. Painful calls, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `${meta.winnerHe} עשתה מהפך בבראקט עם ${score}. ${impact.heSingle}`,
+        hePlural: `${meta.winnerHe} עשתה מהפך בבראקט עם ${score}. ${impact.hePlural}`,
+        enSingle: `${meta.winnerEn} flip the bracket with ${score}. ${sentenceStart(impact.enSingle)}`,
+        enPlural: `${meta.winnerEn} flip the bracket with ${score}. ${sentenceStart(impact.enPlural)}`,
+      },
+    ],
+    thriller: won ? [
+      {
+        pickFirst: false,
+        heSingle: `${meta.winnerHe} שורדת ${score}. בחירה חזקה בלחץ, ו${impact.heSingle}`,
+        hePlural: `${meta.winnerHe} שורדת ${score}. בחירות חזקות בלחץ, ו${impact.hePlural}`,
+        enSingle: `${meta.winnerEn} survive ${score}. Strong call under pressure, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} survive ${score}. Strong calls under pressure, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `${score} עד הסוף. ${meta.winnerHe} ממשיכה, ו${impact.heSingle}`,
+        hePlural: `${score} עד הסוף. ${meta.winnerHe} ממשיכה, ו${impact.hePlural}`,
+        enSingle: `${score} to the end. ${meta.winnerEn} move on, and ${impact.enSingle}`,
+        enPlural: `${score} to the end. ${meta.winnerEn} move on, and ${impact.enPlural}`,
+      },
+    ] : [
+      {
+        pickFirst: false,
+        heSingle: `${meta.winnerHe} שורדת ${score}. קרוב, אבל רע לטופס, ו${impact.heSingle}`,
+        hePlural: `${meta.winnerHe} שורדת ${score}. קרוב, אבל רע לטפסים, ו${impact.hePlural}`,
+        enSingle: `${meta.winnerEn} survive ${score}. Close call, bad ending, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} survive ${score}. Close calls, bad ending, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `${pickedTeamHe} הייתה קרובה, אבל ${score} לא מספיק. ${impact.heSingle}`,
+        hePlural: `${pickedTeamHe} הייתה קרובה, אבל ${score} לא מספיק. ${impact.hePlural}`,
+        enSingle: `${pickedTeamEn} came close, but ${score} is not enough. ${sentenceStart(impact.enSingle)}`,
+        enPlural: `${pickedTeamEn} came close, but ${score} is not enough. ${sentenceStart(impact.enPlural)}`,
+      },
+    ],
+    host_out: won ? [
+      {
+        pickFirst: false,
+        heSingle: `${meta.winnerHe} שולחת את המארחת הביתה עם ${score}. בחירה חזקה, ו${impact.heSingle}`,
+        hePlural: `${meta.winnerHe} שולחת את המארחת הביתה עם ${score}. בחירות חזקות, ו${impact.hePlural}`,
+        enSingle: `${meta.winnerEn} send the hosts out with ${score}. Strong call, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} send the hosts out with ${score}. Strong calls, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `המארחת בחוץ, ${meta.winnerHe} בשלב הבא. ${impact.heSingle}`,
+        hePlural: `המארחת בחוץ, ${meta.winnerHe} בשלב הבא. ${impact.hePlural}`,
+        enSingle: `The hosts are out, ${meta.winnerEn} go on. ${sentenceStart(impact.enSingle)}`,
+        enPlural: `The hosts are out, ${meta.winnerEn} go on. ${sentenceStart(impact.enPlural)}`,
+      },
+    ] : [
+      {
+        pickFirst: false,
+        heSingle: `המסע הביתי נגמר אחרי ${score}. בחירה לא טובה, ו${impact.heSingle}`,
+        hePlural: `המסע הביתי נגמר אחרי ${score}. בחירות לא טובות, ו${impact.hePlural}`,
+        enSingle: `The home run ends after ${score}. Bad call, and ${impact.enSingle}`,
+        enPlural: `The home run ends after ${score}. Bad calls, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `${opponentHe} עצרה את המארחת. ${impact.heSingle}`,
+        hePlural: `${opponentHe} עצרה את המארחת. ${impact.hePlural}`,
+        enSingle: `${opponentEn} stopped the hosts. ${sentenceStart(impact.enSingle)}`,
+        enPlural: `${opponentEn} stopped the hosts. ${sentenceStart(impact.enPlural)}`,
+      },
+    ],
+    one_goal: won ? [
+      {
+        pickFirst: false,
+        heSingle: `${meta.winnerHe} צריכה שער אחד ומקבלת אותו. בחירה חדה, ו${impact.heSingle}`,
+        hePlural: `${meta.winnerHe} צריכה שער אחד ומקבלת אותו. בחירות חדות, ו${impact.hePlural}`,
+        enSingle: `${meta.winnerEn} need one goal and get it. Sharp call, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} need one goal and get it. Sharp calls, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `1-0 קטן, משמעות גדולה. ${meta.winnerHe} ממשיכה, ו${impact.heSingle}`,
+        hePlural: `1-0 קטן, משמעות גדולה. ${meta.winnerHe} ממשיכה, ו${impact.hePlural}`,
+        enSingle: `Small 1-0, huge meaning. ${meta.winnerEn} move on, and ${impact.enSingle}`,
+        enPlural: `Small 1-0, huge meaning. ${meta.winnerEn} move on, and ${impact.enPlural}`,
+      },
+    ] : [
+      {
+        pickFirst: false,
+        heSingle: `שער אחד של ${meta.winnerHe} מספיק. בחירה לא טובה, ו${impact.heSingle}`,
+        hePlural: `שער אחד של ${meta.winnerHe} מספיק. בחירות לא טובות, ו${impact.hePlural}`,
+        enSingle: `One ${meta.winnerEn} goal is enough. Bad call, and ${impact.enSingle}`,
+        enPlural: `One ${meta.winnerEn} goal is enough. Bad calls, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `${pickedTeamHe} בחוץ בגלל שער אחד. ${impact.heSingle}`,
+        hePlural: `${pickedTeamHe} בחוץ בגלל שער אחד. ${impact.hePlural}`,
+        enSingle: `${pickedTeamEn} are out because of one goal. ${sentenceStart(impact.enSingle)}`,
+        enPlural: `${pickedTeamEn} are out because of one goal. ${sentenceStart(impact.enPlural)}`,
+      },
+    ],
+    standard: won ? [
+      {
+        pickFirst: false,
+        heSingle: `${meta.winnerHe} מנצחת ${score} וממשיכה. בחירה טובה, ו${impact.heSingle}`,
+        hePlural: `${meta.winnerHe} מנצחת ${score} וממשיכה. בחירות טובות, ו${impact.hePlural}`,
+        enSingle: `${meta.winnerEn} win ${score} and move on. Good call, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} win ${score} and move on. Good calls, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `${score} ל${meta.winnerHe}. שלב הבא, ו${impact.heSingle}`,
+        hePlural: `${score} ל${meta.winnerHe}. שלב הבא, ו${impact.hePlural}`,
+        enSingle: `${score} for ${meta.winnerEn}. Next round, and ${impact.enSingle}`,
+        enPlural: `${score} for ${meta.winnerEn}. Next round, and ${impact.enPlural}`,
+      },
+    ] : [
+      {
+        pickFirst: false,
+        heSingle: `${meta.winnerHe} מנצחת ${score}; ${pickedTeamHe} נעצרת כאן. בחירה גרועה, ו${impact.heSingle}`,
+        hePlural: `${meta.winnerHe} מנצחת ${score}; ${pickedTeamHe} נעצרת כאן. בחירות גרועות, ו${impact.hePlural}`,
+        enSingle: `${meta.winnerEn} win ${score}; ${pickedTeamEn} stop here. Bad call, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} win ${score}; ${pickedTeamEn} stop here. Bad calls, and ${impact.enPlural}`,
+      },
+      {
+        pickFirst: true,
+        heSingle: `${pickedTeamHe} לא עוברת. ${impact.heSingle}`,
+        hePlural: `${pickedTeamHe} לא עוברת. ${impact.hePlural}`,
+        enSingle: `${pickedTeamEn} do not go through. ${sentenceStart(impact.enSingle)}`,
+        enPlural: `${pickedTeamEn} do not go through. ${sentenceStart(impact.enPlural)}`,
+      },
+    ],
+  };
+  return storyCopyChoice(match, `commentator-knockout-focus-${angle}-${won ? 'won' : 'lost'}-${table}-${teamCode}`, variants[angle] || variants.standard);
+}
+
+function commentatorKnockoutStoryFocus(match, outcome, teamCode, table) {
+  if (!match || !outcome || outcome === 'DRAW') return null;
+  const isTournament = table === 'tournament_winner_picks';
+  const pickHe = isTournament ? 'כזוכת המונדיאל' : 'להתקדם בבראקט הנוקאאוט';
+  const pickEn = isTournament ? 'to win the World Cup' : 'to advance in the knockout bracket';
+  const heSinglePick = `{names} בחר את {team} ${pickHe}`;
+  const hePluralPick = `{names} בחרו את {team} ${pickHe}`;
+  const enPick = `{names} picked {team} ${pickEn}`;
+  const copy = commentatorKnockoutFocusCopy(match, outcome, teamCode, table);
+  const pickFirst = storyCopyHash(`${match.id || matchKey(match)}:commentator-focus-order:${table}:${teamCode}`) % 2 === 0
+    ? copy.pickFirst
+    : !copy.pickFirst;
+  const join = (pick, impact, pickFirst) => pickFirst ? `${pick}. ${impact}` : `${impact}. ${pick}`;
+  return {
+    table,
+    team_code: teamCode,
+    team_he: teamName(teamCode, 'he'),
+    team_en: teamName(teamCode, 'en'),
+    ...(table === 'knockout_picks' ? { match_id: match.id } : {}),
+    he_name: join(heSinglePick, copy.heSingle, pickFirst),
+    he_names: join(hePluralPick, copy.hePlural, pickFirst),
+    he_count: join(hePluralPick, copy.hePlural, pickFirst),
+    en_name: join(enPick, copy.enSingle, pickFirst),
+    en_names: join(enPick, copy.enPlural, pickFirst),
+    en_count: join(enPick, copy.enPlural, pickFirst),
+  };
+}
+
 function directKnockoutStoryFocus(match, outcome, teamCode, table) {
+  return commentatorKnockoutStoryFocus(match, outcome, teamCode, table);
   if (!match || !outcome || outcome === 'DRAW') return null;
   const score = scoreForOutcome(match, outcome);
   const opponent = opponentForTeam(match, teamCode);
@@ -1719,6 +2094,90 @@ function knockoutStoryAngle(match, outcome, meta = knockoutStoryScoreMeta(match,
   return 'standard';
 }
 
+function commentatorKnockoutCaption(match, outcome, angle) {
+  const meta = knockoutStoryScoreMeta(match, outcome);
+  const {
+    score,
+    winnerHe,
+    loserHe,
+    winnerEn,
+    loserEn,
+  } = meta;
+  const variants = {
+    penalties: [
+      {
+        he: `${score} על הלוח, ואז פנדלים. ${winnerHe} ממשיכה, ${loserHe} בחוץ, וטבלת ההימור מקבלת תשובה גדולה`,
+        en: `${score} on the board, then penalties. ${winnerEn} go through, ${loserEn} are out, and the pool table gets a big answer`,
+      },
+      {
+        he: `${winnerHe} עוברת בפנדלים אחרי ${score}. בחירות עליה מקבלות רגע ענק; בחירות על ${loserHe} חוטפות עכשיו`,
+        en: `${winnerEn} advance on penalties after ${score}. ${winnerEn} picks get a huge moment; ${loserEn} picks hurt now`,
+      },
+    ],
+    blowout: [
+      {
+        he: `${winnerHe} דורסת את ${loserHe} ${score}. זו עלייה ברורה, וטבלת ההימור זזה מיד עם כל בחירה על ${winnerHe}`,
+        en: `${winnerEn} smash ${loserEn} ${score}. Clear win, clear path, and every ${winnerEn} pick moves the pool table`,
+      },
+      {
+        he: `${score} ל${winnerHe}, בלי הרבה ויכוח. בחירות על ${winnerHe} מקבלות ניקוד, בחירות על ${loserHe} סופגות מכה`,
+        en: `${score} for ${winnerEn}, no real debate. ${winnerEn} picks score; ${loserEn} picks take damage`,
+      },
+    ],
+    favorite_out: [
+      {
+        he: `${winnerHe} מעיפה את ${loserHe} עם ${score}. זה לא רק ניצחון, זה שינוי גדול בטבלת ההימור`,
+        en: `${winnerEn} knock out ${loserEn} with ${score}. That is not just a win, it is a major pool swing`,
+      },
+      {
+        he: `${loserHe} בחוץ, ${winnerHe} בשלב הבא. בחירות אמיצות על ${winnerHe} מקבלות רגע ענק`,
+        en: `${loserEn} are out, ${winnerEn} are through. Brave ${winnerEn} picks get a huge pool moment`,
+      },
+    ],
+    thriller: [
+      {
+        he: `${winnerHe} שורדת ${score} וממשיכה. משחק צמוד, השפעה גדולה, וטבלת ההימור מרגישה את זה עכשיו`,
+        en: `${winnerEn} survive ${score} and move on. Tight match, big impact, and the pool table feels it now`,
+      },
+      {
+        he: `${score} עד הסוף, ואז ${winnerHe} נשארת בחיים. בחירות עליה עולות, בחירות על ${loserHe} נופלות`,
+        en: `${score} to the end, then ${winnerEn} stay alive. Picks on them rise; ${loserEn} picks fall`,
+      },
+    ],
+    host_out: [
+      {
+        he: `${winnerHe} שולחת את המארחת הביתה עם ${score}. זה רגע נוקאאוט גדול עם השפעה מיידית על ההימור`,
+        en: `${winnerEn} send the hosts home with ${score}. Big knockout moment, immediate pool impact`,
+      },
+      {
+        he: `המארחת בחוץ, ${winnerHe} ממשיכה. בחירה על ${winnerHe} נראית הרבה יותר חזקה עכשיו`,
+        en: `The hosts are out, ${winnerEn} move on. Picking ${winnerEn} looks much stronger now`,
+      },
+    ],
+    one_goal: [
+      {
+        he: `שער אחד מספיק ל${winnerHe}. ${loserHe} בחוץ, ${winnerHe} בשלב הבא, וטבלת ההימור זזה`,
+        en: `One goal is enough for ${winnerEn}. ${loserEn} are out, ${winnerEn} go through, and the pool table moves`,
+      },
+      {
+        he: `${winnerHe} מנצחת ${score}. קטן על הלוח, גדול מאוד לבחירות עליה`,
+        en: `${winnerEn} win ${score}. Small on the board, very big for ${winnerEn} picks`,
+      },
+    ],
+    standard: [
+      {
+        he: `${winnerHe} מנצחת את ${loserHe} ${score} וממשיכה. בחירות נכונות מקבלות ניקוד, טעויות מרגישות את זה`,
+        en: `${winnerEn} beat ${loserEn} ${score} and move on. Right picks score, bad picks feel it`,
+      },
+      {
+        he: `${score} ל${winnerHe}. שלב הבא בשבילה, סוף הדרך ל${loserHe}, וטבלת ההימור משתנה`,
+        en: `${score} for ${winnerEn}. Next round for them, end of the road for ${loserEn}, and the pool table changes`,
+      },
+    ],
+  };
+  return storyCopyChoice(match, `commentator-knockout-caption-${angle}`, variants[angle] || variants.standard);
+}
+
 function knockoutAngleCopy(match, outcome) {
   const meta = knockoutStoryScoreMeta(match, outcome);
   const angle = knockoutStoryAngle(match, outcome, meta);
@@ -1855,14 +2314,15 @@ function knockoutAngleCopy(match, outcome) {
     ],
   };
   const copy = storyCopyChoice(match, `knockout-angle-${angle}`, variants[angle] || variants.standard);
+  const caption = commentatorKnockoutCaption(match, outcome, angle);
   return {
     title: {
       he: copy.heTitle,
       en: copy.enTitle,
     },
     caption: {
-      he: copy.heCaption,
-      en: copy.enCaption,
+      he: caption.he,
+      en: caption.en,
     },
   };
 }
@@ -2752,14 +3212,14 @@ const RECENT_COPY_VARIETY_CLAUSES = {
       'הניקוד הבא יספר את הסיפור.',
     ],
     en: [
-      'Good picks got a boost.',
-      'Bad picks took a hit.',
-      'The pool feels this result.',
-      'The brackets moved in one moment.',
-      'This win shows up in the table too.',
-      'Correct picks got a big moment.',
-      'Wrong picks already feel it.',
-      'The next points tell the story.',
+      'Right calls score now.',
+      'Bad calls lose ground now.',
+      'The pool table changes with it.',
+      'The bracket moves in one moment.',
+      'This result shows up in the table too.',
+      'Smart picks get their moment.',
+      'Missed picks pay for it now.',
+      'The next points will show it.',
     ],
   },
   focus: {
