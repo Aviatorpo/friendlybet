@@ -357,8 +357,14 @@ latest.forEach(story => {
   if (outcome && outcome !== 'DRAW') {
     const first = focuses[0] || {};
     const isGroupStory = String(match && match.stage || '').toUpperCase() === 'GROUP_STAGE';
-    if (!isGroupStory && (first.table !== 'knockout_picks' || first.team_code !== outcome)) {
-      fail(`${story.id}: latest knockout winning stories must try the winner's knockout pick first`);
+    if (!isGroupStory) {
+      const firstIsWinnerSpecific = first.team_code === outcome && ['knockout_picks', 'tournament_winner_picks'].includes(first.table);
+      if (!firstIsWinnerSpecific) {
+        fail(`arg-egy-2026-07-07: latest knockout winning stories must try a winner-specific pool focus first`);
+      }
+      if (!focuses.some(focus => focus.table === 'knockout_picks' && focus.team_code === outcome)) {
+        fail(`arg-egy-2026-07-07: latest knockout winning stories must include the winner's knockout pick focus`);
+      }
     }
     if (isGroupStory && (first.table !== 'tournament_winner_picks' || first.team_code !== outcome)) {
       fail(`${story.id}: latest winning stories must try the winner's tournament-winner picks first`);
