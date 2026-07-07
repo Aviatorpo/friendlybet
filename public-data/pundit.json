@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-07-06T23:54:32.645Z",
-  "freshUntil": "2026-07-07T05:54:32.645Z",
-  "count": 5,
+  "updatedAt": "2026-07-07T01:56:54.033Z",
+  "freshUntil": "2026-07-07T07:56:54.033Z",
+  "count": 6,
   "items": [
+    {
+      "id": "live-084756cf-d007-4858-8fc4-d6ca8b66b686",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "ארה\"ב נגד בלגיה עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
+      "en": "United States vs Belgium is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "sources": [],
+      "expires_at": "2026-07-07T04:56:54.033Z"
+    },
     {
       "id": "result-e2a51510-0a1f-40f3-9990-632608b6f116",
       "type": "result",
