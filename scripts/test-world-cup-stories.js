@@ -375,12 +375,14 @@ const visualChecks = [
   [appJs.includes('assetRev') && appJs.includes('story-assets/') && appJs.includes('v=${rev}'), 'client story image URLs must include a feed revision cache buster'],
   [appJs.includes('function _wcHandleStoriesWheel') && appJs.includes("rail.addEventListener('wheel', _wcHandleStoriesWheel, { passive: false })"), 'desktop story carousel must support horizontal scrolling with the mouse wheel'],
   [appJs.includes('function _wcHandleStoriesPointerDown') && appJs.includes("rail.addEventListener('pointermove', _wcHandleStoriesPointerMove)"), 'desktop story carousel must support mouse drag scrolling'],
+  [appJs.includes('draggable="false"') && stylesCss.includes('-webkit-user-drag: none'), 'story carousel images must not swallow desktop drag gestures'],
   [appJs.includes('function _wcHandleStoriesKeydown') && appJs.includes("rail.addEventListener('keydown', _wcHandleStoriesKeydown)"), 'desktop story carousel must support keyboard arrow navigation'],
   [appJs.includes('_wcScrollStoryCardIntoView(rail, cards[nextIdx])') && !appJs.includes("cards[nextIdx].scrollIntoView"), 'story carousel next/previous navigation must use rail-centered scrolling, not element scrollIntoView'],
-  [indexHtml.includes('world-cup-stories-side-prev') && indexHtml.includes('world-cup-stories-side-next'), 'dashboard story carousel must include large in-rail navigation buttons'],
-  [stylesCss.includes('.wc-stories-stage') && stylesCss.includes('.wc-stories-side-nav'), 'CSS must style the large story carousel navigation controls'],
-  [stylesCss.includes('scrollbar-width: thin') && !stylesCss.includes('.wc-stories-rail::-webkit-scrollbar { display: none; }'), 'story carousel must expose a visible desktop scrollbar'],
-  [stylesCss.includes('direction: ltr') && stylesCss.includes('body.ltr .wc-stories-side-nav'), 'story carousel rail and arrows must keep physical desktop directions in RTL/LTR'],
+  [appJs.includes('function _wcStoriesLogicalScroll') && appJs.includes('function _wcSetStoriesLogicalScroll'), 'story carousel scrolling must normalize RTL/LTR scroll positions without changing the visual structure'],
+  [indexHtml.includes('<div class="wc-stories-rail" id="world-cup-stories-rail"></div>') && !indexHtml.includes('world-cup-stories-side-'), 'dashboard story carousel must preserve the original direct rail structure without side navigation'],
+  [stylesCss.includes('.wc-stories-nav') && !stylesCss.includes('.wc-stories-side-nav') && !stylesCss.includes('.wc-stories-stage'), 'CSS must keep the existing header navigation format rather than adding side controls'],
+  [stylesCss.includes('.wc-stories-nav .ti-chevron-left::before') && stylesCss.includes('transform: rotate(45deg)'), 'story carousel header buttons must keep visible chevron icons even when external icon fonts are unavailable'],
+  [stylesCss.includes('scrollbar-width: none') && stylesCss.includes('.wc-stories-rail::-webkit-scrollbar { display: none; }'), 'story carousel must preserve the previous hidden-scrollbar visual format while adding better desktop input handling'],
 ];
 visualChecks.forEach(([ok, message]) => { if (!ok) fail(message); });
 

@@ -4127,27 +4127,51 @@ function _wcStoriesMaxScroll(rail) {
   return Math.max(0, (rail && rail.scrollWidth ? rail.scrollWidth : 0) - (rail && rail.clientWidth ? rail.clientWidth : 0));
 }
 
+function _wcStoriesAxis(rail) {
+  if (rail && typeof window !== 'undefined' && window.getComputedStyle) {
+    return window.getComputedStyle(rail).direction === 'rtl' ? -1 : 1;
+  }
+  return 1;
+}
+
+function _wcStoriesLogicalScroll(rail) {
+  const max = _wcStoriesMaxScroll(rail);
+  const raw = rail && typeof rail.scrollLeft === 'number' ? rail.scrollLeft : 0;
+  return Math.max(0, Math.min(max, _wcStoriesAxis(rail) === -1 ? -raw : raw));
+}
+
+function _wcSetStoriesLogicalScroll(rail, value, behavior = 'auto') {
+  if (!rail) return;
+  const max = _wcStoriesMaxScroll(rail);
+  const next = Math.max(0, Math.min(max, value));
+  const left = _wcStoriesAxis(rail) === -1 ? -next : next;
+  if (rail.scrollTo) rail.scrollTo({ left, behavior });
+  else rail.scrollLeft = left;
+}
+
 function _wcStoriesHasOverflow(rail) {
   return _wcStoriesMaxScroll(rail) > 2;
 }
 
 function _wcStoriesCanScroll(rail, delta) {
   if (!rail || !_wcStoriesHasOverflow(rail)) return false;
-  if (delta < 0) return rail.scrollLeft > 1;
-  if (delta > 0) return rail.scrollLeft < _wcStoriesMaxScroll(rail) - 1;
+  const logical = _wcStoriesLogicalScroll(rail);
+  if (delta < 0) return logical > 1;
+  if (delta > 0) return logical < _wcStoriesMaxScroll(rail) - 1;
   return false;
 }
 
 function _wcStoryScrollTarget(rail, card) {
   const railRect = rail.getBoundingClientRect();
   const cardRect = card.getBoundingClientRect();
-  const offset = (cardRect.left - railRect.left) + rail.scrollLeft;
-  return Math.max(0, Math.min(_wcStoriesMaxScroll(rail), offset - (rail.clientWidth - cardRect.width) / 2));
+  const railMid = railRect.left + railRect.width / 2;
+  const cardMid = cardRect.left + cardRect.width / 2;
+  return _wcStoriesLogicalScroll(rail) + ((cardMid - railMid) * _wcStoriesAxis(rail));
 }
 
 function _wcScrollStoryCardIntoView(rail, card, behavior = 'smooth') {
   if (!rail || !card) return;
-  rail.scrollTo({ left: _wcStoryScrollTarget(rail, card), behavior });
+  _wcSetStoriesLogicalScroll(rail, _wcStoryScrollTarget(rail, card), behavior);
 }
 
 function _wcHandleStoriesWheel(e) {
@@ -4156,7 +4180,7 @@ function _wcHandleStoriesWheel(e) {
   const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
   if (!_wcStoriesCanScroll(rail, delta)) return;
   e.preventDefault();
-  rail.scrollLeft += delta;
+  _wcSetStoriesLogicalScroll(rail, _wcStoriesLogicalScroll(rail) + delta);
   window.requestAnimationFrame(_wcUpdateStoriesChrome);
 }
 
@@ -4164,10 +4188,13 @@ function _wcHandleStoriesPointerDown(e) {
   const rail = e.currentTarget;
   if (!rail || e.button !== 0 || e.pointerType === 'touch') return;
   if (e.target && e.target.closest && e.target.closest('button, a')) return;
+  e.preventDefault();
+  if (rail.focus) rail.focus({ preventScroll: true });
   rail._wcStoriesDrag = {
     pointerId: e.pointerId,
     startX: e.clientX,
-    scrollLeft: rail.scrollLeft,
+    logicalScroll: _wcStoriesLogicalScroll(rail),
+    axis: _wcStoriesAxis(rail),
     moved: false
   };
   rail.classList.add('is-dragging');
@@ -4181,7 +4208,7 @@ function _wcHandleStoriesPointerMove(e) {
   const dx = e.clientX - drag.startX;
   if (Math.abs(dx) > 2) drag.moved = true;
   if (drag.moved) e.preventDefault();
-  rail.scrollLeft = drag.scrollLeft - dx;
+  _wcSetStoriesLogicalScroll(rail, drag.logicalScroll - (dx * drag.axis));
   window.requestAnimationFrame(_wcUpdateStoriesChrome);
 }
 
@@ -4207,8 +4234,6 @@ function _wcUpdateStoriesChrome() {
   const count = document.getElementById('world-cup-stories-count');
   const prev = document.getElementById('world-cup-stories-prev');
   const next = document.getElementById('world-cup-stories-next');
-  const sidePrev = document.getElementById('world-cup-stories-side-prev');
-  const sideNext = document.getElementById('world-cup-stories-side-next');
   const cards = rail ? Array.from(rail.querySelectorAll('.wc-story')) : [];
   if (!rail || !cards.length) return;
   const idx = _wcStoriesActiveIndex(rail);
@@ -4219,18 +4244,16 @@ function _wcUpdateStoriesChrome() {
   _wcStoriesState.idx = idx;
   if (dots) Array.from(dots.children).forEach((dot, i) => dot.classList.toggle('active', i === idx));
   if (count) count.textContent = `${idx + 1}/${cards.length}`;
-  [prev, sidePrev].forEach(btn => {
-    if (!btn) return;
-    btn.disabled = prevDisabled;
-    btn.setAttribute('aria-label', t('worldCupStories.previous'));
-    btn.title = t('worldCupStories.previous');
-  });
-  [next, sideNext].forEach(btn => {
-    if (!btn) return;
-    btn.disabled = nextDisabled;
-    btn.setAttribute('aria-label', t('worldCupStories.next'));
-    btn.title = t('worldCupStories.next');
-  });
+  if (prev) {
+    prev.disabled = prevDisabled;
+    prev.setAttribute('aria-label', t('worldCupStories.previous'));
+    prev.title = t('worldCupStories.previous');
+  }
+  if (next) {
+    next.disabled = nextDisabled;
+    next.setAttribute('aria-label', t('worldCupStories.next'));
+    next.title = t('worldCupStories.next');
+  }
 }
 
 function _wcScrollWorldCupStories(delta) {
@@ -4263,7 +4286,7 @@ async function renderWorldCupStories() {
     const dir = _wcStoryLang() === 'he' ? 'rtl' : 'ltr';
     return `
       <article class="wc-story" data-story-idx="${idx}" dir="${dir}">
-        <img class="wc-story-img" src="${_wcEsc(img)}" alt="${_wcEsc(copy.headline || '')}" loading="lazy">
+        <img class="wc-story-img" src="${_wcEsc(img)}" alt="${_wcEsc(copy.headline || '')}" loading="lazy" draggable="false">
         <div class="wc-story-caption-panel" dir="${dir}">
           <span class="wc-story-caption-text">${_wcEsc(caption || '')}</span>
         </div>
@@ -4282,17 +4305,13 @@ async function renderWorldCupStories() {
   card.style.display = '';
   const prev = document.getElementById('world-cup-stories-prev');
   const next = document.getElementById('world-cup-stories-next');
-  const sidePrev = document.getElementById('world-cup-stories-side-prev');
-  const sideNext = document.getElementById('world-cup-stories-side-next');
   const wireNav = (btn, delta) => {
     if (!btn || btn._wcStoriesWired) return;
     btn._wcStoriesWired = true;
     btn.addEventListener('click', () => _wcScrollWorldCupStories(delta));
   };
   wireNav(prev, -1);
-  wireNav(sidePrev, -1);
   wireNav(next, 1);
-  wireNav(sideNext, 1);
   if (!rail._wcStoriesWired) {
     rail._wcStoriesWired = true;
     rail.addEventListener('scroll', _wcUpdateStoriesChrome, { passive: true });

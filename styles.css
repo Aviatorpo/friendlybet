@@ -9521,14 +9521,56 @@ body:not(.ltr) .home-lang-toggle {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: 8px;
-  direction: ltr;
+  gap: 7px;
 }
 .wc-stories-nav {
-  display: none;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(217,180,106,0.34);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.07);
+  color: #ecd49a;
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease, opacity 0.16s ease, transform 0.16s ease;
 }
-.wc-stories-stage {
-  position: relative;
+.wc-stories-nav:hover:not(:disabled),
+.wc-stories-nav:focus-visible {
+  background: rgba(217,180,106,0.16);
+  border-color: rgba(236,212,154,0.58);
+}
+.wc-stories-nav:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.64);
+  outline-offset: 2px;
+}
+.wc-stories-nav:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.wc-stories-nav:disabled {
+  opacity: 0.34;
+  cursor: default;
+}
+.wc-stories-nav i {
+  font-size: 18px;
+}
+.wc-stories-nav .ti-chevron-left::before,
+.wc-stories-nav .ti-chevron-right::before {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+}
+.wc-stories-nav .ti-chevron-left::before {
+  transform: rotate(-135deg);
+}
+.wc-stories-nav .ti-chevron-right::before {
+  transform: rotate(45deg);
 }
 .wc-stories-rail {
   display: flex;
@@ -9536,10 +9578,8 @@ body:not(.ltr) .home-lang-toggle {
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  direction: ltr;
-  padding: 0 58px 9px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(217,180,106,0.58) rgba(255,255,255,0.09);
+  padding: 0 14px 4px;
+  scrollbar-width: none;
   cursor: grab;
   overscroll-behavior-inline: contain;
   touch-action: pan-x pan-y;
@@ -9553,60 +9593,16 @@ body:not(.ltr) .home-lang-toggle {
   scroll-snap-type: none;
   user-select: none;
 }
-.wc-stories-rail::-webkit-scrollbar {
-  height: 7px;
+.wc-stories-rail::-webkit-scrollbar { display: none; }
+body.ltr .wc-stories-nav .ti-chevron-left::before,
+body.ltr .wc-stories-nav .ti-chevron-right::before {
+  display: block;
 }
-.wc-stories-rail::-webkit-scrollbar-track {
-  background: rgba(255,255,255,0.08);
-  border-radius: 999px;
+body.ltr .wc-stories-nav .ti-chevron-left::before {
+  transform: rotate(-135deg);
 }
-.wc-stories-rail::-webkit-scrollbar-thumb {
-  background: rgba(217,180,106,0.66);
-  border-radius: 999px;
-}
-.wc-stories-side-nav {
-  position: absolute;
-  z-index: 5;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 48px;
-  min-height: 92px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(236,212,154,0.54);
-  border-radius: 999px;
-  background: rgba(10,10,13,0.78);
-  color: #ecd49a;
-  box-shadow: 0 14px 30px rgba(0,0,0,0.38);
-  cursor: pointer;
-  transition: transform 0.16s ease, opacity 0.16s ease, background 0.16s ease;
-}
-.wc-stories-side-nav:hover,
-.wc-stories-side-nav:focus-visible {
-  background: rgba(34,30,22,0.92);
-  transform: translateY(-50%) scale(1.04);
-}
-.wc-stories-side-nav:focus-visible {
-  outline: 2px solid rgba(255,255,255,0.78);
-  outline-offset: 2px;
-}
-.wc-stories-side-nav:disabled {
-  opacity: 0;
-  pointer-events: none;
-}
-.wc-stories-side-nav i {
-  font-size: 25px;
-}
-.wc-stories-side-prev {
-  left: 8px;
-}
-.wc-stories-side-next {
-  right: 8px;
-}
-body.ltr .wc-stories-side-nav .ti-chevron-left::before,
-body.ltr .wc-stories-side-nav .ti-chevron-right::before {
-  transform: none;
+body.ltr .wc-stories-nav .ti-chevron-right::before {
+  transform: rotate(45deg);
 }
 .wc-story {
   position: relative;
@@ -9623,6 +9619,8 @@ body.ltr .wc-stories-side-nav .ti-chevron-right::before {
   height: 100%;
   object-fit: cover;
   display: block;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 .wc-story::after {
   content: "";
@@ -9716,21 +9714,6 @@ body.ltr .wc-stories-side-nav .ti-chevron-right::before {
   width: 16px;
   border-radius: 999px;
   background: #d9b46a;
-}
-@media (max-width: 520px) {
-  .wc-stories-rail {
-    padding-inline: 44px;
-  }
-  .wc-stories-side-nav {
-    width: 38px;
-    min-height: 68px;
-  }
-  .wc-stories-side-prev {
-    left: 5px;
-  }
-  .wc-stories-side-next {
-    right: 5px;
-  }
 }
 
 /* Quiet gold icon for the secondary help action */
