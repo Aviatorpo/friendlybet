@@ -30,6 +30,8 @@ function allGroupsComplete(rows) {
 }
 const groupStageComplete = allGroupsComplete(matches);
 const bannedHeadlineFragments = [
+  /edge-of-seat/i,
+  /משחק על הקצה/u,
   /Statement made!?/i,
   /No winner, all drama/i,
   /the table felt it/i,
@@ -38,10 +40,15 @@ const bannedHeadlineFragments = [
   /\u05d4\u05d8\u05d1\u05dc\u05d4 \u05d4\u05e8\u05d2\u05d9\u05e9\u05d4 \u05d0\u05ea \u05d6\u05d4/u,
 ];
 const bannedFallbackFragments = [
+  /pool table feels it/i,
+  /טבלת ההימור מרגישה את זה/u,
+  /reread the forms/i,
   /makes noise with/i,
   /\u05e2\u05d5\u05e9\u05d4 \u05e8\u05e2\u05e9 \u05e2\u05dd/u,
 ];
 const bannedFocusFragments = [
+  /Strong calls? under pressure/i,
+  /בחיר(?:ה|ות) חזק(?:ה|ות) בלחץ/u,
   /already need[s]? a defense speech/i,
   /looking for a defense speech/i,
   /live receipts?/i,

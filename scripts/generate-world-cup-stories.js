@@ -1506,10 +1506,10 @@ function commentatorKnockoutPoolImpact(match, table, won, teamCode, angle) {
         enPlural: 'those bracket picks land important pool points',
       },
       {
-        heSingle: 'הבחירה הזאת מזיזה את טבלת ההימור לטובתו',
-        hePlural: 'הבחירות האלה מזיזות את טבלת ההימור לטובתם',
-        enSingle: 'that call moves the pool table the right way',
-        enPlural: 'those calls move the pool table the right way',
+        heSingle: 'זו קבלה יפה מאוד לבראקט',
+        hePlural: 'אלו קבלות יפות מאוד לבראקט',
+        enSingle: 'that bracket call gets a clean receipt',
+        enPlural: 'those bracket calls get clean receipts',
       },
       {
         heSingle: 'זו פגיעה שמופיעה מיד בניקוד',
@@ -1563,10 +1563,10 @@ function commentatorKnockoutPoolImpact(match, table, won, teamCode, angle) {
         enPlural: 'those picks drop straight into the bad column',
       },
       {
-        heSingle: 'זו טעות שכבר מורגשת בטבלת ההימור',
-        hePlural: 'אלו טעויות שכבר מורגשות בטבלת ההימור',
-        enSingle: 'that miss already hurts the pool table',
-        enPlural: 'those misses already hurt the pool table',
+        heSingle: "הבראקט הזה צריך תשובה טובה בצ'אט",
+        hePlural: "הבראקטים האלה צריכים תשובה טובה בצ'אט",
+        enSingle: 'that bracket needs a good answer in the chat',
+        enPlural: 'those brackets need good answers in the chat',
       },
     ]);
   return storyCopyChoice(match, `commentator-pool-impact-${angle}-${table}-${won ? 'won' : 'lost'}-${teamCode}`, variants);
@@ -1680,10 +1680,10 @@ function commentatorKnockoutFocusCopy(match, outcome, teamCode, table) {
     thriller: won ? [
       {
         pickFirst: false,
-        heSingle: `${meta.winnerHe} שורדת ${score}. בחירה חזקה בלחץ, ו${impact.heSingle}`,
-        hePlural: `${meta.winnerHe} שורדת ${score}. בחירות חזקות בלחץ, ו${impact.hePlural}`,
-        enSingle: `${meta.winnerEn} survive ${score}. Strong call under pressure, and ${impact.enSingle}`,
-        enPlural: `${meta.winnerEn} survive ${score}. Strong calls under pressure, and ${impact.enPlural}`,
+        heSingle: `כולם לעמוד ולמחוא כפיים. ${meta.winnerHe} שורדת ${score}, ו${impact.heSingle}`,
+        hePlural: `כולם לעמוד ולמחוא כפיים. ${meta.winnerHe} שורדת ${score}, ו${impact.hePlural}`,
+        enSingle: `Everyone stand up. ${meta.winnerEn} survive ${score}, and ${impact.enSingle}`,
+        enPlural: `Everyone stand up. ${meta.winnerEn} survive ${score}, and ${impact.enPlural}`,
       },
       {
         pickFirst: true,
@@ -1695,10 +1695,10 @@ function commentatorKnockoutFocusCopy(match, outcome, teamCode, table) {
     ] : [
       {
         pickFirst: false,
-        heSingle: `${meta.winnerHe} שורדת ${score}. קרוב, אבל רע לטופס, ו${impact.heSingle}`,
-        hePlural: `${meta.winnerHe} שורדת ${score}. קרוב, אבל רע לטפסים, ו${impact.hePlural}`,
-        enSingle: `${meta.winnerEn} survive ${score}. Close call, bad ending, and ${impact.enSingle}`,
-        enPlural: `${meta.winnerEn} survive ${score}. Close calls, bad ending, and ${impact.enPlural}`,
+        heSingle: `${pickedTeamHe} הייתה קרובה מדי בשביל לצחוק, אבל ${score} עדיין עצר את הבראקט. ${impact.heSingle}`,
+        hePlural: `${pickedTeamHe} הייתה קרובה מדי בשביל לצחוק, אבל ${score} עדיין עצר את הבראקטים. ${impact.hePlural}`,
+        enSingle: `${pickedTeamEn} came too close to laugh, but ${score} still stopped the bracket. ${sentenceStart(impact.enSingle)}`,
+        enPlural: `${pickedTeamEn} came too close to laugh, but ${score} still stopped those brackets. ${sentenceStart(impact.enPlural)}`,
       },
       {
         pickFirst: true,
@@ -2136,8 +2136,8 @@ function commentatorKnockoutCaption(match, outcome, angle) {
     ],
     thriller: [
       {
-        he: `${winnerHe} שורדת ${score} וממשיכה. משחק צמוד, השפעה גדולה, וטבלת ההימור מרגישה את זה עכשיו`,
-        en: `${winnerEn} survive ${score} and move on. Tight match, big impact, and the pool table feels it now`,
+        he: `${loserHe} כמעט הפכה את זה לסיפור ענק, אבל ${winnerHe} נשארה בחיים. בחירות עליה קיבלו קבלה; בחירות על ${loserHe} צריכות הסבר בצ'אט`,
+        en: `${loserEn} almost turned this into a huge story, but ${winnerEn} stayed alive. ${winnerEn} picks get the receipt; ${loserEn} picks owe the chat an explanation`,
       },
       {
         he: `${score} עד הסוף, ואז ${winnerHe} נשארת בחיים. בחירות עליה עולות, בחירות על ${loserHe} נופלות`,
@@ -2246,10 +2246,10 @@ function knockoutAngleCopy(match, outcome) {
         enCaption: `${score}, no breathing room to the end. ${winnerEn} survive and move on, while ${loserEn} leave after a huge match ${emoji}`,
       },
       {
-        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: משחק על הקצה`,
-        enTitle: `${winnerEn} beat ${loserEn} ${score}: edge-of-seat win`,
-        heCaption: `${winnerHe} לקחה את זה ב${score} צמוד. בחירות עליה קיבלו רגע גדול, ובחירות על ${loserHe} מרגישות את המכה עכשיו ${emoji}`,
-        enCaption: `${winnerEn} take it by a tight ${score}. Backers get a big moment, ${loserEn} picks feel the hit now ${emoji}`,
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: קבלות בבראקט`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: bracket receipts are out`,
+        heCaption: `${loserHe} כמעט הפכה את זה לסיפור ענק, אבל ${winnerHe} נשארה בחיים. בחירות עליה קיבלו קבלה; בחירות על ${loserHe} צריכות הסבר בצ'אט ${emoji}`,
+        enCaption: `${loserEn} almost turned this into a huge story, but ${winnerEn} stayed alive. ${winnerEn} picks get the receipt; ${loserEn} picks owe the chat an explanation ${emoji}`,
       },
       {
         heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: נוקאאוט רותח`,
@@ -3409,8 +3409,8 @@ function captionCopy(match, outcome) {
       };
     }
     return {
-      he: `${teamName(outcome, 'he')} עברה את ${teamName(loser, 'he')} ${score}, והבראקטים מרגישים את זה מיד.`,
-      en: `${teamName(outcome)} got past ${teamName(loser)} ${score}, and the brackets feel it immediately.`,
+      he: `${teamName(outcome, 'he')} עברה את ${teamName(loser, 'he')} ${score}, וקבלות הבראקט כבר בחוץ.`,
+      en: `${teamName(outcome)} got past ${teamName(loser)} ${score}, and the bracket receipts are out.`,
     };
   }
   if (outcome === 'DRAW') {
@@ -3421,8 +3421,8 @@ function captionCopy(match, outcome) {
   }
   const loser = focus;
   return {
-    he: `${teamName(outcome, 'he')} לקחה ${score} מול ${teamName(loser, 'he')}, והבית צריך לחשב מחדש את הטפסים.`,
-    en: `${teamName(outcome)} took ${score} against ${teamName(loser)}. The group has to reread the forms now.`,
+    he: `${teamName(outcome, 'he')} לקחה ${score} מול ${teamName(loser, 'he')}. הקבלות בפול השתנו מיד.`,
+    en: `${teamName(outcome)} took ${score} against ${teamName(loser)}. The pool receipts changed immediately.`,
   };
 }
 
