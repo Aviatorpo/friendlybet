@@ -95,6 +95,14 @@ function usesOldGenericKnockoutCaption(text) {
     /\{team\} ניצחה את \{team\} #-# ב\{stage\} היא עולה הלאה והבראקטים בהימור מרגישים את זה מיד/u.test(shape);
 }
 
+function usesOldGenericKnockoutFocus(text) {
+  const shape = copyShape(text, { normalizeTeams: true });
+  return /picked \{team\} to (?:win the world cup|advance in the knockout bracket) #-# against \{team\} good picks? big pool boost/i.test(shape) ||
+    /picked \{team\} to (?:win the world cup|advance in the knockout bracket) after #-# against \{team\} (?:that pick|those picks) took a hard hit/i.test(shape) ||
+    /בחר(?:ו)? את \{team\} (?:כמנצחת המונדיאל|להתקדם בבראקט הנוקאאוט) #-# מול \{team\} בחיר(?:ה|ות) טוב(?:ה|ות) דחיפה גדולה בהימור/u.test(shape) ||
+    /בחר(?:ו)? את \{team\} (?:כמנצחת המונדיאל|להתקדם בבראקט הנוקאאוט) אחרי #-# מול \{team\} הבחיר(?:ה הזאת|ות האלה) קיבל(?:ה|ו) מכה חזקה/u.test(shape);
+}
+
 function focusText(focus, lang) {
   const prefix = lang === 'he' ? 'he_' : 'en_';
   return [
@@ -249,6 +257,11 @@ for (const story of stories) {
         fail(`${story.id}: pool_focuses[${idx}] uses banned repeated defense-speech phrasing`);
       }
     });
+    if (isKnockout && outcome && outcome !== 'DRAW') {
+      if (usesOldGenericKnockoutFocus(enFocus) || usesOldGenericKnockoutFocus(heFocus)) {
+        fail(`${story.id}: pool_focuses[${idx}] uses the old generic pick-boost/hard-hit skeleton`);
+      }
+    }
     if (outcome && outcome !== 'DRAW' && focus.team_code) {
       const isWinningFocus = focus.team_code === outcome;
       const winningPraise = /(good (call|calls|pick|picks)|clean hit|big (pool|bracket) boost|pick got stronger|correct picks|\u05d1\u05d7\u05d9\u05e8(?:\u05d4|\u05d5\u05ea) \u05d8\u05d5\u05d1(?:\u05d4|\u05d5\u05ea)|\u05e4\u05d2\u05d9\u05e2(?:\u05d4|\u05d5\u05ea) \u05d8\u05d5\u05d1(?:\u05d4|\u05d5\u05ea)|\u05d3\u05d7\u05d9\u05e4\u05d4|\u05d4\u05ea\u05d7\u05d6\u05e7\u05d4)/i;

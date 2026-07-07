@@ -1469,18 +1469,210 @@ function directKnockoutStoryFocus(match, outcome, teamCode, table) {
   const isTournament = table === 'tournament_winner_picks';
   const pickHe = isTournament ? 'כמנצחת המונדיאל' : 'להתקדם בבראקט הנוקאאוט';
   const pickEn = isTournament ? 'to win the World Cup' : 'to advance in the knockout bracket';
-  const heSingle = won
-    ? `{names} בחר את {team} ${pickHe}. ${score} מול ${opponentHe}: בחירה טובה, דחיפה גדולה בהימור`
-    : `{names} בחר את {team} ${pickHe}. אחרי ${score} מול ${opponentHe}, הבחירה הזאת קיבלה מכה חזקה`;
-  const hePlural = won
-    ? `{names} בחרו את {team} ${pickHe}. ${score} מול ${opponentHe}: בחירות טובות, דחיפה גדולה בהימור`
-    : `{names} בחרו את {team} ${pickHe}. אחרי ${score} מול ${opponentHe}, הבחירות האלה קיבלו מכה חזקה`;
-  const enSingle = won
-    ? `{names} picked {team} ${pickEn}. ${score} against ${opponentEn}: good pick, big pool boost`
-    : `{names} picked {team} ${pickEn}. After ${score} against ${opponentEn}, that pick took a hard hit`;
-  const enPlural = won
-    ? `{names} picked {team} ${pickEn}. ${score} against ${opponentEn}: good picks, big pool boost`
-    : `{names} picked {team} ${pickEn}. After ${score} against ${opponentEn}, those picks took a hard hit`;
+  const meta = knockoutStoryScoreMeta(match, outcome);
+  const angle = knockoutStoryAngle(match, outcome, meta);
+  const poolNounHe = isTournament ? 'ההימור על הזוכה' : 'בראקט הנוקאאוט';
+  const poolNounEn = isTournament ? 'World Cup pick' : 'knockout bracket call';
+  const copy = storyCopyChoice(match, `knockout-focus-${angle}-${won ? 'won' : 'lost'}-${table}-${teamCode}`, {
+    penalties: won ? [
+      {
+        heSingle: `השוויון נשבר בפנדלים, והבחירה הזאת קיבלה תשובה ענקית ב${poolNounHe}`,
+        hePlural: `השוויון נשבר בפנדלים, והבחירות האלה קיבלו תשובה ענקית ב${poolNounHe}`,
+        enSingle: `Penalties broke the tie, and that ${poolNounEn} got a huge correct-pick moment`,
+        enPlural: `Penalties broke the tie, and those ${poolNounEn}s got a huge correct-pick moment`,
+      },
+      {
+        heSingle: `${score} מול ${opponentHe}, ואז פנדלים. פגיעה טובה, ודחיפה גדולה לטופס`,
+        hePlural: `${score} מול ${opponentHe}, ואז פנדלים. פגיעות טובות, ודחיפה גדולה לטפסים`,
+        enSingle: `${score} against ${opponentEn}, then penalties. Clean hit, big bracket lift`,
+        enPlural: `${score} against ${opponentEn}, then penalties. Clean hits, big bracket lift`,
+      },
+    ] : [
+      {
+        heSingle: `אחרי ${score} ופנדלים מול ${opponentHe}, הבחירה הזאת קיבלה מכה קשה`,
+        hePlural: `אחרי ${score} ופנדלים מול ${opponentHe}, הבחירות האלה קיבלו מכה קשה`,
+        enSingle: `After ${score} and penalties against ${opponentEn}, that pick took a hard hit`,
+        enPlural: `After ${score} and penalties against ${opponentEn}, those picks took a hard hit`,
+      },
+      {
+        heSingle: `הפנדלים שלחו את ${opponentHe} הלאה, והבחירה הזאת נפלה חזק`,
+        hePlural: `הפנדלים שלחו את ${opponentHe} הלאה, והבחירות האלה נפלו חזק`,
+        enSingle: `The shootout sent ${opponentEn} through, and that wrong pick fell hard`,
+        enPlural: `The shootout sent ${opponentEn} through, and those wrong picks fell hard`,
+      },
+    ],
+    blowout: won ? [
+      {
+        heSingle: `${score} מול ${opponentHe}: פגיעה טובה, ניצחון ברור, והטופס קיבל כוח`,
+        hePlural: `${score} מול ${opponentHe}: פגיעות טובות, ניצחון ברור, והטפסים קיבלו כוח`,
+        enSingle: `${score} against ${opponentEn}: clean hit, clear win, and that pick got stronger`,
+        enPlural: `${score} against ${opponentEn}: clean hits, clear win, and those picks got stronger`,
+      },
+      {
+        heSingle: `${opponentHe} לא נשארה קרובה. בחירה נכונה, דחיפה גדולה ב${poolNounHe}`,
+        hePlural: `${opponentHe} לא נשארה קרובה. בחירות נכונות, דחיפה גדולה ב${poolNounHe}`,
+        enSingle: `${opponentEn} never stayed close. Correct pick, big bracket boost`,
+        enPlural: `${opponentEn} never stayed close. Correct picks, big bracket boost`,
+      },
+    ] : [
+      {
+        heSingle: `אחרי ${score} מול ${opponentHe}, הבחירה הזאת לא נפלה בשקט - היא קיבלה מכה קשה`,
+        hePlural: `אחרי ${score} מול ${opponentHe}, הבחירות האלה לא נפלו בשקט - הן קיבלו מכה קשה`,
+        enSingle: `After ${score} against ${opponentEn}, that pick did not fall quietly - it took a heavy hit`,
+        enPlural: `After ${score} against ${opponentEn}, those picks did not fall quietly - they took a heavy hit`,
+      },
+      {
+        heSingle: `${opponentHe} עברה בגדול, והבחירה הזאת קיבלה תשובה לא טובה`,
+        hePlural: `${opponentHe} עברה בגדול, והבחירות האלה קיבלו תשובה לא טובה`,
+        enSingle: `${opponentEn} went through big, and that wrong pick has nowhere to hide`,
+        enPlural: `${opponentEn} went through big, and those wrong picks have nowhere to hide`,
+      },
+    ],
+    favorite_out: won ? [
+      {
+        heSingle: `${score} מול ${opponentHe}: פגיעה טובה שמזיזה את כל הבראקט`,
+        hePlural: `${score} מול ${opponentHe}: פגיעות טובות שמזיזות את כל הבראקט`,
+        enSingle: `${score} against ${opponentEn}: clean hit, and the whole bracket moves`,
+        enPlural: `${score} against ${opponentEn}: clean hits, and the whole bracket moves`,
+      },
+      {
+        heSingle: `${opponentHe} בחוץ, וזו בחירה נכונה שמקבלת דחיפה גדולה`,
+        hePlural: `${opponentHe} בחוץ, ואלה בחירות נכונות שמקבלות דחיפה גדולה`,
+        enSingle: `${opponentEn} are out, and that correct pick gets a big lift`,
+        enPlural: `${opponentEn} are out, and those correct picks get a big lift`,
+      },
+    ] : [
+      {
+        heSingle: `${opponentHe} העיפה את ${teamName(teamCode, 'he')}, והבחירה הזאת קיבלה מכה חזקה`,
+        hePlural: `${opponentHe} העיפה את ${teamName(teamCode, 'he')}, והבחירות האלה קיבלו מכה חזקה`,
+        enSingle: `${opponentEn} knocked ${teamName(teamCode, 'en')} out, and that pick took a hard hit`,
+        enPlural: `${opponentEn} knocked ${teamName(teamCode, 'en')} out, and those picks took a hard hit`,
+      },
+      {
+        heSingle: `הפייבוריט בחוץ. הבחירה הזאת הפכה לבחירה לא טובה ברגע אחד`,
+        hePlural: `הפייבוריט בחוץ. הבחירות האלה הפכו לבחירות לא טובות ברגע אחד`,
+        enSingle: `The favorite is out. That wrong pick turned bad in one moment`,
+        enPlural: `The favorite is out. Those wrong picks turned bad in one moment`,
+      },
+    ],
+    thriller: won ? [
+      {
+        heSingle: `${score} מול ${opponentHe}, על הקצה. בחירה נכונה עם דחיפה גדולה`,
+        hePlural: `${score} מול ${opponentHe}, על הקצה. בחירות נכונות עם דחיפה גדולה`,
+        enSingle: `${score} against ${opponentEn}, right on the edge. Correct pick, big bracket boost`,
+        enPlural: `${score} against ${opponentEn}, right on the edge. Correct picks, big bracket boost`,
+      },
+      {
+        heSingle: `הדרמה נגמרה בצד של {team}. פגיעה טובה, והטופס קיבל חיים`,
+        hePlural: `הדרמה נגמרה בצד של {team}. פגיעות טובות, והטפסים קיבלו חיים`,
+        enSingle: `The drama ended on {team}'s side. Clean hit, and that form stays alive`,
+        enPlural: `The drama ended on {team}'s side. Clean hits, and those forms stay alive`,
+      },
+    ] : [
+      {
+        heSingle: `אחרי ${score} מול ${opponentHe}, הבחירה הזאת הייתה קרובה - ואז קיבלה מכה חזקה`,
+        hePlural: `אחרי ${score} מול ${opponentHe}, הבחירות האלה היו קרובות - ואז קיבלו מכה חזקה`,
+        enSingle: `After ${score} against ${opponentEn}, that pick was close - then took a hard hit`,
+        enPlural: `After ${score} against ${opponentEn}, those picks were close - then took a hard hit`,
+      },
+      {
+        heSingle: `משחק צמוד, אבל הבחירה הזאת יצאה בצד הלא נכון`,
+        hePlural: `משחק צמוד, אבל הבחירות האלה יצאו בצד הלא נכון`,
+        enSingle: `Tight match, but that wrong pick landed on the wrong side`,
+        enPlural: `Tight match, but those wrong picks landed on the wrong side`,
+      },
+    ],
+    host_out: won ? [
+      {
+        heSingle: `${score} מול המארחת: בחירה טובה, דחיפה גדולה, ורבע גמר באופק`,
+        hePlural: `${score} מול המארחת: בחירות טובות, דחיפה גדולה, ורבע גמר באופק`,
+        enSingle: `${score} against the hosts: good call, big lift, quarterfinal in sight`,
+        enPlural: `${score} against the hosts: good calls, big lift, quarterfinal in sight`,
+      },
+      {
+        heSingle: `המארחת בחוץ, וזו בחירה טובה שקיבלה רגע חזק בטבלת ההימור`,
+        hePlural: `המארחת בחוץ, ואלה בחירות טובות שקיבלו רגע חזק בטבלת ההימור`,
+        enSingle: `The hosts are out, and that good pick got a strong pool moment`,
+        enPlural: `The hosts are out, and those good picks got a strong pool moment`,
+      },
+    ] : [
+      {
+        heSingle: `המסע הביתי נגמר אחרי ${score}, והבחירה הזאת נפלה חזק`,
+        hePlural: `המסע הביתי נגמר אחרי ${score}, והבחירות האלה נפלו חזק`,
+        enSingle: `The home run ended after ${score}, and that pick fell hard`,
+        enPlural: `The home run ended after ${score}, and those picks fell hard`,
+      },
+      {
+        heSingle: `${opponentHe} עצרה את המארחת, והבחירה הזאת קיבלה מכה קשה`,
+        hePlural: `${opponentHe} עצרה את המארחת, והבחירות האלה קיבלו מכה קשה`,
+        enSingle: `${opponentEn} stopped the hosts, and that pick took a heavy hit`,
+        enPlural: `${opponentEn} stopped the hosts, and those picks took a heavy hit`,
+      },
+    ],
+    one_goal: won ? [
+      {
+        heSingle: `${score} מול ${opponentHe}: גול אחד, בחירה נכונה, דחיפה חשובה`,
+        hePlural: `${score} מול ${opponentHe}: גול אחד, בחירות נכונות, דחיפה חשובה`,
+        enSingle: `${score} against ${opponentEn}: one goal, correct pick, important lift`,
+        enPlural: `${score} against ${opponentEn}: one goal, correct picks, important lift`,
+      },
+      {
+        heSingle: `זה היה קטן על הלוח וגדול בטופס. פגיעה טובה ב${poolNounHe}`,
+        hePlural: `זה היה קטן על הלוח וגדול בטפסים. פגיעות טובות ב${poolNounHe}`,
+        enSingle: `Small on the scoreboard, big on the form. Clean hit for that ${poolNounEn}`,
+        enPlural: `Small on the scoreboard, big on the forms. Clean hits for those ${poolNounEn}s`,
+      },
+    ] : [
+      {
+        heSingle: `גול אחד של ${opponentHe}, והבחירה הזאת קיבלה מכה חזקה`,
+        hePlural: `גול אחד של ${opponentHe}, והבחירות האלה קיבלו מכה חזקה`,
+        enSingle: `One ${opponentEn} goal, and that pick took a hard hit`,
+        enPlural: `One ${opponentEn} goal, and those picks took a hard hit`,
+      },
+      {
+        heSingle: `${score} הספיק ל${opponentHe}. הבחירה הזאת כבר לא נראית טובה`,
+        hePlural: `${score} הספיק ל${opponentHe}. הבחירות האלה כבר לא נראות טובות`,
+        enSingle: `${score} was enough for ${opponentEn}. That wrong pick looks exposed now`,
+        enPlural: `${score} was enough for ${opponentEn}. Those wrong picks look exposed now`,
+      },
+    ],
+    standard: won ? [
+      {
+        heSingle: `${score} מול ${opponentHe}: בחירה נכונה, שלב הבא, ודחיפה בהימור`,
+        hePlural: `${score} מול ${opponentHe}: בחירות נכונות, שלב הבא, ודחיפה בהימור`,
+        enSingle: `${score} against ${opponentEn}: correct pick, next round, pool lift`,
+        enPlural: `${score} against ${opponentEn}: correct picks, next round, pool lift`,
+      },
+      {
+        heSingle: `{team} עשתה את העבודה. פגיעה טובה שמופיעה ישר בטבלה`,
+        hePlural: `{team} עשתה את העבודה. פגיעות טובות שמופיעות ישר בטבלה`,
+        enSingle: `{team} did the job. Clean hit, straight into the table`,
+        enPlural: `{team} did the job. Clean hits, straight into the table`,
+      },
+    ] : [
+      {
+        heSingle: `${score} מול ${opponentHe} השאיר את הבחירה הזאת עם מכה חזקה`,
+        hePlural: `${score} מול ${opponentHe} השאיר את הבחירות האלה עם מכה חזקה`,
+        enSingle: `The ${score} against ${opponentEn} left that pick with a hard hit`,
+        enPlural: `The ${score} against ${opponentEn} left those picks with a hard hit`,
+      },
+      {
+        heSingle: `{team} נעצרה כאן. בחירה לא טובה, והטבלה תרגיש את זה`,
+        hePlural: `{team} נעצרה כאן. בחירות לא טובות, והטבלה תרגיש את זה`,
+        enSingle: `{team} stop here. Wrong pick, and the table will feel it`,
+        enPlural: `{team} stop here. Wrong picks, and the table will feel it`,
+      },
+    ],
+  }[angle] || []);
+  const heSinglePick = `{names} בחר את {team} ${pickHe}`;
+  const hePluralPick = `{names} בחרו את {team} ${pickHe}`;
+  const enSinglePick = `{names} picked {team} ${pickEn}`;
+  const enPluralPick = `{names} picked {team} ${pickEn}`;
+  const pickFirst = storyCopyHash(`${match.id || matchKey(match)}:focus-order:${table}:${teamCode}`) % 2 === 0;
+  const heSingle = pickFirst ? `${heSinglePick}. ${copy.heSingle}` : `${copy.heSingle}. ${heSinglePick}`;
+  const hePlural = pickFirst ? `${hePluralPick}. ${copy.hePlural}` : `${copy.hePlural}. ${hePluralPick}`;
+  const enSingle = pickFirst ? `${enSinglePick}. ${copy.enSingle}` : `${copy.enSingle}. ${enSinglePick}`;
+  const enPlural = pickFirst ? `${enPluralPick}. ${copy.enPlural}` : `${copy.enPlural}. ${enPluralPick}`;
   return {
     table,
     team_code: teamCode,
