@@ -3935,14 +3935,94 @@ function _wcStoryFocusCacheKey(focus) {
   if (!focus) return '';
   return [
     focus.table || 'group_position_picks',
+    focus.match_id || '',
+    focus.pick_match_id || focus.knockout_match_id || focus.two_phase_match_id || '',
+    focus.stage || '',
     focus.team_code || '',
     focus.position || '',
     focus.bracket_position || ''
   ].join(':');
 }
 
-function _wcStoryFocusQuery(poolId, focus) {
+function _wcStoryFocusMatchId(story, focus) {
+  return String((focus && focus.match_id) || (story && story.match_id) || '');
+}
+
+function _wcStoryKnownMatches() {
+  const out = [];
+  const seen = new Set();
+  const add = rows => {
+    (Array.isArray(rows) ? rows : []).forEach(match => {
+      const key = String((match && (match.id || match.external_id)) || '');
+      if (!match || !key || seen.has(key)) return;
+      seen.add(key);
+      out.push(match);
+    });
+  };
+  add(state && state.results && state.results.allMatches);
+  if (typeof matchesState !== 'undefined') add(matchesState.allMatches);
+  if (typeof _matchesSnapCache !== 'undefined') add(_matchesSnapCache.data);
+  return out;
+}
+
+function _wcStoryFindMatch(story, focus, rows) {
+  const ids = new Set([_wcStoryFocusMatchId(story, focus), focus && focus.external_id, story && story.external_id]
+    .map(v => String(v || '').trim())
+    .filter(Boolean));
+  if (!ids.size) return null;
+  return (Array.isArray(rows) ? rows : []).find(match => {
+    if (!match) return false;
+    return ids.has(String(match.id || '')) || ids.has(String(match.external_id || ''));
+  }) || null;
+}
+
+async function _wcStoryMatch(story, focus) {
+  let match = _wcStoryFindMatch(story, focus, _wcStoryKnownMatches());
+  if (match) return match;
+  if (typeof fetchMatchesFromCDN !== 'function') return null;
+  const matches = await fetchMatchesFromCDN(5 * 60 * 1000);
+  return _wcStoryFindMatch(story, focus, matches);
+}
+
+function _wcStoryBracketPositionsForStage(stage) {
+  const key = typeof _dashboardImpactStageRuleKey === 'function'
+    ? _dashboardImpactStageRuleKey(stage)
+    : null;
+  if (key === 'round_of_32') return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+  if (key === 'round_of_16') return [17, 18, 19, 20, 21, 22, 23, 24];
+  if (key === 'quarter_final') return [25, 26, 27, 28];
+  if (key === 'semi_final') return [29, 30];
+  if (key === 'final') return [31];
+  return [];
+}
+
+function _wcStoryExactTwoPhasePickId(focus) {
+  return String((focus && (focus.pick_match_id || focus.knockout_match_id || focus.two_phase_match_id)) || '').trim();
+}
+
+function _wcStoryApplyKnockoutScope(query, pool, story, focus, match) {
+  if (focus && focus.bracket_position != null) return query.eq('bracket_position', focus.bracket_position);
+
+  const mode = String((pool && pool.betting_mode) || 'single_phase');
+  if (mode === 'two_phase') {
+    const exactMatchId = _wcStoryExactTwoPhasePickId(focus) || _wcStoryFocusMatchId(story, focus);
+    if (!exactMatchId) return null;
+    return query.eq('match_id', exactMatchId).is('bracket_position', null);
+  }
+
+  const stage = (focus && focus.stage) || (story && story.stage) || (match && match.stage);
+  const positions = _wcStoryBracketPositionsForStage(stage);
+  if (!positions.length) return null;
+  return query.in('bracket_position', positions);
+}
+
+async function _wcStoryFocusQuery(pool, story, focus) {
   const table = focus && focus.table ? focus.table : 'group_position_picks';
+  const poolId = pool && pool.id;
+  if (!poolId) return null;
+  const match = table === 'knockout_picks'
+    ? await _wcStoryMatch(story, focus)
+    : null;
   let query = supabaseClient
     .from(table)
     .select('user_id')
@@ -3952,7 +4032,10 @@ function _wcStoryFocusQuery(poolId, focus) {
     query = query.eq(teamColumn, focus.team_code);
   }
   if (table === 'group_position_picks') query = query.eq('position', focus.position || 1);
-  if (table === 'knockout_picks' && focus.bracket_position != null) query = query.eq('bracket_position', focus.bracket_position);
+  if (table === 'knockout_picks') {
+    query = _wcStoryApplyKnockoutScope(query, pool, story, focus, match);
+    if (!query) return null;
+  }
   return query.range(0, 9999);
 }
 
@@ -3963,13 +4046,14 @@ async function _wcStoryPoolCaption(story, baseCopy) {
     return baseCopy.caption || '';
   }
   const lang = _wcStoryLang();
-  const cacheKey = [pool.id, story.id || story.match_id || story.image, lang, focuses.map(_wcStoryFocusCacheKey).join(';')].join('|');
+  const cacheKey = [pool.id, pool.betting_mode || '', story.id || story.match_id || story.image, story.match_id || '', lang, focuses.map(_wcStoryFocusCacheKey).join(';')].join('|');
   if (_wcStoriesPoolCopyCache[cacheKey]) return _wcStoriesPoolCopyCache[cacheKey];
 
   try {
+    const focusQueries = await Promise.all(focuses.map(focus => _wcStoryFocusQuery(pool, story, focus)));
     const [members, ...pickResults] = await Promise.all([
       _loadPoolMembers(),
-      ...focuses.map(focus => _wcStoryFocusQuery(pool.id, focus))
+      ...focusQueries.map(query => query || Promise.resolve({ data: [] }))
     ]);
     if (!Array.isArray(members)) return baseCopy.caption || '';
     for (let i = 0; i < focuses.length; i++) {

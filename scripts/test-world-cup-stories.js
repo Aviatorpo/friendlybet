@@ -356,6 +356,10 @@ const visualChecks = [
   [!generatorJs.includes('50%-64%'), 'story generator prompt must not use the old face-level caption band'],
   [appJs.includes('function _wcStoryFocuses') && appJs.includes('pool_focuses'), 'client must support ordered pool-specific story focus choices'],
   [appJs.includes("table === 'knockout_picks' ? 'predicted_winner' : 'team_code'"), 'client must query specific pick tables by their actual team column'],
+  [appJs.includes('async function _wcStoryFocusQuery(pool, story, focus)'), 'client story focus query must receive pool and story context'],
+  [appJs.includes('function _wcStoryBracketPositionsForStage'), 'client must map knockout story focus to scoring-stage bracket positions'],
+  [appJs.includes("query.in('bracket_position', positions)"), 'single-phase knockout story focus must be restricted to the scoring-eligible bracket stage'],
+  [appJs.includes("query.eq('match_id', exactMatchId).is('bracket_position', null)"), 'two-phase knockout story focus must use an exact match id rather than broad team matching'],
   [appJs.includes('assetRev') && appJs.includes('story-assets/') && appJs.includes('v=${rev}'), 'client story image URLs must include a feed revision cache buster'],
 ];
 visualChecks.forEach(([ok, message]) => { if (!ok) fail(message); });
