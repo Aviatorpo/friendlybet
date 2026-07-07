@@ -1456,8 +1456,80 @@ function matchKey(match) {
   return `${match.home_team_code}-${match.away_team_code}`;
 }
 
+function directKnockoutStoryFocus(match, outcome, teamCode, table) {
+  if (!match || !outcome || outcome === 'DRAW') return null;
+  const score = scoreForOutcome(match, outcome);
+  const opponent = opponentForTeam(match, teamCode);
+  const opponentHe = teamName(opponent, 'he');
+  const opponentEn = teamName(opponent, 'en');
+  const won = teamCode === outcome;
+  const isTournament = table === 'tournament_winner_picks';
+  const pickHe = isTournament ? 'כמנצחת המונדיאל' : 'להתקדם בבראקט הנוקאאוט';
+  const pickEn = isTournament ? 'to win the World Cup' : 'to advance in the knockout bracket';
+  const heSingle = won
+    ? `{names} בחר את {team} ${pickHe}. ${score} מול ${opponentHe}: בחירה טובה, דחיפה גדולה בהימור`
+    : `{names} בחר את {team} ${pickHe}. אחרי ${score} מול ${opponentHe}, הבחירה הזאת קיבלה מכה חזקה`;
+  const hePlural = won
+    ? `{names} בחרו את {team} ${pickHe}. ${score} מול ${opponentHe}: בחירות טובות, דחיפה גדולה בהימור`
+    : `{names} בחרו את {team} ${pickHe}. אחרי ${score} מול ${opponentHe}, הבחירות האלה קיבלו מכה חזקה`;
+  const enSingle = won
+    ? `{names} picked {team} ${pickEn}. ${score} against ${opponentEn}: good pick, big pool boost`
+    : `{names} picked {team} ${pickEn}. After ${score} against ${opponentEn}, that pick took a hard hit`;
+  const enPlural = won
+    ? `{names} picked {team} ${pickEn}. ${score} against ${opponentEn}: good picks, big pool boost`
+    : `{names} picked {team} ${pickEn}. After ${score} against ${opponentEn}, those picks took a hard hit`;
+  return {
+    table,
+    team_code: teamCode,
+    team_he: teamName(teamCode, 'he'),
+    team_en: teamName(teamCode, 'en'),
+    ...(table === 'knockout_picks' ? { match_id: match.id } : {}),
+    he_name: heSingle,
+    he_names: hePlural,
+    he_count: hePlural,
+    en_name: enSingle,
+    en_names: enPlural,
+    en_count: enPlural,
+  };
+}
+
+function directKnockoutStoryOverride(match) {
+  if (!match || !isKnockoutMatch(match) || match.status !== 'FINISHED') return null;
+  const outcome = outcomeFor(match);
+  if (!outcome || outcome === 'DRAW') return null;
+  const score = scoreForOutcome(match, outcome);
+  const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
+  const winnerHe = teamName(outcome, 'he');
+  const loserHe = teamName(loser, 'he');
+  const winnerEn = teamName(outcome, 'en');
+  const loserEn = teamName(loser, 'en');
+  const stageHe = stageLabel(match, 'he');
+  const stageEn = stageLabel(match, 'en');
+  const emoji = storyEmoji(match, outcome);
+  const tiedQualifier = isTiedKnockoutQualification(match, outcome);
+  return {
+    title: {
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: ${stageHe}`,
+      en: `${winnerEn} beat ${loserEn} ${score}: through the ${stageEn}`,
+    },
+    caption: tiedQualifier ? {
+      he: `${winnerHe} עברה את ${loserHe} אחרי ${score} בפנדלים. זה לא תיקו, זה כרטיס לשלב הבא ${emoji}`,
+      en: `${winnerEn} advanced past ${loserEn} after ${score} on penalties. That is not a draw, it is a ticket onward ${emoji}`,
+    } : {
+      he: `${winnerHe} ניצחה את ${loserHe} ${score} ב${stageHe}. היא עולה הלאה, והבראקטים בהימור מרגישים את זה מיד ${emoji}`,
+      en: `${winnerEn} beat ${loserEn} ${score} in the ${stageEn}. They move on, and pool brackets feel it right away ${emoji}`,
+    },
+    pool_focuses: [
+      directKnockoutStoryFocus(match, outcome, outcome, 'knockout_picks'),
+      directKnockoutStoryFocus(match, outcome, outcome, 'tournament_winner_picks'),
+      directKnockoutStoryFocus(match, outcome, loser, 'knockout_picks'),
+      directKnockoutStoryFocus(match, outcome, loser, 'tournament_winner_picks'),
+    ].filter(Boolean),
+  };
+}
+
 function storyOverride(match) {
-  return STORY_COPY_OVERRIDES[matchKey(match)] || null;
+  return directKnockoutStoryOverride(match) || STORY_COPY_OVERRIDES[matchKey(match)] || null;
 }
 
 function isGroupStageMatch(match) {
@@ -2287,72 +2359,92 @@ function focusTextForShape(focus, lang) {
 }
 
 const RECENT_STORY_COPY_WINDOW = 10;
-const RECENT_COPY_VARIETY_ATTEMPTS = 8;
+const RECENT_COPY_VARIETY_ATTEMPTS = 18;
 const RECENT_COPY_VARIETY_CLAUSES = {
   headline: {
     he: [
-      'הטפסים זזו',
-      'הבית קיבל כיוון חדש',
-      "הצ'אט קיבל חומר",
-      'ההימורים מרגישים את זה',
-      'הטבלה שינתה טון',
-      'המקום הראשון כבר פחות שקט',
-      'הבראקטים קיבלו הערה',
-      'הסיפור בבית השתנה',
+      'הבראקט הרגיש את זה',
+      'ההימור זז מיד',
+      'הבחירות קיבלו תשובה',
+      'השלב הבא נפתח',
+      'הטבלה קיבלה מכה',
+      'ההימור קיבל רגע גדול',
+      'המרדף בהימור השתנה',
+      'זה כבר משפיע על הניקוד',
     ],
     en: [
-      'forms moved too',
-      'the group has a new direction',
-      'the chat got material',
-      'the picks can feel it',
-      'the table changed tone',
-      'first place is less quiet now',
-      'brackets got a note',
-      'the group story changed',
+      'the bracket felt it',
+      'the pool moved fast',
+      'the picks got an answer',
+      'the next round opens',
+      'the table took a hit',
+      'the pool got a big moment',
+      'the chase changed',
+      'the points feel this',
     ],
   },
   caption: {
     he: [
-      'ההימור קיבל ויכוח אחר לגמרי.',
-      'הטבלה הרשמית כבר קוראת את זה אחרת.',
-      'זה משנה את השיחה על הבית.',
-      'בחירות המקום הראשון מרגישות את זה מיד.',
-      'הצ\'אט קיבל חומר חדש.',
-      'הטבלה דחפה את הטפסים לצד אחר.',
-      'הבחירות הישנות נראות פחות בטוחות עכשיו.',
-      'זה לא אותו סיפור כמו המשחק הקודם.',
+      'בחירות טובות קיבלו דחיפה.',
+      'בחירות לא טובות קיבלו מכה.',
+      'ההימור מרגיש את התוצאה הזאת.',
+      'הבראקטים זזו ברגע.',
+      'זה ניצחון שמופיע גם בטבלה.',
+      'פגיעה נכונה קיבלה רגע גדול.',
+      'טעות בבחירה כבר מורגשת.',
+      'הניקוד הבא יספר את הסיפור.',
     ],
     en: [
-      'The pool got a completely different argument.',
-      'The official table reads it differently now.',
-      'That changes the group conversation.',
-      'First-place picks feel it immediately.',
-      'The chat just got new material.',
-      'The table pushed the forms somewhere else.',
-      'Old picks look less comfortable now.',
-      'This is not the same story as the previous match.',
+      'Good picks got a boost.',
+      'Bad picks took a hit.',
+      'The pool feels this result.',
+      'The brackets moved in one moment.',
+      'This win shows up in the table too.',
+      'Correct picks got a big moment.',
+      'Wrong picks already feel it.',
+      'The next points tell the story.',
     ],
   },
   focus: {
     he: [
-      'עכשיו זה רגע אישי בהימור.',
-      'הצ\'אט יצטרך לבחור צד.',
-      'הטופס הזה כבר לא רק רקע.',
-      'לבחירה הזאת כבר יש משחק אמיתי מאחוריה.',
-      'הטבלה הכריחה את כולם לקרוא שוב.',
-      'הבדיחה בצ\'אט השתנתה כיוון.',
-      'זה חומר אמיתי לדיון אחרי המשחק.',
-      'הבחירה הזאת קיבלה חיים משלה.',
+      'הטבלה זזה עכשיו.',
+      'זה רגע אמיתי בבראקט.',
+      'הטבלה נותנת לזה תשובה.',
+      'הניקוד מרגיש את זה.',
+      'ההימור כבר זז.',
+      'הבראקט קיבל תשובה.',
+      'התוצאה נכנסה ישר לטבלה.',
+      'השלב הבא כבר מורגש.',
+      'הבחירה קיבלה תוצאה.',
+      'הסיפור בהימור השתנה.',
+      'הבראקט זז קדימה.',
+      'הנקודות מחכות עכשיו.',
+      'המשחק הזה נכנס לחשבון.',
+      'ההימור קיבל כיוון ברור.',
+      'התגובה בטבלה מגיעה מיד.',
+      'הבראקט כבר לא אותו דבר.',
+      'התוצאה הזאת עושה סדר.',
+      'הבחירה הזאת כבר נספרת.',
     ],
     en: [
-      'Now it is a personal pool moment.',
-      'The chat has to pick a side.',
-      'That form is no longer background noise.',
-      'That pick now has a real match behind it.',
-      'The table forced everyone to read it again.',
-      'The pool joke changed direction.',
-      'That is real post-match debate material.',
-      'That pick just got a life of its own.',
+      'The table moves now.',
+      'That is a real bracket moment.',
+      'The table answers it.',
+      'The points feel it.',
+      'The pool already moved.',
+      'The bracket got its answer.',
+      'The result goes straight into the table.',
+      'The next round already feels it.',
+      'That pick got a result.',
+      'The pool story changed.',
+      'The bracket moves forward.',
+      'The points are waiting now.',
+      'This match goes into the count.',
+      'The pool got a clear direction.',
+      'The table answers right away.',
+      'The bracket is not the same now.',
+      'This result clears things up.',
+      'That pick is counted now.',
     ],
   },
 };
@@ -2360,8 +2452,37 @@ const RECENT_COPY_VARIETY_CLAUSES = {
 function latestVarietyClause(story, kind, lang, attempt) {
   const clauses = RECENT_COPY_VARIETY_CLAUSES[kind] && RECENT_COPY_VARIETY_CLAUSES[kind][lang];
   if (!clauses || !clauses.length) return '';
-  const index = storyCopyHash(`${story && story.id || ''}:${kind}:${lang}:${attempt}`) % clauses.length;
+  const index = (storyCopyHash(`${story && story.id || ''}:${kind}:${lang}`) + attempt) % clauses.length;
   return clauses[index];
+}
+
+function escapeRegExpText(value) {
+  return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function stripLatestVarietyClause(text, kind, lang) {
+  let value = String(text || '').trim();
+  const clauses = (RECENT_COPY_VARIETY_CLAUSES[kind] && RECENT_COPY_VARIETY_CLAUSES[kind][lang]) || [];
+  const clauseVariants = [];
+  for (const clause of clauses) {
+    const trimmed = String(clause || '').trim();
+    if (!trimmed) continue;
+    clauseVariants.push(trimmed);
+    clauseVariants.push(trimmed.replace(/\.\s*$/, ''));
+  }
+  for (const clause of [...new Set(clauseVariants)].sort((a, b) => b.length - a.length)) {
+    const escaped = escapeRegExpText(clause);
+    let previous = '';
+    while (value && value !== previous) {
+      previous = value;
+      value = value
+        .replace(new RegExp(`\\s*-\\s*${escaped}\\.?$`, 'u'), '')
+        .replace(new RegExp(`\\s*\\.\\s*${escaped}\\.?$`, 'u'), '')
+        .replace(new RegExp(`\\s+${escaped}\\.?$`, 'u'), '')
+        .trim();
+    }
+  }
+  return value.trim();
 }
 
 function appendLatestShapeClause(story, match, kind, lang, focusIndex = 0, attempt = 0) {
@@ -2369,7 +2490,7 @@ function appendLatestShapeClause(story, match, kind, lang, focusIndex = 0, attem
   const clause = latestVarietyClause(story, kind, lang, attempt);
   const safeClause = clause ? ` ${clause}` : (lang === 'he' ? ` בית ${group} מרגיש את זה.` : ` Group ${group} felt that one.`);
   if (kind === 'headline') {
-    const base = String(story[lang] && story[lang].headline || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, '');
+    const base = stripLatestVarietyClause(String(story[lang] && story[lang].headline || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, ''), kind, lang);
     const joiner = base.includes(':') ? ' -' : ':';
     return {
       ...story,
@@ -2380,23 +2501,26 @@ function appendLatestShapeClause(story, match, kind, lang, focusIndex = 0, attem
     };
   }
   if (kind === 'caption') {
-    const base = String(story[lang] && story[lang].caption || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, '');
+    const base = stripLatestVarietyClause(String(story[lang] && story[lang].caption || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, ''), kind, lang);
+    const joined = clause
+      ? `${base.replace(/[.。]\s*$/, '')}. ${clause}`
+      : `${base}${safeClause}`;
     return {
       ...story,
       [lang]: {
         ...story[lang],
-        caption: withEndingStoryEmoji(`${base}${safeClause}`, match, outcomeFor(match)),
+        caption: withEndingStoryEmoji(joined, match, outcomeFor(match)),
       },
     };
   }
   const focuses = (story.pool_focuses || []).map((focus, idx) => {
     if (idx !== focusIndex) return focus;
     const prefix = lang === 'he' ? 'he_' : 'en_';
-    const addClause = (value) => withEndingStoryEmoji(
-      `${String(value || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, '')}${safeClause}`,
-      match,
-      outcomeFor(match)
-    );
+    const addClause = (value) => {
+      const base = stripLatestVarietyClause(String(value || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, ''), kind, lang);
+      const joined = clause ? `${base.replace(/[.。]\s*$/, '')}. ${clause}` : `${base}${safeClause}`;
+      return withEndingStoryEmoji(joined, match, outcomeFor(match));
+    };
     return {
       ...focus,
       [`${prefix}name`]: addClause(focus[`${prefix}name`]),
