@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-07-07T22:19:42.120Z",
-  "freshUntil": "2026-07-08T04:19:42.120Z",
+  "updatedAt": "2026-07-07T23:15:31.131Z",
+  "freshUntil": "2026-07-08T05:15:31.131Z",
   "count": 4,
   "items": [
     {
-      "id": "live-d0cb75c4-0479-42f4-b473-0eb5b4b51f54",
-      "type": "live",
+      "id": "result-d0cb75c4-0479-42f4-b473-0eb5b4b51f54",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "שווייץ נגד קולומביה עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
-      "en": "Switzerland vs Colombia is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "he": "0:0 על הלוח, שווייץ בשלב הבא וקולומביה בחוץ. זה כרטיס המשך לבראקט 🧾",
+      "en": "0-0 on the board, Switzerland into the next round and Colombia out. It is a bracket ticket 🧾",
       "sources": [],
-      "expires_at": "2026-07-08T01:19:42.120Z"
+      "expires_at": "2026-07-09T08:00:00.000Z"
     },
     {
       "id": "result-90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
       "type": "result",
       "confidence": "confirmed",
-      "he": "3:2 לארגנטינה על מצרים. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות 🧾",
-      "en": "3-2 for Argentina over Egypt. Any bracket path that kept Argentina alive can open the receipts 🧾",
+      "he": "ארגנטינה ניצחה את מצרים 3:2 ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום 🧾",
+      "en": "Argentina beat Egypt 3-2 and stayed alive in the bracket. Any bracket path that kept Argentina alive can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-09T04:00:00.000Z"
     },
@@ -25,8 +25,8 @@
       "id": "result-084756cf-d007-4858-8fc4-d6ca8b66b686",
       "type": "result",
       "confidence": "confirmed",
-      "he": "בלגיה עברה את ארה\"ב 4:1. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על ארה\"ב צריך מסלול חדש 🧾",
-      "en": "Belgium got past United States 4-1. Bracket paths that kept Belgium alive get a receipt; United States routes need a new plan 🧾",
+      "he": "4:1 לבלגיה על ארה\"ב. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות 🧾",
+      "en": "4-1 for Belgium over United States. Any bracket path that kept Belgium alive can open the receipts 🧾",
       "sources": [],
       "expires_at": "2026-07-08T12:00:00.000Z"
     },
@@ -34,8 +34,8 @@
       "id": "result-e2a51510-0a1f-40f3-9990-632608b6f116",
       "type": "result",
       "confidence": "confirmed",
-      "he": "ספרד ניצחה את פורטוגל 1:0 ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום 🧾",
-      "en": "Spain beat Portugal 1-0 and stayed alive in the bracket. Any bracket path that kept Spain alive can keep dreaming 🧾",
+      "he": "ספרד עברה את פורטוגל 1:0. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על פורטוגל צריך מסלול חדש 🧾",
+      "en": "Spain got past Portugal 1-0. Bracket paths that kept Spain alive get a receipt; Portugal routes need a new plan 🧾",
       "sources": [],
       "expires_at": "2026-07-08T07:00:00.000Z"
     }
