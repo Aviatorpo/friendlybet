@@ -4123,28 +4123,114 @@ function _wcStoriesActiveIndex(rail) {
   return best;
 }
 
+function _wcStoriesMaxScroll(rail) {
+  return Math.max(0, (rail && rail.scrollWidth ? rail.scrollWidth : 0) - (rail && rail.clientWidth ? rail.clientWidth : 0));
+}
+
+function _wcStoriesHasOverflow(rail) {
+  return _wcStoriesMaxScroll(rail) > 2;
+}
+
+function _wcStoriesCanScroll(rail, delta) {
+  if (!rail || !_wcStoriesHasOverflow(rail)) return false;
+  if (delta < 0) return rail.scrollLeft > 1;
+  if (delta > 0) return rail.scrollLeft < _wcStoriesMaxScroll(rail) - 1;
+  return false;
+}
+
+function _wcStoryScrollTarget(rail, card) {
+  const railRect = rail.getBoundingClientRect();
+  const cardRect = card.getBoundingClientRect();
+  const offset = (cardRect.left - railRect.left) + rail.scrollLeft;
+  return Math.max(0, Math.min(_wcStoriesMaxScroll(rail), offset - (rail.clientWidth - cardRect.width) / 2));
+}
+
+function _wcScrollStoryCardIntoView(rail, card, behavior = 'smooth') {
+  if (!rail || !card) return;
+  rail.scrollTo({ left: _wcStoryScrollTarget(rail, card), behavior });
+}
+
+function _wcHandleStoriesWheel(e) {
+  const rail = e.currentTarget;
+  if (!rail || e.ctrlKey) return;
+  const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+  if (!_wcStoriesCanScroll(rail, delta)) return;
+  e.preventDefault();
+  rail.scrollLeft += delta;
+  window.requestAnimationFrame(_wcUpdateStoriesChrome);
+}
+
+function _wcHandleStoriesPointerDown(e) {
+  const rail = e.currentTarget;
+  if (!rail || e.button !== 0 || e.pointerType === 'touch') return;
+  if (e.target && e.target.closest && e.target.closest('button, a')) return;
+  rail._wcStoriesDrag = {
+    pointerId: e.pointerId,
+    startX: e.clientX,
+    scrollLeft: rail.scrollLeft,
+    moved: false
+  };
+  rail.classList.add('is-dragging');
+  if (rail.setPointerCapture) rail.setPointerCapture(e.pointerId);
+}
+
+function _wcHandleStoriesPointerMove(e) {
+  const rail = e.currentTarget;
+  const drag = rail && rail._wcStoriesDrag;
+  if (!drag || drag.pointerId !== e.pointerId) return;
+  const dx = e.clientX - drag.startX;
+  if (Math.abs(dx) > 2) drag.moved = true;
+  if (drag.moved) e.preventDefault();
+  rail.scrollLeft = drag.scrollLeft - dx;
+  window.requestAnimationFrame(_wcUpdateStoriesChrome);
+}
+
+function _wcFinishStoriesPointer(e) {
+  const rail = e.currentTarget;
+  const drag = rail && rail._wcStoriesDrag;
+  if (!drag || drag.pointerId !== e.pointerId) return;
+  rail.classList.remove('is-dragging');
+  if (rail.releasePointerCapture) rail.releasePointerCapture(e.pointerId);
+  rail._wcStoriesDrag = null;
+  _wcUpdateStoriesChrome();
+}
+
+function _wcHandleStoriesKeydown(e) {
+  if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+  e.preventDefault();
+  _wcScrollWorldCupStories(e.key === 'ArrowRight' ? 1 : -1);
+}
+
 function _wcUpdateStoriesChrome() {
   const rail = document.getElementById('world-cup-stories-rail');
   const dots = document.getElementById('world-cup-stories-dots');
   const count = document.getElementById('world-cup-stories-count');
   const prev = document.getElementById('world-cup-stories-prev');
   const next = document.getElementById('world-cup-stories-next');
+  const sidePrev = document.getElementById('world-cup-stories-side-prev');
+  const sideNext = document.getElementById('world-cup-stories-side-next');
   const cards = rail ? Array.from(rail.querySelectorAll('.wc-story')) : [];
   if (!rail || !cards.length) return;
   const idx = _wcStoriesActiveIndex(rail);
+  const layoutMeasured = rail.clientWidth > 0;
+  const canNavigate = cards.length > 1 && (!layoutMeasured || _wcStoriesHasOverflow(rail));
+  const prevDisabled = !canNavigate || idx <= 0;
+  const nextDisabled = !canNavigate || idx >= cards.length - 1;
   _wcStoriesState.idx = idx;
   if (dots) Array.from(dots.children).forEach((dot, i) => dot.classList.toggle('active', i === idx));
   if (count) count.textContent = `${idx + 1}/${cards.length}`;
-  if (prev) {
-    prev.disabled = idx <= 0;
-    prev.setAttribute('aria-label', t('worldCupStories.previous'));
-    prev.title = t('worldCupStories.previous');
-  }
-  if (next) {
-    next.disabled = idx >= cards.length - 1;
-    next.setAttribute('aria-label', t('worldCupStories.next'));
-    next.title = t('worldCupStories.next');
-  }
+  [prev, sidePrev].forEach(btn => {
+    if (!btn) return;
+    btn.disabled = prevDisabled;
+    btn.setAttribute('aria-label', t('worldCupStories.previous'));
+    btn.title = t('worldCupStories.previous');
+  });
+  [next, sideNext].forEach(btn => {
+    if (!btn) return;
+    btn.disabled = nextDisabled;
+    btn.setAttribute('aria-label', t('worldCupStories.next'));
+    btn.title = t('worldCupStories.next');
+  });
 }
 
 function _wcScrollWorldCupStories(delta) {
@@ -4154,7 +4240,7 @@ function _wcScrollWorldCupStories(delta) {
   if (!cards.length) return;
   const idx = _wcStoriesActiveIndex(rail);
   const nextIdx = Math.max(0, Math.min(cards.length - 1, idx + delta));
-  cards[nextIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  _wcScrollStoryCardIntoView(rail, cards[nextIdx]);
   _wcStoriesState.idx = nextIdx;
   window.setTimeout(_wcUpdateStoriesChrome, 120);
 }
@@ -4189,24 +4275,36 @@ async function renderWorldCupStories() {
        </article>`;
   }));
   rail.innerHTML = rendered.join('');
+  rail.setAttribute('tabindex', '0');
+  rail.setAttribute('aria-label', t('worldCupStories.kicker'));
   dots.innerHTML = items.map((_, i) => `<span class="${i === _wcStoriesState.idx ? 'active' : ''}"></span>`).join('');
   if (count) count.textContent = `1/${items.length}`;
   card.style.display = '';
   const prev = document.getElementById('world-cup-stories-prev');
   const next = document.getElementById('world-cup-stories-next');
-  if (prev && !prev._wcStoriesWired) {
-    prev._wcStoriesWired = true;
-    prev.addEventListener('click', () => _wcScrollWorldCupStories(-1));
-  }
-  if (next && !next._wcStoriesWired) {
-    next._wcStoriesWired = true;
-    next.addEventListener('click', () => _wcScrollWorldCupStories(1));
-  }
+  const sidePrev = document.getElementById('world-cup-stories-side-prev');
+  const sideNext = document.getElementById('world-cup-stories-side-next');
+  const wireNav = (btn, delta) => {
+    if (!btn || btn._wcStoriesWired) return;
+    btn._wcStoriesWired = true;
+    btn.addEventListener('click', () => _wcScrollWorldCupStories(delta));
+  };
+  wireNav(prev, -1);
+  wireNav(sidePrev, -1);
+  wireNav(next, 1);
+  wireNav(sideNext, 1);
   if (!rail._wcStoriesWired) {
     rail._wcStoriesWired = true;
     rail.addEventListener('scroll', _wcUpdateStoriesChrome, { passive: true });
+    rail.addEventListener('wheel', _wcHandleStoriesWheel, { passive: false });
+    rail.addEventListener('pointerdown', _wcHandleStoriesPointerDown);
+    rail.addEventListener('pointermove', _wcHandleStoriesPointerMove);
+    rail.addEventListener('pointerup', _wcFinishStoriesPointer);
+    rail.addEventListener('pointercancel', _wcFinishStoriesPointer);
+    rail.addEventListener('keydown', _wcHandleStoriesKeydown);
   }
   _wcUpdateStoriesChrome();
+  window.requestAnimationFrame(_wcUpdateStoriesChrome);
 }
 
 function _wcLoadImage(src) {
