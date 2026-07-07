@@ -82,6 +82,18 @@ function copyShape(text, options = {}) {
     .toLowerCase();
 }
 
+function semanticCaptionShape(text) {
+  return copyShape(text, { normalizeTeams: true })
+    .replace(/\b(round of 32|round of 16|quarterfinal|semifinal|final|third-place match|knockout)\b/g, '{stage}')
+    .replace(/שמינית-מוקדמת|שמינית מוקדמת|שמיניתמוקדמת|שמינית הגמר|רבע הגמר|חצי הגמר|הגמר|המשחק על המקום השלישי|הנוקאאוט/gu, '{stage}');
+}
+
+function usesOldGenericKnockoutCaption(text) {
+  const shape = semanticCaptionShape(text);
+  return /\{team\} beat \{team\} #-# in the \{stage\} they move on and pool brackets feel it right away/i.test(shape) ||
+    /\{team\} ניצחה את \{team\} #-# ב\{stage\} היא עולה הלאה והבראקטים בהימור מרגישים את זה מיד/u.test(shape);
+}
+
 function focusText(focus, lang) {
   const prefix = lang === 'he' ? 'he_' : 'en_';
   return [
@@ -164,6 +176,14 @@ for (const story of stories) {
     story.he && story.he.caption,
     story.en && story.en.caption
   ].join(' ');
+  if (isKnockout && outcome && outcome !== 'DRAW') {
+    ['he', 'en'].forEach(lang => {
+      const caption = story[lang] && story[lang].caption;
+      if (usesOldGenericKnockoutCaption(caption)) {
+        fail(`${story.id}: ${lang} knockout caption uses the old generic move-on/brackets skeleton`);
+      }
+    });
+  }
   const storyText = [
     story.he && story.he.headline,
     story.he && story.he.caption,

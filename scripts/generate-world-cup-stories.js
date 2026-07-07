@@ -1456,6 +1456,9 @@ function matchKey(match) {
   return `${match.home_team_code}-${match.away_team_code}`;
 }
 
+const KNOCKOUT_HOST_CODES = new Set(['CAN', 'MEX', 'USA']);
+const KNOCKOUT_FAVORITE_CODES = new Set(['ARG', 'BEL', 'BRA', 'ENG', 'ESP', 'FRA', 'GER', 'POR']);
+
 function directKnockoutStoryFocus(match, outcome, teamCode, table) {
   if (!match || !outcome || outcome === 'DRAW') return null;
   const score = scoreForOutcome(match, outcome);
@@ -1493,32 +1496,194 @@ function directKnockoutStoryFocus(match, outcome, teamCode, table) {
   };
 }
 
+function knockoutStoryScoreMeta(match, outcome) {
+  const winner = outcome;
+  const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
+  const winnerScore = outcome === match.home_team_code ? Number(match.home_score) : Number(match.away_score);
+  const loserScore = outcome === match.home_team_code ? Number(match.away_score) : Number(match.home_score);
+  return {
+    winner,
+    loser,
+    winnerScore,
+    loserScore,
+    margin: Math.abs(winnerScore - loserScore),
+    totalGoals: winnerScore + loserScore,
+    score: `${winnerScore}-${loserScore}`,
+    winnerHe: teamName(winner, 'he'),
+    loserHe: teamName(loser, 'he'),
+    winnerEn: teamName(winner, 'en'),
+    loserEn: teamName(loser, 'en'),
+    emoji: storyEmoji(match, outcome),
+  };
+}
+
+function knockoutStoryAngle(match, outcome, meta = knockoutStoryScoreMeta(match, outcome)) {
+  if (isTiedKnockoutQualification(match, outcome)) return 'penalties';
+  if (meta.margin >= 3) return 'blowout';
+  if (KNOCKOUT_FAVORITE_CODES.has(meta.loser) && !KNOCKOUT_FAVORITE_CODES.has(meta.winner)) return 'favorite_out';
+  if (meta.totalGoals >= 5 || (meta.winnerScore >= 3 && meta.margin === 1)) return 'thriller';
+  if (KNOCKOUT_HOST_CODES.has(meta.loser)) return 'host_out';
+  if (meta.winnerScore === 1 && meta.loserScore === 0) return 'one_goal';
+  return 'standard';
+}
+
+function knockoutAngleCopy(match, outcome) {
+  const meta = knockoutStoryScoreMeta(match, outcome);
+  const angle = knockoutStoryAngle(match, outcome, meta);
+  const {
+    score,
+    winnerHe,
+    loserHe,
+    winnerEn,
+    loserEn,
+    emoji,
+  } = meta;
+  const variants = {
+    penalties: [
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: בפנדלים`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: on penalties`,
+        heCaption: `${score} על הלוח, אבל הפנדלים שלחו את ${winnerHe} לשלב הבא. בחירות על ${winnerHe} קיבלו רגע ענק בהימור ${emoji}`,
+        enCaption: `${score} on the board, but penalties send ${winnerEn} through. ${winnerEn} picks get a huge pool moment ${emoji}`,
+      },
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: הכרעה מהנקודה`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: decided from the spot`,
+        heCaption: `זה נגמר שוויון על הדשא, ואז ${winnerHe} עברה בפנדלים. הבחירות עליה בבראקט קיבלו תשובה גדולה ${emoji}`,
+        enCaption: `It finished level on the pitch, then ${winnerEn} went through on penalties. Bracket picks backing them got the big answer ${emoji}`,
+      },
+    ],
+    blowout: [
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: כוח בבראקט`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: bracket power`,
+        heCaption: `${score} ל${winnerHe} מול ${loserHe}. ניצחון חד, עלייה ברורה, וכל בחירה על ${winnerHe} קיבלה דחיפה גדולה בהימור ${emoji}`,
+        enCaption: `${score} for ${winnerEn} against ${loserEn}. Clear win, clear path, and every ${winnerEn} pick just got a real boost ${emoji}`,
+      },
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: בלי ספקות`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: no doubt`,
+        heCaption: `${winnerHe} לא השאירה את זה צמוד. ${score}, כרטיס לשלב הבא, ומכה חזקה לבחירות על ${loserHe} ${emoji}`,
+        enCaption: `${winnerEn} did not leave it close. ${score}, a ticket onward, and a hard hit for anyone backing ${loserEn} ${emoji}`,
+      },
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: כוח מלא`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: full power`,
+        heCaption: `ככה נראה נוקאאוט ברור: ${winnerHe} עולה אחרי ${score}, והבראקט בהימור זז בבת אחת ${emoji}`,
+        enCaption: `That is a clear knockout result: ${winnerEn} move on after ${score}, and the pool bracket shifts at once ${emoji}`,
+      },
+    ],
+    favorite_out: [
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: בראקט מתהפך`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: bracket shaken`,
+        heCaption: `${loserHe} בחוץ, ${winnerHe} בפנים. ${score} שמפיל הרבה טפסים ומרים בחירות על ${winnerHe} ${emoji}`,
+        enCaption: `${loserEn} are out, ${winnerEn} are through. ${score} hurts plenty of forms and lifts ${winnerEn} picks ${emoji}`,
+      },
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: הפייבוריט נפל`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: favorite down`,
+        heCaption: `${winnerHe} שולחת את ${loserHe} הביתה עם ${score}. זה לא רק ניצחון, זה שינוי גדול בהימור ${emoji}`,
+        enCaption: `${winnerEn} send ${loserEn} home with ${score}. Not just a win, a big pool swing ${emoji}`,
+      },
+    ],
+    thriller: [
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: דרמה עד הסוף`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: drama to the end`,
+        heCaption: `${score}, בלי אוויר עד הסוף. ${winnerHe} שורדת ועולה, ו${loserHe} יוצאת אחרי משחק גדול ${emoji}`,
+        enCaption: `${score}, no breathing room to the end. ${winnerEn} survive and move on, while ${loserEn} leave after a huge match ${emoji}`,
+      },
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: משחק על הקצה`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: edge-of-seat win`,
+        heCaption: `${winnerHe} לקחה את זה ב${score} צמוד. בחירות עליה קיבלו רגע גדול, ובחירות על ${loserHe} מרגישות את המכה עכשיו ${emoji}`,
+        enCaption: `${winnerEn} take it by a tight ${score}. Backers get a big moment, ${loserEn} picks feel the hit now ${emoji}`,
+      },
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: נוקאאוט רותח`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: knockout fire`,
+        heCaption: `חמישה שערים, הכרעה אחת. ${winnerHe} ממשיכה, ${loserHe} בחוץ, וההימור קיבל טלטלה אמיתית ${emoji}`,
+        enCaption: `Five goals, one winner. ${winnerEn} keep going, ${loserEn} are out, and the pool gets a real shake ${emoji}`,
+      },
+    ],
+    host_out: [
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: המארחת בחוץ`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: hosts out`,
+        heCaption: `${loserHe} בחוץ אחרי ${score}, ו${winnerHe} עולה הלאה. רגע גדול בבראקט, והשפעה מידית על טבלת ההימור ${emoji}`,
+        enCaption: `${loserEn} are out after ${score}, and ${winnerEn} move on. Big bracket moment, immediate pool impact ${emoji}`,
+      },
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: סוף למסע הביתי`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: home run ends`,
+        heCaption: `${winnerHe} עצרה את המארחת עם ${score}. בחירות עליה קיבלו דחיפה, ובחירות על ${loserHe} נפלו חזק ${emoji}`,
+        enCaption: `${winnerEn} stop the hosts with ${score}. Their backers get a boost, ${loserEn} picks take a heavy fall ${emoji}`,
+      },
+    ],
+    one_goal: [
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: גול אחד הספיק`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: one goal was enough`,
+        heCaption: `גול אחד, כרטיס אחד לשלב הבא. ${winnerHe} ממשיכה, ${loserHe} נעצרת, והבחירות בבראקט קיבלו תשובה ${emoji}`,
+        enCaption: `One goal, one ticket onward. ${winnerEn} keep going, ${loserEn} stop here, and bracket picks get their answer ${emoji}`,
+      },
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: קטן אבל ענק`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: small score, huge result`,
+        heCaption: `${score} נראה קטן, אבל בנוקאאוט זה מספיק. ${winnerHe} עולה, ${loserHe} בחוץ, וההימור מרגיש את זה מיד ${emoji}`,
+        enCaption: `${score} looks small, but in knockout football it is enough. ${winnerEn} advance, ${loserEn} go out, and the pool feels it fast ${emoji}`,
+      },
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: הכרעה דקה`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: thin margin, big move`,
+        heCaption: `לא צריך הרבה שערים כדי לשנות בראקט. ${winnerHe} עם ${score}, והבחירות עליה מקבלות דחיפה חשובה ${emoji}`,
+        enCaption: `You do not need many goals to change a bracket. ${winnerEn} take ${score}, and picks on them get an important lift ${emoji}`,
+      },
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: נוקאאוט על חוד`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: knockout by a thread`,
+        heCaption: `${winnerHe} מצאה את הגול שהספיק. ${score} שולח אותה הלאה, וכל טופס נגד ${loserHe} קיבל מכה ברורה ${emoji}`,
+        enCaption: `${winnerEn} found the goal that mattered. ${score} sends them on, and every form against ${loserEn} takes a clear hit ${emoji}`,
+      },
+    ],
+    standard: [
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: לשלב הבא`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: through`,
+        heCaption: `${winnerHe} עושה את העבודה מול ${loserHe}: ${score}, עלייה לשלב הבא, והשפעה מידית על הבראקט ${emoji}`,
+        enCaption: `${winnerEn} get it done against ${loserEn}: ${score}, next round, immediate bracket impact ${emoji}`,
+      },
+      {
+        heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: ממשיכה הלאה`,
+        enTitle: `${winnerEn} beat ${loserEn} ${score}: moving on`,
+        heCaption: `${score} ל${winnerHe}, וזה מספיק כדי להעיף את ${loserHe}. בחירות נכונות קיבלו דחיפה, בחירות לא נכונות קיבלו מכה ${emoji}`,
+        enCaption: `${score} for ${winnerEn}, enough to send ${loserEn} out. Correct picks get a boost, wrong picks take the hit ${emoji}`,
+      },
+    ],
+  };
+  const copy = storyCopyChoice(match, `knockout-angle-${angle}`, variants[angle] || variants.standard);
+  return {
+    title: {
+      he: copy.heTitle,
+      en: copy.enTitle,
+    },
+    caption: {
+      he: copy.heCaption,
+      en: copy.enCaption,
+    },
+  };
+}
+
 function directKnockoutStoryOverride(match) {
   if (!match || !isKnockoutMatch(match) || match.status !== 'FINISHED') return null;
   const outcome = outcomeFor(match);
   if (!outcome || outcome === 'DRAW') return null;
-  const score = scoreForOutcome(match, outcome);
   const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
-  const winnerHe = teamName(outcome, 'he');
-  const loserHe = teamName(loser, 'he');
-  const winnerEn = teamName(outcome, 'en');
-  const loserEn = teamName(loser, 'en');
-  const stageHe = stageLabel(match, 'he');
-  const stageEn = stageLabel(match, 'en');
-  const emoji = storyEmoji(match, outcome);
-  const tiedQualifier = isTiedKnockoutQualification(match, outcome);
+  const copy = knockoutAngleCopy(match, outcome);
   return {
-    title: {
-      he: `${winnerHe} ניצחה את ${loserHe} ${score}: ${stageHe}`,
-      en: `${winnerEn} beat ${loserEn} ${score}: through the ${stageEn}`,
-    },
-    caption: tiedQualifier ? {
-      he: `${winnerHe} עברה את ${loserHe} אחרי ${score} בפנדלים. זה לא תיקו, זה כרטיס לשלב הבא ${emoji}`,
-      en: `${winnerEn} advanced past ${loserEn} after ${score} on penalties. That is not a draw, it is a ticket onward ${emoji}`,
-    } : {
-      he: `${winnerHe} ניצחה את ${loserHe} ${score} ב${stageHe}. היא עולה הלאה, והבראקטים בהימור מרגישים את זה מיד ${emoji}`,
-      en: `${winnerEn} beat ${loserEn} ${score} in the ${stageEn}. They move on, and pool brackets feel it right away ${emoji}`,
-    },
+    title: copy.title,
+    caption: copy.caption,
     pool_focuses: [
       directKnockoutStoryFocus(match, outcome, outcome, 'knockout_picks'),
       directKnockoutStoryFocus(match, outcome, outcome, 'tournament_winner_picks'),
