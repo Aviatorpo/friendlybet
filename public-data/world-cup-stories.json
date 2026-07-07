@@ -1,6 +1,91 @@
 {
-  "updated_at": "2026-07-07T13:00:06.663Z",
+  "updated_at": "2026-07-07T18:38:20.472Z",
   "items": [
+    {
+      "id": "arg-egy-2026-07-07",
+      "match_id": "90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
+      "image": "story-assets/argentina-wins-egypt.png",
+      "teams": [
+        "ARG",
+        "EGY"
+      ],
+      "outcome": "ARG",
+      "result": "ARG 3-2 EGY",
+      "top_label": "ARGENTINA QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "ARG",
+        "team_he": "ארגנטינה",
+        "team_en": "Argentina",
+        "match_id": "90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
+        "he_name": "ארגנטינה שורדת 3-2. בחירה חזקה בלחץ, והבחירה הזאת מזיזה את טבלת ההימור לטובתו. {names} בחר את {team} להתקדם בבראקט הנוקאאוט 🔥",
+        "he_names": "ארגנטינה שורדת 3-2. בחירות חזקות בלחץ, והבחירות האלה מזיזות את טבלת ההימור לטובתם. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+        "he_count": "ארגנטינה שורדת 3-2. בחירות חזקות בלחץ, והבחירות האלה מזיזות את טבלת ההימור לטובתם. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+        "en_name": "Argentina survive 3-2. Strong call under pressure, and that call moves the pool table the right way. {names} picked {team} to advance in the knockout bracket 🔥",
+        "en_names": "Argentina survive 3-2. Strong calls under pressure, and those calls move the pool table the right way. {names} picked {team} to advance in the knockout bracket 🔥",
+        "en_count": "Argentina survive 3-2. Strong calls under pressure, and those calls move the pool table the right way. {names} picked {team} to advance in the knockout bracket 🔥"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "ARG",
+          "team_he": "ארגנטינה",
+          "team_en": "Argentina",
+          "match_id": "90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
+          "he_name": "ארגנטינה שורדת 3-2. בחירה חזקה בלחץ, והבחירה הזאת מזיזה את טבלת ההימור לטובתו. {names} בחר את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "he_names": "ארגנטינה שורדת 3-2. בחירות חזקות בלחץ, והבחירות האלה מזיזות את טבלת ההימור לטובתם. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "he_count": "ארגנטינה שורדת 3-2. בחירות חזקות בלחץ, והבחירות האלה מזיזות את טבלת ההימור לטובתם. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "en_name": "Argentina survive 3-2. Strong call under pressure, and that call moves the pool table the right way. {names} picked {team} to advance in the knockout bracket 🔥",
+          "en_names": "Argentina survive 3-2. Strong calls under pressure, and those calls move the pool table the right way. {names} picked {team} to advance in the knockout bracket 🔥",
+          "en_count": "Argentina survive 3-2. Strong calls under pressure, and those calls move the pool table the right way. {names} picked {team} to advance in the knockout bracket 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ARG",
+          "team_he": "ארגנטינה",
+          "team_en": "Argentina",
+          "he_name": "3-2 עד הסוף. ארגנטינה ממשיכה, והחלום על הגביע נראה הרבה יותר רציני בטבלת ההימור. {names} בחר את {team} כזוכת המונדיאל 🔥",
+          "he_names": "3-2 עד הסוף. ארגנטינה ממשיכה, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל 🔥",
+          "he_count": "3-2 עד הסוף. ארגנטינה ממשיכה, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל 🔥",
+          "en_name": "3-2 to the end. Argentina move on, and that World Cup pick looks serious on the leaderboard. {names} picked {team} to win the World Cup 🔥",
+          "en_names": "3-2 to the end. Argentina move on, and those World Cup picks look serious on the leaderboard. {names} picked {team} to win the World Cup 🔥",
+          "en_count": "3-2 to the end. Argentina move on, and those World Cup picks look serious on the leaderboard. {names} picked {team} to win the World Cup 🔥"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "EGY",
+          "team_he": "מצרים",
+          "team_en": "Egypt",
+          "match_id": "90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
+          "he_name": "מצרים הייתה קרובה, אבל 3-2 לא מספיק. זו טעות שכבר מורגשת בטבלת ההימור. {names} בחר את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "he_names": "מצרים הייתה קרובה, אבל 3-2 לא מספיק. אלו טעויות שכבר מורגשות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "he_count": "מצרים הייתה קרובה, אבל 3-2 לא מספיק. אלו טעויות שכבר מורגשות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "en_name": "Egypt came close, but 3-2 is not enough. That miss already hurts the pool table. {names} picked {team} to advance in the knockout bracket 🔥",
+          "en_names": "Egypt came close, but 3-2 is not enough. Those misses already hurt the pool table. {names} picked {team} to advance in the knockout bracket 🔥",
+          "en_count": "Egypt came close, but 3-2 is not enough. Those misses already hurt the pool table. {names} picked {team} to advance in the knockout bracket 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "EGY",
+          "team_he": "מצרים",
+          "team_en": "Egypt",
+          "he_name": "ארגנטינה שורדת 3-2. קרוב, אבל רע לטופס, והמסלול לגביע נעשה כבד מאוד בטבלת ההימור. {names} בחר את {team} כזוכת המונדיאל 🔥",
+          "he_names": "ארגנטינה שורדת 3-2. קרוב, אבל רע לטפסים, והמסלולים לגביע נעשים כבדים מאוד בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל 🔥",
+          "he_count": "ארגנטינה שורדת 3-2. קרוב, אבל רע לטפסים, והמסלולים לגביע נעשים כבדים מאוד בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל 🔥",
+          "en_name": "Argentina survive 3-2. Close call, bad ending, and that title call is in real trouble on the leaderboard. {names} picked {team} to win the World Cup 🔥",
+          "en_names": "Argentina survive 3-2. Close calls, bad ending, and those title calls are in real trouble on the leaderboard. {names} picked {team} to win the World Cup 🔥",
+          "en_count": "Argentina survive 3-2. Close calls, bad ending, and those title calls are in real trouble on the leaderboard. {names} picked {team} to win the World Cup 🔥"
+        }
+      ],
+      "he": {
+        "headline": "ארגנטינה ניצחה את מצרים 3-2: משחק על הקצה 🔥",
+        "caption": "ארגנטינה שורדת 3-2 וממשיכה. משחק צמוד, השפעה גדולה, וטבלת ההימור מרגישה את זה עכשיו 🔥"
+      },
+      "en": {
+        "headline": "Argentina beat Egypt 3-2: edge-of-seat win 🔥",
+        "caption": "Argentina survive 3-2 and move on. Tight match, big impact, and the pool table feels it now 🔥"
+      }
+    },
     {
       "id": "usa-bel-2026-07-07",
       "match_id": "084756cf-d007-4858-8fc4-d6ca8b66b686",
@@ -227,12 +312,12 @@
           "team_he": "מקסיקו",
           "team_en": "Mexico",
           "match_id": "2bbe0177-81d6-4268-9434-6790cec04007",
-          "he_name": "מקסיקו הייתה קרובה, אבל 3-2 לא מספיק. זו טעות שכבר מורגשת בטבלת ההימור. {names} בחר את {team} להתקדם בבראקט הנוקאאוט 🔥",
-          "he_names": "מקסיקו הייתה קרובה, אבל 3-2 לא מספיק. אלו טעויות שכבר מורגשות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
-          "he_count": "מקסיקו הייתה קרובה, אבל 3-2 לא מספיק. אלו טעויות שכבר מורגשות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
-          "en_name": "Mexico came close, but 3-2 is not enough. That miss already hurts the pool table. {names} picked {team} to advance in the knockout bracket 🔥",
-          "en_names": "Mexico came close, but 3-2 is not enough. Those misses already hurt the pool table. {names} picked {team} to advance in the knockout bracket 🔥",
-          "en_count": "Mexico came close, but 3-2 is not enough. Those misses already hurt the pool table. {names} picked {team} to advance in the knockout bracket 🔥"
+          "he_name": "מקסיקו הייתה קרובה, אבל 3-2 לא מספיק. זו טעות שכבר מורגשת בטבלת ההימור. {names} בחר את {team} להתקדם בבראקט הנוקאאוט. התוצאה נכנסה ישר לטבלה 🔥",
+          "he_names": "מקסיקו הייתה קרובה, אבל 3-2 לא מספיק. אלו טעויות שכבר מורגשות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט. התוצאה נכנסה ישר לטבלה 🔥",
+          "he_count": "מקסיקו הייתה קרובה, אבל 3-2 לא מספיק. אלו טעויות שכבר מורגשות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט. התוצאה נכנסה ישר לטבלה 🔥",
+          "en_name": "Mexico came close, but 3-2 is not enough. That miss already hurts the pool table. {names} picked {team} to advance in the knockout bracket. This match goes into the count 🔥",
+          "en_names": "Mexico came close, but 3-2 is not enough. Those misses already hurt the pool table. {names} picked {team} to advance in the knockout bracket. This match goes into the count 🔥",
+          "en_count": "Mexico came close, but 3-2 is not enough. Those misses already hurt the pool table. {names} picked {team} to advance in the knockout bracket. This match goes into the count 🔥"
         },
         {
           "table": "tournament_winner_picks",
@@ -248,11 +333,11 @@
         }
       ],
       "he": {
-        "headline": "אנגליה ניצחה את מקסיקו 3-2: משחק על הקצה 🔥",
+        "headline": "אנגליה ניצחה את מקסיקו 3-2: משחק על הקצה - הבחירות קיבלו תשובה 🔥",
         "caption": "3-2 עד הסוף, ואז אנגליה נשארת בחיים. בחירות עליה עולות, בחירות על מקסיקו נופלות 🔥"
       },
       "en": {
-        "headline": "England beat Mexico 3-2: edge-of-seat win 🔥",
+        "headline": "England beat Mexico 3-2: edge-of-seat win - the chase changed 🔥",
         "caption": "3-2 to the end, then England stay alive. Picks on them rise; Mexico picks fall 🔥"
       }
     },
@@ -639,12 +724,12 @@
           "team_code": "ARG",
           "team_he": "ארגנטינה",
           "team_en": "Argentina",
-          "he_name": "3-2 עד הסוף. ארגנטינה ממשיכה, והחלום על הגביע נראה הרבה יותר רציני בטבלת ההימור. {names} בחר את {team} כזוכת המונדיאל 🔥",
-          "he_names": "3-2 עד הסוף. ארגנטינה ממשיכה, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל 🔥",
-          "he_count": "3-2 עד הסוף. ארגנטינה ממשיכה, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל 🔥",
-          "en_name": "3-2 to the end. Argentina move on, and that World Cup pick looks serious on the leaderboard. {names} picked {team} to win the World Cup 🔥",
-          "en_names": "3-2 to the end. Argentina move on, and those World Cup picks look serious on the leaderboard. {names} picked {team} to win the World Cup 🔥",
-          "en_count": "3-2 to the end. Argentina move on, and those World Cup picks look serious on the leaderboard. {names} picked {team} to win the World Cup 🔥"
+          "he_name": "3-2 עד הסוף. ארגנטינה ממשיכה, והחלום על הגביע נראה הרבה יותר רציני בטבלת ההימור. {names} בחר את {team} כזוכת המונדיאל. הטבלה נותנת לזה תשובה 🔥",
+          "he_names": "3-2 עד הסוף. ארגנטינה ממשיכה, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל. הטבלה נותנת לזה תשובה 🔥",
+          "he_count": "3-2 עד הסוף. ארגנטינה ממשיכה, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל. הטבלה נותנת לזה תשובה 🔥",
+          "en_name": "3-2 to the end. Argentina move on, and that World Cup pick looks serious on the leaderboard. {names} picked {team} to win the World Cup. That pick got a result 🔥",
+          "en_names": "3-2 to the end. Argentina move on, and those World Cup picks look serious on the leaderboard. {names} picked {team} to win the World Cup. That pick got a result 🔥",
+          "en_count": "3-2 to the end. Argentina move on, and those World Cup picks look serious on the leaderboard. {names} picked {team} to win the World Cup. That pick got a result 🔥"
         },
         {
           "table": "knockout_picks",
@@ -664,21 +749,21 @@
           "team_code": "CPV",
           "team_he": "כף ורדה",
           "team_en": "Cape Verde",
-          "he_name": "ארגנטינה שורדת 3-2. קרוב, אבל רע לטופס, והמסלול לגביע נעשה כבד מאוד בטבלת ההימור. {names} בחר את {team} כזוכת המונדיאל 🔥",
-          "he_names": "ארגנטינה שורדת 3-2. קרוב, אבל רע לטפסים, והמסלולים לגביע נעשים כבדים מאוד בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל 🔥",
-          "he_count": "ארגנטינה שורדת 3-2. קרוב, אבל רע לטפסים, והמסלולים לגביע נעשים כבדים מאוד בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל 🔥",
-          "en_name": "Argentina survive 3-2. Close call, bad ending, and that title call is in real trouble on the leaderboard. {names} picked {team} to win the World Cup 🔥",
-          "en_names": "Argentina survive 3-2. Close calls, bad ending, and those title calls are in real trouble on the leaderboard. {names} picked {team} to win the World Cup 🔥",
-          "en_count": "Argentina survive 3-2. Close calls, bad ending, and those title calls are in real trouble on the leaderboard. {names} picked {team} to win the World Cup 🔥"
+          "he_name": "ארגנטינה שורדת 3-2. קרוב, אבל רע לטופס, והמסלול לגביע נעשה כבד מאוד בטבלת ההימור. {names} בחר את {team} כזוכת המונדיאל. הטבלה נותנת לזה תשובה 🔥",
+          "he_names": "ארגנטינה שורדת 3-2. קרוב, אבל רע לטפסים, והמסלולים לגביע נעשים כבדים מאוד בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל. הטבלה נותנת לזה תשובה 🔥",
+          "he_count": "ארגנטינה שורדת 3-2. קרוב, אבל רע לטפסים, והמסלולים לגביע נעשים כבדים מאוד בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל. הטבלה נותנת לזה תשובה 🔥",
+          "en_name": "Argentina survive 3-2. Close call, bad ending, and that title call is in real trouble on the leaderboard. {names} picked {team} to win the World Cup. That pick got a result 🔥",
+          "en_names": "Argentina survive 3-2. Close calls, bad ending, and those title calls are in real trouble on the leaderboard. {names} picked {team} to win the World Cup. That pick got a result 🔥",
+          "en_count": "Argentina survive 3-2. Close calls, bad ending, and those title calls are in real trouble on the leaderboard. {names} picked {team} to win the World Cup. That pick got a result 🔥"
         }
       ],
       "he": {
         "headline": "ארגנטינה ניצחה את כף ורדה 3-2: דרמה עד הסוף 🔥",
-        "caption": "ארגנטינה שורדת 3-2 וממשיכה. משחק צמוד, השפעה גדולה, וטבלת ההימור מרגישה את זה עכשיו 🔥"
+        "caption": "ארגנטינה שורדת 3-2 וממשיכה. משחק צמוד, השפעה גדולה, וטבלת ההימור מרגישה את זה עכשיו. ההימור מרגיש את התוצאה הזאת 🔥"
       },
       "en": {
         "headline": "Argentina beat Cape Verde 3-2: drama to the end 🔥",
-        "caption": "Argentina survive 3-2 and move on. Tight match, big impact, and the pool table feels it now 🔥"
+        "caption": "Argentina survive 3-2 and move on. Tight match, big impact, and the pool table feels it now. Missed picks pay for it now 🔥"
       }
     },
     {
