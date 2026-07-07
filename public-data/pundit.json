@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-07-07T18:26:41.229Z",
-  "freshUntil": "2026-07-08T00:26:41.229Z",
+  "updatedAt": "2026-07-07T20:09:14.503Z",
+  "freshUntil": "2026-07-08T02:09:14.503Z",
   "count": 4,
   "items": [
+    {
+      "id": "live-d0cb75c4-0479-42f4-b473-0eb5b4b51f54",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "שווייץ נגד קולומביה עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
+      "en": "Switzerland vs Colombia is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "sources": [],
+      "expires_at": "2026-07-07T23:09:14.503Z"
+    },
     {
       "id": "result-90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
       "type": "result",
@@ -29,15 +38,6 @@
       "en": "Spain beat Portugal 1-0 and stayed alive in the bracket. Any bracket path that kept Spain alive can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-08T07:00:00.000Z"
-    },
-    {
-      "id": "fixture-d0cb75c4-0479-42f4-b473-0eb5b4b51f54",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "שווייץ נגד קולומביה, היום 23:00. קולומביה פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
-      "en": "Switzerland vs Colombia, today 23:00. Colombia are the favorite, but in knockout football favorites still have to survive ⏰",
-      "sources": [],
-      "expires_at": "2026-07-07T19:45:00.000Z"
     }
   ]
 }
