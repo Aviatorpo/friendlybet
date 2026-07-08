@@ -3400,12 +3400,54 @@ function appendLatestShapeClause(story, match, kind, lang, focusIndex = 0, attem
   return { ...story, pool_focus: focuses[0] || story.pool_focus, pool_focuses: focuses };
 }
 
+function cleanLatestCommentatorFiller(value) {
+  return String(value || '')
+    .replace(/\bforms\b/gi, 'picks')
+    .replace(/\bform\b/gi, 'pick')
+    .replace(/\breceipts\b/gi, 'proof points')
+    .replace(/\breceipt\b/gi, 'proof point')
+    .replace(/correct picks/gi, 'right calls')
+    .replace(/correct pick/gi, 'right call')
+    .replace(/clean hits/gi, 'sharp calls')
+    .replace(/clean hit/gi, 'sharp call')
+    .replace(/big pool boost/gi, 'major table swing')
+    .replace(/big bracket boost/gi, 'major bracket lift')
+    .replace(/\bboost\b/gi, 'lift')
+    .replace(/took a hard hit/gi, 'lost real ground')
+    .replace(/took a heavy hit/gi, 'lost real ground')
+    .replace(/fell hard/gi, 'lost real ground');
+}
+
+function cleanLatestStoryCopy(story) {
+  const cleanLang = (copy) => copy ? {
+    ...copy,
+    headline: cleanLatestCommentatorFiller(copy.headline),
+    caption: cleanLatestCommentatorFiller(copy.caption),
+  } : copy;
+  const focuses = (story.pool_focuses || []).map(focus => ({
+    ...focus,
+    he_name: cleanLatestCommentatorFiller(focus.he_name),
+    he_names: cleanLatestCommentatorFiller(focus.he_names),
+    he_count: cleanLatestCommentatorFiller(focus.he_count),
+    en_name: cleanLatestCommentatorFiller(focus.en_name),
+    en_names: cleanLatestCommentatorFiller(focus.en_names),
+    en_count: cleanLatestCommentatorFiller(focus.en_count),
+  }));
+  return {
+    ...story,
+    he: cleanLang(story.he),
+    en: cleanLang(story.en),
+    pool_focus: focuses[0] || story.pool_focus,
+    pool_focuses: focuses,
+  };
+}
+
 function applyLatestStoryShapeVariety(items, matchById) {
   const seenCaptions = { he: new Set(), en: new Set() };
   const seenFocuses = { he: new Set(), en: new Set() };
   return items.map((story, idx) => {
     if (idx >= RECENT_STORY_COPY_WINDOW) return story;
-    let next = story;
+    let next = cleanLatestStoryCopy(story);
     const match = matchById.get(story && story.match_id);
     for (const lang of ['he', 'en']) {
       let headlineShape = storyShape(next[lang] && next[lang].headline, { normalizeTeams: true });
@@ -3437,7 +3479,7 @@ function applyLatestStoryShapeVariety(items, matchById) {
         if (focusShape) seenFocuses[lang].add(focusShape);
       }
     }
-    return next;
+    return cleanLatestStoryCopy(next);
   });
 }
 
