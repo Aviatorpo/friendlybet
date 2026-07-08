@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-08T03:37:37.945Z",
-  "freshUntil": "2026-07-08T09:37:37.945Z",
-  "count": 4,
+  "updatedAt": "2026-07-08T08:42:55.548Z",
+  "freshUntil": "2026-07-08T14:42:55.548Z",
+  "count": 3,
   "items": [
     {
       "id": "result-d0cb75c4-0479-42f4-b473-0eb5b4b51f54",
@@ -29,15 +29,6 @@
       "en": "4-1 for Belgium over United States. Any bracket path that kept Belgium alive can open the receipts 🧾",
       "sources": [],
       "expires_at": "2026-07-08T12:00:00.000Z"
-    },
-    {
-      "id": "result-e2a51510-0a1f-40f3-9990-632608b6f116",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "ספרד עברה את פורטוגל 1:0. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על פורטוגל צריך מסלול חדש 🧾",
-      "en": "Spain got past Portugal 1-0. Bracket paths that kept Spain alive get a receipt; Portugal routes need a new plan 🧾",
-      "sources": [],
-      "expires_at": "2026-07-08T07:00:00.000Z"
     }
   ]
 }
