@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-08T08:42:55.548Z",
-  "freshUntil": "2026-07-08T14:42:55.548Z",
+  "updatedAt": "2026-07-08T14:35:25.864Z",
+  "freshUntil": "2026-07-08T20:35:25.864Z",
   "count": 3,
   "items": [
     {
@@ -22,13 +22,13 @@
       "expires_at": "2026-07-09T04:00:00.000Z"
     },
     {
-      "id": "result-084756cf-d007-4858-8fc4-d6ca8b66b686",
-      "type": "result",
+      "id": "fixture-414e2eec-b2ac-4c92-b719-f7e6a3526d01",
+      "type": "fixture",
       "confidence": "confirmed",
-      "he": "4:1 לבלגיה על ארה\"ב. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות 🧾",
-      "en": "4-1 for Belgium over United States. Any bracket path that kept Belgium alive can open the receipts 🧾",
+      "he": "רבע הגמר: צרפת נגד מרוקו, מחר 23:00. מי שבנה על צרפת רוצה שקט; מי שסימן את מרוקו מחפש רעידת בראקט ⏰",
+      "en": "quarter-final: France vs Morocco, tomorrow 23:00. France picks want calm; Morocco picks are hunting bracket shock ⏰",
       "sources": [],
-      "expires_at": "2026-07-08T12:00:00.000Z"
+      "expires_at": "2026-07-09T19:45:00.000Z"
     }
   ]
 }
