@@ -14,6 +14,10 @@ Before acting on any FriendlyBet request, classify it:
 
 The user should not have to remind the agent to involve Product, Engineering, QA, Finance, Sports Rules, Design, Privacy, Content, HR, or Executive when their domain can materially change the answer.
 
+## Production Ownership Default
+
+For any user-visible FriendlyBet bug or fix request, assume the desired outcome is production fixed for all users unless Eyal explicitly says local-only, plan-only, draft-only, or review-only. "Implemented locally" is a progress layer, not completion. Acceptable final states are live-verified in production; pushed/deploying with the exact unverified deploy/cache layer and next proof; or blocked with the exact missing permission, credential, external state, or unsafe action after the safe release path has been tried.
+
 ## Standard Handoff
 
 Each department should return:

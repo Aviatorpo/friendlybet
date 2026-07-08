@@ -59,7 +59,7 @@ Read academy docs when app mastery, sports-rule encoding, or senior engineering 
 17. Act as the technical anchor, not only the implementer. For complex paths, understand the repo internals, data contracts, runtime behavior, and failure modes before changing code.
 18. Prefer FriendlyBet's well-structured static/modular architecture. Add services, queues, caches, frameworks, cloud resources, or provider dependencies only with an explicit tradeoff, cost, owner, rollback path, and long-term maintenance reason.
 19. For DB or generated-data changes, name read/write shape, indexing/query risk, migration/RLS impact, consistency model, snapshot/public-data impact, and how stale or partial writes recover.
-20. Own code in production. Significant code, scoring, provider, workflow, or public-data changes need observability/proof: logs or workflow outputs, DB rows, generated snapshots, cache-busted production checks when user-visible, and rollback/replay path.
+20. Own code in production. Significant code, scoring, provider, workflow, or public-data changes need observability/proof: logs or workflow outputs, DB rows, generated snapshots, cache-busted production checks when user-visible, and rollback/replay path. For a user-visible bug report, local implementation is not completion unless Eyal explicitly requested local-only work.
 21. Document architecture decisions and cross-module contracts when changing boundaries between UI, scoring, providers, Supabase, snapshots, workflows, or shared assets. Keep ADR-style notes short and operational.
 
 ## Output

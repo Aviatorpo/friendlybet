@@ -47,7 +47,9 @@ assert(!pilotBody.includes('if (!resolvedRows.length) return null'), 'empty succ
 assert(pilotBody.includes("if (!fallbackRows.length) console.warn('dashboard impact pilot: knockout pick read failed'"), 'pick-read warnings are suppressed when fallback rows are usable');
 assert(pilotBody.includes('_dashboardImpactPickPointsForTeamAtStage'), 'pilot calculates stage-specific point impact');
 assert(pilotBody.includes('_dashboardImpactVerifiedAdvancer'), 'pilot uses verified knockout advancer for result points');
-assert(pilotBody.includes('winner_code'), 'result points depend on verified winner_code');
+assert(pilotBody.includes('_dashboardImpactAdvancedOnPenalties'), 'pilot detects penalty-decided knockout advancement');
+assert(pilotBody.includes('_dashboardImpactAdvancementNoteHtml'), 'pilot renders an explicit penalty advancement note');
+assert(pilotBody.includes("t('matchesEx.advancedOnPenalties'"), 'pilot reuses match-board penalty advancement copy');
 assert(pilotBody.includes('_dashboardImpactMatchStackHtml(activeMatch, lastResult, nextMatch, bracketPicks)'), 'live dashboard renders live/last/next stack');
 assert(pilotBody.includes('_dashboardImpactNextMatch(matches, Date.now(), activeMatch)'), 'next match is not hidden during live state');
 assert(pilotBody.includes("_dashboardImpactTeamScoreText(match, 'home', ux)"), 'home score is bound to the home team row');
@@ -88,6 +90,28 @@ assert(!pointRowBody.includes('dip-flag'), 'point rows keep flags only in the sc
 assert(pointRowBody.includes('_dashboardImpactPointSentenceHtml'), 'point rows render as readable sentences');
 assert(pointRowBody.includes('dip-points-value'), 'point rows emphasize the pool point value inline');
 
+const resolvedWinnerStart = app.indexOf('function _matchResolvedWinner');
+const resolvedWinnerEnd = app.indexOf('function _matchIsPendingProviderFinal', resolvedWinnerStart);
+const resolvedWinnerBody = app.slice(resolvedWinnerStart, resolvedWinnerEnd);
+assert(resolvedWinnerStart >= 0 && resolvedWinnerEnd > resolvedWinnerStart, 'shared resolved winner body is extractable');
+assert(resolvedWinnerBody.includes('winner_code'), 'shared resolved-winner helper uses verified winner_code for tied knockouts');
+
+const resultRowsStart = app.indexOf('function _dashboardImpactResultRows');
+const resultRowsEnd = app.indexOf('function _dashboardImpactLiveMatch', resultRowsStart);
+const resultRowsBody = app.slice(resultRowsStart, resultRowsEnd);
+assert(resultRowsStart >= 0 && resultRowsEnd > resultRowsStart, 'result rows body is extractable');
+assert(resultRowsBody.includes('const advancementNote = _dashboardImpactAdvancementNoteHtml(match, winner);'), 'result rows calculate the penalty advancement note from the resolved winner');
+assert(resultRowsBody.includes('return `${advancementNote}<div class="dip-points-list">'), 'penalty advancement note is shown before result points');
+assert(resultRowsBody.includes('dashboard.impact.resultPointsSentence'), 'result rows still render the points sentence');
+
+const advancerStart = app.indexOf('function _dashboardImpactVerifiedAdvancer');
+const advancerEnd = app.indexOf('function _dashboardImpactResultRows', advancerStart);
+const advancerBody = app.slice(advancerStart, advancerEnd);
+assert(advancerStart >= 0 && advancerEnd > advancerStart, 'verified advancer body is extractable');
+assert(advancerBody.includes('return _matchResolvedWinner(match);'), 'dashboard result rows use the shared resolved-winner logic');
+assert(advancerBody.includes('function _dashboardImpactAdvancedOnPenalties'), 'penalty advancement detector is adjacent to the result advancer');
+assert(advancerBody.includes('Number(match.home_score) === Number(match.away_score)'), 'penalty note is limited to tied knockout scores');
+
 assert(index.includes('id="dashboard-impact-pilot"'), 'dashboard pilot mount exists');
 assert(index.includes('id="dip-open-leaderboard"'), 'leaderboard action exists');
 assert(index.includes('id="dip-open-bracket"'), 'bracket action exists');
@@ -107,6 +131,7 @@ assert(styles.includes('unicode-bidi: isolate'), 'numeric score pill has an expl
 assert(styles.includes('.dip-point-row'), 'pilot has simple point rows');
 assert(styles.includes('.dip-point-sentence'), 'pilot point rows are sentence-based');
 assert(styles.includes('.dip-points-value'), 'pilot emphasizes points inline');
+assert(styles.includes('.dip-advancement-note'), 'pilot styles the explicit penalty advancement note');
 assert(styles.includes('.dip-action:disabled'), 'pilot bracket action has a disabled state');
 assert(styles.includes('.dip-match-block-compact'), 'pilot can de-emphasize secondary cards during live matches');
 assert(styles.includes('.dip-match-stack'), 'pilot stacks separate match cards');
@@ -135,6 +160,7 @@ assert(!styles.includes('.dip-points {'), 'old detached points column was remove
   'dashboard.impact.resultPointsSentence',
   'dashboard.impact.scenarioPointsUnavailable',
   'dashboard.impact.resultPointsUnavailable',
+  'matchesEx.advancedOnPenalties',
   'worldCupStories.previous',
   'worldCupStories.next'
 ].forEach((key) => {

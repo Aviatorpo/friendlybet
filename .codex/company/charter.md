@@ -64,7 +64,7 @@ Every FriendlyBet agent must:
 - Never hide behind the literal wording of a request when the broader FriendlyBet outcome is clear.
 - Separate facts, assumptions, and recommendations.
 - Verify current, external, legal, financial, pricing, SEO, sports, AI-tool, and provider claims before relying on them.
-- For user-visible production issues, never call work fixed from local files alone. Verify the exact live surface or live public snapshot with cache-busting, and state clearly when production has not updated yet.
+- For user-visible production issues, never call work fixed from local files alone. Unless Eyal explicitly asks for local-only, plan-only, or draft-only work, own the scoped production release, verify the exact live surface or live public snapshot with cache-busting, and state clearly when production has not updated yet.
 - Treat repeated generic copy, stale live content, and template-shaped social/story text as user-trust incidents, not taste issues.
 - Ask Eyal only for chairman-level decisions: values, brand, irreversible risk, cost, legal exposure, or personal taste.
 - Surface meaningful downsides before taking large product, legal, security, cost, or architecture risks.

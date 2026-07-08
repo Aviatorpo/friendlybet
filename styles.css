@@ -1491,6 +1491,22 @@ body.ltr .btn-secondary .ti-arrow-left {
   margin-top: 10px;
 }
 
+.dip-advancement-note {
+  margin-top: 8px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: rgba(217, 180, 106, 0.08);
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.dip-advancement-note + .dip-points-list {
+  margin-top: 6px;
+}
+
 .dip-point-row {
   display: block;
   min-height: 34px;
@@ -1569,6 +1585,16 @@ body.ltr .btn-secondary .ti-arrow-left {
 
 .dip-match-block-compact .dip-points-list {
   margin-top: 7px;
+}
+
+.dip-match-block-compact .dip-advancement-note {
+  margin-top: 6px;
+  padding: 6px 8px;
+  font-size: 11.5px;
+}
+
+.dip-match-block-compact .dip-advancement-note + .dip-points-list {
+  margin-top: 5px;
 }
 
 .dip-match-block-compact .dip-point-row {

@@ -2016,10 +2016,24 @@ function _dashboardImpactScenarioRows(match, picks) {
 }
 
 function _dashboardImpactVerifiedAdvancer(match) {
-  if (!match || !_matchIsKnockoutStage(match)) return _matchResolvedWinner(match);
-  const winner = String((match && match.winner_code) || '').toUpperCase();
-  const teams = [match.home_team_code, match.away_team_code].map(code => String(code || '').toUpperCase());
-  return winner && teams.includes(winner) ? winner : null;
+  return _matchResolvedWinner(match);
+}
+
+function _dashboardImpactAdvancedOnPenalties(match, winner = null) {
+  const resolvedWinner = winner || _dashboardImpactVerifiedAdvancer(match);
+  return !!(
+    match &&
+    resolvedWinner &&
+    _matchIsFinishedStatus(match) &&
+    _matchIsKnockoutStage(match) &&
+    _matchHasNumericScore(match) &&
+    Number(match.home_score) === Number(match.away_score)
+  );
+}
+
+function _dashboardImpactAdvancementNoteHtml(match, winner) {
+  if (!_dashboardImpactAdvancedOnPenalties(match, winner)) return '';
+  return `<div class="dip-advancement-note">${escapeHtml(t('matchesEx.advancedOnPenalties', { team: getTeamName(winner) }))}</div>`;
 }
 
 function _dashboardImpactResultRows(match, picks) {
@@ -2035,7 +2049,8 @@ function _dashboardImpactResultRows(match, picks) {
     `;
   }
   const pointsInfo = _dashboardImpactPickPointsForTeamAtStage(winner, match.stage, picks);
-  return `<div class="dip-points-list">${_dashboardImpactPointRowHtml(
+  const advancementNote = _dashboardImpactAdvancementNoteHtml(match, winner);
+  return `${advancementNote}<div class="dip-points-list">${_dashboardImpactPointRowHtml(
     'dashboard.impact.resultPointsSentence',
     'dashboard.impact.resultPointsUnavailable',
     { team: getTeamName(winner) },

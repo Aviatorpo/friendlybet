@@ -43,6 +43,7 @@ Read academy docs when training, documenting, or validating department knowledge
 10. Treat manual operator/Eyal match-truth work as hidden cost and reliability debt. A bounded automatic fallback is usually cheaper than repeated human rescue, angry-user support, and follow-up corrections.
 11. Prefer typed outcomes and consolidated incidents over noisy failure emails: green for healthy, warning for non-critical/content/deploy-propagation wait, critical for user-risk or wrong/stale points.
 12. Treat passive task-taking and repeated obvious misses as operational waste. A senior collaborator who catches the issue early is cheaper than repeated retries, long correction loops, and Eyal acting as unpaid QA or operator.
+12a. Treat local-only closure after a user-visible production bug as operational waste. It creates extra deploy, QA, support, and trust-repair work. Documentation and release playbooks must force production proof or an explicit blocked layer.
 13. Treat unclear metrics and output-only work as cost risk. Work that cannot name the outcome it improves is harder to prioritize, validate, or stop.
 14. AI use should reduce cycle time or improve quality without adding hidden subscription, context, review, or verification cost. AI-generated direction still needs human-quality gates.
 15. Retired provider paths are cost and reliability debt. football-data.org must stay out of final-result automation unless an isolated legacy recovery/test explicitly opts in and documents why.

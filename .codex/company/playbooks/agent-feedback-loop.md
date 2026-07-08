@@ -59,6 +59,7 @@ If Eyal reports that the live app still shows a bug after an agent claimed it wa
 
 - Classify the incident as a verification failure before looking for a new technical explanation.
 - Compare local files, committed Git state, deployed production artifacts, and browser/service-worker/CDN cache behavior as separate layers.
+- If the prior closure said "implemented locally", "done", or equivalent after a user-visible bug report, classify it as a local-only closure failure even before a second live reproduction is gathered.
 - Do not reassure. State which layer is proven, which layer is not, and what exact live check will close the loop.
 - The durable fix must include either a release gate, a live verification command, or a skill/playbook update that blocks local-only completion claims.
 - Do not stop at "blocked" while an executable recovery path remains. The agent owns the next safe action: trigger the workflow, monitor it, patch the workflow, or state the exact missing credential/permission after trying the available route.

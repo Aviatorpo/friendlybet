@@ -59,6 +59,7 @@ rg -n "FIFA_RANKINGS|FIFA_RANK" app.js scripts/calculate-scores-v2.js
 - Every FriendlyBet request gets automatic company preflight: classify as direct/simple, owner-led, or meaningful company work before answering or editing.
 - For meaningful company work, run `.codex/company/playbooks/full-company-planning-review.md` before the plan exists; for tiny tasks, avoid fake department theater and use only the useful owner path.
 - For live result, scoring, leaderboard, fixture, or Action-noise incidents, read `.codex/company/playbooks/live-scoring-operations.md` and `.codex/company/playbooks/quality-gates.md` before planning or patching.
+- For user-visible bug reports, default to a production release path unless Eyal explicitly asks for local-only, plan-only, or draft-only work. Local implementation and tests are not the stopping point.
 - Do not load full `CHANGELOG.md` unless release history is directly relevant.
 - Avoid full reads of `app.js`, `styles.css`, `index.html`, or `i18n.js`; jump by anchor/search.
 
@@ -71,6 +72,8 @@ When shipping app code, bump all three version strings together:
 - `index.html` footer `<span class="menu-version">`
 
 The service-worker cache key gates PWA updates.
+
+For user-visible bug reports, do not stop at local implementation. Ship the scoped fix to `main`, allow the deploy/cache path to update, and verify the live artifact or live surface with cache-busting. If that cannot be completed, report the exact layer: local-only, committed-not-pushed, pushed-not-live, live-artifact-verified, or blocked.
 
 ## User / Product Rules
 

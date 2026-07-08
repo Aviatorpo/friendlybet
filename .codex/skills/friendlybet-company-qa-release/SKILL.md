@@ -38,7 +38,7 @@ Read academy docs when release confidence, regression strategy, or senior QA pla
 3. Recommend focused scripts or manual checks.
 4. For app code, verify the three-place version bump rule.
 5. Never revert unrelated dirty work.
-6. For live user-visible bugs, require production verification after push/deploy: cache-busted public-data fetch, live URL check, or screenshot proof as appropriate.
+6. For live user-visible bugs, require production verification after push/deploy: cache-busted public-data fetch, live URL check, or screenshot proof as appropriate. "Implemented locally" and passing local tests are release-readiness evidence only, not completion, unless Eyal explicitly requested local-only work.
 6a. For generated scoring/public-data commits, separate local correctness from deploy propagation. Local snapshot-vs-DB mismatches fail immediately; cache-busted production proof must wait through the approved Vercel/CDN propagation window before declaring the workflow failed.
 6b. For final-result verifier failures, inspect whether candidates are truly missing result truth. Already scored terminal rows with stale live metadata should be sanitized/cleaned, not treated as unresolved match outcomes.
 7. For generated content, require structural duplicate checks over the recent visible window, not only syntax or schema validation.
