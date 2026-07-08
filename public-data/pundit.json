@@ -1,6 +1,6 @@
 {
-  "updatedAt": "2026-07-08T19:49:29.771Z",
-  "freshUntil": "2026-07-09T01:49:29.771Z",
+  "updatedAt": "2026-07-08T22:15:18.382Z",
+  "freshUntil": "2026-07-09T04:15:18.382Z",
   "count": 3,
   "items": [
     {
@@ -25,8 +25,8 @@
       "id": "fixture-414e2eec-b2ac-4c92-b719-f7e6a3526d01",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "רבע הגמר: צרפת נגד מרוקו, מחר 23:00. מי שבנה על צרפת רוצה שקט; מי שסימן את מרוקו מחפש רעידת בראקט ⏰",
-      "en": "quarter-final: France vs Morocco, tomorrow 23:00. France picks want calm; Morocco picks are hunting bracket shock ⏰",
+      "he": "רבע הגמר: צרפת נגד מרוקו, היום 23:00. מי שבנה על צרפת רוצה שקט; מי שסימן את מרוקו מחפש רעידת בראקט ⏰",
+      "en": "quarter-final: France vs Morocco, today 23:00. France picks want calm; Morocco picks are hunting bracket shock ⏰",
       "sources": [],
       "expires_at": "2026-07-09T19:45:00.000Z"
     }
