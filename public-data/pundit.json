@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-07-09T20:54:06.167Z",
-  "freshUntil": "2026-07-10T02:54:06.167Z",
+  "updatedAt": "2026-07-09T22:20:59.432Z",
+  "freshUntil": "2026-07-10T04:20:59.432Z",
   "count": 2,
   "items": [
     {
-      "id": "live-414e2eec-b2ac-4c92-b719-f7e6a3526d01",
-      "type": "live",
+      "id": "result-414e2eec-b2ac-4c92-b719-f7e6a3526d01",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "צרפת נגד מרוקו עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
-      "en": "France vs Morocco is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "he": "צרפת ניצחה את מרוקו 2:0 ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום 🧾",
+      "en": "France beat Morocco 2-0 and stayed alive in the bracket. Any bracket path that kept France alive can keep dreaming 🧾",
       "sources": [],
-      "expires_at": "2026-07-09T23:54:06.167Z"
+      "expires_at": "2026-07-11T08:00:00.000Z"
     },
     {
       "id": "fixture-28d7a286-32b3-4203-b8a5-793ae663b5ed",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "משחק ענק ברבע הגמר: ספרד נגד בלגיה, מחר 22:00. צד אחד ממשיך, צד אחד הולך הביתה ⏰",
-      "en": "Huge quarter-final: Spain vs Belgium, tomorrow 22:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
+      "he": "משחק ענק ברבע הגמר: ספרד נגד בלגיה, היום 22:00. צד אחד ממשיך, צד אחד הולך הביתה ⏰",
+      "en": "Huge quarter-final: Spain vs Belgium, today 22:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-10T18:45:00.000Z"
     }
