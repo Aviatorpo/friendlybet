@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-08T22:15:18.382Z",
-  "freshUntil": "2026-07-09T04:15:18.382Z",
-  "count": 3,
+  "updatedAt": "2026-07-09T04:09:20.795Z",
+  "freshUntil": "2026-07-09T10:09:20.795Z",
+  "count": 2,
   "items": [
     {
       "id": "result-d0cb75c4-0479-42f4-b473-0eb5b4b51f54",
@@ -11,15 +11,6 @@
       "en": "0-0 on the board, Switzerland into the next round and Colombia out. It is a bracket ticket 🧾",
       "sources": [],
       "expires_at": "2026-07-09T08:00:00.000Z"
-    },
-    {
-      "id": "result-90a0c60f-d1ab-4a6b-af6e-2e8e2f778d6f",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "ארגנטינה ניצחה את מצרים 3:2 ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום 🧾",
-      "en": "Argentina beat Egypt 3-2 and stayed alive in the bracket. Any bracket path that kept Argentina alive can keep dreaming 🧾",
-      "sources": [],
-      "expires_at": "2026-07-09T04:00:00.000Z"
     },
     {
       "id": "fixture-414e2eec-b2ac-4c92-b719-f7e6a3526d01",
