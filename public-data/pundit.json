@@ -1,17 +1,8 @@
 {
-  "updatedAt": "2026-07-09T04:09:20.795Z",
-  "freshUntil": "2026-07-09T10:09:20.795Z",
-  "count": 2,
+  "updatedAt": "2026-07-09T09:58:33.822Z",
+  "freshUntil": "2026-07-09T15:58:33.822Z",
+  "count": 1,
   "items": [
-    {
-      "id": "result-d0cb75c4-0479-42f4-b473-0eb5b4b51f54",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "0:0 על הלוח, שווייץ בשלב הבא וקולומביה בחוץ. זה כרטיס המשך לבראקט 🧾",
-      "en": "0-0 on the board, Switzerland into the next round and Colombia out. It is a bracket ticket 🧾",
-      "sources": [],
-      "expires_at": "2026-07-09T08:00:00.000Z"
-    },
     {
       "id": "fixture-414e2eec-b2ac-4c92-b719-f7e6a3526d01",
       "type": "fixture",
