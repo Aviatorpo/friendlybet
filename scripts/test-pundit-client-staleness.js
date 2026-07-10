@@ -61,6 +61,26 @@ assert(
   'Pool join/share buzz must be based on effective betting availability, not only poolLocked'
 );
 
+assert(
+  /function _punditHasDisplayText\(item\)[\s\S]*?item\.key[\s\S]*?item\.he[\s\S]*?item\.en/.test(src),
+  'Pool Pundit merge must reject items without a translation key or language copy'
+);
+
+assert(
+  /const poolCands\s*=\s*_ppDedup\(poolItems\)\.filter\(_punditHasDisplayText\)/.test(src),
+  'Pool Pundit candidates must be filtered for renderable text before rotation'
+);
+
+assert(
+  /function _poolPunditDisplayItem\(it\)[\s\S]*?key:\s*it\.key[\s\S]*?params:\s*it\.params/.test(src),
+  'Pool Pundit display items must preserve key/params so translated tournament context cards do not render blank'
+);
+
+assert(
+  !/id:\s*it\.id,\s*type:\s*'pool',\s*confidence:\s*'confirmed',\s*he:\s*it\.he,\s*en:\s*it\.en,\s*sources:\s*\[\]/.test(src),
+  'Pool Pundit must not map key-backed items into he/en-only objects'
+);
+
 [
   'יוצא משלב הבתים',
   'leaves the group stage',

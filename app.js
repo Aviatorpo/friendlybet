@@ -3026,7 +3026,7 @@ async function loadPundit() {
     // computed data (live/results/fixtures/countdown); pool candidates = live
     // pool facts + pool evergreens.
     const newsCands = _ppDedup([...newsItems, ...nonNews]);
-    const poolCands = _ppDedup(poolItems);
+    const poolCands = _ppDedup(poolItems).filter(_punditHasDisplayText);
     const POOL_N = Math.min(POOL_SLOTS, poolCands.length);
     const NEWS_N = PUNDIT_TARGET - POOL_N; // 3 normally; 4-5 if the user has no pool buzz
 
@@ -3119,6 +3119,24 @@ async function _loadPoolMembers() {
     _punditState.pool = { poolId: pool.id, members: scoped, fetchedAt: Date.now() };
     return scoped;
   } catch (_) { return null; }
+}
+
+function _punditHasDisplayText(item) {
+  return !!(item && (String(item.key || '').trim() || String(item.he || '').trim() || String(item.en || '').trim()));
+}
+
+function _poolPunditDisplayItem(it) {
+  return {
+    id: it.id,
+    type: 'pool',
+    confidence: it.confidence || 'confirmed',
+    he: it.he,
+    en: it.en,
+    key: it.key,
+    params: it.params || {},
+    sources: Array.isArray(it.sources) ? it.sources : [],
+    expires_at: it.expires_at || null,
+  };
 }
 
 function _ppFormatNamesForLang(names, totalCount, lang) {
@@ -3372,9 +3390,7 @@ async function buildPoolPundit() {
     const seenPool = new Set();
     return cand
       .filter(it => it && it.id && !seenPool.has(it.id) && (seenPool.add(it.id), true))
-      .map(it => ({
-        id: it.id, type: 'pool', confidence: 'confirmed', he: it.he, en: it.en, sources: [],
-      }));
+      .map(_poolPunditDisplayItem);
   }
 
   // Pool-flavored evergreen lines (always available, lower priority than the
@@ -3414,9 +3430,7 @@ async function buildPoolPundit() {
   const seenPool = new Set();
   return cand
     .filter(it => it && it.id && !seenPool.has(it.id) && (seenPool.add(it.id), true))
-    .map(it => ({
-      id: it.id, type: 'pool', confidence: 'confirmed', he: it.he, en: it.en, sources: [],
-    }));
+    .map(_poolPunditDisplayItem);
 }
 
 // ---- Evergreen filler: keeps the card at a constant 5 items ----------------
