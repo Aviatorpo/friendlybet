@@ -1,6 +1,91 @@
 {
-  "updated_at": "2026-07-09T22:04:08.576Z",
+  "updated_at": "2026-07-10T21:02:08.277Z",
   "items": [
+    {
+      "id": "esp-bel-2026-07-10",
+      "match_id": "28d7a286-32b3-4203-b8a5-793ae663b5ed",
+      "image": "story-assets/spain-wins-belgium.png",
+      "teams": [
+        "ESP",
+        "BEL"
+      ],
+      "outcome": "ESP",
+      "result": "ESP 2-1 BEL",
+      "top_label": "SPAIN QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "ESP",
+        "team_he": "ספרד",
+        "team_en": "Spain",
+        "match_id": "28d7a286-32b3-4203-b8a5-793ae663b5ed",
+        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. ספרד מנצחת 2-1 וממשיכה. בחירה טובה, וזו קבלה יפה מאוד לבראקט ⚽",
+        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ספרד מנצחת 2-1 וממשיכה. בחירות טובות, ואלו קבלות יפות מאוד לבראקט ⚽",
+        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ספרד מנצחת 2-1 וממשיכה. בחירות טובות, ואלו קבלות יפות מאוד לבראקט ⚽",
+        "en_name": "{names} picked {team} to advance in the knockout bracket. Spain win 2-1 and move on. Good call, and that bracket call gets a clean proof point ⚽",
+        "en_names": "{names} picked {team} to advance in the knockout bracket. Spain win 2-1 and move on. Good calls, and those bracket calls get clean proof points ⚽",
+        "en_count": "{names} picked {team} to advance in the knockout bracket. Spain win 2-1 and move on. Good calls, and those bracket calls get clean proof points ⚽"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "ESP",
+          "team_he": "ספרד",
+          "team_en": "Spain",
+          "match_id": "28d7a286-32b3-4203-b8a5-793ae663b5ed",
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. ספרד מנצחת 2-1 וממשיכה. בחירה טובה, וזו קבלה יפה מאוד לבראקט ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ספרד מנצחת 2-1 וממשיכה. בחירות טובות, ואלו קבלות יפות מאוד לבראקט ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ספרד מנצחת 2-1 וממשיכה. בחירות טובות, ואלו קבלות יפות מאוד לבראקט ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. Spain win 2-1 and move on. Good call, and that bracket call gets a clean proof point ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. Spain win 2-1 and move on. Good calls, and those bracket calls get clean proof points ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. Spain win 2-1 and move on. Good calls, and those bracket calls get clean proof points ⚽"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ESP",
+          "team_he": "ספרד",
+          "team_en": "Spain",
+          "he_name": "{names} בחר את {team} כזוכת המונדיאל. 2-1 לספרד. שלב הבא, והחלום על הגביע נראה הרבה יותר רציני בטבלת ההימור ⚽",
+          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. 2-1 לספרד. שלב הבא, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור ⚽",
+          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. 2-1 לספרד. שלב הבא, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. 2-1 for Spain. Next round, and that World Cup pick looks serious on the leaderboard ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. 2-1 for Spain. Next round, and those World Cup picks look serious on the leaderboard ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. 2-1 for Spain. Next round, and those World Cup picks look serious on the leaderboard ⚽"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "BEL",
+          "team_he": "בלגיה",
+          "team_en": "Belgium",
+          "match_id": "28d7a286-32b3-4203-b8a5-793ae663b5ed",
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. בלגיה לא עוברת. הבראקט הזה משלם על זה בטבלת ההימור ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. בלגיה לא עוברת. הבראקטים האלה משלמים על זה בטבלת ההימור ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. בלגיה לא עוברת. הבראקטים האלה משלמים על זה בטבלת ההימור ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. Belgium do not go through. That bracket call pays for it on the leaderboard ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. Belgium do not go through. Those bracket calls pay for it on the leaderboard ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. Belgium do not go through. Those bracket calls pay for it on the leaderboard ⚽"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "BEL",
+          "team_he": "בלגיה",
+          "team_en": "Belgium",
+          "he_name": "{names} בחר את {team} כזוכת המונדיאל. ספרד מנצחת 2-1; בלגיה נעצרת כאן. בחירה גרועה, והחלום על הגביע חוטף מכה בטבלת ההימור ⚽",
+          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. ספרד מנצחת 2-1; בלגיה נעצרת כאן. בחירות גרועות, והחלומות על הגביע חוטפים מכה בטבלת ההימור ⚽",
+          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. ספרד מנצחת 2-1; בלגיה נעצרת כאן. בחירות גרועות, והחלומות על הגביע חוטפים מכה בטבלת ההימור ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. Spain win 2-1; Belgium stop here. Bad call, and that World Cup dream takes damage in the pool ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. Spain win 2-1; Belgium stop here. Bad calls, and those World Cup dreams take damage in the pool ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. Spain win 2-1; Belgium stop here. Bad calls, and those World Cup dreams take damage in the pool ⚽"
+        }
+      ],
+      "he": {
+        "headline": "ספרד ניצחה את בלגיה 2-1: ממשיכה הלאה ⚽",
+        "caption": "ספרד מנצחת את בלגיה 2-1 וממשיכה. בחירות נכונות מקבלות ניקוד, טעויות מרגישות את זה ⚽"
+      },
+      "en": {
+        "headline": "Spain beat Belgium 2-1: moving on ⚽",
+        "caption": "Spain beat Belgium 2-1 and move on. Right picks score, bad picks feel it ⚽"
+      }
+    },
     {
       "id": "fra-mar-2026-07-09",
       "match_id": "414e2eec-b2ac-4c92-b719-f7e6a3526d01",
@@ -18,12 +103,12 @@
         "team_he": "צרפת",
         "team_en": "France",
         "match_id": "414e2eec-b2ac-4c92-b719-f7e6a3526d01",
-        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. צרפת מנצחת 2-0 וממשיכה. בחירה טובה, וזו קבלה יפה מאוד לבראקט ⚽",
-        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. צרפת מנצחת 2-0 וממשיכה. בחירות טובות, ואלו קבלות יפות מאוד לבראקט ⚽",
-        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. צרפת מנצחת 2-0 וממשיכה. בחירות טובות, ואלו קבלות יפות מאוד לבראקט ⚽",
-        "en_name": "{names} picked {team} to advance in the knockout bracket. France win 2-0 and move on. Good call, and that bracket call gets a clean proof point ⚽",
-        "en_names": "{names} picked {team} to advance in the knockout bracket. France win 2-0 and move on. Good calls, and those bracket calls get clean proof points ⚽",
-        "en_count": "{names} picked {team} to advance in the knockout bracket. France win 2-0 and move on. Good calls, and those bracket calls get clean proof points ⚽"
+        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. צרפת מנצחת 2-0 וממשיכה. בחירה טובה, וזו קבלה יפה מאוד לבראקט. הבראקט זז קדימה ⚽",
+        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. צרפת מנצחת 2-0 וממשיכה. בחירות טובות, ואלו קבלות יפות מאוד לבראקט. הבראקט זז קדימה ⚽",
+        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. צרפת מנצחת 2-0 וממשיכה. בחירות טובות, ואלו קבלות יפות מאוד לבראקט. הבראקט זז קדימה ⚽",
+        "en_name": "{names} picked {team} to advance in the knockout bracket. France win 2-0 and move on. Good call, and that bracket call gets a clean proof point. The pool already moved ⚽",
+        "en_names": "{names} picked {team} to advance in the knockout bracket. France win 2-0 and move on. Good calls, and those bracket calls get clean proof points. The pool already moved ⚽",
+        "en_count": "{names} picked {team} to advance in the knockout bracket. France win 2-0 and move on. Good calls, and those bracket calls get clean proof points. The pool already moved ⚽"
       },
       "pool_focuses": [
         {
@@ -32,24 +117,24 @@
           "team_he": "צרפת",
           "team_en": "France",
           "match_id": "414e2eec-b2ac-4c92-b719-f7e6a3526d01",
-          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. צרפת מנצחת 2-0 וממשיכה. בחירה טובה, וזו קבלה יפה מאוד לבראקט ⚽",
-          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. צרפת מנצחת 2-0 וממשיכה. בחירות טובות, ואלו קבלות יפות מאוד לבראקט ⚽",
-          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. צרפת מנצחת 2-0 וממשיכה. בחירות טובות, ואלו קבלות יפות מאוד לבראקט ⚽",
-          "en_name": "{names} picked {team} to advance in the knockout bracket. France win 2-0 and move on. Good call, and that bracket call gets a clean proof point ⚽",
-          "en_names": "{names} picked {team} to advance in the knockout bracket. France win 2-0 and move on. Good calls, and those bracket calls get clean proof points ⚽",
-          "en_count": "{names} picked {team} to advance in the knockout bracket. France win 2-0 and move on. Good calls, and those bracket calls get clean proof points ⚽"
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. צרפת מנצחת 2-0 וממשיכה. בחירה טובה, וזו קבלה יפה מאוד לבראקט. הבראקט זז קדימה ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. צרפת מנצחת 2-0 וממשיכה. בחירות טובות, ואלו קבלות יפות מאוד לבראקט. הבראקט זז קדימה ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. צרפת מנצחת 2-0 וממשיכה. בחירות טובות, ואלו קבלות יפות מאוד לבראקט. הבראקט זז קדימה ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. France win 2-0 and move on. Good call, and that bracket call gets a clean proof point. The pool already moved ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. France win 2-0 and move on. Good calls, and those bracket calls get clean proof points. The pool already moved ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. France win 2-0 and move on. Good calls, and those bracket calls get clean proof points. The pool already moved ⚽"
         },
         {
           "table": "tournament_winner_picks",
           "team_code": "FRA",
           "team_he": "צרפת",
           "team_en": "France",
-          "he_name": "{names} בחר את {team} כזוכת המונדיאל. 2-0 לצרפת. שלב הבא, והחלום על הגביע נראה הרבה יותר רציני בטבלת ההימור ⚽",
-          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. 2-0 לצרפת. שלב הבא, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור ⚽",
-          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. 2-0 לצרפת. שלב הבא, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור ⚽",
-          "en_name": "{names} picked {team} to win the World Cup. 2-0 for France. Next round, and that World Cup pick looks serious on the leaderboard ⚽",
-          "en_names": "{names} picked {team} to win the World Cup. 2-0 for France. Next round, and those World Cup picks look serious on the leaderboard ⚽",
-          "en_count": "{names} picked {team} to win the World Cup. 2-0 for France. Next round, and those World Cup picks look serious on the leaderboard ⚽"
+          "he_name": "{names} בחר את {team} כזוכת המונדיאל. 2-0 לצרפת. שלב הבא, והחלום על הגביע נראה הרבה יותר רציני בטבלת ההימור. הבראקט זז קדימה ⚽",
+          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. 2-0 לצרפת. שלב הבא, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור. הבראקט זז קדימה ⚽",
+          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. 2-0 לצרפת. שלב הבא, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור. הבראקט זז קדימה ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. 2-0 for France. Next round, and that World Cup pick looks serious on the leaderboard. The pool already moved ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. 2-0 for France. Next round, and those World Cup picks look serious on the leaderboard. The pool already moved ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. 2-0 for France. Next round, and those World Cup picks look serious on the leaderboard. The pool already moved ⚽"
         },
         {
           "table": "knockout_picks",
@@ -57,12 +142,12 @@
           "team_he": "מרוקו",
           "team_en": "Morocco",
           "match_id": "414e2eec-b2ac-4c92-b719-f7e6a3526d01",
-          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. מרוקו לא עוברת. הבראקט הזה משלם על זה בטבלת ההימור ⚽",
-          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. מרוקו לא עוברת. הבראקטים האלה משלמים על זה בטבלת ההימור ⚽",
-          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. מרוקו לא עוברת. הבראקטים האלה משלמים על זה בטבלת ההימור ⚽",
-          "en_name": "{names} picked {team} to advance in the knockout bracket. Morocco do not go through. That bracket call pays for it on the leaderboard ⚽",
-          "en_names": "{names} picked {team} to advance in the knockout bracket. Morocco do not go through. Those bracket calls pay for it on the leaderboard ⚽",
-          "en_count": "{names} picked {team} to advance in the knockout bracket. Morocco do not go through. Those bracket calls pay for it on the leaderboard ⚽"
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. מרוקו לא עוברת. הבראקט הזה משלם על זה בטבלת ההימור. הבראקט זז קדימה ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. מרוקו לא עוברת. הבראקטים האלה משלמים על זה בטבלת ההימור. הבראקט זז קדימה ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. מרוקו לא עוברת. הבראקטים האלה משלמים על זה בטבלת ההימור. הבראקט זז קדימה ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. Morocco do not go through. That bracket call pays for it on the leaderboard. The pool already moved ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. Morocco do not go through. Those bracket calls pay for it on the leaderboard. The pool already moved ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. Morocco do not go through. Those bracket calls pay for it on the leaderboard. The pool already moved ⚽"
         },
         {
           "table": "tournament_winner_picks",
@@ -783,12 +868,12 @@
         "team_he": "קולומביה",
         "team_en": "Colombia",
         "match_id": "4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
-        "he_name": "1-0 קטן, משמעות גדולה. קולומביה ממשיכה, והבראקט שלו מקבל נקודות חשובות בטבלת ההימור. {names} בחר את {team} להתקדם בבראקט הנוקאאוט. הבראקט זז קדימה ⚽",
-        "he_names": "1-0 קטן, משמעות גדולה. קולומביה ממשיכה, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט. הבראקט זז קדימה ⚽",
-        "he_count": "1-0 קטן, משמעות גדולה. קולומביה ממשיכה, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט. הבראקט זז קדימה ⚽",
-        "en_name": "Small 1-0, huge meaning. Colombia move on, and that bracket pick lands important pool points. {names} picked {team} to advance in the knockout bracket. This result clears things up ⚽",
-        "en_names": "Small 1-0, huge meaning. Colombia move on, and those bracket picks land important pool points. {names} picked {team} to advance in the knockout bracket. This result clears things up ⚽",
-        "en_count": "Small 1-0, huge meaning. Colombia move on, and those bracket picks land important pool points. {names} picked {team} to advance in the knockout bracket. This result clears things up ⚽"
+        "he_name": "1-0 קטן, משמעות גדולה. קולומביה ממשיכה, והבראקט שלו מקבל נקודות חשובות בטבלת ההימור. {names} בחר את {team} להתקדם בבראקט הנוקאאוט ⚽",
+        "he_names": "1-0 קטן, משמעות גדולה. קולומביה ממשיכה, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
+        "he_count": "1-0 קטן, משמעות גדולה. קולומביה ממשיכה, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
+        "en_name": "Small 1-0, huge meaning. Colombia move on, and that bracket pick lands important pool points. {names} picked {team} to advance in the knockout bracket ⚽",
+        "en_names": "Small 1-0, huge meaning. Colombia move on, and those bracket picks land important pool points. {names} picked {team} to advance in the knockout bracket ⚽",
+        "en_count": "Small 1-0, huge meaning. Colombia move on, and those bracket picks land important pool points. {names} picked {team} to advance in the knockout bracket ⚽"
       },
       "pool_focuses": [
         {
@@ -797,24 +882,24 @@
           "team_he": "קולומביה",
           "team_en": "Colombia",
           "match_id": "4c0ce4fe-ad55-4023-be7d-5a852e6781d7",
-          "he_name": "1-0 קטן, משמעות גדולה. קולומביה ממשיכה, והבראקט שלו מקבל נקודות חשובות בטבלת ההימור. {names} בחר את {team} להתקדם בבראקט הנוקאאוט. הבראקט זז קדימה ⚽",
-          "he_names": "1-0 קטן, משמעות גדולה. קולומביה ממשיכה, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט. הבראקט זז קדימה ⚽",
-          "he_count": "1-0 קטן, משמעות גדולה. קולומביה ממשיכה, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט. הבראקט זז קדימה ⚽",
-          "en_name": "Small 1-0, huge meaning. Colombia move on, and that bracket pick lands important pool points. {names} picked {team} to advance in the knockout bracket. This result clears things up ⚽",
-          "en_names": "Small 1-0, huge meaning. Colombia move on, and those bracket picks land important pool points. {names} picked {team} to advance in the knockout bracket. This result clears things up ⚽",
-          "en_count": "Small 1-0, huge meaning. Colombia move on, and those bracket picks land important pool points. {names} picked {team} to advance in the knockout bracket. This result clears things up ⚽"
+          "he_name": "1-0 קטן, משמעות גדולה. קולומביה ממשיכה, והבראקט שלו מקבל נקודות חשובות בטבלת ההימור. {names} בחר את {team} להתקדם בבראקט הנוקאאוט ⚽",
+          "he_names": "1-0 קטן, משמעות גדולה. קולומביה ממשיכה, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
+          "he_count": "1-0 קטן, משמעות גדולה. קולומביה ממשיכה, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
+          "en_name": "Small 1-0, huge meaning. Colombia move on, and that bracket pick lands important pool points. {names} picked {team} to advance in the knockout bracket ⚽",
+          "en_names": "Small 1-0, huge meaning. Colombia move on, and those bracket picks land important pool points. {names} picked {team} to advance in the knockout bracket ⚽",
+          "en_count": "Small 1-0, huge meaning. Colombia move on, and those bracket picks land important pool points. {names} picked {team} to advance in the knockout bracket ⚽"
         },
         {
           "table": "tournament_winner_picks",
           "team_code": "COL",
           "team_he": "קולומביה",
           "team_en": "Colombia",
-          "he_name": "קולומביה צריכה שער אחד ומקבלת אותו. בחירה חדה, והבחירה על גביע העולם מקבלת כוח בטבלת ההימור. {names} בחר את {team} כזוכת המונדיאל. הבראקט זז קדימה ⚽",
-          "he_names": "קולומביה צריכה שער אחד ומקבלת אותו. בחירות חדות, והבחירות על גביע העולם מקבלות כוח בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל. הבראקט זז קדימה ⚽",
-          "he_count": "קולומביה צריכה שער אחד ומקבלת אותו. בחירות חדות, והבחירות על גביע העולם מקבלות כוח בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל. הבראקט זז קדימה ⚽",
-          "en_name": "Colombia need one goal and get it. Sharp call, and that World Cup pick gets louder in the pool. {names} picked {team} to win the World Cup. This result clears things up ⚽",
-          "en_names": "Colombia need one goal and get it. Sharp calls, and those World Cup picks get louder in the pool. {names} picked {team} to win the World Cup. This result clears things up ⚽",
-          "en_count": "Colombia need one goal and get it. Sharp calls, and those World Cup picks get louder in the pool. {names} picked {team} to win the World Cup. This result clears things up ⚽"
+          "he_name": "קולומביה צריכה שער אחד ומקבלת אותו. בחירה חדה, והבחירה על גביע העולם מקבלת כוח בטבלת ההימור. {names} בחר את {team} כזוכת המונדיאל ⚽",
+          "he_names": "קולומביה צריכה שער אחד ומקבלת אותו. בחירות חדות, והבחירות על גביע העולם מקבלות כוח בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל ⚽",
+          "he_count": "קולומביה צריכה שער אחד ומקבלת אותו. בחירות חדות, והבחירות על גביע העולם מקבלות כוח בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל ⚽",
+          "en_name": "Colombia need one goal and get it. Sharp call, and that World Cup pick gets louder in the pool. {names} picked {team} to win the World Cup ⚽",
+          "en_names": "Colombia need one goal and get it. Sharp calls, and those World Cup picks get louder in the pool. {names} picked {team} to win the World Cup ⚽",
+          "en_count": "Colombia need one goal and get it. Sharp calls, and those World Cup picks get louder in the pool. {names} picked {team} to win the World Cup ⚽"
         },
         {
           "table": "knockout_picks",
@@ -844,11 +929,11 @@
       ],
       "he": {
         "headline": "קולומביה ניצחה את גאנה 1-0: הכרעה דקה ⚽",
-        "caption": "קולומביה מנצחת 1-0. קטן על הלוח, גדול מאוד לבחירות עליה. ההימור מרגיש את התוצאה הזאת ⚽"
+        "caption": "קולומביה מנצחת 1-0. קטן על הלוח, גדול מאוד לבחירות עליה ⚽"
       },
       "en": {
         "headline": "Colombia beat Ghana 1-0: thin margin, big move ⚽",
-        "caption": "Colombia win 1-0. Small on the board, very big for Colombia picks. Missed picks pay for it now ⚽"
+        "caption": "Colombia win 1-0. Small on the board, very big for Colombia picks ⚽"
       }
     },
     {
