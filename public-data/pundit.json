@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-07-10T20:57:43.720Z",
-  "freshUntil": "2026-07-11T02:57:43.720Z",
+  "updatedAt": "2026-07-10T21:19:36.946Z",
+  "freshUntil": "2026-07-11T03:19:36.946Z",
   "count": 4,
   "items": [
     {
-      "id": "live-28d7a286-32b3-4203-b8a5-793ae663b5ed",
-      "type": "live",
+      "id": "result-28d7a286-32b3-4203-b8a5-793ae663b5ed",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "ספרד נגד בלגיה עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
-      "en": "Spain vs Belgium is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "he": "ספרד ניצחה את בלגיה 2:1 ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום 🧾",
+      "en": "Spain beat Belgium 2-1 and stayed alive in the bracket. Any bracket path that kept Spain alive can keep dreaming 🧾",
       "sources": [],
-      "expires_at": "2026-07-10T23:57:43.720Z"
+      "expires_at": "2026-07-12T07:00:00.000Z"
     },
     {
       "id": "result-414e2eec-b2ac-4c92-b719-f7e6a3526d01",
       "type": "result",
       "confidence": "confirmed",
-      "he": "צרפת ניצחה את מרוקו 2:0 ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום 🧾",
-      "en": "France beat Morocco 2-0 and stayed alive in the bracket. Any bracket path that kept France alive can keep dreaming 🧾",
+      "he": "2:0 לצרפת על מרוקו. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות 🧾",
+      "en": "2-0 for France over Morocco. Any bracket path that kept France alive can open the receipts 🧾",
       "sources": [],
       "expires_at": "2026-07-11T08:00:00.000Z"
     },
@@ -25,8 +25,8 @@
       "id": "fixture-b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "נורווגיה נגד אנגליה, 12/07 24:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
-      "en": "Norway vs England, 12/07 24:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
+      "he": "נורווגיה נגד אנגליה, מחר 24:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
+      "en": "Norway vs England, tomorrow 24:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-11T20:45:00.000Z"
     },
@@ -34,8 +34,8 @@
       "id": "fixture-ff09af19-18d2-49ad-a2eb-577f904f6e48",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "ארגנטינה נגד שווייץ, 12/07 04:00. ארגנטינה פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
-      "en": "Argentina vs Switzerland, 12/07 04:00. Argentina are the favorite, but in knockout football favorites still have to survive ⏰",
+      "he": "ארגנטינה נגד שווייץ, מחר 04:00. ארגנטינה פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
+      "en": "Argentina vs Switzerland, tomorrow 04:00. Argentina are the favorite, but in knockout football favorites still have to survive ⏰",
       "sources": [],
       "expires_at": "2026-07-12T00:45:00.000Z"
     }
