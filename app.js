@@ -8009,16 +8009,16 @@ async function showPoolSettings() {
   }
   
   // Scoring
-  document.getElementById('score-group-stage').textContent = pool.scoring_group_stage;
-  document.getElementById('score-r32').textContent = pool.scoring_r32;
-  document.getElementById('score-r16').textContent = pool.scoring_r16;
-  document.getElementById('score-qf').textContent = pool.scoring_qf;
-  document.getElementById('score-sf').textContent = pool.scoring_sf;
-  document.getElementById('score-final').textContent = pool.scoring_final;
+  document.getElementById('score-group-stage').textContent = _legacySettingsRuleValue(pool, 'group_first', 'scoring_group_stage', 1);
+  document.getElementById('score-r32').textContent = _legacySettingsRuleValue(pool, 'round_of_32', 'scoring_r32', 1);
+  document.getElementById('score-r16').textContent = _legacySettingsRuleValue(pool, 'round_of_16', 'scoring_r16', 2);
+  document.getElementById('score-qf').textContent = _legacySettingsRuleValue(pool, 'quarter_final', 'scoring_qf', 3);
+  document.getElementById('score-sf').textContent = _legacySettingsRuleValue(pool, 'semi_final', 'scoring_sf', 4);
+  document.getElementById('score-final').textContent = _legacySettingsRuleValue(pool, 'final', 'scoring_final', 8);
   
   // Top scorer
   document.getElementById('settings-top-scorer').checked = pool.top_scorer_enabled;
-  setTopScorerBonus(pool.top_scorer_bonus, false);
+  setTopScorerBonus(_legacySettingsRuleValue(pool, 'top_scorer', 'top_scorer_bonus', 10), false);
   
   // Participants
   const hasLimit = pool.max_participants !== null;
@@ -8103,6 +8103,37 @@ function getToggleValue(settingName) {
   return active ? active.dataset.value : null;
 }
 
+function _legacySettingsRuleValue(pool, ruleKey, legacyKey, fallback) {
+  if (((pool && pool.betting_mode) || 'two_phase') !== 'two_phase') {
+    const nonTwoPhaseLegacy = Number(pool && pool[legacyKey]);
+    return Number.isFinite(nonTwoPhaseLegacy) ? nonTwoPhaseLegacy : fallback;
+  }
+  const rules = (pool && pool.scoring_rules) || {};
+  if (rules[ruleKey] != null) {
+    const value = Number(rules[ruleKey]);
+    if (Number.isFinite(value)) return value;
+  }
+  const legacy = Number(pool && pool[legacyKey]);
+  return Number.isFinite(legacy) ? legacy : fallback;
+}
+
+function _twoPhaseScoringRulesFromLegacySettings(settings) {
+  const currentRules = (state.currentPool && state.currentPool.scoring_rules) || {};
+  return {
+    ...currentRules,
+    group_first: settings.scoring_group_stage,
+    group_second: settings.scoring_group_stage,
+    group_third: 0,
+    group_fourth: 0,
+    round_of_32: settings.scoring_r32,
+    round_of_16: settings.scoring_r16,
+    quarter_final: settings.scoring_qf,
+    semi_final: settings.scoring_sf,
+    final: settings.scoring_final,
+    top_scorer: settings.top_scorer_bonus
+  };
+}
+
 function adjustScore(stage, delta) {
   const el = document.getElementById('score-' + stage.replace(/_/g, '-'));
   if (!el) return;
@@ -8163,6 +8194,10 @@ async function savePoolSettings() {
     newSettings.max_participants = parseInt(document.getElementById('settings-max-members').value) || null;
   } else {
     newSettings.max_participants = null;
+  }
+
+  if ((state.currentPool.betting_mode || 'two_phase') === 'two_phase') {
+    newSettings.scoring_rules = _twoPhaseScoringRulesFromLegacySettings(newSettings);
   }
   
   // Validate name
@@ -9512,6 +9547,23 @@ const ROUND_INFO = {
   FINAL: { nameKey: 'knockoutEx.finalFull', total: 1, points: 8, order: 5 }
 };
 
+const TWO_PHASE_ROUND_RULE_KEY = {
+  R32: 'round_of_32',
+  R16: 'round_of_16',
+  QF: 'quarter_final',
+  SF: 'semi_final',
+  FINAL: 'final'
+};
+
+function twoPhaseRoundPoints(round, pool = state.currentPool) {
+  const fallback = ROUND_INFO && ROUND_INFO[round] ? ROUND_INFO[round].points : 0;
+  const key = TWO_PHASE_ROUND_RULE_KEY[round];
+  const rules = (pool && pool.scoring_rules) || {};
+  if (!key || rules[key] == null) return fallback;
+  const value = Number(rules[key]);
+  return Number.isFinite(value) ? value : fallback;
+}
+
 async function startKnockoutBetting() {
   if (!state.currentUser || !state.currentPool) {
     showToast(t('errors.reconnect'), 'error');
@@ -9814,10 +9866,11 @@ function switchRound(round) {
 
 function renderKnockout() {
   const round = knockoutState.currentRound;
+  const roundPoints = twoPhaseRoundPoints(round);
   
   // Update title
   document.getElementById('ko-round-title').textContent = t(ROUND_INFO[round].nameKey);
-  document.getElementById('ko-round-step').textContent = t('knockoutEx.pointsPerPick', { n: ROUND_INFO[round].points });
+  document.getElementById('ko-round-step').textContent = t('knockoutEx.pointsPerPick', { n: roundPoints });
   
   // Update tab states + counters
   document.querySelectorAll('.ko-tab').forEach(tab => {
@@ -9871,7 +9924,7 @@ function createKnockoutPickCard(match) {
   card.className = 'ko-match-card';
 
   const round = match.round;
-  const points = ROUND_INFO[round].points;
+  const points = twoPhaseRoundPoints(round);
   const userPick = knockoutState.picks[match.id];
   const recoveryLocked = _tpRecoveryMatchLocked(match.id);
   
@@ -10172,7 +10225,7 @@ function analyzeKnockoutStrategy() {
   const stages = {};
   
   Object.keys(ROUND_INFO).forEach(round => {
-    const points = ROUND_INFO[round].points;
+    const points = twoPhaseRoundPoints(round);
     const matches = knockoutState.matches[round];
     
     let picked = 0;
@@ -18674,7 +18727,7 @@ function _koSingleRoundLabel(round) {
 
 function _koSinglePoints(round) {
   if (koSingle.mode === 'two-phase') {
-    return (ROUND_INFO && ROUND_INFO[round] && ROUND_INFO[round].points) || 1;
+    return twoPhaseRoundPoints(round) || 1;
   }
   // single-phase scoring rules — return the stage value from the pool's
   // scoring_rules. v2.5.72: the FINAL value is the full champion reward
