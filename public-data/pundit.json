@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-10T14:49:12.918Z",
-  "freshUntil": "2026-07-10T20:49:12.918Z",
-  "count": 2,
+  "updatedAt": "2026-07-10T17:05:19.051Z",
+  "freshUntil": "2026-07-10T23:05:19.051Z",
+  "count": 3,
   "items": [
     {
       "id": "result-414e2eec-b2ac-4c92-b719-f7e6a3526d01",
@@ -20,6 +20,15 @@
       "en": "Huge quarter-final: Spain vs Belgium, today 22:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-10T18:45:00.000Z"
+    },
+    {
+      "id": "fixture-b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "נורווגיה נגד אנגליה, 12/07 24:00. אנגליה פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
+      "en": "Norway vs England, 12/07 24:00. England are the favorite, but in knockout football favorites still have to survive ⏰",
+      "sources": [],
+      "expires_at": "2026-07-11T20:45:00.000Z"
     }
   ]
 }
