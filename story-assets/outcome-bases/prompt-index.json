@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-07-09T20:05:29.564Z",
+  "updated_at": "2026-07-10T04:16:26.621Z",
   "source": "snapshot",
-  "matches": 10,
+  "matches": 9,
   "prompts": [
     {
       "match_id": "09df59c6-1a7a-42d2-8c77-e9bcc3889dd5",
@@ -50,22 +50,6 @@
       "outcome": "DRAW",
       "image": "story-assets/outcome-bases/cpv-ksa-draw-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Cape Verde vs KSA at FIFA World Cup 2026.\nPrepared outcome: Cape Verde and KSA draw.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "414e2eec-b2ac-4c92-b719-f7e6a3526d01",
-      "match_key": "FRA-MAR",
-      "match_date": "2026-07-09T20:00:00+00:00",
-      "outcome": "FRA",
-      "image": "story-assets/outcome-bases/fra-mar-fra-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: France vs Morocco at FIFA World Cup 2026.\nPrepared outcome: France advances over Morocco.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "414e2eec-b2ac-4c92-b719-f7e6a3526d01",
-      "match_key": "FRA-MAR",
-      "match_date": "2026-07-09T20:00:00+00:00",
-      "outcome": "MAR",
-      "image": "story-assets/outcome-bases/fra-mar-mar-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: France vs Morocco at FIFA World Cup 2026.\nPrepared outcome: Morocco advances over France.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
       "match_id": "28d7a286-32b3-4203-b8a5-793ae663b5ed",
