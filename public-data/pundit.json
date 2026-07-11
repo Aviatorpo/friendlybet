@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-07-11T19:20:56.337Z",
-  "freshUntil": "2026-07-12T01:20:56.337Z",
+  "updatedAt": "2026-07-11T21:35:35.314Z",
+  "freshUntil": "2026-07-12T03:35:35.314Z",
   "count": 3,
   "items": [
+    {
+      "id": "live-b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "נורווגיה נגד אנגליה עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
+      "en": "Norway vs England is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "sources": [],
+      "expires_at": "2026-07-12T00:35:35.314Z"
+    },
     {
       "id": "result-28d7a286-32b3-4203-b8a5-793ae663b5ed",
       "type": "result",
@@ -13,20 +22,11 @@
       "expires_at": "2026-07-12T07:00:00.000Z"
     },
     {
-      "id": "fixture-b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "נורווגיה נגד אנגליה, מחר 24:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
-      "en": "Norway vs England, tomorrow 24:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
-      "sources": [],
-      "expires_at": "2026-07-11T20:45:00.000Z"
-    },
-    {
       "id": "fixture-ff09af19-18d2-49ad-a2eb-577f904f6e48",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "ארגנטינה נגד שווייץ, מחר 04:00. ארגנטינה פייבוריטית, אבל בנוקאאוט פייבוריטית עדיין צריכה לשרוד ⏰",
-      "en": "Argentina vs Switzerland, tomorrow 04:00. Argentina are the favorite, but in knockout football favorites still have to survive ⏰",
+      "he": "ארגנטינה נגד שווייץ, היום 04:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
+      "en": "Argentina vs Switzerland, today 04:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-12T00:45:00.000Z"
     }
