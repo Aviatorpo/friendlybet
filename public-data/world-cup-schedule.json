@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-11T21:02:07.357Z",
+  "updatedAt": "2026-07-11T22:01:43.432Z",
   "source": "https://api.fifa.com/api/v3/calendar/matches?language=en&count=500&idCompetition=17&from=2026-06-01&to=2026-07-31",
   "sourcePage": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?country=IL&wtw-filter=ALL",
   "count": 104,
@@ -2473,8 +2473,8 @@
       "away_team_code": "ENG",
       "home_team_name": "Norway",
       "away_team_name": "England",
-      "home_score": 0,
-      "away_score": 0,
+      "home_score": 1,
+      "away_score": 1,
       "venue": "Miami Stadium",
       "city": "Miami",
       "country": "USA"
