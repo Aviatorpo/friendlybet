@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-11T05:26:57.481Z",
-  "freshUntil": "2026-07-11T11:26:57.481Z",
-  "count": 4,
+  "updatedAt": "2026-07-11T08:09:40.860Z",
+  "freshUntil": "2026-07-11T14:09:40.860Z",
+  "count": 3,
   "items": [
     {
       "id": "result-28d7a286-32b3-4203-b8a5-793ae663b5ed",
@@ -11,15 +11,6 @@
       "en": "Spain beat Belgium 2-1 and stayed alive in the bracket. Any bracket path that kept Spain alive can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-12T07:00:00.000Z"
-    },
-    {
-      "id": "result-414e2eec-b2ac-4c92-b719-f7e6a3526d01",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "2:0 לצרפת על מרוקו. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות 🧾",
-      "en": "2-0 for France over Morocco. Any bracket path that kept France alive can open the receipts 🧾",
-      "sources": [],
-      "expires_at": "2026-07-11T08:00:00.000Z"
     },
     {
       "id": "fixture-b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
