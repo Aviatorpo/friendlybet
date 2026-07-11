@@ -1,6 +1,91 @@
 {
-  "updated_at": "2026-07-10T21:02:08.277Z",
+  "updated_at": "2026-07-11T23:50:31.387Z",
   "items": [
+    {
+      "id": "nor-eng-2026-07-11",
+      "match_id": "b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
+      "image": "story-assets/england-wins-norway.png",
+      "teams": [
+        "NOR",
+        "ENG"
+      ],
+      "outcome": "ENG",
+      "result": "ENG 2-1 NOR",
+      "top_label": "ENGLAND QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "ENG",
+        "team_he": "אנגליה",
+        "team_en": "England",
+        "match_id": "b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
+        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. 2-1 לאנגליה. שלב הבא, וזו פגיעה שמופיעה מיד בניקוד ⚽",
+        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-1 לאנגליה. שלב הבא, ואלו פגיעות שמופיעות מיד בניקוד ⚽",
+        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-1 לאנגליה. שלב הבא, ואלו פגיעות שמופיעות מיד בניקוד ⚽",
+        "en_name": "{names} picked {team} to advance in the knockout bracket. 2-1 for England. Next round, and that pick lands in the points column ⚽",
+        "en_names": "{names} picked {team} to advance in the knockout bracket. 2-1 for England. Next round, and those picks land in the points column ⚽",
+        "en_count": "{names} picked {team} to advance in the knockout bracket. 2-1 for England. Next round, and those picks land in the points column ⚽"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "ENG",
+          "team_he": "אנגליה",
+          "team_en": "England",
+          "match_id": "b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. 2-1 לאנגליה. שלב הבא, וזו פגיעה שמופיעה מיד בניקוד ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-1 לאנגליה. שלב הבא, ואלו פגיעות שמופיעות מיד בניקוד ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-1 לאנגליה. שלב הבא, ואלו פגיעות שמופיעות מיד בניקוד ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. 2-1 for England. Next round, and that pick lands in the points column ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. 2-1 for England. Next round, and those picks land in the points column ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. 2-1 for England. Next round, and those picks land in the points column ⚽"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ENG",
+          "team_he": "אנגליה",
+          "team_en": "England",
+          "he_name": "{names} בחר את {team} כזוכת המונדיאל. אנגליה מנצחת 2-1 וממשיכה. בחירה טובה, והבחירה הזאת כבר עושה רעש נכון בטבלת ההימור ⚽",
+          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. אנגליה מנצחת 2-1 וממשיכה. בחירות טובות, והבחירות האלה כבר עושות רעש נכון בטבלת ההימור ⚽",
+          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. אנגליה מנצחת 2-1 וממשיכה. בחירות טובות, והבחירות האלה כבר עושות רעש נכון בטבלת ההימור ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. England win 2-1 and move on. Good call, and that pick suddenly matters in the pool table ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. England win 2-1 and move on. Good calls, and those picks suddenly matter in the pool table ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. England win 2-1 and move on. Good calls, and those picks suddenly matter in the pool table ⚽"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "NOR",
+          "team_he": "נורווגיה",
+          "team_en": "Norway",
+          "match_id": "b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. אנגליה מנצחת 2-1; נורווגיה נעצרת כאן. בחירה גרועה, ובחירת הנוקאאוט מאבדת גובה בטבלת ההימור ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אנגליה מנצחת 2-1; נורווגיה נעצרת כאן. בחירות גרועות, ובחירות הנוקאאוט מאבדות גובה בטבלת ההימור ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אנגליה מנצחת 2-1; נורווגיה נעצרת כאן. בחירות גרועות, ובחירות הנוקאאוט מאבדות גובה בטבלת ההימור ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. England win 2-1; Norway stop here. Bad call, and that knockout call loses ground in the pool ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. England win 2-1; Norway stop here. Bad calls, and those knockout calls lose ground in the pool ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. England win 2-1; Norway stop here. Bad calls, and those knockout calls lose ground in the pool ⚽"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "NOR",
+          "team_he": "נורווגיה",
+          "team_en": "Norway",
+          "he_name": "{names} בחר את {team} כזוכת המונדיאל. נורווגיה לא עוברת. הבחירה הזאת עולה ביוקר בטבלת ההימור ⚽",
+          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. נורווגיה לא עוברת. הבחירות האלה עולות ביוקר בטבלת ההימור ⚽",
+          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. נורווגיה לא עוברת. הבחירות האלה עולות ביוקר בטבלת ההימור ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. Norway do not go through. That pick costs real ground in the pool table ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. Norway do not go through. Those picks cost real ground in the pool table ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. Norway do not go through. Those picks cost real ground in the pool table ⚽"
+        }
+      ],
+      "he": {
+        "headline": "אנגליה ניצחה את נורווגיה 2-1: לשלב הבא ⚽",
+        "caption": "2-1 לאנגליה. שלב הבא בשבילה, סוף הדרך לנורווגיה, וטבלת ההימור משתנה ⚽"
+      },
+      "en": {
+        "headline": "England beat Norway 2-1: through ⚽",
+        "caption": "2-1 for England. Next round for them, end of the road for Norway, and the pool table changes ⚽"
+      }
+    },
     {
       "id": "esp-bel-2026-07-10",
       "match_id": "28d7a286-32b3-4203-b8a5-793ae663b5ed",
@@ -163,12 +248,12 @@
         }
       ],
       "he": {
-        "headline": "צרפת ניצחה את מרוקו 2-0: לשלב הבא ⚽",
-        "caption": "2-0 לצרפת. שלב הבא בשבילה, סוף הדרך למרוקו, וטבלת ההימור משתנה ⚽"
+        "headline": "צרפת ניצחה את מרוקו 2-0: לשלב הבא - הטבלה קיבלה מכה ⚽",
+        "caption": "2-0 לצרפת. שלב הבא בשבילה, סוף הדרך למרוקו, וטבלת ההימור משתנה. בחירות טובות קיבלו דחיפה ⚽"
       },
       "en": {
-        "headline": "France beat Morocco 2-0: through ⚽",
-        "caption": "2-0 for France. Next round for them, end of the road for Morocco, and the pool table changes ⚽"
+        "headline": "France beat Morocco 2-0: through - the bracket felt it ⚽",
+        "caption": "2-0 for France. Next round for them, end of the road for Morocco, and the pool table changes. This result shows up in the table too ⚽"
       }
     },
     {
@@ -786,9 +871,9 @@
         "he_name": "מרוקו דרסה את קנדה 3-0. בחירה גדולה, וזו קבלה יפה מאוד לבראקט. {names} בחר את {team} להתקדם בבראקט הנוקאאוט ⚽",
         "he_names": "מרוקו דרסה את קנדה 3-0. בחירות גדולות, ואלו קבלות יפות מאוד לבראקט. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
         "he_count": "מרוקו דרסה את קנדה 3-0. בחירות גדולות, ואלו קבלות יפות מאוד לבראקט. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
-        "en_name": "Morocco smashed Canada 3-0. Great call, and that bracket call gets a clean proof point. {names} picked {team} to advance in the knockout bracket ⚽",
-        "en_names": "Morocco smashed Canada 3-0. Great calls, and those bracket calls get clean proof points. {names} picked {team} to advance in the knockout bracket ⚽",
-        "en_count": "Morocco smashed Canada 3-0. Great calls, and those bracket calls get clean proof points. {names} picked {team} to advance in the knockout bracket ⚽"
+        "en_name": "Morocco smashed Canada 3-0. Great call, and that bracket call gets a clean receipt. {names} picked {team} to advance in the knockout bracket ⚽",
+        "en_names": "Morocco smashed Canada 3-0. Great calls, and those bracket calls get clean receipts. {names} picked {team} to advance in the knockout bracket ⚽",
+        "en_count": "Morocco smashed Canada 3-0. Great calls, and those bracket calls get clean receipts. {names} picked {team} to advance in the knockout bracket ⚽"
       },
       "pool_focuses": [
         {
@@ -800,9 +885,9 @@
           "he_name": "מרוקו דרסה את קנדה 3-0. בחירה גדולה, וזו קבלה יפה מאוד לבראקט. {names} בחר את {team} להתקדם בבראקט הנוקאאוט ⚽",
           "he_names": "מרוקו דרסה את קנדה 3-0. בחירות גדולות, ואלו קבלות יפות מאוד לבראקט. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
           "he_count": "מרוקו דרסה את קנדה 3-0. בחירות גדולות, ואלו קבלות יפות מאוד לבראקט. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
-          "en_name": "Morocco smashed Canada 3-0. Great call, and that bracket call gets a clean proof point. {names} picked {team} to advance in the knockout bracket ⚽",
-          "en_names": "Morocco smashed Canada 3-0. Great calls, and those bracket calls get clean proof points. {names} picked {team} to advance in the knockout bracket ⚽",
-          "en_count": "Morocco smashed Canada 3-0. Great calls, and those bracket calls get clean proof points. {names} picked {team} to advance in the knockout bracket ⚽"
+          "en_name": "Morocco smashed Canada 3-0. Great call, and that bracket call gets a clean receipt. {names} picked {team} to advance in the knockout bracket ⚽",
+          "en_names": "Morocco smashed Canada 3-0. Great calls, and those bracket calls get clean receipts. {names} picked {team} to advance in the knockout bracket ⚽",
+          "en_count": "Morocco smashed Canada 3-0. Great calls, and those bracket calls get clean receipts. {names} picked {team} to advance in the knockout bracket ⚽"
         },
         {
           "table": "tournament_winner_picks",
@@ -844,11 +929,11 @@
       ],
       "he": {
         "headline": "מרוקו ניצחה את קנדה 3-0: כוח מלא ⚽",
-        "caption": "מרוקו דורסת את קנדה 3-0. זו עלייה ברורה, וטבלת ההימור זזה מיד עם כל בחירה על מרוקו. בחירות טובות קיבלו דחיפה ⚽"
+        "caption": "מרוקו דורסת את קנדה 3-0. זו עלייה ברורה, וטבלת ההימור זזה מיד עם כל בחירה על מרוקו ⚽"
       },
       "en": {
         "headline": "Morocco beat Canada 3-0: full power ⚽",
-        "caption": "Morocco smash Canada 3-0. Clear win, clear path, and every Morocco pick moves the pool table. This result shows up in the table too ⚽"
+        "caption": "Morocco smash Canada 3-0. Clear win, clear path, and every Morocco pick moves the pool table ⚽"
       }
     },
     {
