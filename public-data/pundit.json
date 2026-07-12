@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-12T06:16:46.412Z",
-  "freshUntil": "2026-07-12T12:16:46.412Z",
-  "count": 3,
+  "updatedAt": "2026-07-12T08:30:40.413Z",
+  "freshUntil": "2026-07-12T14:30:40.413Z",
+  "count": 2,
   "items": [
     {
       "id": "result-ff09af19-18d2-49ad-a2eb-577f904f6e48",
@@ -20,15 +20,6 @@
       "en": "England got past Norway 2-1. Bracket paths that kept England alive get a receipt; Norway routes need a new plan 🧾",
       "sources": [],
       "expires_at": "2026-07-13T09:00:00.000Z"
-    },
-    {
-      "id": "result-28d7a286-32b3-4203-b8a5-793ae663b5ed",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "2:1 לספרד על בלגיה. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות 🧾",
-      "en": "2-1 for Spain over Belgium. Any bracket path that kept Spain alive can open the receipts 🧾",
-      "sources": [],
-      "expires_at": "2026-07-12T07:00:00.000Z"
     }
   ]
 }
