@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-07-12T00:08:21.935Z",
-  "freshUntil": "2026-07-12T06:08:21.935Z",
+  "updatedAt": "2026-07-12T01:04:09.274Z",
+  "freshUntil": "2026-07-12T07:04:09.274Z",
   "count": 3,
   "items": [
+    {
+      "id": "live-ff09af19-18d2-49ad-a2eb-577f904f6e48",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "ארגנטינה נגד שווייץ עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
+      "en": "Argentina vs Switzerland is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "sources": [],
+      "expires_at": "2026-07-12T04:04:09.274Z"
+    },
     {
       "id": "result-b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
       "type": "result",
@@ -20,15 +29,6 @@
       "en": "Spain got past Belgium 2-1. Bracket paths that kept Spain alive get a receipt; Belgium routes need a new plan 🧾",
       "sources": [],
       "expires_at": "2026-07-12T07:00:00.000Z"
-    },
-    {
-      "id": "fixture-ff09af19-18d2-49ad-a2eb-577f904f6e48",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "ארגנטינה נגד שווייץ, היום 04:00. אין כאן מקום לתיקון אחר כך: מנצחת ממשיכה, המפסידה מוחקת בראקטים ⏰",
-      "en": "Argentina vs Switzerland, today 04:00. There is no repair job later: the winner advances, the loser tears up brackets. It still matters for brackets, knockout picks, and pool points ⏰",
-      "sources": [],
-      "expires_at": "2026-07-12T00:45:00.000Z"
     }
   ]
 }
