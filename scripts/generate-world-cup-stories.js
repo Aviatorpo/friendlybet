@@ -1535,8 +1535,8 @@ function commentatorKnockoutPoolImpact(match, table, won, teamCode, angle) {
       {
         heSingle: 'הבחירה הזאת כבר עושה רעש נכון בטבלת ההימור',
         hePlural: 'הבחירות האלה כבר עושות רעש נכון בטבלת ההימור',
-        enSingle: 'that pick suddenly matters in the pool table',
-        enPlural: 'those picks suddenly matter in the pool table',
+        enSingle: 'that pick suddenly has witnesses in the pool',
+        enPlural: 'those picks suddenly have witnesses in the pool',
       },
       {
         heSingle: 'הדרך לגביע קיבלה עוד הוכחה בטבלת ההימור',
@@ -1566,8 +1566,8 @@ function commentatorKnockoutPoolImpact(match, table, won, teamCode, angle) {
       {
         heSingle: 'זו פגיעה שמופיעה מיד בניקוד',
         hePlural: 'אלו פגיעות שמופיעות מיד בניקוד',
-        enSingle: 'that pick lands in the points column',
-        enPlural: 'those picks land in the points column',
+        enSingle: 'that pick becomes a visible pool proof point',
+        enPlural: 'those picks become visible pool proof points',
       },
     ])
     : (isTournament ? [
@@ -1592,8 +1592,8 @@ function commentatorKnockoutPoolImpact(match, table, won, teamCode, angle) {
       {
         heSingle: 'הבחירה הזאת עולה ביוקר בטבלת ההימור',
         hePlural: 'הבחירות האלה עולות ביוקר בטבלת ההימור',
-        enSingle: 'that pick costs real ground in the pool table',
-        enPlural: 'those picks cost real ground in the pool table',
+        enSingle: 'that pick has a problem in the chat now',
+        enPlural: 'those picks have problems in the chat now',
       },
     ] : [
       {
@@ -1611,14 +1611,14 @@ function commentatorKnockoutPoolImpact(match, table, won, teamCode, angle) {
       {
         heSingle: 'הבחירה הזאת יורדת מיד בניקוד',
         hePlural: 'הבחירות האלה יורדות מיד בניקוד',
-        enSingle: 'that pick drops straight into the bad column',
-        enPlural: 'those picks drop straight into the bad column',
+        enSingle: 'that pick just became uncomfortable evidence',
+        enPlural: 'those picks just became uncomfortable evidence',
       },
       {
         heSingle: "הבראקט הזה צריך תשובה טובה בצ'אט",
         hePlural: "הבראקטים האלה צריכים תשובה טובה בצ'אט",
-        enSingle: 'that bracket needs a good answer in the chat',
-        enPlural: 'those brackets need good answers in the chat',
+        enSingle: 'that bracket needs a better answer in the chat',
+        enPlural: 'those brackets need better answers in the chat',
       },
     ]);
   return storyCopyChoice(match, `commentator-pool-impact-${angle}-${table}-${won ? 'won' : 'lost'}-${teamCode}`, variants);
@@ -1656,8 +1656,8 @@ function commentatorKnockoutFocusCopy(match, outcome, teamCode, table) {
         pickFirst: false,
         heSingle: `${meta.winnerHe} עוברת בפנדלים אחרי ${score}. בחירה לא טובה, ו${impact.heSingle}`,
         hePlural: `${meta.winnerHe} עוברת בפנדלים אחרי ${score}. בחירות לא טובות, ו${impact.hePlural}`,
-        enSingle: `${meta.winnerEn} advance on penalties after ${score}. Bad call, and ${impact.enSingle}`,
-        enPlural: `${meta.winnerEn} advance on penalties after ${score}. Bad calls, and ${impact.enPlural}`,
+        enSingle: `${meta.winnerEn} advance on penalties after ${score}. That pick chose the wrong door, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} advance on penalties after ${score}. Those picks chose the wrong door, and ${impact.enPlural}`,
       },
       {
         pickFirst: true,
@@ -1672,8 +1672,8 @@ function commentatorKnockoutFocusCopy(match, outcome, teamCode, table) {
         pickFirst: false,
         heSingle: `${meta.winnerHe} דרסה את ${meta.loserHe} ${score}. בחירה גדולה, ו${impact.heSingle}`,
         hePlural: `${meta.winnerHe} דרסה את ${meta.loserHe} ${score}. בחירות גדולות, ו${impact.hePlural}`,
-        enSingle: `${meta.winnerEn} smashed ${meta.loserEn} ${score}. Great call, and ${impact.enSingle}`,
-        enPlural: `${meta.winnerEn} smashed ${meta.loserEn} ${score}. Great calls, and ${impact.enPlural}`,
+        enSingle: `${meta.winnerEn} smashed ${meta.loserEn} ${score}. That pick has witnesses, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} smashed ${meta.loserEn} ${score}. Those picks have witnesses, and ${impact.enPlural}`,
       },
       {
         pickFirst: true,
@@ -1687,8 +1687,8 @@ function commentatorKnockoutFocusCopy(match, outcome, teamCode, table) {
         pickFirst: false,
         heSingle: `${meta.winnerHe} דרסה את ${meta.loserHe} ${score}. בחירה גרועה, ו${impact.heSingle}`,
         hePlural: `${meta.winnerHe} דרסה את ${meta.loserHe} ${score}. בחירות גרועות, ו${impact.hePlural}`,
-        enSingle: `${meta.winnerEn} smashed ${meta.loserEn} ${score}. Bad call, and ${impact.enSingle}`,
-        enPlural: `${meta.winnerEn} smashed ${meta.loserEn} ${score}. Bad calls, and ${impact.enPlural}`,
+        enSingle: `${meta.winnerEn} smashed ${meta.loserEn} ${score}. That pick has nowhere to hide, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} smashed ${meta.loserEn} ${score}. Those picks have nowhere to hide, and ${impact.enPlural}`,
       },
       {
         pickFirst: true,
@@ -1703,8 +1703,8 @@ function commentatorKnockoutFocusCopy(match, outcome, teamCode, table) {
         pickFirst: false,
         heSingle: `${meta.winnerHe} מעיפה את ${meta.loserHe}. זו בחירה ענקית, ו${impact.heSingle}`,
         hePlural: `${meta.winnerHe} מעיפה את ${meta.loserHe}. אלו בחירות ענקיות, ו${impact.hePlural}`,
-        enSingle: `${meta.winnerEn} knock out ${meta.loserEn}. Huge call, and ${impact.enSingle}`,
-        enPlural: `${meta.winnerEn} knock out ${meta.loserEn}. Huge calls, and ${impact.enPlural}`,
+        enSingle: `${meta.winnerEn} knock out ${meta.loserEn}. That pick just got loud, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} knock out ${meta.loserEn}. Those picks just got loud, and ${impact.enPlural}`,
       },
       {
         pickFirst: true,
@@ -1718,8 +1718,8 @@ function commentatorKnockoutFocusCopy(match, outcome, teamCode, table) {
         pickFirst: false,
         heSingle: `${meta.loserHe} בחוץ. בחירה כואבת, ו${impact.heSingle}`,
         hePlural: `${meta.loserHe} בחוץ. בחירות כואבות, ו${impact.hePlural}`,
-        enSingle: `${meta.loserEn} are out. Painful call, and ${impact.enSingle}`,
-        enPlural: `${meta.loserEn} are out. Painful calls, and ${impact.enPlural}`,
+        enSingle: `${meta.loserEn} are out. That pick hurts in public, and ${impact.enSingle}`,
+        enPlural: `${meta.loserEn} are out. Those picks hurt in public, and ${impact.enPlural}`,
       },
       {
         pickFirst: true,
@@ -1765,8 +1765,8 @@ function commentatorKnockoutFocusCopy(match, outcome, teamCode, table) {
         pickFirst: false,
         heSingle: `${meta.winnerHe} שולחת את המארחת הביתה עם ${score}. בחירה חזקה, ו${impact.heSingle}`,
         hePlural: `${meta.winnerHe} שולחת את המארחת הביתה עם ${score}. בחירות חזקות, ו${impact.hePlural}`,
-        enSingle: `${meta.winnerEn} send the hosts out with ${score}. Strong call, and ${impact.enSingle}`,
-        enPlural: `${meta.winnerEn} send the hosts out with ${score}. Strong calls, and ${impact.enPlural}`,
+        enSingle: `${meta.winnerEn} send the hosts out with ${score}. That pick has a voice now, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} send the hosts out with ${score}. Those picks have a voice now, and ${impact.enPlural}`,
       },
       {
         pickFirst: true,
@@ -1780,8 +1780,8 @@ function commentatorKnockoutFocusCopy(match, outcome, teamCode, table) {
         pickFirst: false,
         heSingle: `המסע הביתי נגמר אחרי ${score}. בחירה לא טובה, ו${impact.heSingle}`,
         hePlural: `המסע הביתי נגמר אחרי ${score}. בחירות לא טובות, ו${impact.hePlural}`,
-        enSingle: `The home run ends after ${score}. Bad call, and ${impact.enSingle}`,
-        enPlural: `The home run ends after ${score}. Bad calls, and ${impact.enPlural}`,
+        enSingle: `The home run ends after ${score}. That pick picked the wrong ending, and ${impact.enSingle}`,
+        enPlural: `The home run ends after ${score}. Those picks picked the wrong ending, and ${impact.enPlural}`,
       },
       {
         pickFirst: true,
@@ -1811,8 +1811,8 @@ function commentatorKnockoutFocusCopy(match, outcome, teamCode, table) {
         pickFirst: false,
         heSingle: `שער אחד של ${meta.winnerHe} מספיק. בחירה לא טובה, ו${impact.heSingle}`,
         hePlural: `שער אחד של ${meta.winnerHe} מספיק. בחירות לא טובות, ו${impact.hePlural}`,
-        enSingle: `One ${meta.winnerEn} goal is enough. Bad call, and ${impact.enSingle}`,
-        enPlural: `One ${meta.winnerEn} goal is enough. Bad calls, and ${impact.enPlural}`,
+        enSingle: `One ${meta.winnerEn} goal is enough. That pick ran out of road, and ${impact.enSingle}`,
+        enPlural: `One ${meta.winnerEn} goal is enough. Those picks ran out of road, and ${impact.enPlural}`,
       },
       {
         pickFirst: true,
@@ -1827,8 +1827,8 @@ function commentatorKnockoutFocusCopy(match, outcome, teamCode, table) {
         pickFirst: false,
         heSingle: `${meta.winnerHe} מנצחת ${score} וממשיכה. בחירה טובה, ו${impact.heSingle}`,
         hePlural: `${meta.winnerHe} מנצחת ${score} וממשיכה. בחירות טובות, ו${impact.hePlural}`,
-        enSingle: `${meta.winnerEn} win ${score} and move on. Good call, and ${impact.enSingle}`,
-        enPlural: `${meta.winnerEn} win ${score} and move on. Good calls, and ${impact.enPlural}`,
+        enSingle: `${meta.winnerEn} win ${score} and move on. That pick gets the first word, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} win ${score} and move on. Those picks get the first word, and ${impact.enPlural}`,
       },
       {
         pickFirst: true,
@@ -1842,8 +1842,8 @@ function commentatorKnockoutFocusCopy(match, outcome, teamCode, table) {
         pickFirst: false,
         heSingle: `${meta.winnerHe} מנצחת ${score}; ${pickedTeamHe} נעצרת כאן. בחירה גרועה, ו${impact.heSingle}`,
         hePlural: `${meta.winnerHe} מנצחת ${score}; ${pickedTeamHe} נעצרת כאן. בחירות גרועות, ו${impact.hePlural}`,
-        enSingle: `${meta.winnerEn} win ${score}; ${pickedTeamEn} stop here. Bad call, and ${impact.enSingle}`,
-        enPlural: `${meta.winnerEn} win ${score}; ${pickedTeamEn} stop here. Bad calls, and ${impact.enPlural}`,
+        enSingle: `${meta.winnerEn} win ${score}; ${pickedTeamEn} stop here. That pick just lost the argument, and ${impact.enSingle}`,
+        enPlural: `${meta.winnerEn} win ${score}; ${pickedTeamEn} stop here. Those picks just lost the argument, and ${impact.enPlural}`,
       },
       {
         pickFirst: true,
@@ -1938,8 +1938,8 @@ function directKnockoutStoryFocus(match, outcome, teamCode, table) {
       {
         heSingle: `${opponentHe} לא נשארה קרובה. בחירה נכונה, דחיפה גדולה ב${poolNounHe}`,
         hePlural: `${opponentHe} לא נשארה קרובה. בחירות נכונות, דחיפה גדולה ב${poolNounHe}`,
-        enSingle: `${opponentEn} never stayed close. Correct pick, big bracket boost`,
-        enPlural: `${opponentEn} never stayed close. Correct picks, big bracket boost`,
+        enSingle: `${opponentEn} never stayed close, and that bracket pick suddenly has witnesses`,
+        enPlural: `${opponentEn} never stayed close, and those bracket picks suddenly have witnesses`,
       },
     ] : [
       {
@@ -1986,8 +1986,8 @@ function directKnockoutStoryFocus(match, outcome, teamCode, table) {
       {
         heSingle: `${score} מול ${opponentHe}, על הקצה. בחירה נכונה עם דחיפה גדולה`,
         hePlural: `${score} מול ${opponentHe}, על הקצה. בחירות נכונות עם דחיפה גדולה`,
-        enSingle: `${score} against ${opponentEn}, right on the edge. Correct pick, big bracket boost`,
-        enPlural: `${score} against ${opponentEn}, right on the edge. Correct picks, big bracket boost`,
+        enSingle: `${score} against ${opponentEn}, right on the edge. That bracket pick gets to speak first`,
+        enPlural: `${score} against ${opponentEn}, right on the edge. Those bracket picks get to speak first`,
       },
       {
         heSingle: `הדרמה נגמרה בצד של {team}. פגיעה טובה, והטופס קיבל חיים`,
@@ -2013,8 +2013,8 @@ function directKnockoutStoryFocus(match, outcome, teamCode, table) {
       {
         heSingle: `${score} מול המארחת: בחירה טובה, דחיפה גדולה, ורבע גמר באופק`,
         hePlural: `${score} מול המארחת: בחירות טובות, דחיפה גדולה, ורבע גמר באופק`,
-        enSingle: `${score} against the hosts: good call, big lift, quarterfinal in sight`,
-        enPlural: `${score} against the hosts: good calls, big lift, quarterfinal in sight`,
+        enSingle: `${score} against the hosts: sharp read, big lift, quarterfinal in sight`,
+        enPlural: `${score} against the hosts: sharp reads, big lift, quarterfinal in sight`,
       },
       {
         heSingle: `המארחת בחוץ, וזו בחירה טובה שקיבלה רגע חזק בטבלת ההימור`,
@@ -2159,7 +2159,7 @@ function commentatorKnockoutCaption(match, outcome, angle) {
     penalties: [
       {
         he: `${score} על הלוח, ואז פנדלים. ${winnerHe} ממשיכה, ${loserHe} בחוץ, וטבלת ההימור מקבלת תשובה גדולה`,
-        en: `${score} on the board, then penalties. ${winnerEn} go through, ${loserEn} are out, and the pool table gets a big answer`,
+        en: `${score} on the board, then penalties. ${winnerEn} go through, ${loserEn} are out, and the chat gets a big answer`,
       },
       {
         he: `${winnerHe} עוברת בפנדלים אחרי ${score}. בחירות עליה מקבלות רגע ענק; בחירות על ${loserHe} חוטפות עכשיו`,
@@ -2169,7 +2169,7 @@ function commentatorKnockoutCaption(match, outcome, angle) {
     blowout: [
       {
         he: `${winnerHe} דורסת את ${loserHe} ${score}. זו עלייה ברורה, וטבלת ההימור זזה מיד עם כל בחירה על ${winnerHe}`,
-        en: `${winnerEn} smash ${loserEn} ${score}. Clear win, clear path, and every ${winnerEn} pick moves the pool table`,
+        en: `${winnerEn} smash ${loserEn} ${score}. Clear win, clear path, ${winnerEn} go through, and every ${winnerEn} pick has witnesses`,
       },
       {
         he: `${score} ל${winnerHe}, בלי הרבה ויכוח. בחירות על ${winnerHe} מקבלות ניקוד, בחירות על ${loserHe} סופגות מכה`,
@@ -2209,21 +2209,21 @@ function commentatorKnockoutCaption(match, outcome, angle) {
     one_goal: [
       {
         he: `שער אחד מספיק ל${winnerHe}. ${loserHe} בחוץ, ${winnerHe} בשלב הבא, וטבלת ההימור זזה`,
-        en: `One goal is enough for ${winnerEn}. ${loserEn} are out, ${winnerEn} go through, and the pool table moves`,
+        en: `One goal is enough for ${winnerEn}. ${loserEn} are out, ${winnerEn} go through, and the chat has material`,
       },
       {
         he: `${winnerHe} מנצחת ${score}. קטן על הלוח, גדול מאוד לבחירות עליה`,
-        en: `${winnerEn} win ${score}. Small on the board, very big for ${winnerEn} picks`,
+        en: `${winnerEn} win ${score} and move on. Small on the board, very big for ${winnerEn} picks`,
       },
     ],
     standard: [
       {
         he: `${winnerHe} מנצחת את ${loserHe} ${score} וממשיכה. בחירות נכונות מקבלות ניקוד, טעויות מרגישות את זה`,
-        en: `${winnerEn} beat ${loserEn} ${score} and move on. Right picks score, bad picks feel it`,
+        en: `${winnerEn} beat ${loserEn} ${score} and move on. Right picks have proof; missed picks have a problem`,
       },
       {
         he: `${score} ל${winnerHe}. שלב הבא בשבילה, סוף הדרך ל${loserHe}, וטבלת ההימור משתנה`,
-        en: `${score} for ${winnerEn}. Next round for them, end of the road for ${loserEn}, and the pool table changes`,
+        en: `${score} for ${winnerEn}. Next round for them, end of the road for ${loserEn}, and the chat has receipts`,
       },
     ],
   };
@@ -2335,7 +2335,7 @@ function knockoutAngleCopy(match, outcome) {
         heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: קטן אבל ענק`,
         enTitle: `${winnerEn} beat ${loserEn} ${score}: small score, huge result`,
         heCaption: `${score} נראה קטן, אבל בנוקאאוט זה מספיק. ${winnerHe} עולה, ${loserHe} בחוץ, וההימור מרגיש את זה מיד ${emoji}`,
-        enCaption: `${score} looks small, but in knockout football it is enough. ${winnerEn} advance, ${loserEn} go out, and the pool feels it fast ${emoji}`,
+        enCaption: `${score} looks small, but in knockout football it is enough. ${winnerEn} advance, ${loserEn} go out, and old picks suddenly look personal ${emoji}`,
       },
       {
         heTitle: `${winnerHe} ניצחה את ${loserHe} ${score}: הכרעה דקה`,
@@ -3139,8 +3139,8 @@ function fallbackEditorialFocus(match, outcome, focus) {
       {
         heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, הטופס הזה צריך תשובה טובה בצ'אט.`,
         heNames: `{names} שמו את {team} ראשונה בבית. אחרי ${score}, הטפסים האלה צריכים תשובה טובה בצ'אט.`,
-        enName: `{names} picked {team} to top the group. After ${score}, that form needs a good answer in the chat.`,
-        enNames: `{names} picked {team} to top the group. After ${score}, those forms need a good answer in the chat.`,
+        enName: `{names} picked {team} to top the group. After ${score}, that form needs a better answer in the chat.`,
+        enNames: `{names} picked {team} to top the group. After ${score}, those forms need better answers in the chat.`,
       },
       {
         heName: `{names} שם את {team} ראשונה בבית. אחרי ${score}, המקום הראשון הזה נראה הרבה פחות פשוט.`,
@@ -3242,14 +3242,14 @@ const RECENT_COPY_VARIETY_CLAUSES = {
       'זה כבר משפיע על הניקוד',
     ],
     en: [
-      'the bracket felt it',
-      'the pool moved fast',
-      'the picks got an answer',
-      'the next round opens',
-      'the table took a hit',
-      'the pool got a big moment',
-      'the chase changed',
-      'the points feel this',
+      'bracket night got personal',
+      'someone has receipts now',
+      'one side of the chat got louder',
+      'the quiet picks got brave',
+      'that bracket just got sharper',
+      'hope changed shirts tonight',
+      'a few picks aged beautifully',
+      'some picks need a lawyer',
     ],
   },
   caption: {
@@ -3264,14 +3264,14 @@ const RECENT_COPY_VARIETY_CLAUSES = {
       'הניקוד הבא יספר את הסיפור.',
     ],
     en: [
-      'Right calls score now.',
-      'Bad calls lose ground now.',
-      'The pool table changes with it.',
-      'The bracket moves in one moment.',
-      'This result shows up in the table too.',
-      'Smart picks get their moment.',
-      'Missed picks pay for it now.',
-      'The next points will show it.',
+      'The story is no longer just the score; it is who trusted it early.',
+      'That result has a very specific audience in the pool.',
+      'Some picks just became proof, and some became evidence.',
+      'The match ended, but the chat argument just started.',
+      'This is the kind of result that makes old picks feel personal.',
+      'The bracket did not just move; it picked a side.',
+      'Someone gets to speak first tonight.',
+      'A few quiet picks just became very loud.',
     ],
   },
   focus: {
@@ -3296,13 +3296,13 @@ const RECENT_COPY_VARIETY_CLAUSES = {
       'הבחירה הזאת כבר נספרת.',
     ],
     en: [
-      'The table moves now.',
-      'That is a real bracket moment.',
-      'The table answers it.',
-      'The points feel it.',
-      'The pool already moved.',
-      'The bracket got its answer.',
-      'The result goes straight into the table.',
+      'The chat has material now.',
+      'That pick aged in public.',
+      'That is no longer a quiet bracket choice.',
+      'That pick just walked into the spotlight.',
+      'Someone gets to talk first tonight.',
+      'The old pick suddenly feels very current.',
+      'A quiet line just became very loud.',
       'The next round already feels it.',
       'That pick got a result.',
       'The pool story changed.',
