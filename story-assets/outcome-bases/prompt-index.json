@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-07-12T03:59:26.562Z",
+  "updated_at": "2026-07-12T08:33:12.316Z",
   "source": "snapshot",
-  "matches": 7,
+  "matches": 8,
   "prompts": [
     {
       "match_id": "09df59c6-1a7a-42d2-8c77-e9bcc3889dd5",
@@ -66,6 +66,22 @@
       "outcome": "ESP",
       "image": "story-assets/outcome-bases/fra-esp-esp-wins-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: France vs Spain at FIFA World Cup 2026.\nPrepared outcome: Spain advances over France.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
+    },
+    {
+      "match_id": "c9ea9358-126d-4ae7-a17a-b520888002c8",
+      "match_key": "ENG-ARG",
+      "match_date": "2026-07-15T19:00:00+00:00",
+      "outcome": "ENG",
+      "image": "story-assets/outcome-bases/eng-arg-eng-wins-base.png",
+      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: England vs Argentina at FIFA World Cup 2026.\nPrepared outcome: England advances over Argentina.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
+    },
+    {
+      "match_id": "c9ea9358-126d-4ae7-a17a-b520888002c8",
+      "match_key": "ENG-ARG",
+      "match_date": "2026-07-15T19:00:00+00:00",
+      "outcome": "ARG",
+      "image": "story-assets/outcome-bases/eng-arg-arg-wins-base.png",
+      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: England vs Argentina at FIFA World Cup 2026.\nPrepared outcome: Argentina advances over England.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     }
   ]
 }
