@@ -51,9 +51,20 @@ __setRunLivePollerWindow(async (opts) => {
   return { polls: 1, leaseSkips: 0, finalDetected: false };
 });
 
-process.env.LIVE_NUDGE_TOKEN = 'secret';
+delete process.env.LIVE_NUDGE_TOKEN;
+delete process.env.LIVE_CONTROLLER_NUDGE_TOKEN;
 
 let res = await call({
+  method: 'POST',
+  headers: { origin: 'https://friendlybet.live' },
+  body: { source: 'browser-nudge' },
+});
+ok('missing token rejects public nudges', res.statusCode === 401);
+ok('missing token does not run the poller', runnerCalls.length === 0);
+
+process.env.LIVE_NUDGE_TOKEN = 'secret';
+
+res = await call({
   method: 'OPTIONS',
   headers: { origin: 'https://friendlybet.live' },
 });

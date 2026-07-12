@@ -5,17 +5,21 @@
 // Strategy: Cache-first for assets, Network-first for API
 // ============================================================
 
-const CACHE_VERSION = 'friendlybet-v2.10.137';
+const CACHE_VERSION = 'friendlybet-v2.10.138';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
-// v2.10.132: keep live data fresh enough while avoiding a Vercel edge request on
-// every dashboard/leaderboard render. These are deliberately short for match data.
+// v2.10.138: keep live match data fresh, while caching slower-moving generated
+// files longer so repeat dashboard visits do not keep hitting Vercel/Supabase.
 const PUBLIC_DATA_TTLS = [
   { test: path => path.endsWith('/matches.json'), ttl: 30 * 1000 },
-  { test: path => path.endsWith('/pundit.json'), ttl: 10 * 60 * 1000 },
-  { test: path => path.includes('/banter/'), ttl: 2 * 60 * 1000 },
-  { test: path => true, ttl: 60 * 1000 }
+  { test: path => path.endsWith('/pundit.json'), ttl: 15 * 60 * 1000 },
+  { test: path => path.endsWith('/world-cup-stories.json'), ttl: 30 * 60 * 1000 },
+  { test: path => path.includes('/leaderboard/'), ttl: 2 * 60 * 1000 },
+  { test: path => path.includes('/banter/'), ttl: 10 * 60 * 1000 },
+  { test: path => path.includes('/knockout-scenarios/manifest.json'), ttl: 60 * 1000 },
+  { test: path => path.includes('/knockout-scenarios/'), ttl: 10 * 60 * 1000 },
+  { test: path => true, ttl: 5 * 60 * 1000 }
 ];
 
 // Files to pre-cache (the app shell)
@@ -116,7 +120,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Skip Vercel Analytics — let the browser hit it directly so beacons fire
+  // Skip Vercel system paths.
   if (url.pathname.startsWith('/_vercel/')) {
     return;
   }
