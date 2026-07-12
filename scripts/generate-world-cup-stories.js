@@ -145,6 +145,58 @@ const DRAW_FOCUS = {
 };
 
 const STORY_COPY_OVERRIDES = {
+  'BRA-NOR': {
+    title: {
+      he: 'נורבגיה ניצחה את ברזיל 2-1: לרבע הגמר',
+      en: 'Norway beat Brazil 2-1: into the quarterfinals',
+    },
+    caption: {
+      he: 'נורבגיה הדיחה את ברזיל עם 2-1 בשמינית הגמר. האלנד הפך ערב ענק לכרטיס לרבע הגמר 🔥',
+      en: 'Norway knocked Brazil out 2-1 in the Round of 16. Haaland turned a huge night into a quarterfinal ticket 🔥',
+    },
+    pool_focuses: [
+      {
+        table: 'knockout_picks',
+        team_code: 'NOR',
+        he_name: '{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. 2-1 על ברזיל הופך את הבחירה הזאת לרגע ענק בבראקט 🔥',
+        he_names: '{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. 2-1 על ברזיל הופך את הבחירות האלה לרגע ענק בבראקט 🔥',
+        he_count: '{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. 2-1 על ברזיל הופך את הבחירות האלה לרגע ענק בבראקט 🔥',
+        en_name: '{names} picked {team} to win this knockout match. A 2-1 over Brazil turns that pick into a huge bracket moment 🔥',
+        en_names: '{names} picked {team} to win this knockout match. A 2-1 over Brazil turns those picks into a huge bracket moment 🔥',
+        en_count: '{names} picked {team} to win this knockout match. A 2-1 over Brazil turns those picks into a huge bracket moment 🔥',
+      },
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'NOR',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי הדחה של ברזיל, החלום הזה כבר נשמע הרבה פחות משוגע 🔥',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי הדחה של ברזיל, החלום הזה כבר נשמע הרבה פחות משוגע 🔥',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי הדחה של ברזיל, החלום הזה כבר נשמע הרבה פחות משוגע 🔥',
+        en_name: '{names} picked {team} to win the World Cup. After knocking out Brazil, that dream sounds much less wild 🔥',
+        en_names: '{names} picked {team} to win the World Cup. After knocking out Brazil, those dreams sound much less wild 🔥',
+        en_count: '{names} picked {team} to win the World Cup. After knocking out Brazil, those dreams sound much less wild 🔥',
+      },
+      {
+        table: 'knockout_picks',
+        team_code: 'BRA',
+        he_name: '{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי 2-1 לנורבגיה, הבראקט הזה צריך תשובה טובה בצ׳אט 😬',
+        he_names: '{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 2-1 לנורבגיה, הבראקטים האלה צריכים תשובה טובה בצ׳אט 😬',
+        he_count: '{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי 2-1 לנורבגיה, הבראקטים האלה צריכים תשובה טובה בצ׳אט 😬',
+        en_name: '{names} picked {team} to win this knockout match. After Norway’s 2-1, that bracket needs a strong chat answer 😬',
+        en_names: '{names} picked {team} to win this knockout match. After Norway’s 2-1, those brackets need strong chat answers 😬',
+        en_count: '{names} picked {team} to win this knockout match. After Norway’s 2-1, those brackets need strong chat answers 😬',
+      },
+      {
+        table: 'tournament_winner_picks',
+        team_code: 'BRA',
+        he_name: '{names} בחר את {team} כמנצחת המונדיאל. אחרי שנורבגיה שלחה אותה הביתה, זה רגע של ידיים על הראש 😬',
+        he_names: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי שנורבגיה שלחה אותה הביתה, זה רגע של ידיים על הראש 😬',
+        he_count: '{names} בחרו את {team} כמנצחת המונדיאל. אחרי שנורבגיה שלחה אותה הביתה, זה רגע של ידיים על הראש 😬',
+        en_name: '{names} picked {team} to win the World Cup. After Norway sent them home, that is a hands-on-head moment 😬',
+        en_names: '{names} picked {team} to win the World Cup. After Norway sent them home, those are hands-on-head moments 😬',
+        en_count: '{names} picked {team} to win the World Cup. After Norway sent them home, those are hands-on-head moments 😬',
+      },
+    ],
+  },
   'ENG-COD': {
     title: {
       he: 'אנגליה ניצחה את דר קונגו 2-1: קיין סחב אותה הלאה',
@@ -1352,8 +1404,119 @@ function matchKey(match) {
   return `${match.home_team_code}-${match.away_team_code}`;
 }
 
+const DIRECT_CURRENT_STORY_KEYS = new Set(['BRA-NOR', 'PAR-FRA', 'CAN-MAR', 'COL-GHA', 'ARG-CPV']);
+
+function directCurrentStoryAngle(key) {
+  return {
+    'BRA-NOR': {
+      heTitle: 'לרבע הגמר, וברזיל בחוץ',
+      enTitle: 'quarterfinals, Brazil out',
+      heCaption: 'נורבגיה ניצחה את ברזיל 2-1 בשמינית הגמר. היא ברבע הגמר, וכל בראקט שהלך איתה קיבל דחיפה ענקית',
+      enCaption: 'Norway beat Brazil 2-1 in the Round of 16. Brazil are out, and every Norway bracket suddenly has a louder voice',
+      emoji: '🔥',
+    },
+    'PAR-FRA': {
+      heTitle: 'שער אחד, כרטיס לשלב הבא',
+      enTitle: 'one goal, next round',
+      heCaption: 'צרפת ניצחה את פרגוואי 1-0 ועלתה שלב. שער אחד הספיק, והבראקט ממשיך עכשיו דרך צרפת',
+      enCaption: 'France beat Paraguay 1-0 and moved on. One goal was enough, and the bracket now runs through France',
+      emoji: '⚽',
+    },
+    'CAN-MAR': {
+      heTitle: 'ניצחון גדול, בראקט זז',
+      enTitle: 'big win, bracket moves',
+      heCaption: 'מרוקו ניצחה את קנדה 3-0 בשמינית הגמר. תוצאה ברורה, קנדה בחוץ והבראקט זז חזק',
+      enCaption: 'Morocco beat Canada 3-0 in the Round of 16. Canada are out, and Morocco picks get the cleanest kind of receipt',
+      emoji: '🔥',
+    },
+    'COL-GHA': {
+      heTitle: 'גול אחד, צעד ענק',
+      enTitle: 'one goal, huge step',
+      heCaption: 'קולומביה ניצחה את גאנה 1-0 ועלתה הלאה. גול אחד הכריע, וגאנה נעצרת כאן',
+      enCaption: 'Colombia beat Ghana 1-0 and moved on. One goal decided it, and Ghana stops here',
+      emoji: '⚽',
+    },
+    'ARG-CPV': {
+      heTitle: 'ניצחון קשה, כרטיס ביד',
+      enTitle: 'hard win, ticket punched',
+      heCaption: 'ארגנטינה ניצחה את כף ורדה 3-2 אחרי משחק צמוד ועלתה שלב. כף ורדה הייתה קרובה, אבל הכרטיס נשאר אצל ארגנטינה',
+      enCaption: 'Argentina beat Cape Verde 3-2 after a tight match and moved on. Cape Verde came close, but Argentina kept the ticket',
+      emoji: '🔥',
+    },
+  }[key] || null;
+}
+
+function directCurrentStoryFocus(match, outcome, teamCode, table) {
+  const key = matchKey(match);
+  const angle = directCurrentStoryAngle(key);
+  if (!angle || outcome === 'DRAW') return null;
+  const score = scoreForOutcome(match, outcome);
+  const opponent = opponentForTeam(match, teamCode);
+  const opponentHe = teamName(opponent, 'he');
+  const opponentEn = teamName(opponent, 'en');
+  const won = teamCode === outcome;
+  const isTournament = table === 'tournament_winner_picks';
+  const pickHe = isTournament ? 'כמנצחת המונדיאל' : 'לנצח במשחק הנוקאאוט הזה';
+  const pickEn = isTournament ? 'to win the World Cup' : 'to win this knockout match';
+  const heSingle = won
+    ? `{names} בחר את {team} ${pickHe}. ${score} מול ${opponentHe}: בחירה טובה, דחיפה גדולה בפול ${angle.emoji}`
+    : `{names} בחר את {team} ${pickHe}. אחרי ${score} מול ${opponentHe}, הבחירה הזאת קיבלה מכה חזקה ${angle.emoji}`;
+  const hePlural = won
+    ? `{names} בחרו את {team} ${pickHe}. ${score} מול ${opponentHe}: בחירות טובות, דחיפה גדולה בפול ${angle.emoji}`
+    : `{names} בחרו את {team} ${pickHe}. אחרי ${score} מול ${opponentHe}, הבחירות האלה קיבלו מכה חזקה ${angle.emoji}`;
+  const enSingle = won
+    ? `{names} picked {team} ${pickEn}. ${score} against ${opponentEn}, and that pick has a receipt now ${angle.emoji}`
+    : `{names} picked {team} ${pickEn}. ${opponentEn} closed that road with ${score} ${angle.emoji}`;
+  const enPlural = won
+    ? `{names} picked {team} ${pickEn}. ${score} against ${opponentEn}, and those picks have receipts now ${angle.emoji}`
+    : `{names} picked {team} ${pickEn}. ${opponentEn} closed that road with ${score} ${angle.emoji}`;
+  return {
+    table,
+    team_code: teamCode,
+    team_he: teamName(teamCode, 'he'),
+    team_en: teamName(teamCode, 'en'),
+    ...(table === 'knockout_picks' ? { match_id: match.id } : {}),
+    he_name: heSingle,
+    he_names: hePlural,
+    he_count: hePlural,
+    en_name: enSingle,
+    en_names: enPlural,
+    en_count: enPlural,
+  };
+}
+
+function directCurrentStoryOverride(match) {
+  const key = matchKey(match);
+  if (!DIRECT_CURRENT_STORY_KEYS.has(key)) return null;
+  const outcome = outcomeFor(match);
+  if (!outcome || outcome === 'DRAW') return null;
+  const angle = directCurrentStoryAngle(key);
+  const score = scoreForOutcome(match, outcome);
+  const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
+  const winnerHe = teamName(outcome, 'he');
+  const loserHe = teamName(loser, 'he');
+  const winnerEn = teamName(outcome, 'en');
+  const loserEn = teamName(loser, 'en');
+  return {
+    title: {
+      he: `${winnerHe} ניצחה את ${loserHe} ${score}: ${angle.heTitle}`,
+      en: `${winnerEn} beat ${loserEn} ${score}: ${angle.enTitle}`,
+    },
+    caption: {
+      he: `${angle.heCaption} ${angle.emoji}`,
+      en: `${angle.enCaption} ${angle.emoji}`,
+    },
+    pool_focuses: [
+      directCurrentStoryFocus(match, outcome, outcome, 'knockout_picks'),
+      directCurrentStoryFocus(match, outcome, outcome, 'tournament_winner_picks'),
+      directCurrentStoryFocus(match, outcome, loser, 'knockout_picks'),
+      directCurrentStoryFocus(match, outcome, loser, 'tournament_winner_picks'),
+    ].filter(Boolean),
+  };
+}
+
 function storyOverride(match) {
-  return STORY_COPY_OVERRIDES[matchKey(match)] || null;
+  return directCurrentStoryOverride(match) || STORY_COPY_OVERRIDES[matchKey(match)] || null;
 }
 
 function isGroupStageMatch(match) {
@@ -1621,6 +1784,32 @@ function tournamentWinnerFocus(match, outcome, teamCode) {
   const heContext = resultContext(match, outcome, teamCode, 'he');
   const enContext = resultContext(match, outcome, teamCode, 'en');
   const category = outcome === 'DRAW' ? 'draw' : (teamCode === outcome ? 'winner' : 'loser');
+  if (category !== 'draw') {
+    const won = category === 'winner';
+    const copy = won ? {
+      heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}: בחירה חזקה, והפול מרגיש את זה.`,
+      heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}: בחירות חזקות, והפול מרגיש את זה.`,
+      enName: `{names} picked {team} to win the World Cup. ${enContext}; that trophy dream suddenly has witnesses.`,
+      enNames: `{names} picked {team} to win the World Cup. ${enContext}; those trophy dreams suddenly have witnesses.`,
+    } : {
+      heName: `{names} בחר את {team} כמנצחת המונדיאל. ${heContext}: הבחירה הזאת קיבלה מכה קשה.`,
+      heNames: `{names} בחרו את {team} כמנצחת המונדיאל. ${heContext}: הבחירות האלה קיבלו מכה קשה.`,
+      enName: `{names} picked {team} to win the World Cup. ${enContext}; that trophy dream just lost a lot of oxygen.`,
+      enNames: `{names} picked {team} to win the World Cup. ${enContext}; those trophy dreams just lost a lot of oxygen.`,
+    };
+    return {
+      table: 'tournament_winner_picks',
+      team_code: teamCode,
+      team_he: teamName(teamCode, 'he'),
+      team_en: teamName(teamCode, 'en'),
+      he_name: copy.heName,
+      he_names: copy.heNames,
+      he_count: copy.heNames,
+      en_name: copy.enName,
+      en_names: copy.enNames,
+      en_count: copy.enNames,
+    };
+  }
   const variants = {
     winner: [
       {
@@ -1750,6 +1939,32 @@ function knockoutFocus(match, outcome, teamCode) {
   const stageHe = stageLabel(match, 'he');
   const stageEn = stageLabel(match, 'en');
   const won = teamCode === outcome;
+  if (outcome !== 'DRAW') {
+    const copy = won ? {
+      heName: `{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. ${score} מול ${opponentHe}: פגיעה טובה ודחיפה גדולה בבראקט.`,
+      heNames: `{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. ${score} מול ${opponentHe}: פגיעות טובות ודחיפה גדולה בבראקט.`,
+      enName: `{names} picked {team} to win this knockout match. ${score} against ${opponentEn}, and that bracket choice has a receipt.`,
+      enNames: `{names} picked {team} to win this knockout match. ${score} against ${opponentEn}, and those bracket choices have receipts.`,
+    } : {
+      heName: `{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי ${score} ב${stageHe}, הבחירה הזאת נפלה חזק.`,
+      heNames: `{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי ${score} ב${stageHe}, הבחירות האלה נפלו חזק.`,
+      enName: `{names} picked {team} to win this knockout match. ${opponentEn} closed that road with ${score} in the ${stageEn}.`,
+      enNames: `{names} picked {team} to win this knockout match. ${opponentEn} closed that road with ${score} in the ${stageEn}.`,
+    };
+    return {
+      table: 'knockout_picks',
+      team_code: teamCode,
+      team_he: teamName(teamCode, 'he'),
+      team_en: teamName(teamCode, 'en'),
+      match_id: match.id,
+      he_name: copy.heName,
+      he_names: copy.heNames,
+      he_count: copy.heNames,
+      en_name: copy.enName,
+      en_names: copy.enNames,
+      en_count: copy.enNames,
+    };
+  }
   const copy = won ? {
     heName: `{names} בחר את {team} לנצח במשחק הנוקאאוט הזה. אחרי ${score} מול ${opponentHe}, הבחירה הזאת נכנסה לשיחה על השלב הבא ⚽`,
     heNames: `{names} בחרו את {team} לנצח במשחק הנוקאאוט הזה. אחרי ${score} מול ${opponentHe}, אלה כבר לא טפסים - אלה קבלות חיות ⚽`,
@@ -1928,8 +2143,8 @@ function fallbackEditorialCaption(match, outcome) {
     const winnerEn = teamName(outcome, 'en');
     const loserEn = teamName(loser, 'en');
     return {
-      he: `${winnerHe} \u05e2\u05d1\u05e8\u05d4 \u05d0\u05ea ${loserHe} \u05e2\u05dd ${score} \u05d1${stageLabel(match, 'he')}. \u05d4\u05d1\u05e8\u05d0\u05e7\u05d8 \u05de\u05ea\u05e7\u05d3\u05dd \u05e2\u05db\u05e9\u05d9\u05d5 \u05d3\u05e8\u05db\u05d4, \u05d5${loserHe} \u05d9\u05d5\u05e8\u05d3\u05ea \u05de\u05d4\u05dc\u05d5\u05d7.`,
-      en: `${winnerEn} got past ${loserEn} ${score} in the ${stageLabel(match, 'en')}. The bracket now moves through ${winnerEn}, while ${loserEn} drops off the board.`,
+      he: `${winnerHe} ניצחה את ${loserHe} ${score} ב${stageLabel(match, 'he')}. היא עולה הלאה, והבראקטים בפול מרגישים את זה מיד.`,
+      en: `${winnerEn} beat ${loserEn} ${score} in the ${stageLabel(match, 'en')}. ${winnerEn} keep the ticket; ${loserEn} run out of road.`,
     };
   }
   if (outcome === 'DRAW') {
@@ -2213,11 +2428,108 @@ const RECENT_COPY_VARIETY_CLAUSES = {
   },
 };
 
+const DIRECT_RECENT_COPY_VARIETY_CLAUSES = {
+  headline: {
+    he: [
+      'הבראקט הרגיש את זה',
+      'הפול זז מיד',
+      'הבחירות קיבלו תשובה',
+      'השלב הבא נפתח',
+      'הטבלה קיבלה מכה',
+      'ההימור קיבל רגע גדול',
+      'המרדף בפול השתנה',
+      'זה כבר משפיע על הניקוד',
+    ],
+    en: [
+      'bracket night got personal',
+      'someone has receipts now',
+      'one side of the chat got louder',
+      'the quiet picks got brave',
+      'that bracket just got sharper',
+      'hope changed shirts tonight',
+      'a few forms aged beautifully',
+      'some picks need a lawyer',
+    ],
+  },
+  caption: {
+    he: [
+      'בחירות טובות קיבלו דחיפה.',
+      'בחירות לא טובות קיבלו מכה.',
+      'הפול מרגיש את התוצאה הזאת.',
+      'הבראקטים זזו ברגע.',
+      'זה ניצחון שמופיע גם בטבלה.',
+      'פגיעה נכונה קיבלה רגע גדול.',
+      'טעות בבחירה כבר מורגשת.',
+      'הניקוד הבא יספר את הסיפור.',
+    ],
+    en: [
+      'The story is no longer just the score; it is who trusted it early.',
+      'That result has a very specific audience in the pool.',
+      'Some forms just became receipts, and some became evidence.',
+      'The match ended, but the chat argument just started.',
+      'This is the kind of result that makes old picks feel personal.',
+      'The bracket did not just move; it picked a side.',
+      'Someone gets to speak first tonight.',
+      'A few quiet forms just became very loud.',
+    ],
+  },
+  focus: {
+    he: [
+      'הטבלה זזה עכשיו.',
+      'זה רגע אמיתי בבראקט.',
+      'הטבלה נותנת לזה תשובה.',
+      'הניקוד מרגיש את זה.',
+      'הפול כבר זז.',
+      'הבראקט קיבל תשובה.',
+      'התוצאה נכנסה ישר לטבלה.',
+    ],
+    en: [
+      'The chat has material now.',
+      'That form aged in public.',
+      'That is no longer a quiet bracket choice.',
+      'That pick just walked into the spotlight.',
+      'Someone gets to talk first tonight.',
+      'The old form suddenly feels very current.',
+      'A quiet line just became very loud.',
+    ],
+  },
+};
+
 function latestVarietyClause(story, kind, lang, attempt) {
-  const clauses = RECENT_COPY_VARIETY_CLAUSES[kind] && RECENT_COPY_VARIETY_CLAUSES[kind][lang];
+  const source = DIRECT_RECENT_COPY_VARIETY_CLAUSES || RECENT_COPY_VARIETY_CLAUSES;
+  const clauses = source[kind] && source[kind][lang];
   if (!clauses || !clauses.length) return '';
   const index = storyCopyHash(`${story && story.id || ''}:${kind}:${lang}:${attempt}`) % clauses.length;
   return clauses[index];
+}
+
+function escapeRegExpText(value) {
+  return String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function stripLatestVarietyClause(text, kind, lang) {
+  let value = String(text || '').trim();
+  const clauses = (DIRECT_RECENT_COPY_VARIETY_CLAUSES[kind] && DIRECT_RECENT_COPY_VARIETY_CLAUSES[kind][lang]) || [];
+  const clauseVariants = [];
+  for (const clause of clauses) {
+    const trimmed = String(clause || '').trim();
+    if (!trimmed) continue;
+    clauseVariants.push(trimmed);
+    clauseVariants.push(trimmed.replace(/\.\s*$/, ''));
+  }
+  for (const clause of [...new Set(clauseVariants)].sort((a, b) => b.length - a.length)) {
+    const escaped = escapeRegExpText(clause);
+    let previous = '';
+    while (value && value !== previous) {
+      previous = value;
+      value = value
+        .replace(new RegExp(`\\s*-\\s*${escaped}\\.?$`, 'u'), '')
+        .replace(new RegExp(`\\s*\\.\\s*${escaped}\\.?$`, 'u'), '')
+        .replace(new RegExp(`\\s+${escaped}\\.?$`, 'u'), '')
+        .trim();
+    }
+  }
+  return value.trim();
 }
 
 function appendLatestShapeClause(story, match, kind, lang, focusIndex = 0, attempt = 0) {
@@ -2225,7 +2537,7 @@ function appendLatestShapeClause(story, match, kind, lang, focusIndex = 0, attem
   const clause = latestVarietyClause(story, kind, lang, attempt);
   const safeClause = clause ? ` ${clause}` : (lang === 'he' ? ` בית ${group} מרגיש את זה.` : ` Group ${group} felt that one.`);
   if (kind === 'headline') {
-    const base = String(story[lang] && story[lang].headline || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, '');
+    const base = stripLatestVarietyClause(String(story[lang] && story[lang].headline || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, ''), kind, lang);
     const joiner = base.includes(':') ? ' -' : ':';
     return {
       ...story,
@@ -2236,23 +2548,26 @@ function appendLatestShapeClause(story, match, kind, lang, focusIndex = 0, attem
     };
   }
   if (kind === 'caption') {
-    const base = String(story[lang] && story[lang].caption || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, '');
+    const base = stripLatestVarietyClause(String(story[lang] && story[lang].caption || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, ''), kind, lang);
+    const joined = clause
+      ? `${base.replace(/[.。]\s*$/, '')}. ${clause}`
+      : `${base}${safeClause}`;
     return {
       ...story,
       [lang]: {
         ...story[lang],
-        caption: withEndingStoryEmoji(`${base}${safeClause}`, match, outcomeFor(match)),
+        caption: withEndingStoryEmoji(joined, match, outcomeFor(match)),
       },
     };
   }
   const focuses = (story.pool_focuses || []).map((focus, idx) => {
     if (idx !== focusIndex) return focus;
     const prefix = lang === 'he' ? 'he_' : 'en_';
-    const addClause = (value) => withEndingStoryEmoji(
-      `${String(value || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, '')}${safeClause}`,
-      match,
-      outcomeFor(match)
-    );
+    const addClause = (value) => {
+      const base = stripLatestVarietyClause(String(value || '').replace(/\s+$/, '').replace(/\s*[\p{Extended_Pictographic}\p{Emoji_Presentation}]\uFE0F?\s*$/u, ''), kind, lang);
+      const joined = clause ? `${base.replace(/[.。]\s*$/, '')}. ${clause}` : `${base}${safeClause}`;
+      return withEndingStoryEmoji(joined, match, outcomeFor(match));
+    };
     return {
       ...focus,
       [`${prefix}name`]: addClause(focus[`${prefix}name`]),
@@ -2319,7 +2634,7 @@ function captionCopy(match, outcome) {
     const loser = outcome === match.home_team_code ? match.away_team_code : match.home_team_code;
     return {
       he: `${teamName(outcome, 'he')} עברה את ${teamName(loser, 'he')} ${score}, והבראקטים מרגישים את זה מיד.`,
-      en: `${teamName(outcome)} got past ${teamName(loser)} ${score}, and the brackets feel it immediately.`,
+      en: `${teamName(outcome)} closed the door on ${teamName(loser)} with ${score}. The bracket is smaller now, and that result has witnesses.`,
     };
   }
   if (outcome === 'DRAW') {
