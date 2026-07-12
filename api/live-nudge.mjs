@@ -31,7 +31,7 @@ function json(res, status, body) {
 
 function authorized(req) {
   const token = process.env.LIVE_NUDGE_TOKEN || process.env.LIVE_CONTROLLER_NUDGE_TOKEN || '';
-  if (!token) return true;
+  if (!token) return false;
   const bearer = String((req.headers && req.headers.authorization) || '').replace(/^Bearer\s+/i, '');
   const headerToken = String((req.headers && req.headers['x-live-nudge-token']) || '');
   return bearer === token || headerToken === token;
