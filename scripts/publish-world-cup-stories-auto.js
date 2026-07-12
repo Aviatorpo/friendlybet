@@ -77,4 +77,5 @@ run(['node', 'scripts/generate-world-cup-stories.js'], {
 });
 runPython(['scripts/audit-world-cup-story-images.py', '--scope', 'stories']);
 run(['node', 'scripts/test-world-cup-stories.js']);
+run(['node', 'scripts/test-world-cup-story-tone.js']);
 latestStorySummary();
