@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-07-11T23:26:59.357Z",
-  "freshUntil": "2026-07-12T05:26:59.357Z",
+  "updatedAt": "2026-07-12T00:08:21.935Z",
+  "freshUntil": "2026-07-12T06:08:21.935Z",
   "count": 3,
   "items": [
     {
-      "id": "live-b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
-      "type": "live",
+      "id": "result-b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "נורווגיה נגד אנגליה עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
-      "en": "Norway vs England is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "he": "2:1 לאנגליה על נורווגיה. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות 🧾",
+      "en": "2-1 for England over Norway. Any bracket path that kept England alive can open the receipts 🧾",
       "sources": [],
-      "expires_at": "2026-07-12T02:26:59.357Z"
+      "expires_at": "2026-07-13T09:00:00.000Z"
     },
     {
       "id": "result-28d7a286-32b3-4203-b8a5-793ae663b5ed",
       "type": "result",
       "confidence": "confirmed",
-      "he": "ספרד ניצחה את בלגיה 2:1 ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום 🧾",
-      "en": "Spain beat Belgium 2-1 and stayed alive in the bracket. Any bracket path that kept Spain alive can keep dreaming 🧾",
+      "he": "ספרד עברה את בלגיה 2:1. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על בלגיה צריך מסלול חדש 🧾",
+      "en": "Spain got past Belgium 2-1. Bracket paths that kept Spain alive get a receipt; Belgium routes need a new plan 🧾",
       "sources": [],
       "expires_at": "2026-07-12T07:00:00.000Z"
     },
