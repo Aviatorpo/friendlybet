@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-07-12T03:15:51.781Z",
-  "freshUntil": "2026-07-12T09:15:51.781Z",
+  "updatedAt": "2026-07-12T06:16:46.412Z",
+  "freshUntil": "2026-07-12T12:16:46.412Z",
   "count": 3,
   "items": [
     {
-      "id": "live-ff09af19-18d2-49ad-a2eb-577f904f6e48",
-      "type": "live",
+      "id": "result-ff09af19-18d2-49ad-a2eb-577f904f6e48",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "ארגנטינה נגד שווייץ עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
-      "en": "Argentina vs Switzerland is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "he": "3:1 לארגנטינה על שווייץ. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות 🧾",
+      "en": "3-1 for Argentina over Switzerland. Any bracket path that kept Argentina alive can open the receipts 🧾",
       "sources": [],
-      "expires_at": "2026-07-12T06:15:51.781Z"
+      "expires_at": "2026-07-13T13:00:00.000Z"
     },
     {
       "id": "result-b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
       "type": "result",
       "confidence": "confirmed",
-      "he": "2:1 לאנגליה על נורווגיה. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות 🧾",
-      "en": "2-1 for England over Norway. Any bracket path that kept England alive can open the receipts 🧾",
+      "he": "אנגליה עברה את נורווגיה 2:1. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על נורווגיה צריך מסלול חדש 🧾",
+      "en": "England got past Norway 2-1. Bracket paths that kept England alive get a receipt; Norway routes need a new plan 🧾",
       "sources": [],
       "expires_at": "2026-07-13T09:00:00.000Z"
     },
@@ -25,8 +25,8 @@
       "id": "result-28d7a286-32b3-4203-b8a5-793ae663b5ed",
       "type": "result",
       "confidence": "confirmed",
-      "he": "ספרד עברה את בלגיה 2:1. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על בלגיה צריך מסלול חדש 🧾",
-      "en": "Spain got past Belgium 2-1. Bracket paths that kept Spain alive get a receipt; Belgium routes need a new plan 🧾",
+      "he": "2:1 לספרד על בלגיה. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות 🧾",
+      "en": "2-1 for Spain over Belgium. Any bracket path that kept Spain alive can open the receipts 🧾",
       "sources": [],
       "expires_at": "2026-07-12T07:00:00.000Z"
     }
