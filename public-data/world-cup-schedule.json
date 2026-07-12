@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-12T03:45:37.756Z",
+  "updatedAt": "2026-07-12T06:22:05.210Z",
   "source": "https://api.fifa.com/api/v3/calendar/matches?language=en&count=500&idCompetition=17&from=2026-06-01&to=2026-07-31",
   "sourcePage": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?country=IL&wtw-filter=ALL",
   "count": 104,
@@ -2545,9 +2545,9 @@
       "fifa_status": 1,
       "result_type": 0,
       "home_team_code": "ENG",
-      "away_team_code": null,
+      "away_team_code": "ARG",
       "home_team_name": "England",
-      "away_team_name": null,
+      "away_team_name": "Argentina",
       "home_score": null,
       "away_score": null,
       "venue": "Atlanta Stadium",
