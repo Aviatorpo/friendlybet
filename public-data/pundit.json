@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-13T03:50:10.996Z",
-  "freshUntil": "2026-07-13T09:50:10.996Z",
-  "count": 2,
+  "updatedAt": "2026-07-13T09:45:10.727Z",
+  "freshUntil": "2026-07-13T15:45:10.727Z",
+  "count": 1,
   "items": [
     {
       "id": "result-ff09af19-18d2-49ad-a2eb-577f904f6e48",
@@ -11,15 +11,6 @@
       "en": "3-1 for Argentina over Switzerland. Any bracket path that kept Argentina alive can open the receipts 🧾",
       "sources": [],
       "expires_at": "2026-07-13T13:00:00.000Z"
-    },
-    {
-      "id": "result-b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "אנגליה עברה את נורווגיה 2:1. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על נורווגיה צריך מסלול חדש 🧾",
-      "en": "England got past Norway 2-1. Bracket paths that kept England alive get a receipt; Norway routes need a new plan 🧾",
-      "sources": [],
-      "expires_at": "2026-07-13T09:00:00.000Z"
     }
   ]
 }
