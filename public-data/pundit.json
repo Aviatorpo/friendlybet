@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-14T08:24:47.498Z",
-  "freshUntil": "2026-07-14T14:24:47.498Z",
-  "count": 1,
+  "updatedAt": "2026-07-14T14:06:57.677Z",
+  "freshUntil": "2026-07-14T20:06:57.677Z",
+  "count": 2,
   "items": [
     {
       "id": "fixture-248af202-753b-4433-a646-853f36ae0e43",
@@ -11,6 +11,15 @@
       "en": "Huge semi-final: France vs Spain, today 22:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-14T18:45:00.000Z"
+    },
+    {
+      "id": "fixture-c9ea9358-126d-4ae7-a17a-b520888002c8",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "משחק ענק בחצי הגמר: אנגליה נגד ארגנטינה, מחר 22:00. צד אחד ממשיך, צד אחד הולך הביתה ⏰",
+      "en": "Huge semi-final: England vs Argentina, tomorrow 22:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
+      "sources": [],
+      "expires_at": "2026-07-15T18:45:00.000Z"
     }
   ]
 }
