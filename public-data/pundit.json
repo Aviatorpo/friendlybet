@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-07-14T19:40:09.385Z",
-  "freshUntil": "2026-07-15T01:40:09.385Z",
+  "updatedAt": "2026-07-14T21:20:46.890Z",
+  "freshUntil": "2026-07-15T03:20:46.890Z",
   "count": 2,
   "items": [
     {
-      "id": "live-248af202-753b-4433-a646-853f36ae0e43",
-      "type": "live",
+      "id": "result-248af202-753b-4433-a646-853f36ae0e43",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "צרפת נגד ספרד עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
-      "en": "France vs Spain is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "he": "2:0 לספרד על צרפת. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות 🧾",
+      "en": "2-0 for Spain over France. Any bracket path that kept Spain alive can open the receipts 🧾",
       "sources": [],
-      "expires_at": "2026-07-14T22:40:09.385Z"
+      "expires_at": "2026-07-16T07:00:00.000Z"
     },
     {
       "id": "fixture-c9ea9358-126d-4ae7-a17a-b520888002c8",
       "type": "fixture",
       "confidence": "confirmed",
-      "he": "משחק ענק בחצי הגמר: אנגליה נגד ארגנטינה, מחר 22:00. צד אחד ממשיך, צד אחד הולך הביתה ⏰",
-      "en": "Huge semi-final: England vs Argentina, tomorrow 22:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
+      "he": "משחק ענק בחצי הגמר: אנגליה נגד ארגנטינה, היום 22:00. צד אחד ממשיך, צד אחד הולך הביתה ⏰",
+      "en": "Huge semi-final: England vs Argentina, today 22:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-15T18:45:00.000Z"
     }
