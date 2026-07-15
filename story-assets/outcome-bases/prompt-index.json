@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-07-15T03:35:56.640Z",
-  "source": "snapshot",
-  "matches": 8,
+  "updated_at": "2026-07-15T08:08:43.480Z",
+  "source": "snapshot+overrides",
+  "matches": 9,
   "prompts": [
     {
       "match_id": "09df59c6-1a7a-42d2-8c77-e9bcc3889dd5",
@@ -52,12 +52,12 @@
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Cape Verde vs KSA at FIFA World Cup 2026.\nPrepared outcome: Cape Verde and KSA draw.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
-      "match_id": "248af202-753b-4433-a646-853f36ae0e43",
-      "match_key": "FRA-ESP",
-      "match_date": "2026-07-14T19:00:00+00:00",
-      "outcome": "ESP",
-      "image": "story-assets/outcome-bases/fra-esp-esp-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: France vs Spain at FIFA World Cup 2026.\nPrepared outcome: Spain advances over France.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
+      "match_id": "c9ea9358-126d-4ae7-a17a-b520888002c8",
+      "match_key": "ENG-ARG",
+      "match_date": "2026-07-15T19:00:00+00:00",
+      "outcome": "ARG",
+      "image": "story-assets/outcome-bases/eng-arg-arg-wins-base.png",
+      "prompt": "Create a vertical 9:16 premium sports meme-card base image for FriendlyBet.\nMatch context: England vs Argentina at FIFA World Cup 2026, Argentina win outcome.\nThis is a pre-generated outcome base. The exact score and result title will be added later by deterministic rendering after the match.\nDo not draw any title, score, letters, numbers-as-text overlays, words, logos, or watermarks anywhere except the real jersey shirt numbers described below.\nLeave the top 0%-17% clean and slightly darker for a future white result title and score subtitle.\nStyle: high-end illustrated sports caricature poster, expressive cartoon realism, not photorealistic, not a real photo, not a deepfake.\nShow exactly two football stars, no other players anywhere.\nLeft/foreground: Lionel Messi, Argentina national-color kit, shirt number #10 printed naturally into the jersey fabric, arms wide after winning the semifinal, face clearly visible below the reserved top band.\nRight/midground: Harry Kane, England national-color kit, shirt number #9 printed naturally into the jersey fabric, stunned after elimination, face clearly visible below the reserved top band.\nCrowd: fans and flags of England and Argentina only; no unrelated flags.\nLeave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.\nLeave the lower edge visually calm for the deterministic FriendlyBet watermark added later.\nAvoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
     },
     {
       "match_id": "c9ea9358-126d-4ae7-a17a-b520888002c8",
@@ -65,15 +65,79 @@
       "match_date": "2026-07-15T19:00:00+00:00",
       "outcome": "ENG",
       "image": "story-assets/outcome-bases/eng-arg-eng-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: England vs Argentina at FIFA World Cup 2026.\nPrepared outcome: England advances over Argentina.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
+      "prompt": "Create a vertical 9:16 premium sports meme-card base image for FriendlyBet.\nMatch context: England vs Argentina at FIFA World Cup 2026, England win outcome.\nThis is a pre-generated outcome base. The exact score and result title will be added later by deterministic rendering after the match.\nDo not draw any title, score, letters, numbers-as-text overlays, words, logos, or watermarks anywhere except the real jersey shirt numbers described below.\nLeave the top 0%-17% clean and slightly darker for a future white result title and score subtitle.\nStyle: high-end illustrated sports caricature poster, expressive cartoon realism, not photorealistic, not a real photo, not a deepfake.\nShow exactly two football stars, no other players anywhere.\nLeft/foreground: Harry Kane, England national-color kit, shirt number #9 printed naturally into the jersey fabric, roaring in relief after sending England to the final, face clearly visible below the reserved top band.\nRight/midground: Lionel Messi, Argentina national-color kit, shirt number #10 printed naturally into the jersey fabric, stunned after elimination, face clearly visible below the reserved top band.\nCrowd: fans and flags of England and Argentina only; no unrelated flags.\nLeave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.\nLeave the lower edge visually calm for the deterministic FriendlyBet watermark added later.\nAvoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
     },
     {
-      "match_id": "c9ea9358-126d-4ae7-a17a-b520888002c8",
-      "match_key": "ENG-ARG",
-      "match_date": "2026-07-15T19:00:00+00:00",
+      "match_id": "84157ade-88e2-422c-bc27-842e6517c5c1",
+      "match_key": "FRA-ARG",
+      "match_date": "2026-07-18T21:00:00+00:00",
       "outcome": "ARG",
-      "image": "story-assets/outcome-bases/eng-arg-arg-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: England vs Argentina at FIFA World Cup 2026.\nPrepared outcome: Argentina advances over England.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
+      "image": "story-assets/outcome-bases/fra-arg-arg-wins-base.png",
+      "projected": true,
+      "prompt": "Create a vertical 9:16 premium sports meme-card base image for FriendlyBet.\nMatch context: France vs Argentina at FIFA World Cup 2026, Argentina third-place win outcome.\nThis is a pre-generated outcome base. The exact score and result title will be added later by deterministic rendering after the match.\nDo not draw any title, score, letters, numbers-as-text overlays, words, logos, or watermarks anywhere except the real jersey shirt numbers described below.\nLeave the top 0%-17% clean and slightly darker for a future white result title and score subtitle.\nStyle: high-end illustrated sports caricature poster, expressive cartoon realism, not photorealistic, not a real photo, not a deepfake.\nShow exactly two football stars, no other players anywhere.\nLeft/foreground: Lionel Messi, Argentina national-color kit, shirt number #10 printed naturally into the jersey fabric, celebrating a podium finish, face clearly visible below the reserved top band.\nRight/midground: Kylian Mbappe, France national-color kit, shirt number #10 printed naturally into the jersey fabric, disappointed after missing the podium, face clearly visible below the reserved top band.\nCrowd: fans and flags of France and Argentina only; no unrelated flags.\nLeave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.\nLeave the lower edge visually calm for the deterministic FriendlyBet watermark added later.\nAvoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+    },
+    {
+      "match_id": "84157ade-88e2-422c-bc27-842e6517c5c1",
+      "match_key": "FRA-ARG",
+      "match_date": "2026-07-18T21:00:00+00:00",
+      "outcome": "FRA",
+      "image": "story-assets/outcome-bases/fra-arg-fra-wins-base.png",
+      "projected": true,
+      "prompt": "Create a vertical 9:16 premium sports meme-card base image for FriendlyBet.\nMatch context: France vs Argentina at FIFA World Cup 2026, France third-place win outcome.\nThis is a pre-generated outcome base. The exact score and result title will be added later by deterministic rendering after the match.\nDo not draw any title, score, letters, numbers-as-text overlays, words, logos, or watermarks anywhere except the real jersey shirt numbers described below.\nLeave the top 0%-17% clean and slightly darker for a future white result title and score subtitle.\nStyle: high-end illustrated sports caricature poster, expressive cartoon realism, not photorealistic, not a real photo, not a deepfake.\nShow exactly two football stars, no other players anywhere.\nLeft/foreground: Kylian Mbappe, France national-color kit, shirt number #10 printed naturally into the jersey fabric, celebrating a podium finish, face clearly visible below the reserved top band.\nRight/midground: Lionel Messi, Argentina national-color kit, shirt number #10 printed naturally into the jersey fabric, disappointed after missing the podium, face clearly visible below the reserved top band.\nCrowd: fans and flags of France and Argentina only; no unrelated flags.\nLeave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.\nLeave the lower edge visually calm for the deterministic FriendlyBet watermark added later.\nAvoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+    },
+    {
+      "match_id": "84157ade-88e2-422c-bc27-842e6517c5c1",
+      "match_key": "FRA-ENG",
+      "match_date": "2026-07-18T21:00:00+00:00",
+      "outcome": "ENG",
+      "image": "story-assets/outcome-bases/fra-eng-eng-wins-base.png",
+      "projected": true,
+      "prompt": "Create a vertical 9:16 premium sports meme-card base image for FriendlyBet.\nMatch context: France vs England at FIFA World Cup 2026, England third-place win outcome.\nThis is a pre-generated outcome base. The exact score and result title will be added later by deterministic rendering after the match.\nDo not draw any title, score, letters, numbers-as-text overlays, words, logos, or watermarks anywhere except the real jersey shirt numbers described below.\nLeave the top 0%-17% clean and slightly darker for a future white result title and score subtitle.\nStyle: high-end illustrated sports caricature poster, expressive cartoon realism, not photorealistic, not a real photo, not a deepfake.\nShow exactly two football stars, no other players anywhere.\nLeft/foreground: Harry Kane, England national-color kit, shirt number #9 printed naturally into the jersey fabric, celebrating a podium finish, face clearly visible below the reserved top band.\nRight/midground: Kylian Mbappe, France national-color kit, shirt number #10 printed naturally into the jersey fabric, disappointed after missing the podium, face clearly visible below the reserved top band.\nCrowd: fans and flags of France and England only; no unrelated flags.\nLeave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.\nLeave the lower edge visually calm for the deterministic FriendlyBet watermark added later.\nAvoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+    },
+    {
+      "match_id": "84157ade-88e2-422c-bc27-842e6517c5c1",
+      "match_key": "FRA-ENG",
+      "match_date": "2026-07-18T21:00:00+00:00",
+      "outcome": "FRA",
+      "image": "story-assets/outcome-bases/fra-eng-fra-wins-base.png",
+      "projected": true,
+      "prompt": "Create a vertical 9:16 premium sports meme-card base image for FriendlyBet.\nMatch context: France vs England at FIFA World Cup 2026, France third-place win outcome.\nThis is a pre-generated outcome base. The exact score and result title will be added later by deterministic rendering after the match.\nDo not draw any title, score, letters, numbers-as-text overlays, words, logos, or watermarks anywhere except the real jersey shirt numbers described below.\nLeave the top 0%-17% clean and slightly darker for a future white result title and score subtitle.\nStyle: high-end illustrated sports caricature poster, expressive cartoon realism, not photorealistic, not a real photo, not a deepfake.\nShow exactly two football stars, no other players anywhere.\nLeft/foreground: Kylian Mbappe, France national-color kit, shirt number #10 printed naturally into the jersey fabric, celebrating a podium finish, face clearly visible below the reserved top band.\nRight/midground: Harry Kane, England national-color kit, shirt number #9 printed naturally into the jersey fabric, disappointed after missing the podium, face clearly visible below the reserved top band.\nCrowd: fans and flags of France and England only; no unrelated flags.\nLeave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.\nLeave the lower edge visually calm for the deterministic FriendlyBet watermark added later.\nAvoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+    },
+    {
+      "match_id": "ae6f51f1-0310-4872-802f-bc4bf8a62a72",
+      "match_key": "ESP-ARG",
+      "match_date": "2026-07-19T19:00:00+00:00",
+      "outcome": "ARG",
+      "image": "story-assets/outcome-bases/esp-arg-arg-wins-base.png",
+      "projected": true,
+      "prompt": "Create a vertical 9:16 premium sports meme-card base image for FriendlyBet.\nMatch context: Spain vs Argentina at FIFA World Cup 2026, Argentina champion win outcome.\nThis is a pre-generated outcome base. The exact score and result title will be added later by deterministic rendering after the match.\nDo not draw any title, score, letters, numbers-as-text overlays, words, logos, or watermarks anywhere except the real jersey shirt numbers described below.\nLeave the top 0%-17% clean and slightly darker for a future white result title and score subtitle.\nStyle: high-end illustrated sports caricature poster, expressive cartoon realism, not photorealistic, not a real photo, not a deepfake.\nShow exactly two football stars, no other players anywhere.\nLeft/foreground: Lionel Messi, Argentina national-color kit, shirt number #10 printed naturally into the jersey fabric, lifting a generic gold World Cup-style trophy with both hands, face clearly visible below the reserved top band.\nRight/midground: Lamine Yamal, Spain national-color kit, shirt number #19 printed naturally into the jersey fabric, devastated after losing the final, face clearly visible below the reserved top band.\nCrowd: fans and flags of Spain and Argentina only; no unrelated flags.\nLeave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.\nLeave the lower edge visually calm for the deterministic FriendlyBet watermark added later.\nAvoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+    },
+    {
+      "match_id": "ae6f51f1-0310-4872-802f-bc4bf8a62a72",
+      "match_key": "ESP-ARG",
+      "match_date": "2026-07-19T19:00:00+00:00",
+      "outcome": "ESP",
+      "image": "story-assets/outcome-bases/esp-arg-esp-wins-base.png",
+      "projected": true,
+      "prompt": "Create a vertical 9:16 premium sports meme-card base image for FriendlyBet.\nMatch context: Spain vs Argentina at FIFA World Cup 2026, Spain champion win outcome.\nThis is a pre-generated outcome base. The exact score and result title will be added later by deterministic rendering after the match.\nDo not draw any title, score, letters, numbers-as-text overlays, words, logos, or watermarks anywhere except the real jersey shirt numbers described below.\nLeave the top 0%-17% clean and slightly darker for a future white result title and score subtitle.\nStyle: high-end illustrated sports caricature poster, expressive cartoon realism, not photorealistic, not a real photo, not a deepfake.\nShow exactly two football stars, no other players anywhere.\nLeft/foreground: Lamine Yamal, Spain national-color kit, shirt number #19 printed naturally into the jersey fabric, lifting a generic gold World Cup-style trophy with both hands, face clearly visible below the reserved top band.\nRight/midground: Lionel Messi, Argentina national-color kit, shirt number #10 printed naturally into the jersey fabric, devastated after losing the final, face clearly visible below the reserved top band.\nCrowd: fans and flags of Spain and Argentina only; no unrelated flags.\nLeave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.\nLeave the lower edge visually calm for the deterministic FriendlyBet watermark added later.\nAvoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+    },
+    {
+      "match_id": "ae6f51f1-0310-4872-802f-bc4bf8a62a72",
+      "match_key": "ESP-ENG",
+      "match_date": "2026-07-19T19:00:00+00:00",
+      "outcome": "ENG",
+      "image": "story-assets/outcome-bases/esp-eng-eng-wins-base.png",
+      "projected": true,
+      "prompt": "Create a vertical 9:16 premium sports meme-card base image for FriendlyBet.\nMatch context: Spain vs England at FIFA World Cup 2026, England champion win outcome.\nThis is a pre-generated outcome base. The exact score and result title will be added later by deterministic rendering after the match.\nDo not draw any title, score, letters, numbers-as-text overlays, words, logos, or watermarks anywhere except the real jersey shirt numbers described below.\nLeave the top 0%-17% clean and slightly darker for a future white result title and score subtitle.\nStyle: high-end illustrated sports caricature poster, expressive cartoon realism, not photorealistic, not a real photo, not a deepfake.\nShow exactly two football stars, no other players anywhere.\nLeft/foreground: Harry Kane, England national-color kit, shirt number #9 printed naturally into the jersey fabric, lifting a generic gold World Cup-style trophy with both hands, face clearly visible below the reserved top band.\nRight/midground: Lamine Yamal, Spain national-color kit, shirt number #19 printed naturally into the jersey fabric, devastated after losing the final, face clearly visible below the reserved top band.\nCrowd: fans and flags of Spain and England only; no unrelated flags.\nLeave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.\nLeave the lower edge visually calm for the deterministic FriendlyBet watermark added later.\nAvoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+    },
+    {
+      "match_id": "ae6f51f1-0310-4872-802f-bc4bf8a62a72",
+      "match_key": "ESP-ENG",
+      "match_date": "2026-07-19T19:00:00+00:00",
+      "outcome": "ESP",
+      "image": "story-assets/outcome-bases/esp-eng-esp-wins-base.png",
+      "projected": true,
+      "prompt": "Create a vertical 9:16 premium sports meme-card base image for FriendlyBet.\nMatch context: Spain vs England at FIFA World Cup 2026, Spain champion win outcome.\nThis is a pre-generated outcome base. The exact score and result title will be added later by deterministic rendering after the match.\nDo not draw any title, score, letters, numbers-as-text overlays, words, logos, or watermarks anywhere except the real jersey shirt numbers described below.\nLeave the top 0%-17% clean and slightly darker for a future white result title and score subtitle.\nStyle: high-end illustrated sports caricature poster, expressive cartoon realism, not photorealistic, not a real photo, not a deepfake.\nShow exactly two football stars, no other players anywhere.\nLeft/foreground: Lamine Yamal, Spain national-color kit, shirt number #19 printed naturally into the jersey fabric, lifting a generic gold World Cup-style trophy with both hands, face clearly visible below the reserved top band.\nRight/midground: Harry Kane, England national-color kit, shirt number #9 printed naturally into the jersey fabric, devastated after losing the final, face clearly visible below the reserved top band.\nCrowd: fans and flags of Spain and England only; no unrelated flags.\nLeave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.\nLeave the lower edge visually calm for the deterministic FriendlyBet watermark added later.\nAvoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
     }
   ]
 }
