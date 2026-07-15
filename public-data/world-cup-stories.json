@@ -1,6 +1,91 @@
 {
-  "updated_at": "2026-07-15T05:48:46.482Z",
+  "updated_at": "2026-07-15T21:04:55.508Z",
   "items": [
+    {
+      "id": "eng-arg-2026-07-15",
+      "match_id": "c9ea9358-126d-4ae7-a17a-b520888002c8",
+      "image": "story-assets/argentina-wins-england.png",
+      "teams": [
+        "ENG",
+        "ARG"
+      ],
+      "outcome": "ARG",
+      "result": "ARG 2-1 ENG",
+      "top_label": "ARGENTINA QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "ARG",
+        "team_he": "ארגנטינה",
+        "team_en": "Argentina",
+        "match_id": "c9ea9358-126d-4ae7-a17a-b520888002c8",
+        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. ארגנטינה מנצחת 2-1 וממשיכה. בחירה טובה, ובחירת הנוקאאוט מקבלת ניקוד חשוב בטבלת ההימור ⚽",
+        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ארגנטינה מנצחת 2-1 וממשיכה. בחירות טובות, ובחירות הנוקאאוט מקבלות ניקוד חשוב בטבלת ההימור ⚽",
+        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ארגנטינה מנצחת 2-1 וממשיכה. בחירות טובות, ובחירות הנוקאאוט מקבלות ניקוד חשוב בטבלת ההימור ⚽",
+        "en_name": "{names} picked {team} to advance in the knockout bracket. Argentina win 2-1 and move on. That pick gets the first word, and that knockout call scores in the pool ⚽",
+        "en_names": "{names} picked {team} to advance in the knockout bracket. Argentina win 2-1 and move on. Those picks get the first word, and those knockout calls score in the pool ⚽",
+        "en_count": "{names} picked {team} to advance in the knockout bracket. Argentina win 2-1 and move on. Those picks get the first word, and those knockout calls score in the pool ⚽"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "ARG",
+          "team_he": "ארגנטינה",
+          "team_en": "Argentina",
+          "match_id": "c9ea9358-126d-4ae7-a17a-b520888002c8",
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. ארגנטינה מנצחת 2-1 וממשיכה. בחירה טובה, ובחירת הנוקאאוט מקבלת ניקוד חשוב בטבלת ההימור ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ארגנטינה מנצחת 2-1 וממשיכה. בחירות טובות, ובחירות הנוקאאוט מקבלות ניקוד חשוב בטבלת ההימור ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ארגנטינה מנצחת 2-1 וממשיכה. בחירות טובות, ובחירות הנוקאאוט מקבלות ניקוד חשוב בטבלת ההימור ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. Argentina win 2-1 and move on. That pick gets the first word, and that knockout call scores in the pool ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. Argentina win 2-1 and move on. Those picks get the first word, and those knockout calls score in the pool ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. Argentina win 2-1 and move on. Those picks get the first word, and those knockout calls score in the pool ⚽"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ARG",
+          "team_he": "ארגנטינה",
+          "team_en": "Argentina",
+          "he_name": "{names} בחר את {team} כזוכת המונדיאל. 2-1 לארגנטינה. שלב הבא, והחלום על הגביע נראה הרבה יותר רציני בטבלת ההימור ⚽",
+          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. 2-1 לארגנטינה. שלב הבא, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור ⚽",
+          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. 2-1 לארגנטינה. שלב הבא, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. 2-1 for Argentina. Next round, and that World Cup pick looks serious on the leaderboard ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. 2-1 for Argentina. Next round, and those World Cup picks look serious on the leaderboard ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. 2-1 for Argentina. Next round, and those World Cup picks look serious on the leaderboard ⚽"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "ENG",
+          "team_he": "אנגליה",
+          "team_en": "England",
+          "match_id": "c9ea9358-126d-4ae7-a17a-b520888002c8",
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. ארגנטינה מנצחת 2-1; אנגליה נעצרת כאן. בחירה גרועה, ובחירת הנוקאאוט מאבדת גובה בטבלת ההימור ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ארגנטינה מנצחת 2-1; אנגליה נעצרת כאן. בחירות גרועות, ובחירות הנוקאאוט מאבדות גובה בטבלת ההימור ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ארגנטינה מנצחת 2-1; אנגליה נעצרת כאן. בחירות גרועות, ובחירות הנוקאאוט מאבדות גובה בטבלת ההימור ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. Argentina win 2-1; England stop here. That pick just lost the argument, and that knockout call loses ground in the pool ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. Argentina win 2-1; England stop here. Those picks just lost the argument, and those knockout calls lose ground in the pool ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. Argentina win 2-1; England stop here. Those picks just lost the argument, and those knockout calls lose ground in the pool ⚽"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ENG",
+          "team_he": "אנגליה",
+          "team_en": "England",
+          "he_name": "{names} בחר את {team} כזוכת המונדיאל. אנגליה לא עוברת. הבחירה על הגביע נראית הרבה פחות בטוחה בטבלת ההימור ⚽",
+          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. אנגליה לא עוברת. הבחירות על הגביע נראות הרבה פחות בטוחות בטבלת ההימור ⚽",
+          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. אנגליה לא עוברת. הבחירות על הגביע נראות הרבה פחות בטוחות בטבלת ההימור ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. England do not go through. That trophy pick looks much weaker in the pool ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. England do not go through. Those trophy picks look much weaker in the pool ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. England do not go through. Those trophy picks look much weaker in the pool ⚽"
+        }
+      ],
+      "he": {
+        "headline": "ארגנטינה ניצחה את אנגליה 2-1: ממשיכה הלאה ⚽",
+        "caption": "ארגנטינה מנצחת את אנגליה 2-1 וממשיכה. בחירות נכונות מקבלות ניקוד, טעויות מרגישות את זה ⚽"
+      },
+      "en": {
+        "headline": "Argentina beat England 2-1: moving on ⚽",
+        "caption": "Argentina beat England 2-1 and move on. Right picks have proof; missed picks have a problem ⚽"
+      }
+    },
     {
       "id": "fra-esp-2026-07-14",
       "match_id": "248af202-753b-4433-a646-853f36ae0e43",
@@ -18,12 +103,12 @@
         "team_he": "ספרד",
         "team_en": "Spain",
         "match_id": "248af202-753b-4433-a646-853f36ae0e43",
-        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. 2-0 על צרפת, וספרד בגמר. הטופס הזה עומד עכשיו מתחת לפרוז׳קטור ⚽",
-        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-0 על צרפת, וספרד בגמר. הטפסים האלה עומדים עכשיו מתחת לפרוז׳קטור ⚽",
-        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-0 על צרפת, וספרד בגמר. הטפסים האלה עומדים עכשיו מתחת לפרוז׳קטור ⚽",
-        "en_name": "{names} picked {team} to advance in the knockout bracket. 2-0 over France sends Spain to the final, and that bracket line is in the spotlight ⚽",
-        "en_names": "{names} picked {team} to advance in the knockout bracket. 2-0 over France sends Spain to the final, and those bracket lines are in the spotlight ⚽",
-        "en_count": "{names} picked {team} to advance in the knockout bracket. 2-0 over France sends Spain to the final, and those bracket lines are in the spotlight ⚽"
+        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. 2-0 לספרד. שלב הבא, והבראקט שלו מקבל נקודות חשובות בטבלת ההימור ⚽",
+        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-0 לספרד. שלב הבא, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור ⚽",
+        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-0 לספרד. שלב הבא, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור ⚽",
+        "en_name": "{names} picked {team} to advance in the knockout bracket. 2-0 for Spain. Next round, and that bracket pick lands important pool points ⚽",
+        "en_names": "{names} picked {team} to advance in the knockout bracket. 2-0 for Spain. Next round, and those bracket picks land important pool points ⚽",
+        "en_count": "{names} picked {team} to advance in the knockout bracket. 2-0 for Spain. Next round, and those bracket picks land important pool points ⚽"
       },
       "pool_focuses": [
         {
@@ -32,24 +117,24 @@
           "team_he": "ספרד",
           "team_en": "Spain",
           "match_id": "248af202-753b-4433-a646-853f36ae0e43",
-          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. 2-0 על צרפת, וספרד בגמר. הטופס הזה עומד עכשיו מתחת לפרוז׳קטור ⚽",
-          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-0 על צרפת, וספרד בגמר. הטפסים האלה עומדים עכשיו מתחת לפרוז׳קטור ⚽",
-          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-0 על צרפת, וספרד בגמר. הטפסים האלה עומדים עכשיו מתחת לפרוז׳קטור ⚽",
-          "en_name": "{names} picked {team} to advance in the knockout bracket. 2-0 over France sends Spain to the final, and that bracket line is in the spotlight ⚽",
-          "en_names": "{names} picked {team} to advance in the knockout bracket. 2-0 over France sends Spain to the final, and those bracket lines are in the spotlight ⚽",
-          "en_count": "{names} picked {team} to advance in the knockout bracket. 2-0 over France sends Spain to the final, and those bracket lines are in the spotlight ⚽"
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. 2-0 לספרד. שלב הבא, והבראקט שלו מקבל נקודות חשובות בטבלת ההימור ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-0 לספרד. שלב הבא, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-0 לספרד. שלב הבא, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. 2-0 for Spain. Next round, and that bracket pick lands important pool points ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. 2-0 for Spain. Next round, and those bracket picks land important pool points ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. 2-0 for Spain. Next round, and those bracket picks land important pool points ⚽"
         },
         {
           "table": "tournament_winner_picks",
           "team_code": "ESP",
           "team_he": "ספרד",
           "team_en": "Spain",
-          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 2-0 על צרפת, החלום הזה רחוק משחק אחד מהגביע ⚽",
-          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-0 על צרפת, החלומות האלה רחוקים משחק אחד מהגביע ⚽",
-          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-0 על צרפת, החלומות האלה רחוקים משחק אחד מהגביע ⚽",
-          "en_name": "{names} picked {team} to win the World Cup. After 2-0 over France, that trophy call is one match from the cup ⚽",
-          "en_names": "{names} picked {team} to win the World Cup. After 2-0 over France, those trophy calls are one match from the cup ⚽",
-          "en_count": "{names} picked {team} to win the World Cup. After 2-0 over France, those trophy calls are one match from the cup ⚽"
+          "he_name": "{names} בחר את {team} כזוכת המונדיאל. ספרד מנצחת 2-0 וממשיכה. בחירה טובה, והבחירה הזאת כבר עושה רעש נכון בטבלת ההימור ⚽",
+          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. ספרד מנצחת 2-0 וממשיכה. בחירות טובות, והבחירות האלה כבר עושות רעש נכון בטבלת ההימור ⚽",
+          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. ספרד מנצחת 2-0 וממשיכה. בחירות טובות, והבחירות האלה כבר עושות רעש נכון בטבלת ההימור ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. Spain win 2-0 and move on. That pick gets the first word, and that pick suddenly has witnesses in the pool ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. Spain win 2-0 and move on. Those picks get the first word, and those picks suddenly have witnesses in the pool ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. Spain win 2-0 and move on. Those picks get the first word, and those picks suddenly have witnesses in the pool ⚽"
         },
         {
           "table": "knockout_picks",
@@ -57,33 +142,33 @@
           "team_he": "צרפת",
           "team_en": "France",
           "match_id": "248af202-753b-4433-a646-853f36ae0e43",
-          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. ספרד סגרה 2-0 בחצי הגמר, והטופס נעצר צעד לפני הגמר 😬",
-          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ספרד סגרה 2-0 בחצי הגמר, והטפסים נעצרו צעד לפני הגמר 😬",
-          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ספרד סגרה 2-0 בחצי הגמר, והטפסים נעצרו צעד לפני הגמר 😬",
-          "en_name": "{names} picked {team} to advance in the knockout bracket. Spain closed it 2-0 in the semifinal, one step before the final 😬",
-          "en_names": "{names} picked {team} to advance in the knockout bracket. Spain closed it 2-0 in the semifinal, one step before the final 😬",
-          "en_count": "{names} picked {team} to advance in the knockout bracket. Spain closed it 2-0 in the semifinal, one step before the final 😬"
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. ספרד מנצחת 2-0; צרפת נעצרת כאן. בחירה גרועה, ובחירת הנוקאאוט מאבדת גובה בטבלת ההימור. הבחירה קיבלה תוצאה ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ספרד מנצחת 2-0; צרפת נעצרת כאן. בחירות גרועות, ובחירות הנוקאאוט מאבדות גובה בטבלת ההימור. הבחירה קיבלה תוצאה ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ספרד מנצחת 2-0; צרפת נעצרת כאן. בחירות גרועות, ובחירות הנוקאאוט מאבדות גובה בטבלת ההימור. הבחירה קיבלה תוצאה ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. Spain win 2-0; France stop here. That pick just lost the argument, and that knockout call loses ground in the pool. That is no longer a quiet bracket choice ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. Spain win 2-0; France stop here. Those picks just lost the argument, and those knockout calls lose ground in the pool. That is no longer a quiet bracket choice ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. Spain win 2-0; France stop here. Those picks just lost the argument, and those knockout calls lose ground in the pool. That is no longer a quiet bracket choice ⚽"
         },
         {
           "table": "tournament_winner_picks",
           "team_code": "FRA",
           "team_he": "צרפת",
           "team_en": "France",
-          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 2-0 מול ספרד, החלום נגמר צעד לפני הגמר 😬",
-          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-0 מול ספרד, החלומות נגמרו צעד לפני הגמר 😬",
-          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-0 מול ספרד, החלומות נגמרו צעד לפני הגמר 😬",
-          "en_name": "{names} picked {team} to win the World Cup. After 2-0 against Spain, that trophy call ends one step before the final 😬",
-          "en_names": "{names} picked {team} to win the World Cup. After 2-0 against Spain, those trophy calls end one step before the final 😬",
-          "en_count": "{names} picked {team} to win the World Cup. After 2-0 against Spain, those trophy calls end one step before the final 😬"
+          "he_name": "{names} בחר את {team} כזוכת המונדיאל. צרפת לא עוברת. הבחירה על הגביע נראית הרבה פחות בטוחה בטבלת ההימור. הבחירה קיבלה תוצאה ⚽",
+          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. צרפת לא עוברת. הבחירות על הגביע נראות הרבה פחות בטוחות בטבלת ההימור. הבחירה קיבלה תוצאה ⚽",
+          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. צרפת לא עוברת. הבחירות על הגביע נראות הרבה פחות בטוחות בטבלת ההימור. הבחירה קיבלה תוצאה ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. France do not go through. That trophy pick looks much weaker in the pool. That is no longer a quiet bracket choice ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. France do not go through. Those trophy picks look much weaker in the pool. That is no longer a quiet bracket choice ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. France do not go through. Those trophy picks look much weaker in the pool. That is no longer a quiet bracket choice ⚽"
         }
       ],
       "he": {
-        "headline": "ספרד ניצחה את צרפת 2-0: בגמר המונדיאל ⚽",
-        "caption": "ספרד עצרה את צרפת 2-0 ועלתה לגמר. ימאל חגג, אמבפה נעצר, והבראקט קיבל חצי גמר עם חתימה ספרדית ⚽"
+        "headline": "ספרד ניצחה את צרפת 2-0: לשלב הבא ⚽",
+        "caption": "2-0 לספרד. שלב הבא בשבילה, סוף הדרך לצרפת, וטבלת ההימור משתנה ⚽"
       },
       "en": {
-        "headline": "Spain beat France 2-0: into the World Cup final ⚽",
-        "caption": "Spain shut France down 2-0 and reached the final. Yamal smiled, Mbappe stopped here, and the chat has a Spanish signature ⚽"
+        "headline": "Spain beat France 2-0: through ⚽",
+        "caption": "2-0 for Spain. Next round for them, end of the road for France, and the chat has proof points ⚽"
       }
     },
     {
@@ -129,12 +214,12 @@
           "team_code": "ARG",
           "team_he": "ארגנטינה",
           "team_en": "Argentina",
-          "he_name": "{names} בחר את {team} כזוכת המונדיאל. ארגנטינה מנצחת 3-1 וממשיכה. בחירה טובה, והבחירה הזאת כבר עושה רעש נכון בטבלת ההימור 🔥",
-          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. ארגנטינה מנצחת 3-1 וממשיכה. בחירות טובות, והבחירות האלה כבר עושות רעש נכון בטבלת ההימור 🔥",
-          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. ארגנטינה מנצחת 3-1 וממשיכה. בחירות טובות, והבחירות האלה כבר עושות רעש נכון בטבלת ההימור 🔥",
-          "en_name": "{names} picked {team} to win the World Cup. Argentina win 3-1 and move on. That pick gets the first word, and that pick suddenly has witnesses in the pool 🔥",
-          "en_names": "{names} picked {team} to win the World Cup. Argentina win 3-1 and move on. Those picks get the first word, and those picks suddenly have witnesses in the pool 🔥",
-          "en_count": "{names} picked {team} to win the World Cup. Argentina win 3-1 and move on. Those picks get the first word, and those picks suddenly have witnesses in the pool 🔥"
+          "he_name": "{names} בחר את {team} כזוכת המונדיאל. ארגנטינה מנצחת 3-1 וממשיכה. בחירה טובה, והבחירה הזאת כבר עושה רעש נכון בטבלת ההימור. הטבלה זזה עכשיו 🔥",
+          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. ארגנטינה מנצחת 3-1 וממשיכה. בחירות טובות, והבחירות האלה כבר עושות רעש נכון בטבלת ההימור. הטבלה זזה עכשיו 🔥",
+          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. ארגנטינה מנצחת 3-1 וממשיכה. בחירות טובות, והבחירות האלה כבר עושות רעש נכון בטבלת ההימור. הטבלה זזה עכשיו 🔥",
+          "en_name": "{names} picked {team} to win the World Cup. Argentina win 3-1 and move on. That pick gets the first word, and that pick suddenly has witnesses in the pool. This match goes into the count 🔥",
+          "en_names": "{names} picked {team} to win the World Cup. Argentina win 3-1 and move on. Those picks get the first word, and those picks suddenly have witnesses in the pool. This match goes into the count 🔥",
+          "en_count": "{names} picked {team} to win the World Cup. Argentina win 3-1 and move on. Those picks get the first word, and those picks suddenly have witnesses in the pool. This match goes into the count 🔥"
         },
         {
           "table": "knockout_picks",
@@ -163,12 +248,12 @@
         }
       ],
       "he": {
-        "headline": "ארגנטינה ניצחה את שווייץ 3-1: לשלב הבא 🔥",
-        "caption": "3-1 לארגנטינה. שלב הבא בשבילה, סוף הדרך לשווייץ, וטבלת ההימור משתנה 🔥"
+        "headline": "ארגנטינה ניצחה את שווייץ 3-1: לשלב הבא - המרדף בהימור השתנה 🔥",
+        "caption": "3-1 לארגנטינה. שלב הבא בשבילה, סוף הדרך לשווייץ, וטבלת ההימור משתנה. טעות בבחירה כבר מורגשת 🔥"
       },
       "en": {
-        "headline": "Argentina beat Switzerland 3-1: through 🔥",
-        "caption": "3-1 for Argentina. Next round for them, end of the road for Switzerland, and the chat has proof points 🔥"
+        "headline": "Argentina beat Switzerland 3-1: through - one side of the chat got louder 🔥",
+        "caption": "3-1 for Argentina. Next round for them, end of the road for Switzerland, and the chat has proof points. Some picks just became proof, and some became evidence 🔥"
       }
     },
     {
@@ -227,12 +312,12 @@
           "team_he": "נורווגיה",
           "team_en": "Norway",
           "match_id": "b45ec5ad-9b65-43b3-9dbe-92c054a90e9b",
-          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. אנגליה מנצחת 2-1; נורווגיה נעצרת כאן. בחירה גרועה, ובחירת הנוקאאוט מאבדת גובה בטבלת ההימור ⚽",
-          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אנגליה מנצחת 2-1; נורווגיה נעצרת כאן. בחירות גרועות, ובחירות הנוקאאוט מאבדות גובה בטבלת ההימור ⚽",
-          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אנגליה מנצחת 2-1; נורווגיה נעצרת כאן. בחירות גרועות, ובחירות הנוקאאוט מאבדות גובה בטבלת ההימור ⚽",
-          "en_name": "{names} picked {team} to advance in the knockout bracket. England win 2-1; Norway stop here. That pick just lost the argument, and that knockout call loses ground in the pool ⚽",
-          "en_names": "{names} picked {team} to advance in the knockout bracket. England win 2-1; Norway stop here. Those picks just lost the argument, and those knockout calls lose ground in the pool ⚽",
-          "en_count": "{names} picked {team} to advance in the knockout bracket. England win 2-1; Norway stop here. Those picks just lost the argument, and those knockout calls lose ground in the pool ⚽"
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. אנגליה מנצחת 2-1; נורווגיה נעצרת כאן. בחירה גרועה, ובחירת הנוקאאוט מאבדת גובה בטבלת ההימור. ההימור קיבל כיוון ברור ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אנגליה מנצחת 2-1; נורווגיה נעצרת כאן. בחירות גרועות, ובחירות הנוקאאוט מאבדות גובה בטבלת ההימור. ההימור קיבל כיוון ברור ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. אנגליה מנצחת 2-1; נורווגיה נעצרת כאן. בחירות גרועות, ובחירות הנוקאאוט מאבדות גובה בטבלת ההימור. ההימור קיבל כיוון ברור ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. England win 2-1; Norway stop here. That pick just lost the argument, and that knockout call loses ground in the pool. That pick aged in public ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. England win 2-1; Norway stop here. Those picks just lost the argument, and those knockout calls lose ground in the pool. That pick aged in public ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. England win 2-1; Norway stop here. Those picks just lost the argument, and those knockout calls lose ground in the pool. That pick aged in public ⚽"
         },
         {
           "table": "tournament_winner_picks",
@@ -299,12 +384,12 @@
           "team_code": "ESP",
           "team_he": "ספרד",
           "team_en": "Spain",
-          "he_name": "{names} בחר את {team} כזוכת המונדיאל. 2-1 לספרד. שלב הבא, והחלום על הגביע נראה הרבה יותר רציני בטבלת ההימור ⚽",
-          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. 2-1 לספרד. שלב הבא, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור ⚽",
-          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. 2-1 לספרד. שלב הבא, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור ⚽",
-          "en_name": "{names} picked {team} to win the World Cup. 2-1 for Spain. Next round, and that World Cup pick looks serious on the leaderboard ⚽",
-          "en_names": "{names} picked {team} to win the World Cup. 2-1 for Spain. Next round, and those World Cup picks look serious on the leaderboard ⚽",
-          "en_count": "{names} picked {team} to win the World Cup. 2-1 for Spain. Next round, and those World Cup picks look serious on the leaderboard ⚽"
+          "he_name": "{names} בחר את {team} כזוכת המונדיאל. 2-1 לספרד. שלב הבא, והחלום על הגביע נראה הרבה יותר רציני בטבלת ההימור. המשחק הזה נכנס לחשבון ⚽",
+          "he_names": "{names} בחרו את {team} כזוכת המונדיאל. 2-1 לספרד. שלב הבא, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור. המשחק הזה נכנס לחשבון ⚽",
+          "he_count": "{names} בחרו את {team} כזוכת המונדיאל. 2-1 לספרד. שלב הבא, והחלומות על הגביע נראים הרבה יותר רציניים בטבלת ההימור. המשחק הזה נכנס לחשבון ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. 2-1 for Spain. Next round, and that World Cup pick looks serious on the leaderboard. The chat has material now ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. 2-1 for Spain. Next round, and those World Cup picks look serious on the leaderboard. The chat has material now ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. 2-1 for Spain. Next round, and those World Cup picks look serious on the leaderboard. The chat has material now ⚽"
         },
         {
           "table": "knockout_picks",
@@ -333,12 +418,12 @@
         }
       ],
       "he": {
-        "headline": "ספרד ניצחה את בלגיה 2-1: ממשיכה הלאה ⚽",
-        "caption": "ספרד מנצחת את בלגיה 2-1 וממשיכה. בחירות נכונות מקבלות ניקוד, טעויות מרגישות את זה ⚽"
+        "headline": "ספרד ניצחה את בלגיה 2-1: ממשיכה הלאה - הבחירות קיבלו תשובה ⚽",
+        "caption": "ספרד מנצחת את בלגיה 2-1 וממשיכה. בחירות נכונות מקבלות ניקוד, טעויות מרגישות את זה. ההימור מרגיש את התוצאה הזאת ⚽"
       },
       "en": {
-        "headline": "Spain beat Belgium 2-1: moving on ⚽",
-        "caption": "Spain beat Belgium 2-1 and move on. Right picks have proof; missed picks have a problem ⚽"
+        "headline": "Spain beat Belgium 2-1: moving on - a few picks aged beautifully ⚽",
+        "caption": "Spain beat Belgium 2-1 and move on. Right picks have proof; missed picks have a problem. Someone gets to speak first tonight ⚽"
       }
     },
     {
@@ -822,12 +907,12 @@
           "team_he": "מקסיקו",
           "team_en": "Mexico",
           "match_id": "2bbe0177-81d6-4268-9434-6790cec04007",
-          "he_name": "מקסיקו הייתה קרובה, אבל 3-2 לא מספיק. הבראקט הזה צריך תשובה טובה בצ'אט. {names} בחר את {team} להתקדם בבראקט הנוקאאוט. התוצאה נכנסה ישר לטבלה 🔥",
-          "he_names": "מקסיקו הייתה קרובה, אבל 3-2 לא מספיק. הבראקטים האלה צריכים תשובה טובה בצ'אט. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט. התוצאה נכנסה ישר לטבלה 🔥",
-          "he_count": "מקסיקו הייתה קרובה, אבל 3-2 לא מספיק. הבראקטים האלה צריכים תשובה טובה בצ'אט. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט. התוצאה נכנסה ישר לטבלה 🔥",
-          "en_name": "Mexico came close, but 3-2 is not enough. That bracket needs a better answer in the chat. {names} picked {team} to advance in the knockout bracket. This match goes into the count 🔥",
-          "en_names": "Mexico came close, but 3-2 is not enough. Those brackets need better answers in the chat. {names} picked {team} to advance in the knockout bracket. This match goes into the count 🔥",
-          "en_count": "Mexico came close, but 3-2 is not enough. Those brackets need better answers in the chat. {names} picked {team} to advance in the knockout bracket. This match goes into the count 🔥"
+          "he_name": "מקסיקו הייתה קרובה, אבל 3-2 לא מספיק. הבראקט הזה צריך תשובה טובה בצ'אט. {names} בחר את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "he_names": "מקסיקו הייתה קרובה, אבל 3-2 לא מספיק. הבראקטים האלה צריכים תשובה טובה בצ'אט. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "he_count": "מקסיקו הייתה קרובה, אבל 3-2 לא מספיק. הבראקטים האלה צריכים תשובה טובה בצ'אט. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "en_name": "Mexico came close, but 3-2 is not enough. That bracket needs a better answer in the chat. {names} picked {team} to advance in the knockout bracket 🔥",
+          "en_names": "Mexico came close, but 3-2 is not enough. Those brackets need better answers in the chat. {names} picked {team} to advance in the knockout bracket 🔥",
+          "en_count": "Mexico came close, but 3-2 is not enough. Those brackets need better answers in the chat. {names} picked {team} to advance in the knockout bracket 🔥"
         },
         {
           "table": "tournament_winner_picks",
@@ -843,11 +928,11 @@
         }
       ],
       "he": {
-        "headline": "אנגליה ניצחה את מקסיקו 3-2: קבלות בבראקט - הבחירות קיבלו תשובה 🔥",
+        "headline": "אנגליה ניצחה את מקסיקו 3-2: קבלות בבראקט 🔥",
         "caption": "3-2 עד הסוף, ואז אנגליה נשארת בחיים. בחירות עליה עולות, בחירות על מקסיקו נופלות 🔥"
       },
       "en": {
-        "headline": "England beat Mexico 3-2: bracket proof points are out - a few picks aged beautifully 🔥",
+        "headline": "England beat Mexico 3-2: bracket receipts are out 🔥",
         "caption": "3-2 to the end, then England stay alive. Picks on them rise; Mexico picks fall 🔥"
       }
     },
@@ -871,9 +956,9 @@
         "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. נורווגיה מעיפה את ברזיל. זו בחירה ענקית, וזו קבלה יפה מאוד לבראקט ⚽",
         "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. נורווגיה מעיפה את ברזיל. אלו בחירות ענקיות, ואלו קבלות יפות מאוד לבראקט ⚽",
         "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. נורווגיה מעיפה את ברזיל. אלו בחירות ענקיות, ואלו קבלות יפות מאוד לבראקט ⚽",
-        "en_name": "{names} picked {team} to advance in the knockout bracket. Norway knock out Brazil. That pick just got loud, and that bracket call gets a clean proof point ⚽",
-        "en_names": "{names} picked {team} to advance in the knockout bracket. Norway knock out Brazil. Those picks just got loud, and those bracket calls get clean proof points ⚽",
-        "en_count": "{names} picked {team} to advance in the knockout bracket. Norway knock out Brazil. Those picks just got loud, and those bracket calls get clean proof points ⚽"
+        "en_name": "{names} picked {team} to advance in the knockout bracket. Norway knock out Brazil. That pick just got loud, and that bracket call gets a clean receipt ⚽",
+        "en_names": "{names} picked {team} to advance in the knockout bracket. Norway knock out Brazil. Those picks just got loud, and those bracket calls get clean receipts ⚽",
+        "en_count": "{names} picked {team} to advance in the knockout bracket. Norway knock out Brazil. Those picks just got loud, and those bracket calls get clean receipts ⚽"
       },
       "pool_focuses": [
         {
@@ -885,9 +970,9 @@
           "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. נורווגיה מעיפה את ברזיל. זו בחירה ענקית, וזו קבלה יפה מאוד לבראקט ⚽",
           "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. נורווגיה מעיפה את ברזיל. אלו בחירות ענקיות, ואלו קבלות יפות מאוד לבראקט ⚽",
           "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. נורווגיה מעיפה את ברזיל. אלו בחירות ענקיות, ואלו קבלות יפות מאוד לבראקט ⚽",
-          "en_name": "{names} picked {team} to advance in the knockout bracket. Norway knock out Brazil. That pick just got loud, and that bracket call gets a clean proof point ⚽",
-          "en_names": "{names} picked {team} to advance in the knockout bracket. Norway knock out Brazil. Those picks just got loud, and those bracket calls get clean proof points ⚽",
-          "en_count": "{names} picked {team} to advance in the knockout bracket. Norway knock out Brazil. Those picks just got loud, and those bracket calls get clean proof points ⚽"
+          "en_name": "{names} picked {team} to advance in the knockout bracket. Norway knock out Brazil. That pick just got loud, and that bracket call gets a clean receipt ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. Norway knock out Brazil. Those picks just got loud, and those bracket calls get clean receipts ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. Norway knock out Brazil. Those picks just got loud, and those bracket calls get clean receipts ⚽"
         },
         {
           "table": "tournament_winner_picks",
