@@ -110,16 +110,41 @@ function localized(list, fallback = null) {
   return (en && en.Description) || (list[0] && list[0].Description) || fallback;
 }
 
-function stageCode(label) {
+function stageCode(label, matchNumber = null) {
+  const number = Number(matchNumber);
+  // FIFA's official WC2026 numbering is an additional invariant for the two
+  // placement fixtures. Keep it ahead of provider wording so a label change
+  // cannot silently turn the bronze final into the tournament final again.
+  if (number === 103) return 'THIRD_PLACE';
+  if (number === 104) return 'FINAL';
+
   const value = String(label || '').toLowerCase();
   if (value.includes('first stage')) return 'GROUP_STAGE';
   if (value.includes('round of 32')) return 'ROUND_OF_32';
   if (value.includes('round of 16')) return 'ROUND_OF_16';
   if (value.includes('quarter')) return 'QUARTER_FINALS';
   if (value.includes('semi')) return 'SEMI_FINALS';
-  if (value.includes('third')) return 'THIRD_PLACE';
+  if (value.includes('third') || value.includes('bronze')) return 'THIRD_PLACE';
   if (value.includes('final')) return 'FINAL';
   return 'UNKNOWN';
+}
+
+function validatePlacementStages(rows) {
+  const byNumber = new Map(rows.map(row => [Number(row.match_number), row]));
+  const thirdPlace = byNumber.get(103);
+  const final = byNumber.get(104);
+  if (!thirdPlace || thirdPlace.stage !== 'THIRD_PLACE') {
+    throw new Error('FIFA match 103 must be classified as THIRD_PLACE');
+  }
+  if (!final || final.stage !== 'FINAL') {
+    throw new Error('FIFA match 104 must be classified as FINAL');
+  }
+
+  const thirdPlaceRows = rows.filter(row => row.stage === 'THIRD_PLACE');
+  const finalRows = rows.filter(row => row.stage === 'FINAL');
+  if (thirdPlaceRows.length !== 1 || finalRows.length !== 1) {
+    throw new Error(`Expected one third-place match and one final, got ${thirdPlaceRows.length} and ${finalRows.length}`);
+  }
 }
 
 function groupLetter(groupName) {
@@ -157,7 +182,7 @@ function transform(raw) {
     source_url: FIFA_PAGE_URL,
     fifa_match_id: raw.IdMatch || null,
     match_number: raw.MatchNumber == null ? null : Number(raw.MatchNumber),
-    stage: stageCode(stageName),
+    stage: stageCode(stageName, raw.MatchNumber),
     stage_name: stageName,
     group_letter: groupLetter(groupName),
     group_name: groupName || null,
@@ -215,6 +240,7 @@ async function main() {
     return at - bt || (a.match_number || 0) - (b.match_number || 0);
   });
   if (rows.length !== 104) throw new Error(`Expected 104 FIFA World Cup matches, got ${rows.length}`);
+  validatePlacementStages(rows);
 
   const stableOut = {
     source: FIFA_SCHEDULE_URL,
@@ -239,7 +265,11 @@ async function main() {
   console.log(`Wrote ${rows.length} FIFA schedule rows to ${path.relative(ROOT, OUT_PATH)}`);
 }
 
-main().catch(err => {
-  console.error(err);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch(err => {
+    console.error(err);
+    process.exit(1);
+  });
+}
+
+module.exports = { stageCode, transform, validatePlacementStages };
