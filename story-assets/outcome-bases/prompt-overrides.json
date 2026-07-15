@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-15T08:08:30.378Z",
-  "source": "manual-future-story-scenarios",
+  "updated_at": "2026-07-15T09:34:47.022Z",
+  "source": "manual-reference-preserved-future-story-scenarios",
   "prompts": [
     {
       "match_id": "c9ea9358-126d-4ae7-a17a-b520888002c8",
@@ -22,6 +22,24 @@
         "Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.",
         "Leave the lower edge visually calm for the deterministic FriendlyBet watermark added later.",
         "Avoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+      ],
+      "reference_assets": [
+        "story-assets/england-wins-norway.png",
+        "story-assets/argentina-wins-switzerland.png"
+      ],
+      "verified_players": [
+        {
+          "team_code": "ENG",
+          "player": "Harry Kane",
+          "number": 9,
+          "source": "SquadLists-English.pdf row #9"
+        },
+        {
+          "team_code": "ARG",
+          "player": "Lionel Messi",
+          "number": 10,
+          "source": "SquadLists-English.pdf row #10"
+        }
       ]
     },
     {
@@ -44,6 +62,24 @@
         "Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.",
         "Leave the lower edge visually calm for the deterministic FriendlyBet watermark added later.",
         "Avoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+      ],
+      "reference_assets": [
+        "story-assets/england-wins-norway.png",
+        "story-assets/argentina-wins-switzerland.png"
+      ],
+      "verified_players": [
+        {
+          "team_code": "ENG",
+          "player": "Harry Kane",
+          "number": 9,
+          "source": "SquadLists-English.pdf row #9"
+        },
+        {
+          "team_code": "ARG",
+          "player": "Lionel Messi",
+          "number": 10,
+          "source": "SquadLists-English.pdf row #10"
+        }
       ]
     },
     {
@@ -67,6 +103,24 @@
         "Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.",
         "Leave the lower edge visually calm for the deterministic FriendlyBet watermark added later.",
         "Avoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+      ],
+      "reference_assets": [
+        "story-assets/france-wins-morocco.png",
+        "story-assets/argentina-wins-switzerland.png"
+      ],
+      "verified_players": [
+        {
+          "team_code": "FRA",
+          "player": "Kylian Mbappe",
+          "number": 10,
+          "source": "SquadLists-English.pdf row #10"
+        },
+        {
+          "team_code": "ARG",
+          "player": "Lionel Messi",
+          "number": 10,
+          "source": "SquadLists-English.pdf row #10"
+        }
       ]
     },
     {
@@ -90,6 +144,24 @@
         "Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.",
         "Leave the lower edge visually calm for the deterministic FriendlyBet watermark added later.",
         "Avoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+      ],
+      "reference_assets": [
+        "story-assets/france-wins-morocco.png",
+        "story-assets/argentina-wins-switzerland.png"
+      ],
+      "verified_players": [
+        {
+          "team_code": "FRA",
+          "player": "Kylian Mbappe",
+          "number": 10,
+          "source": "SquadLists-English.pdf row #10"
+        },
+        {
+          "team_code": "ARG",
+          "player": "Lionel Messi",
+          "number": 10,
+          "source": "SquadLists-English.pdf row #10"
+        }
       ]
     },
     {
@@ -113,6 +185,24 @@
         "Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.",
         "Leave the lower edge visually calm for the deterministic FriendlyBet watermark added later.",
         "Avoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+      ],
+      "reference_assets": [
+        "story-assets/france-wins-morocco.png",
+        "story-assets/england-wins-norway.png"
+      ],
+      "verified_players": [
+        {
+          "team_code": "FRA",
+          "player": "Kylian Mbappe",
+          "number": 10,
+          "source": "SquadLists-English.pdf row #10"
+        },
+        {
+          "team_code": "ENG",
+          "player": "Harry Kane",
+          "number": 9,
+          "source": "SquadLists-English.pdf row #9"
+        }
       ]
     },
     {
@@ -136,6 +226,24 @@
         "Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.",
         "Leave the lower edge visually calm for the deterministic FriendlyBet watermark added later.",
         "Avoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+      ],
+      "reference_assets": [
+        "story-assets/france-wins-morocco.png",
+        "story-assets/england-wins-norway.png"
+      ],
+      "verified_players": [
+        {
+          "team_code": "FRA",
+          "player": "Kylian Mbappe",
+          "number": 10,
+          "source": "SquadLists-English.pdf row #10"
+        },
+        {
+          "team_code": "ENG",
+          "player": "Harry Kane",
+          "number": 9,
+          "source": "SquadLists-English.pdf row #9"
+        }
       ]
     },
     {
@@ -159,6 +267,24 @@
         "Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.",
         "Leave the lower edge visually calm for the deterministic FriendlyBet watermark added later.",
         "Avoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+      ],
+      "reference_assets": [
+        "story-assets/spain-wins-france.png",
+        "story-assets/england-wins-norway.png"
+      ],
+      "verified_players": [
+        {
+          "team_code": "ESP",
+          "player": "Lamine Yamal",
+          "number": 19,
+          "source": "SquadLists-English.pdf row #19"
+        },
+        {
+          "team_code": "ENG",
+          "player": "Harry Kane",
+          "number": 9,
+          "source": "SquadLists-English.pdf row #9"
+        }
       ]
     },
     {
@@ -182,6 +308,24 @@
         "Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.",
         "Leave the lower edge visually calm for the deterministic FriendlyBet watermark added later.",
         "Avoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+      ],
+      "reference_assets": [
+        "story-assets/spain-wins-france.png",
+        "story-assets/england-wins-norway.png"
+      ],
+      "verified_players": [
+        {
+          "team_code": "ESP",
+          "player": "Lamine Yamal",
+          "number": 19,
+          "source": "SquadLists-English.pdf row #19"
+        },
+        {
+          "team_code": "ENG",
+          "player": "Harry Kane",
+          "number": 9,
+          "source": "SquadLists-English.pdf row #9"
+        }
       ]
     },
     {
@@ -205,6 +349,24 @@
         "Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.",
         "Leave the lower edge visually calm for the deterministic FriendlyBet watermark added later.",
         "Avoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+      ],
+      "reference_assets": [
+        "story-assets/spain-wins-france.png",
+        "story-assets/argentina-wins-switzerland.png"
+      ],
+      "verified_players": [
+        {
+          "team_code": "ESP",
+          "player": "Lamine Yamal",
+          "number": 19,
+          "source": "SquadLists-English.pdf row #19"
+        },
+        {
+          "team_code": "ARG",
+          "player": "Lionel Messi",
+          "number": 10,
+          "source": "SquadLists-English.pdf row #10"
+        }
       ]
     },
     {
@@ -228,7 +390,27 @@
         "Leave the lower-middle band around 60%-77% visually clean enough for the app to add its own black caption panel later. Do not place faces in that band.",
         "Leave the lower edge visually calm for the deterministic FriendlyBet watermark added later.",
         "Avoid: score text, result title, yellow result headline, caption panel, black rectangle, empty box, UI card, official FIFA logo, official club logos, sportswear logos, watermark, extra players, unrelated national flags, fake number patches, text over faces."
+      ],
+      "reference_assets": [
+        "story-assets/spain-wins-france.png",
+        "story-assets/argentina-wins-switzerland.png"
+      ],
+      "verified_players": [
+        {
+          "team_code": "ESP",
+          "player": "Lamine Yamal",
+          "number": 19,
+          "source": "SquadLists-English.pdf row #19"
+        },
+        {
+          "team_code": "ARG",
+          "player": "Lionel Messi",
+          "number": 10,
+          "source": "SquadLists-English.pdf row #10"
+        }
       ]
     }
-  ]
+  ],
+  "generation_route": "built-in image_gen using approved local named-player Story assets as references; no fictional-player fallback",
+  "validation_note": "Corrected after image-tool public-figure refusals by preserving approved local player references and verified squad shirt numbers."
 }
