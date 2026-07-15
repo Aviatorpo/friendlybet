@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-14T19:43:40.916Z",
+  "updated_at": "2026-07-15T03:35:56.640Z",
   "source": "snapshot",
   "matches": 8,
   "prompts": [
@@ -50,14 +50,6 @@
       "outcome": "DRAW",
       "image": "story-assets/outcome-bases/cpv-ksa-draw-base.png",
       "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: Cape Verde vs KSA at FIFA World Cup 2026.\nPrepared outcome: Cape Verde and KSA draw.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
-    },
-    {
-      "match_id": "248af202-753b-4433-a646-853f36ae0e43",
-      "match_key": "FRA-ESP",
-      "match_date": "2026-07-14T19:00:00+00:00",
-      "outcome": "FRA",
-      "image": "story-assets/outcome-bases/fra-esp-fra-wins-base.png",
-      "prompt": "LOCAL_DETERMINISTIC_OUTCOME_BASE\nMatch context: France vs Spain at FIFA World Cup 2026.\nPrepared outcome: France advances over Spain.\nGenerated locally from FriendlyBet deterministic templates; no OpenAI/API image generation is used.\nThe exact score and result title will be added later by deterministic rendering after the match."
     },
     {
       "match_id": "248af202-753b-4433-a646-853f36ae0e43",
