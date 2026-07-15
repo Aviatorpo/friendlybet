@@ -1,6 +1,91 @@
 {
-  "updated_at": "2026-07-12T09:33:59.381Z",
+  "updated_at": "2026-07-15T05:48:46.482Z",
   "items": [
+    {
+      "id": "fra-esp-2026-07-14",
+      "match_id": "248af202-753b-4433-a646-853f36ae0e43",
+      "image": "story-assets/spain-wins-france.png",
+      "teams": [
+        "FRA",
+        "ESP"
+      ],
+      "outcome": "ESP",
+      "result": "ESP 2-0 FRA",
+      "top_label": "SPAIN QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "ESP",
+        "team_he": "ספרד",
+        "team_en": "Spain",
+        "match_id": "248af202-753b-4433-a646-853f36ae0e43",
+        "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. 2-0 על צרפת, וספרד בגמר. הטופס הזה עומד עכשיו מתחת לפרוז׳קטור ⚽",
+        "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-0 על צרפת, וספרד בגמר. הטפסים האלה עומדים עכשיו מתחת לפרוז׳קטור ⚽",
+        "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-0 על צרפת, וספרד בגמר. הטפסים האלה עומדים עכשיו מתחת לפרוז׳קטור ⚽",
+        "en_name": "{names} picked {team} to advance in the knockout bracket. 2-0 over France sends Spain to the final, and that bracket line is in the spotlight ⚽",
+        "en_names": "{names} picked {team} to advance in the knockout bracket. 2-0 over France sends Spain to the final, and those bracket lines are in the spotlight ⚽",
+        "en_count": "{names} picked {team} to advance in the knockout bracket. 2-0 over France sends Spain to the final, and those bracket lines are in the spotlight ⚽"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "ESP",
+          "team_he": "ספרד",
+          "team_en": "Spain",
+          "match_id": "248af202-753b-4433-a646-853f36ae0e43",
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. 2-0 על צרפת, וספרד בגמר. הטופס הזה עומד עכשיו מתחת לפרוז׳קטור ⚽",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-0 על צרפת, וספרד בגמר. הטפסים האלה עומדים עכשיו מתחת לפרוז׳קטור ⚽",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. 2-0 על צרפת, וספרד בגמר. הטפסים האלה עומדים עכשיו מתחת לפרוז׳קטור ⚽",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. 2-0 over France sends Spain to the final, and that bracket line is in the spotlight ⚽",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. 2-0 over France sends Spain to the final, and those bracket lines are in the spotlight ⚽",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. 2-0 over France sends Spain to the final, and those bracket lines are in the spotlight ⚽"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ESP",
+          "team_he": "ספרד",
+          "team_en": "Spain",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 2-0 על צרפת, החלום הזה רחוק משחק אחד מהגביע ⚽",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-0 על צרפת, החלומות האלה רחוקים משחק אחד מהגביע ⚽",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-0 על צרפת, החלומות האלה רחוקים משחק אחד מהגביע ⚽",
+          "en_name": "{names} picked {team} to win the World Cup. After 2-0 over France, that trophy call is one match from the cup ⚽",
+          "en_names": "{names} picked {team} to win the World Cup. After 2-0 over France, those trophy calls are one match from the cup ⚽",
+          "en_count": "{names} picked {team} to win the World Cup. After 2-0 over France, those trophy calls are one match from the cup ⚽"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "FRA",
+          "team_he": "צרפת",
+          "team_en": "France",
+          "match_id": "248af202-753b-4433-a646-853f36ae0e43",
+          "he_name": "{names} בחר את {team} להתקדם בבראקט הנוקאאוט. ספרד סגרה 2-0 בחצי הגמר, והטופס נעצר צעד לפני הגמר 😬",
+          "he_names": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ספרד סגרה 2-0 בחצי הגמר, והטפסים נעצרו צעד לפני הגמר 😬",
+          "he_count": "{names} בחרו את {team} להתקדם בבראקט הנוקאאוט. ספרד סגרה 2-0 בחצי הגמר, והטפסים נעצרו צעד לפני הגמר 😬",
+          "en_name": "{names} picked {team} to advance in the knockout bracket. Spain closed it 2-0 in the semifinal, one step before the final 😬",
+          "en_names": "{names} picked {team} to advance in the knockout bracket. Spain closed it 2-0 in the semifinal, one step before the final 😬",
+          "en_count": "{names} picked {team} to advance in the knockout bracket. Spain closed it 2-0 in the semifinal, one step before the final 😬"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "FRA",
+          "team_he": "צרפת",
+          "team_en": "France",
+          "he_name": "{names} בחר את {team} כמנצחת המונדיאל. אחרי 2-0 מול ספרד, החלום נגמר צעד לפני הגמר 😬",
+          "he_names": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-0 מול ספרד, החלומות נגמרו צעד לפני הגמר 😬",
+          "he_count": "{names} בחרו את {team} כמנצחת המונדיאל. אחרי 2-0 מול ספרד, החלומות נגמרו צעד לפני הגמר 😬",
+          "en_name": "{names} picked {team} to win the World Cup. After 2-0 against Spain, that trophy call ends one step before the final 😬",
+          "en_names": "{names} picked {team} to win the World Cup. After 2-0 against Spain, those trophy calls end one step before the final 😬",
+          "en_count": "{names} picked {team} to win the World Cup. After 2-0 against Spain, those trophy calls end one step before the final 😬"
+        }
+      ],
+      "he": {
+        "headline": "ספרד ניצחה את צרפת 2-0: בגמר המונדיאל ⚽",
+        "caption": "ספרד עצרה את צרפת 2-0 ועלתה לגמר. ימאל חגג, אמבפה נעצר, והבראקט קיבל חצי גמר עם חתימה ספרדית ⚽"
+      },
+      "en": {
+        "headline": "Spain beat France 2-0: into the World Cup final ⚽",
+        "caption": "Spain shut France down 2-0 and reached the final. Yamal smiled, Mbappe stopped here, and the chat has a Spanish signature ⚽"
+      }
+    },
     {
       "id": "arg-sui-2026-07-12",
       "match_id": "ff09af19-18d2-49ad-a2eb-577f904f6e48",
