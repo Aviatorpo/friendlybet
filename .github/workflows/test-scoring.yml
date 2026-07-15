@@ -24,6 +24,8 @@ on:
       - 'scripts/test-smart-sync.js'
       - 'scripts/sync-fifa-schedule-to-matches.js'
       - 'scripts/test-sync-fifa-schedule-to-matches.js'
+      - 'scripts/test-update-fifa-world-cup-schedule.js'
+      - 'scripts/update-fifa-world-cup-schedule.js'
       - 'scripts/test-sync-transform.js'
       - 'scripts/test-team-mapping.js'
       - 'scripts/live-poller.js'
@@ -120,6 +122,8 @@ on:
       - 'scripts/test-smart-sync.js'
       - 'scripts/sync-fifa-schedule-to-matches.js'
       - 'scripts/test-sync-fifa-schedule-to-matches.js'
+      - 'scripts/test-update-fifa-world-cup-schedule.js'
+      - 'scripts/update-fifa-world-cup-schedule.js'
       - 'scripts/test-sync-transform.js'
       - 'scripts/test-team-mapping.js'
       - 'scripts/live-poller.js'
@@ -227,6 +231,8 @@ jobs:
         run: node scripts/test-smart-sync.js
       - name: Run FIFA schedule-to-scoring bridge tests
         run: node scripts/test-sync-fifa-schedule-to-matches.js
+      - name: Run FIFA schedule stage-normalization tests
+        run: node scripts/test-update-fifa-world-cup-schedule.js
       - name: Run sync transform tests
         run: node scripts/test-sync-transform.js
       - name: Run recovery login resilience tests
