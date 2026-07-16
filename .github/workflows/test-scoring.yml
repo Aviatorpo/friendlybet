@@ -307,3 +307,5 @@ jobs:
         run: node scripts/test-pundit-live-window-certifier.js
       - name: Run Pundit client staleness tests
         run: node scripts/test-pundit-client-staleness.js
+      - name: Run locked invite recovery tests
+        run: node scripts/test-locked-invite-recovery.js

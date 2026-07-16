@@ -28,6 +28,13 @@ let _tpReopenStatus = null;   // last my_two_phase_knockout_reopen result
 const WC2026_CORRECTION_COPY_SWITCH_ISO = '2026-06-11T19:00:00.000Z';
 
 function showScreen(screenId) {
+  if (screenId === 'join-pool-screen' && state.currentScreen !== 'join-pool-screen') {
+    _resetClosedPoolReturnCard();
+  }
+  if (screenId === 'recovery-login-screen') {
+    _setRecoveryLoginInviteContext(false);
+  }
+
   // v2.5.37: stop any auto-refresh that was running on the previous screen.
   // Currently only matches-screen registers timers; this hook keeps it
   // simple to add others later.
@@ -659,12 +666,66 @@ function clearLocalUser() {
 // JOIN POOL FLOW
 // ============================================================
 
+let _closedInvitePool = null;
+
+function _setRecoveryLoginInviteContext(visible) {
+  const context = document.getElementById('recovery-login-invite-context');
+  if (!context) return;
+  context.style.display = visible ? '' : 'none';
+  context.setAttribute('aria-hidden', visible ? 'false' : 'true');
+}
+
+function _resetClosedPoolReturnCard() {
+  _closedInvitePool = null;
+  const card = document.getElementById('closed-pool-return-card');
+  const submit = document.getElementById('join-pool-submit');
+  const existingHint = document.getElementById('join-existing-hint');
+  if (card) {
+    card.style.display = 'none';
+    card.setAttribute('aria-hidden', 'true');
+  }
+  if (submit) submit.style.display = '';
+  if (existingHint) existingHint.style.display = '';
+}
+window._resetClosedPoolReturnCard = _resetClosedPoolReturnCard;
+
+function _showClosedPoolReturnCard(pool) {
+  _closedInvitePool = pool ? {
+    id: pool.id || null,
+    code: String(pool.code || '').toUpperCase(),
+    name: String(pool.name || pool.code || '')
+  } : null;
+
+  const card = document.getElementById('closed-pool-return-card');
+  const name = document.getElementById('closed-pool-return-name');
+  const submit = document.getElementById('join-pool-submit');
+  const existingHint = document.getElementById('join-existing-hint');
+  const errorDiv = document.getElementById('join-error');
+
+  if (name) name.textContent = (_closedInvitePool && _closedInvitePool.name) || t('join.closedPoolFallback');
+  if (errorDiv) errorDiv.style.display = 'none';
+  if (submit) submit.style.display = 'none';
+  if (existingHint) existingHint.style.display = 'none';
+  if (card) {
+    card.style.display = '';
+    card.setAttribute('aria-hidden', 'false');
+  }
+}
+
+function openClosedPoolRecoveryLogin() {
+  if (!_closedInvitePool) return;
+  showScreen('recovery-login-screen');
+  _setRecoveryLoginInviteContext(true);
+}
+window.openClosedPoolRecoveryLogin = openClosedPoolRecoveryLogin;
+
 async function checkPoolCode() {
   const input = document.getElementById('pool-code-input');
   const errorDiv = document.getElementById('join-error');
   const code = input.value.trim().toUpperCase();
   
   // Validation
+  _resetClosedPoolReturnCard();
   errorDiv.style.display = 'none';
   
   if (!code) {
@@ -710,7 +771,7 @@ async function checkPoolCode() {
     // this preflight early instead of only at the final join_pool RPC. The
     // server RPC remains the source of truth and rejects both.
     if (isPoolJoinClosed(data)) {
-      showError('join-error', _poolClosedMessage(data));
+      _showClosedPoolReturnCard(data);
       return;
     }
     

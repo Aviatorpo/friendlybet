@@ -666,12 +666,29 @@ function loadTablerFallback() {
 
         <div class="form-group">
           <label class="form-label" data-i18n="join.code">קוד ההימור</label>
-          <input type="text" id="pool-code-input" class="form-input form-input-large" placeholder="XXXXX" maxlength="5" autocomplete="off" autocapitalize="characters">
+          <input type="text" id="pool-code-input" class="form-input form-input-large" placeholder="XXXXX" maxlength="5" autocomplete="off" autocapitalize="characters" oninput="_resetClosedPoolReturnCard()">
         </div>
 
         <div id="join-error" class="error-message" style="display: none;"></div>
 
-        <button class="btn-primary btn-large" onclick="checkPoolCode()">
+        <div id="closed-pool-return-card" class="closed-pool-return-card" style="display:none;" role="region" aria-live="polite" aria-labelledby="closed-pool-return-name" aria-hidden="true">
+          <div class="closed-pool-return-heading">
+            <span class="closed-pool-return-lock" aria-hidden="true"><i class="ti ti-lock"></i></span>
+            <div>
+              <div class="closed-pool-return-kicker" data-i18n="join.closedPoolKicker">הפול נמצא</div>
+              <h3 id="closed-pool-return-name">—</h3>
+            </div>
+          </div>
+          <p class="closed-pool-return-text" data-i18n="join.closedReturning">ההרשמה לחברים חדשים נסגרה, אבל הבראקט שלך עדיין שמור. אם כבר הצטרפת, התחבר עם קוד השחזור האישי או ה-QR כדי לראות אותו.</p>
+          <button class="btn-primary btn-large" type="button" onclick="openClosedPoolRecoveryLogin()">
+            <i class="ti ti-login"></i>
+            <span data-i18n="join.closedLoginCta">התחבר כדי לראות את הבראקט שלי</span>
+          </button>
+          <p class="closed-pool-return-help" data-i18n="join.closedLostCode">איבדת את הקוד? בקש מהאדמין של הפול לשלוח לך קישור שחזור אישי חדש.</p>
+          <p class="closed-pool-return-new" data-i18n="join.closedNewUser">עוד לא הצטרפת? הפול הזה כבר לא מקבל חברים חדשים.</p>
+        </div>
+
+        <button id="join-pool-submit" class="btn-primary btn-large" onclick="checkPoolCode()">
           <i class="ti ti-arrow-left"></i>
           <span data-i18n="common.continue">המשך</span>
         </button>
@@ -679,7 +696,7 @@ function loadTablerFallback() {
         <!-- v2.6.50: escape hatch — a returning user who already has an account may
              have tapped 'join' by mistake. They don't need the pool code; they need
              their personal recovery code / saved QR. Route them to the login screen. -->
-        <div class="join-existing-hint">
+        <div id="join-existing-hint" class="join-existing-hint">
           <span class="join-existing-q" data-i18n="join.alreadyMemberQ">כבר הצטרפתם בעבר ויש לכם חשבון?</span>
           <button class="welcome-recovery-link" onclick="showScreen('recovery-login-screen')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"></rect><rect x="4" y="14" width="6" height="6" rx="1"></rect><rect x="14" y="4" width="6" height="6" rx="1"></rect><path d="M14 14h.01M20 14h.01M14 20h.01M20 20h.01M17 17h.01"></path></svg>
@@ -712,6 +729,11 @@ function loadTablerFallback() {
         </div>
         <h2 class="form-title" data-i18n="recoveryLogin.heading">סרקו QR או הזינו קוד</h2>
         <p class="form-subtitle" data-i18n="recoveryLogin.subtitle">בחרו את תמונת ה-QR ששמרתם — או הקלידו את קוד השחזור בן 16 התווים.</p>
+
+        <div id="recovery-login-invite-context" class="recovery-login-invite-context" style="display:none;" aria-hidden="true">
+          <i class="ti ti-shield-lock" aria-hidden="true"></i>
+          <span data-i18n="recoveryLogin.inviteContext">כדי לראות את הבראקט השמור שלך, התחבר עם קוד השחזור האישי שלך. קוד הפול המשותף אינו קוד התחברות.</span>
+        </div>
 
         <!-- Magical path: pick your saved login-QR image -> auto-login, no typing. -->
         <button class="btn-primary btn-large" id="rc-login-qr-btn" type="button" onclick="rcLoginPickQr()" style="margin-bottom:6px;">
@@ -3205,7 +3227,7 @@ function loadTablerFallback() {
       <span>FriendlyBet</span>
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
-      <span class="menu-version">v2.10.139</span>
+      <span class="menu-version">v2.10.140</span>
     </div>
   </div>
 
