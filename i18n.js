@@ -72,6 +72,7 @@ const TRANSLATIONS = {
     'recoveryLogin.errorNotFound': 'קוד לא נמצא. בדוק שהזנת בדיוק את הקוד שקיבלת.',
     'recoveryLogin.errorNoPool': 'ההימור שמשויך לקוד הזה לא נמצא',
     'recoveryLogin.success': 'ברוך שובך, {nickname}!',
+    'recoveryLogin.inviteContext': 'כדי לראות את הבראקט השמור שלך, התחבר עם קוד השחזור האישי שלך. קוד הפול המשותף אינו קוד התחברות.',
     'welcome.noSignup': 'קוד פתוח · ללא איסוף מידע אישי · <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a>',
     
     'create.title': 'צור הימור חדש',
@@ -95,6 +96,12 @@ const TRANSLATIONS = {
     'join.findError': 'הקוד לא נמצא. בדוק שוב.',
     'join.poolLocked': 'ההימור נעול',
     'join.poolLockedDesc': 'המארגן נעל את ההימור. לא ניתן להצטרף.',
+    'join.closedPoolKicker': 'הפול נמצא',
+    'join.closedPoolFallback': 'הפול שלך',
+    'join.closedReturning': 'ההרשמה לחברים חדשים נסגרה, אבל הבראקט שלך עדיין שמור. אם כבר הצטרפת, התחבר עם קוד השחזור האישי או ה-QR כדי לראות אותו.',
+    'join.closedLoginCta': 'התחבר כדי לראות את הבראקט שלי',
+    'join.closedLostCode': 'איבדת את הקוד? בקש מהאדמין של הפול לשלוח לך קישור שחזור אישי חדש.',
+    'join.closedNewUser': 'עוד לא הצטרפת? הפול הזה כבר לא מקבל חברים חדשים.',
     
     'recovery.title': 'התחברות עם קוד שחזור',
     'recovery.code': 'הקוד שלך',
@@ -1814,6 +1821,7 @@ const TRANSLATIONS = {
     'recoveryLogin.errorNotFound': 'Code not found. Make sure it matches exactly what you received.',
     'recoveryLogin.errorNoPool': 'The pool linked to this code could not be found',
     'recoveryLogin.success': 'Welcome back, {nickname}!',
+    'recoveryLogin.inviteContext': 'To view your saved bracket, log in with your personal recovery code. The shared pool code is not a login code.',
     'welcome.noSignup': 'Open source · No personal data collected · <a href="https://github.com/Aviatorpo/friendlybet" target="_blank" rel="noopener">GitHub</a>',
     
     'create.title': 'Create New Pool',
@@ -1837,6 +1845,12 @@ const TRANSLATIONS = {
     'join.findError': 'Code not found. Try again.',
     'join.poolLocked': 'Pool Locked',
     'join.poolLockedDesc': 'The admin has locked this pool. Cannot join.',
+    'join.closedPoolKicker': 'Pool found',
+    'join.closedPoolFallback': 'Your pool',
+    'join.closedReturning': 'Registration for new members is closed, but your bracket is still saved. If you already joined, log in with your personal recovery code or saved QR to view it.',
+    'join.closedLoginCta': 'Log in to view my bracket',
+    'join.closedLostCode': 'Lost your code? Ask the pool admin to send you a new personal recovery link.',
+    'join.closedNewUser': 'Haven’t joined yet? This pool is no longer accepting new members.',
     
     'recovery.title': 'Login with Recovery Code',
     'recovery.code': 'Your Code',
