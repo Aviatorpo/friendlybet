@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-16T03:30:31.103Z",
-  "freshUntil": "2026-07-16T09:30:31.103Z",
-  "count": 2,
+  "updatedAt": "2026-07-16T08:29:37.117Z",
+  "freshUntil": "2026-07-16T14:29:37.117Z",
+  "count": 1,
   "items": [
     {
       "id": "result-c9ea9358-126d-4ae7-a17a-b520888002c8",
@@ -11,15 +11,6 @@
       "en": "2-1 for Argentina over England. Any bracket path that kept Argentina alive can open the receipts 🧾",
       "sources": [],
       "expires_at": "2026-07-17T07:00:00.000Z"
-    },
-    {
-      "id": "result-248af202-753b-4433-a646-853f36ae0e43",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "ספרד ניצחה את צרפת 2:0 ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום 🧾",
-      "en": "Spain beat France 2-0 and stayed alive in the bracket. Any bracket path that kept Spain alive can keep dreaming 🧾",
-      "sources": [],
-      "expires_at": "2026-07-16T07:00:00.000Z"
     }
   ]
 }
