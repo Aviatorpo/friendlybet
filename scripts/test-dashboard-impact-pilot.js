@@ -90,6 +90,29 @@ assert(!pointRowBody.includes('dip-flag'), 'point rows keep flags only in the sc
 assert(pointRowBody.includes('_dashboardImpactPointSentenceHtml'), 'point rows render as readable sentences');
 assert(pointRowBody.includes('dip-points-value'), 'point rows emphasize the pool point value inline');
 
+const scenarioRowsStart = app.indexOf('function _dashboardImpactScenarioRows');
+const scenarioRowsEnd = app.indexOf('function _dashboardImpactVerifiedAdvancer', scenarioRowsStart);
+const scenarioRowsBody = app.slice(scenarioRowsStart, scenarioRowsEnd);
+assert(scenarioRowsStart >= 0 && scenarioRowsEnd > scenarioRowsStart, 'scenario rows body is extractable');
+assert(scenarioRowsBody.includes('!_dashboardImpactStageRuleKey(match.stage)'), 'stages without advancement scoring, including third place, render no scenario points copy');
+
+const stageRuleStart = app.indexOf('function _dashboardImpactStageRuleKey');
+const stageRuleEnd = app.indexOf('function _dashboardImpactBracketRuleKey', stageRuleStart);
+const stageRuleBody = app.slice(stageRuleStart, stageRuleEnd);
+const scenarioRowsRuntime = new Function(`
+  ${stageRuleBody}
+  function _matchIsKnockoutStage() { return true; }
+  function _dashboardImpactPointRowHtml(sentenceKey) { return sentenceKey; }
+  function getTeamName(code) { return code; }
+  function _dashboardImpactPickPointsForTeamAtStage() { return { points: 1 }; }
+  ${scenarioRowsBody}
+  return _dashboardImpactScenarioRows;
+`)();
+const thirdPlaceFixture = { stage: 'THIRD_PLACE', home_team_code: 'FRA', away_team_code: 'ENG' };
+const finalFixture = { stage: 'FINAL', home_team_code: 'ESP', away_team_code: 'ARG' };
+assert(scenarioRowsRuntime(thirdPlaceFixture, []) === '', 'third-place fixture renders no if-advances line');
+assert(scenarioRowsRuntime(finalFixture, []).includes('dashboard.impact.finalScenarioPointsSentence'), 'the final keeps prediction-impact rows with winner wording');
+
 const resolvedWinnerStart = app.indexOf('function _matchResolvedWinner');
 const resolvedWinnerEnd = app.indexOf('function _matchIsPendingProviderFinal', resolvedWinnerStart);
 const resolvedWinnerBody = app.slice(resolvedWinnerStart, resolvedWinnerEnd);
@@ -100,6 +123,15 @@ const resultRowsStart = app.indexOf('function _dashboardImpactResultRows');
 const resultRowsEnd = app.indexOf('function _dashboardImpactLiveMatch', resultRowsStart);
 const resultRowsBody = app.slice(resultRowsStart, resultRowsEnd);
 assert(resultRowsStart >= 0 && resultRowsEnd > resultRowsStart, 'result rows body is extractable');
+assert(resultRowsBody.includes('!_dashboardImpactStageRuleKey(match.stage)'), 'stages without advancement scoring, including third place, render no result points copy');
+assert(resultRowsBody.includes('dashboard.impact.finalResultPointsSentence'), 'the final uses winner wording for completed-result points');
+const resultRowsRuntime = new Function(`
+  ${stageRuleBody}
+  function _matchIsKnockoutStage() { return true; }
+  ${resultRowsBody}
+  return _dashboardImpactResultRows;
+`)();
+assert(resultRowsRuntime(thirdPlaceFixture, []) === '', 'completed third-place fixture renders no advancement result line');
 assert(resultRowsBody.includes('const advancementNote = _dashboardImpactAdvancementNoteHtml(match, winner);'), 'result rows calculate the penalty advancement note from the resolved winner');
 assert(resultRowsBody.includes('return `${advancementNote}<div class="dip-points-list">'), 'penalty advancement note is shown before result points');
 assert(resultRowsBody.includes('dashboard.impact.resultPointsSentence'), 'result rows still render the points sentence');
@@ -160,6 +192,10 @@ assert(!styles.includes('.dip-points {'), 'old detached points column was remove
   'dashboard.impact.resultPointsSentence',
   'dashboard.impact.scenarioPointsUnavailable',
   'dashboard.impact.resultPointsUnavailable',
+  'dashboard.impact.finalScenarioPointsSentence',
+  'dashboard.impact.finalResultPointsSentence',
+  'dashboard.impact.finalScenarioPointsUnavailable',
+  'dashboard.impact.finalResultPointsUnavailable',
   'matchesEx.advancedOnPenalties',
   'worldCupStories.previous',
   'worldCupStories.next'

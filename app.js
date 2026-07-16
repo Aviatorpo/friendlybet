@@ -2003,11 +2003,14 @@ function _dashboardImpactPointRowHtml(sentenceKey, unavailableKey, params, point
 }
 
 function _dashboardImpactScenarioRows(match, picks) {
-  if (!match || !_matchIsKnockoutStage(match) || !match.home_team_code || !match.away_team_code) return '';
+  if (!match || !_matchIsKnockoutStage(match) || !_dashboardImpactStageRuleKey(match.stage) || !match.home_team_code || !match.away_team_code) return '';
+  const isFinal = String(match.stage || '').toUpperCase() === 'FINAL';
+  const sentenceKey = isFinal ? 'dashboard.impact.finalScenarioPointsSentence' : 'dashboard.impact.scenarioPointsSentence';
+  const unavailableKey = isFinal ? 'dashboard.impact.finalScenarioPointsUnavailable' : 'dashboard.impact.scenarioPointsUnavailable';
   const rows = [match.home_team_code, match.away_team_code].map(code => {
     return _dashboardImpactPointRowHtml(
-      'dashboard.impact.scenarioPointsSentence',
-      'dashboard.impact.scenarioPointsUnavailable',
+      sentenceKey,
+      unavailableKey,
       { team: getTeamName(code) },
       _dashboardImpactPickPointsForTeamAtStage(code, match.stage, picks)
     );
@@ -2037,7 +2040,7 @@ function _dashboardImpactAdvancementNoteHtml(match, winner) {
 }
 
 function _dashboardImpactResultRows(match, picks) {
-  if (!match || !_matchIsKnockoutStage(match) || !match.home_team_code || !match.away_team_code) return '';
+  if (!match || !_matchIsKnockoutStage(match) || !_dashboardImpactStageRuleKey(match.stage) || !match.home_team_code || !match.away_team_code) return '';
   const winner = _dashboardImpactVerifiedAdvancer(match);
   if (!winner) {
     return `
@@ -2050,9 +2053,10 @@ function _dashboardImpactResultRows(match, picks) {
   }
   const pointsInfo = _dashboardImpactPickPointsForTeamAtStage(winner, match.stage, picks);
   const advancementNote = _dashboardImpactAdvancementNoteHtml(match, winner);
+  const isFinal = String(match.stage || '').toUpperCase() === 'FINAL';
   return `${advancementNote}<div class="dip-points-list">${_dashboardImpactPointRowHtml(
-    'dashboard.impact.resultPointsSentence',
-    'dashboard.impact.resultPointsUnavailable',
+    isFinal ? 'dashboard.impact.finalResultPointsSentence' : 'dashboard.impact.resultPointsSentence',
+    isFinal ? 'dashboard.impact.finalResultPointsUnavailable' : 'dashboard.impact.resultPointsUnavailable',
     { team: getTeamName(winner) },
     pointsInfo
   )}</div>`;
