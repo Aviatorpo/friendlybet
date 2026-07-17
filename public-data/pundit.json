@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-07-17T03:32:12.803Z",
-  "freshUntil": "2026-07-17T09:32:12.803Z",
+  "updatedAt": "2026-07-17T16:23:56.794Z",
+  "freshUntil": "2026-07-17T22:23:56.794Z",
   "count": 1,
   "items": [
     {
-      "id": "result-c9ea9358-126d-4ae7-a17a-b520888002c8",
-      "type": "result",
+      "id": "fixture-84157ade-88e2-422c-bc27-842e6517c5c1",
+      "type": "fixture",
       "confidence": "confirmed",
-      "he": "2:1 לארגנטינה על אנגליה. כל מסלול בבראקט שהשאיר אותה בחיים יכול לפתוח את הקבלות 🧾",
-      "en": "2-1 for Argentina over England. Any bracket path that kept Argentina alive can open the receipts 🧾",
+      "he": "משחק ענק בהמשחק על המקום השלישי: צרפת נגד אנגליה, 19/07 24:00. צד אחד ממשיך, צד אחד הולך הביתה ⏰",
+      "en": "Huge third-place match: France vs England, 19/07 24:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
-      "expires_at": "2026-07-17T07:00:00.000Z"
+      "expires_at": "2026-07-18T20:45:00.000Z"
     }
   ]
 }
