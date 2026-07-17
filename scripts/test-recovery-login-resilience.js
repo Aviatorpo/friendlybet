@@ -28,6 +28,19 @@ assert.match(app, /const FB_BOOT_FORCE_HOME_MS = FB_BOOT_SUPABASE_WAIT_MS \+ 300
 assert.match(app, /setTimeout\(\(\) => _fbForceHomeIfBlank\('init timeout'\), FB_BOOT_FORCE_HOME_MS\);/, 'startup fallback should use the safe timeout constant');
 assert.match(app, /const waitForSupabase = \(timeoutMs = FB_BOOT_SUPABASE_WAIT_MS\)/, 'initial route wait should use the shared Supabase timeout');
 
+const loginUrlBranch = app.indexOf('if (loginFromUrl)');
+const recoveryUrlBranch = app.indexOf('if (recoveryFromUrl)', loginUrlBranch);
+const inviteUrlBranch = app.indexOf('if (codeFromUrl)', recoveryUrlBranch);
+assert.ok(loginUrlBranch >= 0, 'QR login URL branch is missing');
+assert.ok(recoveryUrlBranch > loginUrlBranch, 'admin recovery link branch must follow QR login handling');
+assert.ok(inviteUrlBranch > recoveryUrlBranch, 'admin recovery link must be handled before shared invite links');
+assert.ok(!app.includes('if (recoveryFromUrl && !(localUser && localUser.pool_id))'), 'admin recovery links must not be ignored when a stale local session exists');
+assert.match(
+  app,
+  /if \(recoveryFromUrl\) \{[\s\S]*showScreen\('recovery-login-screen'\);[\s\S]*input\.value = _formatRecoveryCodeForHash\(recoveryFromUrl\);[\s\S]*return;/,
+  'admin recovery links must always prefill the recovery login screen'
+);
+
 const forceStart = app.indexOf('function _fbForceHomeIfBlank');
 const forceEnd = app.indexOf('// The startup fallback must outlast', forceStart);
 const forceBody = app.slice(forceStart, forceEnd);

@@ -132,7 +132,7 @@ vm.runInContext(
 const version = /APP_VERSION:\s*'([^']+)'/.exec(config)?.[1];
 const cacheVersion = /CACHE_VERSION\s*=\s*'friendlybet-v([^']+)'/.exec(serviceWorker)?.[1];
 const footerVersion = /<span class="menu-version">v([^<]+)<\/span>/.exec(html)?.[1];
-assert.strictEqual(version, '2.10.140', 'app version must be 2.10.140');
+assert.strictEqual(version, '2.10.141', 'app version must be 2.10.141');
 assert.strictEqual(cacheVersion, version, 'service-worker cache version must match app version');
 assert.strictEqual(footerVersion, version, 'footer version must match app version');
 
