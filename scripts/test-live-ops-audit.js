@@ -593,8 +593,19 @@ check('join flow does not create fake pending approvals for open pools', () => {
   const migration = fs.readFileSync(path.join(ROOT, 'migrations/2026-07-03-fix-join-approval-status.sql'), 'utf8');
   assert.ok(migration.includes('v_requires_approval := coalesce(v_pool.approve_before_betting, false);'), 'join_pool RPC must read approve_before_betting');
   assert.ok(migration.includes("v_approval_status := case when v_requires_approval then 'pending' else 'approved' end;"), 'join_pool RPC must approve users in non-approval pools');
-  assert.ok(migration.includes("p.code = '287ZF'"), 'data repair must be scoped to pool 287ZF');
-  assert.ok(migration.includes("u.approval_status = 'pending'"), 'data repair must only touch pending approval rows');
+
+  assert.ok(app.includes('function _effectiveApprovalStatus(user, pool = state.currentPool)'), 'frontend must normalize legacy open-pool pending approval rows');
+  assert.ok(app.includes("!_poolRequiresMemberApproval(pool)"), 'legacy pending normalization must only apply when the pool does not require approval');
+  assert.ok(app.includes('const poolMembers = _normalizePoolUserApprovalRows(members, state.currentPool);'), 'members list must normalize approval metadata before rendering view-picks buttons');
+  assert.ok(app.includes('const poolUsers = _normalizePoolUserApprovalRows(users, pool);'), 'admin members list must normalize approval metadata before rendering badges/actions');
+  assert.ok(app.includes("if (!_poolRequiresMemberApproval(state.currentPool))"), 'admin menu pending badge must not show fake pending approvals in open pools');
+
+  const repairMigration = fs.readFileSync(path.join(ROOT, 'migrations/2026-07-17-repair-legacy-open-pool-approval-status.sql'), 'utf8');
+  assert.ok(repairMigration.includes("coalesce(p.approve_before_betting, false) = false"), 'legacy approval repair must only touch pools that do not require approval');
+  assert.ok(repairMigration.includes("coalesce(u.is_approved, false) = true"), 'legacy approval repair must only touch users already approved by the legacy flag');
+  assert.ok(repairMigration.includes("u.approval_status = 'pending'"), 'legacy approval repair must only touch pending approval rows');
+  assert.ok(repairMigration.includes("u.joined_at < timestamptz '2026-07-03 00:00:00+00'"), 'legacy approval repair must be bounded to rows created before the join fix');
+  assert.ok(!/p\.code\s*=/.test(repairMigration), 'legacy approval repair must not be accidentally scoped to one pool');
 });
 
 console.log(`\nLive-ops audit tests passed: ${passed}`);

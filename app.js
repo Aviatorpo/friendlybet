@@ -4608,6 +4608,51 @@ const _LIVE_MATCH_STATUSES = ['IN_PLAY', 'PAUSED', 'LIVE'];
 // breaking any in-app read - a pool member can't dump every other member's
 // acquisition data from the network response.
 const USER_PUBLIC_COLS = 'id,pool_id,nickname,is_admin,is_approved,is_late_joiner,whatsapp_url,telegram_url,total_score,group_score,knockout_score,top_scorer_score,joined_at,last_active_at,last_score_calc,groups_score,bonus_score,approval_status,approved_at,approved_by,group_points,knockout_points,bonus_points,predictions_locked,predictions_submitted_at';
+function _poolRequiresMemberApproval(pool = state.currentPool) {
+  return !!(pool && pool.approve_before_betting === true);
+}
+
+function _effectiveApprovalStatus(user, pool = state.currentPool) {
+  if (!user) return 'pending';
+  const status = user.approval_status || '';
+  // Legacy production rows created before the 2026-07-03 join fix can have
+  // is_approved=true while approval_status is still pending. In pools that do
+  // not require approval, that pending value is fake and must not hide locked
+  // brackets or show admin approval actions. Keep real approval-required pools
+  // strict: their pending members stay pending.
+  if (status === 'pending' &&
+      !_poolRequiresMemberApproval(pool) &&
+      user.is_admin !== true &&
+      user.is_approved === true) {
+    return 'approved';
+  }
+  if (!status && user.is_approved === true && !_poolRequiresMemberApproval(pool)) return 'approved';
+  return status || 'pending';
+}
+
+function _normalizePoolUserApprovalState(user, pool = state.currentPool) {
+  const effectiveStatus = _effectiveApprovalStatus(user, pool);
+  if (!user || effectiveStatus === user.approval_status) return user;
+  return {
+    ...user,
+    approval_status: effectiveStatus,
+    approved_at: effectiveStatus === 'approved'
+      ? (user.approved_at || user.joined_at || null)
+      : user.approved_at,
+    approval_status_normalized: true
+  };
+}
+
+function _normalizePoolUserApprovalRows(users, pool = state.currentPool) {
+  return Array.isArray(users)
+    ? users.map(user => _normalizePoolUserApprovalState(user, pool))
+    : [];
+}
+
+function _isMemberPendingApproval(member, pool = state.currentPool) {
+  return !!(member && member.is_admin !== true && _effectiveApprovalStatus(member, pool) === 'pending');
+}
+
 const _TERMINAL_MATCH_STATUSES = ['FINISHED', 'AWARDED', 'CANCELLED', 'POSTPONED'];
 const _FINISHED_MATCH_STATUSES = ['FINISHED', 'AWARDED'];
 const _MAX_MATCH_MS = 3.5 * 60 * 60 * 1000; // longest plausible match incl. ET + pens
@@ -5558,6 +5603,12 @@ function openMenu() {
 
 async function updatePendingBadge() {
   try {
+    const badge = document.getElementById('menu-pending-badge');
+    if (!_poolRequiresMemberApproval(state.currentPool)) {
+      if (badge) badge.style.display = 'none';
+      return;
+    }
+
     const { count, error } = await supabaseClient
       .from('users')
       .select('id', { count: 'exact', head: true })
@@ -5567,7 +5618,6 @@ async function updatePendingBadge() {
     
     if (error) return;
     
-    const badge = document.getElementById('menu-pending-badge');
     if (badge) {
       if (count && count > 0) {
         badge.style.display = 'inline-block';
@@ -5933,6 +5983,7 @@ async function showMembers() {
     showToast(t('membersList.loadError'), 'error');
     return;
   }
+  const poolMembers = _normalizePoolUserApprovalRows(members, state.currentPool);
   
   // v2.5.24: pick the correct picks table per betting_mode. The legacy
   // group_picks belongs to two_phase pools; single_phase pools store
@@ -5980,11 +6031,11 @@ async function showMembers() {
   });
 
   // Build summary
-  const total = members.length;
+  const total = poolMembers.length;
   let betted = 0;
   let notBetted = 0;
 
-  members.forEach(m => {
+  poolMembers.forEach(m => {
     const picks = isLateKo ? (koPerUser[m.id] || 0) : (picksPerUser[m.id] || 0);
     if (picks > 0) betted++;
     else notBetted++;
@@ -6003,8 +6054,8 @@ async function showMembers() {
   const r16RecoveryByUser = (r16Recovery && r16Recovery.byUser) || {};
   _renderMembersR16IncidentNotice(list, r16IncidentUserIds, r16IncidentClosed);
 
-  const memberOrder = new Map(members.map((m, index) => [m.id, index]));
-  const displayMembers = [...members].sort((a, b) => {
+  const memberOrder = new Map(poolMembers.map((m, index) => [m.id, index]));
+  const displayMembers = [...poolMembers].sort((a, b) => {
     const ar = r16IncidentUserIds && r16IncidentUserIds.has(a.id) ? 1 : 0;
     const br = r16IncidentUserIds && r16IncidentUserIds.has(b.id) ? 1 : 0;
     if (ar !== br) return br - ar;
@@ -6233,7 +6284,7 @@ function createMemberCard(member, picksCount, koPicksCount, isV2, predictionAcce
   const safeNickname = member.nickname || t('membersList.fallbackUser');
   const safeInitial = safeNickname.charAt(0).toUpperCase();
   const hasVisiblePicks = isV2 ? allDone : (picksCount > 0);
-  const canViewPicks = predictionAccess.mode === 'open' && hasVisiblePicks && member.approval_status !== 'pending';
+  const canViewPicks = predictionAccess.mode === 'open' && hasVisiblePicks && !_isMemberPendingApproval(member);
   const picksActionHtml = predictionAccess.mode === 'open'
     ? (canViewPicks
       ? `<button type="button" class="member-picks-btn" data-member-id="${member.id}"><i class="ti ti-eye"></i><span>${t('membersList.viewPicks')}</span></button>`
@@ -6353,6 +6404,7 @@ async function loadAdminMembers() {
       .order('joined_at', { ascending: true });
     
     if (usersError) throw usersError;
+    const poolUsers = _normalizePoolUserApprovalRows(users, pool);
     
     // v2.5.24: pick the right group-picks table per mode (legacy group_picks
     // for two_phase, group_position_picks for single_phase). knockout_picks
@@ -6363,7 +6415,7 @@ async function loadAdminMembers() {
     const groupTable = isV2 ? 'group_position_picks' : 'group_picks';
 
     // Load picks stats for each user
-    const userIds = users.map(u => u.id);
+    const userIds = poolUsers.map(u => u.id);
 
     // Also load the champion (tournament winner) + top-scorer picks so we can tell a
     // FINISHED member (everything incl. champion + Golden Boot) from one who only STARTED.
@@ -6425,7 +6477,7 @@ async function loadAdminMembers() {
     }
 
     // Enrich users with stats
-    adminState.members = users.map(u => ({
+    adminState.members = poolUsers.map(u => ({
       ...u,
       groupPicksCount: groupPicksByUser[u.id] || 0,
       knockoutPicksCount: knockoutPicksByUser[u.id] || 0,
@@ -6488,7 +6540,7 @@ function renderAdminMembers() {
   
   // Stats
   const total = adminState.members.length;
-  const pending = adminState.members.filter(m => m.approval_status === 'pending' && !m.isAdmin).length;
+  const pending = adminState.members.filter(m => _isMemberPendingApproval(m, adminState.poolData || state.currentPool)).length;
   // Aggregate counts that mirror the per-member statuses: how many STARTED (>=1 group)
   // and how many FINISHED (all groups + full bracket + champion + top scorer).
   const startedCount = adminState.members.filter(m => _adminMemberProgress(m).started).length;
@@ -6533,8 +6585,8 @@ function renderAdminMembers() {
       const br = _adminAnnexRank(b);
       if (ar !== br) return ar - br;
     }
-    if (a.approval_status === 'pending' && b.approval_status !== 'pending') return -1;
-    if (a.approval_status !== 'pending' && b.approval_status === 'pending') return 1;
+    if (_isMemberPendingApproval(a, adminState.poolData || state.currentPool) && !_isMemberPendingApproval(b, adminState.poolData || state.currentPool)) return -1;
+    if (!_isMemberPendingApproval(a, adminState.poolData || state.currentPool) && _isMemberPendingApproval(b, adminState.poolData || state.currentPool)) return 1;
     return (a.nickname || '').localeCompare(b.nickname || '');
   });
   
@@ -6590,14 +6642,15 @@ function renderAdminMembers() {
     const card = document.createElement('div');
     card.className = 'admin-member-card';
     if (member.isAdmin) card.classList.add('is-admin');
-    if (member.approval_status === 'pending' && !member.isAdmin) {
+    const memberPendingApproval = _isMemberPendingApproval(member, adminState.poolData || state.currentPool);
+    if (memberPendingApproval) {
       card.classList.add('is-pending');
     }
     
     const initial = member.nickname ? member.nickname.charAt(0).toUpperCase() : '?';
     
     const adminBadge = member.isAdmin ? `<span class="admin-member-badge">${t('adminMembersEx.adminBadge')}</span>` : '';
-    const pendingBadge = (member.approval_status === 'pending' && !member.isAdmin)
+    const pendingBadge = memberPendingApproval
       ? `<span class="admin-member-pending-badge">${t('adminMembersEx.pendingBadge')}</span>`
       : '';
 
@@ -6632,7 +6685,7 @@ function renderAdminMembers() {
 
     // Quick action buttons for pending users
     let quickActions = '';
-    if (member.approval_status === 'pending' && !member.isAdmin) {
+    if (memberPendingApproval) {
       quickActions = `
         <div class="admin-member-quick-actions">
           <button class="admin-quick-btn approve" data-member-id="${member.id}">
