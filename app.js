@@ -13225,8 +13225,8 @@ async function initApp() {
   const poolNameFromUrl = urlParams.get('pool');
   // v2.5.36: admin-shared recovery link (?recovery=XXXX-XXXX-XXXX-XXXX) -
   // prefill the login input and jump straight to the recovery screen so the
-  // user only has to confirm. If they're already signed in, this falls
-  // through to the regular auto-dashboard route below.
+  // user only has to confirm. This must take precedence over any stale local
+  // session/cookie, otherwise a fresh admin recovery link can open the old user.
   const recoveryFromUrl = urlParams.get('recovery');
   // ?login=CODE — the QR auto-login link: log in immediately, no typing.
   const loginFromUrl = urlParams.get('login');
@@ -13292,7 +13292,7 @@ async function initApp() {
       }
       // else: fall through to the regular localUser routing below.
     }
-    if (recoveryFromUrl && !(localUser && localUser.pool_id)) {
+    if (recoveryFromUrl) {
       showScreen('recovery-login-screen');
       const input = document.getElementById('recovery-login-input');
       if (input) {
