@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-07-18T08:05:54.342Z",
-  "freshUntil": "2026-07-18T14:05:54.342Z",
-  "count": 1,
+  "updatedAt": "2026-07-18T13:42:08.241Z",
+  "freshUntil": "2026-07-18T19:42:08.241Z",
+  "count": 2,
   "items": [
     {
       "id": "fixture-84157ade-88e2-422c-bc27-842e6517c5c1",
@@ -11,6 +11,15 @@
       "en": "Huge third-place match: France vs England, tomorrow 24:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
       "sources": [],
       "expires_at": "2026-07-18T20:45:00.000Z"
+    },
+    {
+      "id": "fixture-ae6f51f1-0310-4872-802f-bc4bf8a62a72",
+      "type": "fixture",
+      "confidence": "confirmed",
+      "he": "משחק ענק בהגמר: ספרד נגד ארגנטינה, מחר 22:00. צד אחד ממשיך, צד אחד הולך הביתה ⏰",
+      "en": "Huge final: Spain vs Argentina, tomorrow 22:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
+      "sources": [],
+      "expires_at": "2026-07-19T18:45:00.000Z"
     }
   ]
 }
