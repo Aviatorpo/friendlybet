@@ -1,6 +1,91 @@
 {
-  "updated_at": "2026-07-15T21:04:55.508Z",
+  "updated_at": "2026-07-18T23:04:58.627Z",
   "items": [
+    {
+      "id": "fra-eng-2026-07-18",
+      "match_id": "84157ade-88e2-422c-bc27-842e6517c5c1",
+      "image": "story-assets/england-wins-france.png",
+      "teams": [
+        "FRA",
+        "ENG"
+      ],
+      "outcome": "ENG",
+      "result": "ENG 6-4 FRA",
+      "top_label": "ENGLAND QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "ENG",
+        "team_he": "אנגליה",
+        "team_en": "England",
+        "match_id": "84157ade-88e2-422c-bc27-842e6517c5c1",
+        "he_name": "6-4 עד הסוף. אנגליה ממשיכה, והבראקט שלו מקבל נקודות חשובות בטבלת ההימור. {names} בחר את {team} להתקדם בבראקט הנוקאאוט 🔥",
+        "he_names": "6-4 עד הסוף. אנגליה ממשיכה, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+        "he_count": "6-4 עד הסוף. אנגליה ממשיכה, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+        "en_name": "6-4 to the end. England move on, and that bracket pick lands important pool points. {names} picked {team} to advance in the knockout bracket 🔥",
+        "en_names": "6-4 to the end. England move on, and those bracket picks land important pool points. {names} picked {team} to advance in the knockout bracket 🔥",
+        "en_count": "6-4 to the end. England move on, and those bracket picks land important pool points. {names} picked {team} to advance in the knockout bracket 🔥"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "ENG",
+          "team_he": "אנגליה",
+          "team_en": "England",
+          "match_id": "84157ade-88e2-422c-bc27-842e6517c5c1",
+          "he_name": "6-4 עד הסוף. אנגליה ממשיכה, והבראקט שלו מקבל נקודות חשובות בטבלת ההימור. {names} בחר את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "he_names": "6-4 עד הסוף. אנגליה ממשיכה, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "he_count": "6-4 עד הסוף. אנגליה ממשיכה, והבראקטים שלהם מקבלים נקודות חשובות בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "en_name": "6-4 to the end. England move on, and that bracket pick lands important pool points. {names} picked {team} to advance in the knockout bracket 🔥",
+          "en_names": "6-4 to the end. England move on, and those bracket picks land important pool points. {names} picked {team} to advance in the knockout bracket 🔥",
+          "en_count": "6-4 to the end. England move on, and those bracket picks land important pool points. {names} picked {team} to advance in the knockout bracket 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ENG",
+          "team_he": "אנגליה",
+          "team_en": "England",
+          "he_name": "כולם לעמוד ולמחוא כפיים. אנגליה שורדת 6-4, והבחירה הזאת כבר עושה רעש נכון בטבלת ההימור. {names} בחר את {team} כזוכת המונדיאל 🔥",
+          "he_names": "כולם לעמוד ולמחוא כפיים. אנגליה שורדת 6-4, והבחירות האלה כבר עושות רעש נכון בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל 🔥",
+          "he_count": "כולם לעמוד ולמחוא כפיים. אנגליה שורדת 6-4, והבחירות האלה כבר עושות רעש נכון בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל 🔥",
+          "en_name": "Everyone stand up. England survive 6-4, and that pick suddenly has witnesses in the pool. {names} picked {team} to win the World Cup 🔥",
+          "en_names": "Everyone stand up. England survive 6-4, and those picks suddenly have witnesses in the pool. {names} picked {team} to win the World Cup 🔥",
+          "en_count": "Everyone stand up. England survive 6-4, and those picks suddenly have witnesses in the pool. {names} picked {team} to win the World Cup 🔥"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "FRA",
+          "team_he": "צרפת",
+          "team_en": "France",
+          "match_id": "84157ade-88e2-422c-bc27-842e6517c5c1",
+          "he_name": "צרפת הייתה קרובה מדי בשביל לצחוק, אבל 6-4 עדיין עצר את הבראקט. בחירת הנוקאאוט מאבדת גובה בטבלת ההימור. {names} בחר את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "he_names": "צרפת הייתה קרובה מדי בשביל לצחוק, אבל 6-4 עדיין עצר את הבראקטים. בחירות הנוקאאוט מאבדות גובה בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "he_count": "צרפת הייתה קרובה מדי בשביל לצחוק, אבל 6-4 עדיין עצר את הבראקטים. בחירות הנוקאאוט מאבדות גובה בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט 🔥",
+          "en_name": "France came too close to laugh, but 6-4 still stopped the bracket. That knockout call loses ground in the pool. {names} picked {team} to advance in the knockout bracket 🔥",
+          "en_names": "France came too close to laugh, but 6-4 still stopped those brackets. Those knockout calls lose ground in the pool. {names} picked {team} to advance in the knockout bracket 🔥",
+          "en_count": "France came too close to laugh, but 6-4 still stopped those brackets. Those knockout calls lose ground in the pool. {names} picked {team} to advance in the knockout bracket 🔥"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "FRA",
+          "team_he": "צרפת",
+          "team_en": "France",
+          "he_name": "צרפת הייתה קרובה, אבל 6-4 לא מספיק. הבחירה הזאת עולה ביוקר בטבלת ההימור. {names} בחר את {team} כזוכת המונדיאל 🔥",
+          "he_names": "צרפת הייתה קרובה, אבל 6-4 לא מספיק. הבחירות האלה עולות ביוקר בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל 🔥",
+          "he_count": "צרפת הייתה קרובה, אבל 6-4 לא מספיק. הבחירות האלה עולות ביוקר בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל 🔥",
+          "en_name": "France came close, but 6-4 is not enough. That pick has a problem in the chat now. {names} picked {team} to win the World Cup 🔥",
+          "en_names": "France came close, but 6-4 is not enough. Those picks have problems in the chat now. {names} picked {team} to win the World Cup 🔥",
+          "en_count": "France came close, but 6-4 is not enough. Those picks have problems in the chat now. {names} picked {team} to win the World Cup 🔥"
+        }
+      ],
+      "he": {
+        "headline": "אנגליה ניצחה את צרפת 6-4: קבלות בבראקט 🔥",
+        "caption": "6-4 עד הסוף, ואז אנגליה נשארת בחיים. בחירות עליה עולות, בחירות על צרפת נופלות 🔥"
+      },
+      "en": {
+        "headline": "England beat France 6-4: bracket proof points are out 🔥",
+        "caption": "6-4 to the end, then England stay alive. Picks on them rise; France picks fall 🔥"
+      }
+    },
     {
       "id": "eng-arg-2026-07-15",
       "match_id": "c9ea9358-126d-4ae7-a17a-b520888002c8",
@@ -673,11 +758,11 @@
         }
       ],
       "he": {
-        "headline": "ארגנטינה ניצחה את מצרים 3-2: קבלות בבראקט 🔥",
+        "headline": "ארגנטינה ניצחה את מצרים 3-2: קבלות בבראקט - הבראקט הרגיש את זה 🔥",
         "caption": "מצרים כמעט הפכה את זה לסיפור ענק, אבל ארגנטינה נשארה בחיים. בחירות עליה קיבלו קבלה; בחירות על מצרים צריכות הסבר בצ'אט 🔥"
       },
       "en": {
-        "headline": "Argentina beat Egypt 3-2: bracket proof points are out 🔥",
+        "headline": "Argentina beat Egypt 3-2: bracket proof points are out - that bracket just got sharper 🔥",
         "caption": "Egypt almost turned this into a huge story, but Argentina stayed alive. Argentina picks get the proof point; Egypt picks owe the chat an explanation 🔥"
       }
     },
