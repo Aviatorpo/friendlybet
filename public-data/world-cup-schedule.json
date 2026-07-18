@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-18T22:01:20.592Z",
+  "updatedAt": "2026-07-18T23:00:45.376Z",
   "source": "https://api.fifa.com/api/v3/calendar/matches?language=en&count=500&idCompetition=17&from=2026-06-01&to=2026-07-31",
   "sourcePage": "https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026/scores-fixtures?country=IL&wtw-filter=ALL",
   "count": 104,
@@ -2573,8 +2573,8 @@
       "away_team_code": "ENG",
       "home_team_name": "France",
       "away_team_name": "England",
-      "home_score": 0,
-      "away_score": 4,
+      "home_score": 4,
+      "away_score": 6,
       "venue": "Miami Stadium",
       "city": "Miami",
       "country": "USA"
