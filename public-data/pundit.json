@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-07-18T21:01:09.279Z",
-  "freshUntil": "2026-07-19T03:01:09.279Z",
-  "count": 1,
+  "updatedAt": "2026-07-18T21:59:49.256Z",
+  "freshUntil": "2026-07-19T03:59:49.256Z",
+  "count": 2,
   "items": [
+    {
+      "id": "live-84157ade-88e2-422c-bc27-842e6517c5c1",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "צרפת נגד אנגליה עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
+      "en": "France vs England is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "sources": [],
+      "expires_at": "2026-07-19T00:59:49.256Z"
+    },
     {
       "id": "fixture-ae6f51f1-0310-4872-802f-bc4bf8a62a72",
       "type": "fixture",
