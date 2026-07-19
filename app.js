@@ -11354,6 +11354,8 @@ async function _applyVerifiedKnockoutScenarioUsers(poolId, currentUsers) {
 }
 
 let _dashboardFinalCelebrationState = null;
+let _dashboardFinalPreviewUrl = null;
+let _dashboardFinalPreviewToken = 0;
 
 function _currentVerifiedFinalScenarioSurface(poolId = state.currentPool && state.currentPool.id) {
   const surface = _verifiedKnockoutScenarioSurface;
@@ -11447,8 +11449,38 @@ function _dashboardFinalCelebrationData(users) {
 
 function _hideDashboardFinalCelebration() {
   _dashboardFinalCelebrationState = null;
+  _dashboardFinalPreviewToken++;
+  if (_dashboardFinalPreviewUrl) {
+    try { URL.revokeObjectURL(_dashboardFinalPreviewUrl); } catch (_) {}
+    _dashboardFinalPreviewUrl = null;
+  }
+  const previewFrame = document.querySelector('.dfc-preview-frame');
+  const preview = document.getElementById('dashboard-final-share-preview');
+  if (previewFrame) previewFrame.classList.remove('is-ready');
+  if (preview) preview.removeAttribute('src');
   const card = document.getElementById('dashboard-final-card');
   if (card) card.style.display = 'none';
+}
+
+async function _renderDashboardFinalSharePreview() {
+  const previewFrame = document.querySelector('.dfc-preview-frame');
+  const preview = document.getElementById('dashboard-final-share-preview');
+  if (!previewFrame || !preview || !_dashboardFinalCelebrationState) return;
+  const token = ++_dashboardFinalPreviewToken;
+  previewFrame.classList.remove('is-ready');
+  try {
+    const blob = await _finalCelebrationCardToBlob();
+    if (token !== _dashboardFinalPreviewToken || !_dashboardFinalCelebrationState || !blob) return;
+    if (_dashboardFinalPreviewUrl) {
+      try { URL.revokeObjectURL(_dashboardFinalPreviewUrl); } catch (_) {}
+    }
+    _dashboardFinalPreviewUrl = URL.createObjectURL(blob);
+    preview.src = _dashboardFinalPreviewUrl;
+    preview.alt = t('dashboard.final.previewAlt', { pool: _dashboardFinalCelebrationState.poolName });
+    previewFrame.classList.add('is-ready');
+  } catch (err) {
+    console.warn('final celebration preview failed:', err);
+  }
 }
 
 function renderDashboardFinalCelebration(users) {
@@ -11464,14 +11496,12 @@ function renderDashboardFinalCelebration(users) {
   const poolWinners = document.getElementById('dashboard-final-pool-winners');
   const goldenBoot = document.getElementById('dashboard-final-golden-boot');
   const share = document.getElementById('dashboard-final-share');
-  const teamBadge = document.getElementById('dashboard-final-team-badge');
 
   if (kicker) kicker.textContent = t('dashboard.final.kicker');
   if (title) title.textContent = t('dashboard.final.title', { team: data.winnerTeam });
   if (scoreline) scoreline.textContent = data.scoreline;
   if (poolWinners) poolWinners.textContent = data.poolWinners.names;
   if (goldenBoot) goldenBoot.textContent = `${data.topScorer.name}${data.topScorer.teamCode ? ` (${data.topScorer.teamCode})` : ''}`;
-  if (teamBadge) teamBadge.textContent = data.winnerCode || '';
   if (share) share.onclick = shareFinalCelebrationCard;
 
   _dashboardFinalCelebrationState = data;
@@ -11481,6 +11511,7 @@ function renderDashboardFinalCelebration(users) {
   const projection = document.getElementById('dashboard-projection-card');
   if (projection) projection.style.display = 'none';
   card.style.display = '';
+  _renderDashboardFinalSharePreview();
   return true;
 }
 
