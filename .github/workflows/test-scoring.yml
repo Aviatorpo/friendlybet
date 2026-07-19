@@ -65,11 +65,13 @@ on:
       - 'scripts/test-espn-live-sync.js'
       - 'scripts/final-result-verifier.js'
       - 'scripts/final-result-verifier-needed.js'
+      - 'scripts/chairman-final-truth-override.js'
       - 'scripts/test-final-result-verifier.js'
       - 'scripts/test-final-result-verifier-ledger.js'
       - 'scripts/test-final-result-verifier-fallback.js'
       - 'scripts/test-final-result-verifier-auto-emergency.js'
       - 'scripts/test-final-result-verifier-needed.js'
+      - 'scripts/test-chairman-final-truth-override.js'
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
       - 'scripts/generate-pundit.js'
@@ -93,6 +95,7 @@ on:
       - 'story-assets/outcome-bases/prompt-index.json'
       - '.github/workflows/calculate-scores-v2.yml'
       - '.github/workflows/final-result-verifier.yml'
+      - '.github/workflows/chairman-final-truth-override.yml'
       - '.github/workflows/update-fifa-world-cup-schedule.yml'
       - '.github/workflows/generate-pundit.yml'
       - '.github/workflows/live-completion-readiness.yml'
@@ -163,11 +166,13 @@ on:
       - 'scripts/test-espn-live-sync.js'
       - 'scripts/final-result-verifier.js'
       - 'scripts/final-result-verifier-needed.js'
+      - 'scripts/chairman-final-truth-override.js'
       - 'scripts/test-final-result-verifier.js'
       - 'scripts/test-final-result-verifier-ledger.js'
       - 'scripts/test-final-result-verifier-fallback.js'
       - 'scripts/test-final-result-verifier-auto-emergency.js'
       - 'scripts/test-final-result-verifier-needed.js'
+      - 'scripts/test-chairman-final-truth-override.js'
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
       - 'scripts/generate-pundit.js'
@@ -191,6 +196,7 @@ on:
       - 'story-assets/outcome-bases/prompt-index.json'
       - '.github/workflows/calculate-scores-v2.yml'
       - '.github/workflows/final-result-verifier.yml'
+      - '.github/workflows/chairman-final-truth-override.yml'
       - '.github/workflows/update-fifa-world-cup-schedule.yml'
       - '.github/workflows/generate-pundit.yml'
       - '.github/workflows/live-completion-readiness.yml'
@@ -291,6 +297,8 @@ jobs:
         run: node scripts/test-final-result-verifier-fallback.js
       - name: Run final-result verifier auto-emergency tests
         run: node scripts/test-final-result-verifier-auto-emergency.js
+      - name: Run chairman final truth override tests
+        run: node scripts/test-chairman-final-truth-override.js
       - name: Run banter engine tests
         run: node scripts/test-banter.js
       - name: Run Pundit feed tests

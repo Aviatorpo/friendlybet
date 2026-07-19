@@ -154,6 +154,9 @@ check('verified-result workflows force match snapshot export before dependent co
       'node scripts/generate-pundit.js',
       'node scripts/world-cup-story-auto-needed.js',
     ],
+    '.github/workflows/chairman-final-truth-override.yml': [
+      'node scripts/generate-pundit.js',
+    ],
     '.github/workflows/publish-world-cup-stories-prepared.yml': [
       'node scripts/world-cup-story-auto-needed.js',
     ],
@@ -168,7 +171,11 @@ check('verified-result workflows force match snapshot export before dependent co
 });
 
 check('verified-result workflows publish all leaderboard snapshots for a new result version', () => {
-  for (const file of ['.github/workflows/final-result-verifier.yml', '.github/workflows/live-poller.yml']) {
+  for (const file of [
+    '.github/workflows/final-result-verifier.yml',
+    '.github/workflows/live-poller.yml',
+    '.github/workflows/chairman-final-truth-override.yml',
+  ]) {
     const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
     assert.ok(
       !text.includes("steps.verify_results.outputs.changed == 'true' && steps.score_results.outputs.changed_pool_ids != ''"),
@@ -179,6 +186,22 @@ check('verified-result workflows publish all leaderboard snapshots for a new res
       `${file} must export, verify, commit, and prove all leaderboard snapshots for the new result version`
     );
   }
+});
+
+check('chairman final truth override is final-only and critical-path first', () => {
+  const file = '.github/workflows/chairman-final-truth-override.yml';
+  const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
+  assert.ok(text.includes('workflow_dispatch'), 'chairman final override must be manual only');
+  assert.ok(text.includes('I_UNDERSTAND_THIS_IS_FINAL_TRUTH_OVERRIDE'), 'chairman final override must require explicit acknowledgement');
+  assert.ok(text.includes('refs/heads/main'), 'chairman final override must refuse non-main production runs');
+  assert.ok(text.includes('CHAIRMAN_FINAL_GOLDEN_BOOT'), 'chairman final override must set manual Golden Boot truth');
+  assert.ok(!text.includes('resolve-final-golden-boot.js'), 'chairman final override must not call automatic Golden Boot resolver');
+  assertOrdered(text, file, 'node scripts/chairman-final-truth-override.js --apply', 'node scripts/calculate-scores-v2.js --critical');
+  assertOrdered(text, file, 'node scripts/calculate-scores-v2.js --critical', 'node scripts/export-snapshots.js all');
+  assertOrdered(text, file, 'node scripts/export-snapshots.js all', 'node scripts/verify-scoring-snapshots.js');
+  assertOrdered(text, file, 'Commit critical final scoring data if changed', 'Prove public scoring snapshots within final promise window');
+  assertOrdered(text, file, 'Prove public scoring snapshots within final promise window', 'Generate leaderboard banter after final truth');
+  assert.ok(text.includes('SCORING_SNAPSHOT_PUBLIC_RETRIES: 30'), 'chairman final override must enforce five-minute public proof');
 });
 
 check('scoring workflow commits critical public snapshots before backup tail', () => {
