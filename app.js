@@ -1308,6 +1308,7 @@ async function goToDashboard() {
 
   // Load real-world results data
   await loadResultsData({ force: true, preferDb: true });
+  if (_poolUsesTopScorerTruth()) await _loadTopScorerTruth();
 
   // v2.4: auto-lock pool when first match starts (both single_phase and two_phase)
   if (typeof spAutoLockPoolIfNeeded === 'function') {
@@ -2424,6 +2425,39 @@ function _poolCreatedAtMs(pool) {
 
 function _isLateKnockoutPool(pool = state.currentPool) {
   return !!pool && pool.betting_mode === 'late_knockout';
+}
+
+const TOP_SCORER_TRUTH_CACHE_MS = 2 * 60 * 1000;
+let _topScorerTruthCache = { at: 0, loaded: false, value: null };
+
+function _poolUsesTopScorerTruth(pool = state.currentPool) {
+  if (!pool || _isLateKnockoutPool(pool)) return false;
+  if (pool.top_scorer_enabled === false) return false;
+  const rules = pool.scoring_rules || {};
+  return Number(rules.top_scorer || 0) > 0;
+}
+
+async function _loadTopScorerTruth(force = false) {
+  if (!supabaseClient) return null;
+  const now = Date.now();
+  if (!force && _topScorerTruthCache.loaded && now - _topScorerTruthCache.at < TOP_SCORER_TRUTH_CACHE_MS) {
+    return _topScorerTruthCache.value;
+  }
+  try {
+    const { data, error } = await supabaseClient
+      .from('app_settings')
+      .select('value')
+      .eq('key', 'top_scorer')
+      .maybeSingle();
+    if (error) throw error;
+    const value = data && data.value ? String(data.value) : null;
+    _topScorerTruthCache = { at: now, loaded: true, value };
+    return value;
+  } catch (err) {
+    console.warn('Top scorer truth load failed:', err);
+    _topScorerTruthCache = { at: now, loaded: false, value: null };
+    return null;
+  }
 }
 
 function _knockoutCutoffMs() {
@@ -10616,7 +10650,17 @@ function _findVerifiedKnockoutScenarioEntry(manifest) {
       if (!Array.isArray(entry.winners) || !entry.winners.includes(resolvedWinner)) continue;
       const expected = (entry.base_finished_match_ids || []).concat([_scenarioMatchIdentity(match)]);
       if (!_sameStringSet(expected, _scenarioFinishedMatchIds())) continue;
-      return { entry, match, winnerCode: resolvedWinner };
+      let topScorerValue = null;
+      let topScorerKey = null;
+      let topScorerCandidateKnown = false;
+      if (entry.requires_top_scorer_truth || entry.path_mode === 'winner_top_scorer') {
+        topScorerValue = _topScorerTruthCache.value ? String(_topScorerTruthCache.value) : '';
+        if (!topScorerValue) continue;
+        topScorerKey = _scenarioSafeSegment(topScorerValue);
+        topScorerCandidateKnown = ((entry.top_scorer_candidates || []).some(candidate =>
+          candidate && String(candidate.key || '') === topScorerKey));
+      }
+      return { entry, match, winnerCode: resolvedWinner, topScorerValue, topScorerKey, topScorerCandidateKnown };
     }
   }
   return null;
@@ -10631,24 +10675,61 @@ function _scenarioStandingsMatchCurrentUsers(standings, currentUsers) {
   return true;
 }
 
+function _knockoutScenarioFetchCandidates(candidate, poolId) {
+  const scenarioKey = _scenarioSafeSegment(candidate && candidate.entry && candidate.entry.scenario_key);
+  const winnerCode = _scenarioSafeSegment(candidate && candidate.winnerCode);
+  const poolSegment = _scenarioSafeSegment(poolId);
+  if (candidate && candidate.entry && candidate.entry.path_mode === 'winner_top_scorer') {
+    const topScorerSegment = _scenarioSafeSegment(candidate.topScorerValue);
+    const baseSegment = _scenarioSafeSegment(candidate.entry.base_top_scorer_segment || '_base');
+    return [
+      { kind: 'top_scorer', url: `/public-data/knockout-scenarios/${scenarioKey}/${winnerCode}/${topScorerSegment}/${poolSegment}.json` },
+      { kind: 'base', url: `/public-data/knockout-scenarios/${scenarioKey}/${winnerCode}/${baseSegment}/${poolSegment}.json` },
+    ];
+  }
+  return [
+    { kind: 'legacy', url: `/public-data/knockout-scenarios/${scenarioKey}/${winnerCode}/${poolSegment}.json` },
+  ];
+}
+
+function _scenarioPayloadMatchesTopScorer(payload, candidate, variantKind) {
+  if (!candidate || !(candidate.entry.requires_top_scorer_truth || candidate.entry.path_mode === 'winner_top_scorer')) return true;
+  const expectedValue = candidate.topScorerValue ? String(candidate.topScorerValue) : '';
+  if (!expectedValue) return false;
+  const payloadValue = payload && payload.top_scorer_player_id != null ? String(payload.top_scorer_player_id) : '';
+  if (variantKind === 'base') {
+    return !candidate.topScorerCandidateKnown && !payloadValue;
+  }
+  if (payloadValue !== expectedValue) return false;
+  if (payload.top_scorer_key != null && String(payload.top_scorer_key) !== _scenarioSafeSegment(expectedValue)) return false;
+  return true;
+}
+
 async function _applyVerifiedKnockoutScenarioUsers(poolId, currentUsers) {
   if (!poolId || !Array.isArray(currentUsers) || !currentUsers.length) return currentUsers;
   const manifest = await _fetchKnockoutScenarioManifest();
   const candidate = _findVerifiedKnockoutScenarioEntry(manifest);
   if (!candidate) return currentUsers;
   try {
-    const url = `/public-data/knockout-scenarios/${_scenarioSafeSegment(candidate.entry.scenario_key)}/${_scenarioSafeSegment(candidate.winnerCode)}/${_scenarioSafeSegment(poolId)}.json`;
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) return currentUsers;
-    const payload = await res.json();
-    if (!payload || payload.type !== 'knockout_scenario_leaderboard') return currentUsers;
-    if (String(payload.pool_id || '') !== String(poolId)) return currentUsers;
-    if (String(payload.winner_code || '') !== String(candidate.winnerCode)) return currentUsers;
-    if (!_scenarioMatchSameFixture(payload.match, candidate.match)) return currentUsers;
-    const expected = (payload.base_finished_match_ids || []).concat([_scenarioMatchIdentity(candidate.match)]);
-    if (!_sameStringSet(expected, _scenarioFinishedMatchIds())) return currentUsers;
-    if (!_scenarioStandingsMatchCurrentUsers(payload.standings, currentUsers)) return currentUsers;
-    return _sortLeaderboardUsers(payload.standings);
+    for (const option of _knockoutScenarioFetchCandidates(candidate, poolId)) {
+      const url = option.url;
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) {
+        if (option.kind === 'top_scorer' && candidate.topScorerCandidateKnown) return currentUsers;
+        continue;
+      }
+      const payload = await res.json();
+      if (!payload || payload.type !== 'knockout_scenario_leaderboard') return currentUsers;
+      if (String(payload.pool_id || '') !== String(poolId)) return currentUsers;
+      if (String(payload.winner_code || '') !== String(candidate.winnerCode)) return currentUsers;
+      if (!_scenarioPayloadMatchesTopScorer(payload, candidate, option.kind)) return currentUsers;
+      if (!_scenarioMatchSameFixture(payload.match, candidate.match)) return currentUsers;
+      const expected = (payload.base_finished_match_ids || []).concat([_scenarioMatchIdentity(candidate.match)]);
+      if (!_sameStringSet(expected, _scenarioFinishedMatchIds())) return currentUsers;
+      if (!_scenarioStandingsMatchCurrentUsers(payload.standings, currentUsers)) return currentUsers;
+      return _sortLeaderboardUsers(payload.standings);
+    }
+    return currentUsers;
   } catch (_) {
     return currentUsers;
   }
@@ -10677,6 +10758,7 @@ async function refreshScoreSurfaces(reason = 'auto') {
     }
 
     await loadResultsData({ force: true, preferDb: true }).catch(() => {});
+    if (_poolUsesTopScorerTruth()) await _loadTopScorerTruth().catch(() => {});
     let users = _sortLeaderboardUsers(await _fetchAllPoolRows('users', 'id,nickname,total_score,joined_at', state.currentPool.id));
     users = await _applyVerifiedKnockoutScenarioUsers(state.currentPool.id, users);
     const totalAcrossPool = users.reduce((sum, user) => sum + (user.total_score || 0), 0);
@@ -10760,6 +10842,7 @@ async function showLeaderboard(options = {}) {
   document.getElementById('lb-members-count').textContent = t('leaderboard.participantsCount', { n: users.length });
 
   await loadResultsData({ force: true, preferDb: true }).catch(() => {});
+  if (_poolUsesTopScorerTruth()) await _loadTopScorerTruth().catch(() => {});
   users = await _applyVerifiedKnockoutScenarioUsers(state.currentPool.id, users);
   const totalScores = users.reduce((sum, u) => sum + (u.total_score || 0), 0);
   const hasScores = totalScores > 0;
