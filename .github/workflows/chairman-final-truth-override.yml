@@ -1,0 +1,244 @@
+name: Chairman Final Truth Override
+
+on:
+  workflow_dispatch:
+    inputs:
+      break_glass_ack:
+        description: 'Required acknowledgement: this bypasses automatic final truth only during an incident'
+        required: true
+        default: 'NO'
+        type: choice
+        options:
+          - 'NO'
+          - 'I_UNDERSTAND_THIS_IS_FINAL_TRUTH_OVERRIDE'
+      dry_run:
+        description: 'Keep true for validation only; false applies production truth and publishes scoring'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      winner_code:
+        description: 'World Cup final winner'
+        required: true
+        type: choice
+        options:
+          - ESP
+          - ARG
+      home_score:
+        description: 'ESP score before penalties'
+        required: true
+        type: string
+      away_score:
+        description: 'ARG score before penalties'
+        required: true
+        type: string
+      result_method:
+        description: 'How the final was decided'
+        required: true
+        default: auto
+        type: choice
+        options:
+          - auto
+          - regular
+          - extra_time
+          - penalties
+      home_penalties:
+        description: 'Optional ESP penalty shootout score'
+        required: false
+        type: string
+      away_penalties:
+        description: 'Optional ARG penalty shootout score'
+        required: false
+        type: string
+      golden_boot:
+        description: 'Final Golden Boot winner'
+        required: true
+        type: choice
+        options:
+          - messi
+          - mbappe
+      operator_note:
+        description: 'Short non-secret reason/source note for the private run report'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: calculate-scores-v2
+  cancel-in-progress: false
+
+jobs:
+  override:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Require main branch
+        run: |
+          if [ "${GITHUB_REF}" != "refs/heads/main" ]; then
+            echo "This production override must run from refs/heads/main, got ${GITHUB_REF}."
+            exit 1
+          fi
+
+      - name: Apply or dry-run chairman final truth
+        id: override
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          CHAIRMAN_FINAL_ACK: ${{ inputs.break_glass_ack }}
+          CHAIRMAN_FINAL_WINNER_CODE: ${{ inputs.winner_code }}
+          CHAIRMAN_FINAL_HOME_SCORE: ${{ inputs.home_score }}
+          CHAIRMAN_FINAL_AWAY_SCORE: ${{ inputs.away_score }}
+          CHAIRMAN_FINAL_RESULT_METHOD: ${{ inputs.result_method }}
+          CHAIRMAN_FINAL_HOME_PENALTIES: ${{ inputs.home_penalties }}
+          CHAIRMAN_FINAL_AWAY_PENALTIES: ${{ inputs.away_penalties }}
+          CHAIRMAN_FINAL_GOLDEN_BOOT: ${{ inputs.golden_boot }}
+          CHAIRMAN_FINAL_OPERATOR_NOTE: ${{ inputs.operator_note }}
+          CHAIRMAN_FINAL_REPORT_PATH: artifacts/chairman-final-truth-override-report.json
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            node scripts/chairman-final-truth-override.js
+          else
+            node scripts/chairman-final-truth-override.js --apply
+          fi
+
+      - name: Upload chairman final truth report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chairman-final-truth-override-report
+          path: artifacts/chairman-final-truth-override-report.json
+          if-no-files-found: warn
+
+      - name: Export match snapshot immediately after final truth
+        if: inputs.dry_run == 'false'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+        run: node scripts/export-snapshots.js matches
+
+      - name: Calculate scores from chairman final truth
+        id: score_results
+        if: inputs.dry_run == 'false'
+        timeout-minutes: 15
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
+          SCORING_VERBOSE: '0'
+          SCORING_FORCE_SCORE_HEARTBEAT: '1'
+        run: node scripts/calculate-scores-v2.js --critical
+
+      - name: Export critical CDN snapshots
+        if: inputs.dry_run == 'false'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_MATCH_SNAPSHOT: '1'
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
+        run: node scripts/export-snapshots.js all
+
+      - name: Verify local scoring snapshots
+        if: inputs.dry_run == 'false'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
+          SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT: '1'
+          SCORING_SCORE_FRESH_AFTER: ${{ steps.score_results.outputs.score_fresh_after }}
+        run: node scripts/verify-scoring-snapshots.js
+
+      - name: Commit critical final scoring data if changed
+        if: inputs.dry_run == 'false'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          CHAIRMAN_FINAL_ACK: ${{ inputs.break_glass_ack }}
+          CHAIRMAN_FINAL_WINNER_CODE: ${{ inputs.winner_code }}
+          CHAIRMAN_FINAL_HOME_SCORE: ${{ inputs.home_score }}
+          CHAIRMAN_FINAL_AWAY_SCORE: ${{ inputs.away_score }}
+          CHAIRMAN_FINAL_RESULT_METHOD: ${{ inputs.result_method }}
+          CHAIRMAN_FINAL_HOME_PENALTIES: ${{ inputs.home_penalties }}
+          CHAIRMAN_FINAL_AWAY_PENALTIES: ${{ inputs.away_penalties }}
+          CHAIRMAN_FINAL_GOLDEN_BOOT: ${{ inputs.golden_boot }}
+          CHAIRMAN_FINAL_OPERATOR_NOTE: ${{ inputs.operator_note }}
+          FORCE_MATCH_SNAPSHOT: '1'
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
+          SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
+          SCORING_VERBOSE: '0'
+          REGENERATE_COMMANDS: |
+            node scripts/chairman-final-truth-override.js --apply
+            FORCE_MATCH_SNAPSHOT=1 node scripts/export-snapshots.js matches
+            SCORING_FORCE_SCORE_HEARTBEAT=1 node scripts/calculate-scores-v2.js --critical
+            FORCE_MATCH_SNAPSHOT=1 FORCE_ALL_LEADERBOARD_SNAPSHOTS=1 node scripts/export-snapshots.js all
+            FORCE_ALL_LEADERBOARD_SNAPSHOTS=1 SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT=1 SCORING_SCORE_FRESH_AFTER="${{ steps.score_results.outputs.score_fresh_after }}" node scripts/verify-scoring-snapshots.js
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data/matches.json public-data/leaderboard)" ]; then
+            bash scripts/commit-generated-snapshots.sh "data: publish chairman final truth scoring" public-data/matches.json public-data/leaderboard
+          else
+            echo "no critical final scoring data change"
+          fi
+
+      - name: Prove public scoring snapshots within final promise window
+        if: inputs.dry_run == 'false'
+        timeout-minutes: 7
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
+          SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT: '1'
+          SCORING_SCORE_FRESH_AFTER: ${{ steps.score_results.outputs.score_fresh_after }}
+          SCORING_SNAPSHOT_PUBLIC_BASE_URL: https://friendlybet.live
+          SCORING_SNAPSHOT_PUBLIC_RETRIES: 30
+          SCORING_SNAPSHOT_PUBLIC_RETRY_MS: 10000
+        run: node scripts/verify-scoring-snapshots.js
+
+      - name: Generate leaderboard banter after final truth
+        if: inputs.dry_run == 'false'
+        continue-on-error: true
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: node scripts/generate-banter.js
+
+      - name: Build Pundit feed after final truth
+        if: inputs.dry_run == 'false'
+        continue-on-error: true
+        run: node scripts/generate-pundit.js
+
+      - name: Validate Pundit feed after final truth
+        if: inputs.dry_run == 'false'
+        continue-on-error: true
+        run: node scripts/test-pundit-feed.js
+
+      - name: Commit optional post-final content if changed
+        if: inputs.dry_run == 'false'
+        continue-on-error: true
+        env:
+          REGENERATE_COMMANDS: |
+            node scripts/generate-banter.js || true
+            node scripts/generate-pundit.js
+            node scripts/test-pundit-feed.js
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data/banter public-data/banter-state.json public-data/pundit.json)" ]; then
+            bash scripts/commit-generated-snapshots.sh "content: refresh chairman final truth feed" public-data/banter public-data/banter-state.json public-data/pundit.json
+          else
+            echo "no optional post-final content change"
+          fi

@@ -36,6 +36,7 @@ Use this map before scanning large files. It is intentionally small and points t
 ## Data / Automation
 
 - Score calculation: `scripts/calculate-scores-v2.js`.
+- Final break-glass override: `scripts/chairman-final-truth-override.js` and `.github/workflows/chairman-final-truth-override.yml`.
 - Retired football-data API match sync scripts: `scripts/sync-matches.js`, `scripts/smart-sync.js`. They must not be used for final-result truth.
 - World Cup Stories generator: `scripts/generate-world-cup-stories.js`.
 - Story feed: `public-data/world-cup-stories.json`.
