@@ -11669,8 +11669,57 @@ function _finalCelebrationShareUrl(source) {
     : `${origin}/?lang=${lang}&${utm}`;
 }
 
+const _finalCelebrationImageCache = {};
+function _finalCelebrationImageCandidates(data) {
+  const match = (data && data.match) || {};
+  const home = String(match.home_team_code || '').toLowerCase();
+  const away = String(match.away_team_code || '').toLowerCase();
+  const winnerCode = String((data && data.winnerCode) || match.winner_code || '').toUpperCase();
+  const winner = winnerCode.toLowerCase();
+  const candidates = [];
+  if (home && away && winner) {
+    candidates.push(`/story-assets/outcome-bases/${home}-${away}-${winner}-wins-base.png`);
+    candidates.push(`/story-assets/outcome-bases/${away}-${home}-${winner}-wins-base.png`);
+  }
+  if (winnerCode) {
+    candidates.push(`/heroes/hero-${winnerCode}.webp`);
+    candidates.push(`/heroes/hero-${winnerCode}.jpg`);
+  }
+  return Array.from(new Set(candidates));
+}
+
+async function _loadFinalCelebrationImage(data) {
+  const candidates = _finalCelebrationImageCandidates(data);
+  for (const src of candidates) {
+    if (_finalCelebrationImageCache[src] !== undefined) {
+      if (_finalCelebrationImageCache[src]) return _finalCelebrationImageCache[src];
+      continue;
+    }
+    const img = await new Promise(resolve => {
+      const el = new Image();
+      el.crossOrigin = 'anonymous';
+      let done = false;
+      const finish = value => {
+        if (!done) {
+          done = true;
+          _finalCelebrationImageCache[src] = value;
+          resolve(value);
+        }
+      };
+      el.onload = () => finish(el);
+      el.onerror = () => finish(false);
+      setTimeout(() => finish(false), 2500);
+      el.src = src;
+    });
+    if (img && img.naturalWidth) return img;
+  }
+  return null;
+}
+
 function _drawFinalCelebrationCard(cv, qr, opts) {
   const ctx = cv.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
   const W = 1080, H = 1350, PAD = 72;
   const INK = '#fbf8ee', MUTED = '#c8c2b2', GOLD = '#d9b46a', GOLD_LT = '#f4dc9f', GREEN = '#4fd1a0';
   const rtl = ((typeof currentLanguage !== 'undefined' && currentLanguage) || 'he') === 'he';
@@ -11701,24 +11750,63 @@ function _drawFinalCelebrationCard(cv, qr, opts) {
     if (cur) lines.push(cur);
     return lines.slice(0, maxLines);
   }
-
-  const bg = ctx.createLinearGradient(0, 0, 0, H);
-  bg.addColorStop(0, '#09130f');
-  bg.addColorStop(0.58, '#11100b');
-  bg.addColorStop(1, '#050706');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, W, H);
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = 'rgba(217,180,106,0.38)';
-  rr(22, 22, W - 44, H - 44, 28);
-  ctx.stroke();
-
-  for (let i = 0; i < 70; i++) {
-    const x = (i * 151) % W;
-    const y = 118 + ((i * 89) % 520);
-    ctx.fillStyle = i % 3 === 0 ? 'rgba(217,180,106,0.50)' : (i % 3 === 1 ? 'rgba(79,209,160,0.35)' : 'rgba(255,255,255,0.18)');
-    ctx.fillRect(x, y, 8 + (i % 4) * 4, 4);
+  function coverImage(img, x, y, w, h) {
+    const iw = img.naturalWidth || img.width;
+    const ih = img.naturalHeight || img.height;
+    const scale = Math.max(w / iw, h / ih);
+    const sw = w / scale;
+    const sh = h / scale;
+    const sx = Math.max(0, (iw - sw) / 2);
+    const sy = Math.max(0, Math.min(ih - sh, ih * 0.42 - sh / 2));
+    ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
   }
+  function containImage(img, x, y, w, h) {
+    const iw = img.naturalWidth || img.width;
+    const ih = img.naturalHeight || img.height;
+    const scale = Math.min(w / iw, h / ih);
+    const dw = iw * scale;
+    const dh = ih * scale;
+    ctx.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+  }
+
+  const hero = opts.heroImage;
+  if (hero && hero.naturalWidth) {
+    ctx.save();
+    ctx.filter = 'blur(24px) brightness(0.62) saturate(1.08)';
+    coverImage(hero, 0, 0, W, H);
+    ctx.restore();
+    containImage(hero, 0, 0, W, H);
+  } else {
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#0a1512');
+    bg.addColorStop(0.52, '#12100b');
+    bg.addColorStop(1, '#050706');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, W, H);
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'rgba(217,180,106,0.18)';
+    ctx.font = '900 230px Sora,Heebo,sans-serif';
+    ctx.fillText(String(opts.winnerCode || '').toUpperCase(), W / 2, 570);
+    ctx.fillStyle = 'rgba(217,180,106,0.92)';
+    ctx.font = '900 120px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",serif';
+    ctx.fillText('🏆', W / 2, 370);
+    ctx.restore();
+  }
+
+  const topShade = ctx.createLinearGradient(0, 0, 0, 380);
+  topShade.addColorStop(0, 'rgba(3,6,7,0.86)');
+  topShade.addColorStop(0.46, 'rgba(3,6,7,0.34)');
+  topShade.addColorStop(1, 'rgba(3,6,7,0)');
+  ctx.fillStyle = topShade;
+  ctx.fillRect(0, 0, W, 390);
+  const bottomShade = ctx.createLinearGradient(0, 700, 0, H);
+  bottomShade.addColorStop(0, 'rgba(3,6,7,0)');
+  bottomShade.addColorStop(0.45, 'rgba(3,6,7,0.60)');
+  bottomShade.addColorStop(1, 'rgba(3,6,7,0.94)');
+  ctx.fillStyle = bottomShade;
+  ctx.fillRect(0, 700, W, H - 700);
 
   ctx.textBaseline = 'middle';
   ctx.textAlign = 'left';
@@ -11744,70 +11832,16 @@ function _drawFinalCelebrationCard(cv, qr, opts) {
   ctx.fillText(opts.scoreline || '', W / 2, 306);
   ctx.restore();
 
-  const cx = W / 2;
-  const floor = 760;
-  ctx.save();
-  ctx.translate(cx, 0);
-  ctx.strokeStyle = 'rgba(251,248,238,0.86)';
-  ctx.lineWidth = 16;
-  ctx.lineCap = 'round';
-  ctx.beginPath();
-  ctx.moveTo(-118, 432);
-  ctx.lineTo(-196, 356);
-  ctx.moveTo(118, 432);
-  ctx.lineTo(196, 356);
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = 'rgba(217,180,106,0.42)';
+  rr(22, 22, W - 44, H - 44, 28);
   ctx.stroke();
-  ctx.fillStyle = 'rgba(79,209,160,0.92)';
-  rr(-105, 414, 210, 226, 40);
-  ctx.fill();
-  ctx.strokeStyle = 'rgba(251,248,238,0.34)';
-  ctx.lineWidth = 4;
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.arc(0, 364, 58, 0, Math.PI * 2);
-  ctx.fillStyle = '#d7b08a';
-  ctx.fill();
-  ctx.lineWidth = 8;
-  ctx.strokeStyle = 'rgba(20,15,10,0.45)';
-  ctx.stroke();
-  ctx.strokeStyle = 'rgba(251,248,238,0.86)';
-  ctx.lineWidth = 18;
-  ctx.beginPath();
-  ctx.moveTo(-48, 634);
-  ctx.lineTo(-88, floor);
-  ctx.moveTo(48, 634);
-  ctx.lineTo(88, floor);
-  ctx.stroke();
-
-  ctx.fillStyle = GOLD;
-  rr(-102, 256, 204, 56, 18);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(-82, 312);
-  ctx.bezierCurveTo(-58, 395, 58, 395, 82, 312);
-  ctx.lineTo(-82, 312);
-  ctx.fill();
-  ctx.strokeStyle = GOLD_LT;
-  ctx.lineWidth = 5;
-  ctx.stroke();
-  ctx.strokeStyle = GOLD;
-  ctx.lineWidth = 14;
-  ctx.beginPath();
-  ctx.arc(-114, 302, 40, Math.PI * 1.18, Math.PI * 0.1);
-  ctx.arc(114, 302, 40, Math.PI * 0.9, Math.PI * 1.82);
-  ctx.stroke();
-  ctx.fillStyle = GOLD_LT;
-  rr(-22, 378, 44, 74, 10);
-  ctx.fill();
-  rr(-66, 452, 132, 30, 10);
-  ctx.fill();
-  ctx.restore();
 
   const panelY = 835;
   rr(PAD, panelY, W - PAD * 2, 228, 24);
-  ctx.fillStyle = 'rgba(255,255,255,0.055)';
+  ctx.fillStyle = 'rgba(3,7,7,0.74)';
   ctx.fill();
-  ctx.strokeStyle = 'rgba(217,180,106,0.28)';
+  ctx.strokeStyle = 'rgba(217,180,106,0.42)';
   ctx.lineWidth = 2;
   ctx.stroke();
 
@@ -11863,11 +11897,15 @@ async function _finalCelebrationCardToBlob() {
   let qr = null;
   try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (_) {}
   try { qr = await _loadQrImage(url); } catch (_) { qr = null; }
+  let heroImage = null;
+  try { heroImage = await _loadFinalCelebrationImage(data); } catch (_) { heroImage = null; }
   const cv = document.createElement('canvas');
   cv.width = 1080;
   cv.height = 1350;
   _drawFinalCelebrationCard(cv, qr, {
     poolName: data.poolName,
+    winnerCode: data.winnerCode,
+    heroImage,
     kicker: t('dashboard.final.cardKicker'),
     title: t('dashboard.final.cardTitle', { team: data.winnerTeam }),
     scoreline: data.scoreline,

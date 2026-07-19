@@ -11,6 +11,7 @@ const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 const css = fs.readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
 const i18n = fs.readFileSync(path.join(ROOT, 'i18n.js'), 'utf8');
 const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, 'public-data', 'knockout-scenarios', 'manifest.json'), 'utf8'));
+const espArgSpainArt = path.join(ROOT, 'story-assets', 'outcome-bases', 'esp-arg-esp-wins-base.png');
 
 function includes(name, text, needle) {
   assert.ok(text.includes(needle), `${name} should include ${needle}`);
@@ -35,6 +36,13 @@ includes('final preview cleans object URLs', app, 'URL.revokeObjectURL(_dashboar
 includes('final share is exported', app, 'window.shareFinalCelebrationCard = shareFinalCelebrationCard');
 includes('shared rank helper exists', app, 'function _rankLeaderboardUsers');
 includes('shared final ranks are gated', app, 'function _useFinalSharedRanks');
+includes('final card uses matchup outcome artwork first', app, '/story-assets/outcome-bases/${home}-${away}-${winner}-wins-base.png');
+includes('final card falls back to existing champion hero assets', app, '/heroes/hero-${winnerCode}.webp');
+includes('final card loads celebration hero before rendering blob', app, 'heroImage = await _loadFinalCelebrationImage(data)');
+assert.ok(!app.includes('ctx.moveTo(-118, 432)'), 'final card must not use the old stick-figure captain renderer');
+assert.ok(!app.includes('ctx.arc(0, 364, 58'), 'final card must not draw the old primitive face/body');
+assert.ok(fs.existsSync(espArgSpainArt), 'pool 349MD final preview must have the Spain-over-Argentina celebration artwork');
+console.log('ok: final card does not contain primitive captain drawing');
 
 includes('Hebrew final title translation exists', i18n, "'dashboard.final.title': '{team} אלופת העולם'");
 includes('English final title translation exists', i18n, "'dashboard.final.title': '{team} are world champions'");
