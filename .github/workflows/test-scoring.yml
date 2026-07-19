@@ -72,6 +72,7 @@ on:
       - 'scripts/test-final-result-verifier-auto-emergency.js'
       - 'scripts/test-final-result-verifier-needed.js'
       - 'scripts/test-chairman-final-truth-override.js'
+      - 'scripts/test-pool-final-preview.js'
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
       - 'scripts/generate-pundit.js'
@@ -88,6 +89,7 @@ on:
       - 'scripts/test-pundit-feed.js'
       - 'scripts/test-pundit-client-staleness.js'
       - 'public-data/matches.json'
+      - 'public-data/final-preview/*.json'
       - 'public-data/pundit-news.json'
       - 'public-data/pundit.json'
       - 'public-data/world-cup-stories.json'
@@ -173,6 +175,7 @@ on:
       - 'scripts/test-final-result-verifier-auto-emergency.js'
       - 'scripts/test-final-result-verifier-needed.js'
       - 'scripts/test-chairman-final-truth-override.js'
+      - 'scripts/test-pool-final-preview.js'
       - 'scripts/generate-banter.js'
       - 'scripts/test-banter.js'
       - 'scripts/generate-pundit.js'
@@ -189,6 +192,7 @@ on:
       - 'scripts/test-pundit-feed.js'
       - 'scripts/test-pundit-client-staleness.js'
       - 'public-data/matches.json'
+      - 'public-data/final-preview/*.json'
       - 'public-data/pundit-news.json'
       - 'public-data/pundit.json'
       - 'public-data/world-cup-stories.json'
@@ -299,6 +303,8 @@ jobs:
         run: node scripts/test-final-result-verifier-auto-emergency.js
       - name: Run chairman final truth override tests
         run: node scripts/test-chairman-final-truth-override.js
+      - name: Run pool final preview tests
+        run: node scripts/test-pool-final-preview.js
       - name: Run banter engine tests
         run: node scripts/test-banter.js
       - name: Run Pundit feed tests

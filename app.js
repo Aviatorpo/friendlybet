@@ -1405,6 +1405,7 @@ async function goToDashboard() {
     allUsers = await _fetchAllPoolRows('users', 'id,nickname,total_score,joined_at', state.currentPool.id);
     allUsers = _sortLeaderboardUsers(allUsers);
     allUsers = await _applyVerifiedKnockoutScenarioUsers(state.currentPool.id, allUsers);
+    allUsers = await _applyPoolFinalPreviewUsers(state.currentPool.id, allUsers);
   } catch (e) {
     console.warn('Dashboard score summary load failed:', e);
   }
@@ -11197,6 +11198,9 @@ function _leaderboardRankLabel(rank) {
 
 let _knockoutScenarioManifestCache = { at: 0, data: null };
 let _verifiedKnockoutScenarioSurface = null;
+const POOL_FINAL_PREVIEW_CODES = new Set(['349MD']);
+const POOL_FINAL_PREVIEW_CACHE_MS = 20 * 1000;
+let _poolFinalPreviewCache = { key: '', at: 0, loaded: false, data: null };
 
 function _scenarioSafeSegment(value) {
   return String(value == null ? '' : value).replace(/[^a-zA-Z0-9._-]+/g, '_') || 'unknown';
@@ -11351,6 +11355,146 @@ async function _applyVerifiedKnockoutScenarioUsers(poolId, currentUsers) {
   } catch (_) {
     return currentUsers;
   }
+}
+
+function _poolFinalPreviewCode(pool = state.currentPool) {
+  const code = String((pool && pool.code) || '').trim().toUpperCase();
+  return POOL_FINAL_PREVIEW_CODES.has(code) ? code : '';
+}
+
+function _normalizePoolFinalPreview(raw, pool, code) {
+  if (!raw || raw.active !== true) return null;
+  if (String(raw.pool_code || '').trim().toUpperCase() !== code) return null;
+  if (raw.pool_id && pool && String(raw.pool_id) !== String(pool.id || '')) return null;
+  if (!Array.isArray(raw.standings) || raw.standings.length === 0) return null;
+  return raw;
+}
+
+async function _fetchPoolFinalPreview(pool = state.currentPool, maxAgeMs = POOL_FINAL_PREVIEW_CACHE_MS) {
+  const code = _poolFinalPreviewCode(pool);
+  if (!code) return null;
+  const now = Date.now();
+  if (_poolFinalPreviewCache.key === code && _poolFinalPreviewCache.loaded && (now - _poolFinalPreviewCache.at) < maxAgeMs) {
+    return _poolFinalPreviewCache.data;
+  }
+  try {
+    const res = await fetch(`/public-data/final-preview/${encodeURIComponent(code)}.json`, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`preview ${res.status}`);
+    const raw = await res.json();
+    const data = _normalizePoolFinalPreview(raw, pool, code);
+    _poolFinalPreviewCache = { key: code, at: now, loaded: true, data };
+    return data;
+  } catch (_) {
+    _poolFinalPreviewCache = { key: code, at: now, loaded: true, data: null };
+    return null;
+  }
+}
+
+function _poolFinalPreviewMatch(preview) {
+  const raw = { ...((preview && preview.match) || {}) };
+  const homeScore = Number(raw.home_score);
+  const awayScore = Number(raw.away_score);
+  return {
+    ...raw,
+    status: raw.status || 'FINISHED',
+    home_score: Number.isFinite(homeScore) ? homeScore : null,
+    away_score: Number.isFinite(awayScore) ? awayScore : null,
+    winner_code: String(raw.winner_code || (preview && preview.winner_code) || '').toUpperCase(),
+    live_source: raw.live_source || 'friendlybet-pool-final-preview',
+    source_updated_at: raw.source_updated_at || (preview && preview.updatedAt) || new Date().toISOString(),
+    last_updated: raw.last_updated || (preview && preview.updatedAt) || new Date().toISOString()
+  };
+}
+
+function _poolFinalPreviewCandidate(preview) {
+  const topScorer = (preview && preview.top_scorer) || {};
+  const topScorerValue = String(topScorer.player_id || preview.top_scorer_player_id || '').trim();
+  if (!topScorerValue) return null;
+  const match = _poolFinalPreviewMatch(preview);
+  const winnerCode = _matchResolvedWinner(match);
+  if (!winnerCode || String(winnerCode) !== String(preview.winner_code || match.winner_code || '').toUpperCase()) return null;
+  const topScorerKey = _scenarioSafeSegment(topScorerValue);
+  const entry = {
+    scenario_key: String(preview.scenario_key || match.external_id || match.id || ''),
+    match,
+    winners: [winnerCode],
+    path_mode: 'winner_top_scorer',
+    requires_top_scorer_truth: true,
+    top_scorer_candidates: [{
+      key: topScorerKey,
+      player_id: topScorerValue,
+      player_name: topScorer.player_name || preview.top_scorer_player_name || '',
+      team_code: topScorer.team_code || preview.top_scorer_team_code || ''
+    }]
+  };
+  return { entry, match, winnerCode, topScorerValue, topScorerKey, topScorerCandidateKnown: true };
+}
+
+function _poolFinalPreviewSurface(preview, poolId, standings) {
+  const candidate = _poolFinalPreviewCandidate(preview);
+  if (!candidate) return null;
+  return {
+    poolId: String(poolId),
+    candidate,
+    payload: {
+      ...preview,
+      type: 'knockout_scenario_leaderboard',
+      pool_id: String(poolId),
+      winner_code: candidate.winnerCode,
+      top_scorer_player_id: candidate.topScorerValue,
+      top_scorer_key: candidate.topScorerKey,
+      match: candidate.match,
+      standings,
+      base_finished_match_ids: Array.isArray(preview.base_finished_match_ids) ? preview.base_finished_match_ids : []
+    },
+    variantKind: 'pool_final_preview',
+    preview: true,
+    at: Date.now()
+  };
+}
+
+function _applyPoolFinalPreviewResults(preview) {
+  const match = _poolFinalPreviewMatch(preview);
+  if (!_matchIsFinishedStatus(match) || !_matchResolvedWinner(match)) return;
+  if (!state.results) return;
+  const sameFinal = row => _scenarioMatchSameFixture(row, match);
+  const byDate = (a, b) => (Date.parse(a.match_date || 0) - Date.parse(b.match_date || 0));
+  const existingAll = Array.isArray(state.results.allMatches) ? state.results.allMatches : [];
+  let replaced = false;
+  const allMatches = existingAll.map(row => {
+    if (!sameFinal(row)) return row;
+    replaced = true;
+    return { ...row, ...match };
+  });
+  if (!replaced) allMatches.push(match);
+  state.results.allMatches = allMatches.slice().sort(byDate);
+
+  const existingFinished = Array.isArray(state.results.finishedMatches)
+    ? state.results.finishedMatches
+    : state.results.allMatches.filter(_matchIsFinishedStatus);
+  state.results.finishedMatches = existingFinished
+    .filter(row => !sameFinal(row))
+    .concat([match])
+    .filter(_matchIsFinishedStatus)
+    .sort(byDate);
+  state.results.pendingVerificationMatches = (Array.isArray(state.results.pendingVerificationMatches)
+    ? state.results.pendingVerificationMatches
+    : []).filter(row => !sameFinal(row));
+  if (!state.results.knockoutWinners) state.results.knockoutWinners = {};
+  if (match.id) state.results.knockoutWinners[match.id] = _matchResolvedWinner(match);
+}
+
+async function _applyPoolFinalPreviewUsers(poolId, currentUsers) {
+  if (!poolId || !Array.isArray(currentUsers) || !currentUsers.length) return currentUsers;
+  const preview = await _fetchPoolFinalPreview();
+  if (!preview || String(preview.pool_id || '') !== String(poolId)) return currentUsers;
+  if (!_scenarioStandingsMatchCurrentUsers(preview.standings, currentUsers)) return currentUsers;
+  const standings = _sortLeaderboardUsers(preview.standings);
+  const surface = _poolFinalPreviewSurface(preview, poolId, standings);
+  if (!surface) return currentUsers;
+  _applyPoolFinalPreviewResults(preview);
+  _verifiedKnockoutScenarioSurface = surface;
+  return standings;
 }
 
 let _dashboardFinalCelebrationState = null;
@@ -11802,6 +11946,7 @@ async function refreshScoreSurfaces(reason = 'auto') {
     if (_poolUsesTopScorerTruth()) await _loadTopScorerTruth().catch(() => {});
     let users = _sortLeaderboardUsers(await _fetchAllPoolRows('users', 'id,nickname,total_score,joined_at', state.currentPool.id));
     users = await _applyVerifiedKnockoutScenarioUsers(state.currentPool.id, users);
+    users = await _applyPoolFinalPreviewUsers(state.currentPool.id, users);
     const totalAcrossPool = users.reduce((sum, user) => sum + (user.total_score || 0), 0);
     const hasScores = totalAcrossPool > 0;
     const me = users.find(user => state.currentUser && user.id === state.currentUser.id);
@@ -11887,6 +12032,7 @@ async function showLeaderboard(options = {}) {
   await loadResultsData({ force: true, preferDb: true }).catch(() => {});
   if (_poolUsesTopScorerTruth()) await _loadTopScorerTruth().catch(() => {});
   users = await _applyVerifiedKnockoutScenarioUsers(state.currentPool.id, users);
+  users = await _applyPoolFinalPreviewUsers(state.currentPool.id, users);
   const totalScores = users.reduce((sum, u) => sum + (u.total_score || 0), 0);
   const hasScores = totalScores > 0;
   const progress = _dashboardGroupProgress();
