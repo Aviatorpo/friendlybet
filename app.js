@@ -14,6 +14,17 @@ const state = {
   pendingRecoveryCode: null // קוד שחזור שעדיין לא שמר
 };
 
+const FB_OPTIONAL_SURFACES = {
+  dashboardFinalCelebration: false,
+  dashboardPundit: false,
+  worldCupStories: false,
+  leaderboardBanter: false
+};
+
+function _fbOptionalSurfaceEnabled(name) {
+  return !!(FB_OPTIONAL_SURFACES && FB_OPTIONAL_SURFACES[name]);
+}
+
 // ============================================================
 // Screen Navigation
 // ============================================================
@@ -3792,6 +3803,12 @@ function _evergreenPundit(count, hourSeed, exclude) {
 async function renderPundit() {
   const card = document.getElementById('pundit-card');
   if (!card) return;
+  if (!_fbOptionalSurfaceEnabled('dashboardPundit')) {
+    if (_punditState.timer) { clearInterval(_punditState.timer); _punditState.timer = null; }
+    if (_punditState.refreshTimer) { clearInterval(_punditState.refreshTimer); _punditState.refreshTimer = null; }
+    card.style.display = 'none';
+    return;
+  }
   const items = await loadPundit();
   if (!items.length) { card.style.display = 'none'; return; }
   card.style.display = '';
@@ -4406,6 +4423,13 @@ async function renderWorldCupStories() {
   const dots = document.getElementById('world-cup-stories-dots');
   const count = document.getElementById('world-cup-stories-count');
   if (!card || !rail || !dots) return;
+  if (!_fbOptionalSurfaceEnabled('worldCupStories')) {
+    card.style.display = 'none';
+    rail.innerHTML = '';
+    dots.innerHTML = '';
+    if (count) count.textContent = '';
+    return;
+  }
   const items = await loadWorldCupStories();
   if (!items.length) {
     card.style.display = 'none';
@@ -11631,6 +11655,7 @@ function renderDashboardFinalCelebration(users) {
   const card = document.getElementById('dashboard-final-card');
   if (!card) return false;
   _hideDashboardFinalCelebration();
+  if (!_fbOptionalSurfaceEnabled('dashboardFinalCelebration')) return false;
   const data = _dashboardFinalCelebrationData(users);
   if (!data) return false;
 
@@ -12458,6 +12483,7 @@ async function renderLeaderboardBanter(users, options = {}) {
   if (!box) return;
   _lbBanter = null;
   box.style.display = 'none';
+  if (!_fbOptionalSurfaceEnabled('leaderboardBanter')) return;
   try {
     if (options && options.dataPending) return;
     if (!state.currentPool || !state.currentPool.id) return;
