@@ -104,6 +104,7 @@
     "400021540",
     "400021541",
     "400021542",
+    "400021543",
     "537327",
     "537328",
     "537329",
@@ -2076,7 +2077,31 @@
         "teams": 48,
         "players": 1535
       }
+    },
+    {
+      "createdAt": "2026-07-19T22:30:18.360Z",
+      "file": "private-backups/2026-07-19T22-30-18-360Z__400021543-ESP-ARG.json.enc",
+      "encrypted": true,
+      "reason": "new-final-match",
+      "triggerMatchIds": [
+        "400021543"
+      ],
+      "tableCounts": {
+        "pools": 2194,
+        "users": 6762,
+        "group_picks": 22978,
+        "knockout_picks": 111995,
+        "group_position_picks": 175061,
+        "tournament_winner_picks": 3620,
+        "top_scorer_picks": 3134,
+        "sp_third_place_picks": 29178,
+        "pick_backups": 50359,
+        "knockout_reopen_grants": 1776,
+        "matches": 176,
+        "teams": 48,
+        "players": 1535
+      }
     }
   ],
-  "updatedAt": "2026-07-18T23:30:16.383Z"
+  "updatedAt": "2026-07-19T22:30:18.360Z"
 }
