@@ -1,4 +1,4 @@
-// Test: final dashboard celebration is hidden until verified final scenario truth.
+// Test: final dashboard celebration/share code is dormant in production UI.
 // Run: node scripts/test-final-dashboard-celebration.js
 
 const fs = require('fs');
@@ -19,17 +19,30 @@ function includes(name, text, needle) {
 }
 
 includes('final card is hidden by default', html, 'id="dashboard-final-card" style="display:none;"');
-includes('final share button exists', html, 'id="dashboard-final-share"');
-includes('final share preview exists', html, 'id="dashboard-final-share-preview"');
+includes('final share button remains dormant', html, 'id="dashboard-final-share"');
+includes('final share preview remains dormant', html, 'id="dashboard-final-share-preview"');
 includes('final card styles exist', css, '.dashboard-final-card');
 includes('final card has dashboard order', css, '#user-dashboard-screen #dashboard-final-card');
 includes('final preview frame styles exist', css, '.dfc-preview-frame');
+includes('dashboard optional surfaces are configured', app, 'const FB_OPTIONAL_SURFACES = {');
+includes('dashboard final card is disabled', app, 'dashboardFinalCelebration: false');
+includes('dashboard pundit is disabled', app, 'dashboardPundit: false');
+includes('world cup stories are disabled', app, 'worldCupStories: false');
+includes('leaderboard banter is disabled', app, 'leaderboardBanter: false');
+includes('dashboard final renderer exits behind flag', app, "if (!_fbOptionalSurfaceEnabled('dashboardFinalCelebration')) return false;");
+includes('dashboard pundit renderer exits behind flag', app, "if (!_fbOptionalSurfaceEnabled('dashboardPundit')) {");
+includes('world cup stories renderer exits behind flag', app, "if (!_fbOptionalSurfaceEnabled('worldCupStories')) {");
+includes('leaderboard banter renderer exits behind flag', app, "if (!_fbOptionalSurfaceEnabled('leaderboardBanter')) return;");
+includes('css hides dashboard final card', css, '#user-dashboard-screen #dashboard-final-card,');
+includes('css hides dashboard pundit card', css, '#user-dashboard-screen #pundit-card,');
+includes('css hides stories card', css, '#user-dashboard-screen #world-cup-stories-card,');
+includes('css hides leaderboard banter', css, '#leaderboard-screen #lb-banter');
 
 includes('scenario surface metadata is captured', app, '_verifiedKnockoutScenarioSurface = {');
 includes('final card requires verified scenario surface', app, 'function _currentVerifiedFinalScenarioSurface');
 includes('final card requires Golden Boot truth', app, "entry.requires_top_scorer_truth || entry.path_mode === 'winner_top_scorer'");
-includes('dashboard renders final celebration', app, 'renderDashboardFinalCelebration(allUsers)');
-includes('refresh renders final celebration', app, 'renderDashboardFinalCelebration(users)');
+includes('dashboard still passes through final gate', app, 'renderDashboardFinalCelebration(allUsers)');
+includes('refresh still passes through final gate', app, 'renderDashboardFinalCelebration(users)');
 includes('dashboard renders final share preview', app, 'async function _renderDashboardFinalSharePreview');
 includes('final preview uses same share-image blob', app, 'const blob = await _finalCelebrationCardToBlob()');
 includes('final preview cleans object URLs', app, 'URL.revokeObjectURL(_dashboardFinalPreviewUrl)');

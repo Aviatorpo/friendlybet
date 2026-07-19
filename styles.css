@@ -11900,3 +11900,12 @@ svg.rc-action-icon { width: 18px; height: 18px; stroke: currentColor; }
   font-weight: 600; font-size: 14px; cursor: pointer; padding: 6px;
 }
 .bracket-share-done:hover { color: #ecd49a; }
+
+/* v2.10.147: final-dashboard rollback. Keep optional editorial/share panels out of
+   the dashboard and leaderboard while preserving scoring and core status surfaces. */
+#user-dashboard-screen #dashboard-final-card,
+#user-dashboard-screen #pundit-card,
+#user-dashboard-screen #world-cup-stories-card,
+#leaderboard-screen #lb-banter {
+  display: none !important;
+}
