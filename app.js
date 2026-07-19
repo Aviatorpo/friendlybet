@@ -1373,6 +1373,7 @@ async function goToDashboard() {
 
   // Load real-world results data
   await loadResultsData({ force: true, preferDb: true });
+  if (_poolUsesTopScorerTruth()) await _loadTopScorerTruth();
 
   // v2.4: auto-lock pool when first match starts (both single_phase and two_phase)
   if (typeof spAutoLockPoolIfNeeded === 'function') {
@@ -1426,7 +1427,7 @@ async function goToDashboard() {
       if (freshMe && state.currentUser) state.currentUser.total_score = freshMe.total_score || 0;
       if (pointsEl) pointsEl.textContent = freshMe ? (freshMe.total_score || 0) : (state.currentUser.total_score || 0);
       if (allUsers.length) {
-        const rank = allUsers.findIndex(u => u.id === state.currentUser.id) + 1;
+        const rank = _leaderboardRankForUser(allUsers, state.currentUser.id, { sharedRanks: _useFinalSharedRanks() });
         const rankEl = document.getElementById('user-rank');
         if (rankEl) rankEl.textContent = (hasScores && rank > 0) ? rank : '-';
       }
@@ -1477,27 +1478,30 @@ async function goToDashboard() {
   // 72h grace deadline for pools affected by the two-phase pick-loss bug.
   try { await updateTwoPhaseIncidentBanner(); } catch (e) { console.warn('Dashboard incident banner failed:', e); }
 
-  renderDashboardDramaHero(resolveDashboardDramaState({
-    users: allUsers,
-    hasScores,
-    tournamentStarted,
-    phase,
-    progress
-  }));
+  const finalCelebrationShown = renderDashboardFinalCelebration(allUsers);
+  if (!finalCelebrationShown) {
+    renderDashboardDramaHero(resolveDashboardDramaState({
+      users: allUsers,
+      hasScores,
+      tournamentStarted,
+      phase,
+      progress
+    }));
 
-  renderDashboardImpactPilot(allUsers, {
-    hasScores,
-    tournamentStarted,
-    phase,
-    progress
-  }).catch(err => {
-    console.warn('Dashboard impact pilot failed:', err);
-    _setDashboardImpactPilotMode(false);
-  });
+    renderDashboardImpactPilot(allUsers, {
+      hasScores,
+      tournamentStarted,
+      phase,
+      progress
+    }).catch(err => {
+      console.warn('Dashboard impact pilot failed:', err);
+      _setDashboardImpactPilotMode(false);
+    });
 
-  updateDashboardProjectionTeaser(allUsers, { phase }).catch(err => {
-    console.warn('Dashboard projection teaser failed:', err);
-  });
+    updateDashboardProjectionTeaser(allUsers, { phase }).catch(err => {
+      console.warn('Dashboard projection teaser failed:', err);
+    });
+  }
 
   // The Pundit - live rotating commentary (fire-and-forget, never blocks the dashboard)
   renderPundit();
@@ -1526,15 +1530,16 @@ function _dashboardCriticalBannerKind() {
 
 function _dashboardRankState(users, hasScores, officialStarted) {
   if (!officialStarted || !hasScores || !state.currentUser || !Array.isArray(users) || !users.length) return null;
-  const idx = users.findIndex(u => u && u.id === state.currentUser.id);
+  const ranked = _rankLeaderboardUsers(users, { sharedRanks: _useFinalSharedRanks() });
+  const idx = ranked.findIndex(u => u && u.id === state.currentUser.id);
   if (idx < 0) return null;
-  const me = users[idx] || {};
-  const leader = users[0] || {};
-  const rank = idx + 1;
+  const me = ranked[idx] || {};
+  const leader = ranked[0] || {};
+  const rank = me._rank || idx + 1;
   const myPoints = me.total_score || 0;
   const leaderPoints = leader.total_score || 0;
   const gapToLeader = Math.max(0, leaderPoints - myPoints);
-  const nextAhead = rank > 1 ? users[idx - 1] : null;
+  const nextAhead = ranked.slice(0, idx).reverse().find(user => _leaderboardScore(user) > myPoints) || null;
   return {
     rank,
     myPoints,
@@ -1637,7 +1642,7 @@ function resolveDashboardDramaState(ctx = {}) {
       actionTarget: 'leaderboard',
       metrics: rankState
         ? [
-            { value: `#${rankState.rank}`, labelKey: 'dashboard.drama.metric.lastRank' },
+    { value: _leaderboardRankLabel(rankState.rank), labelKey: 'dashboard.drama.metric.lastRank' },
             { value: rankState.myPoints, labelKey: 'dashboard.drama.metric.points' }
           ]
         : [{ value: groupProgress.completeGroups, labelKey: 'dashboard.drama.metric.groups' }],
@@ -1679,7 +1684,7 @@ function resolveDashboardDramaState(ctx = {}) {
       actionKey: 'dashboard.drama.action.leaderboard',
       actionTarget: 'leaderboard',
       metrics: [
-        { value: `#${rankState.rank}`, labelKey: 'dashboard.drama.metric.rank' },
+        { value: _leaderboardRankLabel(rankState.rank), labelKey: 'dashboard.drama.metric.rank' },
         { value: rankState.myPoints, labelKey: 'dashboard.drama.metric.points' },
         { value: isLeader ? t('dashboard.drama.metric.leaderValue') : rankState.gapToLeader, labelKey: isLeader ? 'dashboard.drama.metric.status' : 'dashboard.drama.metric.behind' }
       ],
@@ -1796,8 +1801,7 @@ function _dashboardImpactScore(row) {
 }
 
 function _dashboardImpactUserRank(users, userId) {
-  const idx = (users || []).findIndex(user => user && user.id === userId);
-  return idx >= 0 ? idx + 1 : 0;
+  return _leaderboardRankForUser(users || [], userId, { sharedRanks: _useFinalSharedRanks() });
 }
 
 function _dashboardImpactPrimaryStats(users) {
@@ -2597,6 +2601,39 @@ function _poolCreatedAtMs(pool) {
 
 function _isLateKnockoutPool(pool = state.currentPool) {
   return !!pool && pool.betting_mode === 'late_knockout';
+}
+
+const TOP_SCORER_TRUTH_CACHE_MS = 2 * 60 * 1000;
+let _topScorerTruthCache = { at: 0, loaded: false, value: null };
+
+function _poolUsesTopScorerTruth(pool = state.currentPool) {
+  if (!pool || _isLateKnockoutPool(pool)) return false;
+  if (pool.top_scorer_enabled === false) return false;
+  const rules = pool.scoring_rules || {};
+  return Number(rules.top_scorer || 0) > 0;
+}
+
+async function _loadTopScorerTruth(force = false) {
+  if (!supabaseClient) return null;
+  const now = Date.now();
+  if (!force && _topScorerTruthCache.loaded && now - _topScorerTruthCache.at < TOP_SCORER_TRUTH_CACHE_MS) {
+    return _topScorerTruthCache.value;
+  }
+  try {
+    const { data, error } = await supabaseClient
+      .from('app_settings')
+      .select('value')
+      .eq('key', 'top_scorer')
+      .maybeSingle();
+    if (error) throw error;
+    const value = data && data.value ? String(data.value) : null;
+    _topScorerTruthCache = { at: now, loaded: true, value };
+    return value;
+  } catch (err) {
+    console.warn('Top scorer truth load failed:', err);
+    _topScorerTruthCache = { at: now, loaded: false, value: null };
+    return null;
+  }
 }
 
 function _knockoutCutoffMs() {
@@ -11131,7 +11168,35 @@ function _sortLeaderboardUsers(users) {
     String(a.id || '').localeCompare(String(b.id || '')));
 }
 
+function _leaderboardScore(row) {
+  return Number(row && (row.total_score ?? row.totalScore ?? row.score ?? 0)) || 0;
+}
+
+function _rankLeaderboardUsers(users, options = {}) {
+  const sorted = _sortLeaderboardUsers(users || []);
+  const sharedRanks = !!options.sharedRanks;
+  let previousScore = null;
+  let currentRank = 0;
+  return sorted.map((user, idx) => {
+    const score = _leaderboardScore(user);
+    if (!sharedRanks || idx === 0 || score !== previousScore) currentRank = idx + 1;
+    previousScore = score;
+    return { ...user, _rank: currentRank, _score: score };
+  });
+}
+
+function _leaderboardRankForUser(users, userId, options = {}) {
+  const ranked = _rankLeaderboardUsers(users || [], options);
+  const row = ranked.find(user => user && String(user.id || '') === String(userId || ''));
+  return row ? (row._rank || 0) : 0;
+}
+
+function _leaderboardRankLabel(rank) {
+  return rank > 0 ? `#${rank}` : '-';
+}
+
 let _knockoutScenarioManifestCache = { at: 0, data: null };
+let _verifiedKnockoutScenarioSurface = null;
 
 function _scenarioSafeSegment(value) {
   return String(value == null ? '' : value).replace(/[^a-zA-Z0-9._-]+/g, '_') || 'unknown';
@@ -11194,7 +11259,17 @@ function _findVerifiedKnockoutScenarioEntry(manifest) {
       if (!Array.isArray(entry.winners) || !entry.winners.includes(resolvedWinner)) continue;
       const expected = (entry.base_finished_match_ids || []).concat([_scenarioMatchIdentity(match)]);
       if (!_sameStringSet(expected, _scenarioFinishedMatchIds())) continue;
-      return { entry, match, winnerCode: resolvedWinner };
+      let topScorerValue = null;
+      let topScorerKey = null;
+      let topScorerCandidateKnown = false;
+      if (entry.requires_top_scorer_truth || entry.path_mode === 'winner_top_scorer') {
+        topScorerValue = _topScorerTruthCache.value ? String(_topScorerTruthCache.value) : '';
+        if (!topScorerValue) continue;
+        topScorerKey = _scenarioSafeSegment(topScorerValue);
+        topScorerCandidateKnown = ((entry.top_scorer_candidates || []).some(candidate =>
+          candidate && String(candidate.key || '') === topScorerKey));
+      }
+      return { entry, match, winnerCode: resolvedWinner, topScorerValue, topScorerKey, topScorerCandidateKnown };
     }
   }
   return null;
@@ -11209,28 +11284,466 @@ function _scenarioStandingsMatchCurrentUsers(standings, currentUsers) {
   return true;
 }
 
+function _knockoutScenarioFetchCandidates(candidate, poolId) {
+  const scenarioKey = _scenarioSafeSegment(candidate && candidate.entry && candidate.entry.scenario_key);
+  const winnerCode = _scenarioSafeSegment(candidate && candidate.winnerCode);
+  const poolSegment = _scenarioSafeSegment(poolId);
+  if (candidate && candidate.entry && candidate.entry.path_mode === 'winner_top_scorer') {
+    const topScorerSegment = _scenarioSafeSegment(candidate.topScorerValue);
+    const baseSegment = _scenarioSafeSegment(candidate.entry.base_top_scorer_segment || '_base');
+    return [
+      { kind: 'top_scorer', url: `/public-data/knockout-scenarios/${scenarioKey}/${winnerCode}/${topScorerSegment}/${poolSegment}.json` },
+      { kind: 'base', url: `/public-data/knockout-scenarios/${scenarioKey}/${winnerCode}/${baseSegment}/${poolSegment}.json` },
+    ];
+  }
+  return [
+    { kind: 'legacy', url: `/public-data/knockout-scenarios/${scenarioKey}/${winnerCode}/${poolSegment}.json` },
+  ];
+}
+
+function _scenarioPayloadMatchesTopScorer(payload, candidate, variantKind) {
+  if (!candidate || !(candidate.entry.requires_top_scorer_truth || candidate.entry.path_mode === 'winner_top_scorer')) return true;
+  const expectedValue = candidate.topScorerValue ? String(candidate.topScorerValue) : '';
+  if (!expectedValue) return false;
+  const payloadValue = payload && payload.top_scorer_player_id != null ? String(payload.top_scorer_player_id) : '';
+  if (variantKind === 'base') {
+    return !candidate.topScorerCandidateKnown && !payloadValue;
+  }
+  if (payloadValue !== expectedValue) return false;
+  if (payload.top_scorer_key != null && String(payload.top_scorer_key) !== _scenarioSafeSegment(expectedValue)) return false;
+  return true;
+}
+
 async function _applyVerifiedKnockoutScenarioUsers(poolId, currentUsers) {
+  _verifiedKnockoutScenarioSurface = null;
   if (!poolId || !Array.isArray(currentUsers) || !currentUsers.length) return currentUsers;
   const manifest = await _fetchKnockoutScenarioManifest();
   const candidate = _findVerifiedKnockoutScenarioEntry(manifest);
   if (!candidate) return currentUsers;
   try {
-    const url = `/public-data/knockout-scenarios/${_scenarioSafeSegment(candidate.entry.scenario_key)}/${_scenarioSafeSegment(candidate.winnerCode)}/${_scenarioSafeSegment(poolId)}.json`;
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) return currentUsers;
-    const payload = await res.json();
-    if (!payload || payload.type !== 'knockout_scenario_leaderboard') return currentUsers;
-    if (String(payload.pool_id || '') !== String(poolId)) return currentUsers;
-    if (String(payload.winner_code || '') !== String(candidate.winnerCode)) return currentUsers;
-    if (!_scenarioMatchSameFixture(payload.match, candidate.match)) return currentUsers;
-    const expected = (payload.base_finished_match_ids || []).concat([_scenarioMatchIdentity(candidate.match)]);
-    if (!_sameStringSet(expected, _scenarioFinishedMatchIds())) return currentUsers;
-    if (!_scenarioStandingsMatchCurrentUsers(payload.standings, currentUsers)) return currentUsers;
-    return _sortLeaderboardUsers(payload.standings);
+    for (const option of _knockoutScenarioFetchCandidates(candidate, poolId)) {
+      const url = option.url;
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) {
+        if (option.kind === 'top_scorer' && candidate.topScorerCandidateKnown) return currentUsers;
+        continue;
+      }
+      const payload = await res.json();
+      if (!payload || payload.type !== 'knockout_scenario_leaderboard') return currentUsers;
+      if (String(payload.pool_id || '') !== String(poolId)) return currentUsers;
+      if (String(payload.winner_code || '') !== String(candidate.winnerCode)) return currentUsers;
+      if (!_scenarioPayloadMatchesTopScorer(payload, candidate, option.kind)) return currentUsers;
+      if (!_scenarioMatchSameFixture(payload.match, candidate.match)) return currentUsers;
+      const expected = (payload.base_finished_match_ids || []).concat([_scenarioMatchIdentity(candidate.match)]);
+      if (!_sameStringSet(expected, _scenarioFinishedMatchIds())) return currentUsers;
+      if (!_scenarioStandingsMatchCurrentUsers(payload.standings, currentUsers)) return currentUsers;
+      const standings = _sortLeaderboardUsers(payload.standings);
+      _verifiedKnockoutScenarioSurface = {
+        poolId: String(poolId),
+        candidate,
+        payload: { ...payload, standings },
+        variantKind: option.kind,
+        at: Date.now()
+      };
+      return standings;
+    }
+    return currentUsers;
   } catch (_) {
     return currentUsers;
   }
 }
+
+let _dashboardFinalCelebrationState = null;
+
+function _currentVerifiedFinalScenarioSurface(poolId = state.currentPool && state.currentPool.id) {
+  const surface = _verifiedKnockoutScenarioSurface;
+  if (!surface || String(surface.poolId || '') !== String(poolId || '')) return null;
+  const candidate = surface.candidate || {};
+  const entry = candidate.entry || {};
+  const match = candidate.match || {};
+  if (String((entry.match && entry.match.stage) || match.stage || '').toUpperCase() !== 'FINAL') return null;
+  if (!_matchIsFinishedStatus(match) || !_matchResolvedWinner(match) || !_matchHasNumericScore(match)) return null;
+  if (!(entry.requires_top_scorer_truth || entry.path_mode === 'winner_top_scorer')) return null;
+  if (!candidate.topScorerValue) return null;
+  if (!_scenarioPayloadMatchesTopScorer(surface.payload, candidate, surface.variantKind)) return null;
+  return surface;
+}
+
+function _useFinalSharedRanks() {
+  return !!_currentVerifiedFinalScenarioSurface();
+}
+
+function _topScorerTruthDetailsFromScenario(surface) {
+  const candidate = surface && surface.candidate;
+  const entry = candidate && candidate.entry;
+  const value = candidate && candidate.topScorerValue ? String(candidate.topScorerValue) : '';
+  const key = candidate && candidate.topScorerKey ? String(candidate.topScorerKey) : _scenarioSafeSegment(value);
+  const row = ((entry && entry.top_scorer_candidates) || []).find(item =>
+    item && (String(item.player_id || '') === value || String(item.key || '') === key));
+  return {
+    playerId: value,
+    key,
+    name: (row && row.player_name) || t('dashboard.final.unknownTopScorer'),
+    teamCode: (row && row.team_code) || ''
+  };
+}
+
+function _finalScoreline(match) {
+  if (!match || !_matchHasNumericScore(match)) return '';
+  const home = getTeamName(match.home_team_code);
+  const away = getTeamName(match.away_team_code);
+  const base = t('dashboard.final.scoreline', {
+    home,
+    away,
+    homeScore: Number(match.home_score),
+    awayScore: Number(match.away_score)
+  });
+  const winnerCode = _matchResolvedWinner(match);
+  if (winnerCode && Number(match.home_score) === Number(match.away_score)) {
+    return `${base} · ${t('dashboard.final.penalties', { team: getTeamName(winnerCode) })}`;
+  }
+  return base;
+}
+
+function _dashboardFinalPoolWinners(ranked) {
+  const rows = Array.isArray(ranked) ? ranked : [];
+  if (!rows.length) return { rows: [], names: '-', count: 0, topScore: 0 };
+  const topScore = _leaderboardScore(rows[0]);
+  const winners = rows.filter(row => _leaderboardScore(row) === topScore);
+  const names = winners.slice(0, 3).map(row => row.nickname || '?').join(', ');
+  const extra = winners.length > 3 ? t('dashboard.final.winnerListExtra', { n: winners.length - 3 }) : '';
+  return {
+    rows: winners,
+    names: `${names}${extra}`,
+    count: winners.length,
+    topScore
+  };
+}
+
+function _dashboardFinalCelebrationData(users) {
+  const surface = _currentVerifiedFinalScenarioSurface();
+  if (!surface) return null;
+  const standings = (surface.payload && Array.isArray(surface.payload.standings))
+    ? surface.payload.standings
+    : users;
+  const ranked = _rankLeaderboardUsers(standings || [], { sharedRanks: true });
+  if (!ranked.length) return null;
+  const match = surface.candidate.match;
+  const winnerCode = _matchResolvedWinner(match);
+  const poolWinners = _dashboardFinalPoolWinners(ranked);
+  const topScorer = _topScorerTruthDetailsFromScenario(surface);
+  return {
+    surface,
+    ranked,
+    match,
+    winnerCode,
+    winnerTeam: getTeamName(winnerCode),
+    scoreline: _finalScoreline(match),
+    poolWinners,
+    topScorer,
+    poolName: (state.currentPool && state.currentPool.name) || 'FriendlyBet'
+  };
+}
+
+function _hideDashboardFinalCelebration() {
+  _dashboardFinalCelebrationState = null;
+  const card = document.getElementById('dashboard-final-card');
+  if (card) card.style.display = 'none';
+}
+
+function renderDashboardFinalCelebration(users) {
+  const card = document.getElementById('dashboard-final-card');
+  if (!card) return false;
+  _hideDashboardFinalCelebration();
+  const data = _dashboardFinalCelebrationData(users);
+  if (!data) return false;
+
+  const kicker = document.getElementById('dashboard-final-kicker');
+  const title = document.getElementById('dashboard-final-title');
+  const scoreline = document.getElementById('dashboard-final-scoreline');
+  const poolWinners = document.getElementById('dashboard-final-pool-winners');
+  const goldenBoot = document.getElementById('dashboard-final-golden-boot');
+  const share = document.getElementById('dashboard-final-share');
+  const teamBadge = document.getElementById('dashboard-final-team-badge');
+
+  if (kicker) kicker.textContent = t('dashboard.final.kicker');
+  if (title) title.textContent = t('dashboard.final.title', { team: data.winnerTeam });
+  if (scoreline) scoreline.textContent = data.scoreline;
+  if (poolWinners) poolWinners.textContent = data.poolWinners.names;
+  if (goldenBoot) goldenBoot.textContent = `${data.topScorer.name}${data.topScorer.teamCode ? ` (${data.topScorer.teamCode})` : ''}`;
+  if (teamBadge) teamBadge.textContent = data.winnerCode || '';
+  if (share) share.onclick = shareFinalCelebrationCard;
+
+  _dashboardFinalCelebrationState = data;
+  _setDashboardImpactPilotMode(false);
+  const hero = document.getElementById('dashboard-drama-hero');
+  if (hero) hero.style.display = 'none';
+  const projection = document.getElementById('dashboard-projection-card');
+  if (projection) projection.style.display = 'none';
+  card.style.display = '';
+  return true;
+}
+
+function _finalCelebrationShareUrl(source) {
+  const origin = window.location.origin || 'https://friendlybet.live';
+  const code = state.currentPool && state.currentPool.code;
+  const lang = (typeof currentLanguage !== 'undefined' && currentLanguage) || 'he';
+  const utm = `utm_source=${source}&utm_medium=social&utm_campaign=final_celebration`;
+  return code
+    ? `${origin}/?join=${encodeURIComponent(code)}&lang=${lang}&${utm}`
+    : `${origin}/?lang=${lang}&${utm}`;
+}
+
+function _drawFinalCelebrationCard(cv, qr, opts) {
+  const ctx = cv.getContext('2d');
+  const W = 1080, H = 1350, PAD = 72;
+  const INK = '#fbf8ee', MUTED = '#c8c2b2', GOLD = '#d9b46a', GOLD_LT = '#f4dc9f', GREEN = '#4fd1a0';
+  const rtl = ((typeof currentLanguage !== 'undefined' && currentLanguage) || 'he') === 'he';
+  function rr(x, y, w, h, r) {
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, w, h, r);
+    else { ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+  }
+  function fitFont(text, maxW, startPx, weight, family) {
+    let px = startPx;
+    ctx.font = `${weight} ${px}px ${family}`;
+    while (ctx.measureText(String(text || '')).width > maxW && px > 16) {
+      px--;
+      ctx.font = `${weight} ${px}px ${family}`;
+    }
+    return px;
+  }
+  function wrapLines(text, maxW, px, maxLines, weight = '700') {
+    ctx.font = `${weight} ${px}px Heebo,Sora,sans-serif`;
+    const words = String(text || '').split(/\s+/).filter(Boolean);
+    const lines = [];
+    let cur = '';
+    words.forEach(word => {
+      const next = cur ? `${cur} ${word}` : word;
+      if (ctx.measureText(next).width <= maxW || !cur) cur = next;
+      else { lines.push(cur); cur = word; }
+    });
+    if (cur) lines.push(cur);
+    return lines.slice(0, maxLines);
+  }
+
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#09130f');
+  bg.addColorStop(0.58, '#11100b');
+  bg.addColorStop(1, '#050706');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = 'rgba(217,180,106,0.38)';
+  rr(22, 22, W - 44, H - 44, 28);
+  ctx.stroke();
+
+  for (let i = 0; i < 70; i++) {
+    const x = (i * 151) % W;
+    const y = 118 + ((i * 89) % 520);
+    ctx.fillStyle = i % 3 === 0 ? 'rgba(217,180,106,0.50)' : (i % 3 === 1 ? 'rgba(79,209,160,0.35)' : 'rgba(255,255,255,0.18)');
+    ctx.fillRect(x, y, 8 + (i % 4) * 4, 4);
+  }
+
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'left';
+  ctx.fillStyle = INK;
+  ctx.font = '900 38px Sora,sans-serif';
+  ctx.fillText('FriendlyBet', PAD, 82);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = MUTED;
+  fitFont(opts.poolName || '', 390, 25, '700', 'Heebo,sans-serif');
+  ctx.fillText(opts.poolName || '', W - PAD, 84);
+
+  ctx.save();
+  if (rtl && ctx.direction !== undefined) ctx.direction = 'rtl';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = GOLD;
+  ctx.font = '900 26px Sora,Heebo,sans-serif';
+  ctx.fillText((opts.kicker || '').toUpperCase(), W / 2, 162);
+  ctx.fillStyle = INK;
+  fitFont(opts.title || '', W - PAD * 2, 70, '900', 'Heebo,Sora,sans-serif');
+  ctx.fillText(opts.title || '', W / 2, 235);
+  ctx.fillStyle = 'rgba(251,248,238,0.82)';
+  ctx.font = '800 34px Heebo,Sora,sans-serif';
+  ctx.fillText(opts.scoreline || '', W / 2, 306);
+  ctx.restore();
+
+  const cx = W / 2;
+  const floor = 760;
+  ctx.save();
+  ctx.translate(cx, 0);
+  ctx.strokeStyle = 'rgba(251,248,238,0.86)';
+  ctx.lineWidth = 16;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(-118, 432);
+  ctx.lineTo(-196, 356);
+  ctx.moveTo(118, 432);
+  ctx.lineTo(196, 356);
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(79,209,160,0.92)';
+  rr(-105, 414, 210, 226, 40);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(251,248,238,0.34)';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(0, 364, 58, 0, Math.PI * 2);
+  ctx.fillStyle = '#d7b08a';
+  ctx.fill();
+  ctx.lineWidth = 8;
+  ctx.strokeStyle = 'rgba(20,15,10,0.45)';
+  ctx.stroke();
+  ctx.strokeStyle = 'rgba(251,248,238,0.86)';
+  ctx.lineWidth = 18;
+  ctx.beginPath();
+  ctx.moveTo(-48, 634);
+  ctx.lineTo(-88, floor);
+  ctx.moveTo(48, 634);
+  ctx.lineTo(88, floor);
+  ctx.stroke();
+
+  ctx.fillStyle = GOLD;
+  rr(-102, 256, 204, 56, 18);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-82, 312);
+  ctx.bezierCurveTo(-58, 395, 58, 395, 82, 312);
+  ctx.lineTo(-82, 312);
+  ctx.fill();
+  ctx.strokeStyle = GOLD_LT;
+  ctx.lineWidth = 5;
+  ctx.stroke();
+  ctx.strokeStyle = GOLD;
+  ctx.lineWidth = 14;
+  ctx.beginPath();
+  ctx.arc(-114, 302, 40, Math.PI * 1.18, Math.PI * 0.1);
+  ctx.arc(114, 302, 40, Math.PI * 0.9, Math.PI * 1.82);
+  ctx.stroke();
+  ctx.fillStyle = GOLD_LT;
+  rr(-22, 378, 44, 74, 10);
+  ctx.fill();
+  rr(-66, 452, 132, 30, 10);
+  ctx.fill();
+  ctx.restore();
+
+  const panelY = 835;
+  rr(PAD, panelY, W - PAD * 2, 228, 24);
+  ctx.fillStyle = 'rgba(255,255,255,0.055)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(217,180,106,0.28)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.save();
+  if (rtl && ctx.direction !== undefined) ctx.direction = 'rtl';
+  ctx.textAlign = rtl ? 'right' : 'left';
+  const xStart = rtl ? W - PAD - 36 : PAD + 36;
+  ctx.fillStyle = GOLD;
+  ctx.font = '900 24px Sora,Heebo,sans-serif';
+  ctx.fillText(opts.winnersLabel || '', xStart, panelY + 48);
+  ctx.fillStyle = INK;
+  ctx.font = '900 41px Heebo,Sora,sans-serif';
+  wrapLines(opts.winners || '', W - PAD * 2 - 72, 41, 2, '900').forEach((line, i) => {
+    ctx.fillText(line, xStart, panelY + 99 + i * 46);
+  });
+  ctx.fillStyle = GREEN;
+  ctx.font = '900 24px Sora,Heebo,sans-serif';
+  ctx.fillText(opts.goldenBootLabel || '', xStart, panelY + 184);
+  ctx.fillStyle = GOLD_LT;
+  fitFont(opts.goldenBoot || '', W - PAD * 2 - 72, 34, '900', 'Heebo,Sora,sans-serif');
+  ctx.fillText(opts.goldenBoot || '', xStart, panelY + 224);
+  ctx.restore();
+
+  ctx.strokeStyle = 'rgba(217,180,106,0.25)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(PAD, 1120);
+  ctx.lineTo(W - PAD, 1120);
+  ctx.stroke();
+  ctx.textAlign = 'left';
+  ctx.fillStyle = INK;
+  ctx.font = '900 44px Sora,sans-serif';
+  ctx.fillText('friendlybet.live', PAD, 1205);
+  ctx.fillStyle = MUTED;
+  ctx.font = '700 24px Heebo,sans-serif';
+  ctx.fillText(opts.tagline || '', PAD, 1250);
+  if (qr) {
+    const q = 124, p = 14, tileX = W - PAD - q - p * 2, tileY = 1154;
+    rr(tileX, tileY, q + p * 2, q + p * 2, 18);
+    ctx.fillStyle = '#f6f4ee';
+    ctx.fill();
+    ctx.strokeStyle = GOLD;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.drawImage(qr, tileX + p, tileY + p, q, q);
+  }
+}
+
+async function _finalCelebrationCardToBlob() {
+  if (!_dashboardFinalCelebrationState) return null;
+  const data = _dashboardFinalCelebrationState;
+  const url = _finalCelebrationShareUrl('final_celebration_qr');
+  let qr = null;
+  try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (_) {}
+  try { qr = await _loadQrImage(url); } catch (_) { qr = null; }
+  const cv = document.createElement('canvas');
+  cv.width = 1080;
+  cv.height = 1350;
+  _drawFinalCelebrationCard(cv, qr, {
+    poolName: data.poolName,
+    kicker: t('dashboard.final.cardKicker'),
+    title: t('dashboard.final.cardTitle', { team: data.winnerTeam }),
+    scoreline: data.scoreline,
+    winnersLabel: t('dashboard.final.cardWinners'),
+    winners: data.poolWinners.names,
+    goldenBootLabel: t('dashboard.final.cardGoldenBoot'),
+    goldenBoot: data.topScorer.name,
+    tagline: t('dashboard.final.cardTagline')
+  });
+  return new Promise(resolve => cv.toBlob(resolve, 'image/png'));
+}
+
+async function shareFinalCelebrationCard() {
+  if (!_dashboardFinalCelebrationState) {
+    showToast(t('dashboard.final.shareUnavailable'), 'info');
+    return;
+  }
+  let blob;
+  try {
+    blob = await _finalCelebrationCardToBlob();
+  } catch (err) {
+    console.error('final celebration card failed', err);
+    showToast(t('dashboard.final.shareUnavailable'), 'info');
+    return;
+  }
+  if (!blob) {
+    showToast(t('dashboard.final.shareUnavailable'), 'info');
+    return;
+  }
+  const caption = t('dashboard.final.shareCaption', { pool: _dashboardFinalCelebrationState.poolName });
+  const url = _finalCelebrationShareUrl('final_celebration');
+  const file = new File([blob], 'friendlybet-final-winners.png', { type: 'image/png' });
+  _recordShare('final_celebration', 'click');
+  if (navigator.canShare && navigator.share && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], text: caption, url });
+      _recordShare('final_celebration', 'completed');
+    } catch (err) {
+      if (err.name !== 'AbortError') console.error('final celebration share failed', err);
+    }
+  } else {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'friendlybet-final-winners.png';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    try { await navigator.clipboard.writeText(`${caption} ${url}`); } catch (_) {}
+    showToast(t('dashboard.final.shareDownloaded'), 'success');
+  }
+}
+window.shareFinalCelebrationCard = shareFinalCelebrationCard;
 
 let _scoreSurfaceRefreshTimer = null;
 let _scoreSurfaceRefreshInFlight = false;
@@ -11255,6 +11768,7 @@ async function refreshScoreSurfaces(reason = 'auto') {
     }
 
     await loadResultsData({ force: true, preferDb: true }).catch(() => {});
+    if (_poolUsesTopScorerTruth()) await _loadTopScorerTruth().catch(() => {});
     let users = _sortLeaderboardUsers(await _fetchAllPoolRows('users', 'id,nickname,total_score,joined_at', state.currentPool.id));
     users = await _applyVerifiedKnockoutScenarioUsers(state.currentPool.id, users);
     const totalAcrossPool = users.reduce((sum, user) => sum + (user.total_score || 0), 0);
@@ -11271,12 +11785,14 @@ async function refreshScoreSurfaces(reason = 'auto') {
     if (pointsEl) pointsEl.textContent = me ? (me.total_score || 0) : (state.currentUser ? (state.currentUser.total_score || 0) : 0);
     const rankEl = document.getElementById('user-rank');
     if (rankEl) {
-      const rank = me ? users.findIndex(user => user.id === me.id) + 1 : 0;
+      const rank = me ? _leaderboardRankForUser(users, me.id, { sharedRanks: _useFinalSharedRanks() }) : 0;
       rankEl.textContent = (hasScores && rank > 0) ? rank : '-';
     }
-    renderDashboardImpactPilot(users, { hasScores }).catch(err => {
-      console.warn('Dashboard impact pilot refresh failed:', err);
-    });
+    if (!renderDashboardFinalCelebration(users)) {
+      renderDashboardImpactPilot(users, { hasScores }).catch(err => {
+        console.warn('Dashboard impact pilot refresh failed:', err);
+      });
+    }
   } catch (err) {
     console.warn('Score surface refresh failed:', err);
   } finally {
@@ -11338,6 +11854,7 @@ async function showLeaderboard(options = {}) {
   document.getElementById('lb-members-count').textContent = t('leaderboard.participantsCount', { n: users.length });
 
   await loadResultsData({ force: true, preferDb: true }).catch(() => {});
+  if (_poolUsesTopScorerTruth()) await _loadTopScorerTruth().catch(() => {});
   users = await _applyVerifiedKnockoutScenarioUsers(state.currentPool.id, users);
   const totalScores = users.reduce((sum, u) => sum + (u.total_score || 0), 0);
   const hasScores = totalScores > 0;
@@ -11369,21 +11886,22 @@ async function showLeaderboard(options = {}) {
   }
 
   const podiumEl = document.getElementById('lb-podium');
+  const sharedRanks = _useFinalSharedRanks();
   if (hasScores) {
     if (podiumEl) podiumEl.style.display = '';
-    renderPodium(users);
+    renderPodium(users, { sharedRanks });
   } else if (podiumEl) {
     podiumEl.innerHTML = '';
     podiumEl.style.display = 'none';
   }
 
   // Pool Pundit: live banter about what the latest results did to the board
-  renderLeaderboardBanter(users, { phase, dataPending, tournamentContext: tournamentCtx });
+  renderLeaderboardBanter(users, { phase, dataPending, tournamentContext: tournamentCtx, sharedRanks });
 
   // Render full list
   const fullListTitle = document.querySelector('#leaderboard-screen .section-title-small[data-i18n="leaderboard.fullRanking"]');
   if (fullListTitle) fullListTitle.textContent = t(hasScores ? 'leaderboard.fullRanking' : 'leaderboard.participantsList');
-  renderFullLeaderboard(users, { hasScores, phase, dataPending });
+  renderFullLeaderboard(users, { hasScores, phase, dataPending, sharedRanks });
 
   // Empty state
   const emptyEl = document.getElementById('lb-empty');
@@ -11535,14 +12053,14 @@ async function renderTheoreticalLeaderboard(users, options = {}) {
   }
 }
 
-function renderPodium(users) {
+function renderPodium(users, options = {}) {
   const podium = document.getElementById('lb-podium');
   podium.innerHTML = '';
   
   if (users.length === 0) return;
   
   // Take top 3 (or fewer)
-  const top3 = users.slice(0, 3);
+  const top3 = _rankLeaderboardUsers(users, { sharedRanks: !!options.sharedRanks }).slice(0, 3);
   
   // Always build in order: 2nd, 1st, 3rd (visual order)
   const second = top3[1];
@@ -11550,17 +12068,17 @@ function renderPodium(users) {
   const third = top3[2];
   
   if (second) {
-    podium.appendChild(createPodiumSpot('second', second, 2));
+    podium.appendChild(createPodiumSpot('second', second, second._rank || 2));
   } else {
     podium.appendChild(createEmptyPodium('second'));
   }
   
   if (first) {
-    podium.appendChild(createPodiumSpot('first', first, 1));
+    podium.appendChild(createPodiumSpot('first', first, first._rank || 1));
   }
   
   if (third) {
-    podium.appendChild(createPodiumSpot('third', third, 3));
+    podium.appendChild(createPodiumSpot('third', third, third._rank || 3));
   } else {
     podium.appendChild(createEmptyPodium('third'));
   }
@@ -11603,21 +12121,22 @@ function renderFullLeaderboard(users, options = {}) {
     return;
   }
 
-  users.forEach((user, idx) => {
+  const rankedUsers = _rankLeaderboardUsers(users, { sharedRanks: !!options.sharedRanks });
+  rankedUsers.forEach((user, idx) => {
     const row = document.createElement('div');
     row.className = 'lb-row';
 
     const isMe = state.currentUser && user.id === state.currentUser.id;
     if (isMe) row.classList.add('is-me');
 
-    const rank = idx + 1;
+    const rank = user._rank || idx + 1;
 
     // v2 breakdown - new columns fall back to legacy ones
     const groupPts = (user.group_points ?? user.groups_score) || 0;
     const knockoutPts = (user.knockout_points ?? user.knockout_score) || 0;
     const bonusPts = (user.bonus_points ?? user.bonus_score) || 0;
     const isSinglePhase = state.currentPool && state.currentPool.betting_mode === 'single_phase';
-    const rankLabel = options.hasScores ? `#${rank}` : '-';
+    const rankLabel = options.hasScores ? _leaderboardRankLabel(rank) : '-';
     const dataPending = !!options.dataPending;
     const pendingWithoutScores = dataPending && !options.hasScores;
     if (dataPending) row.classList.add('data-pending');
@@ -11749,9 +12268,9 @@ async function renderLeaderboardBanter(users, options = {}) {
     const memberIds = new Set((users || []).map(u => u.id));
     const featId = (headline.featuredUserId && memberIds.has(headline.featuredUserId))
       ? headline.featuredUserId : ((users && users[0] && users[0].id) || null);
-    // Stash the top-3 (already score-sorted by the query) for the share card.
-    const podium = (users || []).slice(0, 3).map(u => ({
-      nickname: u.nickname || '?', total_score: u.total_score || 0,
+    // Stash the top-3 for the share card, preserving shared final ranks when active.
+    const podium = _rankLeaderboardUsers(users || [], { sharedRanks: !!options.sharedRanks }).slice(0, 3).map(u => ({
+      nickname: u.nickname || '?', total_score: u.total_score || 0, rank: u._rank || 0,
     }));
     _lbBanter = { headline, items, featuredUserId: featId, podium };
 

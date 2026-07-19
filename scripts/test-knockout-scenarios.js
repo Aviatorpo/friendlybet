@@ -111,6 +111,38 @@ async function testDryRunScoringUsesPoolRulesAndMultipliers() {
   assert.strictEqual(collectScores[0].email, undefined);
 }
 
+function testFinalTopScorerVariants() {
+  const picks = [
+    { user_id: 'u1', pool_id: 'pool-1', player_id: 'p-messi', player_name: 'Lionel Messi', team_code: 'ARG' },
+    { user_id: 'u2', pool_id: 'pool-1', player_id: 'p-mbappe', player_name: 'Kylian Mbappe', team_code: 'FRA' },
+    { user_id: 'u3', pool_id: 'pool-1', player_id: 'p-jude', player_name: 'Jude Bellingham', team_code: 'ENG' },
+    { user_id: 'u4', pool_id: 'pool-2', player_id: 'p-messi', player_name: 'Lionel Messi', team_code: 'ARG' },
+  ];
+  const contenders = G.filterFinalTopScorerContenders(picks);
+  assert.deepStrictEqual(contenders.map(p => p.player_id).sort(), ['p-mbappe', 'p-messi', 'p-messi']);
+  assert.strictEqual(G.isFinalTopScorerContender(picks[2]), false);
+  assert.ok(G.normalizeTopScorerName('Kylian Mbappe').includes('mbappe'));
+
+  const summary = G.buildTopScorerCandidateSummary(contenders);
+  const messi = summary.find(row => row.player_id === 'p-messi');
+  assert.strictEqual(messi.pick_count, 2);
+  assert.strictEqual(messi.pool_count, 2);
+  assert.strictEqual(JSON.stringify(summary).includes('user_id'), false);
+  assert.strictEqual(JSON.stringify(summary).includes('p-jude'), false);
+
+  const standings = [
+    { id: 'u1', joined_at: '2026-01-03T00:00:00Z', total_score: 12, bonus_points: 0, bonus_score: 0 },
+    { id: 'u2', joined_at: '2026-01-02T00:00:00Z', total_score: 14, bonus_points: 0, bonus_score: 0 },
+    { id: 'u3', joined_at: '2026-01-01T00:00:00Z', total_score: 18, bonus_points: 0, bonus_score: 0 },
+  ];
+  const users = standings.map(row => ({ id: row.id }));
+  const variant = G.applyTopScorerVariant(standings, users, picks, G.topScorerCandidateKey(picks[0]), 10);
+  assert.strictEqual(variant[0].id, 'u1');
+  assert.strictEqual(variant[0].total_score, 22);
+  assert.strictEqual(variant[0].bonus_points, 10);
+  assert.strictEqual(variant[0].bonus_score, 10);
+}
+
 function testClientGuardSource() {
   const app = fs.readFileSync(path.join(__dirname, '..', 'app.js'), 'utf8');
   const i18n = fs.readFileSync(path.join(__dirname, '..', 'i18n.js'), 'utf8');
@@ -122,6 +154,12 @@ function testClientGuardSource() {
   assert.ok(app.includes('String(payload.pool_id || \'\') !== String(poolId)'), 'client must validate scenario pool id');
   assert.ok(app.includes('String(payload.winner_code || \'\') !== String(candidate.winnerCode)'), 'client must validate scenario winner');
   assert.ok(app.includes('_scenarioStandingsMatchCurrentUsers(payload.standings, currentUsers)'), 'client must reject scenario rows for a stale user set');
+  assert.ok(app.includes('requires_top_scorer_truth'), 'final scenario overlays must require verified top-scorer truth');
+  assert.ok(app.includes('_topScorerTruthCache.value'), 'client must read verified top-scorer truth before choosing a final scenario');
+  assert.ok(app.includes("path_mode === 'winner_top_scorer'"), 'client must support nested final winner/top-scorer scenario files');
+  assert.ok(app.includes('base_top_scorer_segment'), 'client must know the safe base segment for final scenario fallback');
+  assert.ok(app.includes('top_scorer_player_id'), 'client must validate final scenario top-scorer identity');
+  assert.ok(app.includes('topScorerCandidateKnown'), 'client must not fall back to base when a known top-scorer variant is missing');
   assert.ok(app.includes("loadResultsData({ force: true, preferDb: true })"), 'score surfaces must refresh verified DB match state');
   assert.ok(app.includes('_applyVerifiedKnockoutScenarioUsers(state.currentPool.id, users)'), 'leaderboard must apply verified scenario rows');
   assert.ok(i18n.includes('Finalizing official data - showing the last official standings'), 'leaderboard pending-result message must say last official standings');
@@ -190,6 +228,53 @@ function testScenarioReadinessGate() {
     assert.strictEqual(blocked.ok, false);
     assert.strictEqual(blocked.status, 'blocked');
     assert.match(blocked.blocker, /missing one or both teams/);
+
+    const finalMatch = {
+      id: 'm-final',
+      external_id: 'ext-final',
+      stage: 'FINAL',
+      status: 'TIMED',
+      match_date: '2026-07-19T19:00:00Z',
+      home_team_code: 'ESP',
+      away_team_code: 'ARG',
+    };
+    const finalEntry = {
+      scenario_key: 'ext-final',
+      match: finalMatch,
+      winners: ['ESP', 'ARG'],
+      path_mode: 'winner_top_scorer',
+      requires_top_scorer_truth: true,
+      base_top_scorer_segment: '_base',
+      top_scorer_candidates: [{ key: 'p-messi' }, { key: 'p-mbappe' }],
+      ESP_pool_count: 2,
+      ARG_pool_count: 2,
+      ESP_top_scorer_variant_count: 4,
+      ARG_top_scorer_variant_count: 4,
+    };
+    for (const winner of finalEntry.winners) {
+      for (const segment of ['_base', 'p-messi', 'p-mbappe']) {
+        fs.mkdirSync(path.join(tmp, 'ext-final', winner, segment), { recursive: true });
+        fs.writeFileSync(path.join(tmp, 'ext-final', winner, segment, 'pool-1.json'), '{}');
+        fs.writeFileSync(path.join(tmp, 'ext-final', winner, segment, 'pool-2.json'), '{}');
+      }
+    }
+    const finalReady = R.evaluateReadiness([finalMatch], { matches: [finalEntry] }, {
+      scenarioDir: tmp,
+      now: new Date('2026-07-19T12:00:00Z'),
+      failWithinHours: 24,
+    });
+    assert.strictEqual(finalReady.ok, true);
+    assert.strictEqual(finalReady.status, 'ready');
+
+    fs.unlinkSync(path.join(tmp, 'ext-final', 'ARG', 'p-messi', 'pool-2.json'));
+    const finalMissing = R.evaluateReadiness([finalMatch], { matches: [finalEntry] }, {
+      scenarioDir: tmp,
+      now: new Date('2026-07-19T12:00:00Z'),
+      failWithinHours: 24,
+    });
+    assert.strictEqual(finalMissing.ok, false);
+    assert.strictEqual(finalMissing.status, 'missing_scenario_files');
+    assert.ok(finalMissing.issues.some(issue => issue.includes('ARG/p-messi')));
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true });
   }
@@ -203,6 +288,7 @@ function testScenarioReadinessGate() {
   testAutoNextIgnoresThirdPlacePlayoff();
   testSimulationAndBaseline();
   await testDryRunScoringUsesPoolRulesAndMultipliers();
+  testFinalTopScorerVariants();
   testClientGuardSource();
   testScenarioReadinessGate();
   console.log('Knockout scenario tests passed');

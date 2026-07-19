@@ -15,6 +15,8 @@ const OUT_DIR = process.env.PUBLIC_DATA_DIR
   : path.join(ROOT, 'public-data');
 const SCENARIO_DIR = path.join(OUT_DIR, 'knockout-scenarios');
 const MANIFEST_PATH = path.join(SCENARIO_DIR, 'manifest.json');
+const BASE_TOP_SCORER_SEGMENT = '_base';
+const FINAL_TOP_SCORER_CONTENDER_NAMES = ['messi', 'mbappe'];
 
 const AUTO_NEXT_TARGET = 'auto-next';
 const DEFAULT_TARGETS = [AUTO_NEXT_TARGET];
@@ -76,6 +78,10 @@ function isTargetPair(match, pair) {
 function isKnockoutStage(match) {
   const stage = String((match && match.stage) || '').toUpperCase();
   return !!match && stage && stage !== 'GROUP_STAGE' && stage !== 'THIRD_PLACE';
+}
+
+function isFinalStage(match) {
+  return String((match && match.stage) || '').toUpperCase() === 'FINAL';
 }
 
 function isKnockoutMatch(match) {
@@ -196,6 +202,101 @@ function sortStandings(rows) {
     String(a.id || '').localeCompare(String(b.id || '')));
 }
 
+function poolTopScorerBonus(pool) {
+  if (!pool || String(pool.betting_mode || '') === 'late_knockout') return 0;
+  if (pool.top_scorer_enabled === false) return 0;
+  const rules = rulesForPool(pool);
+  return Math.round(Number(rules.top_scorer || 0));
+}
+
+function normalizeTopScorerName(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
+function isFinalTopScorerContender(row) {
+  const name = normalizeTopScorerName(row && row.player_name);
+  return FINAL_TOP_SCORER_CONTENDER_NAMES.some(candidate => name.includes(candidate));
+}
+
+function filterFinalTopScorerContenders(rows) {
+  return (rows || []).filter(isFinalTopScorerContender);
+}
+
+function topScorerCandidateKey(row) {
+  return safeSegment(row && (row.player_id || `${row.team_code || 'team'}-${row.player_name || 'player'}`));
+}
+
+function buildTopScorerCandidateSummary(topScorerPicks) {
+  const byKey = new Map();
+  for (const row of topScorerPicks || []) {
+    if (!row) continue;
+    const key = topScorerCandidateKey(row);
+    if (!key) continue;
+    if (!byKey.has(key)) {
+      byKey.set(key, {
+        key,
+        player_id: row.player_id == null ? null : String(row.player_id),
+        player_name: row.player_name || null,
+        team_code: row.team_code || null,
+        pick_count: 0,
+        pool_count: 0,
+        _poolIds: new Set(),
+      });
+    }
+    const candidate = byKey.get(key);
+    candidate.pick_count++;
+    if (row.pool_id != null) candidate._poolIds.add(String(row.pool_id));
+  }
+  return [...byKey.values()]
+    .map(candidate => ({
+      key: candidate.key,
+      player_id: candidate.player_id,
+      player_name: candidate.player_name,
+      team_code: candidate.team_code,
+      pick_count: candidate.pick_count,
+      pool_count: candidate._poolIds.size,
+    }))
+    .sort((a, b) =>
+      (b.pick_count || 0) - (a.pick_count || 0) ||
+      String(a.player_name || '').localeCompare(String(b.player_name || '')) ||
+      String(a.key || '').localeCompare(String(b.key || '')));
+}
+
+function topScorerPicksByCandidate(rows) {
+  const map = new Map();
+  for (const row of rows || []) {
+    const key = topScorerCandidateKey(row);
+    if (!key) continue;
+    if (!map.has(key)) map.set(key, []);
+    map.get(key).push(row);
+  }
+  return map;
+}
+
+function applyTopScorerVariant(standings, poolUsers, poolTopScorerPicks, candidateKey, bonus) {
+  if (!bonus || !candidateKey) return sortStandings(standings || []);
+  const pickedUserIds = new Set((poolTopScorerPicks || [])
+    .filter(row => topScorerCandidateKey(row) === candidateKey)
+    .map(row => String(row.user_id || ''))
+    .filter(Boolean));
+  if (!pickedUserIds.size) return sortStandings(standings || []);
+  const poolUserIds = new Set((poolUsers || []).map(user => String(user.id)));
+  return sortStandings((standings || []).map(row => {
+    if (!row || !pickedUserIds.has(String(row.id)) || !poolUserIds.has(String(row.id))) return row;
+    const bonusPoints = Math.round(Number(row.bonus_points || row.bonus_score || 0) + bonus);
+    const total = Math.round(Number(row.total_score || 0) + bonus);
+    return {
+      ...row,
+      bonus_points: bonusPoints,
+      bonus_score: bonusPoints,
+      total_score: total,
+    };
+  }));
+}
+
 async function loadTopScorer() {
   try {
     const rows = await S.sbAll('app_settings', '?key=eq.top_scorer&select=value');
@@ -269,6 +370,8 @@ async function main() {
     groupByUser: S.indexRowsBy(allGroupPicks, 'user_id'),
     topScorerByPool: S.indexRowsBy(allTopScorerPicks, 'pool_id'),
   };
+  const finalTopScorerPicks = filterFinalTopScorerContenders(allTopScorerPicks);
+  const finalTopScorerCandidates = topScorerPicksByCandidate(finalTopScorerPicks);
 
   let changedFiles = 0;
   const manifest = {
@@ -301,33 +404,79 @@ async function main() {
     for (const winnerCode of winners) {
       const simulatedMatches = simulateWinner(matches, match, winnerCode);
       const winnerDir = path.join(SCENARIO_DIR, scenarioKey, safeSegment(winnerCode));
-      fs.mkdirSync(winnerDir, { recursive: true });
+      const finalScenario = isFinalStage(match);
+      const baseDir = finalScenario
+        ? path.join(winnerDir, BASE_TOP_SCORER_SEGMENT)
+        : winnerDir;
+      fs.mkdirSync(baseDir, { recursive: true });
       let poolCount = 0;
+      let topScorerVariantFiles = 0;
 
       for (const pool of pools || []) {
         const poolUsers = usersByPool.get(pool.id) || [];
         if (!poolUsers.length) continue;
-        const standings = await scorePoolScenario(pool, poolUsers, simulatedMatches, pickIndexes, realTopScorer, scenarioTimestamp);
+        const poolTsPicks = pickIndexes.topScorerByPool.get(pool.id) || [];
+        const topScorerBonus = finalScenario ? poolTopScorerBonus(pool) : 0;
+        const standings = await scorePoolScenario(
+          pool,
+          poolUsers,
+          simulatedMatches,
+          pickIndexes,
+          finalScenario ? null : realTopScorer,
+          scenarioTimestamp);
         const payload = {
           updatedAt: scenarioTimestamp,
           type: 'knockout_scenario_leaderboard',
           pool_id: pool.id,
           winner_code: winnerCode,
+          top_scorer_player_id: null,
+          top_scorer_key: null,
           match: manifestMatch.match,
           base_finished_match_ids: baseFinishedMatchIds,
           scoring_fingerprint: {
             pool_rules: shortHash(rulesForPool(pool)),
             users: shortHash(poolUsers.map(u => [u.id, u.joined_at, u.predictions_submitted_at])),
             knockout_picks: shortHash((pickIndexes.knockoutByUser && poolUsers.flatMap(u => pickIndexes.knockoutByUser.get(u.id) || [])) || []),
+            top_scorer_picks: shortHash(poolTsPicks.map(p => [p.user_id, p.player_id, p.player_name, p.team_code])),
           },
           count: standings.length,
           standings,
         };
-        if (writeScenarioIfChanged(path.join(winnerDir, `${safeSegment(pool.id)}.json`), payload)) changedFiles++;
+        if (writeScenarioIfChanged(path.join(baseDir, `${safeSegment(pool.id)}.json`), payload)) changedFiles++;
+
+        if (finalScenario && finalTopScorerCandidates.size) {
+          for (const [candidateKey, candidateRows] of finalTopScorerCandidates.entries()) {
+            const variantStandings = applyTopScorerVariant(standings, poolUsers, poolTsPicks, candidateKey, topScorerBonus);
+            const sample = candidateRows[0] || {};
+            const variantPayload = {
+              ...payload,
+              top_scorer_player_id: sample.player_id == null ? null : String(sample.player_id),
+              top_scorer_key: candidateKey,
+              top_scorer_player_name: sample.player_name || null,
+              top_scorer_team_code: sample.team_code || null,
+              standings: variantStandings,
+            };
+            const variantDir = path.join(winnerDir, candidateKey);
+            if (writeScenarioIfChanged(path.join(variantDir, `${safeSegment(pool.id)}.json`), variantPayload)) changedFiles++;
+            topScorerVariantFiles++;
+          }
+        }
         poolCount++;
       }
 
       manifestMatch[`${winnerCode}_pool_count`] = poolCount;
+      if (finalScenario) manifestMatch[`${winnerCode}_top_scorer_variant_count`] = topScorerVariantFiles;
+    }
+
+    if (isFinalStage(match)) {
+      manifestMatch.path_mode = 'winner_top_scorer';
+      manifestMatch.requires_top_scorer_truth = true;
+      manifestMatch.base_top_scorer_segment = BASE_TOP_SCORER_SEGMENT;
+      manifestMatch.top_scorer_candidate_policy = {
+        mode: 'final_known_contenders',
+        names: ['Messi', 'Mbappe'],
+      };
+      manifestMatch.top_scorer_candidates = buildTopScorerCandidateSummary(finalTopScorerPicks);
     }
 
     manifest.matches.push(manifestMatch);
@@ -360,5 +509,16 @@ if (require.main === module) {
     findNextScenarioMatch,
     shouldAutoSelectNext,
     AUTO_NEXT_TARGET,
+    BASE_TOP_SCORER_SEGMENT,
+    FINAL_TOP_SCORER_CONTENDER_NAMES,
+    isFinalStage,
+    normalizeTopScorerName,
+    isFinalTopScorerContender,
+    filterFinalTopScorerContenders,
+    poolTopScorerBonus,
+    topScorerCandidateKey,
+    buildTopScorerCandidateSummary,
+    topScorerPicksByCandidate,
+    applyTopScorerVariant,
   };
 }

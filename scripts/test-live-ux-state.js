@@ -240,7 +240,7 @@ assert(/leaderboard\.statusTournamentGeneric/.test(leaderboard), 'Leaderboard mu
 assert(/leaderboard\.statusDataPending/.test(leaderboard), 'Leaderboard must have a pending official-data status');
 assert(/lb-third-place-note/.test(leaderboard) && /leaderboard\.thirdPlacePending/.test(leaderboard), 'Leaderboard must show pending third-place explanation during official partial-group scoring');
 assert(
-  /if \(hasScores\)[\s\S]*renderPodium\(users\)[\s\S]*else if \(podiumEl\)[\s\S]*podiumEl\.innerHTML\s*=\s*''[\s\S]*podiumEl\.style\.display\s*=\s*'none'/.test(leaderboard),
+  /if \(hasScores\)[\s\S]*renderPodium\(users,\s*\{\s*sharedRanks\s*\}\)[\s\S]*else if \(podiumEl\)[\s\S]*podiumEl\.innerHTML\s*=\s*''[\s\S]*podiumEl\.style\.display\s*=\s*'none'/.test(leaderboard),
   'Leaderboard must keep the last official podium visible while official data is pending'
 );
 assert(
@@ -281,7 +281,7 @@ const podiumSandbox = {
   t: (key) => key,
 };
 vm.createContext(podiumSandbox);
-vm.runInContext(`${extractFunction(app, 'renderPodium')}; ${extractFunction(app, 'createPodiumSpot')}; ${extractFunction(app, 'createEmptyPodium')}; this.renderPodium = renderPodium;`, podiumSandbox);
+vm.runInContext(`${extractFunction(app, '_sortLeaderboardUsers')}; ${extractFunction(app, '_leaderboardScore')}; ${extractFunction(app, '_rankLeaderboardUsers')}; ${extractFunction(app, '_leaderboardRankLabel')}; ${extractFunction(app, 'renderPodium')}; ${extractFunction(app, 'createPodiumSpot')}; ${extractFunction(app, 'createEmptyPodium')}; this.renderPodium = renderPodium;`, podiumSandbox);
 podiumSandbox.renderPodium([
   { nickname: 'Leader With A Very Very Long Name', total_score: 9 },
   { nickname: 'Second', total_score: 5 },
@@ -290,6 +290,15 @@ assert(podiumRows.length === 3, 'Podium must render second/first/third slots eve
 assert(podiumRows[0].className.includes('second') && podiumRows[1].className.includes('first') && podiumRows[2].className.includes('third'), 'Podium must keep visual order second, first, third');
 assert(podiumRows[1].innerHTML.includes('Leader With A Very Very Long Name'), 'Podium first slot must show the actual leader name');
 assert(podiumRows[2].innerHTML.includes('leaderboard.podiumEmpty'), 'Podium third slot must show an empty placeholder when only two scored users exist');
+podiumRows.length = 0;
+podiumSandbox.renderPodium([
+  { nickname: 'Co Leader A', total_score: 9 },
+  { nickname: 'Co Leader B', total_score: 9 },
+  { nickname: 'Third', total_score: 5 },
+], { sharedRanks: true });
+const tiedSecondMedal = (podiumRows[0].innerHTML.match(/<div class="podium-medal">([^<]+)<\/div>/) || [])[1];
+const tiedFirstMedal = (podiumRows[1].innerHTML.match(/<div class="podium-medal">([^<]+)<\/div>/) || [])[1];
+assert(podiumRows[0].innerHTML.includes('Co Leader B') && tiedSecondMedal && tiedSecondMedal === tiedFirstMedal, 'Shared first-place podium must show tied leaders as rank one');
 
 const renderFullSource = extractFunction(app, 'renderFullLeaderboard');
 const renderRows = [];
@@ -316,7 +325,7 @@ renderSandbox.document.createElement = () => {
   row.classList.owner = row;
   return row;
 };
-vm.runInContext(`${renderFullSource}; this.renderFullLeaderboard = renderFullLeaderboard;`, renderSandbox);
+vm.runInContext(`${extractFunction(app, '_sortLeaderboardUsers')}; ${extractFunction(app, '_leaderboardScore')}; ${extractFunction(app, '_rankLeaderboardUsers')}; ${extractFunction(app, '_leaderboardRankLabel')}; ${renderFullSource}; this.renderFullLeaderboard = renderFullLeaderboard;`, renderSandbox);
 renderSandbox.renderFullLeaderboard([
   { id: 'u1', nickname: 'שם ארוך מאוד מאוד מאוד Long Long Long', is_admin: true, total_score: 0 },
   { id: 'u2', nickname: 'Second', total_score: 0 },
@@ -344,7 +353,14 @@ renderSandbox.renderFullLeaderboard([
 ], { hasScores: false, dataPending: true });
 assert(renderRows[0].innerHTML.includes('leaderboard.calculatingShort'), 'Pending leaderboard rows without any official scores must avoid fake point totals');
 assert(renderRows[0].innerHTML.includes('leaderboard.calculatingBreakdown'), 'Pending leaderboard rows without official scores must explain that data is finalizing');
-assert(/renderLeaderboardBanter\(users,\s*\{\s*phase,\s*dataPending,\s*tournamentContext:\s*tournamentCtx\s*\}\)/.test(app), 'Leaderboard banter must receive the current tournament context and pending-data state');
+renderRows.length = 0;
+renderSandbox.renderFullLeaderboard([
+  { id: 'u1', nickname: 'Tie A', total_score: 7 },
+  { id: 'u2', nickname: 'Tie B', total_score: 7 },
+  { id: 'u3', nickname: 'Third', total_score: 4 },
+], { hasScores: true, sharedRanks: true });
+assert(renderRows[0].innerHTML.includes('<div class="lb-rank">#1</div>') && renderRows[1].innerHTML.includes('<div class="lb-rank">#1</div>') && renderRows[2].innerHTML.includes('<div class="lb-rank">#3</div>'), 'Final leaderboard rows must use shared ranks for tied scores');
+assert(/renderLeaderboardBanter\(users,\s*\{\s*phase,\s*dataPending,\s*tournamentContext:\s*tournamentCtx,\s*sharedRanks\s*\}\)/.test(app), 'Leaderboard banter must receive the current tournament context, pending-data state, and shared-rank mode');
 assert(/options\s*&&\s*options\.dataPending/.test(app), 'Leaderboard banter must stay hidden while official data is pending');
 assert(/function _groupsCompleteLeaderboardBanter\(users,\s*tournamentCtx\)/.test(app), 'Leaderboard must have a tournament-context Pundit fallback');
 assert(/options\s*&&\s*options\.phase\s*===\s*'groupsComplete'/.test(app), 'Leaderboard Pundit fallback must activate only for groups-complete phase');
