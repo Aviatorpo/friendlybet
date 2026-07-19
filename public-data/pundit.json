@@ -1,23 +1,23 @@
 {
-  "updatedAt": "2026-07-19T22:02:43.775Z",
-  "freshUntil": "2026-07-20T04:02:43.775Z",
+  "updatedAt": "2026-07-19T22:09:08.111Z",
+  "freshUntil": "2026-07-20T04:09:08.111Z",
   "count": 2,
   "items": [
     {
-      "id": "live-ae6f51f1-0310-4872-802f-bc4bf8a62a72",
-      "type": "live",
+      "id": "result-ae6f51f1-0310-4872-802f-bc4bf8a62a72",
+      "type": "result",
       "confidence": "confirmed",
-      "he": "ספרד נגד ארגנטינה עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
-      "en": "Spain vs Argentina is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "he": "ספרד עברה את ארגנטינה 1:0. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על ארגנטינה צריך מסלול חדש 🧾",
+      "en": "Spain got past Argentina 1-0. Bracket paths that kept Spain alive get a receipt; Argentina routes need a new plan 🧾",
       "sources": [],
-      "expires_at": "2026-07-20T01:02:43.775Z"
+      "expires_at": "2026-07-21T07:00:00.000Z"
     },
     {
       "id": "result-84157ade-88e2-422c-bc27-842e6517c5c1",
       "type": "result",
       "confidence": "confirmed",
-      "he": "אנגליה ניצחה את צרפת 6:4 ונשארה בחיים בבראקט. כל מסלול שהשאיר אותה בחיים יכול להמשיך לחלום 🧾",
-      "en": "England beat France 6-4 and stayed alive in the bracket. Any bracket path that kept England alive can keep dreaming 🧾",
+      "he": "אנגליה עברה את צרפת 6:4. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על צרפת צריך מסלול חדש 🧾",
+      "en": "England got past France 6-4. Bracket paths that kept England alive get a receipt; France routes need a new plan 🧾",
       "sources": [],
       "expires_at": "2026-07-20T09:00:00.000Z"
     }
