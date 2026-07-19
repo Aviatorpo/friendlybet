@@ -1,6 +1,91 @@
 {
-  "updated_at": "2026-07-18T23:04:58.627Z",
+  "updated_at": "2026-07-19T22:04:53.865Z",
   "items": [
+    {
+      "id": "esp-arg-2026-07-19",
+      "match_id": "ae6f51f1-0310-4872-802f-bc4bf8a62a72",
+      "image": "story-assets/spain-wins-argentina.png",
+      "teams": [
+        "ESP",
+        "ARG"
+      ],
+      "outcome": "ESP",
+      "result": "ESP 1-0 ARG",
+      "top_label": "SPAIN QUALIFIES!",
+      "pool_focus": {
+        "table": "knockout_picks",
+        "team_code": "ESP",
+        "team_he": "ספרד",
+        "team_en": "Spain",
+        "match_id": "ae6f51f1-0310-4872-802f-bc4bf8a62a72",
+        "he_name": "ספרד צריכה שער אחד ומקבלת אותו. בחירה חדה, ובחירת הנוקאאוט מקבלת ניקוד חשוב בטבלת ההימור. {names} בחר את {team} להתקדם בבראקט הנוקאאוט ⚽",
+        "he_names": "ספרד צריכה שער אחד ומקבלת אותו. בחירות חדות, ובחירות הנוקאאוט מקבלות ניקוד חשוב בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
+        "he_count": "ספרד צריכה שער אחד ומקבלת אותו. בחירות חדות, ובחירות הנוקאאוט מקבלות ניקוד חשוב בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
+        "en_name": "Spain need one goal and get it. Sharp call, and that knockout call scores in the pool. {names} picked {team} to advance in the knockout bracket ⚽",
+        "en_names": "Spain need one goal and get it. Sharp calls, and those knockout calls score in the pool. {names} picked {team} to advance in the knockout bracket ⚽",
+        "en_count": "Spain need one goal and get it. Sharp calls, and those knockout calls score in the pool. {names} picked {team} to advance in the knockout bracket ⚽"
+      },
+      "pool_focuses": [
+        {
+          "table": "knockout_picks",
+          "team_code": "ESP",
+          "team_he": "ספרד",
+          "team_en": "Spain",
+          "match_id": "ae6f51f1-0310-4872-802f-bc4bf8a62a72",
+          "he_name": "ספרד צריכה שער אחד ומקבלת אותו. בחירה חדה, ובחירת הנוקאאוט מקבלת ניקוד חשוב בטבלת ההימור. {names} בחר את {team} להתקדם בבראקט הנוקאאוט ⚽",
+          "he_names": "ספרד צריכה שער אחד ומקבלת אותו. בחירות חדות, ובחירות הנוקאאוט מקבלות ניקוד חשוב בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
+          "he_count": "ספרד צריכה שער אחד ומקבלת אותו. בחירות חדות, ובחירות הנוקאאוט מקבלות ניקוד חשוב בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
+          "en_name": "Spain need one goal and get it. Sharp call, and that knockout call scores in the pool. {names} picked {team} to advance in the knockout bracket ⚽",
+          "en_names": "Spain need one goal and get it. Sharp calls, and those knockout calls score in the pool. {names} picked {team} to advance in the knockout bracket ⚽",
+          "en_count": "Spain need one goal and get it. Sharp calls, and those knockout calls score in the pool. {names} picked {team} to advance in the knockout bracket ⚽"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ESP",
+          "team_he": "ספרד",
+          "team_en": "Spain",
+          "he_name": "1-0 קטן, משמעות גדולה. ספרד ממשיכה, והדרך לגביע קיבלה עוד הוכחה בטבלת ההימור. {names} בחר את {team} כזוכת המונדיאל ⚽",
+          "he_names": "1-0 קטן, משמעות גדולה. ספרד ממשיכה, והדרך לגביע קיבלה עוד הוכחה בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל ⚽",
+          "he_count": "1-0 קטן, משמעות גדולה. ספרד ממשיכה, והדרך לגביע קיבלה עוד הוכחה בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל ⚽",
+          "en_name": "Small 1-0, huge meaning. Spain move on, and the trophy call has real weight in the pool now. {names} picked {team} to win the World Cup ⚽",
+          "en_names": "Small 1-0, huge meaning. Spain move on, and the trophy calls have real weight in the pool now. {names} picked {team} to win the World Cup ⚽",
+          "en_count": "Small 1-0, huge meaning. Spain move on, and the trophy calls have real weight in the pool now. {names} picked {team} to win the World Cup ⚽"
+        },
+        {
+          "table": "knockout_picks",
+          "team_code": "ARG",
+          "team_he": "ארגנטינה",
+          "team_en": "Argentina",
+          "match_id": "ae6f51f1-0310-4872-802f-bc4bf8a62a72",
+          "he_name": "שער אחד של ספרד מספיק. בחירה לא טובה, ובחירת הנוקאאוט מאבדת גובה בטבלת ההימור. {names} בחר את {team} להתקדם בבראקט הנוקאאוט ⚽",
+          "he_names": "שער אחד של ספרד מספיק. בחירות לא טובות, ובחירות הנוקאאוט מאבדות גובה בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
+          "he_count": "שער אחד של ספרד מספיק. בחירות לא טובות, ובחירות הנוקאאוט מאבדות גובה בטבלת ההימור. {names} בחרו את {team} להתקדם בבראקט הנוקאאוט ⚽",
+          "en_name": "One Spain goal is enough. That pick ran out of road, and that knockout call loses ground in the pool. {names} picked {team} to advance in the knockout bracket ⚽",
+          "en_names": "One Spain goal is enough. Those picks ran out of road, and those knockout calls lose ground in the pool. {names} picked {team} to advance in the knockout bracket ⚽",
+          "en_count": "One Spain goal is enough. Those picks ran out of road, and those knockout calls lose ground in the pool. {names} picked {team} to advance in the knockout bracket ⚽"
+        },
+        {
+          "table": "tournament_winner_picks",
+          "team_code": "ARG",
+          "team_he": "ארגנטינה",
+          "team_en": "Argentina",
+          "he_name": "ארגנטינה בחוץ בגלל שער אחד. הבחירה על הגביע נראית הרבה פחות בטוחה בטבלת ההימור. {names} בחר את {team} כזוכת המונדיאל ⚽",
+          "he_names": "ארגנטינה בחוץ בגלל שער אחד. הבחירות על הגביע נראות הרבה פחות בטוחות בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל ⚽",
+          "he_count": "ארגנטינה בחוץ בגלל שער אחד. הבחירות על הגביע נראות הרבה פחות בטוחות בטבלת ההימור. {names} בחרו את {team} כזוכת המונדיאל ⚽",
+          "en_name": "Argentina are out because of one goal. That trophy pick looks much weaker in the pool. {names} picked {team} to win the World Cup ⚽",
+          "en_names": "Argentina are out because of one goal. Those trophy picks look much weaker in the pool. {names} picked {team} to win the World Cup ⚽",
+          "en_count": "Argentina are out because of one goal. Those trophy picks look much weaker in the pool. {names} picked {team} to win the World Cup ⚽"
+        }
+      ],
+      "he": {
+        "headline": "ספרד ניצחה את ארגנטינה 1-0: נוקאאוט על חוד ⚽",
+        "caption": "שער אחד מספיק לספרד. ארגנטינה בחוץ, ספרד בשלב הבא, וטבלת ההימור זזה ⚽"
+      },
+      "en": {
+        "headline": "Spain beat Argentina 1-0: knockout by a thread ⚽",
+        "caption": "One goal is enough for Spain. Argentina are out, Spain go through, and the chat has material ⚽"
+      }
+    },
     {
       "id": "fra-eng-2026-07-18",
       "match_id": "84157ade-88e2-422c-bc27-842e6517c5c1",
