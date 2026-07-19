@@ -95,6 +95,16 @@ function scenarioFileCount(dir) {
   }
 }
 
+function scenarioVariantFileCount(winnerDir, baseSegment) {
+  try {
+    return fs.readdirSync(winnerDir, { withFileTypes: true })
+      .filter(entry => entry.isDirectory() && entry.name !== baseSegment)
+      .reduce((sum, entry) => sum + scenarioFileCount(path.join(winnerDir, entry.name)), 0);
+  } catch (_) {
+    return 0;
+  }
+}
+
 function manifestEntryForMatch(manifest, match) {
   return ((manifest && manifest.matches) || []).find(entry => sameFixture(entry.match, match)) || null;
 }
@@ -110,8 +120,26 @@ function scenarioFilesReady(entry, opts) {
       issues.push(`${winnerCode}: no pool count in manifest`);
       continue;
     }
-    const dir = path.join(opts.scenarioDir, G.safeSegment(entry.scenario_key), G.safeSegment(winnerCode));
-    const actual = scenarioFileCount(dir);
+    const winnerDir = path.join(opts.scenarioDir, G.safeSegment(entry.scenario_key), G.safeSegment(winnerCode));
+    if (entry.path_mode === 'winner_top_scorer') {
+      const baseSegment = G.safeSegment(entry.base_top_scorer_segment || G.BASE_TOP_SCORER_SEGMENT || '_base');
+      const baseActual = scenarioFileCount(path.join(winnerDir, baseSegment));
+      if (baseActual < expected) issues.push(`${winnerCode}: ${baseActual}/${expected} base scenario files present`);
+
+      const candidates = (entry.top_scorer_candidates || [])
+        .map(candidate => candidate && candidate.key)
+        .filter(Boolean);
+      for (const candidateKey of candidates) {
+        const actual = scenarioFileCount(path.join(winnerDir, G.safeSegment(candidateKey)));
+        if (actual < expected) issues.push(`${winnerCode}/${candidateKey}: ${actual}/${expected} top-scorer scenario files present`);
+      }
+
+      const expectedVariants = Number(entry[`${winnerCode}_top_scorer_variant_count`] || 0);
+      const actualVariants = scenarioVariantFileCount(winnerDir, baseSegment);
+      if (actualVariants < expectedVariants) issues.push(`${winnerCode}: ${actualVariants}/${expectedVariants} top-scorer variant files present`);
+      continue;
+    }
+    const actual = scenarioFileCount(winnerDir);
     if (actual < expected) issues.push(`${winnerCode}: ${actual}/${expected} scenario files present`);
   }
   return { ok: issues.length === 0, issues };
