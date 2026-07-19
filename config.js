@@ -7,7 +7,7 @@ const CONFIG = {
   SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_Aj_p7rZjAat_-ros9gzD_g_AsPtotpU',
   
   APP_NAME: 'FriendlyBet',
-  APP_VERSION: '2.10.142',
+  APP_VERSION: '2.10.143',
   LIVE_NUDGE_ENABLED: false,
   
   STORAGE_KEYS: {

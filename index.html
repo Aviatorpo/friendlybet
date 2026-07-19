@@ -1571,6 +1571,43 @@ function loadTablerFallback() {
         </section>
       </section>
 
+      <section class="dashboard-final-card" id="dashboard-final-card" style="display:none;" aria-live="polite">
+        <div class="dfc-visual" aria-hidden="true">
+          <div class="dfc-confetti"></div>
+          <div class="dfc-team-badge" id="dashboard-final-team-badge"></div>
+          <div class="dfc-trophy">
+            <span class="dfc-trophy-cup"></span>
+            <span class="dfc-trophy-stem"></span>
+            <span class="dfc-trophy-base"></span>
+          </div>
+          <div class="dfc-captain">
+            <span class="dfc-captain-head"></span>
+            <span class="dfc-captain-body"></span>
+            <span class="dfc-captain-arm left"></span>
+            <span class="dfc-captain-arm right"></span>
+          </div>
+        </div>
+        <div class="dfc-copy">
+          <div class="dfc-kicker" id="dashboard-final-kicker" data-i18n="dashboard.final.kicker">Final whistle</div>
+          <h2 class="dfc-title" id="dashboard-final-title"></h2>
+          <div class="dfc-scoreline" id="dashboard-final-scoreline"></div>
+          <div class="dfc-facts">
+            <div class="dfc-fact">
+              <span data-i18n="dashboard.final.poolWinnersLabel">Pool winners</span>
+              <strong id="dashboard-final-pool-winners"></strong>
+            </div>
+            <div class="dfc-fact">
+              <span data-i18n="dashboard.final.goldenBootLabel">Golden Boot</span>
+              <strong id="dashboard-final-golden-boot"></strong>
+            </div>
+          </div>
+          <button type="button" class="dfc-share" id="dashboard-final-share">
+            <i class="ti ti-photo-share"></i>
+            <span data-i18n="dashboard.final.share">Share final image</span>
+          </button>
+        </div>
+      </section>
+
       <section class="dashboard-drama-hero" id="dashboard-drama-hero" style="display:none;" aria-live="polite">
         <div class="ddh-copy">
           <div class="ddh-kicker">
@@ -3227,7 +3264,7 @@ function loadTablerFallback() {
       <span>FriendlyBet</span>
       <!-- SEO:guides-footer — crawlable link to the blog/guides hub (maintained by the SEO agent) -->
       <a href="/blog" class="menu-version" style="text-decoration:none">Blog</a>
-      <span class="menu-version">v2.10.142</span>
+      <span class="menu-version">v2.10.143</span>
     </div>
   </div>
 

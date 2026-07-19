@@ -166,6 +166,23 @@ jobs:
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
         run: node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36
 
+      - name: Resolve final Golden Boot before scoring
+        id: golden_boot
+        if: steps.verify_results.outputs.changed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          GOLDEN_BOOT_REPORT_PATH: artifacts/final-golden-boot-report.json
+        run: node scripts/resolve-final-golden-boot.js --apply
+
+      - name: Upload final Golden Boot report
+        if: always() && steps.golden_boot.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-golden-boot-report
+          path: artifacts/final-golden-boot-report.json
+          if-no-files-found: warn
+
       - name: Calculate scores after verified final result
         id: score_results
         if: steps.verify_results.outputs.changed == 'true'
@@ -249,6 +266,7 @@ jobs:
           REGENERATE_COMMANDS: |
             node scripts/update-fifa-world-cup-schedule.js || true
             node scripts/sync-fifa-schedule-to-matches.js --include-placeholders --fail-missing-known-within-hours=36 || true
+            node scripts/resolve-final-golden-boot.js --apply || true
             node scripts/export-snapshots.js matches
             SCORING_FORCE_SCORE_HEARTBEAT=1 node scripts/calculate-scores-v2.js --critical
             node scripts/export-snapshots.js leaderboards

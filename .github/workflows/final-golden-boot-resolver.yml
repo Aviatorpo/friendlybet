@@ -1,0 +1,116 @@
+name: Resolve Final Golden Boot
+
+on:
+  schedule:
+    # Final-night recovery only. Kickoff is 2026-07-19 19:00 UTC; this starts
+    # near possible full time and keeps covering extra time, penalties, and slow
+    # official/stat-source publication.
+    - cron: '*/5 20-23 19 7 *'
+    - cron: '*/5 0-2 20 7 *'
+  workflow_dispatch:
+
+concurrency:
+  group: final-golden-boot-resolver
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+
+      - name: Resolve final Golden Boot
+        id: golden_boot
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          GOLDEN_BOOT_REPORT_PATH: artifacts/final-golden-boot-resolver-report.json
+        run: node scripts/resolve-final-golden-boot.js --apply
+
+      - name: Upload Golden Boot resolver report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-golden-boot-resolver-report
+          path: artifacts/final-golden-boot-resolver-report.json
+          if-no-files-found: warn
+
+      - name: Calculate scores after Golden Boot truth
+        id: score_results
+        if: steps.golden_boot.outputs.score_needed == 'true'
+        timeout-minutes: 12
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
+          SCORING_VERBOSE: '0'
+          SCORING_FORCE_SCORE_HEARTBEAT: '1'
+        run: node scripts/calculate-scores-v2.js --critical
+
+      - name: Export leaderboard snapshots after Golden Boot scoring
+        if: steps.golden_boot.outputs.score_needed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
+        run: node scripts/export-snapshots.js leaderboards
+
+      - name: Verify scoring snapshots after Golden Boot scoring
+        if: steps.golden_boot.outputs.score_needed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
+          SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT: '1'
+          SCORING_SCORE_FRESH_AFTER: ${{ steps.score_results.outputs.score_fresh_after }}
+        run: node scripts/verify-scoring-snapshots.js
+
+      - name: Commit Golden Boot scoring snapshots if changed
+        if: steps.golden_boot.outputs.score_needed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
+          SCORING_SUPABASE_FETCH_TIMEOUT_MS: 30000
+          SCORING_VERBOSE: '0'
+          REGENERATE_COMMANDS: |
+            node scripts/resolve-final-golden-boot.js --apply
+            SCORING_FORCE_SCORE_HEARTBEAT=1 node scripts/calculate-scores-v2.js --critical
+            node scripts/export-snapshots.js leaderboards
+            SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT=1 SCORING_SCORE_FRESH_AFTER="${{ steps.score_results.outputs.score_fresh_after }}" node scripts/verify-scoring-snapshots.js
+        run: |
+          git config user.name "Aviatorpo"
+          git config user.email "283137823+Aviatorpo@users.noreply.github.com"
+          if [ -n "$(git status --porcelain public-data/leaderboard)" ]; then
+            bash scripts/commit-generated-snapshots.sh "data: refresh Golden Boot scoring snapshots" public-data/leaderboard
+          else
+            echo "no Golden Boot leaderboard snapshot change"
+          fi
+
+      - name: Prove public scoring snapshots after Golden Boot scoring
+        if: steps.golden_boot.outputs.score_needed == 'true'
+        env:
+          SUPABASE_URL: https://kovhuahdoluxyqqwqohw.supabase.co
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          LEADERBOARD_POOL_IDS: ${{ steps.score_results.outputs.changed_pool_ids }}
+          FORCE_ALL_LEADERBOARD_SNAPSHOTS: '1'
+          SCORING_REQUIRE_SCORE_HEARTBEAT_AFTER_RESULT: '1'
+          SCORING_SCORE_FRESH_AFTER: ${{ steps.score_results.outputs.score_fresh_after }}
+          SCORING_SNAPSHOT_PUBLIC_BASE_URL: https://friendlybet.live
+          SCORING_SNAPSHOT_PUBLIC_RETRIES: 60
+          SCORING_SNAPSHOT_PUBLIC_RETRY_MS: 10000
+        run: node scripts/verify-scoring-snapshots.js
