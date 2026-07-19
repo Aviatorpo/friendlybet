@@ -1735,162 +1735,54 @@ body.ltr .btn-secondary .ti-arrow-left {
     #0c100d;
   color: #f8f5ea;
   display: grid;
-  grid-template-columns: 148px minmax(0, 1fr);
+  grid-template-columns: minmax(150px, 0.76fr) minmax(0, 1fr);
   gap: 12px;
   align-items: stretch;
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
 }
 
-.dfc-visual {
-  min-height: 190px;
+.dfc-preview-frame {
   position: relative;
+  width: 100%;
+  max-height: 410px;
+  aspect-ratio: 4 / 5;
+  align-self: center;
   overflow: hidden;
   border-radius: 8px;
   background:
-    linear-gradient(180deg, rgba(79, 209, 160, 0.20), rgba(255, 255, 255, 0.035)),
-    #11130f;
+    linear-gradient(180deg, rgba(217, 180, 106, 0.12), rgba(79, 209, 160, 0.08)),
+    #090c09;
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.dfc-confetti,
-.dfc-confetti::before,
-.dfc-confetti::after {
+.dfc-preview-image {
   position: absolute;
   inset: 0;
-  content: "";
-  background-image:
-    linear-gradient(90deg, rgba(217, 180, 106, 0.72) 0 10px, transparent 10px),
-    linear-gradient(90deg, rgba(79, 209, 160, 0.52) 0 8px, transparent 8px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.28) 0 7px, transparent 7px);
-  background-size: 47px 61px, 71px 43px, 83px 79px;
-  background-position: 8px 16px, 19px 39px, 30px 8px;
-  opacity: 0.56;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 180ms ease;
 }
 
-.dfc-team-badge {
+.dfc-preview-frame.is-ready .dfc-preview-image {
+  opacity: 1;
+}
+
+.dfc-preview-loading {
   position: absolute;
-  top: 10px;
-  inset-inline-end: 10px;
-  min-width: 42px;
-  min-height: 26px;
-  padding: 4px 7px;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.42);
-  border: 1px solid rgba(217, 180, 106, 0.42);
-  color: #f1d99a;
-  font-family: Sora, sans-serif;
-  font-weight: 900;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 14px;
+  color: rgba(248, 245, 234, 0.64);
   font-size: 12px;
+  font-weight: 900;
   text-align: center;
-  letter-spacing: 0;
 }
 
-.dfc-captain {
-  position: absolute;
-  left: 50%;
-  bottom: 16px;
-  width: 82px;
-  height: 126px;
-  transform: translateX(-50%);
-}
-
-.dfc-captain-head {
-  position: absolute;
-  top: 0;
-  left: 25px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #d7b08a;
-  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.18);
-}
-
-.dfc-captain-body {
-  position: absolute;
-  top: 34px;
-  left: 14px;
-  width: 54px;
-  height: 76px;
-  border-radius: 20px 20px 8px 8px;
-  background: #4fd1a0;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-.dfc-captain-arm {
-  position: absolute;
-  top: 36px;
-  width: 46px;
-  height: 10px;
-  border-radius: 10px;
-  background: rgba(248, 245, 234, 0.86);
-  transform-origin: center;
-}
-
-.dfc-captain-arm.left {
-  left: -20px;
-  transform: rotate(-42deg);
-}
-
-.dfc-captain-arm.right {
-  right: -20px;
-  transform: rotate(42deg);
-}
-
-.dfc-trophy {
-  position: absolute;
-  left: 50%;
-  top: 34px;
-  width: 76px;
-  height: 86px;
-  transform: translateX(-50%);
-  z-index: 2;
-}
-
-.dfc-trophy-cup {
-  position: absolute;
-  left: 10px;
-  top: 0;
-  width: 56px;
-  height: 38px;
-  border-radius: 10px 10px 24px 24px;
-  background: linear-gradient(180deg, #f4dc9f, #d9b46a);
-  box-shadow: 0 0 22px rgba(217, 180, 106, 0.34);
-}
-
-.dfc-trophy-cup::before,
-.dfc-trophy-cup::after {
-  content: "";
-  position: absolute;
-  top: 8px;
-  width: 22px;
-  height: 25px;
-  border: 5px solid #d9b46a;
-  border-radius: 50%;
-}
-
-.dfc-trophy-cup::before { left: -22px; }
-.dfc-trophy-cup::after { right: -22px; }
-
-.dfc-trophy-stem,
-.dfc-trophy-base {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #f1d99a;
-}
-
-.dfc-trophy-stem {
-  top: 38px;
-  width: 16px;
-  height: 28px;
-  border-radius: 4px;
-}
-
-.dfc-trophy-base {
-  top: 64px;
-  width: 48px;
-  height: 13px;
-  border-radius: 8px;
+.dfc-preview-frame.is-ready .dfc-preview-loading {
+  display: none;
 }
 
 .dfc-copy {
@@ -1976,8 +1868,8 @@ body.ltr .btn-secondary .ti-arrow-left {
     grid-template-columns: 1fr;
   }
 
-  .dfc-visual {
-    min-height: 170px;
+  .dfc-preview-frame {
+    max-height: none;
   }
 
   .dfc-title {
