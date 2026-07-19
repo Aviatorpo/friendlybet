@@ -1,8 +1,17 @@
 {
-  "updatedAt": "2026-07-19T13:45:59.883Z",
-  "freshUntil": "2026-07-19T19:45:59.883Z",
+  "updatedAt": "2026-07-19T19:18:24.642Z",
+  "freshUntil": "2026-07-20T01:18:24.642Z",
   "count": 2,
   "items": [
+    {
+      "id": "live-ae6f51f1-0310-4872-802f-bc4bf8a62a72",
+      "type": "live",
+      "confidence": "confirmed",
+      "he": "ספרד נגד ארגנטינה עכשיו על הדשא. כל שער יכול להפוך בראקטים ולקרב צד אחד לשלב הבא 🔥",
+      "en": "Spain vs Argentina is live now. Every goal can flip brackets and push one side toward the next round 🔥",
+      "sources": [],
+      "expires_at": "2026-07-19T22:18:24.642Z"
+    },
     {
       "id": "result-84157ade-88e2-422c-bc27-842e6517c5c1",
       "type": "result",
@@ -11,15 +20,6 @@
       "en": "England beat France 6-4 and stayed alive in the bracket. Any bracket path that kept England alive can keep dreaming 🧾",
       "sources": [],
       "expires_at": "2026-07-20T09:00:00.000Z"
-    },
-    {
-      "id": "fixture-ae6f51f1-0310-4872-802f-bc4bf8a62a72",
-      "type": "fixture",
-      "confidence": "confirmed",
-      "he": "משחק ענק בהגמר: ספרד נגד ארגנטינה, היום 22:00. צד אחד ממשיך, צד אחד הולך הביתה ⏰",
-      "en": "Huge final: Spain vs Argentina, today 22:00. One side moves on, one side goes home. It still matters for brackets, knockout picks, and pool points ⏰",
-      "sources": [],
-      "expires_at": "2026-07-19T18:45:00.000Z"
     }
   ]
 }
