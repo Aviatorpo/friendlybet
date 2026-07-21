@@ -1,16 +1,6 @@
 {
-  "updatedAt": "2026-07-21T03:36:17.602Z",
-  "freshUntil": "2026-07-21T09:36:17.602Z",
-  "count": 1,
-  "items": [
-    {
-      "id": "result-ae6f51f1-0310-4872-802f-bc4bf8a62a72",
-      "type": "result",
-      "confidence": "confirmed",
-      "he": "ספרד עברה את ארגנטינה 1:0. מסלולים בבראקט שהשאירו אותה בחיים קיבלו קבלה; מי שבנה על ארגנטינה צריך מסלול חדש 🧾",
-      "en": "Spain got past Argentina 1-0. Bracket paths that kept Spain alive get a receipt; Argentina routes need a new plan 🧾",
-      "sources": [],
-      "expires_at": "2026-07-21T07:00:00.000Z"
-    }
-  ]
+  "updatedAt": "2026-07-21T19:46:07.029Z",
+  "freshUntil": "2026-07-22T01:46:07.029Z",
+  "count": 0,
+  "items": []
 }
